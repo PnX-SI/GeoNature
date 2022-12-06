@@ -435,7 +435,42 @@ class MapConfig(Schema):
     # et Suisse)
     # Laisser à null pour n'avoir aucune restriction
     OSM_RESTRICT_COUNTRY_CODES = fields.String(load_default=None)
-    REF_LAYERS = fields.List(fields.Dict(), load_default=[])
+    REF_LAYERS = fields.List(
+        fields.Dict(),
+        load_default=[
+            {
+                "code": "limitesadministratives",
+                "label": "Limites administratives (IGN)",
+                "type": "wms",
+                "url": "https://wxs.ign.fr/essentiels/geoportail/r/wms",
+                "activate": False,
+                "params": {
+                    "VERSION": "1.3.0",
+                    "crs": "CRS:84",
+                    "dpiMode": 7,
+                    "format": "image/png",
+                    "layers": "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST",
+                    "styles": "",
+                },
+            },
+            {
+                "code": "znieff1",
+                "label": "ZNIEFF1 (INPN)",
+                "type": "wms",
+                "url": "https://ws.carmencarto.fr/WMS/119/fxx_inpn",
+                "activate": False,
+                "params": {
+                    "layers": "znieff1",
+                    "crs": "EPSG:4326",
+                    "service": "wms",
+                    "format": "image/png",
+                    "version": "1.3.0",
+                    "request": "GetMap",
+                    "transparent": True,
+                },
+            },
+        ],
+    )
     REF_LAYERS_LEGEND = fields.Boolean(load_default=False)
 
 
