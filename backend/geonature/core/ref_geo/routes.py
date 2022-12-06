@@ -229,13 +229,15 @@ def get_areas():
 
     # allow to format response
     format = request.args.get("format", default="", type=str)
-    # format features as geojson according to standard
+
+    fields = {"area_type.type_code"}
     if format == "geojson":
-        fields = ["id_area", "id_type", "geojson_4326", "area_type.type_code", "area_name"]
+        fields |= {"+geojson_4326"}
         data = data.options(undefer("geojson_4326"))
-        response = [d.as_dict(fields=fields) for d in data]
-        return to_geojson(response)
-    response = [d.as_dict(fields=["area_type.type_code"]) for d in data]
+    response = [d.as_dict(fields=fields) for d in data]
+    if format == "geojson":
+        # format features as geojson according to standard
+        response = to_geojson(response)
     return jsonify(response)
 
 
