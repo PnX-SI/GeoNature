@@ -282,15 +282,15 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
           }
           for (let i = 0; i < geojson.geometry.coordinates.length; i++) {
             const latLng = L.GeoJSON.coordsToLatLng(geojson.geometry.coordinates[i]);
-            const Marker = L.marker(latLng);
-            Marker.bindTooltip(`${countObs}`, {
+            const marker = L.marker(latLng);
+            marker.bindTooltip(`${countObs}`, {
               permanent: true,
               direction: 'center',
               offset: L.point({ x: 0, y: -25 }),
               className: 'number-obs',
             });
-            Marker['countObs'] = countObs;
-            this.setIconEventAndAdd(Marker, geojson.properties.observations.id);
+            marker['countObs'] = countObs;
+            this.setIconEventAndAdd(marker, geojson.properties.observations.id);
           }
         } else if (geojson.geometry.type == 'Polygon' || geojson.geometry.type == 'MultiPolygon') {
           const latLng = L.GeoJSON.coordsToLatLngs(
