@@ -107,7 +107,7 @@ RUN --mount=type=cache,target=/root/.npm \
     npm ci --omit=dev
 
 
-FROM python:3.9-bullseye AS prod
+FROM python:3.9-bullseye AS wheels
 
 ENV PIP_ROOT_USER_ACTION=ignore
 RUN --mount=type=cache,target=/root/.cache \
@@ -142,7 +142,7 @@ EXPOSE 8000
 CMD ["gunicorn", "geonature:create_app()", "--bind=0.0.0.0:8000"]
 
 
-FROM prod AS prod-light
+FROM wheels AS prod-light
 
 WORKDIR /dist/geonature
 RUN --mount=type=cache,target=/root/.cache \
@@ -150,7 +150,7 @@ RUN --mount=type=cache,target=/root/.cache \
 RUN rm -f *.whl
 
 
-FROM prod AS prod-full
+FROM wheels AS prod-full
 
 WORKDIR /dist/geonature
 COPY --from=build-occtax /build/dist/*.whl .
