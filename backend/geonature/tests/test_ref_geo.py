@@ -11,7 +11,7 @@ from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.utils.env import migrate
 
-from ref_geo.models import BibAreasTypes
+from ref_geo.models import BibAreasTypes, LAreas
 from pypnusershub.db.tools import user_to_token
 
 from .fixtures import acquisition_frameworks, datasets
@@ -299,6 +299,38 @@ class TestRefGeo:
 
         assert response.status_code == 200
         assert response.json[0]["area_name"] == CITY
+
+    def test_get_areas_as_geojson(self, area_commune):
+        """
+        This test can't try to get only one commune
+        Example : if first commune is Aast, we can get many result with ilike operator
+        """
+        type_code = area_commune.type_code
+        id_type = area_commune.id_type
+        first_comm = LAreas.query.filter(LAreas.id_type == id_type).first()
+        # will test many responses are return
+        response = self.client.get(
+            url_for("ref_geo.get_areas"),
+            query_string={"type_code": type_code, "format": "geojson"},
+        )
+        assert response.status_code == 200
+        assert len(response.json) > 0
+        result_comm = response.json[0]
+        result_type = result_comm["properties"]["area_type"]["type_code"]
+        assert result_comm["geometry"] is not None
+        assert result_type == type_code
+        # will test only one response with correct format
+        response = self.client.get(
+            url_for("ref_geo.get_areas"),
+            query_string={
+                "type_code": type_code,
+                "format": "geojson",
+                "area_name": first_comm.area_name,
+            },
+        )
+        result = response.json[0]
+        assert result["geometry"] is not None
+        assert result["properties"]["id_type"] == first_comm.id_type
 
     def test_get_area_size(self):
         response = self.client.post(
