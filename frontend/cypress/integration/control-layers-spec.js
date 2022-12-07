@@ -1,7 +1,7 @@
 describe('Testing Leaflet control layers', () => {
   const controlSelector = '.leaflet-control-layers';
   const controlExpandedSelector = `.leaflet-control-layers-expanded`;
-  const overlayersTitleSelector = '.title-overlay';
+  const overlayersTitleSelector = '[data-qa="title-overlay"]';
   // Go to home page
   before(() => {
     cy.geonatureLogout();

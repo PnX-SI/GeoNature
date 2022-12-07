@@ -319,7 +319,7 @@ export class MapService {
     let svgSquare = `<svg width="16" height="16">
       <rect width="300" height="100" style="fill:${fillColor};fill-opacity:${fillOpacity};stroke-width:${weight};stroke:${color}" />
     </svg>`;
-    return `<span class="title-overlay">${title}</span> <br/> <span style="${padding}">${svgSquare}</span>`;
+    return `<span data-qa="title-overlay">${title}</span> <br/> <span style="${padding}">${svgSquare}</span>`;
   }
 
   /**
@@ -349,7 +349,7 @@ export class MapService {
           overlaysLayers[this.getLegendBox({ title: title, ...style, legendUrl: legendUrl })] =
             lyr[1];
         } else {
-          overlaysLayers[title] = lyr[1];
+          overlaysLayers[`<span data-qa="title-overlay">${title}</span>`] = lyr[1];
         }
         if (lyr[0].activate) {
           map.addLayer(layerLeaf);

@@ -5,6 +5,7 @@ API_TAXHUB = 'http://127.0.0.1:5000/api'
 SECRET_KEY = '5fdc2c8fb46f44033144d07396ba082a95b8b3cc827b611a7aaaefbef414f13b'
 DEFAULT_LANGUAGE='fr'
 [MAPCONFIG]
+REF_LAYERS_LEGEND=false
 REF_LAYERS=[
     {
         code="znieff1",
