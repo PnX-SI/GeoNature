@@ -113,6 +113,9 @@ jobs:
           ./install/05_install_frontend.sh --ci
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
+      - name: Show generated frontend config
+        run: |
+          cat ./frontend/src/conf/app.config.ts
       - name: Run GeoNature backend
         run: geonature dev_back &
         env:
