@@ -902,9 +902,9 @@ def get_acquisition_framework_stats(id_acquisition_framework):
         .distinct()
         .count()
     )
-    nb_observations = (
-        DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
-    )
+    nb_observations = Synthese.query.filter(
+        Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework)
+    ).count()
     nb_habitat = 0
 
     # Check if pr_occhab exist

@@ -1,6 +1,7 @@
 import pytest
 import json
 import itertools
+from collections import Counter
 
 from flask import url_for, current_app
 from sqlalchemy import func
@@ -37,12 +38,6 @@ def source():
 @pytest.fixture()
 def unexisted_id_source():
     return db.session.query(func.max(TSources.id_source)).scalar() + 1
-
-
-@pytest.fixture()
-def bbox_geom(synthese_data):
-    """used to check bbox"""
-    return Point(geometry=to_shape(synthese_data[0].the_geom_4326))
 
 
 @pytest.fixture()
@@ -114,7 +109,7 @@ synthese_properties = {
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestSynthese:
     def test_synthese_scope_filtering(self, app, users, synthese_data):
-        all_ids = {s.id_synthese for s in synthese_data}
+        all_ids = {s.id_synthese for s in synthese_data.values()}
         sq = Synthese.query.with_entities(Synthese.id_synthese).filter(
             Synthese.id_synthese.in_(all_ids)
         )
@@ -238,20 +233,21 @@ class TestSynthese:
 
         for feat in features:
             for obs in feat["properties"]["observations"]:
-                assert obs["lb_nom"] in [synt.nom_cite for synt in synthese_data]
+                assert obs["lb_nom"] in [synt.nom_cite for synt in synthese_data.values()]
         assert response.status_code == 200
 
-    def test_get_synthese_data_aggregate(self, users, synthese_same_geom):
+    def test_get_synthese_data_aggregate(self, users, datasets, synthese_data):
         # Test geometry aggregation
         set_logged_user_cookie(self.client, users["admin_user"])
         response = self.client.get(
             url_for("gn_synthese.get_observations_for_web"),
-            query_string={"cd_nom": synthese_same_geom[0].cd_nom},
+            query_string={"id_dataset": [synthese_data["p1_af1"].id_dataset]},
         )
         data = response.get_json()
         features = data["features"]
-        assert len(features) == 1
-        assert len(features[0]["properties"]["observations"]) == 2
+        # There must be one feature with one obs and one feature with two obs
+        assert len(features) == 2
+        assert Counter([len(f["properties"]["observations"]) for f in features]) == Counter([1, 2])
 
     def test_filter_cor_observers(self, users, synthese_data):
         """
@@ -316,13 +312,13 @@ class TestSynthese:
 
     def test_get_one_synthese_record(self, app, users, synthese_data):
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese)
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 401
 
         set_logged_user_cookie(self.client, users["noright_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese)
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 403
 
@@ -335,31 +331,31 @@ class TestSynthese:
 
         set_logged_user_cookie(self.client, users["admin_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese)
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 200
 
         set_logged_user_cookie(self.client, users["self_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese)
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 200
 
         set_logged_user_cookie(self.client, users["user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese)
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 200
 
         set_logged_user_cookie(self.client, users["associate_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese)
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 200
 
         set_logged_user_cookie(self.client, users["stranger_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese)
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == Forbidden.code
 
@@ -400,7 +396,7 @@ class TestSynthese:
         )
 
     def test_taxa_distribution(self, synthese_data):
-        s = synthese_data[0]
+        s = synthese_data["p1_af1"]
 
         response = self.client.get(url_for("gn_synthese.get_taxa_distribution"))
         assert response.status_code == 200
@@ -436,7 +432,7 @@ class TestSynthese:
     def test_get_taxa_count(self, synthese_data):
         response = self.client.get(url_for("gn_synthese.get_taxa_count"))
 
-        assert response.json >= len(set(synt.cd_nom for synt in synthese_data))
+        assert response.json >= len(set(synt.cd_nom for synt in synthese_data.values()))
 
     def test_get_taxa_count_id_dataset(self, synthese_data, datasets, unexisted_id):
         id_dataset = datasets["own_dataset"].id_dataset
@@ -445,7 +441,7 @@ class TestSynthese:
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
         response_empty = self.client.get(url_for(url), query_string={"id_dataset": unexisted_id})
 
-        assert response.json == len(set(synt.cd_nom for synt in synthese_data))
+        assert response.json == len(set(synt.cd_nom for synt in synthese_data.values()))
         assert response_empty.json == 0
 
     def test_get_observation_count(self, synthese_data):
@@ -457,7 +453,7 @@ class TestSynthese:
 
     def test_get_observation_count_id_dataset(self, synthese_data, datasets, unexisted_id):
         id_dataset = datasets["own_dataset"].id_dataset
-        nb_observations = len(synthese_data)
+        nb_observations = len([s for s in synthese_data.values() if s.id_dataset == id_dataset])
         url = "gn_synthese.get_observation_count"
 
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
@@ -484,7 +480,7 @@ class TestSynthese:
         assert response_empty.status_code == 204
         assert response_empty.get_data(as_text=True) == ""
 
-    def test_get_bbox_id_source(self, bbox_geom, source):
+    def test_get_bbox_id_source(self, synthese_data, source):
         id_source = source.id_source
         url = "gn_synthese.get_bbox"
 
@@ -518,7 +514,9 @@ class TestSynthese:
                 "id_dataset": k,
                 "count": len(list(g)),
             }
-            for k, g in itertools.groupby(sorted(synthese_data, key=ds_keyfunc), key=ds_keyfunc)
+            for k, g in itertools.groupby(
+                sorted(synthese_data.values(), key=ds_keyfunc), key=ds_keyfunc
+            )
         ]
 
         cn_keyfunc = lambda s: s.cd_nom
@@ -527,7 +525,9 @@ class TestSynthese:
                 "cd_nom": k,
                 "count": len(list(g)),
             }
-            for k, g in itertools.groupby(sorted(synthese_data, key=cn_keyfunc), key=cn_keyfunc)
+            for k, g in itertools.groupby(
+                sorted(synthese_data.values(), key=cn_keyfunc), key=cn_keyfunc
+            )
         ]
 
         resp_json = response_dataset.json
@@ -547,7 +547,7 @@ class TestSynthese:
                     assert item["count"] >= test_cd_nom["count"]
 
     def test_get_autocomplete_taxons_synthese(self, synthese_data):
-        seach_name = synthese_data[0].nom_cite
+        seach_name = synthese_data["obs1"].nom_cite
 
         response = self.client.get(
             url_for("gn_synthese.get_autocomplete_taxons_synthese"),
@@ -555,4 +555,4 @@ class TestSynthese:
         )
 
         assert response.status_code == 200
-        assert response.json[0]["cd_nom"] == synthese_data[0].cd_nom
+        assert response.json[0]["cd_nom"] == synthese_data["obs1"].cd_nom
