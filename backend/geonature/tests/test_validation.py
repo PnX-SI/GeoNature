@@ -39,7 +39,7 @@ class TestValidation:
 
     def test_add_validation_status(self, users, synthese_data):
         set_logged_user_cookie(self.client, users["user"])
-        synthese = synthese_data[0]
+        synthese = synthese_data["obs1"]
         id_nomenclature_valid_status = TNomenclatures.query.filter(
             sa.and_(
                 TNomenclatures.cd_nomenclature == "1",
@@ -72,7 +72,7 @@ class TestValidation:
         set_logged_user_cookie(self.client, users["user"])
         response = self.client.get(url_for("gn_commons.get_hist", uuid_attached_row="invalid"))
         assert response.status_code == BadRequest.code
-        s = next(filter(lambda s: s.unique_id_sinp, synthese_data))
+        s = next(filter(lambda s: s.unique_id_sinp, synthese_data.values()))
         response = self.client.get(
             url_for("gn_commons.get_hist", uuid_attached_row=s.unique_id_sinp)
         )
