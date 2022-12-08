@@ -89,23 +89,11 @@ export class HomeContentComponent implements OnInit {
 
     if (needToRefreshStats) {
       // Get general stats from Server
-      this._syntheseApi
-        .getSyntheseGeneralStat()
-        // .map(stat => {
-        //   // eslint-disable-next-line guard-for-in
-        //   for (const key in stat) {
-        //     // Pretty the number with spaces
-        //     if (stat[key]) {
-        //       stat[key] = stat[key].toLocaleString('fr-FR');
-        //     }
-        //   }
-        //   return stat;
-        // })
-        .subscribe((stats) => {
-          stats['createdDate'] = new Date().toUTCString();
-          localStorage.setItem('homePage.stats', JSON.stringify(stats));
-          this.generalStat = stats;
-        });
+      this._syntheseApi.getSyntheseGeneralStat().subscribe((stats) => {
+        stats['createdDate'] = new Date().toUTCString();
+        localStorage.setItem('homePage.stats', JSON.stringify(stats));
+        this.generalStat = stats;
+      });
     }
   }
 
