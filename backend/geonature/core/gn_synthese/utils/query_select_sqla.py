@@ -132,11 +132,10 @@ class SyntheseQuery:
                 # push the joined table in _already_joined_table list
                 self._already_joined_table.append(right_table)
 
-    def filter_query_with_cruved(self, user):
+    def filter_query_with_cruved(self, user, scope):
         """
         Filter the query with the cruved authorization of a user
         """
-        scope = int(user.value_filter)
         if scope in (1, 2):
             # get id synthese where user is observer
             subquery_observers = (
@@ -454,8 +453,8 @@ class SyntheseQuery:
             self.add_join(BibAreasTypes, BibAreasTypes.id_type, LAreas.id_type)
             self.query = self.query.where(BibAreasTypes.type_code == self.areas_type)
 
-    def apply_all_filters(self, user):
-        self.filter_query_with_cruved(user)
+    def apply_all_filters(self, user, scope):
+        self.filter_query_with_cruved(user, scope)
         self.filter_taxonomy()
         self.filter_other_filters()
         self.transform_to_areas()
@@ -465,7 +464,7 @@ class SyntheseQuery:
             self.query = self.query.select_from(self.query_joins)
         return self.query
 
-    def filter_query_all_filters(self, user):
+    def filter_query_all_filters(self, user, scope):
         """High level function to manage query with all filters.
 
         Apply CRUVED, toxonomy and other filters.
@@ -480,5 +479,5 @@ class SyntheseQuery:
         sqlalchemy.orm.query.Query.filter
             Combined filter to apply.
         """
-        self.apply_all_filters(user)
+        self.apply_all_filters(user, scope)
         return self.build_query()

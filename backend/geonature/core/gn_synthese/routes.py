@@ -75,8 +75,8 @@ routes = Blueprint("gn_synthese", __name__)
 
 
 @routes.route("/for_web", methods=["GET", "POST"])
-@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
-def get_observations_for_web(info_role):
+@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+def get_observations_for_web(scope):
     """Optimized route to serve data for the frontend with all filters.
 
     .. :quickref: Synthese; Get filtered observations
@@ -99,7 +99,6 @@ def get_observations_for_web(info_role):
         geojson = json.loads(r["st_asgeojson"])
         geojson["properties"] = properties
 
-    :param str info_role: Role used to get the associated filters, **TBC**
     :qparam str limit: Limit number of synthese returned. Defaults to NB_MAX_OBS_MAP.
     :qparam str cd_ref_parent: filtre tous les taxons enfants d'un TAXREF cd_ref.
     :qparam str cd_ref: Filter by TAXREF cd_ref attribute
@@ -196,7 +195,7 @@ def get_observations_for_web(info_role):
         if output_format == "grouped_geom_by_areas"
         else None,
     )
-    synthese_query_class.filter_query_all_filters(info_role)
+    synthese_query_class.filter_query_all_filters(g.current_user, scope)
     obs_query = synthese_query_class.query
     obs_query = obs_query.cte("OBSERVATIONS")
 
@@ -222,14 +221,13 @@ def get_observations_for_web(info_role):
                 properties=properties,
             )
         )
-
     return jsonify(FeatureCollection(geojson_features))
 
 
 @routes.route("", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
+@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
 @json_resp
-def get_synthese(info_role):
+def get_synthese(scope):
     """Return synthese row(s) filtered by form params. NOT USED ANY MORE FOR PERFORMANCE ISSUES
 
     .. :quickref: Synthese; Deprecated
@@ -239,7 +237,6 @@ def get_synthese(info_role):
 
     Params must have same synthese fields names
 
-    :parameter str info_role: Role used to get the associated filters
     :returns dict[dict, int, bool]: See description above
     """
     # change all args in a list of value
@@ -251,10 +248,8 @@ def get_synthese(info_role):
 
     query = select([VSyntheseForWebApp]).order_by(VSyntheseForWebApp.date_min.desc())
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
-    synthese_query_class.filter_query_all_filters(info_role)
+    synthese_query_class.filter_query_all_filters(g.current_user, scope)
     data = DB.engine.execute(synthese_query_class.query.limit(result_limit))
-
-    # q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role)
 
     # data = q.limit(result_limit)
     columns = current_app.config["SYNTHESE"]["COLUMNS_API_SYNTHESE_WEB_APP"] + MANDATORY_COLUMNS
@@ -346,8 +341,8 @@ def get_one_synthese(scope, id_synthese):
 
 
 @routes.route("/export_taxons", methods=["POST"])
-@permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
-def export_taxon_web(info_role):
+@permissions.check_cruved_scope("E", get_scope=True, module_code="SYNTHESE")
+def export_taxon_web(scope):
     """Optimized route for taxon web export.
 
     .. :quickref: Synthese;
@@ -388,7 +383,7 @@ def export_taxon_web(info_role):
     id_list = request.get_json()
 
     # check R and E CRUVED to know if we filter with cruved
-    cruved = cruved_scope_for_user_in_module(info_role.id_role, module_code="SYNTHESE")[0]
+    cruved = cruved_scope_for_user_in_module(g.current_user.id_role, module_code="SYNTHESE")[0]
     sub_query = (
         select(
             [
@@ -410,7 +405,7 @@ def export_taxon_web(info_role):
 
     if cruved["R"] > cruved["E"]:
         # filter on cruved
-        synthese_query_class.filter_query_with_cruved(info_role)
+        synthese_query_class.filter_query_with_cruved(g.current_user, scope)
 
     subq = synthese_query_class.query.alias("subq")
 
@@ -426,8 +421,8 @@ def export_taxon_web(info_role):
 
 
 @routes.route("/export_observations", methods=["POST"])
-@permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
-def export_observations_web(info_role):
+@permissions.check_cruved_scope("E", get_scope=True, module_code="SYNTHESE")
+def export_observations_web(scope):
     """Optimized route for observations web export.
 
     .. :quickref: Synthese;
@@ -483,9 +478,9 @@ def export_observations_web(info_role):
         with_generic_table=True,
     )
     # check R and E CRUVED to know if we filter with cruved
-    cruved = cruved_scope_for_user_in_module(info_role.id_role, module_code="SYNTHESE")[0]
+    cruved = cruved_scope_for_user_in_module(g.current_user.id_role, module_code="SYNTHESE")[0]
     if cruved["R"] > cruved["E"]:
-        synthese_query_class.filter_query_with_cruved(info_role)
+        synthese_query_class.filter_query_with_cruved(g.current_user, scope)
 
     results = DB.session.execute(
         synthese_query_class.query.limit(current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"])
@@ -534,8 +529,8 @@ def export_observations_web(info_role):
 
 
 @routes.route("/export_metadata", methods=["GET", "POST"])
-@permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
-def export_metadata(info_role):
+@permissions.check_cruved_scope("E", get_scope=True, module_code="SYNTHESE")
+def export_metadata(scope):
     """Route to export the metadata in CSV
 
     .. :quickref: Synthese;
@@ -572,7 +567,7 @@ def export_metadata(info_role):
         ),
         VSyntheseForWebApp.id_dataset,
     )
-    synthese_query_class.filter_query_all_filters(info_role)
+    synthese_query_class.filter_query_all_filters(g.current_user, scope)
 
     data = DB.engine.execute(synthese_query_class.query)
     return to_csv_resp(
@@ -584,8 +579,8 @@ def export_metadata(info_role):
 
 
 @routes.route("/export_statuts", methods=["POST"])
-@permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
-def export_status(info_role):
+@permissions.check_cruved_scope("E", get_scope=True, module_code="SYNTHESE")
+def export_status(scope):
     """Route to get all the protection status of a synthese search
 
     .. :quickref: Synthese;
@@ -622,7 +617,7 @@ def export_status(info_role):
     # Initialize SyntheseQuery class
     synthese_query = SyntheseQuery(VSyntheseForWebApp, q, filters)
 
-    synthese_query.apply_all_filters(info_role)
+    synthese_query.apply_all_filters(g.current_user, scope)
 
     # Add join
     synthese_query.add_join(Taxref, Taxref.cd_nom, VSyntheseForWebApp.cd_nom)
@@ -714,9 +709,9 @@ def export_status(info_role):
 
 
 @routes.route("/general_stats", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
+@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
 @json_resp
-def general_stats(info_role):
+def general_stats(scope):
     """Return stats about synthese.
 
     .. :quickref: Synthese;
@@ -735,7 +730,7 @@ def general_stats(info_role):
         ]
     )
     synthese_query_obj = SyntheseQuery(Synthese, q, {})
-    synthese_query_obj.filter_query_with_cruved(info_role)
+    synthese_query_obj.filter_query_with_cruved(g.current_user, scope)
     result = DB.session.execute(synthese_query_obj.query)
     synthese_counts = result.fetchone()
 

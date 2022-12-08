@@ -2,7 +2,7 @@ import logging
 import datetime
 import json
 
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, g
 from flask.json import jsonify
 import sqlalchemy as sa
 from sqlalchemy.orm import aliased, contains_eager, selectinload
@@ -28,8 +28,8 @@ log = logging.getLogger()
 
 
 @blueprint.route("", methods=["GET", "POST"])
-@permissions.check_cruved_scope("R", True, module_code="VALIDATION")
-def get_synthese_data(info_role):
+@permissions.check_cruved_scope("R", get_scope=True, module_code="VALIDATION")
+def get_synthese_data(scope):
     """
     Return synthese and t_validations data filtered by form params
     Params must have same synthese fields names
@@ -38,8 +38,6 @@ def get_synthese_data(info_role):
 
     Parameters:
     ------------
-    info_role (User):
-        Information about the user asking the route. Auto add with kwargs
 
     Returns
     -------
@@ -163,7 +161,7 @@ def get_synthese_data(info_role):
 
     query = (
         SyntheseQuery(Synthese, query.selectable, filters, query_joins=query.selectable.froms[0])
-        .filter_query_all_filters(info_role)
+        .filter_query_all_filters(g.current_user, scope)
         .limit(result_limit)
     )
 
@@ -195,8 +193,8 @@ def get_synthese_data(info_role):
 
 
 @blueprint.route("/statusNames", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="VALIDATION")
-def get_statusNames(info_role):
+@permissions.check_cruved_scope("R", module_code="VALIDATION")
+def get_statusNames():
     nomenclatures = (
         TNomenclatures.query.join(BibNomenclaturesTypes)
         .filter(BibNomenclaturesTypes.mnemonique == "STATUT_VALID")
@@ -214,8 +212,8 @@ def get_statusNames(info_role):
 
 
 @blueprint.route("/<id_synthese>", methods=["POST"])
-@permissions.check_cruved_scope("C", True, module_code="VALIDATION")
-def post_status(info_role, id_synthese):
+@permissions.check_cruved_scope("C", module_code="VALIDATION")
+def post_status(id_synthese):
     data = dict(request.get_json())
     try:
         id_validation_status = data["statut"]
@@ -237,7 +235,7 @@ def post_status(info_role, id_synthese):
         uuid = synthese.unique_id_sinp
 
         # t_validations.id_validator:
-        id_validator = info_role.id_role
+        id_validator = g.current_user.id_role
 
         # t_validations.validation_date
         val_date = datetime.datetime.now()
