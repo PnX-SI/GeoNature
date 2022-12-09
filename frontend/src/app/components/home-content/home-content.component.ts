@@ -10,6 +10,7 @@ import { SideNavService } from '../sidenav-items/sidenav-service';
 import { ModuleService } from '../../services/module.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'pnx-home-content',
@@ -25,6 +26,9 @@ export class HomeContentComponent implements OnInit {
   public generalStat: any;
   public locale: string;
   public destroy$: Subject<boolean> = new Subject<boolean>();
+  public cluserOrSimpleFeatureGroup = AppConfig.SYNTHESE.ENABLE_LEAFLET_CLUSTER
+    ? (L as any).markerClusterGroup()
+    : new L.FeatureGroup();
 
   constructor(
     private _SideNavService: SideNavService,
@@ -52,7 +56,7 @@ export class HomeContentComponent implements OnInit {
     this.appConfig = AppConfig;
 
     if (this.showLastObsMap) {
-      this._syntheseApi.getSyntheseData({ limit: 100 }).subscribe((data) => {
+      this._syntheseApi.getSyntheseData({ limit: 100, ungrouped_geom: true }).subscribe((data) => {
         this.lastObs = data;
       });
     }
@@ -114,12 +118,14 @@ export class HomeContentComponent implements OnInit {
       click: () => {
         // Open popup
         const popup = `
-          ${feature.properties.observations.nom_vern_or_lb_nom} <br>
-          <b> Observé le: </b> ${feature.properties.observations.date_min} <br>
-          <b> Par</b>:  ${feature.properties.observations.observers}
+          ${feature.properties.nom_vern_or_lb_nom} <br>
+          <b> Observé le: </b> ${feature.properties.date_min} <br>
+          <b> Par</b>:  ${feature.properties.observers}
         `;
         layer.bindPopup(popup).openPopup();
       },
     });
+    this.cluserOrSimpleFeatureGroup.addLayer(layer);
+    this.cluserOrSimpleFeatureGroup.addTo(this._mapService.map);
   }
 }

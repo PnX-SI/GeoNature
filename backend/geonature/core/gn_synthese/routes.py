@@ -144,6 +144,13 @@ def get_observations_for_web(info_role):
         else False
     )
 
+    ungrouped_geom = (
+        True
+        if "ungrouped_geom" in filters
+        and (filters["ungrouped_geom"] in ["1", "true"] or filters["ungrouped_geom"] == True)
+        else False
+    )
+
     # Build defaut CTE observations query
     count_min_max = case(
         [
@@ -215,7 +222,12 @@ def get_observations_for_web(info_role):
     )
 
     # Group geometries with main query
-    query = select([obs_query.c.geojson, properties]).group_by(obs_query.c.geojson)
+    query = (
+        select([obs_query])
+        if ungrouped_geom
+        else select([obs_query.c.geojson, properties]).group_by(obs_query.c.geojson)
+    )
+    
     results = DB.session.execute(query)
 
     # Build final GeoJson
