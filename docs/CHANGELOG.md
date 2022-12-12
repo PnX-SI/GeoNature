@@ -61,6 +61,32 @@ CHANGELOG
     l’emplacement géographique de l’observation sélectionnée (#1492)
 -   [Synthèse] L’export des statuts de protection est maintenant basé
     sur les données de la *BDC Statuts* (#1492)
+-   Possibilité d’affichage de zonage sur les cartes. Ces derniers peuvent provenir :
+
+    -   d’un flux WMS ou WFS
+    -   d’un flux geojson
+    -   du référentiel géographique interne
+
+    Les couches sont configurable via le paramètre ``REF_LAYERS`` de la section ``MAPCONFIG``.
+-   Deux Dockerfiles permettant de générer une image frontend et une image backend ont été mergés.
+    La dockerisation de GeoNature reste toutefois un travail en cours, et l’utilisation de ces
+    images n’est pas officiellement supportée. Voir #2206 pour plus de détails.
+-   Les colonnes ``id_source`` de la synthèse et ``id_module`` des relevés OccTax sont désormais ``NOT NULL``.
+-   Ajout d’un mécanisme de notifications (#1873).
+    L’utilisateur peut choisir de souscrire, pour chaque type de notificaton, s’il veut être
+    notifié dans GeoNature et/ou par e-mail.
+    Les templates de notifications peuvent être modifié par l’administrateur dans l’interface
+    Flask Admin.
+    Il est implémenté la notification du changement du status de validation des observations.
+-   Recherche des méta-données par entprise géographique des observations.
+    Le paramètre ``METADATA_AREA_FILTERS`` permet de spécifier les types de zones géographiques
+    disponible à la recherche (communes, départements, régions par défaut).
+-   Mise à jour des dépendances :
+    -   TaxHub
+    -   UsersHub
+    -   UsersHub-authentification-module 1.6.2
+    -   Utils-Flask-SQLAlchemy 0.3.1
+    -   Utils-Flask-SQLAlchemy-Geo 0.2.6
 
 **🐛 Corrections**
 
@@ -69,12 +95,15 @@ CHANGELOG
     une machine sans PostgreSQL (BDD sur un autre hôte)
 -   La *BDC Statuts* est maintenance chargée lors de l’intégration
     continue juste après le chargement des départements (#1492)
+-   Ajout de l’``id_module`` aux relevés des données d’exemple OccTax.
 
 **💻 Développement**
 
 -   Nettoyage du frontend : dépendances, configuration Angular.
 -   Homogénéisation de la configuration entre `current_app.config` et
     `geonature.utils.config.config`.
+-   Ajout de UsersHub aux dépendances (développement uniquement).
+
 
 2.10.4 (2022-11-30)
 -------------------
@@ -642,16 +671,16 @@ dépendances et ses modules principaux est disponible](https://geonature.fr/docu
     `type_code` (voir `ref_geo.bib_areas_types`)
 
     ```python
-        AREA_FILTERS = [
-            { label = "Communes", id_type = 25 }
-        ]
+    AREA_FILTERS = [
+        { label = "Communes", id_type = 25 }
+    ]
     ```
     devient
 
     ```python
-        AREA_FILTERS = [
-            { label = "Communes", type_code = "COM" }
-        ]
+    AREA_FILTERS = [
+        { label = "Communes", type_code = "COM" }
+    ]
     ```
 
 -   Si vous aviez modifié les colonnes de la liste des observations du
@@ -854,7 +883,7 @@ passage à la version 3 de Marshmallow.
     préfixe figure bien également à la fin des directives `ProxyPass` et
     `ProxyPassReverse` comme dans l'exemple suivant :
 
-    ``` {.}
+    ```apache
     <Location /geonature/api>
         ProxyPass http://127.0.0.1:8000/geonature/api
         ProxyPassReverse  http://127.0.0.1:8000/geonature/api
@@ -864,7 +893,7 @@ passage à la version 3 de Marshmallow.
     Si vous servez GeoNature sur un sous-domaine, vérifiez ou modifier
     la configuration Apache :
 
-    ``` {.}
+    ```apache
     <Location /api>
         ProxyPass http://127.0.0.1:8000/api
         ProxyPassReverse  http://127.0.0.1:8000/api
@@ -881,7 +910,7 @@ passage à la version 3 de Marshmallow.
     -   Si vous avez UsersHub installé, ajoutez dans votre configuration
         GeoNature la section suivante (en adaptant le chemin) :
 
-    ``` {.}
+    ```ini
     [ALEMBIC]
     VERSION_LOCATIONS = '/path/to/usershub/app/migrations/versions'
     ```
@@ -891,7 +920,7 @@ passage à la version 3 de Marshmallow.
     -   Exécuter les commandes suivantes afin d'indiquer à Alembic
         l'état de votre base de données :
 
-    ``` {.}
+    ```bash
     geonature db stamp f06cc80cc8ba  # GeoNature 2.7.5
     geonature db stamp 0dfdbfbccd63  # référentiel géographique des communes
     geonature db stamp 3fdaa1805575  # référentiel géographique des départements
@@ -1206,11 +1235,10 @@ Si vous mettez à jour GeoNature :
     `gn_errors.log` par `supervisor.log` dans la variable
     `stdout_logfile` :
 
-```{=html}
-<!-- -->
-```
+    ```bash
     sudo sed -i 's|\(stdout_logfile = .*\)/gn_errors.log|\1/supervisor.log|' /etc/supervisor/conf.d/geonature-service.conf
     sudo supervisorctl reload
+    ```
 
 2.6.2 (2021-02-15)
 ------------------
@@ -1997,42 +2025,41 @@ Si vous mettez à jour GeoNature.
     (<https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.3.2to2.4.0.sql>)
 -   Installer les dépendances de la librairie Python WeasyPrint :
 
-```{=html}
-<!-- -->
-```
+    ```bash
     sudo apt-get install -y libcairo2
     sudo apt-get install -y libpango-1.0-0
     sudo apt-get install -y libpangocairo-1.0-0
     sudo apt-get install -y libgdk-pixbuf2.0-0
     sudo apt-get install -y libffi-dev
     sudo apt-get install -y shared-mime-info
+    ```
 
 -   Corriger l’utilisation des paramètres du proxy (#944) dans le
     fichier `backend/gunicorn_start.sh` en remplaçant les 2 lignes :
 
-```{=html}
-<!-- -->
-```
+    ```bash
     export HTTP_PROXY="'$proxy_http'"
     export HTTPS_PROXY="'$proxy_https'"
+    ```
 
-par :
+    par :
 
+    ```bash
     # Activation de la configuration des proxy si necessaire
     [[ -z "$proxy_http" ]] || export HTTP_PROXY="'$proxy_http'"
     [[ -z "$proxy_https" ]] || export HTTPS_PROXY="'$proxy_https'"
+    ```
 
 -   Vous pouvez supprimer les associations des observations de la
     synthèse aux zonages limitrophes, si vous n’avez pas
     d’observations sans géométrie (#719) :
 
-```{=html}
-<!-- -->
-```
+    ```sql
     DELETE FROM gn_synthese.cor_area_synthese cas
     USING gn_synthese.synthese s, ref_geo.l_areas a
     WHERE cas.id_synthese = s.id_synthese AND a.id_area = cas.id_area
     AND public.ST_TOUCHES(s.the_geom_local,a.geom);
+    ```
 
 -   Suivez ensuite la procédure classique de mise à jour de GeoNature
     (<http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application>)
@@ -2255,12 +2282,11 @@ version. Compatibilité dans la 2.3.1.
     schéma `ref_habitats` avec Habref et mettre à jour le schéma
     `ref_nomenclatures` :
 
-```{=html}
-<!-- -->
-```
+    ```bash
     cd /home/`whoami`/geonature/install/migration
     chmod +x 2.2.1to2.3.0.sh
     ./2.2.1to2.3.0.sh
+    ```
 
 Vérifier que la migration s’est bien déroulée dans le fichier
 `var/log/2.2.1to2.3.0.log`.
@@ -2270,13 +2296,12 @@ Vérifier que la migration s’est bien déroulée dans le fichier
 -   Vous pouvez installer le nouveau module Occhab (Occurrences
     d’habitats) si vous le souhaitez :
 
-```{=html}
-<!-- -->
-```
+    ```bash
     cd /home/`whoami`/geonature/backend
     source venv/bin/activate
     geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_occhab /occhab
     deactivate
+    ```
 
 -   Lors de la migration (`/data/migrations/2.2.1to2.3.0.sql`), tous les
     JDD actifs sont associés par défaut au module Occtax
@@ -3498,23 +3523,21 @@ Si vous mettez à jour votre GeoNature depuis une Beta4 :
 
 -   Téléchargez la beta5 et renommer les répertoires :
 
-```{=html}
-<!-- -->
-```
+    ```bash
     cd /home/myuser
     wget https://github.com/PnX-SI/GeoNature/archive/geonature2beta.zip
     unzip geonature2beta.zip
     mv /home/<mon_user>/geonature/ /home/<mon_user>/geonature_old/
     mv GeoNature-geonature2beta /home/<mon_user>/geonature/
+    ```
 
 -   Exécutez le script de migration `install/migration/beta4tobeta5.sh`
     depuis la racine de votre GeoNature :
 
-```{=html}
-<!-- -->
-```
+    ```bash
     cd geonature
     ./install/migration/beta4tobeta5.sh
+    ```
 
 Celui-ci va récupérer vos fichiers de configuration, déplacer les
 modules et appliquer les changements de la BDD.
