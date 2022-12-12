@@ -35,9 +35,9 @@ def check_cruved_scope(
 ):
     """
     Decorator to protect routes with SCOPE CRUVED
-    The decorator first check if the user is conected and have a corect token (get_user_from_token_and_raise)
+    The decorator first check if the user is connected and have a correct token (get_user_from_token_and_raise)
     and then return the max user SCOPE permission for the action in parameter
-    The decorator manage herited CRUVED from user's group and parent module (GeoNature)
+    The decorator manages herited CRUVED from user's group and parent module (GeoNature)
     Return a VUsersPermissions as kwargs of the decorated function as 'info_role' parameter
 
     Parameters:

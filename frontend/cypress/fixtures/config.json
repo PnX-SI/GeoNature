@@ -185,11 +185,7 @@
   "LOGO_STRUCTURE_FILE": "logo_structure.png",
   "PASS_METHOD": "hash",
   "XML_NAMESPACE": "{http://inpn.mnhn.fr/mtd}",
-  "PUBLIC_ACCESS": {
-    "ENABLE_PUBLIC_ACCESS": false,
-    "PUBLIC_LOGIN": null,
-    "PUBLIC_PASSWORD": null
-  },
+  "PUBLIC_ACCESS_USERNAME": "",
   "MTD": {
     "ID_INSTANCE_FILTER": null,
     "JDD_MODULE_CODE_ASSOCIATION": ["OCCTAX", "OCCHAB"]

@@ -39,7 +39,7 @@
       <ng-container
         *ngIf="
           !appConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION &&
-            appConfig.PUBLIC_ACCESS.PUBLIC_LOGIN != currentUser?.user_login &&
+            appConfig.PUBLIC_ACCESS_USERNAME != currentUser?.user_login &&
             appConfig.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT;
           else noUserManagement
         "
@@ -71,7 +71,7 @@
       <ng-template #noUserManagement>
         <ng-container
           *ngIf="
-            appConfig.PUBLIC_ACCESS.PUBLIC_LOGIN != currentUser?.user_login;
+            appConfig.PUBLIC_ACCESS_USERNAME != currentUser?.user_login;
             else publicAccessUser
           "
         >

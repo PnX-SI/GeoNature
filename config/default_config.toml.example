@@ -81,6 +81,9 @@ MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
 # Chemin du dossier où stocker les fichiers depuis la racine du dossier 'backend'
 UPLOAD_FOLDER = "static/medias"
 
+# Configuration de l'accès sans authentication
+PUBLIC_ACCESS_USERNAME = ""
+
 # Active (=true) ou pas (=false) l'envoi d'email pour chaque erreur du backend de GeoNature
 # Attention : si activé, il est nécessaire de remplir la secetion 'MAIL_CONFIG'.
 MAIL_ON_ERROR = false
@@ -430,12 +433,6 @@ MAIL_ON_ERROR = false
         { "id" = "invasive", "show" = true, "display_name" = "Espèces envahissantes", "status_types" = ["REGLLUTTE"] },
         { "id" = "znief", "show" = true, "display_name" = "Espèces déterminantes ZNIEFF", "status_types" = ["ZDET"] },
     ]
-
-# Configuration de l'accès sans authentication
-[PUBLIC_ACCESS]
-    PUBLIC_LOGIN = "admin"
-    PUBLIC_PASSWORD = "admin"
-    ENABLE_PUBLIC_ACCESS = true
 
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]

@@ -122,12 +122,6 @@ class UsersHubConfig(Schema):
     URL_USERSHUB = fields.Url()
 
 
-class PublicAccess(Schema):
-    PUBLIC_LOGIN = fields.String(load_default=None)
-    PUBLIC_PASSWORD = fields.String(load_default=None)
-    ENABLE_PUBLIC_ACCESS = fields.Boolean(load_default=False)
-
-
 class ServerConfig(Schema):
     LOG_LEVEL = fields.Integer(load_default=20)
 
@@ -515,7 +509,7 @@ class GnGeneralSchemaConf(Schema):
     MTD = fields.Nested(MTDSchemaConf, load_default=MTDSchemaConf().load({}))
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
-    PUBLIC_ACCESS = fields.Nested(PublicAccess, load_default=PublicAccess().load({}))
+    PUBLIC_ACCESS_USERNAME = fields.String(load_default="")
     TAXHUB = fields.Nested(TaxHub, load_default=TaxHub().load({}))
     NOTIFICATION = fields.Nested(NotificationConf, load_default=NotificationConf().load({}))
 
