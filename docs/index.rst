@@ -11,4 +11,3 @@ Bienvenue dans la documentation de GeoNature
    FAQ
    authors
    CHANGELOG
-   versions-compatibility
