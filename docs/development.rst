@@ -4,15 +4,14 @@ DEVELOPPEMENT
 Général
 -------
 
-GeoNature a été développé par Gil Deluermoz depuis 2010 avec PHP/Symfony/ExtJS.
+GeoNature 1, créé en 2010, a été développé par Gil Deluermoz avec PHP/Symfony/ExtJS.
 
-En 2017, les parcs nationaux français ont décidé de refondre GeoNature
-complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
+GeoNature 2 est une refonte initié en 2017 par les parcs nationaux français en Python/Flask/Angular.
 
-Mainteneurs :
+Mainteneurs actuels :
 
-- Elie BOUTTIER (PnEcrins)
-- Theo LECHEMIA (PnEcrins)
+- Élie BOUTTIER (PnEcrins)
+- Théo LECHEMIA (PnEcrins)
 - Amandine SAHL (PnCevennes)
 - Camille MONCHICOURT (PnEcrins)
 
@@ -48,32 +47,6 @@ Documentation des routes
 Génération automatique actuellement hors-service :-(
 
 
-Release
--------
-
-Pour sortir une nouvelle version de GeoNature :
-
-- Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, GeoNature-atlas)
-- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances
-- Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``, ``config/settings.ini.sample``, ``backend/requirements.txt``
-- Complétez le fichier ``docs/CHANGELOG.rst`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
-- Mettez à jour le fichier ``VERSION``
-- Remplissez le tableau de compatibilité des dépendances (``docs/versions-compatibility.rst``)
-- Mergez la branche ``develop`` dans la branche ``master``
-- Faites la release (https://github.com/PnX-SI/GeoNature/releases) en la taguant ``X.Y.Z`` (sans ``v`` devant) et en copiant le contenu du Changelog
-- Dans la branche ``develop``, modifiez le fichier ``VERSION`` en ``X.Y.Z.dev0`` et pareil dans le fichier ``docs/CHANGELOG.rst``
-
-BDD
----
-
-Mettre à jour le ``ref_geo`` à partir des données IGN scan express :
-
-- Télécharger le dernier millésime : http://professionnels.ign.fr/adminexpress
-- Intégrer le fichier Shape dans la BDD grâce à QGIS dans une table nommée ``ref_geo.temp_fr_municipalities``
-- Générer le SQL de création de la table : ``pg_dump --table=ref_geo.temp_fr_municipalities --column-inserts -U <MON_USER> -h <MON_HOST> -d <MA_BASE> > fr_municipalities.sql``. Le fichier en sortie doit s'appeler ``fr_municipalities.sql``
-- Zipper le fichier SQL et le mettre sur le serveur https://geonature.fr/data
-- Adapter le script ``install_db.sh`` pour récupérer le nouveau fichier zippé
-
 Pratiques et règles de developpement
 ------------------------------------
 
@@ -84,25 +57,25 @@ au projet GeoNature.
 Git
 ***
 
+- Assurez-vous d’avoir récupérer les dépendances dans les sous-modules git : ``git submodule init && git submodule update``
+- Après un ``git pull``, il faut mettre à jour les sous-modules : ``git submodule update``
+
 - Ne jamais faire de commit dans la branche ``master`` mais dans la branche ``develop`` ou idéalement dans une branche dédiée à la fonctionnalité (feature branch)
 - Faire des pull request vers la branche ``develop``
 - Faire des ``git pull`` avant chaque développement et avant chaque commit
-- Les messages de commits font référence à un ticket ou le ferment (``ref #12`` ou ``fixes #23``)
+- Les messages des commits font référence à un ticket ou le ferment (``ref #12`` ou ``fixes #23``)
 - Les messages des commits sont en anglais (dans la mesure du possible)
+- Privilégier les rebases afin de concerver un historique linéaire
+- Privilégier l’amendemant (``git commit --amend`` ou ``git commit --fixup``) des commits existants lorsque vous portez des corrections à votre PR, en particulier pour l’appliquage du style.
+
 
 Backend
 *******
 
 - Une fonction ou classe doit contenir une docstring en français. Les doctrings doivent suivre le modèle NumPy/SciPy (voir https://numpydoc.readthedocs.io/en/latest/format.html et https://realpython.com/documenting-python-code/#numpyscipy-docstrings-example)
 - Les commentaires dans le codes doivent être en anglais (ne pas s'empêcher de mettre un commentaire en français sur une partie du code complexe !)
-- Assurez-vous d’avoir récupérer les dépendances dans les sous-modules git : ``git submodule init && git submodule update``
-  - Après un ``git pull``, il faut mettre à jour les sous-modules : ``git submodule update``
-- Installer les requirements-dev (``cd backend && pip install -r requirements-dev.txt``) qui contiennent une série d'outils indispensables au développement dans GeoNature.
 - Utiliser *blake* comme formateur de texte et activer l'auto-formatage dans son éditeur de texte (Tuto pour VsCode : https://medium.com/@marcobelo/setting-up-python-black-on-visual-studio-code-5318eba4cd00)
-- Utiliser *pylint* comme formatteur de code 
-- Respecter la norme PEP8 (assurée par les deux outils précédents)
 - La longueur maximale pour une ligne de code est 100 caractères. Pour VsCode copier ces lignes le fichier ``settings.json`` :
-- Respecter le snake case
 
 ::
 
@@ -111,16 +84,23 @@ Backend
       "100"
     ]
 
-- Utiliser des doubles quotes pour les chaines de charactères.
+- Privilégier la snake_case pour les variables, CamelCase pour les classes.
 
 BDD 
 ***
 
-- Le noms des tables est préfixé par un "t" pour une table de contenu, de "bib" pour les tables de "dictionnaires" et de "cor" pour les tables de correspondance (relations N-N)
-- Les schémas du coeur de GeoNature sont préfixés de "gn" 
-- Les schémas des protocoles ou modules GeoNature sont préfixés de "pr"
+- Le noms des tables est préfixé par "t\_" pour une table de contenu, de "bib\_" pour les tables de "dictionnaires" et de "cor\_" pour les tables de correspondance (relations N-N)
+- Les schémas du coeur de GeoNature sont préfixés de "gn\_"
+- Les schémas des protocoles ou modules GeoNature sont préfixés de "pr\_"
 - Ne rien écrire dans le schéma ``public``
-- Ne pas répeter le nom des tables dans les noms des colonnes
+
+Modèle Python
+"""""""""""""
+
+Les conventions précédentes concernent uniquement la BDD. Pour les modèles Python, on fera attention à :
+
+- Nommer les modèles sans le préfixe "t\_", et à les écrire au singulier. Exemple : ``class Observation:``.
+- Ne pas répeter le nom des tables dans les noms des colonnes.
 
 Typescript
 **********
@@ -130,7 +110,13 @@ Typescript
 - Les messages renvoyés aux utilisateurs sont en français 
 - Installer les outils de devéloppement : ``npm install --only=dev``
 - Utiliser *prettier* comme formateur de texte et activer l'autoformatage dans son éditeur de texte (VsCode dispose d'une extension Prettier : https://github.com/prettier/prettier-vscode)
-- Utiliser ``tslint`` comme linter
+  Pour lancer manuellement prettier depuis le dossier ``frontend`` :
+
+.. code-block:: bash
+
+    nvm use
+    npm run format
+
 - La longueur maximale pour une ligne de code est 100 caractères.
 
 Angular
@@ -188,182 +174,12 @@ Style et ergonomie
 
   - Utiliser le système de grille de bootstrap pour assurer le responsive design sur l'application. On ne vise pas l'utilisation sur mobile, mais à minima sur ordinateur portable de petite taille.
 
-
-Développer et installer un gn_module
-------------------------------------
-
-GeoNature a été conçu pour fonctionner en briques modulaires. 
-
-Chaque protocole, répondant à une question scientifique, est amené à avoir
-son propre module GeoNature comportant son modèle de base de données (dans un
-schéma séparé), son API et son interface utilisateur.
-
-Les modules développés s'appuieront sur le coeur de GeoNature qui est
-constitué d'un ensemble de briques réutilisables.
-
-En base de données, le coeur de GeoNature est constitué de l'ensemble des
-référentiels (utilisateurs, taxonomique, nomenclatures géographique)
-et du schéma ``gn_synthese`` regroupant l'ensemble données saisies dans les
-différents protocoles (voir doc administrateur pour plus de détail sur le
-modèle de données).
-
-L'API du coeur permet d'interroger les schémas de la base de données "coeur"
-de GeoNature. Une documentation complète de l'API est disponible dans la
-rubrique :ref:`API`.
-
-Du côté interface utilisateur, GeoNature met à disposition un ensemble de
-composants Angular réutilisables
-(http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html),
-pour l'affichage des cartes, des formulaires etc...
-
-Développer un gn_module
-***********************
-
-Avant de développer un gn_module, assurez-vous d'avoir GeoNature bien
-installé sur votre machine (voir :ref:`installation-standalone`).
-
-Afin de pouvoir connecter ce module au "coeur", il est impératif de suivre
-une arborescence prédéfinie par l'équipe GeoNature.
-Un template GitHub a été prévu à cet effet
-(https://github.com/PnX-SI/gn_module_template).
-Il est possible de créer un nouveau dépôt GitHub à partir de ce template,
-ou alors de copier/coller le contenu du dépôt dans un nouveau.
-
-Cette arborescence implique de développer le module dans les technologies du
-coeur de GeoNature à savoir :
-
-- Le backend est développé en Python grâce au framework Flask.
-- Le frontend est développé grâce au framework Angular (voir la version actuelle du coeur)
-
-GeoNature prévoit cependant l'intégration de module "externe" dont le
-frontend serait développé dans d'autres technologies. La gestion de
-l'intégration du module est à la charge du développeur.
-
-- Le module se placera dans un dossier à part du dossier "GeoNature" et portera le suffixe "gn_module". Exemple : *gn_module_validation*
-
-- La racine du module comportera les fichiers suivants :
-
-  - ``install_app.sh`` : script bash d'installation des librairies python ou npm necessaires au module
-  - ``install_env.sh`` : script bash d'installation des paquets Linux
-  - ``requirements.txt`` : liste des librairies python necessaires au module
-  - ``manifest.toml`` : fichier de description du module (nom, version du module, version de GeoNature compatible)
-  - ``conf_gn_module.toml`` : fichier de configuration de l'application (livré en version sample)
-  - ``conf_schema_toml.py`` : schéma 'marshmallow' (https://marshmallow.readthedocs.io/en/latest/) du fichier de configuration (permet de s'assurer la conformité des paramètres renseignés par l'utilisateur). Ce fichier doit contenir une classe ``GnModuleSchemaConf`` dans laquelle toutes les configurations sont synchronisées.
-  - ``install_gn_module.py`` : script python lançant les commandes relatives à 'installation du module (Base de données, ...). Ce fichier doit comprendre une fonction ``gnmodule_install_app(gn_db, gn_app)`` qui est utilisée pour installer le module (Voir l'`exemple du module CMR <https://github.com/PnX-SI/gn_module_cmr/blob/master/install_gn_module.py>`__)
-
-- La racine du module comportera les dossiers suivants :
-
-  - ``backend`` : dossier comportant l'API du module utilisant un blueprint Flask
-  - Le fichier ``blueprint.py`` comprend les routes du module (ou instancie les nouveaux blueprints du module)
-  - Le fichier ``models.py`` comprend les modèles SQLAlchemy des tables du module.
-  - ``frontend`` : le dossier ``app`` comprend les fichiers typescript du module, et le dossier ``assets`` l'ensemble des médias (images, son).
-
-    - Le dossier ``app`` doit comprendre le "module Angular racine", celui-ci doit impérativement s'appeler ``gnModule.module.ts``
-    - Le dossier ``app`` doit contenir un fichier ``module.config.ts``. Ce fichier est automatiquement synchronisé avec le fichier de configuration du module `<GEONATURE_DIRECTORY>/external_modules/<nom_module>/conf_gn_module.toml`` grâce à la commande ``geonature update_module_configuration <nom_module>``. C'est à partir de ce fichier que toutes les configuration doivent pointer.
-    - A la racine du dossier ``frontend``, on retrouve également un fichier ``package.json`` qui décrit l'ensemble des librairies JS necessaires au module.
-
-  - ``data`` : ce dossier comprenant les scripts SQL d'installation du module
-
-Le module est ensuite installable à la manière d'un plugin grâce à la commande ``geonature install_gn_module`` de la manière suivante :
-
-::
-
-    # se placer dans le répertoire backend de GeoNature
-    cd <GEONATURE_DIRECTORY>/backend
-    # activer le virtualenv python
-    source venv/bin/activate
-    # lancer la commande d'installation
-    geonature install_gn_module <CHEMIN_ABSOLU_DU_MODULE> <URL_API>
-    # example geonature install_gn_module /home/moi/gn_module_validation /validation
-
-
-Bonnes pratiques Frontend
-"""""""""""""""""""""""""
-
-- Pour l'ensemble des composants cartographiques et des formulaires (taxonomie, nomenclatures...), il est conseillé d'utiliser les composants présents dans le module 'GN2CommonModule'.
-
-  Importez ce module dans le module racine de la manière suivante 
-  
-  ::
-
-    import { GN2CommonModule } from '@geonature_common/GN2Common.module';
-
-- Les librairies JS seront installées dans le dossier ``node_modules`` de GeoNature. (Il n'est pas nécessaire de réinstaller toutes les librairies déjà présentes dans GeoNature (Angular, Leaflet, ChartJS ...). Le ``package.json`` de GeoNature liste l'ensemble des librairies déjà installées et réutilisable dans le module.
-
-- Les fichiers d'assets sont à ranger dans le dossier ``assets`` du frontend. Angular-cli impose cependant que tous les assets soient dans le répertoire mère de l'application (celui de GeoNature). Un lien symbolique est créé à l'installation du module pour faire entre le dossier d'assets du module et celui de Geonature.
-
-- Utiliser node_modules présent dans GeoNature
-
-  Pour utiliser des librairies déjà installées dans GeoNature,
-  utilisez la syntaxe suivante
-  
-  ::
-
-    import { TreeModule } from "@librairies/angular-tree-component";
-
-  L'alias ``@librairies`` pointe en effet vers le repertoire des node_modules
-  de GeoNature
-
-  Pour les utiliser à l'interieur du module, utiliser la syntaxe suivante 
-  
-  ::
-
-    <img src="external_assets/<MY_MODULE_CODE>/afb.png">
-
-  Exemple pour le module de validation 
-  
-  ::
-
-    <img src="external_assets/<gn_module_validation>/afb.png">
-
-
-Installer un gn_module
-**********************
-
-Renseignez l'éventuel fichier ``config/settings.ini`` du module.
-
-Pour installer un module, rendez vous dans le dossier ``backend`` de GeoNature.
-
-Activer ensuite le virtualenv pour rendre disponible les commandes GeoNature 
-
-.. code-block::
-
-    source venv/bin/activate
-
-
-Lancez ensuite la commande 
-
-.. code-block::
-
-    geonature install_gn_module <mon_chemin_absolu_vers_le_module> <url_api>
-
-
-Le premier paramètre est l'emplacement absolu du module sur votre machine et
-le 2ème le chemin derrière lequel on retrouvera les routes de l'API du module.
-
-Exemple pour atteindre les routes du module de validation à l'adresse
-'http://mon-geonature.fr/api/geonature/validation'
-
-Cette commande exécute les actions suivantes :
-
-- Vérification de la conformité de la structure du module (présence des fichiers et dossiers obligatoires)
-- Intégration du blueprint du module dans l'API de GeoNature
-- Vérification de la conformité des paramètres utilisateurs
-- Génération du routing Angular pour le frontend
-- Re-build du frontend pour une mise en production
-
-Complétez l'éventuelle configuration du module (``config/conf_gn_module.toml``) 
-à partir des paramètres présents dans
-``config/conf_gn_module.toml.example`` dont vous pouvez surcoucher les
-valeurs par défaut. Puis relancez la mise à jour de la configuration
-(depuis le répertoire ``geonature/backend`` et une fois dans le venv
-(``source venv/bin/activate``) :
-``geonature update_module_configuration nom_du_module``)
-
 .. _mode-dev:
 
 Passer en mode développement
 ----------------------------
+
+Cette section documente comment passer en mode développement une installation de GeoNature initialement faite en mode production.
 
 Récupération des sources
 ************************
@@ -387,48 +203,20 @@ Si vous avez téléchargé GeoNature zippé (via la procédure d'installation gl
   git submodule init
   git submodule update
 
+
 Configuration des URLs de développement
 ***************************************
 
 il est nécessaire de changer la configuration du fichier ``config/geonature_config.toml`` pour utiliser les adresses suivantes :
 
 .. code-block:: bash
-    
+
   URL_APPLICATION = 'http://127.0.0.1:4200'
   API_ENDPOINT = 'http://127.0.0.1:8000'
   API_TAXHUB =  'http://127.0.0.1:5000/api'
 
 N’oubliez pas les :ref:`actions à effecture après modification de la configuration <post_config_change>`.
 
-Serveur frontend en développement
-*********************************
-
-Lancer le serveur frontent via le virtualenv :
-
-.. code-block:: bash
-  
-  source ~/geonature/frontend/
-  nvm use
-  npm run start
-
-
-API en développement
-********************
-
-.. Note::
-  Retrouvez plus de'informations dans la section :ref:`dev-backend` dédiée.
-
-Dans un nouveau terminal, stopper le service geonature (gunicorn) et lancer le serveur backend :
-
-.. code-block:: bash
-    
-  sudo systemctl stop geonature    
-  source ~/geonature/backend/venv/bin/activate
-  geonature dev_back
-
-Les serveurs seront accessibles via ces adresses (login ``admin`` et password ``admin``) :
-  - backend - 127.0.0.1:8000
-  - frontend - 127.0.0.1:4200
 
 Autres extensions en développement
 **********************************
@@ -469,11 +257,14 @@ Développement Backend
 Démarrage du serveur de dev backend
 ***********************************
 
-La commande ``geonature`` fournit la sous-commande ``dev_back`` pour lancer un serveur de test :
+La commande ``geonature`` fournit la sous-commande ``dev-back`` pour lancer un serveur de test :
 
 ::
 
-    (venv)...$ geonature dev_back
+    (venv)...$ geonature dev-back
+
+
+L’API est alors accessible à l’adresse http://127.0.0.1:8000.
 
 
 Base de données avec Flask-SQLAlchemy
@@ -770,27 +561,27 @@ Voici quelques conseils sur l’envoi de réponse dans vos routes.
 
 - Privilégier l’envoi du modèle sérialisé (vues de type create/update), ou d’une liste de modèles sérialisés (vues de type list), plutôt que des structures de données non conventionnelles.
 
-  ::
+.. code-block:: python
 
     def get_foo(pk):
         foo = Foo.query.get_or_404(pk)
-        return jsonify(foo.as_dict(fields=…))
+        return jsonify(foo.as_dict(fields=...))
 
     def get_foo(pk):
         foo = Foo.query.get_or_404(pk)
-        return FooSchema(only=…).jsonify(foo)
+        return FooSchema(only=...).jsonify(foo)
 
     def list_foo():
-        q = Foo.query.filter(…)
-        return jsonify([foo.as_dict(fields=…) for foo in q.all()])
+        q = Foo.query.filter(...)
+        return jsonify([foo.as_dict(fields=...) for foo in q.all()])
 
     def list_foo():
-        q = Foo.query.filter(…)
-        return FooSchema(only=…).jsonify(q.all(), many=True)
+        q = Foo.query.filter(...)
+        return FooSchema(only=...).jsonify(q.all(), many=True)
 
 - Pour les listes vides, ne pas renvoyer le code d’erreur 404 mais une liste vide !
 
-  ::
+.. code-block:: python
 
     return jsonify([])
 
@@ -798,22 +589,20 @@ Voici quelques conseils sur l’envoi de réponse dans vos routes.
 
 - Traitement des erreurs : utiliser `les exceptions prévues à cet effet <https://werkzeug.palletsprojects.com/en/2.0.x/exceptions/>`_ :
 
-  ::
+.. code-block:: python
 
-    from werkzeug.exceptions import Forbidden, BadRequest, NotFound
+    from werkzeug.exceptions import Fobridden, Badrequest, NotFound
 
     def restricted_action(pk):
-        if …:
+        if not is_allowed():
             raise Forbidden
 
     
-  - Penser à utiliser ``get_or_404`` plutôt que de lancer une exception ``NotFound``
-  - Si l’utilisateur n’a pas le droit d’effectuer une action, utiliser l’exception ``Forbidden`` (code HTTP 403), et non l’exception ``Unauthorized`` (code HTTP 401), cette dernière étant réservée aux utilisateurs non authentifiés.
-  - Vérifier la validité des données fournies par l’utilisateur (``request.json`` ou ``request.args``) et lever une exception ``BadRequest`` si celles-ci ne sont pas valides (l’utilisateur ne doit pas être en mesure de déclencher une erreur 500 en fournissant une string plutôt qu’un int par exemple !).
+- Penser à utiliser ``get_or_404`` plutôt que de lancer une exception ``NotFound``
+- Si l’utilisateur n’a pas le droit d’effectuer une action, utiliser l’exception ``Forbidden`` (code HTTP 403), et non l’exception ``Unauthorized`` (code HTTP 401), cette dernière étant réservée aux utilisateurs non authentifiés.
+- Vérifier la validité des données fournies par l’utilisateur (``request.json`` ou ``request.args``) et lever une exception ``BadRequest`` si celles-ci ne sont pas valides (l’utilisateur ne doit pas être en mesure de déclencher une erreur 500 en fournissant une string plutôt qu’un int par exemple !).
 
-    - Marshmallow peut servir à cela :
-
-    ::
+    - Marshmallow peut servir à cela ::
 
         from marshmallow import Schema, fields, ValidationError
         def my_route():
@@ -984,58 +773,62 @@ Utilisation de la configuration
 
 La configuration globale de l'application est controlée par le fichier
 ``config/geonature_config.toml`` qui contient un nombre limité de paramètres.
+Il est possible d’utiliser un autre fichier de configuration en spécifiant
+un autre chemin d’accès dans la variable d’environnement
+``GEONATURE_CONFIG_FILE``.
 
-De nombreux paramètres sont néammoins passés à l'application via un schéma
-Marshmallow (voir fichier ``backend/geonature/utils/config_schema.py``).
+Il est également possible de définir des paramètres de configuration par variable
+d’environnement en préfixant le nom du paramètre par ``GEONATURE_`` (*e.g.* ``GEONATURE_SQLALCHEMY_DATABASE_URI``). Cette méthode permet cependant de passer uniquement des valeurs textuelles.
+
+Les paramètres de configuration sont validés par un schéma Marshmallow (voir ``backend/geonature/utils/config_schema.py``).
 
 Dans l'application flask, l'ensemble des paramètres de configuration sont
-utilisables via le dictionnaire ``config`` ::
+utilisables via le dictionnaire ``config`` :
+
+
+.. code-block:: python
 
     from geonature.utils.config import config
+
     MY_PARAMETER = config['MY_PARAMETER']
 
-Chaque module GeoNature dispose de son propre fichier de configuration,
-(``module/config/cong_gn_module.toml``) contrôlé de la même manière par un
-schéma Marshmallow (``module/config/conf_schema_toml.py``).
+Le dictionnaire ``config`` est également accessible via ``current_app.config``.
 
-Pour récupérer la configuration du module dans l'application Flask,
-il existe deux méthodes:
+La :ref:`configuration des modules <module-config>` est accessible à la clé ``MODULE_CODE`` du dictionnaire de configuration. Elle est également accessible directement via la propriété ``config`` du blueprint du module :
 
-Dans le fichier ``blueprint.py`` ::
-
-        # Methode 1 :
+.. code-block:: python
 
         from flask import current_app
-        MY_MODULE_PARAMETER = current_app.config['MY_MODULE_NAME']['MY_PARAMETER]
-        # ou MY_MODULE_NAME est le nom du module tel qu'il est défini dans le fichier ``manifest.toml`` et la table ``gn_commons.t_modules``
 
-        #Méthode 2 :
+        MY_MODULE_PARAMETER = current_app.config['MODULE_CODE']['MY_MODULE_PARAMETER']
         MY_MODULE_PARAMETER = blueprint.config['MY_MODULE_PARAMETER']
 
-Il peut-être utile de récupérer l'ID du module GeoNature (notamment pour des
-questions droits). De la même manière que précédement, à l'interieur d'une
-route, on peut récupérer l'ID du module de la manière suivante ::
 
-        ID_MODULE = blueprint.config['ID_MODULE']
-        # ou
-        ID_MODULE = current_app.config['MODULE_NAME']['ID_MODULE']
+Authentification et autorisations
+*********************************
 
-Si on souhaite récupérer l'ID du module en dehors du contexte d'une route,
-il faut utiliser la méthode suivante ::
+Accéder à l’utilisateur courant
+"""""""""""""""""""""""""""""""
 
-        from geonature.utils.env import get_id_module
-        ID_MODULE = get_id_module(current_app, 'occtax')
+L’utilisateur courant est stocké dans l’espace de nom ``g`` :
+
+.. code-block:: pycon
+
+    >>> from flask import g
+    >>> print(g.current_user)
+    <User ''admin'' id='3'>
 
 
-Authentification et authorisations
-**********************************
+Il s’agit d’une instance de ``pypnusershub.db.models.User``.
+Si l’utilisateur n’est pas connecté, ``g.current_user`` vaudra ``None``.
+
 
 Restreindre une route aux utilisateurs connectés
 """"""""""""""""""""""""""""""""""""""""""""""""
 
 Utiliser le décorateur ``@login_required`` :
 
-::
+.. code-block:: python
 
     from geonature.core.gn_permissions.decorators import login_required
 
@@ -1044,109 +837,96 @@ Utiliser le décorateur ``@login_required`` :
         pass
 
 
-Connaitre l’utilisateur actuellement connecté
-"""""""""""""""""""""""""""""""""""""""""""""
-
-L’utilisateur courant est stocké dans l’espace de nom ``g`` :
-
-::
-
-    from flask import g
-
-    print(g.current_user)
+Si l’utilisateur n’est pas authentifié, celui-ci est redirigé vers une page d’authentification, à moins que la requête contienne un header ``Accept: application/json`` (requête effectuée par le frontend) auquel cas une erreur 401 (Unauthorized) est levé.
 
 
-Il s’agit d’une instance de ``pypnusershub.db.models.User``.
+Restreindre une route aux utilisateurs ayant certains droits
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Utiliser le décorateur ``@check_cruved_scope`` :
+
+.. py:decorator:: check_cruved_scope
+
+   :param action: Type d'action effectuée par la route
+                  (Create, Read, Update, Validate, Export, Delete)
+   :type action: str["C", "R", "U", "V", "E", "D"]
+   :param module_code: Code du module sur lequel on veut vérifier la porté.
+    Si non fourni, on vérifie le CRUVED de GeoNature.
+   :type module_code: str, optional
+   :param object_code: Code de l’objet sur lequel on veut vérifié la porté.
+    Si non fourni, on vérifie la porté sur l’objet ``ALL``.
+   :type object_code: str, optional
+   :param get_scope: si ``True``, ajoute le scope aux kwargs de la vue
+   :type get_scope: bool, optional
+
+Lorsque l’utilisateur n’est pas connecté, le comportement est le même que le décorateur ``@login_required``. Lorsque celui-ci est connecté, le décorateur va récupérer le scope de l’utilisateur pour l’action donnée dans le module donnée (et éventuellement l’objet donnée). Si ce scope est égale à 0, alors une erreur 403 (Forbidden) est levé.
+
+.. warning::
+
+    Le décorateur ne vérifie pas si un scope de 1 ou 2 est suffisant pour accéder
+    aux ressources demandées. C’est à votre route d’implémenter cette vérification,
+    en utilisant l’argument ``get_scope=True`` afin de récupérer la valeur exacte du
+    scope.
 
 
-Vérification des droits des utilisateurs
-""""""""""""""""""""""""""""""""""""""""
+Exemple d’utilisation :
 
-- ``geonature.core.gn_permissions.decorators.check_cruved_scope``
+.. code-block:: python
 
-  Décorateur pour les routes : Vérifie les droits de l'utilisateur à effectuer
-  une action sur la donnée et le redirige en cas de niveau insuffisant ou
-  d'informations de session erronées
+    from geonature.core.gn_permissions.decorators import check_cruved_scope
 
-  params :
-
-  * action <str:['C','R','U','V','E','D']> type d'action effectuée par la route
-    (Create, Read, Update, Validate, Export, Delete)
-  * get_role <bool:False> : si True, ajoute l'id utilisateur aux kwargs de la vue
-  * module_code: <str:None> : Code du module (gn_commons.t_modules) sur lequel on
-    veut récupérer le CRUVED. Si ce paramètre n'est pas passé, on vérifie le
-    CRUVED de GeoNature
-
-
-  ::
-
-        from flask import Blueprint
-        from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
-        from utils_flask_sqla.response import json_resp
-        from geonature.core.gn_permissions import decorators as permissions
-
-        blueprint = Blueprint(__name__)
-
-        @blueprint.route('/mysensibleview', methods=['GET'])
-        @permissions.check_cruved_scope(
-                'R',
-                True,
-                module_code="OCCTAX"
-        )
-        @json_resp
-        def my_sensible_view(info_role):
-            # Récupérer l'id de l'utilisateur qui demande la route
-            id_role = info_role.id_role
-            # Récupérer la portée autorisée à l'utilisateur pour l'action 'R' (read)
-            read_scope = info_role.value_filter
-            #récupérer le CRUVED complet de l'utilisateur courant
-            user_cruved = get_or_fetch_user_cruved(
-                    session=session,
-                    id_role=info_role.id_role,
-                    module_code=MY_MODULE_CODE,
-            )
-            return {'result': 'id_role = {}'.format(info_role.id_role)}
-
-- ``geonature.core.gn_permissions.tools.cruved_scope_for_user_in_module``
-
-  * Fonction qui retourne le CRUVED d'un utilisateur pour un module et/ou
-    un objet donné.
-  * Si aucun CRUVED n'est défini pour le module, c'est celui de GeoNature qui
-    est retourné, sinon 0.
-  * Le CRUVED du module enfant surcharge toujours celui du module parent.
-  * Le CRUVED sur les objets n'est pas hérité du module parent.
-
-  params :
-
-  * id_role <integer:None>
-  * module_code <str:None> : code du module sur lequel on veut avoir le CRUVED
-  * object_code <str:'ALL'> : code de l'objet sur lequel on veut avoir le CRUVED
-  * get_id <boolean: False> : retourne l'id_filter et non le code_filter si True
-
-  Valeur retournée : tuple
-
-  A l'indice 0 du tuple: <dict{str:str}> ou <dict{str:int}>, boolean)
-  {'C': '1', 'R':'2', 'U': '1', 'V':'2', 'E':'3', 'D': '3'} ou
-  {'C': 2, 'R':3, 'U': 4, 'V':1, 'E':2, 'D': 2} si ``get_id=True``
-
-  A l'indice 1 du tuple: un booléen spécifiant si le CRUVED est hérité depuis
-  un module parent ou non.
-
-  ::
-
-    from pypnusershub.db.tools import cruved_for_user_in_app
-
-    # récupérer le CRUVED de l'utilisateur 1 dans le module OCCTAX
-    cruved, herited = cruved_scope_for_user_in_module(
-            id_role=1
-            module_code='OCCTAX
+    @blueprint.route('/mysensibleview', methods=['GET'])
+    @check_cruved_scope(
+            'R',
+            module_code="OCCTAX"
+            get_scope=True,
     )
-    # récupérer le CRUVED de l'utilisateur 1 sur GeoNature
-    cruved, herited = cruved_scope_for_user_in_module(id_role=1)
+    def my_sensible_view(scope):
+        if scope < 2:
+            raise Forbidden
+
+
+Récupération manuelle des permissions
+"""""""""""""""""""""""""""""""""""""
+
+La fonction suivante permet de récupérer manuellement le scope pour chaque actions pour un rôle et un module donnée :
+
+.. py:function:: get_scopes_by_action(id_role, module_code, object_code)
+
+   Retourne un dictionnaire avec pour clé les actions du cruved et pour valeur le scope associé
+   pour un utilisateur et un module donnée (et éventuellement un objet précis).
+
+   :param int id_role: Identifiant du role. Utilisation de ``g.current_user`` si non spécifié
+                       (nécessite de se trouver dans une route authentifié).
+   :param str module_code: Code du module. ``GEONATURE`` si non précisé.
+   :param str object_code: Code de l’objet. ``ALL`` si non précisé.
+   :return: Dictionnaire de scope pour chaque action du cruved.
+   :rtype: dict[str, int]
+
+Exemple d’usage :
+
+.. code-block:: pycon
+
+    >>> from geonature.core.gn_permissions.tools import get_scopes_by_action
+    >>> get_scopes_by_action(id_role=3, module_code="METADATA")
+    {'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3}
 
 
 Développement Frontend
 ----------------------
+
+Serveur frontend en développement
+*********************************
+
+Lancer le serveur frontent en développement :
+
+.. code-block:: bash
+
+  cd ~/geonature/frontend/
+  nvm use
+  npm run start
+
+Le frontend est alors accessible à l’adresse http://127.0.0.1:4200.
 
 Bonnes pratiques
 ****************
@@ -1313,80 +1093,156 @@ Exemple d'utilisation avec une liste simple :
             </tr>
     </table>
 
-Test end to end
-***************
 
-Pour toute PR ou nouvelle fonctionnalité il est demandé d'écrire des tests.
-Pour les test e2e, la librairie Cypress est utilisé. 
-Des exemples de tests peuvent être trouvé ici : https://github.com/PnX-SI/GeoNature/tree/develop/frontend/cypress/integration
-Les tests sont joués automatiquement sur Github-action lors de commit et PR sur la branch develop et master.
-Pour lancer les tests sur sa machine locale, utilisez la commande ``npm run e2e && npm run e2e:coverage``. Celle-ci lance le serveur de frontend, joue les tests cypress et contrôle la couverture de test. Cette dernière est disponible dans le repertoire `frontend/coverage`.
+Tests
+*****
+
+Pour toute PR ou nouvelle fonctionnalité il est demandé d'écrire des tests. Voir la section dédié sur l’:ref:`écriture des tests frontend <tests-frontend>`.
 
 
-Test end to end
-***************
-
-Pour toute PR ou nouvelle fonctionnalité il est demandé d'écrire des tests.
-Pour les test e2e, la librairie Cypress est utilisé. 
-Des exemples de tests peuvent être trouvé ici : https://github.com/PnX-SI/GeoNature/tree/develop/frontend/cypress/integration
-Les tests sont joués automatiquement sur Github-action lors de commit et PR sur la branch develop et master.
-Pour lancer les tests sur sa machine locale, utilisez la commande ``npm run e2e && npm run e2e:coverage``. Celle-ci lance le serveur de frontend, joue les tests cypress et contrôle la couverture de test. Cette dernière est disponible dans le repertoire `frontend/coverage`.
-
-
-* dans les templates : ``[valueFieldName]="'area_code'`` dans les templates
-* dans les config (js, ts ou json) (attention à la casse) : ``"value_field_name": "area_code"``
-* dans le module Monitoring, ajouter aussi ``"type_util": "area"``
-
-Outils d'aide à la qualité du code
-----------------------------------
-
-Des outils d'amélioration du code pour les développeurs peuvent être utilisés :
-flake8, pylint, pytest, coverage.
-
-La documentation peut être générée avec Sphinx.
-
-Les fichiers de configuration de ces outils se trouvent à la racine du projet :
-
-* .pylint
-
-Un fichier ``.editorconfig`` permettant de définir le comportement de
-votre éditeur de code est également disponible à la racine du projet.
-
-
-Sphinx
-******
-
-Sphinx est un générateur de documentation.
-
-Pour générer la documentation HTML, se placer dans le répertoire ``docs``
-et modifier les fichiers .rst::
-
-        cd docs
-        make html
-
-
-Pylint
-******
-
-Pylint fait la même chose que Flake8 mais il est plus complet, plus
-configurable mais aussi plus exigeant.
-
-Pour inspecter le répertoire ``geonature``::
-
-        cd backend
-        pylint geonature
-
-tslint
-******
-
-tslint fait la même chose que pylint mais pour la partie frontend en
-typescript::
-
-        cd frontend
-        npm run lint
-
-
+.. _tests-backend:
 
 .. include:: tests_backend.rst
 
+.. _tests-frontend:
+
 .. include:: tests_frontend.rst
+
+
+Développer un module externe
+----------------------------
+
+GeoNature a été conçu pour fonctionner en briques modulaires.
+
+Chaque protocole, répondant à une question scientifique, est amené à avoir
+son propre module GeoNature comportant son modèle de base de données (dans un
+schéma séparé), son API et son interface utilisateur.
+
+Les modules développés s'appuieront sur le coeur de GeoNature qui est
+constitué d'un ensemble de briques réutilisables.
+
+En base de données, le coeur de GeoNature est constitué de l'ensemble des
+référentiels (utilisateurs, taxonomique, nomenclatures géographique)
+et du schéma ``gn_synthese`` regroupant l'ensemble données saisies dans les
+différents protocoles (voir doc administrateur pour plus de détail sur le
+modèle de données).
+
+L'API du coeur permet d'interroger les schémas de la base de données "coeur"
+de GeoNature. Une documentation complète de l'API est disponible dans la
+rubrique :ref:`API`.
+
+Du côté interface utilisateur, GeoNature met à disposition un ensemble de
+composants Angular réutilisables pour l'affichage des cartes, des formulaires etc...
+
+Avant de développer un gn_module, assurez-vous d'avoir GeoNature bien
+installé sur votre machine (voir :ref:`installation-standalone`).
+
+Afin de pouvoir connecter ce module au "coeur", il est impératif de suivre
+une arborescence prédéfinie par l'équipe GeoNature.
+Un template GitHub a été prévu à cet effet
+(https://github.com/PnX-SI/gn_module_template).
+Il est possible de créer un nouveau dépôt GitHub à partir de ce template,
+ou alors de copier/coller le contenu du dépôt dans un nouveau.
+
+Cette arborescence implique de développer le module dans les technologies du
+coeur de GeoNature à savoir :
+
+- Le backend est développé en Python grâce au framework Flask.
+- Le frontend est développé grâce au framework Angular (voir la version actuelle du coeur)
+
+GeoNature prévoit cependant l'intégration de module "externe" dont le
+frontend serait développé dans d'autres technologies. La gestion de
+l'intégration du module est à la charge du développeur.
+
+- Le module se placera dans un dossier à part du dossier "GeoNature" et portera le suffixe "gn_module". Exemple : *gn_module_validation*
+
+- Le backend doit être un paquet Python. Ce paquet peut définir différent *entry points* permettant de renseigner différentes informations sur votre module :
+
+  - ``code`` : le MODULE_CODE de votre module (obligatoire)
+  - ``picto`` : le pictogramme par défaut pour l’entrée dans le menu Geonature (facultatif)
+  - ``blueprint`` : le blueprint qui sera servit par GeoNature (obligatoire)
+  - ``config_schema`` : un schéma Marshmallow permettant de valider la configuration du module (obligatoire)
+  - ``migrations`` : l’emplacement de vos migrations Alembic pour le schéma de base de données de votre module (facultatif)
+  - ``alembic_branch`` : le nom de la branche Alembic (par défaut, la branche Alembic devra porter le nom du module code en minuscule)
+  - ``tasks``: votre fichier de tâches asynchrones Celery (facultatif)
+
+- Le frontend doit être placé dans un sous-dossier ``frontend``. Il comprendra les éléments suivants :
+
+  - Les fichiers ``package.json`` et ``package-lock.json`` avec vos dépendances (facultatif si pas de dépendances)
+  - Un dossier ``assets`` avec un sous-dossier du nom du module avec l'ensemble des médias (images, son)
+  - Un dossier ``app`` qui comprendra le code de votre module, avec notamment le "module Angular racine" qui doit impérativement s'appeler ``gnModule.module.ts``
+
+Pour l’installation du module, voir :ref:`install-gn-module`.
+
+
+Bonnes pratiques Frontend
+"""""""""""""""""""""""""
+
+- Pour l'ensemble des composants cartographiques et des formulaires (taxonomie, nomenclatures...), il est conseillé d'utiliser les composants présents dans le module 'GN2CommonModule'.
+
+  Importez ce module dans le module racine de la manière suivante
+
+  ::
+
+    import { GN2CommonModule } from '@geonature_common/GN2Common.module';
+
+- Les librairies JS seront installées dans le dossier ``node_modules`` de GeoNature. (Il n'est pas nécessaire de réinstaller toutes les librairies déjà présentes dans GeoNature (Angular, Leaflet, ChartJS ...). Le ``package.json`` de GeoNature liste l'ensemble des librairies déjà installées et réutilisable dans le module.
+
+- Les fichiers d'assets sont à ranger dans le dossier ``assets`` du frontend. Angular-cli impose cependant que tous les assets soient dans le répertoire mère de l'application (celui de GeoNature). Un lien symbolique est créé à l'installation du module pour faire entre le dossier d'assets du module et celui de Geonature.
+
+- Utiliser node_modules présent dans GeoNature
+
+  Pour utiliser des librairies déjà installées dans GeoNature,
+  utilisez la syntaxe suivante
+
+  ::
+
+    import { TreeModule } from "@librairies/angular-tree-component";
+
+  L'alias ``@librairies`` pointe en effet vers le repertoire des node_modules
+  de GeoNature
+
+  Pour les utiliser à l'interieur du module, utiliser la syntaxe suivante
+
+  ::
+
+    <img src="assets/<MY_MODULE_CODE>/afb.png">
+
+  Exemple pour le module de validation
+
+  ::
+
+    <img src="assets/<gn_module_validation>/afb.png">
+
+
+Documentation
+-------------
+
+La documentation se trouve dans le dossier ``docs``.
+Elle est écrites en ReStructuredText et généré avec Sphinx.
+
+Pour générer la documentation HTML :
+
+- Se placer dans le dossier ``docs`` : ``cd docs``
+- Créer un virtualenv : ``python3 -m venv venv``
+- Activer le virtualenv : ``source venv/bin/activate``
+- Installer les dépendances nécessaires à la génération de la documentation : ``pip install -r requirements.txt``
+- Lancer la génération de la documentation : ``make html``
+
+La documentation générée se trouve dans le dossier ``build/html/``.
+
+
+Release
+-------
+
+Pour sortir une nouvelle version de GeoNature :
+
+- Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, RefGeo, Utils-Flask-SQLAlchemy, Utils-Flask-SQLAlchemy-Geo)
+- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances
+- Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``, ``config/settings.ini.sample``, ``backend/requirements-dependencies.in`` (puis regénérer ``backend/requirements.txt`` avec ``pip compile``)
+- Complétez le fichier ``docs/CHANGELOG.rst`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
+- Mettez à jour le fichier ``VERSION``
+- Remplissez le tableau de compatibilité des dépendances (``docs/versions-compatibility.rst``)
+- Mergez la branche ``develop`` dans la branche ``master``
+- Faites la release (https://github.com/PnX-SI/GeoNature/releases) en la taguant ``X.Y.Z`` (sans ``v`` devant) et en copiant le contenu du Changelog
+- Dans la branche ``develop``, modifiez le fichier ``VERSION`` en ``X.Y.Z.dev0`` et pareil dans le fichier ``docs/CHANGELOG.rst``

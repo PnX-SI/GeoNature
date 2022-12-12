@@ -356,7 +356,6 @@ Cette section liste les branches Alembic disponibles et leur impacte sur la base
 * ``habitats`` : Crée le schéma ``ref_habitats``. Fournie par Habref-api-module.
 * ``habitats_inpn_data`` : Insert le référentiel HABREF de l’INPN en base. Fournie par Habref-api-module.
 * ``ref_geo`` : Crée le schéma ``ref_geo``.
-* ``ref_sensitivity_inpn`` : Insère le référentiel de sensbilité de l’INPN en base.
 
 Si vous utilisez TaxHub, vous pouvez être intéressé par les branches suivantes :
 
@@ -952,8 +951,6 @@ Idem côté Frontend, où chaque module a sa configuration et ses composants : h
 
 Mais en pouvant utiliser des composants du Cœur comme expliqué dans la documentation Developpeur.
 
-Plus d'infos sur le développement d'un module : https://github.com/PnX-SI/GeoNature/blob/master/docs/development.rst#d%C3%A9velopper-et-installer-un-gn_module
-
 
 Configuration
 -------------
@@ -997,11 +994,10 @@ Ainsi, à chaque modification du fichier de configuration, vous devez :
     nvm use
     npm run build
 
+Vous pouvez également lancer la commande ``geonature update-configuration`` qui génèrera la configuration frontend de GeoNature ainsi que de l’ensemble des modules installés avant de lancer le build du frontend.
 
 Configuration d'un gn_module
 """"""""""""""""""""""""""""
-
-Lors de l'installation d'un module, un fichier de configuration est créé : ``<MODULE_DIRECTORY>/config/conf_gn_module.toml``.
 
 Comme pour la configuration globale, ce fichier est minimaliste et peut être surcouché. Le fichier ``conf_gn_module.toml.example``, situé dans le répertoire ``config`` du module, décrit l'ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut.
 
@@ -1010,7 +1006,7 @@ A chaque modification de ce fichier, lancer les commandes suivantes depuis le ba
 .. code-block:: console
 
     source venv/bin/activate
-    geonature update_module_configuration <NOM_DE_MODULE>
+    geonature update-module-configuration <NOM_DE_MODULE>
     deactivate
 
 Exploitation
@@ -1453,6 +1449,12 @@ Vous pouvez aussi vous inspirer des exemples avancés de migration des données 
 * Import depuis SERENA : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/serena
 * Import continu : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic
 * Import d'un CSV historique (Flavia) : https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/2018-12-csv-vers-synthese-FLAVIA.sql
+
+
+.. include:: import-level-1.rst
+
+.. include:: import-level-2.rst
+
 
 Création de compte
 ------------------

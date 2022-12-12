@@ -150,10 +150,12 @@ Exemple :
   0 * * * * geonatadmin /home/user/geonature/backend/venv/bin/geonature profiles update
 
 
+.. _install-gn-module:
+
 Installation d'un module GeoNature
 **********************************
 
-L'installation de GeoNature n'est livrée qu'avec les schémas de base de données et les modules du coeur (NB : les modules Occtax, Occhab et Validation sont fournis par défaut). Pour ajouter un gn_module externe, il est nécessaire de l'installer :
+L'installation de GeoNature n'est livrée qu'avec les modules du coeur par défaut : Occtax, Occhab et Validation. Pour ajouter un module GeoNature externe, il est nécessaire de l'installer :
 
 Téléchargement
 --------------
@@ -232,6 +234,8 @@ Exemple pour le module d’import :
     source <dossier GeoNature>/backend/venv/bin/activate
     geonature upgrade-modules <code du module>
 
+.. _module-config:
+
 Configuration du module
 -----------------------
 
@@ -294,9 +298,7 @@ La mise à jour doit être réalisée avec votre utilisateur linux courant (``ge
 
 * Suivez les éventuelles notes de version spécifiques décrites au niveau de chaque version : https://github.com/PnX-SI/GeoNature/releases.
 
-⚠️ Si la release inclut des scripts de migration SQL : *lancer ces scripts avec l'utilisateur de BDD courant* (généralement ``geonatadmin``) et non le super-utilisateur ``postgres``.
-
-Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions intermédiaires et notamment les scripts de mise à jour de la base de données à exécuter successivement.
+Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions intermédiaires.
 
 * Si vous devez aussi mettre à jour TaxHub et/ou UsersHub, suivez leurs notes de versions mais aussi leur documentation (https://usershub.readthedocs.io et https://taxhub.readthedocs.io).
 
