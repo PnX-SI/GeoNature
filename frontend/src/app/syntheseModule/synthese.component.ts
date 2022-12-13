@@ -43,7 +43,7 @@ export class SyntheseComponent implements OnInit {
     this.searchService.getSyntheseData(formParams).subscribe(
       (data) => {
         // mark the form pristine at each search in order to manage store data
-        if (this._fs.searchForm.value.with_areas) {
+        if (this._fs.searchForm.value.format == 'grouped_geom_by_areas') {
           this._syntheseStore.gridData = data;
         } else {
           this._syntheseStore.pointData = data;
@@ -159,9 +159,11 @@ export class SyntheseComponent implements OnInit {
     this._route.queryParamMap.subscribe((params) => {
       this._fs.searchForm.patchValue({
         limit: AppConfig.SYNTHESE.NB_LAST_OBS,
-        with_areas:
+        format:
           AppConfig.SYNTHESE.ENABLE_AREA_AGGREGATION &&
-          AppConfig.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT,
+          AppConfig.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT
+            ? 'grouped_geom_by_areas'
+            : 'grouped_geom',
       });
       if (params.get('id_dataset')) {
         this._fs.searchForm.patchValue({ id_dataset: params.get('id_dataset') });
