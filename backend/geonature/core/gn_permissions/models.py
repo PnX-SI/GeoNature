@@ -63,7 +63,8 @@ class TFilters(DB.Model):
     value_filter = DB.Column(DB.Unicode)
     label_filter = DB.Column(DB.Unicode)
     description_filter = DB.Column(DB.Unicode)
-    id_filter_type = DB.Column(DB.Integer)
+    id_filter_type = DB.Column(DB.Integer, ForeignKey(BibFiltersType.id_filter_type))
+    filter_type = DB.relationship(BibFiltersType)
 
 
 @serializable
