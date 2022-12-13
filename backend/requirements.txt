@@ -235,7 +235,7 @@ pypn-ref-geo==1.2.1
     #   taxhub
 pypnnomenclature==1.5.3
     # via -r requirements-dependencies.in
-pypnusershub==1.6.2
+pypnusershub==1.6.3
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
@@ -306,7 +306,7 @@ urllib3==1.26.12
     #   botocore
     #   requests
     #   taxhub
-utils-flask-sqlalchemy==0.3.0
+utils-flask-sqlalchemy==0.3.1
     # via
     #   -r requirements-dependencies.in
     #   pypn-habref-api
@@ -315,7 +315,7 @@ utils-flask-sqlalchemy==0.3.0
     #   pypnusershub
     #   taxhub
     #   utils-flask-sqlalchemy-geo
-utils-flask-sqlalchemy-geo==0.2.5
+utils-flask-sqlalchemy-geo==0.2.6
     # via
     #   -r requirements-dependencies.in
     #   pypn-ref-geo
