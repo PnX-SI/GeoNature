@@ -154,21 +154,20 @@ class TestSynthese:
         r = self.client.get(url, query_string=query_string)
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
-        assert len(r.json["features"]) == 1
-        assert (
-            r.json["features"][0]["properties"]["observations"][0]["cd_nom"]
-            == taxon_attribut.bib_nom.cd_nom
-        )
+        assert len(r.json["features"]) > 0
+        for feature in r.json["features"]:
+            assert feature["properties"]["cd_nom"] == taxon_attribut.bib_nom.cd_nom
 
         # test intersection filters
-        com_type = BibAreasTypes.query.filter_by(type_code="COM").one()
         query_string = {
             "geoIntersection": "POLYGON ((5.852731 45.7775, 5.852731 44.820481, 7.029224 44.820481, 7.029224 45.7775, 5.852731 45.7775))",
         }
         r = self.client.get(url, query_string=query_string)
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
-        assert len(r.json["features"]) == 1
+        assert {synthese_data[k].id_synthese for k in ["p1_af1", "p1_af2"]}.issubset(
+            {f["properties"]["id"] for f in r.json["features"]}
+        )
 
         # test geometry filter with circle radius
         query_string = {
@@ -178,22 +177,27 @@ class TestSynthese:
         r = self.client.get(url, query_string=query_string)
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
-        assert len(r.json["features"]) == 1
+        assert {synthese_data[k].id_synthese for k in ["p1_af1", "p1_af2"]}.issubset(
+            {f["properties"]["id"] for f in r.json["features"]}
+        )
 
         # test ref geo area filter
+        com_type = BibAreasTypes.query.filter_by(type_code="COM").one()
         chambery = LAreas.query.filter_by(area_type=com_type, area_name="Chambéry").one()
         query_string = {f"area_{com_type.id_type}": chambery.id_area}
         r = self.client.get(url, query_string=query_string)
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
-        assert len(r.json["features"]) == 1
+        assert {synthese_data[k].id_synthese for k in ["p1_af1", "p1_af2"]}.issubset(
+            {f["properties"]["id"] for f in r.json["features"]}
+        )
 
         # test organisms and multiple same arg in query string
         id_organisme = users["self_user"].id_organisme
         r = self.client.get(f"{url}?id_organism={id_organisme}&id_organism=2")
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
-        assert len(r.json["features"]) >= 2
+        assert len(r.json["features"]) >= 2  # FIXME
 
         # test status lr
         query_string = {"regulations_protection_status": ["REGLLUTTE"]}
@@ -232,8 +236,9 @@ class TestSynthese:
         assert len(features) > 0
 
         for feat in features:
-            for obs in feat["properties"]["observations"]:
-                assert obs["lb_nom"] in [synt.nom_cite for synt in synthese_data.values()]
+            assert feat["properties"]["lb_nom"] in [
+                synt.nom_cite for synt in synthese_data.values()
+            ]
         assert response.status_code == 200
 
     def test_get_synthese_data_aggregate(self, users, datasets, synthese_data):
@@ -241,8 +246,29 @@ class TestSynthese:
         set_logged_user_cookie(self.client, users["admin_user"])
         response = self.client.get(
             url_for("gn_synthese.get_observations_for_web"),
-            query_string={"id_dataset": [synthese_data["p1_af1"].id_dataset]},
+            query_string={
+                "id_dataset": [synthese_data["p1_af1"].id_dataset],
+                "format": "grouped_geom",
+            },
         )
+        assert response.status_code == 200
+        data = response.get_json()
+        features = data["features"]
+        # There must be one feature with one obs and one feature with two obs
+        assert len(features) == 2
+        assert Counter([len(f["properties"]["observations"]) for f in features]) == Counter([1, 2])
+
+    def test_get_synthese_data_aggregate_by_areas(self, users, datasets, synthese_data):
+        # Test geometry aggregation
+        set_logged_user_cookie(self.client, users["admin_user"])
+        response = self.client.get(
+            url_for("gn_synthese.get_observations_for_web"),
+            query_string={
+                "id_dataset": [synthese_data["p1_af1"].id_dataset],
+                "format": "grouped_geom_by_areas",
+            },
+        )
+        assert response.status_code == 200
         data = response.get_json()
         features = data["features"]
         # There must be one feature with one obs and one feature with two obs
