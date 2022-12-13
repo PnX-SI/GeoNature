@@ -130,13 +130,10 @@ def get_observations_for_web(info_role):
     else:
         filters = {key: request.args.get(key) for key, value in request.args.items()}
 
-    result_limit = (
-        int(filters.pop("limit"))
-        if "limit" in filters
-        else current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
-    )
-
-    output_format = "ungrouped_geom" if "format" not in filters else filters["format"]
+    result_limit = int(filters.pop("limit", current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]))
+    output_format = filters.pop("format", "ungrouped_geom")
+    if output_format not in ["ungrouped_geom", "grouped_geom", "grouped_geom_by_areas"]:
+        raise BadRequest(f"Bad format '{output_format}'")
 
     # Build defaut CTE observations query
     count_min_max = case(
@@ -198,7 +195,9 @@ def get_observations_for_web(info_role):
         VSyntheseForWebApp,
         obs_query,
         filters,
-        areas_type=current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"],
+        areas_type=current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"]
+        if output_format == "grouped_geom_by_areas"
+        else None,
     )
     synthese_query_class.filter_query_all_filters(info_role)
     obs_query = synthese_query_class.query

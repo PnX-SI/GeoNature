@@ -447,11 +447,7 @@ class SyntheseQuery:
                     self.query = self.query.where(col.ilike("%{}%".format(value[0])))
 
     def transform_to_areas(self):
-        if (
-            "format" in self.filters
-            and self.filters["format"][0] == "grouped_geom_by_areas"
-            and self.areas_type
-        ):
+        if self.areas_type:
             cas = aliased(CorAreaSynthese)
             self.add_join(cas, cas.id_synthese, self.model.id_synthese)
             self.add_join(LAreas, LAreas.id_area, cas.id_area)
