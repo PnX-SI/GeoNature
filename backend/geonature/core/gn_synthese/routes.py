@@ -1,6 +1,5 @@
 import json
 import datetime
-import time
 import re
 from collections import OrderedDict
 from warnings import warn
@@ -17,7 +16,7 @@ from flask import (
 )
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from sqlalchemy import distinct, func, desc, asc, select, case
-from sqlalchemy.orm import joinedload, contains_eager, lazyload, selectinload
+from sqlalchemy.orm import joinedload, lazyload, selectinload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 
@@ -137,19 +136,7 @@ def get_observations_for_web(info_role):
         else current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
     )
 
-    with_areas = (
-        True
-        if "with_areas" in filters
-        and (filters["with_areas"] in ["1", "true"] or filters["with_areas"] == True)
-        else False
-    )
-
-    ungrouped_geom = (
-        True
-        if "ungrouped_geom" in filters
-        and (filters["ungrouped_geom"] in ["1", "true"] or filters["ungrouped_geom"] == True)
-        else False
-    )
+    output_format = "ungrouped_geom" if "format" not in filters else filters["format"]
 
     # Build defaut CTE observations query
     count_min_max = case(
@@ -195,7 +182,7 @@ def get_observations_for_web(info_role):
 
     geojson = (
         LAreas.geojson_4326.label("geojson")
-        if with_areas
+        if output_format == "grouped_geom_by_areas"
         else VSyntheseForWebApp.st_asgeojson.label("geojson")
     )
 
@@ -217,15 +204,15 @@ def get_observations_for_web(info_role):
     obs_query = synthese_query_class.query
     obs_query = obs_query.cte("OBSERVATIONS")
 
-    properties = func.json_build_object(
+    grouped_properties = func.json_build_object(
         "observations", func.json_agg(obs_query.c.obs_as_json).label("observations")
     )
 
     # Group geometries with main query
     query = (
-        select([obs_query])
-        if ungrouped_geom
-        else select([obs_query.c.geojson, properties]).group_by(obs_query.c.geojson)
+        select([obs_query.c.geojson, obs_query.c.obs_as_json])
+        if output_format == "ungrouped_geom"
+        else select([obs_query.c.geojson, grouped_properties]).group_by(obs_query.c.geojson)
     )
 
     results = DB.session.execute(query)

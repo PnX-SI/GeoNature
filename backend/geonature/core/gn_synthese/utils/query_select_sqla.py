@@ -447,14 +447,16 @@ class SyntheseQuery:
                     self.query = self.query.where(col.ilike("%{}%".format(value[0])))
 
     def transform_to_areas(self):
-        if "with_areas" in self.filters and self.areas_type:
-            with_areas = self.filters["with_areas"][0]
-            if with_areas in ["1", "true"] or with_areas == True:
-                cas = aliased(CorAreaSynthese)
-                self.add_join(cas, cas.id_synthese, self.model.id_synthese)
-                self.add_join(LAreas, LAreas.id_area, cas.id_area)
-                self.add_join(BibAreasTypes, BibAreasTypes.id_type, LAreas.id_type)
-                self.query = self.query.where(BibAreasTypes.type_code == self.areas_type)
+        if (
+            "format" in self.filters
+            and self.filters["format"][0] == "grouped_geom_by_areas"
+            and self.areas_type
+        ):
+            cas = aliased(CorAreaSynthese)
+            self.add_join(cas, cas.id_synthese, self.model.id_synthese)
+            self.add_join(LAreas, LAreas.id_area, cas.id_area)
+            self.add_join(BibAreasTypes, BibAreasTypes.id_type, LAreas.id_type)
+            self.query = self.query.where(BibAreasTypes.type_code == self.areas_type)
 
     def apply_all_filters(self, user):
         self.filter_query_with_cruved(user)

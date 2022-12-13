@@ -108,7 +108,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
 
   private initializeFormWithMapParams() {
     this.formService.searchForm.patchValue({
-      with_areas: this.areasEnable,
+      format: this.areasEnable ? 'grouped_geom_by_areas' : 'grouped_geom',
     });
   }
 
@@ -177,7 +177,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
         switchBtn.onclick = () => {
           this.areasEnable = switchBtn.checked;
           this.formService.searchForm.patchValue({
-            with_areas: switchBtn.checked,
+            format: switchBtn.checked ? 'grouped_geom_by_areas' : 'grouped_geom',
           });
           this.onAreasToggle.emit(switchBtn.checked ? 'grid' : 'point');
 
