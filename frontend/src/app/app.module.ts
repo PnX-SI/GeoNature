@@ -1,6 +1,7 @@
 // Angular core
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
+import { Observable } from "rxjs";
 
 import {
   HttpClientModule,
@@ -80,6 +81,15 @@ export function getModulesAndInitRouting(injector) {
   };
 }
 
+function initializeAppFactory(httpClient: HttpClient): () => Observable<any> {
+  return () => httpClient.get("https://dummyjson.com/products")
+    .pipe(
+      tap(user => {
+        console.log(user);
+        return user
+       })
+    );
+ }
 @NgModule({
   imports: [
     BrowserModule,
@@ -131,6 +141,12 @@ export function getModulesAndInitRouting(injector) {
     { provide: APP_CONFIG_TOKEN, useValue: AppConfig },
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeAppFactory,
+      deps: [HttpClient],
+      multi: true
+    },
     // { provide: APP_INITIALIZER, useFactory: get_cruved, deps: [CruvedStoreService], multi: true},
     {
       provide: APP_INITIALIZER,

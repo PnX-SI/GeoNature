@@ -7,7 +7,10 @@ import logging
 import threading
 from pathlib import Path
 from binascii import a2b_base64
-
+import base64
+from io import BytesIO, StringIO
+from PIL import Image
+from codecs import encode
 import click
 from lxml import etree as ET
 
@@ -449,13 +452,13 @@ def update_dataset(id_dataset, scope):
     # TODO: specify which fields may be updated
     return DatasetSchema().jsonify(datasetHandler(dataset=dataset, data=request.get_json()))
 
-
-@routes.route("/dataset/export_pdf/<id_dataset>", methods=["GET"])
+@routes.route("/dataset/export_pdf", methods=["POST"])
 @permissions.check_cruved_scope("E", get_scope=True, module_code="METADATA")
-def get_export_pdf_dataset(id_dataset, scope):
+def get_export_pdf_dataset(scope):
     """
     Get a PDF export of one dataset
     """
+    id_dataset = request.args.get("dataset")
     dataset = TDatasets.query.get_or_404(id_dataset)
     if not dataset.has_instance_permission(scope=scope):
         raise Forbidden("Vous n'avez pas les droits d'exporter ces informations")
@@ -486,21 +489,13 @@ def get_export_pdf_dataset(id_dataset, scope):
         "url": current_app.config["URL_APPLICATION"] + "/#/metadata/dataset_detail/" + id_dataset,
         "date": date,
     }
+    # chart
+    dataset["chart"] = request.data[22:]
 
-    filename = "jdd_{}_{}_{}.pdf".format(
-        id_dataset,
-        secure_filename(dataset["dataset_shortname"]),
-        dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
-    )
-
-    dataset["chart"] = (Path(current_app.static_folder) / "images" / "taxa.png").exists()
+    print(dataset["chart"])
 
     # Appel de la methode pour generer un pdf
-    pdf_file = fm.generate_pdf("dataset_template_pdf.html", dataset, filename)
-    pdf_file_posix = Path(pdf_file)
-
-    return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
-
+    return fm.generate_pdf2("dataset_template_pdf.html", dataset)
 
 @routes.route("/acquisition_frameworks", methods=["GET", "POST"])
 @permissions.check_cruved_scope(
@@ -624,13 +619,14 @@ def get_acquisition_frameworks_list(scope):
     )
 
 
-@routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["GET"])
+@routes.route("/acquisition_frameworks/export_pdf", methods=["POST"])
 @permissions.check_cruved_scope("E", module_code="METADATA")
-def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
+def get_export_pdf_acquisition_frameworks():
     """
     Get a PDF export of one acquisition
     """
 
+    id_acquisition_framework = request.args.get("af")
     # Recuperation des données
     af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
     acquisition_framework = af.as_dict(True, depth=2)
@@ -671,6 +667,8 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
         "nb_habitats": nb_habitat,
     }
 
+    acquisition_framework["chart"] = request.data[22:]
+
     if acquisition_framework:
         acquisition_framework[
             "nomenclature_territorial_level"
@@ -699,8 +697,6 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
             + id_acquisition_framework,
             "date": date,
         }
-        params = {"id_acquisition_frameworks": id_acquisition_framework}
-
     else:
         return (
             render_template(
@@ -714,27 +710,10 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
         acquisition_framework["initial_closing_date"] = af.initial_closing_date.strftime(
             "%d-%m-%Y %H:%M"
         )
-        filename = "{}_{}_{}.pdf".format(
-            id_acquisition_framework,
-            secure_filename(acquisition_framework["acquisition_framework_name"][0:31]),
-            af.initial_closing_date.strftime("%d%m%Y_%H%M%S"),
-        )
         acquisition_framework["closed_title"] = current_app.config["METADATA"]["CLOSED_AF_TITLE"]
 
-    else:
-        filename = "{}_{}_{}.pdf".format(
-            id_acquisition_framework,
-            secure_filename(acquisition_framework["acquisition_framework_name"][0:31]),
-            dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
-        )
-
     # Appel de la methode pour generer un pdf
-    pdf_file = fm.generate_pdf(
-        "acquisition_framework_template_pdf.html", acquisition_framework, filename
-    )
-    pdf_file_posix = Path(pdf_file)
-    return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
-
+    return fm.generate_pdf2("acquisition_framework_template_pdf.html", acquisition_framework)
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>", methods=["GET"])
 @permissions.check_cruved_scope("R", get_scope=True, module_code="METADATA")

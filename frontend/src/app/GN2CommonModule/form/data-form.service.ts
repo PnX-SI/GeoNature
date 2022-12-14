@@ -4,6 +4,7 @@ import {
   HttpParams,
   HttpEventType,
   HttpErrorResponse,
+  HttpHeaders,
   HttpEvent,
 } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
@@ -470,9 +471,26 @@ export class DataFormService {
     );
   }
 
-  uploadCanvas(img: any) {
-    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/meta/upload_canvas`, img);
+  exportPDF(img, params, endPoint, prefix) {
+    let queryString = new HttpParams();
+    for (let key in params) {
+      queryString = queryString.set(key, params[key]);
+    }
+    const source = this._http.post(
+      endPoint,
+      img,
+      {
+        params: queryString,
+        headers: new HttpHeaders().set('Content-Type', 'application/pdf'),
+        observe: 'events',
+        responseType: 'blob',
+        reportProgress: false,
+      }
+    );
+
+    this.subscribeAndDownload(source, prefix, "pdf");
   }
+
   getTaxaDistribution(taxa_rank, params?: ParamsDict) {
     let queryString = new HttpParams();
     queryString = queryString.set('taxa_rank', taxa_rank);
