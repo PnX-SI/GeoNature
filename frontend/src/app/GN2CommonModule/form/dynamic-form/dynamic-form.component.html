@@ -179,7 +179,7 @@
 
     <div *ngSwitchCase="'radio'">
       <div
-        *ngFor="let val of formDefComp['values']"
+        *ngFor="let item of formDefComp['values']"
         class="custom-control custom-radio"
         [ngClass]="{ 'ng-invalid': form.get(formDefComp['attribut_name']).invalid }"
       >
@@ -189,14 +189,14 @@
           (click)="onRadioChange(val, form.get(formDefComp['attribut_name']))"
           class="custom-control-input"
           name="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ val }}"
-          [value]="val"
+          [value]="item.value"
           [formControl]="form.get(formDefComp['attribut_name'])"
         />
         <label
           class="custom-control-label"
           for="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ val }}"
         >
-          <span [innerHTML]="val"></span>
+          <span [innerHTML]="item.label"></span>
         </label>
       </div>
     </div>

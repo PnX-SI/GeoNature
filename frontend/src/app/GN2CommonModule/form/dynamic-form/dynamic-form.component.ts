@@ -30,7 +30,7 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   public appConfig = AppConfig;
   public rand = Math.ceil(Math.random() * 1e10);
 
-  public formDefComp = {};
+  public formDefComp: any = {};
   public isValInSelectList: boolean = true;
   private _sub: Subscription;
 
@@ -54,7 +54,7 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   setFormDefComp(withDefaultValue = false) {
-    this.formDefComp = {};
+    const formDefComp: any = {};
     for (const key of Object.keys(this.formDef)) {
       this.formDefComp[key] = this._dynformService.getFormDefValue(
         this.formDef,
@@ -62,6 +62,20 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
         this.form.value
       );
     }
+
+    // traitement de values pour le type radio
+    // TODO pour select ?? multiselect ??
+    // si on a une liste de valeur
+    // - on la transforme en liste de dictionnaire [...{label, value}...]
+    if (['radio'].includes(formDefComp.type)) {
+      this.formDefComp.values = this.formDefComp.values.map((val) => {
+        let isValObject = typeof val === 'object' && !Array.isArray(val) && val !== null;
+        return isValObject ? val : { label: val, value: val };
+      });
+    }
+
+    this.formDefComp = formDefComp;
+
     if (this.form !== undefined) {
       // on met à jour les contraintes
       this._dynformService.setControl(
