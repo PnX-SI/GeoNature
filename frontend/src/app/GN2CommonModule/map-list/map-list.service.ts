@@ -244,17 +244,13 @@ export class MapListService {
       map.fitBounds((layer as any)._bounds);
     } else {
       let latlng;
-      const zoom = map.getZoom();
+      const zoom = 18;
       // if its a multipoint
       if (!layer._latlng) {
         map.fitBounds(new L.GeoJSON(layer.feature).getBounds());
       } else {
         latlng = layer._latlng;
-        if (zoom >= 12) {
-          map.setView(latlng, zoom);
-        } else {
-          map.setView(latlng, 16);
-        }
+        map.setView(latlng, zoom);
       }
     }
   }

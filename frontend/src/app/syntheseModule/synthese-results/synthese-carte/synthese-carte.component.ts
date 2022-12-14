@@ -122,10 +122,8 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     // On table click, change style layer and zoom
     this.mapListService.onTableClick$.subscribe((id) => {
       const selectedLayer = this.mapListService.layerDict[id];
-      //selectedLayer.bringToFront();
       this.toggleStyle(selectedLayer);
       this.mapListService.zoomOnSelectedLayer(this._ms.map, selectedLayer);
-      selectedLayer.bringToFront();
     });
 
     // add the featureGroup to the map
@@ -374,7 +372,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     }
     layer.on({
       click: (e) => {
-        this.toggleIcon(layer);
+        this.toggleStyle(layer);
         this.mapListService.mapSelected.next(ids);
         if (this.areasEnable) {
           this.bindAreasPopup(layer, ids);
@@ -382,17 +380,6 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
       },
     });
     this.cluserOrSimpleFeatureGroup.addLayer(layer);
-  }
-
-  private toggleIcon(selectedLayer) {
-    // Reset style of previous selected layer
-    if (this.mapListService.selectedLayer !== undefined) {
-      this.mapListService.selectedLayer.setIcon(this.defaultIcon);
-    }
-    // Apply new selected layer
-    this.mapListService.selectedLayer = selectedLayer;
-    // Set selected style on new selected layer
-    this.mapListService.selectedLayer.setIcon(this.selectedIcon);
   }
 
   private setDefaultStyle(layer) {
@@ -415,21 +402,36 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     });
   }
 
-  // Redefine toggle style from mapListSerice because we don't use geojson component here for perf reasons
   private toggleStyle(selectedLayer) {
     // Reset style of previous selected layer
-    if (this.mapListService.selectedLayer !== undefined) {
+    if (
+      // if not a marker
+      this.mapListService.selectedLayer !== undefined &&
+      this.mapListService.selectedLayer._latlngs
+    ) {
       let originStyle = this.areasEnable ? this.originAreasStyle : this.originDefaultStyle;
       originStyle['fillColor'] = this.mapListService.selectedLayer.options.fillColor;
       this.mapListService.selectedLayer.setStyle(originStyle);
+    } else if (
+      // if marker
+      this.mapListService.selectedLayer !== undefined &&
+      this.mapListService.selectedLayer._latlng
+    ) {
+      this.mapListService.selectedLayer.setIcon(this.defaultIcon);
     }
 
     // Apply new selected layer
     this.mapListService.selectedLayer = selectedLayer;
 
     // Set selected style on new selected layer
-    let selectedStyle = this.areasEnable ? this.selectedAreasStyle : this.selectedDefaultStyle;
-    this.mapListService.selectedLayer.setStyle(selectedStyle);
+    if (this.mapListService.selectedLayer._latlngs) {
+      // if not a marker
+      let selectedStyle = this.areasEnable ? this.selectedAreasStyle : this.selectedDefaultStyle;
+      this.mapListService.selectedLayer.setStyle(selectedStyle);
+    } else {
+      // if marker
+      this.mapListService.selectedLayer.setIcon(this.selectedIcon);
+    }
   }
 
   private bindAreasPopup(layer, ids) {
