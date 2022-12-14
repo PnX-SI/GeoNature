@@ -5,7 +5,7 @@ import json
 
 from flask import Blueprint, request, current_app, Response, redirect, g
 from sqlalchemy.sql import distinct, and_
-from werkzeug.exceptions import NotFound, BadRequest
+from werkzeug.exceptions import NotFound, BadRequest, Forbidden
 
 from geonature.utils.env import DB
 from geonature.core.gn_permissions import decorators as permissions
@@ -322,9 +322,14 @@ def update_role():
     """
     if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
         return {"message": "Page introuvable"}, 404
+
     data = dict(request.get_json())
 
     user = g.current_user
+
+    # Prevent public-access user from updating its own information
+    if user.is_public:
+        raise Forbidden
 
     attliste = [k for k in data]
     for att in attliste:
