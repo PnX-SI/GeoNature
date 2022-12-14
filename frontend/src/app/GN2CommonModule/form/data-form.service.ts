@@ -597,7 +597,13 @@ export class DataFormService {
     let queryString: HttpParams = new HttpParams();
     // eslint-disable-next-line guard-for-in
     for (const key in params) {
-      queryString = queryString.set(key, params[key].toString());
+      if (Array.isArray(params[key])) {
+        params[key].forEach((val) => {
+          queryString = queryString.append(key, val);
+        });
+      } else {
+        queryString = queryString.set(key, params[key].toString());
+      }
     }
     return this._http
       .get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/additional_fields`, { params: queryString })

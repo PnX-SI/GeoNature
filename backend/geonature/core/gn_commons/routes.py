@@ -114,46 +114,60 @@ def get_one_parameter(param_name, id_org=None):
 
 @routes.route("/additional_fields", methods=["GET"])
 def get_additional_fields():
+    """
+    Get additionnal fields
+
+    .. :quickref: Commons;
+
+    :qparam str id_dataset: filter fields on id_dataset rattachment. If id_dataset = null return global fields (not attached to any datasets)
+    :qparam str module_code:
+    :qparam str object_code:
+    :returns: Array<dict<TAdditionalFields>>
+    """
     params = request.args
     q = DB.session.query(TAdditionalFields).order_by(TAdditionalFields.field_order)
     if "id_dataset" in params:
-        if params["id_dataset"] == "null":
-            # ~ operator means NOT EXISTS
-            q = q.filter(~TAdditionalFields.datasets.any())
+        if len(params.getlist("id_dataset")) > 1:
+            id_dataset_ors = []
+            for id_dataset in params.getlist("id_dataset"):
+                if id_dataset == "null":
+                    # ~ operator means NOT EXISTS
+                    id_dataset_ors.append(~TAdditionalFields.datasets.any())
+                else:
+                    id_dataset_ors.append(TAdditionalFields.datasets.any(id_dataset=id_dataset))
+            q = q.filter(or_(*id_dataset_ors))
         else:
-            if len(params["id_dataset"].split(",")) > 1:
-                ors = [
-                    TAdditionalFields.datasets.any(id_dataset=id_dastaset)
-                    for id_dastaset in params.split(",")
-                ]
-                q = q.filter(or_(*ors))
-            else:
-                q = q.filter(TAdditionalFields.datasets.any(id_dataset=params["id_dataset"]))
+            q = q.filter(TAdditionalFields.datasets.any(id_dataset=params.get("id_dataset")))
+
     if "module_code" in params:
-        if len(params["module_code"].split(",")) > 1:
-
-            ors = [
+        if len(params.getlist("module_code")) > 1:
+            module_code_ors = [
                 TAdditionalFields.modules.any(module_code=module_code)
-                for module_code in params["module_code"].split(",")
+                for module_code in params.getlist("module_code")
             ]
-
-            q = q.filter(or_(*ors))
+            q = q.filter(or_(*module_code_ors))
         else:
             q = q.filter(TAdditionalFields.modules.any(module_code=params["module_code"]))
 
     if "object_code" in params:
-        if len(params["object_code"].split(",")) > 1:
-            ors = [
+        if len(params.getlist("object_code")) > 1:
+            object_code_ors = [
                 TAdditionalFields.objects.any(code_object=code_object)
-                for code_object in params["object_code"].split(",")
+                for code_object in params.getlist("object_code")
             ]
-            q = q.filter(or_(*ors))
+            q = q.filter(or_(*object_code_ors))
         else:
             q = q.filter(TAdditionalFields.objects.any(code_object=params["object_code"]))
     return jsonify(
         [
             d.as_dict(
-                fields=["bib_nomenclature_type", "modules", "objects", "datasets", "type_widget"]
+                fields=[
+                    "bib_nomenclature_type",
+                    "modules",
+                    "objects",
+                    "datasets",
+                    "type_widget",
+                ]
             )
             for d in q.all()
         ]
