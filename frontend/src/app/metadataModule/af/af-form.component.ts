@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
@@ -128,9 +128,11 @@ export class AfFormComponent implements OnInit {
   }
 
   getPdf() {
-    const url = `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${
-      this.afFormS.acquisition_framework.getValue().id_acquisition_framework
-    }`;
-    window.open(url);
+    this._dfs.exportPDF(
+      null,
+      { af: this.afFormS.acquisition_framework.getValue().id_acquisition_framework },
+      `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf`,
+      "af"
+    )
   }
 }

@@ -205,18 +205,13 @@
                     <div class="map"></div>
                 </div> -->
         <!-- A modifier lorsque la carte sera prete -->
-
-        {% if data['chart']: %}
         <div class="repartition">
           <p class="repartition-especes">Répartition des espèces</p>
           <img
-            class="taxons"
-            src="{{url_for('static', filename='images/taxa.png')}}"
+            class="taxons test"
             alt="Pas d'espèces à afficher."
           >
         </div>
-        {% endif %}
-
         <div class="ca">
           <hr class="ligne-titre main-color">
           <p class="ca-initial">Cadre d'acquisition</p>
@@ -334,6 +329,11 @@
       </div>
     </div>
     {% endif %}
+    <style>
+      .test{
+        background: url('data:image/png;base64,{{data["chart"]}}')
+      }
+    </style>
   </body>
 
 </html>

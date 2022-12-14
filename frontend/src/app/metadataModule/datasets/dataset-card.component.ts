@@ -141,11 +141,12 @@ export class DatasetCardComponent implements OnInit {
   }
 
   getPdf() {
-    const url = `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`;
-    const dataUrl = this.chart ? this.chart.ctx['canvas'].toDataURL('image/png') : '';
-    this._dfs.uploadCanvas(dataUrl).subscribe((data) => {
-      window.open(url);
-    });
+    this._dfs.exportPDF(
+      this.chart ? this.chart.toBase64Image() : "",
+      { dataset: this.id_dataset },
+      `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf`,
+      "jdd"
+    )
   }
 
   delete_Dataset(idDataset) {
