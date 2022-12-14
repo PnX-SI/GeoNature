@@ -245,14 +245,14 @@
             class="form-sm"
             label="Periode début"
             [parentFormControl]="formService.searchForm.controls.period_start"
-            >>
+            >
           </pnx-period>
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
           <pnx-period
             label="Periode fin"
             [parentFormControl]="formService.searchForm.controls.period_end"
-            >>
+            >
           </pnx-period>
         </div>
         <small
@@ -267,10 +267,10 @@
   </fieldset>
 
   <fieldset>
-    <legend>Ou ?</legend>
+    <legend>Où ?</legend>
 
     <div *ngIf="formService.formBuilded">
-      <div *ngFor="let area of areaFilters; let i = index">
+      <div *ngFor="let area of formService.areasFilters; let i = index">
         <pnx-areas
           [parentFormControl]="area.control"
           [label]="area.label"
