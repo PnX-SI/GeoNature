@@ -455,6 +455,7 @@ class MapConfig(Schema):
                 "activate": False,
                 "params": {
                     "layers": "znieff1",
+                    "opacity": 0.2,
                     "crs": "EPSG:4326",
                     "service": "wms",
                     "format": "image/png",
