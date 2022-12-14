@@ -30,7 +30,7 @@ def get_module_config_path(module_code):
 def get_module_config(module_dist):
     module_code = load_entry_point(module_dist, "gn_module", "code")
     config_schema = load_entry_point(module_dist, "gn_module", "config_schema")
-    config = {"MODULE_CODE": module_code}
+    config = {"MODULE_CODE": module_code, "MODULE_URL": "/{module_code.lower()}"}
     config.update(load_and_validate_toml(get_module_config_path(module_code), config_schema))
     return config
 
