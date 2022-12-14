@@ -6,7 +6,7 @@ Général
 
 GeoNature 1, créé en 2010, a été développé par Gil Deluermoz avec PHP/Symfony/ExtJS.
 
-GeoNature 2 est une refonte initié en 2017 par les parcs nationaux français en Python/Flask/Angular.
+GeoNature 2 est une refonte initiée en 2017 par les parcs nationaux français en Python/Flask/Angular.
 
 Mainteneurs actuels :
 
@@ -57,16 +57,16 @@ au projet GeoNature.
 Git
 ***
 
-- Assurez-vous d’avoir récupérer les dépendances dans les sous-modules git : ``git submodule init && git submodule update``
+- Assurez-vous d’avoir récupéré les dépendances dans les sous-modules git : ``git submodule init && git submodule update``
 - Après un ``git pull``, il faut mettre à jour les sous-modules : ``git submodule update``
 
 - Ne jamais faire de commit dans la branche ``master`` mais dans la branche ``develop`` ou idéalement dans une branche dédiée à la fonctionnalité (feature branch)
-- Faire des pull request vers la branche ``develop``
+- Faire des pull requests vers la branche ``develop``
 - Faire des ``git pull`` avant chaque développement et avant chaque commit
 - Les messages des commits font référence à un ticket ou le ferment (``ref #12`` ou ``fixes #23``)
 - Les messages des commits sont en anglais (dans la mesure du possible)
-- Privilégier les rebases afin de concerver un historique linéaire
-- Privilégier l’amendemant (``git commit --amend`` ou ``git commit --fixup``) des commits existants lorsque vous portez des corrections à votre PR, en particulier pour l’appliquage du style.
+- Privilégier les rebases afin de conserver un historique linéaire
+- Privilégier l’amendement (``git commit --amend`` ou ``git commit --fixup``) des commits existants lorsque vous portez des corrections à votre PR, en particulier pour l’application du style.
 
 
 Backend
@@ -75,7 +75,7 @@ Backend
 - Une fonction ou classe doit contenir une docstring en français. Les doctrings doivent suivre le modèle NumPy/SciPy (voir https://numpydoc.readthedocs.io/en/latest/format.html et https://realpython.com/documenting-python-code/#numpyscipy-docstrings-example)
 - Les commentaires dans le codes doivent être en anglais (ne pas s'empêcher de mettre un commentaire en français sur une partie du code complexe !)
 - Utiliser *blake* comme formateur de texte et activer l'auto-formatage dans son éditeur de texte (Tuto pour VsCode : https://medium.com/@marcobelo/setting-up-python-black-on-visual-studio-code-5318eba4cd00)
-- La longueur maximale pour une ligne de code est 100 caractères. Pour VsCode copier ces lignes le fichier ``settings.json`` :
+- La longueur maximale pour une ligne de code est 100 caractères. Pour VSCODE copier ces lignes le fichier ``settings.json`` :
 
 ::
 
@@ -144,13 +144,13 @@ HTML
         Filtrer
       </button>
 
-- VsCode fournit un formatteur de HTML par défaut (Dans les options de VsCode, tapez "wrap attributes" et sélectionner "force-expand-multiline")
+- VSCODE fournit un formatteur de HTML par défaut (Dans les options de VsCode, tapez "wrap attributes" et sélectionner "force-expand-multiline")
 
 Style et ergonomie
 ******************
 
 - Boutons :
-  On utilise les boutons d'Angular materials (https://material.angular.io/components/button/overview).
+  On utilise les boutons d'Angular Material (https://material.angular.io/components/button/overview).
   
   - mat-raised-button pour les boutons contenant du texte 
   - mat-fab ou mat-mini-fab pour les boutons d'actions avec seulement une icone 
@@ -158,13 +158,13 @@ Style et ergonomie
 - Couleur des boutons :
 
   - Action : primary 
-  - Validation: vert (n'existant pas dans material: utiliser la classe `button-success`)
+  - Validation: vert (n'existant pas dans Material : utiliser la classe `button-success`)
   - Suppression: warn 
   - Navigation: basic 
 
 - Librairie d'icones :
 
-  - Utiliser la librairie material icons fournie avec le projet : https://material.io/resources/icons/?style=baseline (``<mat-icon> add </mat-icon>``)
+  - Utiliser la librairie Material icons fournie avec le projet : https://material.io/resources/icons/?style=baseline (``<mat-icon> add </mat-icon>``)
 
 - Formulaire :
 
@@ -172,7 +172,7 @@ Style et ergonomie
 
 - Système de grille et responsive :
 
-  - Utiliser le système de grille de bootstrap pour assurer le responsive design sur l'application. On ne vise pas l'utilisation sur mobile, mais à minima sur ordinateur portable de petite taille.
+  - Utiliser le système de grille de Bootstrap pour assurer le responsive design sur l'application. On ne vise pas l'utilisation sur mobile, mais à minima sur ordinateur portable de petite taille.
 
 .. _mode-dev:
 
@@ -207,7 +207,7 @@ Si vous avez téléchargé GeoNature zippé (via la procédure d'installation gl
 Configuration des URLs de développement
 ***************************************
 
-il est nécessaire de changer la configuration du fichier ``config/geonature_config.toml`` pour utiliser les adresses suivantes :
+Il est nécessaire de changer la configuration du fichier ``config/geonature_config.toml`` pour utiliser les adresses suivantes :
 
 .. code-block:: bash
 
@@ -215,7 +215,7 @@ il est nécessaire de changer la configuration du fichier ``config/geonature_con
   API_ENDPOINT = 'http://127.0.0.1:8000'
   API_TAXHUB =  'http://127.0.0.1:5000/api'
 
-N’oubliez pas les :ref:`actions à effecture après modification de la configuration <post_config_change>`.
+N’oubliez pas les :ref:`actions à effectuer après modification de la configuration <post_config_change>`.
 
 
 Autres extensions en développement
@@ -227,7 +227,7 @@ Pour plus d'informations, référez-vous aux documentations dédiées :
 - https://taxhub.readthedocs.io/fr/latest/installation.html#developpement
 - https://usershub.readthedocs.io/fr/latest/
 
-Si toutefois TaxHub retourne une erreur 500 et ne répond pas sur l'URL http://127.0.0.1:5000 alors vous pouvez avoir besoin de passer TaxHub en mode développement :
+Si toutefois TaxHub retourne une erreur 500 et ne répond pas sur l'URL http://127.0.0.1:5000, alors vous pouvez avoir besoin de passer TaxHub en mode développement :
 
 .. code-block:: bash
 
@@ -240,7 +240,7 @@ Debugger avec un navigateur
 L'extension `Angular DevTools <https://angular.io/guide/devtools>`_ permettra de debugger l'application dans la console du navigateur.
 Pour utiliser l'extension vous devez l'installer et passer obligatoirement en mode ``development``.
 
-Ouvrez le fichier  ``frontend/src/conf/app.config.ts`` et modifiez la valeur ``PROD_MOD`` pour avoir :
+Ouvrez le fichier ``frontend/src/conf/app.config.ts`` et modifiez la valeur ``PROD_MOD`` pour avoir :
 
 .. code-block:: javascript
   :linenos:
@@ -303,7 +303,7 @@ Ceci est typiquement la première ligne de toutes les routes travaillant sur une
 Fonctions de filtrages
 """"""""""""""""""""""
 
-L’attribut ``query`` est une instance de la classe ``flask_sqlalchemy.BaseQuery`` qui peut être sur-chargée afin de définir de nouvelles fonctions de filtrage.
+L’attribut ``query`` est une instance de la classe ``flask_sqlalchemy.BaseQuery`` qui peut être surchargée afin de définir de nouvelles fonctions de filtrage.
 
 On pourra ainsi implémenter une fonction pour filtrer les objets auxquels l’utilisateur a accès, ou encore pour implémenter des filtres de recherche.
 
@@ -357,7 +357,7 @@ Les schémas Marshmallow peuvent être facilement créés à partir des modèles
             model = MyModel
             include_fk = True
 
-La propriété ``include_fk=True`` concerne les champs de type ``ForeignKey``, mais pas les ``relationships`` en elles-même. Pour ces dernières, il est nécessaire d’ajouter manuellement des champs ``Nested`` à son schéma :
+La propriété ``include_fk=True`` concerne les champs de type ``ForeignKey``, mais pas les ``relationships`` en elles-mêmes. Pour ces dernières, il est nécessaire d’ajouter manuellement des champs ``Nested`` à son schéma :
 
 ::
 
@@ -850,16 +850,16 @@ Utiliser le décorateur ``@check_cruved_scope`` :
    :param action: Type d'action effectuée par la route
                   (Create, Read, Update, Validate, Export, Delete)
    :type action: str["C", "R", "U", "V", "E", "D"]
-   :param module_code: Code du module sur lequel on veut vérifier la porté.
+   :param module_code: Code du module sur lequel on veut vérifier la portée.
     Si non fourni, on vérifie le CRUVED de GeoNature.
    :type module_code: str, optional
-   :param object_code: Code de l’objet sur lequel on veut vérifié la porté.
-    Si non fourni, on vérifie la porté sur l’objet ``ALL``.
+   :param object_code: Code de l’objet sur lequel on veut vérifié la portée.
+    Si non fourni, on vérifie la portée sur l’objet ``ALL``.
    :type object_code: str, optional
    :param get_scope: si ``True``, ajoute le scope aux kwargs de la vue
    :type get_scope: bool, optional
 
-Lorsque l’utilisateur n’est pas connecté, le comportement est le même que le décorateur ``@login_required``. Lorsque celui-ci est connecté, le décorateur va récupérer le scope de l’utilisateur pour l’action donnée dans le module donnée (et éventuellement l’objet donnée). Si ce scope est égale à 0, alors une erreur 403 (Forbidden) est levé.
+Lorsque l’utilisateur n’est pas connecté, le comportement est le même que le décorateur ``@login_required``. Lorsque celui-ci est connecté, le décorateur va récupérer le scope de l’utilisateur pour l’action donnée dans le module donnée (et éventuellement l’objet donnée). Si ce scope est égal à 0, alors une erreur 403 (Forbidden) est levée.
 
 .. warning::
 
@@ -889,18 +889,18 @@ Exemple d’utilisation :
 Récupération manuelle des permissions
 """""""""""""""""""""""""""""""""""""
 
-La fonction suivante permet de récupérer manuellement le scope pour chaque actions pour un rôle et un module donnée :
+La fonction suivante permet de récupérer manuellement le scope pour chaque actions pour un rôle et un module donnés :
 
 .. py:function:: get_scopes_by_action(id_role, module_code, object_code)
 
-   Retourne un dictionnaire avec pour clé les actions du cruved et pour valeur le scope associé
-   pour un utilisateur et un module donnée (et éventuellement un objet précis).
+   Retourne un dictionnaire avec pour clé les actions du CRUVED et pour valeur le scope associé
+   pour un utilisateur et un module donné (et éventuellement un objet précis).
 
    :param int id_role: Identifiant du role. Utilisation de ``g.current_user`` si non spécifié
-                       (nécessite de se trouver dans une route authentifié).
+                       (nécessite de se trouver dans une route authentifiée).
    :param str module_code: Code du module. ``GEONATURE`` si non précisé.
    :param str object_code: Code de l’objet. ``ALL`` si non précisé.
-   :return: Dictionnaire de scope pour chaque action du cruved.
+   :return: Dictionnaire de scope pour chaque action du CRUVED.
    :rtype: dict[str, int]
 
 Exemple d’usage :
@@ -969,13 +969,13 @@ ci-dessous.
   - ``onDelete`` : événement émit chaque fois que le champ du formulaire est supprimé. Renvoie un évenement vide.
 
 Ces composants peuvent être considérés comme des "dump components" ou
-"presentation components", puisque que la logique de contrôle est déporté
-au composant parent qui l'accueil
+"presentation components", puisque que la logique de contrôle est déportée
+au composant parent qui l'accueille
 (https://blog.angular-university.io/angular-2-smart-components-vs-presentation-components-whats-the-difference-when-to-use-each-and-why/)
 
 Un ensemble de composants permettant de simplifier l'affichage des cartographies
 Leaflet sont disponibles. Notamment un composant "map-list" permettant de
-connecter une carte avec une liste d'objets décrits en détail ci dessous.
+connecter une carte avec une liste d'objets décrits en détail ci-dessous.
 
 MapListComponent
 """"""""""""""""
@@ -987,7 +987,7 @@ responsabilité du développeur. Le service ``MapListService`` offre
 cependant des fonctions permettant facilement de synchroniser
 les deux éléments.
 
-Fonctionnalité et comportement offert par le composant et le
+Fonctionnalité et comportement offerts par le composant et le
 service :
 
 - Charger les données
@@ -1097,7 +1097,7 @@ Exemple d'utilisation avec une liste simple :
 Tests
 *****
 
-Pour toute PR ou nouvelle fonctionnalité il est demandé d'écrire des tests. Voir la section dédié sur l’:ref:`écriture des tests frontend <tests-frontend>`.
+Pour toute PR ou nouvelle fonctionnalité il est demandé d'écrire des tests. Voir la section dédiée sur l’:ref:`écriture des tests frontend <tests-frontend>`.
 
 
 .. _tests-backend:
@@ -1242,7 +1242,6 @@ Pour sortir une nouvelle version de GeoNature :
 - Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``, ``config/settings.ini.sample``, ``backend/requirements-dependencies.in`` (puis regénérer ``backend/requirements.txt`` avec ``pip compile``)
 - Complétez le fichier ``docs/CHANGELOG.rst`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
 - Mettez à jour le fichier ``VERSION``
-- Remplissez le tableau de compatibilité des dépendances (``docs/versions-compatibility.rst``)
 - Mergez la branche ``develop`` dans la branche ``master``
 - Faites la release (https://github.com/PnX-SI/GeoNature/releases) en la taguant ``X.Y.Z`` (sans ``v`` devant) et en copiant le contenu du Changelog
 - Dans la branche ``develop``, modifiez le fichier ``VERSION`` en ``X.Y.Z.dev0`` et pareil dans le fichier ``docs/CHANGELOG.rst``
