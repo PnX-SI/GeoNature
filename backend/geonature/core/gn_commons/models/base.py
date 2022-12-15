@@ -2,6 +2,7 @@
     Modèles du schéma gn_commons
 """
 import os
+from pathlib import Path
 
 from flask import current_app
 from sqlalchemy import ForeignKey
@@ -16,7 +17,6 @@ from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.utils.env import DB
-from geonature.core.gn_commons.file_manager import rename_file
 
 
 @serializable
@@ -152,17 +152,9 @@ class TMedias(DB.Model):
     def remove_file(self):
         if not self.media_path:
             return
-        initial_path = self.media_path
-        (inv_file_name, inv_file_path) = initial_path[::-1].split("/", 1)
-        file_name = inv_file_name[::-1]
-        file_path = inv_file_path[::-1]
-
-        try:
-            self.media_path = rename_file(
-                self.media_path, "{}/deleted_{}".format(file_path, file_name)
-            )
-        except FileNotFoundError:
-            raise Exception("Unable to delete file {}".format(initial_path))
+        path = Path(current_app.config["BASE_DIR"]) / self.media_path
+        new_path = path.parent / path.rename(f"deleted_{path.name}")
+        self.media_path = str(new_path.relative_to(current_app.config["BASE_DIR"]))
 
     def remove_thumbnails(self):
         # delete thumbnail test sur nom des fichiers avec id dans le dossier thumbnail
