@@ -125,11 +125,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     this.mapListService.onTableClick$.subscribe((id) => {
       const selectedLayers = this.layersDict[id];
       this.toggleStyleFromList(selectedLayers);
-      const tempFeatureGroup = new L.FeatureGroup();
-      selectedLayers.forEach((layer) => {
-        tempFeatureGroup.addLayer(layer);
-      });
-      this._ms.map.fitBounds(tempFeatureGroup.getBounds(), { maxZoom: 18 });
+      this.zoomOnLayers(selectedLayers);
     });
 
     // add the featureGroup to the map
@@ -142,6 +138,17 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
       if (this.areasEnable) {
         this.addAreasLegend();
       }
+    }
+  }
+
+  zoomOnLayers(layers) {
+    const zoom = this._ms.map.getZoom();
+    const group = new L.FeatureGroup();
+    layers.forEach((layer) => group.addLayer(layer));
+    if (zoom >= 12) {
+      this._ms.map.fitBounds(group.getBounds(), { maxZoom: zoom });
+    } else {
+      this._ms.map.fitBounds(group.getBounds(), { maxZoom: 15 });
     }
   }
 
@@ -403,7 +410,6 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     }
     // Apply new selected layer
     this.selectedLayers = currentSelectedLayers;
-    console.log(currentSelectedLayers);
 
     let selectedStyle = this.areasEnable ? this.selectedAreasStyle : this.selectedDefaultStyle;
     this.selectedLayers.forEach((layer) => {

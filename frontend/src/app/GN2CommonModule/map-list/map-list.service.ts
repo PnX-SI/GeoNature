@@ -240,19 +240,29 @@ export class MapListService {
   }
 
   zoomOnSelectedLayer(map, layer) {
-    const tempFeatureGroup = new L.FeatureGroup();
-    tempFeatureGroup.addLayer(layer);
-    map.fitBounds(tempFeatureGroup.getBounds(), { maxZoom: 15 });
+    const zoom = map.getZoom();
+    const group = new L.FeatureGroup();
+    group.addLayer(layer);
+    if (zoom >= 12) {
+      map.fitBounds(group.getBounds(), { maxZoom: zoom });
+    } else {
+      map.fitBounds(group.getBounds(), { maxZoom: 15 });
+    }
   }
 
-  zoomOnSeveralSelectedLayers(map, layers) {
-    let group = new L.FeatureGroup();
-    layers.forEach((layer) => {
-      this.layerDict[layer];
-      group.addLayer(this.layerDict[layer]);
-    });
+  zoomOnSeveralSelectedLayers(map, ids) {
+    const zoom = map.getZoom();
 
-    this._ms.getMap().fitBounds(group.getBounds());
+    let group = new L.FeatureGroup();
+    ids.forEach((id) => {
+      this.layerDict[id];
+      group.addLayer(this.layerDict[id]);
+    });
+    if (zoom >= 12) {
+      map.fitBounds(group.getBounds(), { maxZoom: zoom });
+    } else {
+      map.fitBounds(group.getBounds(), { maxZoom: 15 });
+    }
   }
 
   /**
