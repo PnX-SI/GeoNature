@@ -240,19 +240,9 @@ export class MapListService {
   }
 
   zoomOnSelectedLayer(map, layer) {
-    if (layer instanceof L.Polygon || layer instanceof L.Polyline) {
-      map.fitBounds((layer as any)._bounds);
-    } else {
-      let latlng;
-      const zoom = 18;
-      // if its a multipoint
-      if (!layer._latlng) {
-        map.fitBounds(new L.GeoJSON(layer.feature).getBounds());
-      } else {
-        latlng = layer._latlng;
-        map.setView(latlng, zoom);
-      }
-    }
+    const tempFeatureGroup = new L.FeatureGroup();
+    tempFeatureGroup.addLayer(layer);
+    map.fitBounds(tempFeatureGroup.getBounds(), { maxZoom: 15 });
   }
 
   zoomOnSeveralSelectedLayers(map, layers) {
