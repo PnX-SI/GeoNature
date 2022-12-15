@@ -139,7 +139,7 @@ ENV GEONATURE_CONFIG_FILE ""
 
 EXPOSE 8000
 
-CMD ["gunicorn", "geonature:create_app()", "--bind=0.0.0.0:8000"]
+CMD ["gunicorn", "geonature:create_app()", "--bind=0.0.0.0:8000", "--access-logfile=-"]
 
 
 FROM wheels AS prod-light
