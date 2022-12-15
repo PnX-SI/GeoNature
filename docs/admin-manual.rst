@@ -470,13 +470,12 @@ Etapes :
 
 2/ Configuration GeoNature : 
 
-- Reporter identifiant et mot de passe dans le fichier de configuration de GeoNature (``config/geonature_config.toml``)
+- Dans le fichier de configuration de GeoNature (``config/geonature_config.toml``), spécifier le nom d'utilisateur pour l'accès public via le paramètre ``PUBLIC_ACCESS_USERNAME`` :
 
-.. code:: 
 
-  PUBLIC_LOGIN = 'public'
-  PUBLIC_PASSWORD = 'public'
+.. code::
 
+  PUBLIC_ACCESS_USERNAME = 'public'
 
 :ref:`Exécuter les actions post-modification de la configuration <post_config_change>`.
 

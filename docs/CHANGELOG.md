@@ -81,6 +81,8 @@ CHANGELOG
 -   Recherche des méta-données par entprise géographique des observations.
     Le paramètre ``METADATA_AREA_FILTERS`` permet de spécifier les types de zones géographiques
     disponible à la recherche (communes, départements, régions par défaut).
+-   Suppression de la section ``[PUBLIC_ACCESS]`` dans les paramètres de configuration. Remplacé par 
+    un unique paramètre ``PUBLIC_ACCESS_USERNAME``.
 -   Mise à jour des dépendances :
     -   TaxHub
     -   UsersHub
