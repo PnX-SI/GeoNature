@@ -45,6 +45,8 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   private areasLegend;
   private enableFitBounds = true;
   private areasLabelSwitchBtn;
+  public selectedLayers: Array<L.Layer> = [];
+  public layersDict: object = {};
 
   private originDefaultStyle = {
     color: '#3388FF',
@@ -121,9 +123,13 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     // event from the list
     // On table click, change style layer and zoom
     this.mapListService.onTableClick$.subscribe((id) => {
-      const selectedLayer = this.mapListService.layerDict[id];
-      this.toggleStyle(selectedLayer);
-      this.mapListService.zoomOnSelectedLayer(this._ms.map, selectedLayer);
+      const selectedLayers = this.layersDict[id];
+      this.toggleStyleFromList(selectedLayers);
+      const tempFeatureGroup = new L.FeatureGroup();
+      selectedLayers.forEach((layer) => {
+        tempFeatureGroup.addLayer(layer);
+      });
+      this._ms.map.fitBounds(tempFeatureGroup.getBounds(), { maxZoom: 18 });
     });
 
     // add the featureGroup to the map
@@ -243,6 +249,67 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     this.areasLegend.remove(map);
   }
 
+  layerDictCache(idSyntheseList, layer) {
+    for (let id of idSyntheseList) {
+      id in this.layersDict ? this.layersDict[id].push(layer) : (this.layersDict[id] = [layer]);
+    }
+  }
+
+  markerStyle(layer, countObs) {
+    layer.setIcon(this.defaultIcon);
+    layer.bindTooltip(`${countObs}`, {
+      permanent: true,
+      direction: 'center',
+      offset: L.point({ x: 0, y: -25 }),
+      className: 'number-obs',
+    });
+  }
+
+  layerEvent(feature, layer, idSyntheseIds) {
+    layer.on({
+      click: (e) => {
+        this.toggleStyleFromMap(feature, layer);
+        this.mapListService.mapSelected.next(idSyntheseIds);
+        if (this.areasEnable) {
+          this.bindAreasPopup(layer, idSyntheseIds);
+        }
+      },
+    });
+  }
+
+  onEachFeature(feature, layer) {
+    let countObs = feature.properties.observations.id.length;
+    // make a cache a layers in a dict with id key
+    this.layerDictCache(feature.properties.observations.id, layer);
+    // set style
+    if (this.areasEnable) {
+      this.setAreasStyle(layer, feature.properties.observations.length);
+    }
+    if (feature.geometry.type == 'Point' || feature.geometry.type == 'MultiPoint') {
+      this.markerStyle(layer, countObs);
+    }
+    // set events
+    this.layerEvent(feature, layer, feature.properties.observations.id);
+  }
+
+  /**
+   *
+   */
+  clusterCountOverrideFn(cluster) {
+    const obsChildCount = cluster
+      .getAllChildMarkers()
+      .map((marker) => {
+        return marker.feature.properties.observations.id.length;
+      })
+      .reduce((previous, next) => previous + next);
+    const clusterSize = obsChildCount > 100 ? 'large' : obsChildCount > 10 ? 'medium' : 'small';
+    return L.divIcon({
+      html: `<div><span>${obsChildCount}</span></div>`,
+      className: `marker-cluster marker-cluster-${clusterSize}`,
+      iconSize: L.point(40, 40),
+    });
+  }
+
   ngOnChanges(change) {
     // on change delete the previous layer and load the new ones from the geojson data send by the API
     // here we don't use geojson component for performance reasons
@@ -254,72 +321,13 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
       // regenerate the featuregroup
       this.cluserOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
         ? (L as any).markerClusterGroup({
-            iconCreateFunction: (cluster) => {
-              const obsChildCount = cluster
-                .getAllChildMarkers()
-                .map((marker) => marker.countObs)
-                .reduce((previous, next) => previous + next);
-              const clusterSize =
-                obsChildCount > 100 ? 'large' : obsChildCount > 10 ? 'medium' : 'small';
-              return L.divIcon({
-                html: `<div><span>${obsChildCount}</span></div>`,
-                className: `marker-cluster marker-cluster-${clusterSize}`,
-                iconSize: L.point(40, 40),
-              });
-            },
+            iconCreateFunction: this.clusterCountOverrideFn,
           })
         : new L.FeatureGroup();
-
-      change.inputSyntheseData.currentValue.features.forEach((geojson) => {
-        let countObs = geojson.properties.observations.id.length;
-        // we don't create a generic function for setStyle and event on each layer to avoid
-        // a if on possible milion of point (with multipoint we must set the event on each point)
-        if (geojson.geometry.type == 'Point' || geojson.geometry.type == 'MultiPoint') {
-          if (geojson.geometry.type == 'Point') {
-            geojson.geometry.coordinates = [geojson.geometry.coordinates];
-          }
-          for (let i = 0; i < geojson.geometry.coordinates.length; i++) {
-            const latLng = L.GeoJSON.coordsToLatLng(geojson.geometry.coordinates[i]);
-            const marker = L.marker(latLng);
-            marker.bindTooltip(`${countObs}`, {
-              permanent: true,
-              direction: 'center',
-              offset: L.point({ x: 0, y: -25 }),
-              className: 'number-obs',
-            });
-            marker['countObs'] = countObs;
-            this.setIconEventAndAdd(marker, geojson.properties.observations.id);
-          }
-        } else if (geojson.geometry.type == 'Polygon' || geojson.geometry.type == 'MultiPolygon') {
-          const latLng = L.GeoJSON.coordsToLatLngs(
-            geojson.geometry.coordinates,
-            geojson.geometry.type === 'Polygon' ? 1 : 2
-          );
-          if (this.areasEnable) {
-            this.setAreasStyleEventAndAdd(
-              new L.Polygon(latLng),
-              geojson.properties.observations.id
-            );
-          } else {
-            this.setStyleEventAndAdd(
-              new L.Polygon(latLng).bindTooltip(`${countObs} observation(s)`),
-              geojson.properties.observations.id
-            );
-          }
-        } else if (
-          geojson.geometry.type == 'LineString' ||
-          geojson.geometry.type == 'MultiLineString'
-        ) {
-          const latLng = L.GeoJSON.coordsToLatLngs(
-            geojson.geometry.coordinates,
-            geojson.geometry.type === 'LineString' ? 0 : 1
-          );
-          this.setStyleEventAndAdd(
-            new L.Polyline(latLng).bindTooltip(`${countObs} observation(s)`),
-            geojson.properties.observations.id
-          );
-        }
+      const geojsonLayer = new L.GeoJSON(change.inputSyntheseData.currentValue, {
+        onEachFeature: this.onEachFeature.bind(this),
       });
+      this.cluserOrSimpleFeatureGroup.addLayer(geojsonLayer);
       this._ms.map.addLayer(this.cluserOrSimpleFeatureGroup);
       // zoom on extend after first search
       if (change.inputSyntheseData.previousValue !== undefined) {
@@ -337,11 +345,9 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
-  private setAreasStyleEventAndAdd(layer, ids) {
-    this.originAreasStyle['fillColor'] = this.getColor(ids.length);
+  private setAreasStyle(layer, nbObs) {
+    this.originAreasStyle['fillColor'] = this.getColor(nbObs);
     layer.setStyle(this.originAreasStyle);
-    this.eventOnEachFeature(ids, layer);
-    this.cluserOrSimpleFeatureGroup.addLayer(layer);
   }
 
   private getColor(obsNbr) {
@@ -359,79 +365,54 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
-  private setStyleEventAndAdd(layer, ids) {
-    this.setDefaultStyle(layer);
-    this.eventOnEachFeature(ids, layer);
-    this.cluserOrSimpleFeatureGroup.addLayer(layer);
-  }
-
-  private setIconEventAndAdd(layer, ids) {
-    layer.setIcon(this.defaultIcon);
-    for (let id of ids) {
-      this.mapListService.layerDict[id] = layer;
-    }
-    layer.on({
-      click: (e) => {
-        this.toggleStyle(layer);
-        this.mapListService.mapSelected.next(ids);
-        if (this.areasEnable) {
-          this.bindAreasPopup(layer, ids);
+  toggleStyleFromMap(feature, layer) {
+    // restore initial style
+    let originStyle = this.areasEnable ? this.originAreasStyle : this.originDefaultStyle;
+    let selectedStyle = this.areasEnable ? this.selectedAreasStyle : this.selectedDefaultStyle;
+    if (this.selectedLayers.length > 0) {
+      this.selectedLayers.forEach((layer) => {
+        if ('setStyle' in layer) {
+          (layer as L.GeoJSON).setStyle(originStyle);
+        } else {
+          (layer as L.Marker).setIcon(this.defaultIcon);
         }
-      },
-    });
-    this.cluserOrSimpleFeatureGroup.addLayer(layer);
-  }
-
-  private setDefaultStyle(layer) {
-    layer.setStyle(this.originDefaultStyle);
-  }
-
-  private eventOnEachFeature(ids, layer): void {
-    // event from the map
-    for (let id of ids) {
-      this.mapListService.layerDict[id] = layer;
+      });
     }
-    layer.on({
-      click: (e) => {
-        this.toggleStyle(layer);
-        this.mapListService.mapSelected.next(ids);
-        if (this.areasEnable) {
-          this.bindAreasPopup(layer, ids);
-        }
-      },
-    });
-  }
-
-  private toggleStyle(selectedLayer) {
-    // Reset style of previous selected layer
-    if (
-      // if not a marker
-      this.mapListService.selectedLayer !== undefined &&
-      this.mapListService.selectedLayer._latlngs
-    ) {
-      let originStyle = this.areasEnable ? this.originAreasStyle : this.originDefaultStyle;
-      originStyle['fillColor'] = this.mapListService.selectedLayer.options.fillColor;
-      this.mapListService.selectedLayer.setStyle(originStyle);
-    } else if (
-      // if marker
-      this.mapListService.selectedLayer !== undefined &&
-      this.mapListService.selectedLayer._latlng
-    ) {
-      this.mapListService.selectedLayer.setIcon(this.defaultIcon);
-    }
-
-    // Apply new selected layer
-    this.mapListService.selectedLayer = selectedLayer;
-
-    // Set selected style on new selected layer
-    if (this.mapListService.selectedLayer._latlngs) {
-      // if not a marker
-      let selectedStyle = this.areasEnable ? this.selectedAreasStyle : this.selectedDefaultStyle;
-      this.mapListService.selectedLayer.setStyle(selectedStyle);
+    // set selected style
+    if (this.areasEnable || !(feature.geometry.type == 'Point')) {
+      layer.setStyle(selectedStyle);
     } else {
-      // if marker
-      this.mapListService.selectedLayer.setIcon(this.selectedIcon);
+      layer.setIcon(this.selectedIcon);
     }
+
+    this.selectedLayers = [layer];
+  }
+
+  private toggleStyleFromList(currentSelectedLayers) {
+    // restore inital style
+    let originStyle = this.areasEnable ? this.originAreasStyle : this.originDefaultStyle;
+    if (this.selectedLayers.length > 0) {
+      // originStyle['fillColor'] = this.mapListService.selectedLayer.options.fillColor;
+      this.selectedLayers.forEach((layer) => {
+        if ('setStyle' in layer) {
+          (layer as L.GeoJSON).setStyle(originStyle);
+        } else {
+          (layer as L.Marker).setIcon(this.defaultIcon);
+        }
+      });
+    }
+    // Apply new selected layer
+    this.selectedLayers = currentSelectedLayers;
+    console.log(currentSelectedLayers);
+
+    let selectedStyle = this.areasEnable ? this.selectedAreasStyle : this.selectedDefaultStyle;
+    this.selectedLayers.forEach((layer) => {
+      if ('setStyle' in layer) {
+        (layer as any).setStyle(selectedStyle);
+      } else {
+        (layer as L.Marker).setIcon(this.selectedIcon);
+      }
+    });
   }
 
   private bindAreasPopup(layer, ids) {

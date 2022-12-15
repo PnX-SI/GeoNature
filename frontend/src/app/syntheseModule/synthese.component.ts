@@ -88,9 +88,13 @@ export class SyntheseComponent implements OnInit {
    */
   formatDataForTable(geojson) {
     this._mapListService.tableData = [];
+    const idSynthese = new Set();
     geojson.features.forEach((feature) => {
       feature.properties.observations.forEach((obs) => {
-        this._mapListService.tableData.push(obs);
+        if (!idSynthese.has(obs.id)) {
+          this._mapListService.tableData.push(obs);
+          idSynthese.add(obs.id);
+        }
       });
     });
   }
