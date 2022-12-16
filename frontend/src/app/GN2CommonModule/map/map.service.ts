@@ -9,6 +9,7 @@ import 'leaflet.markercluster';
 import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../service/common.service';
 import { Feature } from 'geojson';
+import { CustomMarkerIcon } from '@geonature_common/map/marker/marker.component';
 @Injectable()
 export class MapService {
   public map: Map;
@@ -146,12 +147,7 @@ export class MapService {
 
   createMarker(x, y, isDraggable) {
     return L.marker([y, x], {
-      icon: L.icon({
-        iconUrl: 'assets/marker-icon.png',
-        shadowUrl: 'assets/marker-shadow.png',
-        iconSize: [24, 36],
-        iconAnchor: [12, 36],
-      }),
+      icon: new CustomMarkerIcon(),
       draggable: isDraggable,
     });
   }
