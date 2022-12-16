@@ -6,6 +6,10 @@ export const leafletDrawOption: any = {
     circlemarker: false,
     rectangle: false,
     marker: false,
+    // for displaying marker in prod set :
+    // marker: {
+    //   icon: new CustomMarkerIcon(),
+    // },
     polygon: {
       allowIntersection: false, // Restricts shapes to simple polygons
       drawError: {

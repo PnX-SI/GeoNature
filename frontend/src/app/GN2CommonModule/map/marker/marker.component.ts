@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { Map, Marker } from 'leaflet';
+import { Map, Marker, Icon } from 'leaflet';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { MapService } from '../map.service';
@@ -7,6 +7,23 @@ import { AppConfig } from '@geonature_config/app.config';
 import * as L from 'leaflet';
 import { CommonService } from '../../service/common.service';
 import { GeoJson } from '@tmcw/togeojson';
+
+const iconRetinaUrl = 'assets/marker-icon-2x.png';
+const iconUrl = 'assets/marker-icon.png';
+const shadowUrl = 'assets/marker-shadow.png';
+
+export const CustomMarkerIcon = Icon.extend({
+  options: {
+    iconRetinaUrl: iconRetinaUrl,
+    iconUrl: iconUrl,
+    shadowUrl: shadowUrl,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    tooltipAnchor: [16, -28],
+    shadowSize: [41, 41],
+  },
+});
 
 /**
  * Ce composant permet d'afficher un marker au clic sur la carte ainsi qu'un controleur permettant d'afficher/désafficher le marker.
