@@ -63,18 +63,15 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
       );
     }
 
-    // traitement de values pour le type radio
-    // TODO pour select ?? multiselect ??
+    // traitement de values pour le type radio, select et multiselect
     // si on a une liste de valeur
     // - on la transforme en liste de dictionnaire [...{label, value}...]
-    if (['radio'].includes(formDefComp.type)) {
+    if (['radio', 'multiselect', 'select', 'checkbox'].includes(this.formDefComp.type_widget)) {
       this.formDefComp.values = this.formDefComp.values.map((val) => {
         let isValObject = typeof val === 'object' && !Array.isArray(val) && val !== null;
         return isValObject ? val : { label: val, value: val };
       });
     }
-
-    this.formDefComp = formDefComp;
 
     if (this.form !== undefined) {
       // on met à jour les contraintes
