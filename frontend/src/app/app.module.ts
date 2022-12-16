@@ -63,6 +63,7 @@ import { NotificationDataService } from './components/notification/notification-
 // Config
 import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
 import { Router } from '@angular/router';
+import { UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
 
 export function getModulesAndInitRouting(injector) {
   return () => {
@@ -124,6 +125,7 @@ export function getModulesAndInitRouting(injector) {
     CookieService,
     HttpClient,
     ModuleGuardService,
+    UserPublicGuard,
     SideNavService,
     CruvedStoreService,
     UserDataService,
