@@ -58,7 +58,7 @@ def install_frontend_dependencies(module_frontend_path):
     with (FRONTEND_DIR / ".nvmrc").open("r") as f:
         node_version = f.read().strip()
     subprocess.run(
-        ["/bin/bash", "-i", "-c", f"nvm exec {node_version} npm ci --omit=dev"],
+        ["/bin/bash", "-i", "-c", f"nvm exec {node_version} npm ci --omit=dev --omit=peer"],
         check=True,
         cwd=module_frontend_path,
     )
