@@ -89,17 +89,17 @@ Chaque fichier de migration est caractérisé par :
 * un ancêtre : Lorsqu’un fichier de migration représente l’évolution d’un état antérieur de la base de données, l’ancêtre indique dans quelle version la base de données doit se trouver avant d’appliquer le-dis fichier de migration.
 * des dépendances : Il est possible d’indiquer qu’une migration nécessite qu’une ou plusieurs autres migrations aient été préalablement appliquées. Par exemple, ceci permet d’indiquer que le schéma de GeoNature nécessite les schémas ``taxonomie`` et ``utilisateurs``.
 
-Les commandes Alembic sont disponible grâce à la sous-commande ``db`` de la commande ``geonature`` :
+Les commandes Alembic sont disponibles grâce à la sous-commande ``db`` de la commande ``geonature`` :
 
 .. code-block::
 
     $ geonature db --help
 
-Les deux sous-commandes ``status`` et ``autoupgrade`` sont spécifique à GeoNature afin d’aider à l’utilisation d’Alembic.
+Les deux sous-commandes ``status`` et ``autoupgrade`` sont spécifiques à GeoNature afin d’aider à l’utilisation d’Alembic.
 
 La commande ``status`` permet de visualiser les branches et l’ensemble de leurs révisions.
-Pour chaque révision est indiqué si celle-ci est appliqué à la base de données.
-Si une branche a au moins sa première révision d’appliquée, alors un petit symbole indique si cette branche est à jour, c’est-à-dire si toutes les révisions de la branche ont été appliquées (``✓``) ou si la branche est en retard, c’est-à-dire que celle-ci contient des révisions qui ne sont pas encore appliqué à la base de données (``×``).
+Pour chaque révision est indiqué si celle-ci est appliquée à la base de données.
+Si une branche a au moins sa première révision d’appliquée, alors un petit symbole indique si cette branche est à jour, c’est-à-dire si toutes les révisions de la branche ont été appliquées (``✓``) ou si la branche est en retard, c’est-à-dire que celle-ci contient des révisions qui ne sont pas encore appliquées à la base de données (``×``).
 
 .. code-block::
 
@@ -209,8 +209,8 @@ Si une branche a au moins sa première révision d’appliquée, alors un petit 
       [x] ─ 72f227e37bdf utilisateurs sample data
 
 La commande ``autoupgrade`` permet de mettre automatiquement à jour toutes les branches dont au moins une révision est appliquée lorsque celles-ci possèdent une ou plusieurs révisions non appliquées.
-Cette commande est appelé par le script ``migration.sh`` lors d’une mise à jour de la base de données.
-Elle accepte également les paramètres ``-x`` qui sont alors fournis à la commande ``upgrade`` lorsque appelé sur chaque branche en retard.
+Cette commande est appelée par le script ``migration.sh`` lors d’une mise à jour de la base de données.
+Elle accepte également les paramètres ``-x`` qui sont alors fournis à la commande ``upgrade`` lorsque appelée sur chaque branche en retard.
 
 La commande ``heads`` permet de lister l’ensemble des branches disponibles, ainsi que la dernière révision disponible pour chaque branche :
 
@@ -243,7 +243,7 @@ La commande ``heads`` permet de lister l’ensemble des branches disponibles, ai
     46e91e738845 (habitats_inpn_data) (effective head)
     62e63cd6135d (habitats) (effective head)
 
-La commande ``history`` permet de lister l’ensemble de fichier de révisions. Il est également possible de lister les révisions devant être appliqué pour passer d’un état à un autre. Par exemple, voici la liste des révisions à appliquer pour passer d’une base de données vierge (``base``) à une base avec la branche ``nomenclatures_inpn_data`` à jour (``head``) :
+La commande ``history`` permet de lister l’ensemble de fichier de révisions. Il est également possible de lister les révisions devant être appliquées pour passer d’un état à un autre. Par exemple, voici la liste des révisions à appliquer pour passer d’une base de données vierge (``base``) à une base avec la branche ``nomenclatures_inpn_data`` à jour (``head``) :
 
 .. code-block::
 
@@ -259,7 +259,7 @@ Si vous avez déjà une base de données existante correspondant à une installa
 
     $ geonature db stamp f06cc80cc8ba
 
-Il est possible que votre base de données contiennent quelques données supplémentaires (référentiel géographique des communes, …), qu’il faut donc indiquer à Alembic aussi.
+Il est possible que votre base de données contienne quelques données supplémentaires (référentiel géographique des communes, …), qu’il faut donc indiquer à Alembic aussi.
 Reportez-vous aux notes de versions de la release 2.8.0 de GeoNature afin de consulter la liste des révisions à éventuellement « `stamper` ».
 
 Vous pouvez demander à Alembic dans quel état se trouve votre base de données avec la commande ``current`` :
@@ -281,10 +281,10 @@ Vous pouvez demander à Alembic dans quel état se trouve votre base de données
     f61f95136ec3 (effective head)
     96a713739fdd (effective head)
 
-La liste obtenue contient, pour chaque branche, la dernière migration appliqué.
-Notons toutefois que Alembic ne stoque pas l’ensemble de cette liste dans la table ``public.alembic_revision``, mais se restreint uniquement aux migrations dont l’application ne peut être déduit des indications de dépendances.
+La liste obtenue contient, pour chaque branche, la dernière migration appliquée.
+Notons toutefois que Alembic ne stocke pas l’ensemble de cette liste dans la table ``public.alembic_revision``, mais se restreint uniquement aux migrations dont l’application ne peut être déduit des indications de dépendances.
 
-Il est possible que d’afficher les informations liées à une révision avec la commande ``show`` :
+Il est possible de n’afficher que les informations liées à une révision avec la commande ``show`` :
 
 .. code-block::
 
@@ -313,9 +313,9 @@ Il est possible de monter des branches optionnelles pour, par exemple, bénéfic
 
     $ geonature db upgrade ref_geo_inpn_grids_10@head -x data-directory=./tmp_geo
 
-L’ensemble des branches disponible est décrit dans la sous-section ci-après.
+L’ensemble des branches disponibles est décrit dans la sous-section ci-après.
 
-L’argument ``-x`` permet de fournir des variables à usage des fichiers de migrations. Dans le cas des migrations de données de zones géographiques, celles-ci supporte la variable ``data-directory`` permettant de spécifier où doivent être cherché et éventuellement téléchargé les données géographiques. Si l’argument n’est pas spécifié, un dossier temporaire, supprimé à la fin de la procédure, sera utilisé.
+L’argument ``-x`` permet de fournir des variables à usage des fichiers de migrations. Dans le cas des migrations de données de zones géographiques, celles-ci supporte la variable ``data-directory`` permettant de spécifier où doivent être cherchées et éventuellement téléchargées les données géographiques. Si l’argument n’est pas spécifié, un dossier temporaire, supprimé à la fin de la procédure, sera utilisé.
 
 Pour supprimer les mailles 10×10 de son référentiel géographique, on utilisera :
 
@@ -323,9 +323,9 @@ Pour supprimer les mailles 10×10 de son référentiel géographique, on utilise
 
     $ geonature db downgrade ref_geo_inpn_grids_10@base
 
-Dans le cas d’une branche contenant plusieurs migrations, on pourra appliquer ou dé-appliquer chaque migration individuellement avec ``upgrade branch@+1`` ou ``downgrade branch@-1``. Il est également possible de référencer directement un numéro de migration.
+Dans le cas d’une branche contenant plusieurs migrations, on pourra appliquer ou désappliquer chaque migration individuellement avec ``upgrade branch@+1`` ou ``downgrade branch@-1``. Il est également possible de référencer directement un numéro de migration.
 
-Si l’on souhaite appliquer une migration manuellement, ou si l’on souhaite la modifier, il est possible de passer l’argument ``--sql`` aux commandes ``upgrade`` et ``downgrade`` afin de récupérer le code SQL de la migration. Cela ne fonctionne toutefois pas avec certaines migrations telles que les migrations de données géographique en raison d’import SQL nécessitant de manipuler directement le curseur SQLAlchemy.
+Si l’on souhaite appliquer une migration manuellement, ou si l’on souhaite la modifier, il est possible de passer l’argument ``--sql`` aux commandes ``upgrade`` et ``downgrade`` afin de récupérer le code SQL de la migration. Cela ne fonctionne toutefois pas avec certaines migrations telles que les migrations de données géographiques, en raison d’import SQL nécessitant de manipuler directement le curseur SQLAlchemy.
 
 Pour créer un nouveau fichier de migration afin d’y placer ses évolutions de la base de données, on utilisera la commande suivante :
 
@@ -335,49 +335,49 @@ Pour créer un nouveau fichier de migration afin d’y placer ses évolutions de
       Generating […]/backend/geonature/migrations/versions/31250092bce3_add_table_gn_commons_t_foo.py ...  done
 
 La `documentation d’Alembic <https://alembic.sqlalchemy.org/en/latest/ops.html>`_ liste les opérations prises en charge.
-Certaines opérations complexes telles que la création de trigger ne sont pas prévu, mais il reste toujours possible d’executer du SQL directement avec l’opérateur ``op.execute``.
+Certaines opérations complexes telles que la création de trigger ne sont pas prévues, mais il reste toujours possible d’exécuter du SQL directement avec l’opérateur ``op.execute``.
 
 
 Description des branches
 ````````````````````````
 
-Cette section liste les branches Alembic disponibles et leur impacte sur la base de données.
+Cette section liste les branches Alembic disponibles et leur impact sur la base de données.
 
-* ``sql_utils`` : Fournie quelques fonctions SQl utilitaires dans le schéma ``public``. Fournie par Utils-Flask-SQLAlchemy.
-* ``geonature`` : Crée les schémas propres à GeoNature (``gn_commons``, ``gn_synthese``, …).
-* ``geonature-samples`` : Insert quelques données d’exemple en base.
-* ``taxonomie`` : Crée le schéma ``taxonomie``. Fournie par TaxHub.
-* ``nomenclatures`` : Crée le schéma ``ref_nomenclatures``. Fournie par Nomenclature-api-module.
-* ``nomenclatures_inpn_data`` : Insert le référentiel des nomenclatures de l’INPN en base. Fournie par Nomenclature-api-module.
+* ``sql_utils`` : Fournit quelques fonctions SQl utilitaires dans le schéma ``public``. Fourni par Utils-Flask-SQLAlchemy.
+* ``geonature`` : Créé les schémas propres à GeoNature (``gn_commons``, ``gn_synthese``, …).
+* ``geonature-samples`` : Insère quelques données d’exemple en base.
+* ``taxonomie`` : Créé le schéma ``taxonomie``. Fournie par TaxHub.
+* ``nomenclatures`` : Crée le schéma ``ref_nomenclatures``. Fourni par Nomenclature-api-module.
+* ``nomenclatures_inpn_data`` : Insère le référentiel des nomenclatures de l’INPN en base. Fourni par Nomenclature-api-module.
 * ``nomenclatures_taxonomie`` : Complète le schéma ``ref_nomenclatures`` pour accueillir les nomenclatures liées à la taxonomie.
-* ``nomenclatures_taxonomie_inpn_data`` : Insert les nomenclatures liées à la taxonomie en base.
+* ``nomenclatures_taxonomie_inpn_data`` : Insère les nomenclatures liées à la taxonomie en base.
 * ``utilisateurs`` : Installe le schéma ``utilisateurs``. Fournie par UsersHub-authentification-module.
-* ``utilisateurs-samples`` : Insert des données d’exemples (utilisateurs, groupes) dans le schéma ``utilisateurs``. Fournie par UsersHub-authentification-module.
-* ``habitats`` : Crée le schéma ``ref_habitats``. Fournie par Habref-api-module.
-* ``habitats_inpn_data`` : Insert le référentiel HABREF de l’INPN en base. Fournie par Habref-api-module.
-* ``ref_geo`` : Crée le schéma ``ref_geo``.
+* ``utilisateurs-samples`` : Insère des données d’exemples (utilisateurs, groupes) dans le schéma ``utilisateurs``. Fourni par UsersHub-authentification-module.
+* ``habitats`` : Créé le schéma ``ref_habitats``. Fourni par Habref-api-module.
+* ``habitats_inpn_data`` : Insère le référentiel HABREF de l’INPN en base. Fourni par Habref-api-module.
+* ``ref_geo`` : Créé le schéma ``ref_geo``. Fourni par RefGeo.
 
 Si vous utilisez TaxHub, vous pouvez être intéressé par les branches suivantes :
 
-* ``taxhub`` : Déclare l’application TaxHub dans la liste des applications. Fournie par TaxHub.
-* ``taxhub-admin`` : Associe le groupe « Grp_admin » issue des données d’exemple à l’application UsersHub et au profil « Administrateur » permettant aux utilisateurs du groupe de se connecter à TaxHub. Fournie par TaxHub.
+* ``taxhub`` : Déclare l’application TaxHub dans la liste des applications. Fourni par TaxHub.
+* ``taxhub-admin`` : Associe le groupe « Grp_admin » issue des données d’exemple à l’application UsersHub et au profil « Administrateur » permettant aux utilisateurs du groupe de se connecter à TaxHub. Fourni par TaxHub.
 
 Si vous utilisez UsersHub, vous pouvez être intéressé par les branches suivantes :
 
-* ``usershub`` : Déclare l’application UsersHub dans la liste des applications. Fournie par UsersHub.
-* ``usershub-samples`` : Associe le groupe « Grp_admin » issue des données d’exemple à l’application UsersHub et au profil « Administrateur » permettant aux utilisateurs du groupe de se connecter à UsersHub. Fournie par UsersHub.
+* ``usershub`` : Déclare l’application UsersHub dans la liste des applications. Fourni par UsersHub.
+* ``usershub-samples`` : Associe le groupe « Grp_admin » issue des données d’exemple à l’application UsersHub et au profil « Administrateur » permettant aux utilisateurs du groupe de se connecter à UsersHub. Fourni par UsersHub.
 
 Les branches ci-après sont totalement optionnelles :
 
-* ``ref_geo_inpn_grids_1`` : Insert les mailles 1×1 km (INPN) dans le référentiel géographique (type de zone ``M1``).
-* ``ref_geo_inpn_grids_5`` : Insert les mailles 5×5 km (INPN) dans le référentiel géographique (type de zone ``M5``).
-* ``ref_geo_inpn_grids_10`` : Insert les mailles 10×10 km (INPN) dans le référentiel géographique (type de zone ``M10``).
-* ``ref_geo_fr_municipalities`` : Insert les municipalités française (IGN février 2020) dans le référentiel géographique (type de zone ``COM``).
-* ``ref_geo_fr_departments`` : Insert les départements français (IGN février 2020) dans le référentiel géographique (type de zone ``DEP``).
-* ``ign_bd_alti`` : Insert le modèle numérique de terrain (MNT) de l’IGN en base.
+* ``ref_geo_inpn_grids_1`` : Insère les mailles 1×1 km (INPN) dans le référentiel géographique (type de zone ``M1``).
+* ``ref_geo_inpn_grids_5`` : Insère les mailles 5×5 km (INPN) dans le référentiel géographique (type de zone ``M5``).
+* ``ref_geo_inpn_grids_10`` : Insère les mailles 10×10 km (INPN) dans le référentiel géographique (type de zone ``M10``).
+* ``ref_geo_fr_municipalities`` : Insère les communes françaises (IGN février 2020) dans le référentiel géographique (type de zone ``COM``).
+* ``ref_geo_fr_departments`` : Insère les départements français (IGN février 2020) dans le référentiel géographique (type de zone ``DEP``).
+* ``ign_bd_alti`` : Insère le modèle numérique de terrain (MNT) de l’IGN en base.
 * ``ign_bd_alti_vector`` : Vectorise le MNT.
 
-Note : pour plusieurs fichiers de révisions, notamment lié au référentiel géographique ou nécessitant des données INPN, il est nécessaire de télécharger des ressources externes. Il est possible d’enregistrer les données téléchargé (et ne pas les re-télécharger si elles sont déjà présentes) avec ``-x data-directory=…`` :
+Note : pour plusieurs fichiers de révision, notamment liés au référentiel géographique ou nécessitant des données INPN, il est nécessaire de télécharger des ressources externes. Il est possible d’enregistrer les données téléchargées (et ne pas les re-télécharger si elles sont déjà présentes) avec ``-x data-directory=…`` :
 
 .. code-block::
 
@@ -2186,7 +2186,8 @@ Modifiez la variable ``EXCLUDED_COLUMNS``
 
 **5.** Configurer les filtres des statuts de protection et des listes rouges
 
-Il existe deux paramètres qui permettent de configurer les statuts de protection et les listes rouges à afficher dans la fenêtre acancée du module Synthese.
+Il existe deux paramètres qui permettent de configurer les statuts de protection et les listes rouges à afficher dans la fenêtre avancée du module Synthese.
+
 Il s'agit de :
 
 * ``RED_LISTS_FILTERS`` : pour configurer les listes rouges. Les listes déroulantes configurées affichent les codes et intitulés des valeurs des listes (*CR - En danger critique*, *DD - Données insuffisantes*, ...).
@@ -2237,7 +2238,7 @@ Exemple de requête de mise à jour de la table ``taxonomie.bdc_statut_texte`` :
     146311, 88261, 300212, 146310, 31346, 249369, 138064
   ) ;
 
-
+Il est aussi possible de désactiver les textes en fonction du territoire auquel elles s'appliquent (par exemple en utilisant le champs ``cd_sig`` de la table ``taxonomie.bdc_statut_text``.
 
 D'autres élements sont paramètrables dans le module synthese. La liste complète est disponible dans le fichier ``config/geonature_config.toml`` rubrique ``SYNTHESE``.
 
