@@ -1624,6 +1624,9 @@ Il s'agit maintenant de gérer ses permissions dans GeoNature même.
    - Editer le CRUVED pour chacun des modules de l'instance. Passer à 0 tous les droits et tous les modules devant être supprimés. Laisser '3' pour les modules d'intérêt. 
 
 
+.. include:: sensitivity.rst
+
+
 Module OCCTAX
 -------------
 
