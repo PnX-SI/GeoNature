@@ -142,6 +142,7 @@ then
             --zipfile RefSensibiliteV15_20220331.zip \
             --csvfile RefSensibilite_V15_31032022/RefSensibilite_15.csv  \
             --encoding=iso-8859-15 |& tee -a "${LOG_FILE}"
+    geonature sensitivity refresh-rules-cache |& tee -a "${LOG_FILE}"
 fi
 
 if  [ "$install_default_dem" = true ];
