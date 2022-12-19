@@ -15,7 +15,7 @@ GeoNature repose sur les composants suivants :
 Deux méthodes d’installation existent :
 
 - :ref:`installation-all` : Installation automatisée de GeoNature, TaxHub et UsersHub.
-- :ref:`installation-standalone` : TaxHub et UsersHub ne sont pas installés (mais leur schémas sont tous de même créés dans la base de données).
+- :ref:`installation-standalone` : TaxHub et UsersHub ne sont pas installés (mais leurs schémas sont tous de même créés dans la base de données).
 
 
 Prérequis
@@ -37,8 +37,6 @@ Prérequis
   - https://registry.npmjs.org
   - https://www.npmjs.com
   - https://raw.githubusercontent.com/
-  - https://inpn.mnhn.fr/mtd
-  - https://preprod-inpn.mnhn.fr/mtd
   - https://wxs.ign.fr/
 
 
@@ -174,7 +172,7 @@ Installation avec la sous-commande ``install-gn-module`` :
     source <dossier GeoNature>/backend/venv/bin/activate
     geonature install-gn-module <dossier du module> <code du module>
 
-Exemple pour le module d’import :
+Exemple pour le module Import :
 
 .. code-block:: bash
 
@@ -213,7 +211,7 @@ Installer le module avec ``pip`` en mode éditable après avoir activé le venv 
     cd <dossier GeoNature>/frontend/external_modules/
     ln -s <dossier du module>/frontend <code du module en minuscule>
 
-Exemple pour le module d’import :
+Exemple pour le module Import :
 
 .. code-block:: bash
 
@@ -256,7 +254,7 @@ Afin de modifier les paramètres par défaut du module, vous pouvez le copier :
 
     cp ~/gn_module_import/config/conf_gn_module.toml.example ~/GeoNature/config/import_config.toml
 
-* Dans le dossier ``config`` du module en le nommant ``conf_gn_module.toml``. Exemple pour le module d’import :
+* Dans le dossier ``config`` du module en le nommant ``conf_gn_module.toml``. Exemple pour le module Import :
 
 .. code-block:: bash
 
@@ -291,11 +289,11 @@ Mise à jour de l'application
 ****************************
 
 .. warning::
-    Avant chaque mise à jour de GeoNature, il est important de sauvegarder l'application et sa base de données, ou de faire un snapshot du serveur pour pouvoir revenir à son état antérieure avant mise à jour en cas de problème.
+    Avant chaque mise à jour de GeoNature, il est important de sauvegarder l'application et sa base de données, ou de faire un snapshot du serveur pour pouvoir revenir à son état antérieure avant mise à jour, en cas de problème.
 
 .. warning::
     Vérifiez préalablement la compatibilité des modules que vous utilisez avant de mettre GeoNature à jour.
-    S’il est nécessaire de les mettres à jour, arrêtez vous après le remplacement du dossier par le nouveau code source
+    S’il est nécessaire de les mettre à jour, arrêtez vous après le remplacement du dossier par le nouveau code source
     (et la récupération éventuelle de la configuration) ; le script de migration de GeoNature s’occupera automatiquement
     d’installer la nouvelle version du module.
 
