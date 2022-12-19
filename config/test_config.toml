@@ -52,3 +52,6 @@ REF_LAYERS=[
         params= {limit= 2000}
     },
 ]
+
+[SYNTHESE]
+AREA_AGGREGATION_TYPE = "M5"
