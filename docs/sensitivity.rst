@@ -8,14 +8,14 @@ Les régles de sensibilité définies par défaut sont issues des règles du SIN
 Elles dépendent de l'espèce et de l'observation. C'est-à-dire que pour une espèce donnée,
 plusieurs niveaux de sensibilité sont possibles selon l'observation.
 
-Critère de sensibilité
-``````````````````````
+Critères de sensibilité
+```````````````````````
 
 * Taxon
 * Emplacement
 * Ancienneté
 * Période de l’année
-* Statut biologoque
+* Statut biologique
 * Comportement de l’occurence
 
 Certaines règles de sensibilité peuvent porter uniquement sur l’espèce,
@@ -37,7 +37,7 @@ Pour plus d'informations
 
 Vous pouvez consulter :
 
-- La page du site du `MNHN traitant de la sensibilité <https://inpn.mnhn.fr/programme/donnees-observations-especes/references/sensibilite>`_.
+- La page du site du `SINP traitant de la sensibilité <https://inpn.mnhn.fr/programme/donnees-observations-especes/references/sensibilite>`_.
 - Le rapport de 2020 sur `La sensibilité des données du système  d’information  de l’inventaire  du  patrimoine naturel : méthodes, pratiques et usages (J. Ichter et S. Robert) <https://inpn.mnhn.fr/docs-web/docs/download/355449>`_.
 
 
@@ -52,7 +52,7 @@ Intégration dans GeoNature
 Stockage des règles en base
 ````````````````````````````
 
-Les règles de sensibilités sont stockées dans le schéma ``gn_sensitivity``
+Les règles de sensibilité sont stockées dans le schéma ``gn_sensitivity``
 qui contient 3 tables :
 
 * ``t_sensitivity_rules`` qui relie notamment une espèce à un niveau de
@@ -71,9 +71,10 @@ de sensibilité est appliqué peu importe la localisation de l’observation.
 que l’un des critères ou l’une des zones correspond à l’observation.
 
 Certaines règles sont définies non pas pour une espèce donnée mais pour un
-rang supérieur. Ces règles sont artificiellement dupliquées pour chaque espèces
+rang supérieur. Ces règles sont artificiellement dupliquées pour chaques espèces
 sous-jacentes dans la vue matérialisée ``t_sensitivity_rules_cd_ref``.
-Il est nécessaire de la rafraichir lors de l’évolution du référentiel.
+Il est nécessaire de la rafraichir lors de l’évolution du référentiel
+de sensibilité.
 
 Attribution aux observations de la synthèse
 ```````````````````````````````````````````
@@ -92,16 +93,16 @@ comportement de l’occurence.
 Gestion du référentiel
 ``````````````````````
 
-GeoNature fourni la commande ``geonature sensitivity`` pour gérer son référentiel
+GeoNature fournit la commande ``geonature sensitivity`` pour gérer son référentiel
 de sensibilité :
 
 * ``geonature sensitivity info`` : statistiques sur les règles présentes
 * ``geonature sensitivity add-referential`` : import de nouvelles règles
 * ``geonature sensitivity remove-referential`` : suppression de règles
 * ``geonature sensitivity refresh-rules-cache`` : mise à jour de la vue matérialisées des règles
-* ``geonature sensitivity update-synthèse`` : recalcule de la sensibilité des observations de la synthèse
+* ``geonature sensitivity update-synthese`` : recalcul de la sensibilité des observations de la synthèse
 
-Le référentiel de sensibilité fournie par l’INPN est normalement intégré
+Le référentiel de sensibilité fourni par le SINP est normalement intégré
 à GeoNature lors de son installation. Sinon, il peut être manuellement
 intégré avec l’une ou l’autre des commandes suivantes :
 
@@ -127,8 +128,8 @@ TaxRef v14 :
             --csvfile RefSensibilite_V14_31032022/RefSensibilite_14.csv  \
             --encoding=iso-8859-15
 
-Le jeux de règles est fourni pour les versions 14 et 15 de TaxRef, certaines
-espèces sensibles pouvant voir leur cd_nom changer d’une version à l’autre.
+Le jeu de règles est fourni pour les versions 14 et 15 de TaxRef, certaines
+espèces sensibles pouvant voir leur cd_nom changé d’une version à l’autre.
 
 Personnalisation
 ````````````````
@@ -155,13 +156,13 @@ une espèce donnée (peu importe l'observation) est abordée ici.
        REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref
 
 #. Il est maintenant nécessaire de mettre à jour la sensibilité de vos
-   observations présentent dans la synthèse. Pour cela, lancez la commande suivante :
+   observations présentes dans la synthèse. Pour cela, lancez la commande suivante :
 
    .. code-block:: bash
 
       geonature sensitivity update-synthese
 
-Normalement, les valeurs dans la colonne ``id_nomenclature_sensitivity``
-de la table ``gn_synthese.synthese`` ont
+Les valeurs dans la colonne ``id_nomenclature_sensitivity`` des observations sensibles
+de la table ``gn_synthese.synthese`` auront alors 
 changé. Vous pouvez le vérifier en navigant dans le module Synthèse
 puis dans les détails d'une observation de votre/vos espèce(s).
