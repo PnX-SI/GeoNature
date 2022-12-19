@@ -232,7 +232,7 @@ Exemple pour le module d’import :
 .. code-block:: bash
 
     source <dossier GeoNature>/backend/venv/bin/activate
-    geonature upgrade-modules <code du module>
+    geonature upgrade-modules-db <code du module>
 
 .. _module-config:
 

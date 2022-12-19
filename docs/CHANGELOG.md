@@ -29,7 +29,7 @@ CHANGELOG
         `frontend` des modules considérés. Ces liens sont créés par la
         commande `install-gn-module`. Le processus de migration
         convertie automatiquement vos liens symboliques existants.
-    -   Ajout de la commande `upgrade-modules` permettant d'insérer le
+    -   Ajout de la commande `upgrade-modules-db` permettant d'insérer le
         module dans la table `t_modules` et de monter sa branche Alembic
         afin de créer son schéma de base de données. Il n'est pas
         nécessaire de lancer cette commande manuellement pour les

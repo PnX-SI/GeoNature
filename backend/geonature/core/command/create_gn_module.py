@@ -72,7 +72,7 @@ def install_gn_module(module_path, module_code, build, upgrade_db):
 
 @main.command()
 @click.argument("module_codes", metavar="[MODULE_CODE]...", nargs=-1)
-def upgrade_modules(module_codes):
+def upgrade_modules_db(module_codes):
     for module_code_entry in iter_entry_points("gn_module", "code"):
         module_code = module_code_entry.resolve()
         if module_codes and module_code not in module_codes:
