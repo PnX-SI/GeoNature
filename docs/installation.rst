@@ -162,6 +162,7 @@ Téléchargement
 
 Téléchargez le module depuis son dépôt Github puis dézippez-le dans le repertoire utilisateur, au même niveau que le dossier de GeoNature.
 
+.. _install-gn-module-auto:
 
 Installation automatique
 ------------------------
@@ -180,18 +181,25 @@ Exemple pour le module d’import :
     source ~/GeoNature/backend/venv/bin/activate
     geonature install-gn-module ~/gn_module_import/ IMPORT
 
+Puis relancer GeoNature :
+
+.. code-block:: bash
+
+    sudo systemctl restart geonature
+
 
 Installation manuelle
 ---------------------
 
 **Installation du backend**
 
-Installer le module avec ``pip`` en mode éditable après avoir activé le venv de GeoNature :
+Installer le module avec ``pip`` en mode éditable après avoir activé le venv de GeoNature, puis relancer GeoNature :
 
 .. code-block:: bash
 
     source <dossier GeoNature>/backend/venv/bin/activate
     pip install --editable <dossier du module>
+    sudo systemctl restart geonature
 
 .. _module_install_frontend:
 
@@ -270,11 +278,26 @@ Après chaque modification du module, vous devez :
     source <dossier GeoNature>/backend/venv/bin/activate
     geonature update-configuration
 
+Mise à jour du module
+---------------------
+
+* Déplacer le code de l’ancienne version du module : ``mv gn_module_xxx gn_module_xxx_old``
+* Télécharger et désarchiver la nouvelle version du module, et renommer son dossier afin qu’il porte le même nom qu’avant (*e.g.* ``gn_module_xxx``)
+* (Optionnel) Si le fichier de configuration du module est placé avec celui-ci, le récupérer : ``cp gn_module_xxx_old/config/conf_gn_module.toml gn_module_xxx/config/``
+* Relancer l’:ref:`installation du module<install-gn-module-auto>` : ``geonature install-gn-module gn_module_xxx XXX && sudo systemctl reload geonature``
+
 
 Mise à jour de l'application
 ****************************
 
-Attention, avant chaque mise à jour de GeoNature, il est important de sauvegarder l'application et sa base de données, ou de faire un snapshot du serveur pour pouvoir revenir à son état antérieure avant mise à jour en cas de problème.
+.. warning::
+    Avant chaque mise à jour de GeoNature, il est important de sauvegarder l'application et sa base de données, ou de faire un snapshot du serveur pour pouvoir revenir à son état antérieure avant mise à jour en cas de problème.
+
+.. warning::
+    Vérifiez préalablement la compatibilité des modules que vous utilisez avant de mettre GeoNature à jour.
+    S’il est nécessaire de les mettres à jour, arrêtez vous après le remplacement du dossier par le nouveau code source
+    (et la récupération éventuelle de la configuration) ; le script de migration de GeoNature s’occupera automatiquement
+    d’installer la nouvelle version du module.
 
 La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans un nouveau répertoire, récupérer les fichiers de configuration et de surcouche depuis la version actuelle et de relancer l'installation dans le répertoire de la nouvelle version.
 
