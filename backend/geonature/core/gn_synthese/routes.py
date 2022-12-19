@@ -129,9 +129,9 @@ def get_observations_for_web(info_role):
         filters = json.loads(request.data.decode("utf-8"))
     else:
         filters = {key: request.args.get(key) for key, value in request.args.items()}
-
-    result_limit = int(filters.pop("limit", current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]))
-    output_format = filters.pop("format", "ungrouped_geom")
+    query_params = request.args
+    result_limit = query_params.get("limit", current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"], int)
+    output_format = query_params.get("format", "ungrouped_geom")
     if output_format not in ["ungrouped_geom", "grouped_geom", "grouped_geom_by_areas"]:
         raise BadRequest(f"Bad format '{output_format}'")
 

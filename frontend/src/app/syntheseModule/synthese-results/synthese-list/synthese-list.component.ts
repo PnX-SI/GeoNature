@@ -137,11 +137,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     link.remove();
   }
 
-  getQueryString(): HttpParams {
-    const formatedParams = this._fs.formatParams();
-    return this._ds.buildQueryUrl(formatedParams);
-  }
-
   openInfoModal(row) {
     row.id_synthese = row.id;
     const modalRef = this.ngbModal.open(SyntheseInfoObsComponent, {

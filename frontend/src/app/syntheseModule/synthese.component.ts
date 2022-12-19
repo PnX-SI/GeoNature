@@ -37,10 +37,51 @@ export class SyntheseComponent implements OnInit {
     private _ngModal: NgbModal
   ) {}
 
+  ngOnInit() {
+    this._route.queryParamMap.subscribe((params) => {
+      this._fs.queryStringForm.patchValue({
+        limit: AppConfig.SYNTHESE.NB_LAST_OBS,
+        format:
+          AppConfig.SYNTHESE.ENABLE_AREA_AGGREGATION &&
+          AppConfig.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT
+            ? 'grouped_geom_by_areas'
+            : 'grouped_geom',
+      });
+      if (params.get('id_dataset')) {
+        this._fs.searchForm.patchValue({ id_dataset: params.get('id_dataset') });
+      }
+      if (params.get('id_acquisition_framework')) {
+        this._fs.searchForm.patchValue({
+          id_acquisition_framework: params.get('id_acquisition_framework'),
+        });
+      }
+      const idSynthese = this._route.snapshot.paramMap.get('id_synthese');
+
+      if (idSynthese) {
+        this._fs.searchForm.patchValue({ id_synthese: params.get('idSynthese') });
+        this.openInfoModal(idSynthese);
+      }
+
+      this._fs.selectedCdRefFromTree = [];
+      this._fs.selectedTaxonFromRankInput = [];
+      this._fs.selectedtaxonFromComponent = [];
+      this._fs.selectedRedLists = [];
+      this._fs.selectedStatus = [];
+      this._fs.selectedTaxRefAttributs = [];
+      this.loadAndStoreData(this._fs.formatParams());
+      // remove initial parameter passed by url
+      this._fs.searchForm.patchValue({
+        id_dataset: null,
+        id_acquisition_framework: null,
+      });
+    });
+  }
+
   loadAndStoreData(formParams) {
     this.searchService.dataLoaded = false;
     this._fs.searchForm.markAsPristine();
-    this.searchService.getSyntheseData(formParams).subscribe(
+
+    this.searchService.getSyntheseData(formParams, this._fs.queryStringForm.value).subscribe(
       (data) => {
         // mark the form pristine at each search in order to manage store data
         if (this._fs.searchForm.value.format == 'grouped_geom_by_areas') {
@@ -56,8 +97,7 @@ export class SyntheseComponent implements OnInit {
           const modalRef = this._modalService.open(SyntheseModalDownloadComponent, {
             size: 'lg',
           });
-          const formatedParams = this._fs.formatParams();
-          modalRef.componentInstance.queryString = this.searchService.buildQueryUrl(formatedParams);
+          modalRef.componentInstance.queryString = this.searchService.buildQueryUrl(formParams);
           modalRef.componentInstance.tooManyObs = true;
         }
 
@@ -102,7 +142,6 @@ export class SyntheseComponent implements OnInit {
   fetchOrRenderData(event: EventToggle) {
     // if the form has change reload data
     // else load data from cache if already loaded
-
     if (this._fs.searchForm.dirty) {
       this.loadAndStoreData(this._fs.formatParams());
     } else {
@@ -127,12 +166,15 @@ export class SyntheseComponent implements OnInit {
   }
   onSearchEvent() {
     // reinitlize limit = 100
-    this._fs.searchForm.patchValue({
+    this._fs.queryStringForm.patchValue({
       limit: null,
     });
     // on search button click, clean cache and call loadAndStoreData
     this._syntheseStore.gridData = null;
     this._syntheseStore.pointData = null;
+    // merge queryString form and seachForm data
+    // const dataForWebService = { ...this.queryStringForm.value, ...this._fs.searchForm.value };
+
     this.loadAndStoreData(this._fs.formatParams());
   }
 
@@ -157,46 +199,6 @@ export class SyntheseComponent implements OnInit {
       feature.properties.observations = { id: ids };
     }
     return geojson;
-  }
-
-  ngOnInit() {
-    this._route.queryParamMap.subscribe((params) => {
-      this._fs.searchForm.patchValue({
-        limit: AppConfig.SYNTHESE.NB_LAST_OBS,
-        format:
-          AppConfig.SYNTHESE.ENABLE_AREA_AGGREGATION &&
-          AppConfig.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT
-            ? 'grouped_geom_by_areas'
-            : 'grouped_geom',
-      });
-      if (params.get('id_dataset')) {
-        this._fs.searchForm.patchValue({ id_dataset: params.get('id_dataset') });
-      }
-      if (params.get('id_acquisition_framework')) {
-        this._fs.searchForm.patchValue({
-          id_acquisition_framework: params.get('id_acquisition_framework'),
-        });
-      }
-      const idSynthese = this._route.snapshot.paramMap.get('id_synthese');
-
-      if (idSynthese) {
-        this._fs.searchForm.patchValue({ id_synthese: params.get('idSynthese') });
-        this.openInfoModal(idSynthese);
-      }
-
-      this._fs.selectedCdRefFromTree = [];
-      this._fs.selectedTaxonFromRankInput = [];
-      this._fs.selectedtaxonFromComponent = [];
-      this._fs.selectedRedLists = [];
-      this._fs.selectedStatus = [];
-      this._fs.selectedTaxRefAttributs = [];
-      this.loadAndStoreData(this._fs.formatParams());
-      // remove initial parameter passed by url
-      this._fs.searchForm.patchValue({
-        id_dataset: null,
-        id_acquisition_framework: null,
-      });
-    });
   }
 
   openInfoModal(idSynthese) {

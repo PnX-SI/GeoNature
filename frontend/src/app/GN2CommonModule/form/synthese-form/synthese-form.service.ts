@@ -11,6 +11,7 @@ import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-da
 @Injectable()
 export class SyntheseFormService {
   public searchForm: FormGroup;
+  public queryStringForm: FormGroup;
   public formBuilded = false;
   public selectedtaxonFromComponent = [];
   public selectedCdRefFromTree = [];
@@ -29,6 +30,10 @@ export class SyntheseFormService {
     private _dateParser: NgbDateParserFormatter,
     private _periodFormatter: NgbDatePeriodParserFormatter
   ) {
+    this.queryStringForm = this._fb.group({
+      limit: null,
+      format: null,
+    });
     this.searchForm = this._fb.group({
       cd_nom: null,
       observers: null,
