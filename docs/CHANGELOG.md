@@ -4,6 +4,26 @@ CHANGELOG
 2.11.0 (unreleased)
 -------------------
 
+A clarifier :
+
+- Modules packagés obligatoirement
+- Modules à mettre à jour (TH, Monitoring, Dashboard, ...)
+- Installation et mise à jour des modules simplifiées
+- Conf des modules dans dossier de conf de GN pour faciliter les mises à jour
+- Mise à jour des règles de sensibilité
+
+**En bref**
+
+- Utilisation de la BDC statuts dans la Synthèse pour les filtres et infos sur les statuts des espèces
+- Mise à jour des règles de sensibilité du SINP
+- Notifications (changement de statut de validation de mes observations)
+- Filtre des métadonnées par zonage géographique
+- Affichage de zonages sur les cartes (depuis le ref_geo, un WMS, un WFS ou un GeoJSON)
+- Suppression du support des modules non packagés
+- Simplification et amélioration des commandes d'installation et de mise à jour des modules
+- Amélioration du script ``migration.sh`` de mise à jour de GeoNature
+- Nettoyage du frontend et amélioration de la séparation backend/frontend
+
 **🚀 Nouveautés**
 
 -   [Synthèse] Ajout de filtres sur les statuts de protection et les
@@ -19,6 +39,9 @@ CHANGELOG
     l’emplacement géographique de l’observation sélectionnée (#1492)
 -   [Synthèse] L’export des statuts de protection est maintenant basé
     sur les données de la *BDC Statuts* (#1492)
+-   Documentation dans la rubrique 
+    "5. Configurer les filtres des statuts de protection et des listes rouges"
+    de https://docs.geonature.fr/admin-manual.html#module-synthese
 -   Possibilité d’afficher des zonages sur les cartes (#974).
     Ces derniers peuvent provenir :
     -   d’un flux WMS ou WFS
@@ -33,13 +56,15 @@ CHANGELOG
     Les templates de notifications peuvent être modifiés par l’administrateur dans le module
     Admin.
     Actuellement seule la notification du changement du statut de validation des observations est implémentée.
+    Les fonctionnalités de notifications sont activées par défaut, mais peuvent être désactivées globalement 
+    en passant le paramètre de GeoNature ``NOTIFICATIONS_ENABLED`` à ``false``.
 -   Recherche des métadonnées par emprise géographique des observations (#1768)
     Le paramètre ``METADATA_AREA_FILTERS`` permet de spécifier les types de zonages géographiques
     disponibles à la recherche (communes, départements et régions activés par défaut).
 -   Ajout de sous-commandes pour la gestion du référentiel de sensibilité :
-    -   ``geonature sensitivity info`` : information sur les règles présentes en base
-    -   ``geonature sensitivity remove-referential`` : supprimer les règles d’une source données
-    -   ``geonature sensitivity add-referential`` : ajouter de nouvelle règles
+    -   ``geonature sensitivity info`` : information sur les règles présentes dans la base de données
+    -   ``geonature sensitivity remove-referential`` : supprimer les règles d’une source donnée
+    -   ``geonature sensitivity add-referential`` : ajouter de nouvelles règles
     Les nouvelles installations de GeoNature repose sur l’utilisation de ces commandes
     pour fournir les règles INPN du 31/03/2022.
     Ces dernières sont fournies à l’échelle du département et non plus des anciennes régions.
@@ -54,9 +79,14 @@ CHANGELOG
 -   Support de la configuration par variable d'environnement préfixée
     par `GEONATURE_` (*e.g* `GEONATURE_SQLALCHEMY_DATABASE_URI`). Les
     paramètres définis ainsi peuvent être exclus de la configuration
-    TOML, y compris les paramètres obligatoires.
--   Suppression de la section ``[PUBLIC_ACCESS]`` dans les paramètres de configuration remplacé par
-    un unique paramètre ``PUBLIC_ACCESS_USERNAME`` (#2202).
+    TOML, y compris les paramètres obligatoires
+-   Suppression de la section ``[PUBLIC_ACCESS]`` dans les paramètres de configuration, remplacée par
+    un unique paramètre ``PUBLIC_ACCESS_USERNAME`` (#2202)
+-   Blocage de la possibilité de modifier son compte pour l'utilisateur public (#2218)
+-   Possibilité d'accéder directement à une page de GeoNature avec l'utilisateur public, 
+    sans passer par la page d'authentification (#1650)
+-   Mise à jour des règles de sensibilité (incluant nationales et régionales mises à plat au niveau des départements)
+    pour TaxRef version 14 et 15 + Documentation sensibilité (#1891)
 -   Mise à jour des dépendances :
     -   TaxHub
     -   UsersHub
@@ -103,11 +133,10 @@ CHANGELOG
     une machine sans PostgreSQL (BDD sur un autre hôte)
 -   La *BDC Statuts* est maintenance chargée lors de l’intégration
     continue juste après le chargement des départements (#1492)
--   Ajout de l’``id_module`` aux relevés des données d’exemple Occtax
+-   Ajout de l’`id_module` aux relevés des données d’exemple Occtax
 -   Correction du chargement du module Validation (#2183)
 -   Correction du script de migration pour gérer la migration de l’ensemble
-    des modules externes.
-
+    des modules externes
 
 **💻 Développement**
 
@@ -121,6 +150,7 @@ CHANGELOG
 -   L'installation du backend, du frontend et des modules peut désormais
     être faite sans disposer de la BDD (#1359)
 -   Ajout de UsersHub aux dépendances (développement uniquement)
+-   Marqueur carto OK (#2223)
 
 **⚠️ Notes de version**
 
@@ -132,6 +162,7 @@ CHANGELOG
 -   Modification de la procédure d'installation et de mise à jour des modules
     à répercuter et appliquer
 -   Désactivez les textes de la BDC statuts ne correspondant par à votre territoire
+-   Mettre à jour TaxHub en version 1.10.7
 -   Mettez à jour vos règles de sensibilité :
     -   Déinstallez les règles fournies par Alembic :
 
@@ -179,7 +210,7 @@ CHANGELOG
         geonature sensitivity refresh-rules-cache
         ```
 
-    -   Relancer le calcule de la sensibilité des observations de la synthèse :
+    -   Relancer le calcul de la sensibilité des observations de la synthèse :
 
         ```bash
         geonature sensitivity update-synthese
