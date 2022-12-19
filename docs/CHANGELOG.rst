@@ -4,7 +4,7 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
-* [frontend / dynamic-form]: pour les composants 'radio', possibilité de définir ``values`` comme une liste de valeur (``string``, ``numeric``) ou une liste de dictionnaire ``{value, label}``
+* [frontend / champs additionnel / dynamic-form]: Les formulaires de type 'radio', 'select' 'multiselect' et 'checkbox', attendent désormais une liste de dictionnaire ``{value, label}`` (voir doc des champs additionnels). La rétrocompatibilité avec des listes simples est maintenue, mais vous êtes invité à modifier ces champs dans le backoffice. Pour conserver le bon affichage lors de l'édition des données, renseignez l'ancienne valeur deux fois dans la clé `value` et la clé `label`.
 
 2.10.3 (2022-11-15)
 -------------------
