@@ -105,7 +105,7 @@ def notification_rule(users, rule_method, rule_category):
 
 @pytest.fixture()
 def notifications_enabled(monkeypatch):
-    monkeypatch.setitem(current_app.config["NOTIFICATION"], "ENABLED", True)
+    monkeypatch.setitem(current_app.config, "NOTIFICATIONS_ENABLED", True)
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")

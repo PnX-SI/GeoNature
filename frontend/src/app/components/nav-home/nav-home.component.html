@@ -80,7 +80,7 @@
             {{ currentUser?.user_login }}
           </span>
           <!-- add notification only if user connected and notification enabled -->
-          <ng-container *ngIf="appConfig.NOTIFICATION.ENABLED == true">
+          <ng-container *ngIf="appConfig.NOTIFICATIONS_ENABLED == true">
             <a
               class="mx-2 mat-elevation-z1"
               mat-icon-button

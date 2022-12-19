@@ -88,6 +88,9 @@ PUBLIC_ACCESS_USERNAME = ""
 # Attention : si activé, il est nécessaire de remplir la secetion 'MAIL_CONFIG'.
 MAIL_ON_ERROR = false
 
+# Notifications
+NOTIFICATIONS_ENABLED = true
+
 [USERSHUB]
     # URL de l'application Usershub
     URL_USERSHUB = "http://127.0.0.1:5001"
@@ -564,8 +567,3 @@ MAIL_ON_ERROR = false
         { "label" = "Départements", "type_code"= "DEP" },
         { "label" = "Régions", "type_code"= "REG" }
     ]
-
-# Notification
-[NOTIFICATION]
-    #Enabled
-    ENABLED = true

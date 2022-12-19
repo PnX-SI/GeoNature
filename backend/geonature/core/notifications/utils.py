@@ -18,7 +18,7 @@ from geonature.core.notifications.tasks import send_notification_mail
 def dispatch_notifications(
     code_categories, id_roles, title=None, url=None, *, content=None, context={}
 ):
-    if not current_app.config["NOTIFICATION"]["ENABLED"]:
+    if not current_app.config["NOTIFICATIONS_ENABLED"]:
         return
 
     categories = chain.from_iterable(
