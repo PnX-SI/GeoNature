@@ -4,15 +4,7 @@ CHANGELOG
 2.11.0 (unreleased)
 -------------------
 
-A clarifier :
-
-- Modules packagés obligatoirement
-- Modules à mettre à jour (TH, Monitoring, Dashboard, ...)
-- Installation et mise à jour des modules simplifiées
-- Conf des modules dans dossier de conf de GN pour faciliter les mises à jour
-- Mise à jour des règles de sensibilité
-
-**En bref**
+**⏩ En bref**
 
 - Utilisation de la BDC statuts dans la Synthèse pour les filtres et infos sur les statuts des espèces
 - Mise à jour des règles de sensibilité du SINP
@@ -23,6 +15,65 @@ A clarifier :
 - Simplification et amélioration des commandes d'installation et de mise à jour des modules
 - Amélioration du script ``migration.sh`` de mise à jour de GeoNature
 - Nettoyage du frontend et amélioration de la séparation backend/frontend
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+-   Mettre à jour TaxHub en version 1.10.7
+-   Si vous utilisez des modules spécifiques (hors Import, Export, Dashboard, Monitoring), 
+    vérifiez qu'ils disposent d'une version packagée compatible avec GeoNature 2.11 (#2058)
+-   Si vous les utilisez, mettez à jour les modules Dashboard et Monitoring 
+    dans leurs dernières versions compatibles avec le version 2.11.0 de GeoNature.
+    La procédure de mise à jour des modules a été revue et simplifiée.
+-   Suivez la procédure de mise à jour classique de GeoNature
+    (<https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application>)
+-   Si vous aviez mis en place l'accès public à GeoNature, adaptez sa configuration avec 
+    le nouveau paramètre unique ``PUBLIC_ACCESS_USERNAME`` (#2202)
+-   Vous pouvez désactiver les textes de la BDC statuts ne correspondant par à votre territoire
+    Voir rubrique "5. Configurer les filtres des statuts de protection et des listes rouges"
+    de https://docs.geonature.fr/admin-manual.html#module-synthese
+-   Vous pouvez mettre à jour vos règles de sensibilité si vous utilisez TaxRef versions 14 ou 15 :
+
+    -   Déinstallez les règles fournies par Alembic :
+        ```bash
+        source ~/geonature/backend/venv/bin/activate
+        geonature db downgrade ref_sensitivity_inpn@base
+        ```
+    -   Vous n’avez probablement plus besoin des anciennes régions que vous pouvez alors supprimer de votre référentiel géographique :
+        ```bash
+        geonature db downgrade ref_geo_fr_regions_1970@base
+        ```
+    -   Assurez-vous que votre référientiel géographique contienne les départements :
+        ```bash
+        geonature db upgrade ref_geo_fr_departments@head
+        ```
+    -   Si vous avez TaxRef v15, insérez les nouvelles règles ainsi :
+        ```bash
+        geonature sensitivity add-referential \
+            --source-name "Référentiel sensibilité TAXREF v15 20220331" \
+            --url https://inpn.mnhn.fr/docs-web/docs/download/401875 \
+            --zipfile RefSensibiliteV15_20220331.zip \
+            --csvfile RefSensibilite_V15_31032022/RefSensibilite_15.csv  \
+            --encoding=iso-8859-15
+        ```
+    -   Si vous avez TaxRef v14, insérez les nouvelles règles ainsi :
+        ```bash
+        geonature sensitivity add-referential \
+            --source-name "Référentiel sensibilité TAXREF v14 20220331" \
+            --url https://inpn.mnhn.fr/docs-web/docs/download/401876 \
+            --zipfile RefSensibiliteV14_20220331.zip \
+            --csvfile RefSensibilite_V14_31032022/RefSensibilite_14.csv  \
+            --encoding=iso-8859-15
+        ```
+    -   Rafraichissez la vue matérialisée pré-calculant les taxons enfants :
+        ```bash
+        geonature sensitivity refresh-rules-cache
+        ```
+    -   Relancer le calcul de la sensibilité des observations de la synthèse :
+        ```bash
+        geonature sensitivity update-synthese
+        ```
 
 **🚀 Nouveautés**
 
@@ -61,32 +112,32 @@ A clarifier :
 -   Recherche des métadonnées par emprise géographique des observations (#1768)
     Le paramètre ``METADATA_AREA_FILTERS`` permet de spécifier les types de zonages géographiques
     disponibles à la recherche (communes, départements et régions activés par défaut).
+-   Mise à jour des règles de sensibilité des observations (incluant les règles nationales et régionales 
+    mises à plat au niveau des départements) pour TaxRef version 14 et 15 (#1891)
+-   Intégration et mise à jour de la documentation sur les régles et le calcul de la sensibilité
 -   Ajout de sous-commandes pour la gestion du référentiel de sensibilité :
     -   ``geonature sensitivity info`` : information sur les règles présentes dans la base de données
     -   ``geonature sensitivity remove-referential`` : supprimer les règles d’une source donnée
     -   ``geonature sensitivity add-referential`` : ajouter de nouvelles règles
-    Les nouvelles installations de GeoNature repose sur l’utilisation de ces commandes
-    pour fournir les règles INPN du 31/03/2022.
+    Les nouvelles installations de GeoNature reposent sur l’utilisation de ces commandes
+    pour fournir les règles SINP de sensibilité du 31/03/2022.
     Ces dernières sont fournies à l’échelle du département et non plus des anciennes régions.
     La branche Alembic ``ref_sensitivity_inpn`` ne doit plus être utilisée et sera supprimée dans
     une prochaine version de GeoNature.
-    Suivre les instructions des notes de versions pour mettre à jour son référentiel.
 -   Deux Dockerfiles permettant de générer une image frontend et une image backend ont été intégrés.
     La dockerisation de GeoNature reste toutefois un travail en cours, et l’utilisation de ces
     images n’est pas encore officiellement supportée (#2206)
 -   Les colonnes ``id_source`` de la synthèse et ``id_module`` des relevés Occtax sont désormais
     ``NOT NULL`` (#2186)
--   Support de la configuration par variable d'environnement préfixée
-    par `GEONATURE_` (*e.g* `GEONATURE_SQLALCHEMY_DATABASE_URI`). Les
-    paramètres définis ainsi peuvent être exclus de la configuration
-    TOML, y compris les paramètres obligatoires
 -   Suppression de la section ``[PUBLIC_ACCESS]`` dans les paramètres de configuration, remplacée par
     un unique paramètre ``PUBLIC_ACCESS_USERNAME`` (#2202)
 -   Blocage de la possibilité de modifier son compte pour l'utilisateur public (#2218)
 -   Possibilité d'accéder directement à une page de GeoNature avec l'utilisateur public, 
     sans passer par la page d'authentification (#1650)
--   Mise à jour des règles de sensibilité (incluant nationales et régionales mises à plat au niveau des départements)
-    pour TaxRef version 14 et 15 + Documentation sensibilité (#1891)
+-   Support de la configuration par variable d'environnement préfixée
+    par `GEONATURE_` (*e.g* `GEONATURE_SQLALCHEMY_DATABASE_URI`). Les
+    paramètres définis ainsi peuvent être exclus de la configuration
+    TOML, y compris les paramètres obligatoires
 -   Mise à jour des dépendances :
     -   TaxHub
     -   UsersHub
@@ -108,7 +159,7 @@ A clarifier :
         commande `generate-frontend-config`.
     -   La commande `update-configuration` génère la configuration
         frontend de tous les modules actifs en plus de la configuration
-        GeoNature (puis lancer le build du frontend).
+        GeoNature (puis lance le build du frontend).
     -   Les liens symboliques dans le dossier `external_modules` sont
         supprimés au profit de liens symboliques dans le dossier
         `frontend/external_modules` pointant directement vers le dossier
@@ -144,77 +195,15 @@ A clarifier :
 -   Révision importante de la documentation, de développement notamment
 -   Les fichiers `tsconfig.json` et `tsconfig.app.json` n'ont plus
     besoin d'être générés (#2088)
+-   Suppression des paramètres `ID_MODULE`, `FRONTEND_PATH` et `MODULE_URL` de la 
+    configuration frontend des modules à répercuter dans les modules (#2165)
 -   Homogénéisation de la configuration entre `current_app.config` et
     `geonature.utils.config.config`
 -   Compilation en production sans AOT (#1855)
 -   L'installation du backend, du frontend et des modules peut désormais
     être faite sans disposer de la BDD (#1359)
 -   Ajout de UsersHub aux dépendances (développement uniquement)
--   Marqueur carto OK (#2223)
-
-**⚠️ Notes de version**
-
--   Packagez vos modules spécifiques si ce n'est pas déjà le cas ! (#2058)
--   Répercutez dans vos modules spécifiques, la suppression des paramètres
-    `ID_MODULE`, `FRONTEND_PATH` et `MODULE_URL` de la configuration frontend des modules,
-    (voir #2165 pour adapter vos modules)
--   Si vous aviez mis en place l'accès public, modifiez la CONF !!! (#2202)
--   Modification de la procédure d'installation et de mise à jour des modules
-    à répercuter et appliquer
--   Désactivez les textes de la BDC statuts ne correspondant par à votre territoire
--   Mettre à jour TaxHub en version 1.10.7
--   Mettez à jour vos règles de sensibilité :
-    -   Déinstallez les règles fournies par Alembic :
-
-        ```bash
-        geonature db downgrade ref_sensitivity_inpn@base
-        ```
-
-    -   Vous n’avez probablement plus besoin des anciennes régions que vous pouvez alors supprimer de votre référentiel géographique :
-
-        ```bash
-        geonature db downgrade ref_geo_fr_regions_1970@base
-        ```
-
-    -   Assurez vous que votre référientiel géographique contienne les départements :
-
-        ```bash
-        geonature db upgrade ref_geo_fr_departments@head
-        ```
-
-    -   Si vous avez TaxRef v15, insérez les nouvelles règles ainsi :
-
-        ```bash
-        geonature sensitivity add-referential \
-            --source-name "Référentiel sensibilité TAXREF v15 20220331" \
-            --url https://inpn.mnhn.fr/docs-web/docs/download/401875 \
-            --zipfile RefSensibiliteV15_20220331.zip \
-            --csvfile RefSensibilite_V15_31032022/RefSensibilite_15.csv  \
-            --encoding=iso-8859-15
-        ```
-
-    -   Si vous avez TaxRef v14, insérez les nouvelles règles ainsi :
-
-        ```bash
-        geonature sensitivity add-referential \
-            --source-name "Référentiel sensibilité TAXREF v14 20220331" \
-            --url https://inpn.mnhn.fr/docs-web/docs/download/401876 \
-            --zipfile RefSensibiliteV14_20220331.zip \
-            --csvfile RefSensibilite_V14_31032022/RefSensibilite_14.csv  \
-            --encoding=iso-8859-15
-        ```
-
-    -   Rafraichissez la vue matérialisée pré-calculant les taxons enfants :
-
-        ```bash
-        geonature sensitivity refresh-rules-cache
-        ```
-
-    -   Relancer le calcul de la sensibilité des observations de la synthèse :
-
-        ```bash
-        geonature sensitivity update-synthese
-        ```
+-   Correction du chemin du marqueur Leaflet (#2223)
 
 
 2.10.4 (2022-11-30)
