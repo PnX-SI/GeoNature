@@ -285,7 +285,7 @@ sqlalchemy==1.3.24
     #   taxhub
     #   utils-flask-sqlalchemy-geo
     #   wtforms-sqlalchemy
-taxhub==1.10.6
+taxhub==1.10.7
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
