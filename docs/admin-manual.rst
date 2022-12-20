@@ -449,47 +449,6 @@ A noter que toutes les actions et toutes les portées n'ont pas été implément
 
 TODO : Lister les permissions implémentées dans chaque module.
 
-
-Accès public
-""""""""""""
-
-Cette section de la documentation concerne l'implémentation d'un utilisateur-lecteur pour votre instance GeoNature, permettant d'y donner accès sans authentification.
-
-Etapes :
-
-1/ UsersHub :
-
-- Aller dans la section ``Utilisateurs``
-- Créer un utilisateur 
-- Définir un identifiant et un mot de passe (par défaut utilisateur 'public' et mot de passe 'public')
-- Aller ensuite dans la section `Applications`
-- Pour GeoNature, cliquer sur le premier icône 'Voir les membres'
-- Cliquer sur ajouter un rôle 
-- Choisir l'utilisateur juste créé
-- Attribuer le rôle 1, 'lecteur' 
-
-2/ Configuration GeoNature : 
-
-- Dans le fichier de configuration de GeoNature (``config/geonature_config.toml``), spécifier le nom d'utilisateur pour l'accès public via le paramètre ``PUBLIC_ACCESS_USERNAME`` :
-
-
-.. code::
-
-  PUBLIC_ACCESS_USERNAME = 'public'
-
-:ref:`Exécuter les actions post-modification de la configuration <post_config_change>`.
-
-A ce moment-là, cet utilisateur a tous les droits sur GeoNature.
-Il s'agit maintenant de gérer ses permissions dans GeoNature même.
-
-3/ GeoNature 
-
-- Se connecter à GeoNature avec un utilisateur administrateur
-- Aller dans le module Admin
-- Cliquer sur 'Gestion des permissions'
-- Choisissez l'utilisateur sélectionné 
-- Editer le CRUVED pour chacun des modules de l'instance. Passer à 0 tous les droits et tous les modules devant être supprimés. Laisser '3' pour les modules d'intérêt. 
-
 Nomenclatures
 """""""""""""
 
@@ -1455,11 +1414,11 @@ Vous pouvez aussi vous inspirer des exemples avancés de migration des données 
 .. include:: import-level-2.rst
 
 
-Création de compte
-------------------
+Comptes utilisateurs
+--------------------
 
-Configuration de la création de compte
-""""""""""""""""""""""""""""""""""""""
+Demande de création de compte
+"""""""""""""""""""""""""""""
 
 Depuis la version 2.1.0, UsersHub propose une API de création de compte utilisateur. Une interface a été ajoutée à GeoNature pour permettre aux futurs utilisateurs de faire des demandes de création de compte depuis la page d'authentification de GeoNature. Ce mode est activable/désactivable depuis la configuration globale de GeoNature.
 
@@ -1537,7 +1496,7 @@ Il est également possible de créer automatiquement un jeu de données et un ca
 
 
 Customisation du formulaire
-"""""""""""""""""""""""""""
+```````````````````````````
 
 Le formulaire de création de compte est par défaut assez minimaliste (nom, prénom, email, mot de passe, organisme, remarque).
 
@@ -1571,7 +1530,7 @@ L'exemple ci-dessous permet de créer un champs de type "checkbox" obligatoire, 
 Espace utilisateur
 """"""""""""""""""
 
-Enfin, un espace "utilisateur" est accessible lorsque l'on est connecté, permettant de modifier ses informations personnelles, y compris son mot de passe.
+Un espace "utilisateur" est accessible lorsque l'on est connecté, permettant de modifier ses informations personnelles, y compris son mot de passe.
 
 Cet espace est activable grâce au paramètre ``ENABLE_USER_MANAGEMENT``. Par défaut, il est désactivé.
 
@@ -1582,8 +1541,9 @@ Cet espace est activable grâce au paramètre ``ENABLE_USER_MANAGEMENT``. Par d�
         ENABLE_SIGN_UP = true
         ENABLE_USER_MANAGEMENT = true
 
+
 Accès public
-------------
+""""""""""""
 
 Cette section de la documentation concerne l'implémentation d'un utilisateur-lecteur pour votre instance GeoNature. 
 
@@ -1592,7 +1552,8 @@ Etapes :
 1/ UsersHub :
    - Aller dans la section `Utilisateurs` 
    - Créer un utilisateur 
-   - Définir un identifiant et un mot de passe (par défaut utilisateur 'public' et mot de passe 'public')
+   - Définir un identifiant et un mot de passe (par exemple utilisateur 'public' et mot de passe 'public')
+   - S’assurer qu’il ne soit dans aucun groupe
    - Aller ensuite dans la section `Applications`
    - Pour GeoNature, cliquer sur le premier icône 'Voir les membres'
    - Cliquer sur ajouter un rôle 
@@ -1600,19 +1561,17 @@ Etapes :
    - Attribuer le rôle 1, 'lecteur' 
 
 2/ Configuration GeoNature : 
-  - Reporter identifiant et mot de passe dans le fichier de configuration de GeoNature
 
-.. code-block::
+  - Dans le fichier de configuration de GeoNature (``config/geonature_config.toml``), spécifier le nom d'utilisateur pour l'accès public via le paramètre ``PUBLIC_ACCESS_USERNAME`` :
 
-    $ cd config
-    $ nano geonature_config.toml
-    PUBLIC_LOGIN = 'public'
-    PUBLIC_PASSWORD = 'public'
+.. code-block:: ini
+
+    PUBLIC_ACCESS_USERNAME = 'public'
 
 
 :ref:`Exécuter les actions post-modification de la configuration <post_config_change>`.
 
-A ce moment-là, cet utilisateur a tous les droits sur GeoNature.
+A ce moment-là, cet utilisateur n’a aucun droit sur GeoNature.
 Il s'agit maintenant de gérer ses permissions dans GeoNature même.
 
 3/ GeoNature 
@@ -1621,7 +1580,7 @@ Il s'agit maintenant de gérer ses permissions dans GeoNature même.
    - Aller dans le module Admin
    - Cliquer sur 'Gestion des permissions'
    - Choisissez l'utilisateur sélectionné 
-   - Editer le CRUVED pour chacun des modules de l'instance. Passer à 0 tous les droits et tous les modules devant être supprimés. Laisser '3' pour les modules d'intérêt. 
+   - Editer le CRUVED pour chacun des modules de l'instance. Passer à 0 tous les droits et tous les modules devant être supprimés. Laisser '1' pour les modules d'intérêt.
 
 
 .. include:: sensitivity.rst
