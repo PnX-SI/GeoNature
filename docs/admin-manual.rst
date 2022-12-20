@@ -1582,6 +1582,13 @@ Il s'agit maintenant de gérer ses permissions dans GeoNature même.
    - Choisissez l'utilisateur sélectionné 
    - Editer le CRUVED pour chacun des modules de l'instance. Passer à 0 tous les droits et tous les modules devant être supprimés. Laisser '1' pour les modules d'intérêt.
 
+Accès public automatique
+````````````````````````
+
+Un lien GeoNature peut déclancher automatiquement une connexion avec l’utilisateur public en lui rajoutant les paramètres ``access=public``.
+
+Exemple : `<https://demo.geonature.fr/geonature/#/synthese?access=public>`_
+
 
 .. include:: sensitivity.rst
 
