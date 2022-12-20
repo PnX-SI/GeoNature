@@ -14,3 +14,14 @@ class RequestID:
             return start_response(status, response_headers, exc_info)
 
         return self.app(environ, new_start_response)
+
+
+class SchemeFix:
+    def __init__(self, app, scheme=None):
+        self.app = app
+        self.scheme = scheme
+
+    def __call__(self, environ, start_response):
+        if self.scheme:
+            environ["wsgi.url_scheme"] = self.scheme
+        return self.app(environ, start_response)

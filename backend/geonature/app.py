@@ -22,7 +22,7 @@ from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
 from geonature.core.admin.admin import admin
-from geonature.middlewares import RequestID
+from geonature.middlewares import SchemeFix, RequestID
 
 from pypnusershub.db.tools import (
     user_from_token,
@@ -86,6 +86,7 @@ def create_app(with_external_mods=True):
         warnings.filterwarnings(action="default", category=DeprecationWarning)
 
     # set from headers HTTP_HOST, SERVER_NAME, and SERVER_PORT
+    app.wsgi_app = SchemeFix(app.wsgi_app, scheme=config.get("PREFERRED_URL_SCHEME"))
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
     app.wsgi_app = RequestID(app.wsgi_app)
 
