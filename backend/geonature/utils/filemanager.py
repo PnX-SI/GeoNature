@@ -83,18 +83,7 @@ def delete_recursively(path_folder, period=1, excluded_files=[]):
             log.error(e)
 
 
-def generate_pdf(template, data, filename):
-    # flask render template
-    template_rendered = render_template(template, data=data)
-    # weasyprint create PDF
-    html_file = HTML(
-        string=template_rendered, base_url=current_app.config["API_ENDPOINT"], encoding="utf-8"
-    )
-    file_abs_path = str(Path(current_app.static_folder) / "pdf" / filename)
-    # create PDF
-    return html_file.write_pdf(file_abs_path)
-
-def generate_pdf2(template, data):
+def generate_pdf(template, data):
     # flask render a template by name with the given context
     template_rendered = render_template(template, data=data)
     # weasyprint HTML document parsed
@@ -103,4 +92,3 @@ def generate_pdf2(template, data):
     )
     # weasyprint render the document to a PDF file
     return html_file.write_pdf()
-    

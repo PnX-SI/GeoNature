@@ -490,12 +490,11 @@ def get_export_pdf_dataset(scope):
         "date": date,
     }
     # chart
-    dataset["chart"] = request.data[22:]
-
-    print(dataset["chart"])
+    dataset["chart"] = request.json["chart"]
 
     # Appel de la methode pour generer un pdf
-    return fm.generate_pdf2("dataset_template_pdf.html", dataset)
+    return fm.generate_pdf("dataset_template_pdf.html", dataset)
+
 
 @routes.route("/acquisition_frameworks", methods=["GET", "POST"])
 @permissions.check_cruved_scope(
@@ -713,7 +712,8 @@ def get_export_pdf_acquisition_frameworks():
         acquisition_framework["closed_title"] = current_app.config["METADATA"]["CLOSED_AF_TITLE"]
 
     # Appel de la methode pour generer un pdf
-    return fm.generate_pdf2("acquisition_framework_template_pdf.html", acquisition_framework)
+    return fm.generate_pdf("acquisition_framework_template_pdf.html", acquisition_framework)
+
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>", methods=["GET"])
 @permissions.check_cruved_scope("R", get_scope=True, module_code="METADATA")

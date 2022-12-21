@@ -478,17 +478,19 @@ export class DataFormService {
     }
     const source = this._http.post(
       endPoint,
-      img,
+      {
+        chart: img,
+      },
       {
         params: queryString,
-        headers: new HttpHeaders().set('Content-Type', 'application/pdf'),
+        headers: new HttpHeaders().set('Content-Type', 'application/json'),
         observe: 'events',
         responseType: 'blob',
         reportProgress: false,
       }
     );
 
-    this.subscribeAndDownload(source, prefix, "pdf");
+    this.subscribeAndDownload(source, prefix, 'pdf');
   }
 
   getTaxaDistribution(taxa_rank, params?: ParamsDict) {
