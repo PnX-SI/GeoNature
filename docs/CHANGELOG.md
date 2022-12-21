@@ -78,12 +78,9 @@ Si vous mettez à jour GeoNature :
 
 **🚀 Nouveautés**
 
--   [Synthèse] Ajout de filtres sur les statuts de protection et les listes rouges dans le fenêtre de recherche avancée basés sur la
-    [BDC Statuts](<https://inpn.mnhn.fr/programme/base-de-connaissance-statuts/presentation>).
-    Ajout des paramètres de configuration `STATUS_FILTERS` et `RED_LISTS_FILTERS` dans la section `SYNTHESE`. Il est possible de
-    modifier les listes et statuts affichés comme indiqué dans la documentation de la configuration du module SYNTHESE. (#1492)
--   [Synthèse] Affichage dans la fiche d’une observation, onglet *Taxonomie*, des informations issues de la *BDC Statuts* (statuts de
-    protection, listes rouges) en rapport avec le taxon et l’emplacement géographique de l’observation sélectionnée (#1492)
+-   [Synthèse] Ajout de filtres sur les statuts de protection et les listes rouges dans le fenêtre de recherche avancée basés sur la [BDC Statuts](<https://inpn.mnhn.fr/programme/base-de-connaissance-statuts/presentation>).
+    Ajout des paramètres de configuration `STATUS_FILTERS` et `RED_LISTS_FILTERS` dans la section `SYNTHESE`. Il est possible de modifier les listes et statuts affichés comme indiqué dans la documentation de la configuration du module SYNTHESE. (#1492)
+-   [Synthèse] Affichage dans la fiche d’une observation, onglet *Taxonomie*, des informations issues de la *BDC Statuts* (statuts de protection, listes rouges) en rapport avec le taxon et l’emplacement géographique de l’observation sélectionnée (#1492)
 -   [Synthèse] L’export des statuts de protection est maintenant basé sur les données de la *BDC Statuts* (#1492)
 -   Documentation dans la rubrique "5. Configurer les filtres des statuts de protection et des listes rouges" de https://docs.geonature.fr/admin-manual.html#module-synthese
 -   Possibilité d’afficher des zonages sur les cartes (#974).
@@ -157,6 +154,10 @@ Si vous mettez à jour GeoNature :
 -   L'installation du backend, du frontend et des modules peut désormais être faite sans disposer de la BDD (#1359)
 -   Ajout de UsersHub aux dépendances (développement uniquement)
 -   Correction du chemin du marqueur Leaflet (#2223)
+
+**📝 Merci aux contributeurs**
+
+@jpm-cbna / @pierrejego / @Gaetanbrl / @amandine-sahl / @VincentCauchois / @antoinececchimnhn / @metourneau / @bouttier / @TheoLechemia / @camillemonchicourt
 
 
 2.10.4 (2022-11-30)
