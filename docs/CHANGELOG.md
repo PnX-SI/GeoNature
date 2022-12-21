@@ -190,6 +190,9 @@ Si vous mettez à jour GeoNature :
 -   Correction du chargement du module Validation (#2183)
 -   Correction du script de migration pour gérer la migration de l’ensemble
     des modules externes
+-   Correction de la gestion du protocole (http / https) lors des redirections
+    automatique de Flask (redirection en cas de slash manquant en fin d’URL)
+-   Rafraichissement du caches des règles de sensibilité en fin d’installation
 
 **💻 Développement**
 
