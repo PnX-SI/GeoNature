@@ -390,11 +390,8 @@ class TestGNMeta:
 
         set_logged_user_cookie(self.client, users["user"])
 
-        response = self.client.get(
-            url_for(
-                "gn_meta.get_export_pdf_acquisition_frameworks",
-                id_acquisition_framework=af_id,
-            )
+        response = self.client.post(
+            url_for("gn_meta.get_export_pdf_acquisition_frameworks", af=af_id, json={})
         )
 
         assert response.status_code == 200
@@ -402,10 +399,10 @@ class TestGNMeta:
     def test_get_export_pdf_acquisition_frameworks_unauthorized(self, acquisition_frameworks):
         af_id = acquisition_frameworks["own_af"].id_acquisition_framework
 
-        response = self.client.get(
+        response = self.client.post(
             url_for(
                 "gn_meta.get_export_pdf_acquisition_frameworks",
-                id_acquisition_framework=af_id,
+                af=af_id,
             )
         )
 
@@ -637,27 +634,31 @@ class TestGNMeta:
         unexisting_id = db.session.query(func.max(TDatasets.id_dataset)).scalar() + 1
         ds = datasets["own_dataset"]
 
-        response = self.client.get(
-            url_for("gn_meta.get_export_pdf_dataset", id_dataset=ds.id_dataset)
+        response = self.client.post(
+            url_for("gn_meta.get_export_pdf_dataset", dataset=ds.id_dataset, json={})
         )
         assert response.status_code == Unauthorized.code
 
         set_logged_user_cookie(self.client, users["self_user"])
 
-        response = self.client.get(
-            url_for("gn_meta.get_export_pdf_dataset", id_dataset=unexisting_id)
+        response = self.client.post(
+            url_for("gn_meta.get_export_pdf_dataset", dataset=unexisting_id, json={})
         )
         assert response.status_code == NotFound.code
 
-        response = self.client.get(
-            url_for("gn_meta.get_export_pdf_dataset", id_dataset=ds.id_dataset)
+        response = self.client.post(
+            url_for("gn_meta.get_export_pdf_dataset", dataset=ds.id_dataset, json={})
         )
         assert response.status_code == Forbidden.code
 
         set_logged_user_cookie(self.client, users["user"])
-
-        response = self.client.get(
-            url_for("gn_meta.get_export_pdf_dataset", id_dataset=ds.id_dataset)
+        print("LAST")
+        response = self.client.post(
+            url_for(
+                "gn_meta.get_export_pdf_dataset",
+                dataset=ds.id_dataset
+                # json chart is not required
+            )
         )
         assert response.status_code == 200
 
