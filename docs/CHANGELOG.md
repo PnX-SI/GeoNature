@@ -23,13 +23,13 @@ Si vous mettez à jour GeoNature :
 -   Mettre à jour TaxHub en version 1.10.7
 -   Si vous utilisez des modules spécifiques (hors Import, Export, Dashboard, Monitoring), 
     vérifiez qu'ils disposent d'une version packagée compatible avec GeoNature 2.11 (#2058)
--   Si vous les utilisez, mettez à jour les modules Dashboard et Monitoring 
-    dans leurs dernières versions compatibles avec le version 2.11.0 de GeoNature.
-    La procédure de mise à jour des modules a été revue et simplifiée.
--   Suivez la procédure de mise à jour classique de GeoNature
-    (<https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application>)
+-   Si vous utilisez les modules Dashboard et Monitoring, une mise à jour de compatibilité
+    avec GeoNature 2.11 est nécessaire mais à effectuer **après** la mise à jour de GeoNature
 -   Si vous aviez mis en place l'accès public à GeoNature, adaptez sa configuration avec 
     le nouveau paramètre unique ``PUBLIC_ACCESS_USERNAME`` (#2202)
+-   Suivez la procédure de mise à jour classique de GeoNature
+    (<https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application>)
+-   Si vous les utilisez, mettre à jour Dashboard en version 1.2.1 et Monitoring en version 0.4.0
 -   Vous pouvez désactiver les textes de la BDC statuts ne correspondant par à votre territoire
     Voir rubrique "5. Configurer les filtres des statuts de protection et des listes rouges"
     de https://docs.geonature.fr/admin-manual.html#module-synthese
