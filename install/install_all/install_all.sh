@@ -247,6 +247,10 @@ if [ "$install_usershub_app" = true ]; then
     fi
 fi
 
+# Upgrade depending branches like taxhub and usershub
+source "${GEONATURE_DIR}/backend/venv/bin/activate"
+geonature db autoupgrade
+deactivate
 
 # Apache vhost for GeoNature, TaxHub and UsersHub
 envsubst '${DOMAIN_NAME}' < "${GEONATURE_DIR}/install/assets/vhost_apache.conf" | sudo tee /etc/apache2/sites-available/geonature.conf || exit 1
