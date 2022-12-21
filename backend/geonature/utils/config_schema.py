@@ -204,6 +204,7 @@ class GnPySchemaConf(Schema):
     ACCOUNT_MANAGEMENT = fields.Nested(
         AccountManagement, load_default=AccountManagement().load({})
     )
+    BAD_LOGIN_STATUS_CODE = fields.Integer(load_default=401)
     USERSHUB = fields.Nested(UsersHubConfig, load_default=UsersHubConfig().load({}))
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
