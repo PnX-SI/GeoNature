@@ -1,8 +1,8 @@
 CHANGELOG
 =========
 
-2.11.0 - Ilex aquifolium (2022-12-21)
--------------------------------------
+2.11.0 - Ilex aquifolium 🌲 (2022-12-21)
+----------------------------------------
 
 **⏩ En bref**
 
@@ -21,21 +21,15 @@ CHANGELOG
 Si vous mettez à jour GeoNature :
 
 -   Mettre à jour TaxHub en version 1.10.7
--   Si vous utilisez des modules spécifiques (hors Import, Export, Dashboard, Monitoring), 
-    vérifiez qu'ils disposent d'une version packagée compatible avec GeoNature 2.11 (#2058)
--   Si vous utilisez les modules Dashboard et Monitoring, une mise à jour de compatibilité
-    avec GeoNature 2.11 est nécessaire mais à effectuer **après** la mise à jour de GeoNature
--   Si vous aviez mis en place l'accès public à GeoNature, adaptez sa configuration avec 
-    le nouveau paramètre unique ``PUBLIC_ACCESS_USERNAME`` (#2202)
--   Suivez la procédure de mise à jour classique de GeoNature
-    (<https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application>)
--   Si vous les utilisez, mettre à jour Dashboard en version 1.2.1 et Monitoring en version 0.4.0
--   Vous pouvez désactiver les textes de la BDC statuts ne correspondant par à votre territoire
-    Voir rubrique "5. Configurer les filtres des statuts de protection et des listes rouges"
-    de https://docs.geonature.fr/admin-manual.html#module-synthese
--   Vous pouvez mettre à jour vos règles de sensibilité si vous utilisez TaxRef versions 14 ou 15 :
+-   Si vous utilisez des modules spécifiques (hors Import, Export, Dashboard, Monitoring), vérifiez qu'ils disposent d'une version packagée compatible avec GeoNature 2.11 (#2058)
+-   Si vous aviez mis en place l'accès public à GeoNature, adaptez sa configuration avec le nouveau paramètre unique ``PUBLIC_ACCESS_USERNAME`` (#2202)
+-   Suivez la procédure de mise à jour classique de GeoNature (<https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application>)
+-   Si vous les utilisez, mettre à jour les modules Dashboard en version 1.2.1 (ou plus) et Monitoring en version 0.4.0 (ou plus), **après** la mise à jour de GeoNature
+-   Vous pouvez désactiver les textes de la BDC statuts ne correspondant par à votre territoire. 
+    Voir rubrique "5. Configurer les filtres des statuts de protection et des listes rouges" de https://docs.geonature.fr/admin-manual.html#module-synthese
+-   Vous pouvez mettre à jour vos règles de sensibilité si vous utilisez TaxRef versions 14 ou 15 : 
 
-    -   Déinstallez les règles fournies par Alembic :
+    -   Désinstallez les règles fournies par Alembic :
         ```bash
         source ~/geonature/backend/venv/bin/activate
         geonature db downgrade ref_sensitivity_inpn@base
@@ -66,80 +60,53 @@ Si vous mettez à jour GeoNature :
             --csvfile RefSensibilite_V14_31032022/RefSensibilite_14.csv  \
             --encoding=iso-8859-15
         ```
-    -   Rafraichissez la vue matérialisée pré-calculant les taxons enfants :
+    -   Rafraîchissez la vue matérialisée pré-calculant les taxons enfants :
         ```bash
         geonature sensitivity refresh-rules-cache
         ```
-    -   Relancer le calcul de la sensibilité des observations de la synthèse :
+    -   Relancez le calcul de la sensibilité des observations de la synthèse :
         ```bash
         geonature sensitivity update-synthese
         ```
 
 **🚀 Nouveautés**
 
--   [Synthèse] Ajout de filtres sur les statuts de protection et les
-    listes rouges dans le fenêtre de recherche avancée basés sur la
-    [BDC Statuts](<https://inpn.mnhn.fr/programme/base-de-connaissance-statuts/presentation>).
-    Ajout des paramètres de configuration `STATUS_FILTERS` et
-    `RED_LISTS_FILTERS` dans la section `SYNTHESE`. Il est possible de
-    modifier les listes et statuts affichés comme indiqué dans la
-    documentation de la configuration du module SYNTHESE. (#1492)
--   [Synthèse] Affichage dans la fiche d’une observation, onglet
-    *Taxonomie*, des informations issues de la *BDC Statuts* (statuts de
-    protection, listes rouges) en rapport avec le taxon et
-    l’emplacement géographique de l’observation sélectionnée (#1492)
--   [Synthèse] L’export des statuts de protection est maintenant basé
-    sur les données de la *BDC Statuts* (#1492)
--   Documentation dans la rubrique 
-    "5. Configurer les filtres des statuts de protection et des listes rouges"
-    de https://docs.geonature.fr/admin-manual.html#module-synthese
+-   [Synthèse] Ajout de filtres sur les statuts de protection et les listes rouges dans le fenêtre de recherche avancée basés sur la [BDC Statuts](<https://inpn.mnhn.fr/programme/base-de-connaissance-statuts/presentation>).
+    Ajout des paramètres de configuration `STATUS_FILTERS` et `RED_LISTS_FILTERS` dans la section `SYNTHESE`. Il est possible de modifier les listes et statuts affichés comme indiqué dans la documentation de la configuration du module SYNTHESE. (#1492)
+-   [Synthèse] Affichage dans la fiche d’une observation, onglet *Taxonomie*, des informations issues de la *BDC Statuts* (statuts de protection, listes rouges) en rapport avec le taxon et l’emplacement géographique de l’observation sélectionnée (#1492)
+-   [Synthèse] L’export des statuts de protection est maintenant basé sur les données de la *BDC Statuts* (#1492)
+-   Documentation dans la rubrique "5. Configurer les filtres des statuts de protection et des listes rouges" de https://docs.geonature.fr/admin-manual.html#module-synthese
 -   Possibilité d’afficher des zonages sur les cartes (#974).
     Ces derniers peuvent provenir :
     -   d’un flux WMS ou WFS
     -   d’un fichier ou flux GeoJSON
     -   du référentiel géographique interne
     Les couches sont configurables via le paramètre ``REF_LAYERS`` de la section ``MAPCONFIG``.
-    Par défaut un WMS des limites administrativs de l'IGN et un WMS des ZNIEFF 1 continentales en
-    métropôle sont affichés.
+    Par défaut un WMS des limites administrativs de l'IGN et un WMS des ZNIEFF 1 continentales en métropole sont affichés.
 -   Ajout d’un mécanisme de notifications (#1873).
-    L’utilisateur peut choisir de souscrire, pour chaque type de notificaton, s’il veut être
-    notifié dans GeoNature et/ou par e-mail.
-    Les templates de notifications peuvent être modifiés par l’administrateur dans le module
-    Admin.
+    L’utilisateur peut choisir de souscrire, pour chaque type de notificaton, s’il veut être notifié dans GeoNature et/ou par e-mail.
+    Les templates de notifications peuvent être modifiés par l’administrateur dans le module Admin.
     Actuellement seule la notification du changement du statut de validation des observations est implémentée.
-    Les fonctionnalités de notifications sont activées par défaut, mais peuvent être désactivées globalement 
-    en passant le paramètre de GeoNature ``NOTIFICATIONS_ENABLED`` à ``false``.
+    Les fonctionnalités de notifications sont activées par défaut, mais peuvent être désactivées globalement en passant le paramètre de GeoNature ``NOTIFICATIONS_ENABLED`` à ``false``.
 -   Recherche des métadonnées par emprise géographique des observations (#1768)
-    Le paramètre ``METADATA_AREA_FILTERS`` permet de spécifier les types de zonages géographiques
-    disponibles à la recherche (communes, départements et régions activés par défaut).
--   Mise à jour des règles de sensibilité des observations (incluant les règles nationales et régionales 
-    mises à plat au niveau des départements) pour TaxRef version 14 et 15 (#1891)
+    Le paramètre ``METADATA_AREA_FILTERS`` permet de spécifier les types de zonages géographiques disponibles à la recherche (communes, départements et régions activés par défaut).
+-   Mise à jour des règles de sensibilité des observations (incluant les règles nationales et régionales mises à plat au niveau des départements) pour TaxRef version 14 et 15 (#1891)
 -   Intégration et mise à jour de la documentation sur les régles et le calcul de la sensibilité
 -   Ajout de sous-commandes pour la gestion du référentiel de sensibilité :
     -   ``geonature sensitivity info`` : information sur les règles présentes dans la base de données
     -   ``geonature sensitivity remove-referential`` : supprimer les règles d’une source donnée
     -   ``geonature sensitivity add-referential`` : ajouter de nouvelles règles
-    Les nouvelles installations de GeoNature reposent sur l’utilisation de ces commandes
-    pour fournir les règles SINP de sensibilité du 31/03/2022.
+    Les nouvelles installations de GeoNature reposent sur l’utilisation de ces commandes pour fournir les règles SINP de sensibilité du 31/03/2022.
     Ces dernières sont fournies à l’échelle du département et non plus des anciennes régions.
-    La branche Alembic ``ref_sensitivity_inpn`` ne doit plus être utilisée et sera supprimée dans
-    une prochaine version de GeoNature.
+    La branche Alembic ``ref_sensitivity_inpn`` ne doit plus être utilisée et sera supprimée dans une prochaine version de GeoNature.
 -   Deux Dockerfiles permettant de générer une image frontend et une image backend ont été intégrés.
-    La dockerisation de GeoNature reste toutefois un travail en cours, et l’utilisation de ces
-    images n’est pas encore officiellement supportée (#2206)
--   Les colonnes ``id_source`` de la synthèse et ``id_module`` des relevés Occtax sont désormais
-    ``NOT NULL`` (#2186)
--   Suppression de la section ``[PUBLIC_ACCESS]`` dans les paramètres de configuration, remplacée par
-    un unique paramètre ``PUBLIC_ACCESS_USERNAME`` (#2202)
+    La dockerisation de GeoNature reste toutefois un travail en cours, et l’utilisation de ces images n’est pas encore officiellement supportée (#2206)
+-   Les colonnes ``id_source`` de la synthèse et ``id_module`` des relevés Occtax sont désormais ``NOT NULL`` (#2186)
+-   Suppression de la section ``[PUBLIC_ACCESS]`` dans les paramètres de configuration, remplacée par un unique paramètre ``PUBLIC_ACCESS_USERNAME`` (#2202)
 -   Blocage de la possibilité de modifier son compte pour l'utilisateur public (#2218)
--   Possibilité d'accéder directement à une page de GeoNature avec l'utilisateur public, 
-    sans passer par la page d'authentification (#1650)
--   Support de la configuration par variable d'environnement préfixée
-    par `GEONATURE_` (*e.g* `GEONATURE_SQLALCHEMY_DATABASE_URI`). Les
-    paramètres définis ainsi peuvent être exclus de la configuration
-    TOML, y compris les paramètres obligatoires
--   Activation de [Celery Beat](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html)
-    permettant de lancer des tâches périodiquement
+-   Possibilité d'accéder directement à une page de GeoNature avec l'utilisateur public, sans passer par la page d'authentification (#1650)
+-   Support de la configuration par variable d'environnement préfixée par `GEONATURE_` (*e.g* `GEONATURE_SQLALCHEMY_DATABASE_URI`). Les paramètres définis ainsi peuvent être exclus de la configuration TOML, y compris les paramètres obligatoires
+-   Activation de [Celery Beat](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html) permettant de lancer des tâches périodiquement
 -   Mise à jour des dépendances :
     -   TaxHub 1.10.7
     -   UsersHub
@@ -148,67 +115,42 @@ Si vous mettez à jour GeoNature :
     -   Utils-Flask-SQLAlchemy-Geo 0.2.6
 -   Modules GeoNature et séparation backend/frontend (#2088) :
     -   Suppression du support des modules non packagés (#2058).
-    -   La commande `install-packaged-gn-module` devient
-        `install-gn-module`.
-    -   Suppression des paramètres `ID_MODULE`, `FRONTEND_PATH` et
-        `MODULE_URL` de la configuration frontend des modules, (#2165).
-    -   Recherche de la configuration des modules également dans le
-        dossier `config` de GeoNature, sous le nom
-        `{module_code}_config.toml` (le code du module étant en
-        minuscule).
-    -   La commande `update-module-configuration` est renommée
-        `generate-frontend-module-config` par homogénéité avec la
-        commande `generate-frontend-config`.
-    -   La commande `update-configuration` génère la configuration
-        frontend de tous les modules actifs en plus de la configuration
-        GeoNature (puis lance le build du frontend).
-    -   Les liens symboliques dans le dossier `external_modules` sont
-        supprimés au profit de liens symboliques dans le dossier
-        `frontend/external_modules` pointant directement vers le dossier
-        `frontend` des modules considérés. Ces liens sont créés par la
-        commande `install-gn-module`. Le processus de migration
-        convertit automatiquement vos liens symboliques existants.
-    -   Ajout de la commande `upgrade-modules-db` permettant d'insérer le
-        module dans la table `t_modules` et de monter sa branche Alembic
-        afin de créer ou mettre à jour son schéma de base de données.
-        Il n'est pas nécessaire de lancer cette commande manuellement
-        pour les modules installés avec la commande `install-gn-module`
-        sauf lorsque cette dernière est appelée avec le paramètre
-        `--upgrade-db=false`.
-    -   Les assets frontend ne sont plus collectés dans un dossier
-        portant le nom du module. Le mainteneur du module doit donc
-        créer cette arborescence lui-même.
+    -   La commande `install-packaged-gn-module` devient `install-gn-module`.
+    -   Suppression des paramètres `ID_MODULE`, `FRONTEND_PATH` et `MODULE_URL` de la configuration frontend des modules, (#2165).
+    -   Recherche de la configuration des modules également dans le dossier `config` de GeoNature, sous le nom `{module_code}_config.toml` (le code du module étant en minuscule).
+    -   La commande `update-module-configuration` est renommée `generate-frontend-module-config` par homogénéité avec la commande `generate-frontend-config`.
+    -   La commande `update-configuration` génère la configuration frontend de tous les modules actifs en plus de la configuration GeoNature (puis lance le build du frontend).
+    -   Les liens symboliques dans le dossier `external_modules` sont supprimés au profit de liens symboliques dans le dossier `frontend/external_modules` pointant directement vers le dossier `frontend` des modules considérés. Ces liens sont créés par la commande `install-gn-module`. Le processus de migration convertit automatiquement vos liens symboliques existants.
+    -   Ajout de la commande `upgrade-modules-db` permettant d'insérer le module dans la table `t_modules` et de monter sa branche Alembic afin de créer ou mettre à jour son schéma de base de données.
+        Il n'est pas nécessaire de lancer cette commande manuellement pour les modules installés avec la commande `install-gn-module` sauf lorsque cette dernière est appelée avec le paramètre `--upgrade-db=false`.
+    -   Les assets frontend ne sont plus collectés dans un dossier portant le nom du module. Le mainteneur du module doit donc créer cette arborescence lui-même.
 
 **🐛 Corrections**
 
 -   Installation d'une dépendance Debian manquante pour Cypress (#2125)
--   Les fichiers de service systemd ont été corrigés pour fonctionner sur
-    une machine sans PostgreSQL (BDD sur un autre hôte)
--   La *BDC Statuts* est maintenance chargée lors de l’intégration
-    continue juste après le chargement des départements (#1492)
+-   Les fichiers de service systemd ont été corrigés pour fonctionner sur une machine sans PostgreSQL (BDD sur un autre hôte)
+-   La *BDC Statuts* est maintenance chargée lors de l’intégration continue juste après le chargement des départements (#1492)
 -   Ajout de l’`id_module` aux relevés des données d’exemple Occtax
 -   Correction du chargement du module Validation (#2183)
--   Correction du script de migration pour gérer la migration de l’ensemble
-    des modules externes
--   Correction de la gestion du protocole (http / https) lors des redirections
-    automatique de Flask (redirection en cas de slash manquant en fin d’URL)
--   Rafraichissement du caches des règles de sensibilité en fin d’installation
+-   Correction du script de migration pour gérer la migration de l’ensemble des modules externes
+-   Correction de la gestion du protocole (http / https) lors des redirections automatique de Flask (redirection en cas de slash manquant en fin d’URL)
+-   Rafraîchissement du cache des règles de sensibilité en fin d’installation
 
 **💻 Développement**
 
 -   Nettoyage du frontend : dépendances, configuration Angular
 -   Révision importante de la documentation, de développement notamment
--   Les fichiers `tsconfig.json` et `tsconfig.app.json` n'ont plus
-    besoin d'être générés (#2088)
--   Suppression des paramètres `ID_MODULE`, `FRONTEND_PATH` et `MODULE_URL` de la 
-    configuration frontend des modules à répercuter dans les modules (#2165)
--   Homogénéisation de la configuration entre `current_app.config` et
-    `geonature.utils.config.config`
+-   Les fichiers `tsconfig.json` et `tsconfig.app.json` n'ont plus besoin d'être générés (#2088)
+-   Suppression des paramètres `ID_MODULE`, `FRONTEND_PATH` et `MODULE_URL` de la configuration frontend des modules à répercuter dans les modules (#2165)
+-   Homogénéisation de la configuration entre `current_app.config` et `geonature.utils.config.config`
 -   Compilation en production sans AOT (#1855)
--   L'installation du backend, du frontend et des modules peut désormais
-    être faite sans disposer de la BDD (#1359)
+-   L'installation du backend, du frontend et des modules peut désormais être faite sans disposer de la BDD (#1359)
 -   Ajout de UsersHub aux dépendances (développement uniquement)
 -   Correction du chemin du marqueur Leaflet (#2223)
+
+**📝 Merci aux contributeurs**
+
+@jpm-cbna / @pierrejego / @Gaetanbrl / @amandine-sahl / @VincentCauchois / @antoinececchimnhn / @metourneau / @bouttier / @TheoLechemia / @camillemonchicourt
 
 
 2.10.4 (2022-11-30)
@@ -285,8 +227,8 @@ Si vous mettez à jour GeoNature :
     suivant les notes de version de la 2.10.0, en vous aidant
     éventuellement de l’exemple de migration.
 
-2.10.0 - Alouatta macconnelli (2022-11-02)
-------------------------------------------
+2.10.0 - Alouatta macconnelli 🐒 (2022-11-02)
+---------------------------------------------
 
 -   **Angular 12, tests automatisés frontend et backend**
 -   **Discussions, signalement, partage, épinglage d’une occurrence**
@@ -638,8 +580,8 @@ dépendances et ses modules principaux est disponible](https://geonature.fr/docu
 -   Contournement d’un problème de redirection incorrecte par l'API de
     TaxHub lorsque celui-ci est mal configuré (#1438, #1616)
 
-2.9.0 - Actias luna (2022-01-13)
---------------------------------
+2.9.0 - Actias luna 🦋 (2022-01-13)
+-----------------------------------
 
 **Profils de taxons**
 
@@ -860,8 +802,8 @@ dépendances et ses modules principaux est disponible](https://geonature.fr/docu
 -   Mise-à-jour corrective de [UsersHub-authentification-module
     1.5.7](https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.7)
 
-2.8.0 - Vaccinium myrtillus (2021-10-18)
-----------------------------------------
+2.8.0 - Vaccinium myrtillus 🌿 (2021-10-18)
+-------------------------------------------
 
 **Gestion de la base de données avec Alembic**
 
@@ -1152,8 +1094,8 @@ Si vous mettez à jour GeoNature :
 -   Vous pouvez passer directement à cette version mais en suivant les
     notes des versions intermédiaires
 
-2.7.0 - Androsace delphinensis (2021-06-30)
--------------------------------------------
+2.7.0 - Androsace delphinensis 🌼 (2021-06-30)
+----------------------------------------------
 
 Nécessite la version 1.8.x de TaxHub.
 
