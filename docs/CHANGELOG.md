@@ -138,6 +138,8 @@ Si vous mettez à jour GeoNature :
     par `GEONATURE_` (*e.g* `GEONATURE_SQLALCHEMY_DATABASE_URI`). Les
     paramètres définis ainsi peuvent être exclus de la configuration
     TOML, y compris les paramètres obligatoires
+-   Activation de [Celery Beat](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html)
+    permettant de lancer des tâches périodiquement
 -   Mise à jour des dépendances :
     -   TaxHub 1.10.7
     -   UsersHub
