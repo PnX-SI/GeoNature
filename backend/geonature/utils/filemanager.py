@@ -4,7 +4,6 @@ import shutil
 import logging
 import datetime
 import re
-from io import BytesIO
 from pathlib import Path
 
 from werkzeug.utils import secure_filename

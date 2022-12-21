@@ -4,14 +4,8 @@
 import datetime as dt
 import json
 import logging
-import threading
 from pathlib import Path
 from binascii import a2b_base64
-import base64
-from io import BytesIO, StringIO
-from PIL import Image
-from codecs import encode
-import click
 from lxml import etree as ET
 
 from flask import (
@@ -190,19 +184,6 @@ def get_dataset(scope, id_dataset):
     dataset_schema.context = {"user_cruved": user_cruved}
 
     return dataset_schema.jsonify(dataset)
-
-
-@routes.route("/upload_canvas", methods=["POST"])
-def upload_canvas():
-    """Upload the canvas as a temporary image used while generating the pdf file"""
-    data = request.data[22:]
-    filepath = str(Path(current_app.static_folder) / "images" / "taxa.png")
-    fm.remove_file(filepath)
-    if data:
-        binary_data = a2b_base64(data)
-        with open(filepath, "wb") as fd:
-            fd.write(binary_data)
-    return "", 204
 
 
 @routes.route("/dataset/<int:ds_id>", methods=["DELETE"])
@@ -452,6 +433,7 @@ def update_dataset(id_dataset, scope):
     # TODO: specify which fields may be updated
     return DatasetSchema().jsonify(datasetHandler(dataset=dataset, data=request.get_json()))
 
+
 @routes.route("/dataset/export_pdf", methods=["POST"])
 @permissions.check_cruved_scope("E", get_scope=True, module_code="METADATA")
 def get_export_pdf_dataset(scope):
@@ -462,17 +444,18 @@ def get_export_pdf_dataset(scope):
     dataset = TDatasets.query.get_or_404(id_dataset)
     if not dataset.has_instance_permission(scope=scope):
         raise Forbidden("Vous n'avez pas les droits d'exporter ces informations")
-
     dataset_schema = DatasetSchema(
         only=[
             "nomenclature_data_type",
             "nomenclature_dataset_objectif",
             "nomenclature_collecting_method",
             "acquisition_framework",
+            "cor_dataset_actor.nomenclature_actor_role",
+            "cor_dataset_actor.organism",
+            "cor_dataset_actor.role",
         ]
     )
     dataset = dataset_schema.dump(dataset)
-
     if len(dataset.get("dataset_desc")) > 240:
         dataset["dataset_desc"] = dataset.get("dataset_desc")[:240] + "..."
 
@@ -490,8 +473,8 @@ def get_export_pdf_dataset(scope):
         "date": date,
     }
     # chart
-    dataset["chart"] = request.json["chart"]
-
+    if request.is_json and request.json is not None:
+        dataset["chart"] = request.json["chart"]
     # Appel de la methode pour generer un pdf
     return fm.generate_pdf("dataset_template_pdf.html", dataset)
 
@@ -666,7 +649,8 @@ def get_export_pdf_acquisition_frameworks():
         "nb_habitats": nb_habitat,
     }
 
-    acquisition_framework["chart"] = request.data[22:]
+    if request.is_json and request.json is not None:
+        acquisition_framework["chart"] = request.json["chart"]
 
     if acquisition_framework:
         acquisition_framework[
