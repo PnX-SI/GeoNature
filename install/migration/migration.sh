@@ -146,7 +146,7 @@ echo "Mise à jour de la base de données…"
 # Voir https://github.com/PnX-SI/GeoNature/issues/2186#issuecomment-1337684933
 geonature db heads | grep "(occtax)" > /dev/null && geonature db upgrade occtax@4c97453a2d1a
 geonature db autoupgrade
-geonature upgrade-modules
+geonature upgrade-modules-db
 
 echo "Redémarrage des services…"
 for service in ${SERVICES[@]}; do
