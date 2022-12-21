@@ -13,7 +13,7 @@ import sqlalchemy as sa
 revision = "4c97453a2d1a"
 down_revision = "df088920b2f3"
 branch_labels = None
-depends_on = None
+depends_on = ("f4ffdc68072c",)  # add id_module column in t_sources
 
 
 def upgrade():
