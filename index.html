@@ -46,10 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">INSTALLATION</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user-manual.html">MANUEL UTILISATEUR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
-<li class="toctree-l1"><a class="reference internal" href="import-level-1.html">IMPORT NIVEAU 1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="import-level-2.html">IMPORT NIVEAU 2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">DEVELOPPEMENT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="versions-compatibility.html">COMPATIBILITE</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
@@ -106,14 +103,15 @@
 <li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="admin-manual.html#architecture">Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin-manual.html#base-de-donnees">Base de données</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin-manual.html#gestion-de-la-sensibilite">Gestion de la sensibilité</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin-manual.html#modularite">Modularité</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin-manual.html#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin-manual.html#exploitation">Exploitation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin-manual.html#sauvegarde-et-restauration">Sauvegarde et restauration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin-manual.html#customisation">Customisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin-manual.html#integrer-des-donnees">Intégrer des données</a></li>
-<li class="toctree-l2"><a class="reference internal" href="admin-manual.html#creation-de-compte">Création de compte</a></li>
-<li class="toctree-l2"><a class="reference internal" href="admin-manual.html#id2">Accès public</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin-manual.html#comptes-utilisateurs">Comptes utilisateurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin-manual.html#id2">Gestion de la sensibilité</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin-manual.html#module-occtax">Module OCCTAX</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin-manual.html#module-admin">Module Admin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin-manual.html#module-occhab">Module OCCHAB</a></li>
@@ -121,80 +119,18 @@
 <li class="toctree-l2"><a class="reference internal" href="admin-manual.html#module-validation">Module VALIDATION</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="import-level-1.html">IMPORT NIVEAU 1</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="import-level-1.html#importer-la-donnee-source-dans-la-bdd-avec-qgis">Importer la donnée source dans la BDD avec QGIS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="import-level-1.html#creer-les-metadonnees">Créer les métadonnées</a></li>
-<li class="toctree-l2"><a class="reference internal" href="import-level-1.html#insertion-des-donnees-dans-la-synthese">Insertion des données dans la Synthèse</a></li>
-<li class="toctree-l2"><a class="reference internal" href="import-level-1.html#insertion-depuis-un-shapefile">Insertion depuis un shapefile</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="import-level-2.html">IMPORT NIVEAU 2</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="import-level-2.html#description">Description</a></li>
-<li class="toctree-l2"><a class="reference internal" href="import-level-2.html#import-du-fichier-csv">1 - Import du fichier CSV</a></li>
-<li class="toctree-l2"><a class="reference internal" href="import-level-2.html#preparation-de-la-nouvelle-table-contenant-les-donnees-importees">2 - Préparation de la nouvelle table contenant les données importées</a></li>
-<li class="toctree-l2"><a class="reference internal" href="import-level-2.html#creation-des-metadonnees">3 - Création des métadonnées</a></li>
-<li class="toctree-l2"><a class="reference internal" href="import-level-2.html#creation-du-mapping-source-cible">4 - Création du mapping (source –&gt; cible)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="import-level-2.html#construire-la-requete-d-import">5 - Construire la requête d’import</a></li>
-<li class="toctree-l2"><a class="reference internal" href="import-level-2.html#chargement-des-donnees-dans-la-table-de-destination-synthese-ici">6 - Chargement des données dans la table de destination (synthese ici)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="import-level-2.html#on-gere-les-nouveaux-taxons-vis-a-vis-la-saisie">7 - On gère les nouveaux taxons vis à vis la saisie</a></li>
-<li class="toctree-l2"><a class="reference internal" href="import-level-2.html#deplacement-de-la-table-importee-facultatif">8 - Déplacement de la table importée (facultatif)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="import-level-2.html#resultat-final">RESULTAT FINAL</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">DEVELOPPEMENT</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="development.html#general">Général</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#api">API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="development.html#release">Release</a></li>
-<li class="toctree-l2"><a class="reference internal" href="development.html#bdd">BDD</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#pratiques-et-regles-de-developpement">Pratiques et règles de developpement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="development.html#developper-et-installer-un-gn-module">Développer et installer un gn_module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#passer-en-mode-developpement">Passer en mode développement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#developpement-backend">Développement Backend</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#developpement-frontend">Développement Frontend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="development.html#outils-d-aide-a-la-qualite-du-code">Outils d’aide à la qualité du code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#tests-backend">Tests backend</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#tests-frontend">Tests frontend</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="versions-compatibility.html">COMPATIBILITE</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-10-x">GeoNature 2.10.X</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-9-2">GeoNature 2.9.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-9-1">GeoNature 2.9.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-9-0">GeoNature 2.9.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-8-0">GeoNature 2.8.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-7-5">GeoNature 2.7.5</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-7-4">GeoNature 2.7.4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-7-3">GeoNature 2.7.3</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-7-2">GeoNature 2.7.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-7-1">GeoNature 2.7.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-7-0">GeoNature 2.7.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-6-2">GeoNature 2.6.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-6-1">GeoNature 2.6.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-6-0">GeoNature 2.6.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-5-5">GeoNature 2.5.5</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-5-4">GeoNature 2.5.4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-5-3">GeoNature 2.5.3</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-5-2">GeoNature 2.5.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-5-1">GeoNature 2.5.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-5-0">GeoNature 2.5.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-4-1">GeoNature 2.4.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-4-0">GeoNature 2.4.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-3-2">GeoNature 2.3.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-3-1">GeoNature 2.3.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-3-0">GeoNature 2.3.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-2-0">GeoNature 2.2.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-1-2">GeoNature 2.1.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-1-1">GeoNature 2.1.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-1-0">GeoNature 2.1.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-0-0">GeoNature 2.0.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature2-rc4-2">GeoNature2 RC4.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature2-rc4-1">GeoNature2 RC4.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature2-rc4">GeoNature2 RC4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature2-rc3">GeoNature2 RC3</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature2-rc2">GeoNature2 RC2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature2-rc1">GeoNature2 RC1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature2-beta5">GeoNature2 Beta5</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature2-beta4">GeoNature2 Beta4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#developper-un-module-externe">Développer un module externe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#release">Release</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a><ul>
@@ -203,12 +139,13 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="authors.html#parc-national-des-ecrins">Parc national des Ecrins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authors.html#parc-national-des-ecrins">Parc national des Écrins</a></li>
 <li class="toctree-l2"><a class="reference internal" href="authors.html#parc-national-des-cevennes">Parc national des Cevennes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="authors.html#contributeurs">Contributeurs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#ilex-aquifolium-2022-12-21">2.11.0 - Ilex aquifolium (2022-12-21)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id1">2.10.4 (2022-11-30)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id2">2.10.3 (2022-11-15)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id3">2.10.2 (2022-11-09)</a></li>
@@ -258,26 +195,7 @@
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#beta3-2018-03-28">2.0.0.beta3 (2018-03-28)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#beta2-2018-03-16">2.0.0.beta2 (2018-03-16)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#beta1-2018-02-16">2.0.0.beta1 (2018-02-16)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id27">1.9.1 (2018-05-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id28">1.9.0 (2017-07-06)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id29">1.8.4 (2017-04-10)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id30">1.8.3 (2017-02-23)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id31">1.8.2 (2017-01-11)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id32">1.8.1 (2017-01-05)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id33">1.8.0 (2016-12-14)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id34">1.7.4 (2016-07-06)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id35">1.7.3 (2016-05-19)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id36">1.7.2 (2016-04-27)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id37">1.7.1 (2016-04-27)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id38">1.7.0 (2016-04-24)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id39">1.6.0 (2016-01-14)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id40">1.5.0 (2015-11-26)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id41">1.4.0 (2015-10-16)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id42">1.3.0 (2015-02-11)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id43">1.2.0 (2015-02-11)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id44">1.1.0 (2014-12-11)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id45">1.0.0 (2014-12-10)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id46">0.1.0 (2014-12-01)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#versions-1-2014-2018">Versions 1 (2014-2018)</a></li>
 </ul>
 </li>
 </ul>

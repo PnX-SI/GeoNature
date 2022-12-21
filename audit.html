@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Priorités pour le référenciel &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+            <a href="index.html" class="icon icon-home"> GeoNature
+            <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Priorités pour le référenciel</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/audit.md.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="priorites-pour-le-referenciel">
+<h1>Priorités pour le référenciel<a class="headerlink" href="#priorites-pour-le-referenciel" title="Lien permanent vers cette rubrique"></a></h1>
+<p>HTTPS</p>
+<p>HttpOnly cookies + Match cookie session avec adresse IP ou un certif ssl</p>
+<p>Sanitize</p>
+<p>Log 500 and send email</p>
+<p>Verifier:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Est-ce que la connection au CAS se fait en HTTPS ?
+
+Les id sont ils séquentiels ? Peut ont y accéder de sans avoir les droits ?
+</pre></div>
+</div>
+<p>Backup</p>
+<p>Installation et configuration de référence</p>
+<p>Definition d’une procédure de connexion à UsersHub pour une mise en oeuvre sécurisée</p>
+<p>Documentation des ports et permissions recommandés pour l’application</p>
+<p>Ajout de linters (pylint, mypy, mccabe…)</p>
+<p>Ajouts de tests unitaires et suite de test (tox + pytest)</p>
+<ul class="simple">
+<li><p>Déclaration à la CNIL;</p></li>
+<li><p>Fichier de LICENCE</p></li>
+<li><p>Dossier de licence des dépendances</p></li>
+</ul>
+</section>
+<section id="securite">
+<h1>Sécurité:<a class="headerlink" href="#securite" title="Lien permanent vers cette rubrique"></a></h1>
+<p>HTTPS</p>
+<p>HttpOnly cookies + Match cookie session avec adresse IP ou un certif ssl</p>
+<p>Sanitize ticket in routes.py :</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>urlValidate = &quot;%s?ticket=%s&amp;service=%s&quot;%(configCas[&#39;URL_VALIDATION&#39;], params[&#39;ticket&#39;], base_url)
+
+Au cas ou l&#39;autre service ne soit pas sécurisé
+</pre></div>
+</div>
+<p>Log 500 and send email</p>
+<p>Verifier:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Est-ce que la connection au CAS se fait en HTTPS ?
+
+Les id sont ils séquentiels ? Peut ont y accéder de sans avoir les droits ?
+</pre></div>
+</div>
+<p>remove_file, upload_file et rename_file doivent vérifier le chemin absolu avant de faire l’opération. Un 3eme paramètre doit contenir une liste noire en dur de chemin de dossiers interdits. On doit aussi vérifier que les fichiers du projets en lui même ne sont pas sur ce chemin.</p>
+<p>Throttle</p>
+<p>Backup</p>
+<p>Utilisation de JWT pour l’authentification</p>
+<p>API OAUTH pour UsersHub</p>
+<p>Definition d’une procédure de connexion à UsersHub pour une mise en oeuvre sécurisée</p>
+<p>Documentation des ports et permissions recommandés pour l’application</p>
+</section>
+<section id="modularite">
+<h1>Modularité:<a class="headerlink" href="#modularite" title="Lien permanent vers cette rubrique"></a></h1>
+<p>Définir les objectifs de la modularisation</p>
+<p>Versionner l’API et le schéma de base de donnée</p>
+<p>Fournir un processus, des conventions et outils de migration pour la base</p>
+<p>Créer une API de backend d’authentification et d’identification.</p>
+<p>Comment un module s’attache-t-il au projet ? A quoi peut il réagir ? Que peut il overrider (template, config, vues, urls, etc) ?</p>
+<p>Comment creer son propre point d’entrée qui utilise l’outils de manière composée</p>
+<p>Comment gérér la configuration par defaut et celle custo ?</p>
+<p>Comment gérer les mises à jour ? Notamment les migrations de schéma.</p>
+<p>D’après les objectifs de http://geonature.fr/documents/2017-04-Presentation-projet-1.0.pdf:</p>
+<ul class="simple">
+<li><p>1 modèle de données par protocole</p></li>
+<li><p>1 schéma de base de données par protocole</p></li>
+<li><p>1 synthèse automatique de l’ensemble des données Faune/flore/fonge issues des
+différents protocoles</p></li>
+<li><p>1 schéma de métadonnées permettant d’identifier le protocole, le programme, le jeu de
+données et la source de chaque donnée</p></li>
+<li><p>Des méthodes standards d’alimentation de la synthèse (API, triggers ou ETL)</p></li>
+</ul>
+<p>=&gt; Comment attacher le modèle à l’administration ? Aux formulaires ?
+=&gt; Comment s’intégrer dans le processus d’installation. Intéragir avec les autres protocols ?
+=&gt; Comment se déclarer pour faire partie de la synthèse ?</p>
+<ul class="simple">
+<li><p>Des bonnes pratiques et guides techniques pour le développement de nouveaux
+modules et protocoles</p></li>
+</ul>
+<p>=&gt; Doc ?</p>
+<p>Utilisation d’uuid à la place de d’id incrémentaux. Particulièrement pour : les données utilisateurs et les taxons.</p>
+</section>
+<section id="qualite-du-code">
+<h1>Qualité du code:<a class="headerlink" href="#qualite-du-code" title="Lien permanent vers cette rubrique"></a></h1>
+<p>Ajout de linters (pylint, mypy, mccabe…)</p>
+<p>Ajouts de tests unitaires et suite de test (tox + pytest)</p>
+<p>.gitignore plus complet</p>
+<p>Mettre des <strong>init</strong>.py dans les dossiers pour les compter comme des packages et non des namespaces</p>
+<p>Log 404</p>
+<p>Log Exceptions</p>
+<p>Mettre des doc string, exemple:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>route.py : def insert_in_cor_role(id_group, id_user):
+</pre></div>
+</div>
+<p>Utiliser Pipfile et lock files pour locker les dépendences et inclure les dépendences de dev</p>
+<p>Workflow git:
+Déplacer le projet dans un repo séparé
+Utiliser des features branches</p>
+<p>Imports inutilisés, fichiers vides (utils.py), reste de python 2 (/home/user/Work/dev_pro/ecrins/GeoNature/backend/src/core/gn_exports/routes.py)</p>
+<p>Créer un décorateur pour rollback automatiquement en cas d’exception dans les vues</p>
+<p>Et get_or_404</p>
+<p>Retirer les mettres et remplacer par logging</p>
+<p>Gérer les valeurs aberrantes en entrée:</p>
+<p>E.g: mettre un try et une limite de taille et interdire les valeurs négatives sur:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>limit = int(parameters.get(&#39;limit&#39;)) if parameters.get(&#39;limit&#39;) else 100
+page = int(parameters.get(&#39;offset&#39;)) if parameters.get(&#39;offset&#39;) else 0
+</pre></div>
+</div>
+<p>Ne pas retourner -1 en cas d’erreur mais lever une exception. E.G:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>def get_releve_if_allowed(self, user, data_scope):
+    &quot;&quot;&quot;Return the releve if the user is allowed
+      -params:
+      user: object from TRole
+      data_scope: string: level of rigth for an action
+    &quot;&quot;&quot;
+    if data_scope == &#39;2&#39;:
+        if self.user_is_observer_or_digitiser(user) or self.user_is_in_dataset_actor(user):
+            return self
+    elif data_scope == &#39;1&#39;:
+        if self.user_is_observer_or_digitiser(user):
+            return self
+    else:
+        return self
+    return -1
+</pre></div>
+</div>
+<p>Eviter d’attrapper les exceptions très larges si on ne reraise pas. E.G:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>try:
+    nbResultsWithoutFilter = VReleveList.query.count()
+except Exception as e:
+    db.session.rollback()
+</pre></div>
+</div>
+<p>OU:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>def remove_file(filepath):
+    try :
+        os.remove(os.path.join(current_app.config[&#39;BASE_DIR&#39;], filepath))
+    except :
+        pass
+</pre></div>
+</div>
+<p>Ou:
+try:
+int(value)
+except Exception as e:
+return “{0} must be an integer”.format(paramName)</p>
+<p>Verifier la taille du dataset pour:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>try:
+    data = q.limit(limit).offset(page*limit).all()
+except Exception as e:
+    db.session.rollback()
+    raise
+
+user = info_role[0]
+user_cruved = cruved_for_user_in_app(user.id_role,current_app.config[&#39;ID_APPLICATION_GEONATURE&#39;] )
+featureCollection = []
+for n in data:
+    releve_cruved = n.get_releve_cruved(user, user_cruved)
+    feature = n.get_geofeature()
+    feature[&#39;properties&#39;][&#39;rights&#39;] = releve_cruved
+    featureCollection.append(feature)
+</pre></div>
+</div>
+<p>Utiliser extend:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>        for o in observers:
+            releve.observers.append(o)
+</pre></div>
+</div>
+<p>Reecrire removeDisallowedFilenameChars: secure_filename fait déjà unicodedata.normalize, utliser split(), autoriser les caracteres chinois, mettre un nombre de lettres minimales complétées par un hash du nom original si les lettres manquent:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>def removeDisallowedFilenameChars(uncleanString):
+    cleanedString = secure_filename(uncleanString)
+    cleanedString = unicodedata.normalize(&#39;NFKD&#39;, uncleanString)
+    cleanedString = re.sub(&#39;[ ]+&#39;, &#39;_&#39;, cleanedString)
+    cleanedString = re.sub(&#39;[^0-9a-zA-Z_-]&#39;, &#39;&#39;, cleanedString)
+    return cleanedString
+</pre></div>
+</div>
+<p>Render le code générique avec un mapping:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>def testDataType(value, sqlType, paramName):
+    if sqlType == db.Integer or isinstance(sqlType, (db.Integer)):
+        try:
+            int(value)
+        except Exception as e:
+            return &#39;{0} must be an integer&#39;.format(paramName)
+    if sqlType == db.Numeric or isinstance(sqlType, (db.Numeric)):
+        try:
+            float(value)
+        except Exception as e:
+            return &#39;{0} must be an float (decimal separator .)&#39;\
+                .format(paramName)
+    elif sqlType == db.DateTime or isinstance(sqlType, (db.Date, db.DateTime)):
+        try:
+            from dateutil import parser
+            dt = parser.parse(value)
+        except Exception as e:
+            return &#39;{0} must be an date (yyyy-mm-dd)&#39;.format(paramName)
+    return None
+</pre></div>
+</div>
+<p>Le projet doit-il supporter Python 2.7 ? Si oui, créer l’insfrastructure pour cela. Si non, retirer les artefacts tels que # coding et les imports <strong>future</strong></p>
+<p>Pinpoint dependancies</p>
+<p>Faire l’introspection du serializableModel une seule fois à la création de la classe, soit à l’aide d’une lib tierce partie existante (ex: marshmallow) ou à l’aide d’une metaclass.</p>
+<p>Choisir un standard de notation pour les selecteurs SCSS. Documenter les variables.</p>
+<p>Gestion des erreurs réseau sur les appels Ajax</p>
+</section>
+<section id="aspect-legal">
+<h1>Aspect légal:<a class="headerlink" href="#aspect-legal" title="Lien permanent vers cette rubrique"></a></h1>
+<ul class="simple">
+<li><p>Déclaration à la CNIL;</p></li>
+<li><p>Fichier de LICENCE</p></li>
+<li><p>Dossier de licence des dépendances</p></li>
+</ul>
+</section>
+<section id="ergonomie">
+<h1>Ergonomie:<a class="headerlink" href="#ergonomie" title="Lien permanent vers cette rubrique"></a></h1>
+<ul class="simple">
+<li><p>Faire bilan ergonomique</p></li>
+<li><p>Le menu pour changer la langue ne doit pas changer de langue lui-même.</p></li>
+<li><p>Retirer le “#” des Urls</p></li>
+<li><p>Restaurer le click milieu sur certains menus</p></li>
+</ul>
+</section>
+<section id="configuration">
+<h1>Configuration:<a class="headerlink" href="#configuration" title="Lien permanent vers cette rubrique"></a></h1>
+<ul class="simple">
+<li><p>Une grande partie des valeurs devraient être centralisées, et overridable par variables d’environnement. E.G: conf.ts et conf.py doivent hériter du même fichier de conf.</p></li>
+<li><p>En mode dev, le make file pour runner gunicorn doit utiliser ces configs et env var.</p></li>
+</ul>
+</section>
+<section id="temps-de-chargement">
+<h1>Temps de chargement<a class="headerlink" href="#temps-de-chargement" title="Lien permanent vers cette rubrique"></a></h1>
+<p>Retirer les polyfills pour les ever greens browsers dans le production build</p>
+<p>Vérifier que l’import de rxj ne tue pas le tree shaking</p>
+<p>Préciser d’utiliser ng build –prod pour la mise en production pour profiter de l’AOT</p>
+</section>
+<section id="documentation">
+<h1>Documentation<a class="headerlink" href="#documentation" title="Lien permanent vers cette rubrique"></a></h1>
+<ul class="simple">
+<li><p>Fournir un graphique du modele general de donnée</p></li>
+<li><p>Fournir une list des enpoints de l’API</p></li>
+<li><p>Founrir un schéma général de l’organisations des différents éléments de la stack déployées</p></li>
+<li><p>Fournir un schéma général de l’organisation des différents</p></li>
+<li><p>Ces schémas doivent être mis à jour une fois par mois à une date fixe.</p></li>
+</ul>
+</section>
+<section id="bons-points">
+<h1>Bons points<a class="headerlink" href="#bons-points" title="Lien permanent vers cette rubrique"></a></h1>
+<p>Peu de requêts SQL pures. Lesquelles ont un échapement corrects des paramétres.</p>
+<p>Autoescape n’est pas désactivé</p>
+<p>Vérification de l’appartenance des relevés.</p>
+<p>Lazy loading bien pensé dans le routing frontend</p>
+<p>Polyfill minimalist</p>
+<p>Utilisation des modules Angular les plus à jour (ex: HttpClient)</p>
+<p>Gestion des utilisateurs et permissions standardisée, fournies par un service séparé</p>
+<p>Indice de MacAbe 5, à l’exception de 14 méthodes</p>
+</section>
+<section id="questions">
+<h1>Questions<a class="headerlink" href="#questions" title="Lien permanent vers cette rubrique"></a></h1>
+<p>Ou est le backoffice dont on parle dans https://github.com/PnX-SI/GeoNature/wiki/V2-:-Backoffice</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

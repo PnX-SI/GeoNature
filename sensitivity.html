@@ -45,10 +45,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">INSTALLATION</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user-manual.html">MANUEL UTILISATEUR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
-<li class="toctree-l1"><a class="reference internal" href="import-level-1.html">IMPORT NIVEAU 1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="import-level-2.html">IMPORT NIVEAU 2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">DEVELOPPEMENT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="versions-compatibility.html">COMPATIBILITE</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
@@ -85,6 +82,19 @@
 <p>Les régles de sensibilité définies par défaut sont issues des règles du SINP.
 Elles dépendent de l’espèce et de l’observation. C’est-à-dire que pour une espèce donnée,
 plusieurs niveaux de sensibilité sont possibles selon l’observation.</p>
+<section id="criteres-de-sensibilite">
+<h3>Critères de sensibilité<a class="headerlink" href="#criteres-de-sensibilite" title="Lien permanent vers cette rubrique"></a></h3>
+<ul class="simple">
+<li><p>Taxon</p></li>
+<li><p>Emplacement</p></li>
+<li><p>Ancienneté</p></li>
+<li><p>Période de l’année</p></li>
+<li><p>Statut biologique</p></li>
+<li><p>Comportement de l’occurence</p></li>
+</ul>
+<p>Certaines règles de sensibilité peuvent porter uniquement sur l’espèce,
+rendant l’entiereté des observations d’une espèce (et donc une espèce) sensible.</p>
+</section>
 <section id="niveaux-de-sensibilite">
 <h3>Niveaux de sensibilité<a class="headerlink" href="#niveaux-de-sensibilite" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Voici les 5 niveaux de sensibilité définis par le SINP :</p>
@@ -95,53 +105,51 @@ plusieurs niveaux de sensibilité sont possibles selon l’observation.</p>
 <li><p>Sensible - Diffusion à la Commune ou Znieff</p></li>
 <li><p>Non sensible - Diffusion précise</p></li>
 </ul>
-<p>Dans certains cas, des demandes consistent à rendre l’entiereté des observations
-d’une espèce (et donc une espèce) sensible.
-Cette documentation propose une méthode pour y arriver dans l’outil GeoNature.</p>
 </section>
 <section id="pour-plus-d-informations">
 <h3>Pour plus d’informations<a class="headerlink" href="#pour-plus-d-informations" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Vous pouvez consulter :</p>
 <ul class="simple">
-<li><p>La page du site du <a class="reference external" href="https://inpn.mnhn.fr/programme/donnees-observations-especes/references/sensibilite">MNHN traitant de la sensibilité</a>.</p></li>
+<li><p>La page du site du <a class="reference external" href="https://inpn.mnhn.fr/programme/donnees-observations-especes/references/sensibilite">SINP traitant de la sensibilité</a>.</p></li>
 <li><p>Le rapport de 2020 sur <a class="reference external" href="https://inpn.mnhn.fr/docs-web/docs/download/355449">La sensibilité des données du système  d’information  de l’inventaire  du  patrimoine naturel : méthodes, pratiques et usages (J. Ichter et S. Robert)</a>.</p></li>
 </ul>
-</section>
-</section>
-<section id="attention">
-<h2>Attention<a class="headerlink" href="#attention" title="Lien permanent vers cette rubrique"></a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
 <p>L’objectif de ce document n’est pas de modifier les règles établies par
 le SINP. Il est donc conseillé de respecter ces règles définies au niveau
 régional et national et donc de ne pas ajouter de règles locales.</p>
+</div>
+</section>
 </section>
 <section id="integration-dans-geonature">
 <h2>Intégration dans GeoNature<a class="headerlink" href="#integration-dans-geonature" title="Lien permanent vers cette rubrique"></a></h2>
-<p>Le référentiel de sensibilité fournie par l’INPN est normalement intégré
-à GeoNature lors de son installation. Sinon, il peut être manuellement
-intégré avec la commande :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(venv)$ geonature db upgrade ref_sensitivity_inpn@head
-</pre></div>
-</div>
-<section id="schema-gn-sensitivity">
-<h3>Schéma gn_sensitivity<a class="headerlink" href="#schema-gn-sensitivity" title="Lien permanent vers cette rubrique"></a></h3>
-<p>3 tables sont utilisées par ces fonctions :</p>
+<section id="stockage-des-regles-en-base">
+<h3>Stockage des règles en base<a class="headerlink" href="#stockage-des-regles-en-base" title="Lien permanent vers cette rubrique"></a></h3>
+<p>Les règles de sensibilité sont stockées dans le schéma <code class="docutils literal notranslate"><span class="pre">gn_sensitivity</span></code>
+qui contient 3 tables :</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules</span></code> qui relie notamment une espèce à un niveau de
 sensibilité</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">cor_sensitivity_criteria</span></code> qui permet d’appliquer ce niveau de
-sensibilité en fonction d’un critère (par défaut, biologique)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">cor_sensitivity_area</span></code> qui permet d’appliquer un niveau de
-sensibilité en fonction de la zone géographique (pas encore abordée
-ici)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cor_sensitivity_criteria</span></code> qui permet de restreindre une règle de
+sensibilité en fonction d’un critère (par exemple, statut biologique)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cor_sensitivity_area</span></code> qui permet de restreindre une règle de
+sensibilité à une zone géographique</p></li>
 </ul>
 <p>S’il n’y a aucune entrée dans <code class="docutils literal notranslate"><span class="pre">cor_sensitivity_criteria</span></code>, le niveau de
 sensibilité défini dans <code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules</span></code> est appliqué peu importe
 le statut biologique ou le comportement de l’occurence.
 De même, s’il n’y a aucune entrée dans <code class="docutils literal notranslate"><span class="pre">cor_sensitivity_area</span></code>, le niveau
-de sensibilité est appliqué peu importe la localisation de l’observation.</p>
+de sensibilité est appliqué peu importe la localisation de l’observation.
+À l’inverse, s’il y a plusieurs entrées, la sensibilité est appliqué dès
+que l’un des critères ou l’une des zones correspond à l’observation.</p>
+<p>Certaines règles sont définies non pas pour une espèce donnée mais pour un
+rang supérieur. Ces règles sont artificiellement dupliquées pour chaques espèces
+sous-jacentes dans la vue matérialisée <code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules_cd_ref</span></code>.
+Il est nécessaire de la rafraichir lors de l’évolution du référentiel
+de sensibilité.</p>
 </section>
-<section id="schema-gn-synthese">
-<h3>Schéma gn_synthese<a class="headerlink" href="#schema-gn-synthese" title="Lien permanent vers cette rubrique"></a></h3>
+<section id="attribution-aux-observations-de-la-synthese">
+<h3>Attribution aux observations de la synthèse<a class="headerlink" href="#attribution-aux-observations-de-la-synthese" title="Lien permanent vers cette rubrique"></a></h3>
 <p>A chaque insertion d’une donnée dans la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code>,
 un trigger (<code class="docutils literal notranslate"><span class="pre">tri_insert_calculate_sensitivity</span></code>) fait appel à une
 fonction (<code class="docutils literal notranslate"><span class="pre">fct_tri_cal_sensitivity_on_each_statement</span></code>) qui appelle
@@ -152,39 +160,70 @@ sensibilité en fonction de l’espèce, du type de sensibilité, de la durée
 de validité, de la période d’observation, du statut biologique et du
 comportement de l’occurence.</p>
 </section>
+<section id="gestion-du-referentiel">
+<h3>Gestion du référentiel<a class="headerlink" href="#gestion-du-referentiel" title="Lien permanent vers cette rubrique"></a></h3>
+<p>GeoNature fournit la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">sensitivity</span></code> pour gérer son référentiel
+de sensibilité :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">sensitivity</span> <span class="pre">info</span></code> : statistiques sur les règles présentes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">sensitivity</span> <span class="pre">add-referential</span></code> : import de nouvelles règles</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">sensitivity</span> <span class="pre">remove-referential</span></code> : suppression de règles</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">sensitivity</span> <span class="pre">refresh-rules-cache</span></code> : mise à jour de la vue matérialisées des règles</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">sensitivity</span> <span class="pre">update-synthese</span></code> : recalcul de la sensibilité des observations de la synthèse</p></li>
+</ul>
+<p>Le référentiel de sensibilité fourni par le SINP est normalement intégré
+à GeoNature lors de son installation. Sinon, il peut être manuellement
+intégré avec l’une ou l’autre des commandes suivantes :</p>
+<p>TaxRef v15 :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">geonature</span> <span class="n">sensitivity</span> <span class="n">add</span><span class="o">-</span><span class="n">referential</span> \
+        <span class="o">--</span><span class="n">source</span><span class="o">-</span><span class="n">name</span> <span class="s2">&quot;Référentiel sensibilité TAXREF v15 20220331&quot;</span> \
+        <span class="o">--</span><span class="n">url</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">inpn</span><span class="o">.</span><span class="n">mnhn</span><span class="o">.</span><span class="n">fr</span><span class="o">/</span><span class="n">docs</span><span class="o">-</span><span class="n">web</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">download</span><span class="o">/</span><span class="mi">401875</span> \
+        <span class="o">--</span><span class="n">zipfile</span> <span class="n">RefSensibiliteV15_20220331</span><span class="o">.</span><span class="n">zip</span> \
+        <span class="o">--</span><span class="n">csvfile</span> <span class="n">RefSensibilite_V15_31032022</span><span class="o">/</span><span class="n">RefSensibilite_15</span><span class="o">.</span><span class="n">csv</span>  \
+        <span class="o">--</span><span class="n">encoding</span><span class="o">=</span><span class="n">iso</span><span class="o">-</span><span class="mi">8859</span><span class="o">-</span><span class="mi">15</span>
+</pre></div>
+</div>
+<p>TaxRef v14 :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">geonature</span> <span class="n">sensitivity</span> <span class="n">add</span><span class="o">-</span><span class="n">referential</span> \
+        <span class="o">--</span><span class="n">source</span><span class="o">-</span><span class="n">name</span> <span class="s2">&quot;Référentiel sensibilité TAXREF v14 20220331&quot;</span> \
+        <span class="o">--</span><span class="n">url</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">inpn</span><span class="o">.</span><span class="n">mnhn</span><span class="o">.</span><span class="n">fr</span><span class="o">/</span><span class="n">docs</span><span class="o">-</span><span class="n">web</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">download</span><span class="o">/</span><span class="mi">401876</span> \
+        <span class="o">--</span><span class="n">zipfile</span> <span class="n">RefSensibiliteV14_20220331</span><span class="o">.</span><span class="n">zip</span> \
+        <span class="o">--</span><span class="n">csvfile</span> <span class="n">RefSensibilite_V14_31032022</span><span class="o">/</span><span class="n">RefSensibilite_14</span><span class="o">.</span><span class="n">csv</span>  \
+        <span class="o">--</span><span class="n">encoding</span><span class="o">=</span><span class="n">iso</span><span class="o">-</span><span class="mi">8859</span><span class="o">-</span><span class="mi">15</span>
+</pre></div>
+</div>
+<p>Le jeu de règles est fourni pour les versions 14 et 15 de TaxRef, certaines
+espèces sensibles pouvant voir leur cd_nom changé d’une version à l’autre.</p>
 </section>
 <section id="personnalisation">
-<h2>Personnalisation<a class="headerlink" href="#personnalisation" title="Lien permanent vers cette rubrique"></a></h2>
+<h3>Personnalisation<a class="headerlink" href="#personnalisation" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Pour l’instant, seule la personnalisation de la sensibilité pour
 une espèce donnée (peu importe l’observation) est abordée ici.</p>
-<section id="sensibilite-de-l-espece-toute-observation-confondue">
-<h3>Sensibilité de l’espèce toute observation confondue<a class="headerlink" href="#sensibilite-de-l-espece-toute-observation-confondue" title="Lien permanent vers cette rubrique"></a></h3>
 <ol class="arabic">
 <li><p>Dans <code class="docutils literal notranslate"><span class="pre">gn_sensitivity.t_sensitivity_rules</span></code> : Changez le niveau de
 sensibilité <code class="docutils literal notranslate"><span class="pre">id_nomenclature_sensitivity</span></code> par celui désiré. Pour la
 valeur à renseigner, voir dans <code class="docutils literal notranslate"><span class="pre">t_nomenclature</span></code> en filtrant avec
-<code class="docutils literal notranslate"><span class="pre">id_type=ref_nomenclatures.get_id_nomenclature_type('SENSIBILITE')</span></code>.
-En général l’identifiant varie entre 65 (non sensible) et 69
-(aucune diffusion). Attention ces identifiants peuvent varier en fonction de
-votre installation.</p></li>
+<code class="docutils literal notranslate"><span class="pre">id_type=ref_nomenclatures.get_id_nomenclature_type('SENSIBILITE')</span></code>.</p></li>
 <li><p>Dans <code class="docutils literal notranslate"><span class="pre">cor_sensitivity_criteria</span></code> : s’il y a une correspondance
 d”<code class="docutils literal notranslate"><span class="pre">id_sensitivity</span></code> avec <code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules</span></code>, modifiez ou supprimez cette ligne.</p></li>
-<li><p>Lancez la commande SQL suivante :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">REFRESH</span><span class="w"> </span><span class="n">MATERIALIZED</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">gn_sensitivity</span><span class="p">.</span><span class="n">t_sensitivity_rules_cd_ref</span><span class="p">;</span><span class="w"></span>
+<li><p>Rafraichissez le cache des règles extrapolées aux espèces :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity refresh-rules-cache
 </pre></div>
 </div>
-<p>Pour rafraîchir la vue materialisée utilisée par les fonctions
-appelées par le trigger de <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code>.</p>
+<p>Ceci est équivalent à lancer manuellement la commande SQL suivante :</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">REFRESH</span><span class="w"> </span><span class="n">MATERIALIZED</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">gn_sensitivity</span><span class="p">.</span><span class="n">t_sensitivity_rules_cd_ref</span><span class="w"></span>
+</pre></div>
+</div>
 </li>
 <li><p>Il est maintenant nécessaire de mettre à jour la sensibilité de vos
-observations présentent dans la synthèse. Pour cela, lancez la commande suivante :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(venv)$ geonature sensitivity update-synthese
+observations présentes dans la synthèse. Pour cela, lancez la commande suivante :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity update-synthese
 </pre></div>
 </div>
 </li>
 </ol>
-<p>Normalement, les valeurs dans la colonne <code class="docutils literal notranslate"><span class="pre">id_nomenclature_sensitivity</span></code>
-de la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code> ont
+<p>Les valeurs dans la colonne <code class="docutils literal notranslate"><span class="pre">id_nomenclature_sensitivity</span></code> des observations sensibles
+de la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code> auront alors
 changé. Vous pouvez le vérifier en navigant dans le module Synthèse
 puis dans les détails d’une observation de votre/vos espèce(s).</p>
 </section>

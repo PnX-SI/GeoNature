@@ -72,16 +72,20 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#taches-planifiees">Taches planifiées</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation-d-un-module-geonature">Installation d’un module GeoNature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-d-un-module-geonature">Installation d’un module GeoNature</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#telechargement">Téléchargement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation-automatique">Installation automatique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation-manuelle">Installation manuelle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-du-module">Configuration du module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mise-a-jour-du-module">Mise à jour du module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#mise-a-jour-de-l-application">Mise à jour de l’application</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="user-manual.html">MANUEL UTILISATEUR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
-<li class="toctree-l1"><a class="reference internal" href="import-level-1.html">IMPORT NIVEAU 1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="import-level-2.html">IMPORT NIVEAU 2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">DEVELOPPEMENT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="versions-compatibility.html">COMPATIBILITE</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
@@ -126,7 +130,7 @@
 <p>Deux méthodes d’installation existent :</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#installation-all"><span class="std std-ref">Installation globale</span></a> : Installation automatisée de GeoNature, TaxHub et UsersHub.</p></li>
-<li><p><a class="reference internal" href="#installation-standalone"><span class="std std-ref">Installation de GeoNature uniquement</span></a> : TaxHub et UsersHub ne sont pas installés (mais leur schémas sont tous de même créés dans la base de données).</p></li>
+<li><p><a class="reference internal" href="#installation-standalone"><span class="std std-ref">Installation de GeoNature uniquement</span></a> : TaxHub et UsersHub ne sont pas installés (mais leurs schémas sont tous de même créés dans la base de données).</p></li>
 </ul>
 <section id="prerequis">
 <h2>Prérequis<a class="headerlink" href="#prerequis" title="Lien permanent vers cette rubrique"></a></h2>
@@ -147,8 +151,6 @@
 <li><p><a class="reference external" href="https://registry.npmjs.org">https://registry.npmjs.org</a></p></li>
 <li><p><a class="reference external" href="https://www.npmjs.com">https://www.npmjs.com</a></p></li>
 <li><p><a class="reference external" href="https://raw.githubusercontent.com/">https://raw.githubusercontent.com/</a></p></li>
-<li><p><a class="reference external" href="https://inpn.mnhn.fr/mtd">https://inpn.mnhn.fr/mtd</a></p></li>
-<li><p><a class="reference external" href="https://preprod-inpn.mnhn.fr/mtd">https://preprod-inpn.mnhn.fr/mtd</a></p></li>
 <li><p><a class="reference external" href="https://wxs.ign.fr/">https://wxs.ign.fr/</a></p></li>
 </ul>
 </li>
@@ -505,43 +507,127 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
 </div>
 </section>
 <section id="installation-d-un-module-geonature">
-<h2>Installation d’un module GeoNature<a class="headerlink" href="#installation-d-un-module-geonature" title="Lien permanent vers cette rubrique"></a></h2>
-<p>L’installation de GeoNature n’est livrée qu’avec les schémas de base de données et les modules du coeur (NB : les modules Occtax, Occhab et Validation sont fournis par défaut). Pour ajouter un gn_module externe, il est nécessaire de l’installer :</p>
-<p><strong>1.</strong> Téléchargez le module depuis son dépôt Github puis dézippez-le dans le repertoire utilisateur, au même niveau que le dossier <code class="docutils literal notranslate"><span class="pre">geonature</span></code>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd /home/`whoami`
+<span id="install-gn-module"></span><h2>Installation d’un module GeoNature<a class="headerlink" href="#installation-d-un-module-geonature" title="Lien permanent vers cette rubrique"></a></h2>
+<p>L’installation de GeoNature n’est livrée qu’avec les modules du coeur par défaut : Occtax, Occhab et Validation. Pour ajouter un module GeoNature externe, il est nécessaire de l’installer :</p>
+<section id="telechargement">
+<h3>Téléchargement<a class="headerlink" href="#telechargement" title="Lien permanent vers cette rubrique"></a></h3>
+<p>Téléchargez le module depuis son dépôt Github puis dézippez-le dans le repertoire utilisateur, au même niveau que le dossier de GeoNature.</p>
+</section>
+<section id="installation-automatique">
+<span id="install-gn-module-auto"></span><h3>Installation automatique<a class="headerlink" href="#installation-automatique" title="Lien permanent vers cette rubrique"></a></h3>
+<p>Installation avec la sous-commande <code class="docutils literal notranslate"><span class="pre">install-gn-module</span></code> :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> &lt;dossier GeoNature&gt;/backend/venv/bin/activate
+geonature install-gn-module &lt;dossier du module&gt; &lt;code du module&gt;
 </pre></div>
 </div>
-<p><strong>2.</strong> Renseignez l’éventuel fichier <code class="docutils literal notranslate"><span class="pre">config/settings.ini</span></code> du module.</p>
-<p><strong>3.</strong> Installez le module. Rendez-vous dans le répertoire <code class="docutils literal notranslate"><span class="pre">backend</span></code> de GeoNature et activez le virtualenv pour rendre disponible les commandes GeoNature :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<p>Exemple pour le module Import :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> ~/GeoNature/backend/venv/bin/activate
+geonature install-gn-module ~/gn_module_import/ IMPORT
 </pre></div>
 </div>
-<p>Lancez ensuite la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">install_gn_module</span> <span class="pre">&lt;mon_chemin_absolu_vers_le_module&gt;</span> <span class="pre">&lt;url_relative_du_module&gt;</span></code></p>
-<p>Le premier paramètre est l’emplacement absolu du module sur votre serveur et le deuxième est le chemin derrière lequel on accédera au module dans le navigateur.</p>
-<p>Exemple pour un module Import :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>geonature install_gn_module /home/`whoami`/gn_module_import import
-</pre></div>
-</div>
-<p>Le module sera disponible à l’adresse <code class="docutils literal notranslate"><span class="pre">http://mon-geonature.fr/geonature/#/import</span></code></p>
-<p>L’API du module sera disponible à l’adresse <code class="docutils literal notranslate"><span class="pre">http://mon-geonature.fr/api/import</span></code></p>
-<p>Cette commande exécute les actions suivantes :</p>
-<ul class="simple">
-<li><p>Vérification de la conformité de la structure du module (présence des fichiers et dossiers obligatoires)</p></li>
-<li><p>Intégration du blueprint du module dans l’API de GeoNature</p></li>
-<li><p>Vérification de la conformité des paramètres utilisateurs</p></li>
-<li><p>Génération du routing Angular pour le frontend</p></li>
-</ul>
-<p><strong>4.</strong> Complétez l’éventuelle configuration du module (<code class="docutils literal notranslate"><span class="pre">config/conf_gn_module.toml</span></code>) à partir des paramètres présents dans <code class="docutils literal notranslate"><span class="pre">config/conf_gn_module.toml.example</span></code> dont vous pouvez surcoucher les valeurs par défaut. Puis relancez la mise à jour de la configuration (depuis le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/backend</span></code> et une fois dans le venv (<code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">venv/bin/activate</span></code>) : <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">update_module_configuration</span> <span class="pre">nom_du_module</span></code>)</p>
-<p><strong>5.</strong> Re-build du frontend :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">frontend</span>
-<span class="n">nvm</span> <span class="n">use</span>
-<span class="n">npm</span> <span class="n">run</span> <span class="n">build</span>
+<p>Puis relancer GeoNature :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo systemctl restart geonature
 </pre></div>
 </div>
 </section>
+<section id="installation-manuelle">
+<h3>Installation manuelle<a class="headerlink" href="#installation-manuelle" title="Lien permanent vers cette rubrique"></a></h3>
+<p><strong>Installation du backend</strong></p>
+<p>Installer le module avec <code class="docutils literal notranslate"><span class="pre">pip</span></code> en mode éditable après avoir activé le venv de GeoNature, puis relancer GeoNature :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> &lt;dossier GeoNature&gt;/backend/venv/bin/activate
+pip install --editable &lt;dossier du module&gt;
+sudo systemctl restart geonature
+</pre></div>
+</div>
+<p id="module-install-frontend"><strong>Installation du frontend</strong></p>
+<ul class="simple">
+<li><p>Créer un lien symbolique dans le dossier <code class="docutils literal notranslate"><span class="pre">frontend/external_modules</span></code> de GeoNature vers le dossier <code class="docutils literal notranslate"><span class="pre">frontend</span></code> du module.
+Le lien symbolique doit être nommé suivant le code du module en minuscule :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> &lt;dossier GeoNature&gt;/frontend/external_modules/
+ln -s &lt;dossier du module&gt;/frontend &lt;code du module en minuscule&gt;
+</pre></div>
+</div>
+<p>Exemple pour le module Import :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> ~/GeoNature/frontend/external_modules/
+ln -s ~/gn_module_import/frontend import
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Générer la configuration frontend du module :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> &lt;dossier GeoNature&gt;/backend/venv/bin/activate
+geonature update-module-configuration &lt;CODE DU MODULE&gt;
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Re-builder le frontend :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> &lt;dossier GeoNature&gt;/frontend/
+nvm use
+npm run build
+</pre></div>
+</div>
+<p><strong>Installation de la base de données</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> &lt;dossier GeoNature&gt;/backend/venv/bin/activate
+geonature upgrade-modules-db &lt;code du module&gt;
+</pre></div>
+</div>
+</section>
+<section id="configuration-du-module">
+<span id="module-config"></span><h3>Configuration du module<a class="headerlink" href="#configuration-du-module" title="Lien permanent vers cette rubrique"></a></h3>
+<p>De manière facultative, vous pouvez modifier la configuration du module. La plupart des modules fournissent un fichier d’exemple <code class="docutils literal notranslate"><span class="pre">conf_gn_module.toml.example</span></code> dans leur dossier <code class="docutils literal notranslate"><span class="pre">config</span></code>.
+Afin de modifier les paramètres par défaut du module, vous pouvez le copier :</p>
+<ul class="simple">
+<li><p>Dans le dossier <code class="docutils literal notranslate"><span class="pre">config</span></code> de GeoNature en le nommant <code class="docutils literal notranslate"><span class="pre">&lt;code</span> <span class="pre">du</span> <span class="pre">module</span> <span class="pre">en</span> <span class="pre">minuscule&gt;_config.toml</span></code> (recommandé). Exemple pour le module d’import :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp ~/gn_module_import/config/conf_gn_module.toml.example ~/GeoNature/config/import_config.toml
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Dans le dossier <code class="docutils literal notranslate"><span class="pre">config</span></code> du module en le nommant <code class="docutils literal notranslate"><span class="pre">conf_gn_module.toml</span></code>. Exemple pour le module Import :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp ~/gn_module_import/config/conf_gn_module.toml.example ~/gn_module_import/config/conf_gn_module.toml
+</pre></div>
+</div>
+<p>Après chaque modification du module, vous devez :</p>
+<ul class="simple">
+<li><p>Recharger GeoNature :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo systemctl reload geonature
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Re-générer la configuration frontend du module et re-builder le frontend avec la sous-commande <code class="docutils literal notranslate"><span class="pre">update-configuration</span></code> :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> &lt;dossier GeoNature&gt;/backend/venv/bin/activate
+geonature update-configuration
+</pre></div>
+</div>
+</section>
+<section id="mise-a-jour-du-module">
+<h3>Mise à jour du module<a class="headerlink" href="#mise-a-jour-du-module" title="Lien permanent vers cette rubrique"></a></h3>
+<ul class="simple">
+<li><p>Déplacer le code de l’ancienne version du module : <code class="docutils literal notranslate"><span class="pre">mv</span> <span class="pre">gn_module_xxx</span> <span class="pre">gn_module_xxx_old</span></code></p></li>
+<li><p>Télécharger et désarchiver la nouvelle version du module, et renommer son dossier afin qu’il porte le même nom qu’avant (<em>e.g.</em> <code class="docutils literal notranslate"><span class="pre">gn_module_xxx</span></code>)</p></li>
+<li><p>(Optionnel) Si le fichier de configuration du module est placé avec celui-ci, le récupérer : <code class="docutils literal notranslate"><span class="pre">cp</span> <span class="pre">gn_module_xxx_old/config/conf_gn_module.toml</span> <span class="pre">gn_module_xxx/config/</span></code></p></li>
+<li><p>Relancer l’<a class="reference internal" href="#install-gn-module-auto"><span class="std std-ref">installation du module</span></a> : <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">install-gn-module</span> <span class="pre">gn_module_xxx</span> <span class="pre">XXX</span> <span class="pre">&amp;&amp;</span> <span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">reload</span> <span class="pre">geonature</span></code></p></li>
+</ul>
+</section>
+</section>
 <section id="mise-a-jour-de-l-application">
 <h2>Mise à jour de l’application<a class="headerlink" href="#mise-a-jour-de-l-application" title="Lien permanent vers cette rubrique"></a></h2>
-<p>Attention, avant chaque mise à jour de GeoNature, il est important de sauvegarder l’application et sa base de données, ou de faire un snapshot du serveur pour pouvoir revenir à son état antérieure avant mise à jour en cas de problème.</p>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Avant chaque mise à jour de GeoNature, il est important de sauvegarder l’application et sa base de données, ou de faire un snapshot du serveur pour pouvoir revenir à son état antérieure avant mise à jour, en cas de problème.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Vérifiez préalablement la compatibilité des modules que vous utilisez avant de mettre GeoNature à jour.
+S’il est nécessaire de les mettre à jour, arrêtez vous après le remplacement du dossier par le nouveau code source
+(et la récupération éventuelle de la configuration) ; le script de migration de GeoNature s’occupera automatiquement
+d’installer la nouvelle version du module.</p>
+</div>
 <p>La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans un nouveau répertoire, récupérer les fichiers de configuration et de surcouche depuis la version actuelle et de relancer l’installation dans le répertoire de la nouvelle version.</p>
 <p>La mise à jour doit être réalisée avec votre utilisateur linux courant (<code class="docutils literal notranslate"><span class="pre">geonatureadmin</span></code> par exemple) et non pas le super-utilisateur <code class="docutils literal notranslate"><span class="pre">root</span></code>.</p>
 <ul>
@@ -561,8 +647,7 @@ cd geonature
 </li>
 <li><p>Suivez les éventuelles notes de version spécifiques décrites au niveau de chaque version : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/releases">https://github.com/PnX-SI/GeoNature/releases</a>.</p></li>
 </ul>
-<p>⚠️ Si la release inclut des scripts de migration SQL : <em>lancer ces scripts avec l’utilisateur de BDD courant</em> (généralement <code class="docutils literal notranslate"><span class="pre">geonatadmin</span></code>) et non le super-utilisateur <code class="docutils literal notranslate"><span class="pre">postgres</span></code>.</p>
-<p>Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions intermédiaires et notamment les scripts de mise à jour de la base de données à exécuter successivement.</p>
+<p>Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions intermédiaires.</p>
 <ul>
 <li><p>Si vous devez aussi mettre à jour TaxHub et/ou UsersHub, suivez leurs notes de versions mais aussi leur documentation (<a class="reference external" href="https://usershub.readthedocs.io">https://usershub.readthedocs.io</a> et <a class="reference external" href="https://taxhub.readthedocs.io">https://taxhub.readthedocs.io</a>).</p></li>
 <li><p>Lancez le script de <code class="docutils literal notranslate"><span class="pre">migration.sh</span></code> à la racine du dossier <code class="docutils literal notranslate"><span class="pre">geonature</span></code>:</p>

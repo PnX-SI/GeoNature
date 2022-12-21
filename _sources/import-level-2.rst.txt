@@ -1,8 +1,8 @@
 IMPORT NIVEAU 2
-===============
+"""""""""""""""
 
 Description
------------
+```````````
 
 L'exercice consiste à importer le fichier 
 https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-avance/observations.csv dans GeoNature V2.
@@ -29,7 +29,7 @@ https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-
 
 
 1 - Import du fichier CSV
--------------------------
+`````````````````````````
 
 Cette action doit être faite par un superuser PostgreSQL.
 
@@ -64,7 +64,7 @@ Dans les 2 cas, copier-coller les 2 commandes ci-dessous en adaptant les chemins
 
 
 2 - Préparation de la nouvelle table contenant les données importées
---------------------------------------------------------------------
+````````````````````````````````````````````````````````````````````
 
 **Ajouter une clé primaire sur la table importée**
 
@@ -92,7 +92,7 @@ En l'état vos données sont importées et stockées dans la base GeoNature. Cep
 
 
 3 - Création des métadonnées
-----------------------------
+````````````````````````````
 
 Il est nécessaire de rattacher les données importées à un jeu de données qui doit appartenir à un cadre d'acquisition. Si ceux-ci n'ont pas encore été créés dans la base, vous devez le faire dans ``gn_meta.t_acquisition_frameworks`` pour le cadre d'acquisition et dans ``gn_meta.t_datasets`` pour le jeu de données. Vous pouvez pour cela utiliser les formulaires disponibles dans l'interface d'aministration de GeoNature : http://myurl/geonature/#/admin
 
@@ -131,7 +131,7 @@ Il est également nécessaire, pour la synthese, de lui indiquer où sont stock�
 
 
 4 - Création du mapping (source --> cible)
-------------------------------------------
+``````````````````````````````````````````
 
 Le schéma gn_imports comporte trois tables permettant de préparer le mapping des champs entre la table importée (source) et une table de destination (target).
 
@@ -168,7 +168,7 @@ Une fois que le mapping est renseigné, vous pouvez passer à l'étape suivante.
 
 
 5 - Construire la requête d'import
-----------------------------------
+``````````````````````````````````
 
 Attention, pgAdmin va tronquer le résultat. Pour obtenir l'ensemble de la requête utiliser le bouton d'export du résultat dans un fichier ou executé la requête avec psql.
 
@@ -186,13 +186,13 @@ Attention, pgAdmin va tronquer le résultat. Pour obtenir l'ensemble de la requ�
 
 
 6 - Chargement des données dans la table de destination (synthese ici)
-----------------------------------------------------------------------
+``````````````````````````````````````````````````````````````````````
 
 Voir la requête d'import en synthèse à la fin de cette page.
 
 
 7 - On gère les nouveaux taxons vis à vis la saisie
----------------------------------------------------
+```````````````````````````````````````````````````
 
 Gestion des taxons dans ``taxonomie.bib_noms`` et de la liste des taxons saisissables dans Occtax.
 
@@ -252,7 +252,7 @@ Si on veut nettoyer et qu'on est sur de ne plus en avoir besoin
     DROP TABLE gn_imports.new_noms;
 
 8 - Déplacement de la table importée (facultatif)
--------------------------------------------------
+`````````````````````````````````````````````````
 
 On peut si on le souhaite déplacer la table vers une destination d'archivage
 
@@ -263,7 +263,7 @@ On peut si on le souhaite déplacer la table vers une destination d'archivage
 On peut la mettre dans le schéma gn_exports pour l'exercice afin de tester mais ce n'est pas sa vocation.
 
 RESULTAT FINAL
---------------
+``````````````
 
 .. code:: sql
     

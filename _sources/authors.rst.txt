@@ -1,12 +1,12 @@
 AUTEURS
 =======
 
-Parc national des Ecrins
+Parc national des Écrins
 ------------------------
 
 * Gil Deluermoz
-* Theo Lechemia
-* Elie Bouttier
+* Théo Lechemia
+* Élie Bouttier
 * Camille Monchicourt
 
 .. image:: http://geonature.fr/img/logo-pne.jpg
@@ -25,17 +25,17 @@ Parc national des Cevennes
 Contributeurs
 -------------
 
-* Quang Pham (Parc national des Ecrins)
+* Quang Pham (Parc national des Écrins)
 * Claire Lagaye (Parc national de la Vanoise)
 * Xavier Arbez (Parc naturel régional du Pilat)
 * Kevin Samuel
 * Donovan Maillard (Flavia)
-* Khanh-Chau Nguyen (Parc national des Ecrins)
+* Khanh-Chau Nguyen (Parc national des Écrins)
 * Etienne Trimaille (Parc national de Guadeloupe)
 * Fred Cloitre (LPO Ardèche)
 * Daniel Thonon (LPO Isère)
-* Richard Vergely (Parc national des Ecrins)
-* Robin Elzeard (Parc national des Ecrins)
+* Richard Vergely (Parc national des Écrins)
+* Robin Elzeard (Parc national des Écrins)
 * Sylvain Montagner (Parc naturel régional de Normandie-Maine)
 * Patrick Kappeler (Natural Solutions)
 * Julien Corny (Natural Solutions)
