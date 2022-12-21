@@ -139,7 +139,7 @@ Si vous mettez à jour GeoNature :
     paramètres définis ainsi peuvent être exclus de la configuration
     TOML, y compris les paramètres obligatoires
 -   Mise à jour des dépendances :
-    -   TaxHub
+    -   TaxHub 1.10.7
     -   UsersHub
     -   UsersHub-authentification-module 1.6.2
     -   Utils-Flask-SQLAlchemy 0.3.1
