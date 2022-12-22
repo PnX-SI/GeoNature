@@ -122,16 +122,13 @@ def get_observations_for_web(info_role):
     :>jsonarr int nb_total: Number of observations
     :>jsonarr bool nb_obs_limited: Is number of observations capped
     """
-    if request.is_json:
-        filters = request.json
-    elif request.data:
-        #  decode byte to str - compat python 3.5
-        filters = json.loads(request.data.decode("utf-8"))
-    else:
-        filters = {key: request.args.get(key) for key, value in request.args.items()}
-    query_params = request.args
-    result_limit = query_params.get("limit", current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"], int)
-    output_format = query_params.get("format", "ungrouped_geom")
+    filters = request.json if request.is_json else {}
+    if type(filters) != dict:
+        raise BadRequest("Bad filters")
+    result_limit = request.args.get(
+        "limit", current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"], type=int
+    )
+    output_format = request.args.get("format", "ungrouped_geom")
     if output_format not in ["ungrouped_geom", "grouped_geom", "grouped_geom_by_areas"]:
         raise BadRequest(f"Bad format '{output_format}'")
 

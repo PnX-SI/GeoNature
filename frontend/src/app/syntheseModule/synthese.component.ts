@@ -1,4 +1,5 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
 import { MapListService } from '@geonature_common/map-list/map-list.service';
@@ -38,15 +39,15 @@ export class SyntheseComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this._fs.selectors = this._fs.selectors
+      .set('limit', AppConfig.SYNTHESE.NB_LAST_OBS)
+      .set(
+        'format',
+        AppConfig.SYNTHESE.ENABLE_AREA_AGGREGATION && AppConfig.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT
+          ? 'grouped_geom_by_areas'
+          : 'grouped_geom'
+      );
     this._route.queryParamMap.subscribe((params) => {
-      this._fs.queryStringForm.patchValue({
-        limit: AppConfig.SYNTHESE.NB_LAST_OBS,
-        format:
-          AppConfig.SYNTHESE.ENABLE_AREA_AGGREGATION &&
-          AppConfig.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT
-            ? 'grouped_geom_by_areas'
-            : 'grouped_geom',
-      });
       if (params.get('id_dataset')) {
         this._fs.searchForm.patchValue({ id_dataset: params.get('id_dataset') });
       }
@@ -81,10 +82,10 @@ export class SyntheseComponent implements OnInit {
     this.searchService.dataLoaded = false;
     this._fs.searchForm.markAsPristine();
 
-    this.searchService.getSyntheseData(formParams, this._fs.queryStringForm.value).subscribe(
+    this.searchService.getSyntheseData(formParams, this._fs.selectors).subscribe(
       (data) => {
         // mark the form pristine at each search in order to manage store data
-        if (this._fs.searchForm.value.format == 'grouped_geom_by_areas') {
+        if (this._fs.selectors.get('format') == 'grouped_geom_by_areas') {
           this._syntheseStore.gridData = data;
         } else {
           this._syntheseStore.pointData = data;
@@ -113,12 +114,10 @@ export class SyntheseComponent implements OnInit {
       }
     );
 
-    if (this.firstLoad && 'limit' in formParams) {
+    if (this.firstLoad && this._fs.selectors.has('limit')) {
       //toaster
-      this._toasterService.info(
-        `Les ${AppConfig.SYNTHESE.NB_LAST_OBS} dernières observations de la synthèse`,
-        ''
-      );
+      let limit = this._fs.selectors.get('limit');
+      this._toasterService.info(`Les ${limit} dernières observations de la synthèse`, '');
     }
     this.firstLoad = false;
   }
@@ -165,16 +164,9 @@ export class SyntheseComponent implements OnInit {
     }
   }
   onSearchEvent() {
-    // reinitlize limit = 100
-    this._fs.queryStringForm.patchValue({
-      limit: null,
-    });
     // on search button click, clean cache and call loadAndStoreData
     this._syntheseStore.gridData = null;
     this._syntheseStore.pointData = null;
-    // merge queryString form and seachForm data
-    // const dataForWebService = { ...this.queryStringForm.value, ...this._fs.searchForm.value };
-
     this.loadAndStoreData(this._fs.formatParams());
   }
 

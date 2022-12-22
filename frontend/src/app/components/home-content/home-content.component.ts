@@ -56,9 +56,11 @@ export class HomeContentComponent implements OnInit {
     this.appConfig = AppConfig;
 
     if (this.showLastObsMap) {
-      this._syntheseApi.getSyntheseData({ limit: 100, ungrouped_geom: true }).subscribe((data) => {
-        this.lastObs = data;
-      });
+      this._syntheseApi
+        .getSyntheseData({}, { limit: 100, format: 'ungrouped_geom' })
+        .subscribe((data) => {
+          this.lastObs = data;
+        });
     }
 
     if (this.showGeneralStat) {

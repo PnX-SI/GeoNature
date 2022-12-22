@@ -180,9 +180,10 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
         switchBtn.checked = this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
         switchBtn.onclick = () => {
           this.areasEnable = switchBtn.checked;
-          this.formService.searchForm.patchValue({
-            format: switchBtn.checked ? 'grouped_geom_by_areas' : 'grouped_geom',
-          });
+          this.formService.selectors = this.formService.selectors.set(
+            'format',
+            switchBtn.checked ? 'grouped_geom_by_areas' : 'grouped_geom'
+          );
           this.onAreasToggle.emit(switchBtn.checked ? 'grid' : 'point');
 
           // Show areas legend if areas toggle button is enable

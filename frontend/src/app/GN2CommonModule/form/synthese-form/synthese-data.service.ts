@@ -43,14 +43,9 @@ export class SyntheseDataService {
     return queryUrl;
   }
 
-  getSyntheseData(postParams, getParams = {}) {
-    let queryString = new HttpParams();
-    for (let key in getParams) {
-      queryString = queryString.set(key, getParams[key]);
-    }
-
-    return this._api.post<any>(`${AppConfig.API_ENDPOINT}/synthese/for_web`, postParams, {
-      params: queryString,
+  getSyntheseData(filters, selectors) {
+    return this._api.post<any>(`${AppConfig.API_ENDPOINT}/synthese/for_web`, filters, {
+      params: selectors,
     });
   }
 
