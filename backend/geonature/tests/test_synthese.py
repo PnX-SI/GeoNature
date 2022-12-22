@@ -1,6 +1,7 @@
 import pytest
 import json
 import itertools
+from collections import Counter
 
 from flask import url_for, current_app
 from sqlalchemy import func
@@ -40,12 +41,6 @@ def unexisted_id_source():
 
 
 @pytest.fixture()
-def bbox_geom(synthese_data):
-    """used to check bbox"""
-    return Point(geometry=to_shape(synthese_data[0].the_geom_4326))
-
-
-@pytest.fixture()
 def taxon_attribut(noms_example, attribut_example, synthese_data):
     """
     Require "taxonomie_taxons_example" and "taxonomie_attributes_example" alembic branches.
@@ -63,50 +58,58 @@ def taxon_attribut(noms_example, attribut_example, synthese_data):
 synthese_properties = {
     "type": "object",
     "properties": {
-        "id": {"type": "number"},
-        "cd_nom": {"type": "number"},
-        "count_min_max": {"type": "string"},
-        "dataset_name": {"type": "string"},
-        "date_min": {"type": "string"},
-        "entity_source_pk_value": {
-            "oneOf": [
-                {"type": "null"},
-                {"type": "string"},
-            ],
-        },
-        "lb_nom": {"type": "string"},
-        "nom_vern_or_lb_nom": {"type": "string"},
-        "unique_id_sinp": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
-        },
-        "observers": {
-            "oneOf": [
-                {"type": "null"},
-                {"type": "string"},
-            ],
-        },
-        "url_source": {
-            "oneOf": [
-                {"type": "null"},
-                {"type": "string"},
-            ],
+        "observations": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "number"},
+                    "cd_nom": {"type": "number"},
+                    "count_min_max": {"type": "string"},
+                    "dataset_name": {"type": "string"},
+                    "date_min": {"type": "string"},
+                    "entity_source_pk_value": {
+                        "oneOf": [
+                            {"type": "null"},
+                            {"type": "string"},
+                        ],
+                    },
+                    "lb_nom": {"type": "string"},
+                    "nom_vern_or_lb_nom": {"type": "string"},
+                    "unique_id_sinp": {
+                        "type": "string",
+                        "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                    },
+                    "observers": {
+                        "oneOf": [
+                            {"type": "null"},
+                            {"type": "string"},
+                        ],
+                    },
+                    "url_source": {
+                        "oneOf": [
+                            {"type": "null"},
+                            {"type": "string"},
+                        ],
+                    },
+                },
+                "required": [  # obligatoire pour le fonctionement du front
+                    "id",
+                    "cd_nom",
+                    "url_source",
+                    "entity_source_pk_value",
+                ],
+                # "additionalProperties": False,
+            },
         },
     },
-    "required": [  # obligatoire pour le fonctionement du front
-        "id",
-        "cd_nom",
-        "url_source",
-        "entity_source_pk_value",
-    ],
-    "additionalProperties": False,
 }
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestSynthese:
     def test_synthese_scope_filtering(self, app, users, synthese_data):
-        all_ids = {s.id_synthese for s in synthese_data}
+        all_ids = {s.id_synthese for s in synthese_data.values()}
         sq = Synthese.query.with_entities(Synthese.id_synthese).filter(
             Synthese.id_synthese.in_(all_ids)
         )
@@ -142,76 +145,95 @@ class TestSynthese:
         validate_json(instance=r.json, schema=schema)
 
         # test on synonymy and taxref attrs
-        query_string = {
+        filters = {
             "cd_ref": taxon_attribut.bib_nom.cd_ref,
             "taxhub_attribut_{}".format(
                 taxon_attribut.bib_attribut.id_attribut
             ): taxon_attribut.valeur_attribut,
         }
-        r = self.client.get(url, query_string=query_string)
+        r = self.client.post(url, json=filters)
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
-        assert len(r.json["features"]) == 1
-        assert r.json["features"][0]["properties"]["cd_nom"] == taxon_attribut.bib_nom.cd_nom
+        assert len(r.json["features"]) > 0
+        for feature in r.json["features"]:
+            assert feature["properties"]["cd_nom"] == taxon_attribut.bib_nom.cd_nom
 
-        # test geometry filters
-        com_type = BibAreasTypes.query.filter_by(type_code="COM").one()
-        vesdun = LAreas.query.filter_by(area_type=com_type, area_name="Vesdun").one()
-        query_string = {
-            "geoIntersection": """
-            POLYGON((2.313844516928274 46.62891246017805,2.654420688803274 46.62891246017805,2.654420688803274 46.415359531851166,2.313844516928274 46.415359531851166,2.313844516928274 46.62891246017805))
-            """,
-            f"area_{com_type.id_type}": vesdun.id_area,
+        # test intersection filters
+        filters = {
+            "geoIntersection": "POLYGON ((5.852731 45.7775, 5.852731 44.820481, 7.029224 44.820481, 7.029224 45.7775, 5.852731 45.7775))",
         }
-        r = self.client.get(url, query_string=query_string)
+        r = self.client.post(url, json=filters)
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
-        assert len(r.json["features"]) >= 2
+        assert {synthese_data[k].id_synthese for k in ["p1_af1", "p1_af2"]}.issubset(
+            {f["properties"]["id"] for f in r.json["features"]}
+        )
+        assert {synthese_data[k].id_synthese for k in ["p2_af1", "p2_af2"]}.isdisjoint(
+            {f["properties"]["id"] for f in r.json["features"]}
+        )
 
         # test geometry filter with circle radius
-        query_string = {
-            "geoIntersection": "POINT ({} {})".format(
-                current_app.config["MAPCONFIG"]["CENTER"][1] + 0.01,
-                current_app.config["MAPCONFIG"]["CENTER"][0] - 0.10,
-            ),
+        filters = {
+            "geoIntersection": "POINT (5.92 45.56)",
             "radius": "20000",  # 20km
         }
-        r = self.client.get(url, query_string=query_string)
+        r = self.client.post(url, json=filters)
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
-        assert len(r.json["features"]) >= 2
+        assert {synthese_data[k].id_synthese for k in ["p1_af1", "p1_af2"]}.issubset(
+            {f["properties"]["id"] for f in r.json["features"]}
+        )
+        assert {synthese_data[k].id_synthese for k in ["p2_af1", "p2_af2"]}.isdisjoint(
+            {f["properties"]["id"] for f in r.json["features"]}
+        )
 
-        # test organisms and multiple same arg in query string
-        id_organisme = users["self_user"].id_organisme
-        r = self.client.get(f"{url}?id_organism={id_organisme}&id_organism=2")
+        # test ref geo area filter
+        com_type = BibAreasTypes.query.filter_by(type_code="COM").one()
+        chambery = LAreas.query.filter_by(area_type=com_type, area_name="Chambéry").one()
+        filters = {f"area_{com_type.id_type}": chambery.id_area}
+        r = self.client.post(url, json=filters)
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
-        assert len(r.json["features"]) >= 2
+        assert {synthese_data[k].id_synthese for k in ["p1_af1", "p1_af2"]}.issubset(
+            {f["properties"]["id"] for f in r.json["features"]}
+        )
+        assert {synthese_data[k].id_synthese for k in ["p2_af1", "p2_af2"]}.isdisjoint(
+            {f["properties"]["id"] for f in r.json["features"]}
+        )
+
+        # test organism
+        filters = {
+            "id_organism": users["self_user"].id_organisme,
+        }
+        r = self.client.post(url, json=filters)
+        assert r.status_code == 200
+        validate_json(instance=r.json, schema=schema)
+        assert len(r.json["features"]) >= 2  # FIXME
 
         # test status lr
-        query_string = {"regulations_protection_status": ["REGLLUTTE"]}
-        r = self.client.get(url, query_string=query_string)
+        filters = {"regulations_protection_status": ["REGLLUTTE"]}
+        r = self.client.get(url, json=filters)
         assert r.status_code == 200
         # test status znieff
-        query_string = {"znief_protection_status": True}
-        r = self.client.get(url, query_string=query_string)
+        filters = {"znief_protection_status": True}
+        r = self.client.get(url, json=filters)
         assert r.status_code == 200
         # test status protection
-        query_string = {"protections_protection_status": ["PN"]}
-        r = self.client.get(url, query_string=query_string)
+        filters = {"protections_protection_status": ["PN"]}
+        r = self.client.get(url, json=filters)
         assert r.status_code == 200
         # test LR
-        query_string = {"worldwide_red_lists": ["LC"]}
-        r = self.client.get(url, query_string=query_string)
+        filters = {"worldwide_red_lists": ["LC"]}
+        r = self.client.get(url, json=filters)
         assert r.status_code == 200
-        query_string = {"european_red_lists": ["LC"]}
-        r = self.client.get(url, query_string=query_string)
+        filters = {"european_red_lists": ["LC"]}
+        r = self.client.get(url, json=filters)
         assert r.status_code == 200
-        query_string = {"national_red_lists": ["LC"]}
-        r = self.client.get(url, query_string=query_string)
+        filters = {"national_red_lists": ["LC"]}
+        r = self.client.get(url, json=filters)
         assert r.status_code == 200
-        query_string = {"regional_red_lists": ["LC"]}
-        r = self.client.get(url, query_string=query_string)
+        filters = {"regional_red_lists": ["LC"]}
+        r = self.client.get(url, json=filters)
         assert r.status_code == 200
 
     def test_get_synthese_data_cruved(self, app, users, synthese_data, datasets):
@@ -221,14 +243,52 @@ class TestSynthese:
             url_for("gn_synthese.get_observations_for_web"), query_string={"limit": 100}
         )
         data = response.get_json()
-
         features = data["features"]
         assert len(features) > 0
-        assert all(
-            feat["properties"]["lb_nom"] in [synt.nom_cite for synt in synthese_data]
-            for feat in features
-        )
+
+        for feat in features:
+            assert feat["properties"]["lb_nom"] in [
+                synt.nom_cite for synt in synthese_data.values()
+            ]
         assert response.status_code == 200
+
+    def test_get_synthese_data_aggregate(self, users, datasets, synthese_data):
+        # Test geometry aggregation
+        set_logged_user_cookie(self.client, users["admin_user"])
+        response = self.client.post(
+            url_for("gn_synthese.get_observations_for_web"),
+            query_string={
+                "format": "grouped_geom",
+            },
+            json={
+                "id_dataset": [synthese_data["p1_af1"].id_dataset],
+            },
+        )
+        assert response.status_code == 200, response.text
+        data = response.get_json()
+        features = data["features"]
+        # There must be one feature with one obs and one feature with two obs
+        assert len(features) == 2
+        assert Counter([len(f["properties"]["observations"]) for f in features]) == Counter([1, 2])
+
+    def test_get_synthese_data_aggregate_by_areas(self, users, datasets, synthese_data):
+        # Test geometry aggregation
+        set_logged_user_cookie(self.client, users["admin_user"])
+        response = self.client.get(
+            url_for("gn_synthese.get_observations_for_web"),
+            query_string={
+                "format": "grouped_geom_by_areas",
+            },
+            json={
+                "id_dataset": [synthese_data["p1_af1"].id_dataset],
+            },
+        )
+        assert response.status_code == 200, response.text
+        data = response.get_json()
+        features = data["features"]
+        # There must be one feature with one obs and one feature with two obs
+        assert len(features) == 2
+        assert Counter([len(f["properties"]["observations"]) for f in features]) == Counter([1, 2])
 
     def test_filter_cor_observers(self, users, synthese_data):
         """
@@ -250,7 +310,7 @@ class TestSynthese:
         # csv
         response = self.client.post(
             url_for("gn_synthese.export_observations_web"),
-            data=[1, 2, 3],
+            json=[1, 2, 3],
             query_string={"export_format": "csv"},
         )
 
@@ -258,14 +318,14 @@ class TestSynthese:
 
         response = self.client.post(
             url_for("gn_synthese.export_observations_web"),
-            data=[1, 2, 3],
+            json=[1, 2, 3],
             query_string={"export_format": "geojson"},
         )
         assert response.status_code == 200
 
         response = self.client.post(
             url_for("gn_synthese.export_observations_web"),
-            data=[1, 2, 3],
+            json=[1, 2, 3],
             query_string={"export_format": "shapefile"},
         )
         assert response.status_code == 200
@@ -293,13 +353,13 @@ class TestSynthese:
 
     def test_get_one_synthese_record(self, app, users, synthese_data):
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese)
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 401
 
         set_logged_user_cookie(self.client, users["noright_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese)
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 403
 
@@ -312,31 +372,31 @@ class TestSynthese:
 
         set_logged_user_cookie(self.client, users["admin_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese)
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 200
 
         set_logged_user_cookie(self.client, users["self_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese)
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 200
 
         set_logged_user_cookie(self.client, users["user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese)
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 200
 
         set_logged_user_cookie(self.client, users["associate_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese)
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 200
 
         set_logged_user_cookie(self.client, users["stranger_user"])
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese)
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == Forbidden.code
 
@@ -377,7 +437,7 @@ class TestSynthese:
         )
 
     def test_taxa_distribution(self, synthese_data):
-        s = synthese_data[0]
+        s = synthese_data["p1_af1"]
 
         response = self.client.get(url_for("gn_synthese.get_taxa_distribution"))
         assert response.status_code == 200
@@ -413,7 +473,7 @@ class TestSynthese:
     def test_get_taxa_count(self, synthese_data):
         response = self.client.get(url_for("gn_synthese.get_taxa_count"))
 
-        assert response.json >= len(set(synt.cd_nom for synt in synthese_data))
+        assert response.json >= len(set(synt.cd_nom for synt in synthese_data.values()))
 
     def test_get_taxa_count_id_dataset(self, synthese_data, datasets, unexisted_id):
         id_dataset = datasets["own_dataset"].id_dataset
@@ -422,7 +482,7 @@ class TestSynthese:
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
         response_empty = self.client.get(url_for(url), query_string={"id_dataset": unexisted_id})
 
-        assert response.json == len(set(synt.cd_nom for synt in synthese_data))
+        assert response.json == len(set(synt.cd_nom for synt in synthese_data.values()))
         assert response_empty.json == 0
 
     def test_get_observation_count(self, synthese_data):
@@ -434,7 +494,7 @@ class TestSynthese:
 
     def test_get_observation_count_id_dataset(self, synthese_data, datasets, unexisted_id):
         id_dataset = datasets["own_dataset"].id_dataset
-        nb_observations = len(synthese_data)
+        nb_observations = len([s for s in synthese_data.values() if s.id_dataset == id_dataset])
         url = "gn_synthese.get_observation_count"
 
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
@@ -444,9 +504,6 @@ class TestSynthese:
         assert response_empty.json == 0
 
     def test_get_bbox(self, synthese_data):
-        # In synthese, all entries are located at the same point
-        geom = Point(geometry=to_shape(synthese_data[0].the_geom_4326))
-
         response = self.client.get(url_for("gn_synthese.get_bbox"))
 
         assert response.status_code == 200
@@ -454,32 +511,24 @@ class TestSynthese:
 
     def test_get_bbox_id_dataset(self, synthese_data, datasets, unexisted_id):
         id_dataset = datasets["own_dataset"].id_dataset
-        # In synthese, all entries are located at the same point
-        geom = Point(geometry=to_shape(synthese_data[0].the_geom_4326))
         url = "gn_synthese.get_bbox"
 
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
         assert response.status_code == 200
-        assert response.json["type"] == "Point"
-        assert response.json["coordinates"] == [
-            pytest.approx(coord, 0.9) for coord in [geom.geometry.x, geom.geometry.y]
-        ]
+        assert response.json["type"] == "Polygon"
 
         response_empty = self.client.get(url_for(url), query_string={"id_dataset": unexisted_id})
         assert response_empty.status_code == 204
         assert response_empty.get_data(as_text=True) == ""
 
-    def test_get_bbox_id_source(self, bbox_geom, source):
+    def test_get_bbox_id_source(self, synthese_data, source):
         id_source = source.id_source
         url = "gn_synthese.get_bbox"
 
         response = self.client.get(url_for(url), query_string={"id_source": id_source})
 
         assert response.status_code == 200
-        assert response.json["type"] == "Point"
-        assert response.json["coordinates"] == [
-            pytest.approx(coord, 0.9) for coord in [bbox_geom.geometry.x, bbox_geom.geometry.y]
-        ]
+        assert response.json["type"] == "Polygon"
 
     def test_get_bbox_id_source_empty(self, unexisted_id_source):
         url = "gn_synthese.get_bbox"
@@ -506,7 +555,9 @@ class TestSynthese:
                 "id_dataset": k,
                 "count": len(list(g)),
             }
-            for k, g in itertools.groupby(sorted(synthese_data, key=ds_keyfunc), key=ds_keyfunc)
+            for k, g in itertools.groupby(
+                sorted(synthese_data.values(), key=ds_keyfunc), key=ds_keyfunc
+            )
         ]
 
         cn_keyfunc = lambda s: s.cd_nom
@@ -515,7 +566,9 @@ class TestSynthese:
                 "cd_nom": k,
                 "count": len(list(g)),
             }
-            for k, g in itertools.groupby(sorted(synthese_data, key=cn_keyfunc), key=cn_keyfunc)
+            for k, g in itertools.groupby(
+                sorted(synthese_data.values(), key=cn_keyfunc), key=cn_keyfunc
+            )
         ]
 
         resp_json = response_dataset.json
@@ -535,7 +588,7 @@ class TestSynthese:
                     assert item["count"] >= test_cd_nom["count"]
 
     def test_get_autocomplete_taxons_synthese(self, synthese_data):
-        seach_name = synthese_data[0].nom_cite
+        seach_name = synthese_data["obs1"].nom_cite
 
         response = self.client.get(
             url_for("gn_synthese.get_autocomplete_taxons_synthese"),
@@ -543,4 +596,4 @@ class TestSynthese:
         )
 
         assert response.status_code == 200
-        assert response.json[0]["cd_nom"] == synthese_data[0].cd_nom
+        assert response.json[0]["cd_nom"] == synthese_data["obs1"].cd_nom

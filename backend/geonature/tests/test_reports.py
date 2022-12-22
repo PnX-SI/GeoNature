@@ -85,10 +85,8 @@ class TestReports:
         # TEST GET WITHOUT REQUIRED ID SYNTHESE
         set_logged_user_cookie(self.client, users["admin_user"])
         response = self.client.get(url_for(url))
-        ids = []
-        for el in synthese_data:
-            ids.append(el.id_synthese)
         assert response.status_code == NotFound.code
+        ids = [s.id_synthese for s in synthese_data.values()]
         # TEST GET BY ID SYNTHESE
         response = self.client.get(
             url_for(url, idSynthese=ids[0], idRole=users["admin_user"].id_role, type="discussion")
