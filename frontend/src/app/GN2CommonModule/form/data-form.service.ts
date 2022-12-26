@@ -471,19 +471,13 @@ export class DataFormService {
     );
   }
 
-  exportPDF(img, params, endPoint, prefix) {
-    let queryString = new HttpParams();
-    for (let key in params) {
-      queryString = queryString.set(key, params[key]);
-    }
+  exportPDF(img, endPoint, prefix) {
     const source = this._http.post(
       endPoint,
       {
         chart: img,
       },
       {
-        params: queryString,
-        headers: new HttpHeaders().set('Content-Type', 'application/json'),
         observe: 'events',
         responseType: 'blob',
         reportProgress: false,
@@ -555,16 +549,12 @@ export class DataFormService {
     const subscription = source.subscribe(
       (event) => {
         if (event.type === HttpEventType.Response) {
-          this._blob = new Blob([event.body], { type: event.headers.get('Content-Type') });
+          this._blob = event.body;
         }
       },
-      (e: HttpErrorResponse) => {
-        //this._commonService.translateToaster('error', 'ErrorMessage');
-        //this.isDownloading = false;
-      },
+      (e: HttpErrorResponse) => {},
       // response OK
       () => {
-        //this.isDownloading = false;
         const date = new Date();
         const extension = format === 'shapefile' ? 'zip' : format;
         this.saveBlob(this._blob, `${fileName}_${date.toISOString()}.${extension}`);
@@ -572,18 +562,12 @@ export class DataFormService {
       }
     );
   }
-
   saveBlob(blob, filename) {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.setAttribute('visibility', 'hidden');
     link.download = filename;
-    link.onload = () => {
-      URL.revokeObjectURL(link.href);
-    };
-    document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
   }
 
   //liste des lieux

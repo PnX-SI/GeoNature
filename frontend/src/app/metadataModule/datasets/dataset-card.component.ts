@@ -143,8 +143,7 @@ export class DatasetCardComponent implements OnInit {
   getPdf() {
     this._dfs.exportPDF(
       this.chart ? this.chart.toBase64Image() : '',
-      { dataset: this.id_dataset },
-      `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf`,
+      `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`,
       'jdd'
     );
   }

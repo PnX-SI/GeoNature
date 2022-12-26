@@ -4,17 +4,12 @@
 import datetime as dt
 import json
 import logging
-from pathlib import Path
-from binascii import a2b_base64
 from lxml import etree as ET
 
 from flask import (
     Blueprint,
     current_app,
     request,
-    render_template,
-    send_from_directory,
-    copy_current_request_context,
     Response,
     g,
 )
@@ -434,13 +429,12 @@ def update_dataset(id_dataset, scope):
     return DatasetSchema().jsonify(datasetHandler(dataset=dataset, data=request.get_json()))
 
 
-@routes.route("/dataset/export_pdf", methods=["POST"])
+@routes.route("/dataset/export_pdf/<id_dataset>", methods=["GET", "POST"])
 @permissions.check_cruved_scope("E", get_scope=True, module_code="METADATA")
-def get_export_pdf_dataset(scope):
+def get_export_pdf_dataset(id_dataset, scope):
     """
     Get a PDF export of one dataset
     """
-    id_dataset = request.args.get("dataset")
     dataset = TDatasets.query.get_or_404(id_dataset)
     if not dataset.has_instance_permission(scope=scope):
         raise Forbidden("Vous n'avez pas les droits d'exporter ces informations")
@@ -475,8 +469,9 @@ def get_export_pdf_dataset(scope):
     # chart
     if request.is_json and request.json is not None:
         dataset["chart"] = request.json["chart"]
-    # Appel de la methode pour generer un pdf
-    return fm.generate_pdf("dataset_template_pdf.html", dataset)
+    # create PDF file
+    pdf_file = fm.generate_pdf("dataset_template_pdf.html", dataset)
+    return current_app.response_class(pdf_file, content_type="application/pdf")
 
 
 @routes.route("/acquisition_frameworks", methods=["GET", "POST"])
@@ -601,14 +596,12 @@ def get_acquisition_frameworks_list(scope):
     )
 
 
-@routes.route("/acquisition_frameworks/export_pdf", methods=["POST"])
+@routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["POST"])
 @permissions.check_cruved_scope("E", module_code="METADATA")
-def get_export_pdf_acquisition_frameworks():
+def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     """
     Get a PDF export of one acquisition
     """
-
-    id_acquisition_framework = request.args.get("af")
     # Recuperation des données
     af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
     acquisition_framework = af.as_dict(True, depth=2)

@@ -389,7 +389,9 @@ class TestGNMeta:
         set_logged_user_cookie(self.client, users["user"])
 
         response = self.client.post(
-            url_for("gn_meta.get_export_pdf_acquisition_frameworks", af=af_id, json={})
+            url_for(
+                "gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id
+            )
         )
 
         assert response.status_code == 200
@@ -399,8 +401,7 @@ class TestGNMeta:
 
         response = self.client.post(
             url_for(
-                "gn_meta.get_export_pdf_acquisition_frameworks",
-                af=af_id,
+                "gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id
             )
         )
 
@@ -619,30 +620,25 @@ class TestGNMeta:
         ds = datasets["own_dataset"]
 
         response = self.client.post(
-            url_for("gn_meta.get_export_pdf_dataset", dataset=ds.id_dataset, json={})
+            url_for("gn_meta.get_export_pdf_dataset", id_dataset=ds.id_dataset)
         )
         assert response.status_code == Unauthorized.code
 
         set_logged_user_cookie(self.client, users["self_user"])
 
         response = self.client.post(
-            url_for("gn_meta.get_export_pdf_dataset", dataset=unexisting_id, json={})
+            url_for("gn_meta.get_export_pdf_dataset", id_dataset=unexisting_id)
         )
         assert response.status_code == NotFound.code
 
         response = self.client.post(
-            url_for("gn_meta.get_export_pdf_dataset", dataset=ds.id_dataset, json={})
+            url_for("gn_meta.get_export_pdf_dataset", id_dataset=ds.id_dataset)
         )
         assert response.status_code == Forbidden.code
 
         set_logged_user_cookie(self.client, users["user"])
-        print("LAST")
         response = self.client.post(
-            url_for(
-                "gn_meta.get_export_pdf_dataset",
-                dataset=ds.id_dataset
-                # json chart is not required
-            )
+            url_for("gn_meta.get_export_pdf_dataset", id_dataset=ds.id_dataset)
         )
         assert response.status_code == 200
 
