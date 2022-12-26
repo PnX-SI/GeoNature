@@ -69,8 +69,9 @@ export class OccHabMapListComponent implements OnInit {
   }
 
   getStations(params?) {
+    params['habitats'] = 1;
     this.dataLoading = true;
-    this._occHabDataService.getStations(params).subscribe(
+    this._occHabDataService.listStations(params).subscribe(
       (featuresCollection) => {
         // store the idsStation in the store service
         if (featuresCollection.features.length === this.config.OCCHAB.NB_MAX_MAP_LIST) {
@@ -115,11 +116,11 @@ export class OccHabMapListComponent implements OnInit {
 
   displayHabTooltip(row): string[] {
     let tooltip = [];
-    if (row.t_habitats === undefined) {
+    if (row.habitats === undefined) {
       tooltip.push('Aucun habitat');
     } else {
-      for (let i = 0; i < row.t_habitats.length; i++) {
-        let occ = row.t_habitats[i];
+      for (let i = 0; i < row.habitats.length; i++) {
+        let occ = row.habitats[i];
         tooltip.push(occ.nom_cite);
       }
     }

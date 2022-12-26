@@ -6,7 +6,7 @@
     mat-raised-button
     color="primary"
     class="button-success hard-shadow btn-action uppercase"
-    [routerLink]="['form']"
+    [routerLink]="['add']"
     matTooltip="Ajouter une nouvelle station d'habitat"
   >
     Ajouter
@@ -125,7 +125,7 @@
         <ng-template let-row="row" ngx-datatable-cell-template>
           <button
             class="btn btn-outline-shadow btn-no-padding btn-ghost"
-            [routerLink]="['form', row.id_station]"
+            [routerLink]="['edit', row.id_station]"
           >
             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
           </button>
@@ -147,7 +147,7 @@
         <ng-template ngx-datatable-cell-template let-row="row">
           <span [matTooltip]="displayHabTooltip(row).join('\n')" matTooltipPosition="left">
             <span>
-              <span class="badge badge-dark"> {{ row.t_habitats?.length }} </span>
+              <span class="badge badge-dark"> {{ row.habitats?.length }} </span>
               {{ displayHabTooltip(row) }}
             </span>
           </span>
@@ -177,7 +177,7 @@
   <pnx-occhab-delete
     [c]="c"
     [idStation]="deleteOne.id_station"
-    [nbHabitats]="deleteOne.t_habitats.length"
+    [nbHabitats]="deleteOne.habitats?.length"
     (onDelete)="mapListService.deleteObsFront(deleteOne.id_station)"
   >
   </pnx-occhab-delete>

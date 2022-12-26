@@ -16,13 +16,13 @@
             <tbody>
               <ng-container
                 *ngFor="
-                  let hab of occHabForm.stationForm.value.t_habitats;
+                  let hab of occHabForm.stationForm.value.habitats;
                   let last = last;
                   let i = index
                 "
               >
                 <tr *ngIf="i != occHabForm.currentEditingHabForm">
-                  <td>{{ occHabForm.stationForm.value.t_habitats.length - i }}</td>
+                  <td>{{ occHabForm.stationForm.value.habitats.length - i }}</td>
                   <td>{{ hab?.nom_cite }}</td>
                   <td>{{ hab?.id_nomenclature_abundance?.label_default }}</td>
                   <td>
@@ -381,7 +381,7 @@
                   [searchAsParameter]="false"
                   [parentFormControl]="
                     occHabForm.stationForm
-                      .get('t_habitats')
+                      .get('habitats')
                       .controls[occHabForm.currentEditingHabForm].get('habref')
                   "
                   queryParamSearch="search_name"
@@ -411,7 +411,7 @@
                   label="Habitat d'interet communautaire"
                   [parentFormControl]="
                     occHabForm.stationForm
-                      .get('t_habitats')
+                      .get('habitats')
                       .controls[occHabForm.currentEditingHabForm].get(
                         'id_nomenclature_community_interest'
                       )
@@ -438,7 +438,7 @@
                   class="form-control form-control-sm"
                   [formControl]="
                     occHabForm.stationForm
-                      .get('t_habitats')
+                      .get('habitats')
                       .controls[occHabForm.currentEditingHabForm].get('determiner')
                   "
                 />
@@ -451,7 +451,7 @@
                   label="Type de détermination"
                   [parentFormControl]="
                     occHabForm.stationForm
-                      .get('t_habitats')
+                      .get('habitats')
                       .controls[occHabForm.currentEditingHabForm].get(
                         'id_nomenclature_determination_type'
                       )
@@ -470,7 +470,7 @@
               label="Technique de collecte"
               [parentFormControl]="
                 occHabForm.stationForm
-                  .get('t_habitats')
+                  .get('habitats')
                   .controls[occHabForm.currentEditingHabForm].get(
                     'id_nomenclature_collection_technique'
                   )
@@ -491,13 +491,13 @@
                 placeholder="Précision sur la technique de collecte"
                 [ngClass]="{
                   'ng-invalid':
-                    occHabForm.stationForm.get('t_habitats').controls[
+                    occHabForm.stationForm.get('habitats').controls[
                       occHabForm.currentEditingHabForm
                     ].errors?.invalidTechnicalValues
                 }"
                 [formControl]="
                   occHabForm.stationForm
-                    .get('t_habitats')
+                    .get('habitats')
                     .controls[occHabForm.currentEditingHabForm].get('technical_precision')
                 "
               />
@@ -505,7 +505,7 @@
 
             <small
               *ngIf="
-                occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm]
+                occHabForm.stationForm.get('habitats').controls[occHabForm.currentEditingHabForm]
                   .errors?.invalidTechnicalValues
               "
               class="error"
@@ -525,7 +525,7 @@
                 class="form-control form-control-sm"
                 [formControl]="
                   occHabForm.stationForm
-                    .get('t_habitats')
+                    .get('habitats')
                     .controls[occHabForm.currentEditingHabForm].get('recovery_percentage')
                 "
               />
@@ -536,7 +536,7 @@
               label="Abondance"
               [parentFormControl]="
                 occHabForm.stationForm
-                  .get('t_habitats')
+                  .get('habitats')
                   .controls[occHabForm.currentEditingHabForm].get('id_nomenclature_abundance')
               "
               [items]="storeService.nomenclatureItems.ABONDANCE_HAB"
@@ -556,10 +556,10 @@
               class="uppercase"
               (click)="validateHabitat()"
               [disabled]="
-                occHabForm.stationForm.get('t_habitats').controls[
+                occHabForm.stationForm.get('habitats').controls[
                   occHabForm.currentEditingHabForm
                 ] &&
-                occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm]
+                occHabForm.stationForm.get('habitats').controls[occHabForm.currentEditingHabForm]
                   .invalid
               "
               data-qa="pnx-occhab-form-valid-button"
@@ -572,7 +572,5 @@
       </div>
     </div>
 
-    <!-- {{occHabForm.stationForm.value.t_habitats[0] |json }} -->
-    <!-- {{occHabForm.stationForm.value |json }} -->
   </div>
 </div>

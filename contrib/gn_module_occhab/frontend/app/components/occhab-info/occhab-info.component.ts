@@ -6,19 +6,20 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
 
+import { StationFeature } from '../../models';
+
 @Component({
   selector: 'pnx-occhab-info',
   templateUrl: './occhab-info.component.html',
   styleUrls: ['./occhab-info.component.scss', '../responsive-map.scss'],
 })
 export class OcchabInfoComponent implements OnInit, OnDestroy {
-  public oneStation;
-  public stationContent;
+  public station: StationFeature;
   public currentHab;
   public habInfo: Array<any>;
   public modalContent;
   public selectedIndex;
-  private _sub: Subscription;
+
   constructor(
     private _occHabDataService: OccHabDataService,
     private _route: ActivatedRoute,
@@ -28,22 +29,14 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
     private _commonService: CommonService
   ) {}
 
-  ngOnInit() {}
-
-  ngAfterViewInit() {
-    // get the id from the route
-    this._sub = this._route.params.subscribe((params) => {
-      if (params['id_station']) {
-        this._occHabDataService.getOneStation(params['id_station']).subscribe((station) => {
-          this.stationContent = station.properties;
-          this.oneStation = station;
-        });
-      }
+  ngOnInit() {
+    this._route.data.subscribe(({ station }) => {
+      this.station = station;
     });
   }
 
   setCurrentHab(index) {
-    this.currentHab = this.stationContent.t_one_habitats[index];
+    this.currentHab = this.station.properties.habitats[index];
     this.selectedIndex = index;
   }
 
@@ -54,7 +47,6 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
       },
       () => {
         this.habInfo = null;
-        this._commonService.regularToaster('error', "Erreur lors de l'interrogation Habref");
       }
     );
   }
@@ -72,7 +64,5 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
     this._ngbModal.open(modalDelete);
   }
 
-  ngOnDestroy() {
-    this._sub.unsubscribe();
-  }
+  ngOnDestroy() {}
 }

@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { CommonService } from '@geonature_common/service/common.service';
 import { filter } from 'rxjs/operators';
 import { ConfigService } from '@geonature/services/config.service';
+import { StationFeature } from '../../models';
 
 @Component({
   selector: 'pnx-occhab-form',
@@ -30,7 +31,7 @@ export class OccHabFormComponent implements OnInit {
   public firstFileLayerMessage = true;
   public currentGeoJsonFileLayer;
   public markerCoordinates;
-  public currentEditingStation: any;
+  public currentEditingStation: StationFeature;
   // boolean tocheck if the station has at least one hab (control the validity of the form)
   public atLeastOneHab = false;
 
@@ -70,7 +71,7 @@ export class OccHabFormComponent implements OnInit {
         this.atLeastOneHab = true;
         this.showHabForm = false;
         this.showTabHab = true;
-        this._occHabDataService.getOneStation(params['id_station']).subscribe((station) => {
+        this._occHabDataService.getStation(params['id_station']).subscribe((station) => {
           this.currentEditingStation = station;
           if (station.geometry.type == 'Point') {
             // set the input for the marker component
@@ -128,19 +129,10 @@ export class OccHabFormComponent implements OnInit {
 
   postStation() {
     const station = this.occHabForm.formatStationBeforePost();
-    this._occHabDataService.postStation(station).subscribe(
-      (data) => {
-        this.occHabForm.resetAllForm();
-        this._router.navigate(['occhab']);
-      },
-      (error) => {
-        if (error.status === 403) {
-          this._commonService.translateToaster('error', 'NotAllowed');
-        } else {
-          this._commonService.translateToaster('error', 'ErrorMessage');
-        }
-      }
-    );
+    this._occHabDataService.createOrUpdateStation(station).subscribe((data) => {
+      this.occHabForm.resetAllForm();
+      this._router.navigate(['occhab']);
+    });
   }
 
   formatter(item) {

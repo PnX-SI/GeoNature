@@ -22,14 +22,11 @@ export class ModalDeleteStation implements OnInit {
 
   deleteStation() {
     this.onDelete.emit();
-    this._occHabDataService.deleteOneStation(this.idStation).subscribe(
+    this._occHabDataService.deleteStation(this.idStation).subscribe(
       (d) => {
         this._commonService.regularToaster('success', 'Station supprimée avec succès');
 
-        this._router.navigate(['occhab']);
-      },
-      () => {
-        this._commonService.regularToaster('error', 'Erreur lors de la suppression de la station');
+        this._router.navigate(['/occhab']);
       },
       () => {
         this.c();

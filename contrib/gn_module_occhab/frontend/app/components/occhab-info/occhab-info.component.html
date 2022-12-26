@@ -2,7 +2,7 @@
   <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
     <pnx-map height="87vh">
       <pnx-geojson
-        [geojson]="oneStation"
+        [geojson]="station"
         [zoomOnFirstTime]="true"
       >
       </pnx-geojson>
@@ -11,25 +11,25 @@
   <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 padding-sm right-side">
     <div class="card border-primary bg-light">
       <h5 class="card-header bg-primary text-white">
-        Station n° {{stationContent?.id_station}}
+        Station n° {{station.properties.id_station}}
         <button
-          matTooltip="Editez le relevé {{oneStation?.id}}"
+          matTooltip="Editez le relevé {{station?.id}}"
           mat-mini-fab
           class="button-success float-right"
           type="button"
-          [disabled]="stationContent?.rights.U == false"
-          [routerLink]="['/occhab/form', oneStation?.id]"
+          [disabled]="station?.properties.cruved.U == false"
+          [routerLink]="['/occhab/edit', station?.id]"
         >
           <mat-icon>edit</mat-icon>
         </button>
         <button
-          matTooltip="Supprimer le relevé {{oneStation?.id}}"
+          matTooltip="Supprimer le relevé {{station?.id}}"
           mat-mini-fab
           color="warn"
           type="button"
           (click)="openDeleteModal(deleteModal)"
           class="float-right mr-1"
-          [disabled]="stationContent?.rights.D == false"
+          [disabled]="station?.properties.cruved.D == false"
         >
           <mat-icon>delete</mat-icon>
         </button>
@@ -45,29 +45,29 @@
             <h5>
               <b class="text-muted">Jeu de donnée :</b>
             </h5>
-            <p> {{stationContent?.dataset.dataset_name}} </p>
+            <p> {{station?.properties.dataset?.dataset_name}} </p>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <h5>
               <b class="text-muted">Date :</b>
             </h5>
             <p>
-              {{stationContent?.date_min | date:'dd/MM/yyyy'}} -
-              {{stationContent?.date_max | date:'dd/MM/yyyy'}}
+              {{station?.properties.date_min | date:'dd/MM/yyyy'}} -
+              {{station?.properties.date_max | date:'dd/MM/yyyy'}}
             </p>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <h5>
               <b class="text-muted">Observateur(s) :</b>
             </h5>
-            <div *ngIf="stationContent?.observers; else elseBlock">
-              <p *ngFor="let obs of stationContent.observers; let last=last">
+            <div *ngIf="station?.properties.observers; else elseBlock">
+              <p *ngFor="let obs of station.properties.observers; let last=last">
                 {{obs.nom_role}} {{obs.prenom_role}}
                 <span *ngIf="!last">, </span>
               </p>
             </div>
             <ng-template #elseBlock>
-              <p>{{stationContent?.observers_txt}} </p>
+              <p>{{station?.properties.observers_txt}} </p>
             </ng-template>
           </div>
 
@@ -76,17 +76,17 @@
         <div class="content row">
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <h5> <b class="text-muted">Altitude (en m) : </b> </h5>
-            <p>{{stationContent?.altitude_min}} - {{stationContent?.altitude_max}}</p>
+            <p>{{station?.properties.altitude_min}} - {{station?.properties.altitude_max}}</p>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <h5> <b class="text-muted">Surface (en m²) : </b> </h5>
-            <p> {{stationContent?.area}} <small>(
-                {{stationContent?.area_surface_calculation?.label_default}} )</small></p>
+            <p> {{station?.properties.area}} <small>(
+                {{station?.properties.nomenclature_area_surface_calculation?.label_default}} )</small></p>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <h5> <b class="text-muted">Type d'information géographique : </b> </h5>
-            <p *ngIf="stationContent?.geographic_object">
-              {{stationContent?.geographic_object?.label_default}} </p>
+            <p *ngIf="station?.properties.nomenclature_geographic_object">
+              {{station.properties.nomenclature_geographic_object.label_default}} </p>
           </div>
 
         </div>
@@ -97,7 +97,7 @@
               <tr
                 class="clickable"
                 [ngClass]="{'table-primary': i == selectedIndex}"
-                *ngFor="let hab of stationContent?.t_one_habitats; let i=index"
+                *ngFor="let hab of station?.properties.habitats; let i=index"
                 (click)="setCurrentHab(i); getHabInfo(hab.cd_hab)"
               >
                 <td> {{hab.nom_cite}}</td>
@@ -113,7 +113,7 @@
 
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 ">
             <h5> <b class="text-muted">Commentaire : </b> </h5>
-            <p>{{stationContent?.comment}} </p>
+            <p>{{station?.properties.comment}} </p>
           </div>
 
         </div>
@@ -133,12 +133,12 @@
         <div class="row">
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
             <b class="text-muted">Technique de collecte : </b>
-            {{currentHab?.collection_technique?.label_default}} <br>
+            {{currentHab?.nomenclature_collection_technique?.label_default}} <br>
             <b class="text-muted">Méthode de détermination : </b>
-            {{currentHab?.determination_method?.label_default}} <br>
+            {{currentHab?.nomenclature_determination_type?.label_default}} <br>
             <b class="text-muted">Pourcentage de recouvrement : </b>
-            {{currentHab?.recovery_percentage}} <br>
-            <b class="text-muted">Abondance : </b> {{currentHab?.abundance?.label_default}} <br>
+            {{currentHab?.nomenclature_recovery_percentage}} <br>
+            <b class="text-muted">Abondance : </b> {{currentHab?.nomenclature_abundance?.label_default}} <br>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <h5 class="text-muted"> <b>Information sur l'habitat (Habref) : </b> </h5>
@@ -243,8 +243,8 @@
 
     <pnx-occhab-delete
       [c]="c"
-      [idStation]="oneStation?.id"
-      [nbHabitats]="stationContent.t_one_habitats.length"
+      [idStation]="station?.id"
+      [nbHabitats]="station.properties.habitats.length"
     >
     </pnx-occhab-delete>
 
