@@ -126,13 +126,4 @@ export class AfFormComponent implements OnInit {
         }
       );
   }
-
-  getPdf() {
-    this._dfs.exportPDF(
-      null,
-      { af: this.afFormS.acquisition_framework.getValue().id_acquisition_framework },
-      `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf`,
-      'af'
-    );
-  }
 }

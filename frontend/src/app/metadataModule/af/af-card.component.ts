@@ -145,8 +145,7 @@ export class AfCardComponent implements OnInit {
   getPdf() {
     this._dfs.exportPDF(
       this.chart ? this.chart.toBase64Image() : '',
-      { af: this.af.id_acquisition_framework },
-      `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf`,
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${this.af.id_acquisition_framework}`,
       'af'
     );
   }
