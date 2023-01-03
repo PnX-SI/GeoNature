@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import { ModuleConfig } from "../../module.config";
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { ModuleConfig } from '../../module.config';
 
 interface OCCTAX_FORM_PARAM {
   geometry?: any;
@@ -80,7 +80,7 @@ export class OcctaxFormParamService {
       id_nomenclature_grp_typ: null,
       grp_method: null,
       id_nomenclature_geo_object_nature: null,
-      precision: null
+      precision: null,
     },
     occurrence: {
       id_nomenclature_obs_technique: null,
@@ -136,10 +136,10 @@ export class OcctaxFormParamService {
     );
   }
 
-  constructor() { }
+  constructor() {}
 
   get(element: string) {
-    let keys = element.split(".");
+    let keys = element.split('.');
     let temp_value = this.parameters;
     let value = null;
     //vérification de l'activation du paramètre en config occtax

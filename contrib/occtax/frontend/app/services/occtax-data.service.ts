@@ -1,31 +1,34 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { AppConfig } from "@geonature_config/app.config";
-import { ModuleService } from "@geonature/services/module.service"
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { AppConfig } from '@geonature_config/app.config';
+import { ModuleService } from '@geonature/services/module.service';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class OcctaxDataService {
   private currentModule;
-  constructor(
-    private _api: HttpClient,
-    private _moduleService : ModuleService
-
-  ) {    
+  constructor(private _api: HttpClient, private _moduleService: ModuleService) {
     this.currentModule = this._moduleService.currentModule;
-   }
+  }
 
   getOneReleve(id) {
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/occtax/${this.currentModule.module_code}/releve/${id}`);
+    return this._api.get<any>(
+      `${AppConfig.API_ENDPOINT}/occtax/${this.currentModule.module_code}/releve/${id}`
+    );
   }
 
   deleteReleve(id) {
-    return this._api.delete(`${AppConfig.API_ENDPOINT}/occtax/${this.currentModule.module_code}/releve/${id}`);
+    return this._api.delete(
+      `${AppConfig.API_ENDPOINT}/occtax/${this.currentModule.module_code}/releve/${id}`
+    );
   }
 
   postOcctax(form) {
-    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/${this.currentModule.module_code}/releve`, form);
+    return this._api.post(
+      `${AppConfig.API_ENDPOINT}/occtax/${this.currentModule.module_code}/releve`,
+      form
+    );
   }
 
   getOneCounting(id_counting) {
@@ -35,7 +38,10 @@ export class OcctaxDataService {
   }
 
   createReleve(form) {
-    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/${this.currentModule.module_code}/only/releve`, form);
+    return this._api.post(
+      `${AppConfig.API_ENDPOINT}/occtax/${this.currentModule.module_code}/only/releve`,
+      form
+    );
   }
 
   updateReleve(id_releve, form) {
@@ -64,5 +70,4 @@ export class OcctaxDataService {
       `${AppConfig.API_ENDPOINT}/occtax/${this.currentModule.module_code}/occurrence/${id}`
     );
   }
-
 }
