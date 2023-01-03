@@ -92,8 +92,7 @@ def users(app):
     app = Application.query.filter(Application.code_application == "GN").one()
     profil = Profil.query.filter(Profil.nom_profil == "Lecteur").one()
 
-    modules_codes = ["GEONATURE", "SYNTHESE", "IMPORT", "OCCTAX", "METADATA"]
-    modules = TModules.query.filter(TModules.module_code.in_(modules_codes)).all()
+    modules = TModules.query.all()
 
     actions = {
         code: TActions.query.filter(TActions.code_action == code).one() for code in "CRUVED"
