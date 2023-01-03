@@ -3,13 +3,8 @@ import logging, json
 from flask import current_app, redirect, Response, g
 from werkzeug.exceptions import Forbidden, Unauthorized
 from werkzeug.routing import RequestRedirect
+from authlib.jose.errors import ExpiredTokenError, JoseError
 
-
-from itsdangerous import (
-    TimedJSONWebSignatureSerializer as Serializer,
-    SignatureExpired,
-    BadSignature,
-)
 
 import sqlalchemy as sa
 from sqlalchemy.sql.expression import func
@@ -18,6 +13,7 @@ from sqlalchemy.sql.expression import func
 from pypnusershub.db.tools import (
     AccessRightsExpiredError,
     UnreadableAccessRightsError,
+    decode_token,
 )
 
 from geonature.core.gn_permissions.models import VUsersPermissions, TFilters
@@ -30,14 +26,10 @@ def user_from_token(token, secret_key=None):
     secret_key = secret_key or current_app.config["SECRET_KEY"]
 
     try:
-        s = Serializer(current_app.config["SECRET_KEY"])
-        user = s.loads(token)
-        return user
-
-    except SignatureExpired:
+        return decode_token(token)
+    except ExpiredTokenError:
         raise AccessRightsExpiredError("Token expired")
-
-    except BadSignature:
+    except JoseError:
         raise UnreadableAccessRightsError("Token BadSignature", 403)
 
 
@@ -51,7 +43,7 @@ def log_expiration_warning():
 
 
 def get_user_from_token_and_raise(
-    request, secret_key=None, redirect_on_expiration=None, redirect_on_invalid_token=None
+    request, redirect_on_expiration=None, redirect_on_invalid_token=None
 ):
     """
     Deserialize the token
@@ -59,7 +51,7 @@ def get_user_from_token_and_raise(
     """
     try:
         token = request.cookies["token"]
-        return user_from_token(token, secret_key)
+        return user_from_token(token)
 
     except KeyError:
         if redirect_on_expiration:
@@ -101,7 +93,12 @@ class UserCruved:
 
         self._id_role = id_role
         self._code_filter_type = code_filter_type
-        self._module_code = module_code
+        if module_code:
+            self._module_code = module_code
+        elif hasattr(g, "current_module"):
+            self._module_code = g.current_module.module_code
+        else:
+            self._module_code = self._main_module_code
         self._object_code = object_code
         self._permission_select = self._build_permission_select_list(append_to_select)
 
@@ -277,56 +274,6 @@ class UserCruved:
         """
         permissions = self._build_query_permission(action)
         return self.build_herited_user_cruved(permissions)
-
-
-def get_user_permissions(
-    user, code_filter_type, code_action=None, module_code=None, code_object=None
-):
-    """
-    Get all the permissions of a user for an action, a module (or an object) and a filter_type
-    Users permissions could be multiples because of user's group. The view mapped by VUsersPermissions does not take the
-    max because some filter type could be not quantitative
-
-    Parameters:
-        user(dict)
-        code_filter_type(str): <SCOPE, GEOGRAPHIC ...>
-        code_action(str): <C,R,U,V,E,D> or None if all actions wanted
-        module_code(str): 'GEONATURE', 'OCCTAX'
-        code_object(str): 'PERMISSIONS', 'DATASET' (table gn_permissions.t_oject)
-    Return:
-        Array<VUsersPermissions>
-    """
-    user_cruved = UserCruved(
-        id_role=user["id_role"],
-        code_filter_type=code_filter_type,
-        module_code=module_code,
-        object_code=code_object,
-    ).get_user_perm_list(code_action=code_action)
-    object_for_error = None
-
-    try:
-        assert len(user_cruved) > 0
-        return user_cruved
-    except AssertionError:
-        object_for_error = ",".join(filter(None, (code_object, module_code)))
-        raise Forbidden(
-            f"User {user['id_role']} cannot '{code_action}' in module/app/object {object_for_error}"
-        )
-
-
-# def build_cruved_dict(cruved, get_id):
-#     """
-#         function utils to build a dict like {'C':'3', 'R':'2'}...
-#         from Array<VUsersPermissions>
-#         NOT USE => TODO DELETE
-#     """
-#     cruved_dict = {}
-#     for action_scope in cruved:
-#         if get_id:
-#             cruved_dict[action_scope[0]] = action_scope[2]
-#         else:
-#             cruved_dict[action_scope[0]] = action_scope[1]
-#     return cruved_dict
 
 
 def beautifulize_cruved(actions, cruved):

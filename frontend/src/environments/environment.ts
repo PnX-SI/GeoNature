@@ -5,6 +5,4 @@
 
 export const environment = {
   production: false,
-  NODE_ENV: 'developpement',
-  NODE_DEBUG: true,
 };

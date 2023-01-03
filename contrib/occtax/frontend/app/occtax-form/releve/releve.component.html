@@ -76,9 +76,10 @@
           label="{{ 'MetaData.Datasets' | translate }}" 
           [parentFormControl]="propertiesForm.get('id_dataset')"
           (valueLoaded)="userDatasets = $event.value"
-          moduleCode="OCCTAX"
-          creatableInModule="OCCTAX"
-          (onChange)="occtaxFormReleveService.onDatasetChanged($event);">
+          [moduleCode]="moduleService.currentModule?.module_code"
+          [creatableInModule]="moduleService.currentModule?.module_code"
+          (onChange)="occtaxFormReleveService.onDatasetChanged($event);"
+          >
         </pnx-datasets>
       </ng-template>
   </div>
@@ -91,6 +92,7 @@
     <pnx-date
       *ngIf="occtaxConfig.form_fields.date_min"
       [isInvalid]="propertiesForm.hasError('invalidDate') || propertiesForm.get('date_min').invalid"
+      data-qa="pnx-occtax-releve-form-datemin"
       label="{{ 'Releve.MinDate' | translate }}"
       [defaultToday]="occtaxConfig.DATE_FORM_WITH_TODAY"
       [parentFormControl]="propertiesForm.get('date_min')"
@@ -105,6 +107,7 @@
     <!-- DATE MAX -->
     <pnx-date
       *ngIf="occtaxConfig.form_fields.date_max"
+      data-qa="pnx-occtax-releve-form-datemax"
       [isInvalid]="propertiesForm.hasError('invalidDate') || propertiesForm.get('date_max').invalid"
       label="{{ 'Releve.MaxDate' | translate }} "
       [parentFormControl]="propertiesForm.get('date_max')"
@@ -115,6 +118,7 @@
     <button
       class="btn btn-sm btn-outline-shadow"
       (click)="occtaxFormReleveService.showTime = !occtaxFormReleveService.showTime"
+      data-qa="pnx-occtax-releve-form-adddate"
     >
       <i
         class="fa fa-plus"

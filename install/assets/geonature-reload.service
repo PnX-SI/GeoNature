@@ -1,0 +1,6 @@
+[Unit]
+Description=Reload GeoNature
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemctl reload geonature

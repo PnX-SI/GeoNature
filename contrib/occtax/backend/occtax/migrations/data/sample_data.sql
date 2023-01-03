@@ -247,7 +247,8 @@ INSERT INTO pr_occtax.t_releves_occtax (
   comment,
   geom_local,
   geom_4326,
-  precision
+  precision,
+  id_module
   ) VALUES (
       '4f784326-2511-11ec-9fdd-23b0fb947058',
       (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),
@@ -265,7 +266,8 @@ INSERT INTO pr_occtax.t_releves_occtax (
       'Exemple test',
       '01010000206A0800002E988D737BCC2D41ECFA38A659805841',
       '0101000020E61000000000000000001A40CDCCCCCCCC6C4640',
-      10
+      10,
+      gn_commons.get_id_module_bycode('OCCTAX')
 ),(
       '4fa06f7c-2511-11ec-93a1-eb4838107091',
       (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),
@@ -283,7 +285,8 @@ INSERT INTO pr_occtax.t_releves_occtax (
       'Autre exemple test',
       '01010000206A0800002E988D737BCC2D41ECFA38A659805841',
       '0101000020E61000000000000000001A40CDCCCCCCCC6C4640',
-      100
+      100,
+      gn_commons.get_id_module_bycode('OCCTAX')
   );
 
 -- Insérer 3 occurrences dans les 2 relevés Occtax

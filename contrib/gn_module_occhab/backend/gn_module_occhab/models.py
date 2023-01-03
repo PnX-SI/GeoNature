@@ -30,7 +30,7 @@ class THabitatsOcchab(DB.Model):
     id_habitat = DB.Column(DB.Integer, primary_key=True)
     id_station = DB.Column(DB.Integer, ForeignKey("pr_occhab.t_stations.id_station"))
     unique_id_sinp_hab = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
-    cd_hab = DB.Column(DB.Integer, ForeignKey("ref_habitats.habref.cd_hab"))
+    cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
     nom_cite = DB.Column(DB.Unicode)
     id_nomenclature_determination_type = DB.Column(
         DB.Integer, ForeignKey(TNomenclatures.id_nomenclature)
@@ -44,7 +44,7 @@ class THabitatsOcchab(DB.Model):
     technical_precision = DB.Column(DB.Unicode)
     id_nomenclature_sensitvity = DB.Column(DB.Integer)
 
-    habref = DB.relationship("Habref", lazy="joined")
+    habref = DB.relationship(Habref, lazy="joined")
 
 
 @serializable

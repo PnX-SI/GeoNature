@@ -38,9 +38,9 @@ def downgrade():
                 public.ST_Transform(
                     public.ST_SetSRID(
                         public.box2d(public.ST_extent(s.the_geom_local))::geometry,
-                        public.Find_SRID('gn_synthese', 'synthese', 'the_geom_local'),
+                        public.Find_SRID('gn_synthese', 'synthese', 'the_geom_local')
                     ),
-                    4326,
+                    4326
                 ) AS bbox4326
             FROM  s
             GROUP BY cd_ref

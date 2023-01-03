@@ -2,10 +2,11 @@ import pytest
 from datetime import datetime, timedelta
 import sqlalchemy as sa
 from flask import url_for
-from werkzeug.exceptions import Unauthorized
+from werkzeug.exceptions import Unauthorized, BadRequest
 
 from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
+from geonature.utils.config import config
 
 from pypnnomenclature.models import TNomenclatures
 
@@ -14,6 +15,9 @@ from .utils import set_logged_user_cookie
 
 
 gn_module_validation = pytest.importorskip("gn_module_validation")
+pytestmark = pytest.mark.skipif(
+    "VALIDATION" in config["DISABLED_MODULES"], reason="Validation is disabled"
+)
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "app")
@@ -63,3 +67,13 @@ class TestValidation:
         )
         assert response.status_code == 200
         assert abs(datetime.fromisoformat(response.json) - validation_date) < timedelta(seconds=2)
+
+    def test_get_validation_history(self, users, synthese_data):
+        set_logged_user_cookie(self.client, users["user"])
+        response = self.client.get(url_for("gn_commons.get_hist", uuid_attached_row="invalid"))
+        assert response.status_code == BadRequest.code
+        s = next(filter(lambda s: s.unique_id_sinp, synthese_data))
+        response = self.client.get(
+            url_for("gn_commons.get_hist", uuid_attached_row=s.unique_id_sinp)
+        )
+        assert response.status_code == 200

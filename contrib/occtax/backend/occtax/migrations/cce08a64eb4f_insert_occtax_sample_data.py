@@ -18,6 +18,7 @@ branch_labels = ("occtax-samples",)
 depends_on = (
     "3d0bf4ee67d1",  # geonature samples data
     "addb71d8efad",  # occtax
+    "023b0be41829",  # add id_module in t_releves_occtax
 )
 
 

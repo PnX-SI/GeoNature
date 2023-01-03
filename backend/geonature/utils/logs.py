@@ -10,7 +10,7 @@ from flask.logging import default_handler
 class RequestIdFormatter(logging.Formatter):
     def format(self, record):
         s = super().format(record)
-        if has_request_context():
+        if has_request_context() and "FLASK_REQUEST_ID" in request.environ:
             req_id = request.environ["FLASK_REQUEST_ID"]
             s = f"[{req_id}] {s}"
         return s
@@ -38,6 +38,7 @@ def config_loggers(config):
         )
         mail_handler.setLevel(logging.ERROR)
         root_logger.addHandler(mail_handler)
+    logging.getLogger("fiona").setLevel(config["SERVER"]["LOG_LEVEL"])
     if os.environ.get("FLASK_ENV") == "development":
         warnings.simplefilter("always", DeprecationWarning)
     else:

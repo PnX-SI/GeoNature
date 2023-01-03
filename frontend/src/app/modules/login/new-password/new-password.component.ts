@@ -8,7 +8,6 @@ import { similarValidator } from '@geonature/services/validators';
 import { AuthService } from '../../../components/auth/auth.service';
 import { AppConfig } from '../../../../conf/app.config';
 
-
 @Component({
   selector: 'pnx-new-password',
   templateUrl: 'new-password.component.html',

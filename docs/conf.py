@@ -17,11 +17,6 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
-
-sys.path.insert(0, os.path.abspath("../backend"))
-
 
 # -- General configuration ------------------------------------------------
 
@@ -40,13 +35,8 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.viewcode",
     "sphinx.ext.githubpages",
-    "sphinxcontrib.httpdomain",
-    "sphinxcontrib.autohttp.flask",
-    "sphinxcontrib.autohttp.flaskqref",
+    "myst_parser",
 ]
-
-http_index_ignore_prefixes = ["/nomenclatures"]
-http_index_shortname = "api"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -54,8 +44,7 @@ templates_path = ["_templates"]
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
-# source_suffix = ['.rst', '.md']
-source_suffix = ".rst"
+source_suffix = [".rst", ".md"]
 
 # The master toctree document.
 master_doc = "index"
@@ -79,12 +68,12 @@ release = "2.0"
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "fr"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = []
+exclude_patterns = ["venv*"]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
@@ -136,6 +125,10 @@ html_sidebars = {"**": ["globaltoc.html", "relations.html", "sourcelink.html", "
 #         'searchbox.html',
 #     ]
 # }
+
+html_extra_path = [
+    "CNAME",
+]
 
 
 # -- Options for HTMLHelp output ------------------------------------------

@@ -17,17 +17,19 @@ setuptools.setup(
     maintainer="Parcs nationaux des Écrins et des Cévennes",
     maintainer_email="geonature@ecrins-parcnational.fr",
     url="https://github.com/PnX-SI/GeoNature/",
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     version=version,
     packages=setuptools.find_packages(where="backend", include=["geonature*"]),
     package_dir={
         "": "backend",
     },
     package_data={
+        "geonature": ["**/templates/**/*.html"],
         "geonature.tests": ["data/*.sql"],
-        "geonature.migrations": ["data/**/*.sql"],
+        "geonature.migrations": ["alembic.ini", "script.py.mako", "data/**/*.sql"],
     },
-    install_requires=list(open("backend/requirements.in", "r")),
+    install_requires=list(open("backend/requirements-common.in", "r"))
+    + list(open("backend/requirements-dependencies.in", "r")),
     extras_require={
         "tests": [
             "pytest",

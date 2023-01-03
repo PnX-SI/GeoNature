@@ -2,29 +2,27 @@
 Démarrage de l'application
 """
 
-import logging, os
+import logging, warnings, os, sys
 from itertools import chain
-from pkg_resources import iter_entry_points
-from urllib.parse import urlsplit
+from pkg_resources import iter_entry_points, load_entry_point
 from importlib import import_module
 
 from flask import Flask, g, request, current_app
-from flask.json import JSONEncoder
+from flask.json.provider import DefaultJSONProvider
 from flask_mail import Message
 from flask_cors import CORS
 from flask_sqlalchemy import before_models_committed
 from werkzeug.middleware.proxy_fix import ProxyFix
 from psycopg2.errors import UndefinedTable
-from sqlalchemy.exc import ProgrammingError
+from sqlalchemy.exc import OperationalError, ProgrammingError
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.engine import RowProxy
 
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
-from geonature.utils.module import import_backend_enabled_modules
 from geonature.core.admin.admin import admin
-from geonature.middlewares import RequestID
+from geonature.middlewares import SchemeFix, RequestID
 
 from pypnusershub.db.tools import (
     user_from_token,
@@ -57,46 +55,42 @@ def configure_alembic(alembic_config):
 if config.get("SENTRY_DSN"):
     import sentry_sdk
     from sentry_sdk.integrations.flask import FlaskIntegration
+    from sentry_sdk.integrations.celery import CeleryIntegration
 
     sentry_sdk.init(
         config["SENTRY_DSN"],
-        integrations=[FlaskIntegration()],
+        integrations=[FlaskIntegration(), CeleryIntegration()],
         traces_sample_rate=1.0,
     )
 
 
-class MyJSONEncoder(JSONEncoder):
-    def default(self, o):
+class MyJSONProvider(DefaultJSONProvider):
+    @staticmethod
+    def default(o):
         if isinstance(o, RowProxy):
             return dict(o)
-        return super().default(o)
+        return DefaultJSONProvider.default(o)
 
 
 def create_app(with_external_mods=True):
-    app = Flask(__name__.split(".")[0], static_folder="../static")
+    static_folder = os.environ.get("GEONATURE_STATIC_FOLDER", "../static")
+    app = Flask(__name__.split(".")[0], static_folder=static_folder)
 
     app.config.update(config)
-    api_uri = urlsplit(app.config["API_ENDPOINT"])
-    app.config["APPLICATION_ROOT"] = api_uri.path
-    app.config["PREFERRED_URL_SCHEME"] = api_uri.scheme
+
     if "SCRIPT_NAME" not in os.environ:
         os.environ["SCRIPT_NAME"] = app.config["APPLICATION_ROOT"].rstrip("/")
-    app.config["TEMPLATES_AUTO_RELOAD"] = True
-    # disable cache for downloaded files (PDF file stat for ex)
-    app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-    app.config.from_envvar("GEONATURE_SETTINGS", silent=True)  # optional settings
 
-    if len(app.config["SECRET_KEY"]) < 20:
-        raise Exception(
-            "The SECRET_KEY config option must have a length "
-            "greater or equals to 20 characters."
-        )
+    # Enable deprecation warnings in debug mode
+    if app.debug and not sys.warnoptions:
+        warnings.filterwarnings(action="default", category=DeprecationWarning)
 
     # set from headers HTTP_HOST, SERVER_NAME, and SERVER_PORT
+    app.wsgi_app = SchemeFix(app.wsgi_app, scheme=config.get("PREFERRED_URL_SCHEME"))
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
     app.wsgi_app = RequestID(app.wsgi_app)
 
-    app.json_encoder = MyJSONEncoder
+    app.json = MyJSONProvider(app)
 
     # set logging config
     config_loggers(app.config)
@@ -105,6 +99,11 @@ def create_app(with_external_mods=True):
     migrate.init_app(app, DB, directory=BACKEND_DIR / "geonature" / "migrations")
     MA.init_app(app)
     CORS(app, supports_credentials=True)
+
+    if "CELERY" in app.config:
+        from geonature.utils.celery import celery_app
+
+        celery_app.conf.update(app.config["CELERY"])
 
     # Emails configuration
     if app.config["MAIL_CONFIG"]:
@@ -150,17 +149,6 @@ def create_app(with_external_mods=True):
 
     admin.init_app(app)
 
-    # Pass the ID_APP to the submodule to avoid token conflict between app on the same server
-    with app.app_context():
-        try:
-            gn_app = Application.query.filter_by(code_application=config["CODE_APPLICATION"]).one()
-        except (ProgrammingError, NoResultFound):
-            logging.warning(
-                "Warning: unable to find GeoNature application, database not yet initialized?"
-            )
-        else:
-            app.config["ID_APP"] = app.config["ID_APPLICATION_GEONATURE"] = gn_app.id_application
-
     for blueprint_path, url_prefix in [
         ("pypnusershub.routes:routes", "/auth"),
         ("pypn_habref_api.routes:routes", "/habref"),
@@ -178,6 +166,7 @@ def create_app(with_external_mods=True):
         ("geonature.core.gn_monitoring.routes:routes", "/gn_monitoring"),
         ("geonature.core.gn_profiles.routes:routes", "/gn_profiles"),
         ("geonature.core.sensitivity.routes:routes", None),
+        ("geonature.core.notifications.routes:routes", "/notifications"),
     ]:
         module_name, blueprint_name = blueprint_path.split(":")
         blueprint = getattr(import_module(module_name), blueprint_name)
@@ -189,22 +178,20 @@ def create_app(with_external_mods=True):
 
         # Loading third-party modules
         if with_external_mods:
-            try:
-                for (
-                    module_object,
-                    module_config,
-                    module_blueprint,
-                ) in import_backend_enabled_modules():
-                    app.config[module_config["MODULE_CODE"]] = module_config
-                    app.register_blueprint(
-                        module_blueprint, url_prefix=module_config["MODULE_URL"]
+            for module_code_entry in iter_entry_points("gn_module", "code"):
+                module_code = module_code_entry.resolve()
+                if module_code in config["DISABLED_MODULES"]:
+                    continue
+                try:
+                    module_blueprint = load_entry_point(
+                        module_code_entry.dist, "gn_module", "blueprint"
                     )
-            except ProgrammingError as sqla_error:
-                if isinstance(sqla_error.orig, UndefinedTable):
-                    logging.warning(
-                        "Warning: database not yet initialized, skipping loading of external modules"
-                    )
+                except Exception as e:
+                    logging.exception(e)
+                    logging.warning(f"Unable to load module {module_code}, skipping…")
+                    current_app.config["DISABLED_MODULES"].append(module_code)
                 else:
-                    raise
+                    module_blueprint.config = config[module_code]
+                    app.register_blueprint(module_blueprint, url_prefix=f"/{module_code.lower()}")
 
     return app

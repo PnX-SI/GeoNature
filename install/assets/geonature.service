@@ -1,5 +1,6 @@
 [Unit]
 Description=GeoNature
+After=postgresql.service
 After=network.target
 
 [Service]
@@ -12,16 +13,17 @@ Environment=GUNICORN_NUM_WORKERS=4
 Environment=GUNICORN_HOST=127.0.0.1
 Environment=GUNICORN_PORT=8000
 Environment=GUNICORN_TIMEOUT=30
+Environment=GUNICORN_LOG_FILE=/var/log/geonature/%N%I.log
 EnvironmentFile=-${BASE_DIR}/environ
 ExecStart=${BASE_DIR}/backend/venv/bin/gunicorn geonature:create_app() \
                 --name "${GUNICORN_PROC_NAME}" --workers "${GUNICORN_NUM_WORKERS}" \
-                --bind "${GUNICORN_HOST}:${GUNICORN_PORT}" --timeout="${GUNICORN_TIMEOUT}"
+                --bind "${GUNICORN_HOST}:${GUNICORN_PORT}" --timeout="${GUNICORN_TIMEOUT}" \
+                --log-file "${GUNICORN_LOG_FILE}"
 ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
 TimeoutStartSec=10
 TimeoutStopSec=5
 PrivateTmp=true
-StandardOutput=append:/var/log/geonature.log
-StandardError=inherit
 
 [Install]
 WantedBy=multi-user.target

@@ -15,6 +15,10 @@ mat-sidenav-content {
   background-color: $solitude;
 }
 
+.cdk-overlay-container {
+  z-index: 2000 !important; 
+}
+
 .purple {
   color: #673ab7;
 }
@@ -421,6 +425,15 @@ li.no-bullet {
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.39);
   z-index: 9999;
+  span#cover-message{
+    display: block;
+    position: absolute;
+    left: calc(50% - 150px);
+    top: 0%;
+    width: 300px;
+    height: auto;
+    text-align: center;
+  }
 }
 
 #cover-spin-removable {
@@ -541,6 +554,10 @@ pnx-root:empty + #cover-spin-removable {
 }
 a.mat-raised-button:hover {
   text-decoration: none !important;
+}
+
+.ngx-toastr {
+  width: 500px !important;  // Specify toastr-dialog width for all devices
 }
 
 /* .loading screen is visible when app is not bootstrapped yet, my-app is empty */

@@ -15,7 +15,7 @@ GeoNature repose sur les composants suivants :
 Deux méthodes d’installation existent :
 
 - :ref:`installation-all` : Installation automatisée de GeoNature, TaxHub et UsersHub.
-- :ref:`installation-standalone` : TaxHub et UsersHub ne sont pas installés (mais leur schémas sont tous de même créés dans la base de données).
+- :ref:`installation-standalone` : TaxHub et UsersHub ne sont pas installés (mais leurs schémas sont tous de même créés dans la base de données).
 
 
 Prérequis
@@ -37,8 +37,6 @@ Prérequis
   - https://registry.npmjs.org
   - https://www.npmjs.com
   - https://raw.githubusercontent.com/
-  - https://inpn.mnhn.fr/mtd
-  - https://preprod-inpn.mnhn.fr/mtd
   - https://wxs.ign.fr/
 
 
@@ -150,10 +148,154 @@ Exemple :
   0 * * * * geonatadmin /home/user/geonature/backend/venv/bin/geonature profiles update
 
 
+.. _install-gn-module:
+
+Installation d'un module GeoNature
+**********************************
+
+L'installation de GeoNature n'est livrée qu'avec les modules du coeur par défaut : Occtax, Occhab et Validation. Pour ajouter un module GeoNature externe, il est nécessaire de l'installer :
+
+Téléchargement
+--------------
+
+Téléchargez le module depuis son dépôt Github puis dézippez-le dans le repertoire utilisateur, au même niveau que le dossier de GeoNature.
+
+.. _install-gn-module-auto:
+
+Installation automatique
+------------------------
+
+Installation avec la sous-commande ``install-gn-module`` :
+
+.. code-block:: bash
+
+    source <dossier GeoNature>/backend/venv/bin/activate
+    geonature install-gn-module <dossier du module> <code du module>
+
+Exemple pour le module Import :
+
+.. code-block:: bash
+
+    source ~/GeoNature/backend/venv/bin/activate
+    geonature install-gn-module ~/gn_module_import/ IMPORT
+
+Puis relancer GeoNature :
+
+.. code-block:: bash
+
+    sudo systemctl restart geonature
+
+
+Installation manuelle
+---------------------
+
+**Installation du backend**
+
+Installer le module avec ``pip`` en mode éditable après avoir activé le venv de GeoNature, puis relancer GeoNature :
+
+.. code-block:: bash
+
+    source <dossier GeoNature>/backend/venv/bin/activate
+    pip install --editable <dossier du module>
+    sudo systemctl restart geonature
+
+.. _module_install_frontend:
+
+**Installation du frontend**
+
+* Créer un lien symbolique dans le dossier ``frontend/external_modules`` de GeoNature vers le dossier ``frontend`` du module.
+  Le lien symbolique doit être nommé suivant le code du module en minuscule :
+
+.. code-block:: bash
+
+    cd <dossier GeoNature>/frontend/external_modules/
+    ln -s <dossier du module>/frontend <code du module en minuscule>
+
+Exemple pour le module Import :
+
+.. code-block:: bash
+
+    cd ~/GeoNature/frontend/external_modules/
+    ln -s ~/gn_module_import/frontend import
+
+* Générer la configuration frontend du module :
+
+.. code-block:: bash
+
+    source <dossier GeoNature>/backend/venv/bin/activate
+    geonature update-module-configuration <CODE DU MODULE>
+
+* Re-builder le frontend :
+
+.. code-block:: bash
+
+    cd <dossier GeoNature>/frontend/
+    nvm use
+    npm run build
+
+**Installation de la base de données**
+
+.. code-block:: bash
+
+    source <dossier GeoNature>/backend/venv/bin/activate
+    geonature upgrade-modules-db <code du module>
+
+.. _module-config:
+
+Configuration du module
+-----------------------
+
+De manière facultative, vous pouvez modifier la configuration du module. La plupart des modules fournissent un fichier d’exemple ``conf_gn_module.toml.example`` dans leur dossier ``config``.
+Afin de modifier les paramètres par défaut du module, vous pouvez le copier :
+
+* Dans le dossier ``config`` de GeoNature en le nommant ``<code du module en minuscule>_config.toml`` (recommandé). Exemple pour le module d’import :
+
+.. code-block:: bash
+
+    cp ~/gn_module_import/config/conf_gn_module.toml.example ~/GeoNature/config/import_config.toml
+
+* Dans le dossier ``config`` du module en le nommant ``conf_gn_module.toml``. Exemple pour le module Import :
+
+.. code-block:: bash
+
+    cp ~/gn_module_import/config/conf_gn_module.toml.example ~/gn_module_import/config/conf_gn_module.toml
+
+
+Après chaque modification du module, vous devez :
+
+* Recharger GeoNature :
+
+.. code-block:: bash
+
+    sudo systemctl reload geonature
+
+* Re-générer la configuration frontend du module et re-builder le frontend avec la sous-commande ``update-configuration`` :
+
+.. code-block:: bash
+
+    source <dossier GeoNature>/backend/venv/bin/activate
+    geonature update-configuration
+
+Mise à jour du module
+---------------------
+
+* Déplacer le code de l’ancienne version du module : ``mv gn_module_xxx gn_module_xxx_old``
+* Télécharger et désarchiver la nouvelle version du module, et renommer son dossier afin qu’il porte le même nom qu’avant (*e.g.* ``gn_module_xxx``)
+* (Optionnel) Si le fichier de configuration du module est placé avec celui-ci, le récupérer : ``cp gn_module_xxx_old/config/conf_gn_module.toml gn_module_xxx/config/``
+* Relancer l’:ref:`installation du module<install-gn-module-auto>` : ``geonature install-gn-module gn_module_xxx XXX && sudo systemctl reload geonature``
+
+
 Mise à jour de l'application
 ****************************
 
-Attention, avant chaque mise à jour de GeoNature, il est important de sauvegarder l'application et sa base de données, ou de faire un snapshot du serveur pour pouvoir revenir à son état antérieure avant mise à jour en cas de problème.
+.. warning::
+    Avant chaque mise à jour de GeoNature, il est important de sauvegarder l'application et sa base de données, ou de faire un snapshot du serveur pour pouvoir revenir à son état antérieure avant mise à jour, en cas de problème.
+
+.. warning::
+    Vérifiez préalablement la compatibilité des modules que vous utilisez avant de mettre GeoNature à jour.
+    S’il est nécessaire de les mettre à jour, arrêtez vous après le remplacement du dossier par le nouveau code source
+    (et la récupération éventuelle de la configuration) ; le script de migration de GeoNature s’occupera automatiquement
+    d’installer la nouvelle version du module.
 
 La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans un nouveau répertoire, récupérer les fichiers de configuration et de surcouche depuis la version actuelle et de relancer l'installation dans le répertoire de la nouvelle version.
 
@@ -177,9 +319,7 @@ La mise à jour doit être réalisée avec votre utilisateur linux courant (``ge
 
 * Suivez les éventuelles notes de version spécifiques décrites au niveau de chaque version : https://github.com/PnX-SI/GeoNature/releases.
 
-⚠️ Si la release inclut des scripts de migration SQL : *lancer ces scripts avec l'utilisateur de BDD courant* (généralement ``geonatadmin``) et non le super-utilisateur ``postgres``.
-
-Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions intermédiaires et notamment les scripts de mise à jour de la base de données à exécuter successivement.
+Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions intermédiaires.
 
 * Si vous devez aussi mettre à jour TaxHub et/ou UsersHub, suivez leurs notes de versions mais aussi leur documentation (https://usershub.readthedocs.io et https://taxhub.readthedocs.io).
 

@@ -9,9 +9,9 @@ from flask import (
     send_from_directory,
     render_template,
     jsonify,
+    g,
 )
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Unauthorized
-from geonature.core.gn_commons.models import TAdditionalFields
 from sqlalchemy import or_, func, distinct, case
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import joinedload
@@ -22,6 +22,8 @@ from marshmallow import ValidationError
 
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
+from geonature.core.gn_commons.models import TAdditionalFields
+from geonature.core.gn_commons.models.base import TModules
 from geonature.utils.env import DB, db, ROOT_DIR
 from pypnusershub.db.models import User, Organisme
 from utils_flask_sqla_geo.generic import GenericTableGeo
@@ -54,8 +56,17 @@ blueprint = Blueprint("pr_occtax", __name__)
 log = logging.getLogger(__name__)
 
 
+@blueprint.url_value_preprocessor
+def set_current_module(endpoint, values):
+    requested_module = values.pop("module_code", "OCCTAX")
+    g.current_module = TModules.query.filter_by(module_code=requested_module).first_or_404(
+        f"No module name {requested_module}"
+    )
+
+
+@blueprint.route("/<module_code>/releves", methods=["GET"])
 @blueprint.route("/releves", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="OCCTAX")
+@permissions.check_cruved_scope("R", True)
 @json_resp
 def getReleves(info_role):
     """
@@ -91,7 +102,7 @@ def getReleves(info_role):
 
     user = info_role
     user_cruved = get_or_fetch_user_cruved(
-        session=session, id_role=info_role.id_role, module_code="OCCTAX"
+        session=session, id_role=info_role.id_role, module_code=g.current_module.module_code
     )
 
     featureCollection = []
@@ -119,8 +130,9 @@ def getReleves(info_role):
     }
 
 
+@blueprint.route("/<module_code>/occurrences", methods=["GET"])
 @blueprint.route("/occurrences", methods=["GET"])
-@permissions.check_cruved_scope("R", module_code="OCCTAX")
+@permissions.check_cruved_scope("R")
 @json_resp
 def getOccurrences():
     """
@@ -135,6 +147,7 @@ def getOccurrences():
     return [n.as_dict() for n in data]
 
 
+@blueprint.route("/<module_code>/counting/<int:id_counting>", methods=["GET"])
 @blueprint.route("/counting/<int:id_counting>", methods=["GET"])
 @json_resp
 def getOneCounting(id_counting):
@@ -170,8 +183,9 @@ def getOneCounting(id_counting):
     return counting
 
 
+@blueprint.route("/<module_code>/releve/<int:id_releve>", methods=["GET"])
 @blueprint.route("/releve/<int:id_releve>", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="OCCTAX")
+@permissions.check_cruved_scope("R", True)
 def getOneReleve(id_releve, info_role):
     """
     Get one releve
@@ -192,7 +206,7 @@ def getOneReleve(id_releve, info_role):
     releve = releve.get_releve_if_allowed(info_role)
 
     user_cruved = get_or_fetch_user_cruved(
-        session=session, id_role=info_role.id_role, module_code="OCCTAX"
+        session=session, id_role=info_role.id_role, module_code=g.current_module.module_code
     )
 
     releve_cruved = {
@@ -207,8 +221,9 @@ def getOneReleve(id_releve, info_role):
     return releveCruvedSchema.dump(releve_cruved)
 
 
+@blueprint.route("/<module_code>/vreleveocctax", methods=["GET"])
 @blueprint.route("/vreleveocctax", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="OCCTAX")
+@permissions.check_cruved_scope("R", True)
 @json_resp
 def getViewReleveOccurrence(info_role):
     """
@@ -247,7 +262,7 @@ def getViewReleveOccurrence(info_role):
     user_cruved = get_or_fetch_user_cruved(
         session=session,
         id_role=info_role.id_role,
-        module_code="OCCTAX",
+        module_code=g.current_module.module_code,
         id_application_parent=current_app.config["ID_APPLICATION_GEONATURE"],
     )
     featureCollection = []
@@ -266,8 +281,9 @@ def getViewReleveOccurrence(info_role):
     return {"message": "not found"}, 404
 
 
+@blueprint.route("/<module_code>/releve", methods=["POST"])
 @blueprint.route("/releve", methods=["POST"])
-@permissions.check_cruved_scope("C", True, module_code="OCCTAX")
+@permissions.check_cruved_scope("C", True)
 @json_resp
 def insertOrUpdateOneReleve(info_role):
     """
@@ -310,6 +326,8 @@ def insertOrUpdateOneReleve(info_role):
     if "observers" in data["properties"]:
         observersList = data["properties"]["observers"]
         data["properties"].pop("observers")
+    if "id_module" not in data["properties"]:
+        data["properties"]["id_module"] = g.current_module.id_module
 
     # Test et suppression des propriétés inexistantes de TRelevesOccurrence
     attliste = [k for k in data["properties"]]
@@ -362,7 +380,7 @@ def insertOrUpdateOneReleve(info_role):
     if releve.id_releve_occtax:
         # get update right of the user
         user_cruved = get_or_fetch_user_cruved(
-            session=session, id_role=info_role.id_role, module_code="OCCTAX"
+            session=session, id_role=info_role.id_role, module_code=g.current_module.module_code
         )
         update_code_filter = user_cruved["U"]
         # info_role.code_action = update_data_scope
@@ -407,7 +425,7 @@ def releveHandler(request, *, releve, info_role):
     # Test des droits d'édition du relevé
     if releve.id_releve_occtax is not None:
         user_cruved = get_or_fetch_user_cruved(
-            session=session, id_role=info_role.id_role, module_code="OCCTAX"
+            session=session, id_role=info_role.id_role, module_code=g.current_module.module_code
         )
         # info_role.code_action = update_data_scope
         user = UserRigth(
@@ -438,8 +456,9 @@ def releveHandler(request, *, releve, info_role):
     return releve
 
 
+@blueprint.route("/<module_code>/only/releve", methods=["POST"])
 @blueprint.route("/only/releve", methods=["POST"])
-@permissions.check_cruved_scope("C", True, module_code="OCCTAX")
+@permissions.check_cruved_scope("C", True)
 def createReleve(info_role):
     """
     Post one Occtax data (Releve + Occurrence + Counting)
@@ -481,8 +500,9 @@ def createReleve(info_role):
     }
 
 
+@blueprint.route("/<module_code>/only/releve/<int:id_releve>", methods=["POST"])
 @blueprint.route("/only/releve/<int:id_releve>", methods=["POST"])
-@permissions.check_cruved_scope("U", True, module_code="OCCTAX")
+@permissions.check_cruved_scope("U", True)
 def updateReleve(id_releve, info_role):
     """
     Post one Occurrence data (Occurrence + Counting) for add to Releve
@@ -512,7 +532,7 @@ def occurrenceHandler(request, *, occurrence, info_role):
     # Test des droits d'édition du relevé si modification
     if occurrence.id_occurrence_occtax is not None:
         user_cruved = get_or_fetch_user_cruved(
-            session=session, id_role=info_role.id_role, module_code="OCCTAX"
+            session=session, id_role=info_role.id_role, module_code=g.current_module.module_code
         )
         # info_role.code_action = update_data_scope
         info_role = UserRigth(
@@ -537,8 +557,9 @@ def occurrenceHandler(request, *, occurrence, info_role):
     return occurrence
 
 
+@blueprint.route("/<module_code>/releve/<int:id_releve>/occurrence", methods=["POST"])
 @blueprint.route("/releve/<int:id_releve>/occurrence", methods=["POST"])
-@permissions.check_cruved_scope("C", True, module_code="OCCTAX")
+@permissions.check_cruved_scope("C", True)
 def createOccurrence(id_releve, info_role):
     """
     Post one Occurrence data (Occurrence + Counting) for add to Releve
@@ -552,8 +573,9 @@ def createOccurrence(id_releve, info_role):
     )
 
 
+@blueprint.route("/<module_code>/occurrence/<int:id_occurrence>", methods=["POST"])
 @blueprint.route("/occurrence/<int:id_occurrence>", methods=["POST"])
-@permissions.check_cruved_scope("U", True, module_code="OCCTAX")
+@permissions.check_cruved_scope("U", True)
 def updateOccurrence(id_occurrence, info_role):
     """
     Post one Occurrence data (Occurrence + Counting) for add to Releve
@@ -566,8 +588,9 @@ def updateOccurrence(id_occurrence, info_role):
     )
 
 
+@blueprint.route("/<module_code>/releve/<int:id_releve>", methods=["DELETE"])
 @blueprint.route("/releve/<int:id_releve>", methods=["DELETE"])
-@permissions.check_cruved_scope("D", True, module_code="OCCTAX")
+@permissions.check_cruved_scope("D", True)
 @json_resp
 def deleteOneReleve(id_releve, info_role):
     """Delete one releve and its associated occurrences and counting
@@ -583,8 +606,9 @@ def deleteOneReleve(id_releve, info_role):
     return {"message": "delete with success"}, 200
 
 
+@blueprint.route("/<module_code>/occurrence/<int:id_occ>", methods=["DELETE"])
 @blueprint.route("/occurrence/<int:id_occ>", methods=["DELETE"])
-@permissions.check_cruved_scope("D", module_code="OCCTAX")
+@permissions.check_cruved_scope("D")
 def deleteOneOccurence(id_occ):
     """Delete one occurrence and associated counting
 
@@ -603,8 +627,9 @@ def deleteOneOccurence(id_occ):
     return "", 204
 
 
+@blueprint.route("/<module_code>/releve/occurrence_counting/<int:id_count>", methods=["DELETE"])
 @blueprint.route("/releve/occurrence_counting/<int:id_count>", methods=["DELETE"])
-@permissions.check_cruved_scope("D", module_code="OCCTAX")
+@permissions.check_cruved_scope("D")
 def deleteOneOccurenceCounting(id_count):
     """Delete one counting
 
@@ -620,6 +645,7 @@ def deleteOneOccurenceCounting(id_count):
     return "", 204
 
 
+@blueprint.route("/<module_code>/defaultNomenclatures", methods=["GET"])
 @blueprint.route("/defaultNomenclatures", methods=["GET"])
 def getDefaultNomenclatures():
     """Get default nomenclatures define in occtax module
@@ -648,12 +674,9 @@ def getDefaultNomenclatures():
     return jsonify(dict(data))
 
 
+@blueprint.route("/<module_code>/export", methods=["GET"])
 @blueprint.route("/export", methods=["GET"])
-@permissions.check_cruved_scope(
-    "E",
-    True,
-    module_code="OCCTAX",
-)
+@permissions.check_cruved_scope("E", True)
 def export(info_role):
     """Export data from pr_occtax.v_export_occtax view (parameter)
 
@@ -703,7 +726,7 @@ def export(info_role):
     additional_col_names = []
     query_add_fields = (
         DB.session.query(TAdditionalFields)
-        .filter(TAdditionalFields.modules.any(module_code="OCCTAX"))
+        .filter(TAdditionalFields.modules.any(module_code=g.current_module.module_code))
         .filter(TAdditionalFields.exportable == True)
     )
     global_add_fields = query_add_fields.filter(~TAdditionalFields.datasets.any()).all()
@@ -716,7 +739,8 @@ def export(info_role):
     additional_col_names = [field.field_name for field in global_add_fields]
     if export_format == "csv":
         # set additional data col at the end (remove it and inset it ...)
-        columns.remove(export_col_name_additional_data)
+        if export_col_name_additional_data in columns:
+            columns.remove(export_col_name_additional_data)
         columns = columns + additional_col_names
         columns.append(export_col_name_additional_data)
         if additional_col_names:

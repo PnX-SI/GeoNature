@@ -1,14 +1,13 @@
 """
 Decorators to protects routes with permissions
 """
-import json
 from functools import wraps
+from warnings import warn
 
-from flask import redirect, request, Response, current_app, g, Response
+from flask import request, g
 from werkzeug.exceptions import Unauthorized, Forbidden
 
 from geonature.core.gn_permissions.tools import (
-    get_user_permissions,
     get_user_from_token_and_raise,
     UserCruved,
 )
@@ -31,13 +30,14 @@ def check_cruved_scope(
     object_code=None,
     redirect_on_expiration=None,
     redirect_on_invalid_token=None,
+    *,
     get_scope=False,
 ):
     """
     Decorator to protect routes with SCOPE CRUVED
-    The decorator first check if the user is conected and have a corect token (get_user_from_token_and_raise)
+    The decorator first check if the user is connected and have a correct token (get_user_from_token_and_raise)
     and then return the max user SCOPE permission for the action in parameter
-    The decorator manage herited CRUVED from user's group and parent module (GeoNature)
+    The decorator manages herited CRUVED from user's group and parent module (GeoNature)
     Return a VUsersPermissions as kwargs of the decorated function as 'info_role' parameter
 
     Parameters:
@@ -51,7 +51,7 @@ def check_cruved_scope(
         @wraps(fn)
         def __check_cruved_scope(*args, **kwargs):
             user = get_user_from_token_and_raise(
-                request, action, redirect_on_expiration, redirect_on_invalid_token
+                request, redirect_on_expiration, redirect_on_invalid_token
             )
             user_with_highter_perm = None
 
@@ -73,6 +73,10 @@ def check_cruved_scope(
                 raise Forbidden(description=message)
             # if get_role = True : set info_role as kwargs
             if get_role:
+                warn(
+                    "'get_role' is deprecated, see https://github.com/PnX-SI/GeoNature/issues/2162",
+                    DeprecationWarning,
+                )
                 kwargs["info_role"] = user_with_highter_perm
             if get_scope:
                 kwargs["scope"] = int(user_with_highter_perm.value_filter)

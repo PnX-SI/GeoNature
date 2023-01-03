@@ -1,7 +1,0 @@
--e file:dependencies/UsersHub-authentification-module#egg=pypnusershub
--e file:dependencies/Nomenclature-api-module#egg=pypnnomenclature
--e file:dependencies/Habref-api-module#egg=pypn_habref_api
--e file:dependencies/TaxHub#egg=taxhub
--e file:dependencies/Utils-Flask-SQLAlchemy#egg=utils-flask-sqlalchemy
--e file:dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo
--e file:dependencies/RefGeo#egg=pypn-ref-geo

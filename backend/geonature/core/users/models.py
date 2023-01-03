@@ -65,13 +65,3 @@ class UserRigth:
         self.module_code = module_code
         self.nom_role = nom_role
         self.prenom_role = prenom_role
-
-
-@serializable
-class TListes(DB.Model):
-    __tablename__ = "t_listes"
-    __table_args__ = {"schema": "utilisateurs", "extend_existing": True}
-    id_liste = DB.Column(DB.Integer, primary_key=True)
-    code_liste = DB.Column(DB.Unicode)
-    nom_liste = DB.Column(DB.Unicode)
-    desc_liste = DB.Column(DB.Integer)

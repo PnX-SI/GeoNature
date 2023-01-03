@@ -8,9 +8,8 @@ import { LoginComponent } from './login/login.component';
 import { NewPasswordComponent } from './new-password/new-password.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 
-import { routes } from './login.routes'
+import { routes } from './login.routes';
 import { SignUpGuard, UserManagementGuard } from './routes-guard.service';
-
 
 @NgModule({
   imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes)],

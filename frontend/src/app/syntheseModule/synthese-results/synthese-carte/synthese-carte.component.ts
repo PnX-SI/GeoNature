@@ -59,6 +59,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
       //selectedLayer.bringToFront();
       this.toggleStyle(selectedLayer);
       this.mapListService.zoomOnSelectedLayer(this._ms.map, selectedLayer);
+      selectedLayer.bringToFront();
     });
 
     // add the featureGroup to the map
@@ -150,13 +151,16 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
             const latLng = L.GeoJSON.coordsToLatLng(geojson.geometry.coordinates[i]);
             this.setStyleEventAndAdd(L.circleMarker(latLng), geojson.properties.id);
           }
-        } else if (geojson.type == 'Polygon' || geojson.type == 'MultiPolygon') {
+        } else if (geojson.geometry.type == 'Polygon' || geojson.geometry.type == 'MultiPolygon') {
           const latLng = L.GeoJSON.coordsToLatLngs(
             geojson.geometry.coordinates,
             geojson.geometry.type === 'Polygon' ? 1 : 2
           );
           this.setStyleEventAndAdd(new L.Polygon(latLng), geojson.properties.id);
-        } else if (geojson.geometry.type == 'LineString' || geojson.geometry.type == 'MultiLineString') {
+        } else if (
+          geojson.geometry.type == 'LineString' ||
+          geojson.geometry.type == 'MultiLineString'
+        ) {
           const latLng = L.GeoJSON.coordsToLatLngs(
             geojson.geometry.coordinates,
             geojson.geometry.type === 'LineString' ? 0 : 1

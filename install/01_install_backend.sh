@@ -61,7 +61,6 @@ else
   sed -i "s|^API_ENDPOINT = .*$|API_ENDPOINT = '${my_url}geonature\/api'|" config/geonature_config.toml
   sed -i "s|^API_TAXHUB = .*$|API_TAXHUB = '${my_url}taxhub\/api'|" config/geonature_config.toml
   sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 16`'|" config/geonature_config.toml
-  sed -i "s|^LOCAL_SRID = .*$|LOCAL_SRID = '${srid_local}'|" config/geonature_config.toml
   sed -i "s|^DEFAULT_LANGUAGE = .*$|DEFAULT_LANGUAGE = '${default_language}'|" config/geonature_config.toml
   sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 32`'|" config/geonature_config.toml
 fi
@@ -93,7 +92,7 @@ if [[ "${MODE}" == "dev" ]]; then
       echo "Avez-vous lancé 'git submodule init && git submodule update' ?"
       exit 1
   fi
-  pip install -e "${BASE_DIR}"[tests] -r requirements-common.txt -r requirements-submodules.txt
+  pip install -e "${BASE_DIR}"[tests] -r requirements-dev.txt
 else
   pip install -e "${BASE_DIR}" -r requirements.txt
 fi
@@ -104,7 +103,7 @@ readonly BIN_VENV_DIR="${BASE_DIR}/backend/venv/bin"
 readonly ACTIVATE_FILE="${BIN_VENV_DIR}/activate"
 readonly COMPLETION_FILE_NAME="geonature_completion"
 if ! grep -q "${COMPLETION_FILE_NAME}" "${ACTIVATE_FILE}" ; then
-  cp "${ACTIVATE_FILE}" "${ACTIVATE_FILE}.save-$(date +'%f')"
+  cp "${ACTIVATE_FILE}" "${ACTIVATE_FILE}.save-$(date +'%F')"
   cat >> "${ACTIVATE_FILE}" << EOF
 
 # GeoNature command completion
@@ -119,13 +118,3 @@ echo "Ajout du fichier d'autocomplétion de la commande GeoNature au virtual env
 if [ ! -f "${BIN_VENV_DIR}/${COMPLETION_FILE_NAME}" ]; then
   _GEONATURE_COMPLETE=bash_source geonature > "${BIN_VENV_DIR}/${COMPLETION_FILE_NAME}"
 fi
-
-
-echo "Installation du service-file systemd…"
-envsubst '${USER} ${BASE_DIR}' < "${BASE_DIR}/install/assets/geonature.service" | sudo tee /etc/systemd/system/geonature.service && sudo systemctl daemon-reload || exit 1
-if [[ "${MODE}" != "dev" ]]; then
-  echo "Activation de geonature au démarrage…"
-  sudo systemctl enable geonature || exit 1
-fi
-
-echo "Vous pouvez maintenant démarrer GeoNature avec la commande : sudo systemctl start geonature"

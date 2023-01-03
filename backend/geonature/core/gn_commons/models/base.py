@@ -78,8 +78,7 @@ class TModules(DB.Model):
     __table_args__ = {"schema": "gn_commons"}
 
     type = DB.Column(DB.Unicode)
-    mapper_args = {
-        "polymorphic_identity": "modules",
+    __mapper_args__ = {
         "polymorphic_on": "type",
     }
 
@@ -97,12 +96,14 @@ class TModules(DB.Model):
     active_backend = DB.Column(DB.Boolean)
     module_doc_url = DB.Column(DB.Unicode)
     module_order = DB.Column(DB.Integer)
+    ng_module = DB.Column(DB.Unicode(length=500))
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
 
     objects = DB.relationship(
         "TObjects", secondary=lambda: _resolve_import_cor_object_module(), backref="modules"
     )
+    # relationship datasets add via backref
 
     def __str__(self):
         return self.module_label.capitalize()
@@ -259,6 +260,7 @@ class TMobileApps(DB.Model):
     app_code = DB.Column(DB.Unicode)
     relative_path_apk = DB.Column(DB.Unicode)
     url_apk = DB.Column(DB.Unicode)
+    url_settings = DB.Column(DB.Unicode)
     package = DB.Column(DB.Unicode)
     version_code = DB.Column(DB.Unicode)
 

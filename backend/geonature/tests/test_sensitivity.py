@@ -14,6 +14,7 @@ from geonature.core.sensitivity.models import (
     CorSensitivityCriteria,
 )
 from geonature.core.gn_synthese.models import Synthese
+from geonature.tests.fixtures import source
 
 from ref_geo.models import LAreas, BibAreasTypes
 from apptax.taxonomie.models import Taxref
@@ -47,6 +48,15 @@ class TestSensitivity:
         life_stage_conflict = TNomenclatures.query.filter_by(
             id_type=life_stage_type.id_type, cd_nomenclature=statut_bio_hibernation.cd_nomenclature
         ).one()
+        comportement_type = BibNomenclaturesTypes.query.filter_by(
+            mnemonique="OCC_COMPORTEMENT"
+        ).one()
+        comportement_halte = TNomenclatures.query.filter_by(
+            id_type=comportement_type.id_type, mnemonique="6"
+        ).one()
+        comportement_hivernage = TNomenclatures.query.filter_by(
+            id_type=comportement_type.id_type, mnemonique="Hivernage"
+        ).one()
 
         query = sa.select([TNomenclatures.mnemonique]).where(
             TNomenclatures.id_nomenclature
@@ -55,7 +65,10 @@ class TestSensitivity:
                 taxon.cd_ref,
                 local_geom,
                 sa.cast(
-                    {"STATUS_BIO": statut_bio_hibernation.id_nomenclature},
+                    {
+                        "STATUS_BIO": statut_bio_hibernation.id_nomenclature,
+                        "OCC_COMPORTEMENT": comportement_halte.id_nomenclature,
+                    },
                     sa.dialects.postgresql.JSONB,
                 ),
             )
@@ -175,6 +188,30 @@ class TestSensitivity:
         assert db.session.execute(query).scalar() == diffusion_maille.mnemonique
         transaction.rollback()
 
+        # Add a matching behaviour
+        transaction = db.session.begin_nested()
+        with db.session.begin_nested():
+            rule.criterias.append(comportement_halte)
+        assert db.session.execute(query).scalar() == diffusion_maille.mnemonique
+        transaction.rollback()
+
+        # Add a matching behaviour and not matching bio status
+        # The rule should match as soon as any criterias match
+        transaction = db.session.begin_nested()
+        with db.session.begin_nested():
+            rule.criterias.append(comportement_halte)
+            rule.criterias.append(statut_bio_reproduction)
+        assert db.session.execute(query).scalar() == diffusion_maille.mnemonique
+        transaction.rollback()
+
+        # Add a not matching behaviour and not matching bio status
+        transaction = db.session.begin_nested()
+        with db.session.begin_nested():
+            rule.criterias.append(comportement_hivernage)
+            rule.criterias.append(statut_bio_reproduction)
+        assert db.session.execute(query).scalar() == not_sensitive.mnemonique
+        transaction.rollback()
+
         # We add a not matching life stage, but with the same cd_nomenclature than
         # status bio of the observation, and check that the rule does not apply even so.
         transaction = db.session.begin_nested()
@@ -260,7 +297,7 @@ class TestSensitivity:
         assert db.session.execute(query).scalar() == not_sensitive.mnemonique
         transaction.rollback()
 
-    def test_synthese_sensitivity(self, app):
+    def test_synthese_sensitivity(self, app, source):
         taxon = Taxref.query.first()
         sensitivity_nomenc_type = BibNomenclaturesTypes.query.filter_by(
             mnemonique="SENSIBILITE"
@@ -286,6 +323,7 @@ class TestSensitivity:
         date_obs = datetime.now()
         with db.session.begin_nested():
             s = Synthese(
+                source=source,
                 cd_nom=taxon.cd_nom,
                 nom_cite="Sensitive taxon",
                 date_min=date_obs,

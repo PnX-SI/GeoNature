@@ -17,6 +17,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
 from utils_flask_sqla.generic import testDataType
 from werkzeug.exceptions import BadRequest, NotFound
+from werkzeug.datastructures import MultiDict
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User, Organisme
@@ -24,6 +25,8 @@ from utils_flask_sqla.serializers import serializable
 
 from geonature.utils.env import DB, db
 from geonature.core.gn_commons.models import cor_field_dataset, cor_module_dataset
+
+from ref_geo.models import LAreas
 
 
 class FilterMixin:
@@ -278,28 +281,26 @@ class TDatasetsQuery(BaseQuery):
             ors = [
                 TDatasets.id_digitizer == user.id_role,
                 TDatasets.cor_dataset_actor.any(id_role=user.id_role),
+                TDatasets.acquisition_framework.has(id_digitizer=user.id_role),
+                TDatasets.acquisition_framework.has(
+                    TAcquisitionFramework.cor_af_actor.any(id_role=user.id_role),
+                ),
             ]
             # if organism is None => do not filter on id_organism even if level = 2
             if scope == 2 and user.id_organisme is not None:
-                ors.append(TDatasets.cor_dataset_actor.any(id_organism=user.id_organisme))
+                ors += [
+                    TDatasets.cor_dataset_actor.any(id_organism=user.id_organisme),
+                    TDatasets.acquisition_framework.has(
+                        TAcquisitionFramework.cor_af_actor.any(id_organism=user.id_organisme),
+                    ),
+                ]
             self = self.filter(or_(*ors))
         return self
 
-    def filter_by_params(self, params={}):
+    def filter_by_params(self, params: MultiDict = MultiDict()):
         if "active" in params:
             self = self.filter(TDatasets.active == bool(params["active"]))
             params.pop("active")
-        if "id_acquisition_framework" in params:
-            if type(params["id_acquisition_framework"]) is list:
-                self = self.filter(
-                    TDatasets.id_acquisition_framework.in_(
-                        [int(id_af) for id_af in params["id_acquisition_framework"]]
-                    )
-                )
-            else:
-                self = self.filter(
-                    TDatasets.id_acquisition_framework == int(params["id_acquisition_framework"])
-                )
         table_columns = TDatasets.__table__.columns
         if "orderby" in params:
             try:
@@ -308,15 +309,20 @@ class TDatasetsQuery(BaseQuery):
             except AttributeError:
                 raise BadRequest("the attribute to order on does not exist")
         if "module_code" in params:
-            self = self.filter(TDatasets.modules.any(module_code=params["module_code"]))
+            self = self.filter(TDatasets.modules.any(module_code=params.pop("module_code")))
         # Generic Filters
-        for param in params:
-            if param in table_columns:
-                col = getattr(table_columns, param)
-                testT = testDataType(params[param], col.type, param)
+        for key, values in params.lists():
+            try:
+                col = getattr(TDatasets, key)
+            except AttributeError:
+                raise BadRequest(f"Column {key} does not exist")
+            col = getattr(table_columns, key)
+            for v in values:
+                testT = testDataType(v, col.type, key)
                 if testT:
                     raise BadRequest(testT)
-                self = self.filter(col == params[param])
+            ors = [col == v for v in values]
+            self = self.filter(or_(*ors))
         return self
 
     def filter_by_readable(self, user=None):
@@ -336,6 +342,14 @@ class TDatasetsQuery(BaseQuery):
         if create_scope < scope:
             scope = create_scope
         return query.filter_by_scope(scope)
+
+    def filter_by_areas(self, areas):
+        from geonature.core.gn_synthese.models import Synthese
+
+        areaFilter = []
+        for type_area, id_area in areas:
+            areaFilter.append(sa.and_(LAreas.id_type == type_area, LAreas.id_area == id_area))
+        return self.filter(TDatasets.synthese_records.any(Synthese.areas.any(sa.or_(*areaFilter))))
 
 
 @serializable(exclude=["user_actors", "organism_actors"])
@@ -402,7 +416,7 @@ class TDatasets(CruvedMixin, FilterMixin, db.Model):
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
     digitizer = DB.relationship(User, lazy="joined")  # joined for permission check
     id_taxa_list = DB.Column(DB.Integer)
-    modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
+    modules = DB.relationship("TModules", secondary=cor_module_dataset, backref="datasets")
 
     creator = DB.relationship(User, lazy="joined")  # = digitizer
     nomenclature_data_type = DB.relationship(
@@ -561,13 +575,27 @@ class TAcquisitionFrameworkQuery(BaseQuery):
         """
         return self.filter_by_scope(self._get_read_scope())
 
+    def filter_by_areas(self, areas):
+        """
+        Filter meta by areas
+        """
+        return self.filter(
+            TAcquisitionFramework.t_datasets.any(
+                TDatasets.query.filter_by_areas(areas).whereclause,
+            ),
+        )
+
     def filter_by_params(self, params={}):
         # XXX frontend retro-compatibility
         selector = params.get("selector")
+        areas = params.pop("areas", None)
         if selector == "ds":
             params = {f"datasets.{key}": value for key, value in params.items()}
         f = TAcquisitionFramework.compute_filter(**params)
-        return self.filter(f)
+        qs = self.filter(f)
+        if areas:
+            qs = qs.filter_by_areas(areas)
+        return qs
 
 
 @serializable(exclude=["user_actors", "organism_actors"])

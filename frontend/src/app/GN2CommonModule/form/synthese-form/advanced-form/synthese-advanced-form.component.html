@@ -6,42 +6,44 @@
 </div>
 
 <div class="modal-body">
-  <div class="form-group">
-    <pnx-autocomplete
-      [apiEndPoint]="URL_AUTOCOMPLETE"
-      [searchAsParameter]="'true'"
-      [parentFormControl]="formService.searchForm.controls.taxon_rank"
-      [formatter]="formatter"
-      [othersGetParams]="queryString"
-      [mapFunc]="mapFunc"
-      [formatter]="formatter"
-      keyValue="displayed_name"
-      label="Rechercher un rang taxonomique (nom latin - au dessus du genre)"
-      (onChange)="onTaxonSelected($event)"
-    >
-    </pnx-autocomplete>
+  <div>
+    <h5>Rangs taxonomiques</h5>
+    <div class="form-group">
+      <pnx-autocomplete
+        [apiEndPoint]="URL_AUTOCOMPLETE"
+        [searchAsParameter]="'true'"
+        [parentFormControl]="formService.searchForm.controls.taxon_rank"
+        [formatter]="formatter"
+        [othersGetParams]="queryString"
+        [mapFunc]="mapFunc"
+        [formatter]="formatter"
+        keyValue="displayed_name"
+        label="Rechercher un rang taxonomique (nom latin - au dessus du genre)"
+        (onChange)="onTaxonSelected($event)"
+      >
+      </pnx-autocomplete>
 
-    <div
-      class="searched-taxa-list alert alert-warning taxon-alert"
-      *ngIf="formService.selectedTaxonFromRankInput.length > 0"
-    >
-      <h5><small>Taxon(s) recherché(s):</small></h5>
-      <ul class="list-group d-flex flex-row flex-wrap">
-        <li
-          class="list-group-item d-flex justify-content-between w-50"
-          *ngFor="let taxon of formService.selectedTaxonFromRankInput; let i = index"
-        >
-          {{ taxon.lb_nom }}
-          <i
-            (click)="formService.removeTaxon(i, formService.selectedTaxonFromRankInput)"
-            class="fa fa-times clickable"
-          ></i>
-        </li>
-      </ul>
+      <div
+        class="searched-taxa-list alert alert-warning taxon-alert"
+        *ngIf="formService.selectedTaxonFromRankInput.length > 0"
+      >
+        <h5><small>Taxon(s) recherché(s):</small></h5>
+        <ul class="list-group d-flex flex-row flex-wrap" >
+          <li
+            class="list-group-item d-flex justify-content-between w-50"
+            *ngFor="let taxon of formService.selectedTaxonFromRankInput; let i = index"
+          >
+            {{taxon.lb_nom}}
+            <i
+              (click)="formService.removeTaxon(i, formService.selectedTaxonFromRankInput)"
+              class="fa fa-times clickable"
+            ></i>
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
 
-  <div [hidden]="!AppConfig.SYNTHESE.DISPLAY_TAXON_TREE" class="form-group">
+  <div [hidden]="!storeService.displayTaxonTree" class="form-group">
     <button
       (click)="toggleTree()"
       id="btn-tree"
@@ -54,72 +56,145 @@
       <i *ngIf="!showTree" class="fa fa-chevron-right" aria-expanded="false"> </i>
     </button>
 
-    <div class="collapse" id="collapseTree">
-      <small> Selectionner un ou plusieurs taxons à partir de la hierarchie taxonomique </small>
-      <br />
-      <div class="card">
-        <div class="card-body tree-wrapper">
-          <tree-root
-            #tree
-            (event)="catchEvent($event)"
-            [state]="storeService.taxonTreeState"
-            [nodes]="storeService.taxonTree"
-            [options]="treeOptions"
-          >
-            <ng-template #treeNodeTemplate let-node let-index="index">
-              <i *ngIf="!node.data.leaf" class="fa fa-folder-o" aria-hidden="true"></i>
-              <i *ngIf="node.data.leaf" class="fa fa-hand-o-right" aria-hidden="true"></i>
-              <span [ngClass]="node.data.classes">{{ node.data.name }}</span>
-            </ng-template>
-          </tree-root>
-        </div>
-      </div>
-      <button
-        type="button"
-        id="button-refresh"
-        class="btn btn-sm btn-outline-danger"
-        (click)="resetTree()"
+      <div
+        class="collapse"
+        id="collapseTree"
       >
-        <small> Réinitialiser la sélection </small>
-      </button>
+        <small>
+          Selectionner un ou plusieurs taxons à partir de la hierarchie taxonomique
+        </small>
+        <br>
+        <div class="card">
+          <div class="card-body tree-wrapper">
+            <tree-root
+              #tree
+              (event)="catchEvent($event)"
+              [state]="storeService.taxonTreeState"
+              [nodes]="storeService.taxonTree"
+              [options]="treeOptions"
+            >
+              <ng-template
+                #treeNodeTemplate
+                let-node
+                let-index="index"
+              >
+                <i
+                  *ngIf="!node.data.leaf"
+                  class="fa fa-folder-o"
+                  aria-hidden="true"
+                ></i>
+                <i
+                  *ngIf="node.data.leaf"
+                  class="fa fa-hand-o-right"
+                  aria-hidden="true"
+                ></i>
+                <span [ngClass]="node.data.classes">{{ node.data.name }}</span>
+              </ng-template>
+            </tree-root>
+          </div>
+        </div>
+        <button
+          type="button"
+          id="button-refresh"
+          class="btn btn-sm btn-outline-danger"
+          (click)="resetTree()"
+        >
+          <small> Réinitialiser la sélection </small>
+        </button>
+      </div>
     </div>
   </div>
 
-  <div class="form-group">
-    <pnx-multiselect
-      [values]="storeService.taxonomyLR"
-      [parentFormControl]="formService.searchForm.controls.taxonomy_lr"
-      keyLabel="nom_categorie_lr"
-      keyValue="id_categorie_france"
-      label="Liste rouge UICN"
+  <div *ngIf="formService.formBuilded && formService.statusFilters.length > 0">
+    <h5>Statuts</h5>
+    <div
+      class="form-group"
+      *ngFor="let status of formService.statusFilters; let i = index"
     >
-    </pnx-multiselect>
+      <pnx-multiselect
+        *ngIf="status.show && status.status_types.length > 1"
+        [values]="status.values"
+        [parentFormControl]="status.control"
+        keyLabel="display"
+        keyValue="cd_type_statut"
+        [label]="status.display_name"
+        (onChange)="onStatusSelected($event)"
+        (onDelete)="onStatusDeleted($event)"
+      >
+      </pnx-multiselect>
+
+      <div
+        *ngIf="status.show && status.status_types.length == 1"
+        class="form-group"
+      >
+        <div class="custom-control custom-checkbox">
+          <input
+            type="checkbox"
+            [id]="status.control_name"
+            class="custom-control-input"
+            [formControl]="status.control"
+            [value]="status.status_types[0]"
+            (change)="onStatusCheckboxChanged($event)"
+          />
+          <label [for]="status.control_name" class="custom-control-label">
+            <small>{{ status.display_name }}</small>
+          </label>
+        </div>
+    </div>
   </div>
 
-  <div class="form-group">
-    <pnx-multiselect
-      [values]="storeService.taxonomyHab"
-      [parentFormControl]="formService.searchForm.controls.taxonomy_id_hab"
-      keyLabel="nom_habitat"
-      keyValue="id_habitat"
-      label="Habitat"
+  <div *ngIf="formService.formBuilded && formService.redListsFilters.length > 0">
+    <h5>Listes rouges</h5>
+    <div
+      class="form-group"
+      *ngFor="let redList of formService.redListsFilters; let i = index"
     >
-    </pnx-multiselect>
+      <pnx-multiselect
+        *ngIf="redList.show"
+        [values]="redList.values"
+        [parentFormControl]="redList.control"
+        keyLabel="display"
+        keyValue="code_statut"
+        [label]="redList.display_name"
+        (onChange)="$event.statusType = redList.status_type ; onRedListsSelected($event)"
+        (onDelete)="$event.statusType = redList.status_type ; onRedListsDeleted($event)"
+      >
+      </pnx-multiselect>
+    </div>
   </div>
 
-  <div class="form-group">
-    <pnx-multiselect
-      [values]="storeService.taxonomyGroup2Inpn"
-      [parentFormControl]="formService.searchForm.controls.taxonomy_group2_inpn"
-      keyLabel="value"
-      keyValue="value"
-      label="Groupe 2 INPN"
-    >
-    </pnx-multiselect>
+  <div *ngIf="storeService.formBuilded">
+    <h5>Attributs TaxRef</h5>
+
+    <div class="form-group">
+      <pnx-multiselect
+        [values]="storeService.taxonomyHab"
+        [parentFormControl]="formService.searchForm.controls.taxonomy_id_hab"
+        keyLabel="nom_habitat"
+        keyValue="id_habitat"
+        label="Habitat"
+        (onChange)="onTaxRefAttributsSelected($event.id_habitat)"
+        (onDelete)="onTaxRefAttributsDeleted($event.value.id_habitat)"
+      >
+      </pnx-multiselect>
+    </div>
+
+    <div class="form-group">
+      <pnx-multiselect
+        [values]="storeService.taxonomyGroup2Inpn"
+        [parentFormControl]="formService.searchForm.controls.taxonomy_group2_inpn"
+        keyLabel="value"
+        keyValue="value"
+        label="Groupe 2 INPN"
+        (onChange)="onTaxRefAttributsSelected($event.value)"
+        (onDelete)="onTaxRefAttributsDeleted($event.value.value)"
+      >
+      </pnx-multiselect>
+    </div>
   </div>
 
   <div *ngIf="storeService.formBuilded && storeService.taxhubAttributes.length > 0">
-    <h5>Attributs taxhub</h5>
+    <h5>Attributs TaxHub</h5>
     <div
       class="dynamic-form padding-sm"
       *ngFor="let formDef of storeService.taxhubAttributes; let i = index"

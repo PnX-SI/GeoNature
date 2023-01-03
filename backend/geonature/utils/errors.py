@@ -10,10 +10,6 @@ class GeoNatureError(Exception):
     pass
 
 
-class GNModuleInstallError(GeoNatureError):
-    pass
-
-
 class ConfigError(GeoNatureError):
     """
     Configuration error class

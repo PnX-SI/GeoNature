@@ -15,6 +15,7 @@ from geonature.core.gn_synthese.models import Synthese, TSources
 
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user_cookie
 from ref_geo.models import BibAreasTypes, LAreas
+from apptax.tests.fixtures import noms_example, attribut_example
 
 from .fixtures import *
 from .utils import jsonschema_definitions
@@ -34,14 +35,25 @@ def source():
 
 
 @pytest.fixture()
-def taxon_attribut():
+def unexisted_id_source():
+    return db.session.query(func.max(TSources.id_source)).scalar() + 1
+
+
+@pytest.fixture()
+def bbox_geom(synthese_data):
+    """used to check bbox"""
+    return Point(geometry=to_shape(synthese_data[0].the_geom_4326))
+
+
+@pytest.fixture()
+def taxon_attribut(noms_example, attribut_example, synthese_data):
     """
     Require "taxonomie_taxons_example" and "taxonomie_attributes_example" alembic branches.
     """
     from apptax.taxonomie.models import BibAttributs, BibNoms, CorTaxonAttribut
 
     nom = BibNoms.query.filter_by(cd_ref=209902).one()
-    attribut = BibAttributs.query.filter_by(nom_attribut="migrateur").one()
+    attribut = BibAttributs.query.filter_by(nom_attribut=attribut_example.nom_attribut).one()
     with db.session.begin_nested():
         c = CorTaxonAttribut(bib_nom=nom, bib_attribut=attribut, valeur_attribut="eau")
         db.session.add(c)
@@ -135,14 +147,12 @@ class TestSynthese:
             "taxhub_attribut_{}".format(
                 taxon_attribut.bib_attribut.id_attribut
             ): taxon_attribut.valeur_attribut,
-            "taxonomy_group2_inpn": "Insectes",
-            "taxonomy_id_hab": 3,
         }
         r = self.client.get(url, query_string=query_string)
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
         assert len(r.json["features"]) == 1
-        assert r.json["features"][0]["properties"]["cd_nom"] == 713776
+        assert r.json["features"][0]["properties"]["cd_nom"] == taxon_attribut.bib_nom.cd_nom
 
         # test geometry filters
         com_type = BibAreasTypes.query.filter_by(type_code="COM").one()
@@ -177,6 +187,32 @@ class TestSynthese:
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
         assert len(r.json["features"]) >= 2
+
+        # test status lr
+        query_string = {"regulations_protection_status": ["REGLLUTTE"]}
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+        # test status znieff
+        query_string = {"znief_protection_status": True}
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+        # test status protection
+        query_string = {"protections_protection_status": ["PN"]}
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+        # test LR
+        query_string = {"worldwide_red_lists": ["LC"]}
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+        query_string = {"european_red_lists": ["LC"]}
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+        query_string = {"national_red_lists": ["LC"]}
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+        query_string = {"regional_red_lists": ["LC"]}
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
 
     def test_get_synthese_data_cruved(self, app, users, synthese_data, datasets):
         set_logged_user_cookie(self.client, users["self_user"])
@@ -432,6 +468,26 @@ class TestSynthese:
         response_empty = self.client.get(url_for(url), query_string={"id_dataset": unexisted_id})
         assert response_empty.status_code == 204
         assert response_empty.get_data(as_text=True) == ""
+
+    def test_get_bbox_id_source(self, bbox_geom, source):
+        id_source = source.id_source
+        url = "gn_synthese.get_bbox"
+
+        response = self.client.get(url_for(url), query_string={"id_source": id_source})
+
+        assert response.status_code == 200
+        assert response.json["type"] == "Point"
+        assert response.json["coordinates"] == [
+            pytest.approx(coord, 0.9) for coord in [bbox_geom.geometry.x, bbox_geom.geometry.y]
+        ]
+
+    def test_get_bbox_id_source_empty(self, unexisted_id_source):
+        url = "gn_synthese.get_bbox"
+
+        response = self.client.get(url_for(url), query_string={"id_source": unexisted_id_source})
+
+        assert response.status_code == 204
+        assert response.json is None
 
     def test_observation_count_per_column(self, synthese_data):
         column_name_dataset = "id_dataset"

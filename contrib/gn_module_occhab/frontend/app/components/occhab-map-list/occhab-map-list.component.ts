@@ -7,7 +7,7 @@ import { OccHabModalDownloadComponent } from "./modal-download.component";
 import { NgbModal, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
 import * as moment from "moment";
-import { ModuleConfig } from "../../../../../../external_modules/occhab/frontend/app/module.config";
+import { ModuleConfig } from "../../module.config";
 
 @Component({
   selector: "pnx-occhab-map-list",

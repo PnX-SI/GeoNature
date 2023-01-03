@@ -54,9 +54,15 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   constructor(public mapservice: MapService, private _commonService: CommonService) {}
 
   ngOnInit() {
+    // HACK for leaflet draw compatibility
+    (window as any).type = true;
     this.map = this.mapservice.map;
     this._Le = L as any;
     this.enableLeafletDraw();
+  }
+
+  ngOnDestroy() {
+    (window as any).type = undefined;
   }
 
   enableLeafletDraw() {
@@ -122,7 +128,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     });
 
     // on layer deleted
-    this.map.on(this._Le.Draw.Event.DELETESTART, (e) => {
+    this.map.on(this._Le.Draw.Event.DELETED, (e) => {
       this.layerDeleted.emit();
     });
 

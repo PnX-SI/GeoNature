@@ -4,6 +4,8 @@
 
 import os
 
+from pkg_resources import iter_entry_points, load_entry_point
+
 from marshmallow import (
     Schema,
     fields,
@@ -11,7 +13,7 @@ from marshmallow import (
     ValidationError,
     post_load,
 )
-from marshmallow.validate import OneOf, Regexp, Email
+from marshmallow.validate import OneOf, Regexp, Email, Length
 
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
@@ -19,7 +21,9 @@ from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_COLUMNS_API_SYNTHESE,
 )
 from geonature.utils.env import GEONATURE_VERSION
+from geonature.utils.module import get_module_config
 from geonature.utils.utilsmails import clean_recipients
+from geonature.utils.utilstoml import load_and_validate_toml
 
 
 class EmailStrOrListOfEmailStrField(fields.Field):
@@ -95,6 +99,11 @@ class MailConfig(Schema):
     ERROR_MAIL_TO = EmailStrOrListOfEmailStrField(load_default=None)
 
 
+class CeleryConfig(Schema):
+    broker_url = fields.String(load_default="redis://localhost:6379/0")
+    result_backend = fields.String(load_default="redis://localhost:6379/0")
+
+
 class AccountManagement(Schema):
     # Config for sign-up
     ENABLE_SIGN_UP = fields.Boolean(load_default=False)
@@ -111,12 +120,6 @@ class UsersHubConfig(Schema):
     ADMIN_APPLICATION_LOGIN = fields.String()
     ADMIN_APPLICATION_PASSWORD = fields.String()
     URL_USERSHUB = fields.Url()
-
-
-class PublicAccess(Schema):
-    PUBLIC_LOGIN = fields.String(load_default=None)
-    PUBLIC_PASSWORD = fields.String(load_default=None)
-    ENABLE_PUBLIC_ACCESS = fields.Boolean(load_default=False)
 
 
 class ServerConfig(Schema):
@@ -158,6 +161,14 @@ class MetadataConfig(Schema):
     )
     CD_NOMENCLATURE_ROLE_TYPE_DS = fields.List(fields.Str(), load_default=[])
     CD_NOMENCLATURE_ROLE_TYPE_AF = fields.List(fields.Str(), load_default=[])
+    METADATA_AREA_FILTERS = fields.List(
+        fields.Dict,
+        load_default=[
+            {"label": "Communes", "type_code": "COM"},
+            {"label": "Départements", "type_code": "DEP"},
+            {"label": "Régions", "type_code": "REG"},
+        ],
+    )
 
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
@@ -173,7 +184,7 @@ class GnPySchemaConf(Schema):
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(load_default=True)
     SESSION_TYPE = fields.String(load_default="filesystem")
-    SECRET_KEY = fields.String(required=True)
+    SECRET_KEY = fields.String(required=True, validate=Length(min=20))
     # le cookie expire toute les 7 jours par défaut
     COOKIE_EXPIRATION = fields.Integer(load_default=3600 * 24 * 7)
     COOKIE_AUTORENEW = fields.Boolean(load_default=True)
@@ -187,11 +198,13 @@ class GnPySchemaConf(Schema):
     CAS = fields.Nested(CasSchemaConf, load_default=CasSchemaConf().load({}))
     MAIL_ON_ERROR = fields.Boolean(load_default=False)
     MAIL_CONFIG = fields.Nested(MailConfig, load_default=MailConfig().load({}))
+    CELERY = fields.Nested(CeleryConfig, load_default=CeleryConfig().load({}))
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     ADMIN_APPLICATION_LOGIN = fields.String()
     ACCOUNT_MANAGEMENT = fields.Nested(
         AccountManagement, load_default=AccountManagement().load({})
     )
+    BAD_LOGIN_STATUS_CODE = fields.Integer(load_default=401)
     USERSHUB = fields.Nested(UsersHubConfig, load_default=UsersHubConfig().load({}))
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
@@ -245,9 +258,76 @@ class GnFrontEndConf(Schema):
 
 
 class Synthese(Schema):
+    # --------------------------------------------------------------------
+    # SYNTHESE - SEARCH FORM
     AREA_FILTERS = fields.List(
         fields.Dict, load_default=[{"label": "Communes", "type_code": "COM"}]
     )
+    # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
+    TAXON_RESULT_NUMBER = fields.Integer(load_default=20)
+    # Afficher ou non l'arbre taxonomique
+    DISPLAY_TAXON_TREE = fields.Boolean(load_default=True)
+    # Switch the observer form input in free text input (true) or in select input (false)
+    SEARCH_OBSERVER_WITH_LIST = fields.Boolean(load_default=False)
+    # Id of the observer list -- utilisateurs.t_menus
+    ID_SEARCH_OBSERVER_LIST = fields.Integer(load_default=1)
+    # Regulatory or not status list of fields
+    STATUS_FILTERS = fields.List(
+        fields.Dict,
+        load_default=[
+            {
+                "id": "protections",
+                "show": True,
+                "display_name": "Taxons protégés",
+                "status_types": ["PN", "PR", "PD"],
+            },
+            {
+                "id": "regulations",
+                "show": True,
+                "display_name": "Taxons réglementés",
+                "status_types": ["REGLII", "REGLLUTTE", "REGL", "REGLSO"],
+            },
+            {
+                "id": "znief",
+                "show": True,
+                "display_name": "Espèces déterminantes ZNIEFF",
+                "status_types": ["ZDET"],
+            },
+        ],
+    )
+    # Red lists list of fields
+    RED_LISTS_FILTERS = fields.List(
+        fields.Dict,
+        load_default=[
+            {
+                "id": "worldwide",
+                "show": True,
+                "display_name": "Liste rouge mondiale",
+                "status_type": "LRM",
+            },
+            {
+                "id": "european",
+                "show": True,
+                "display_name": "Liste rouge européenne",
+                "status_type": "LRE",
+            },
+            {
+                "id": "national",
+                "show": True,
+                "display_name": "Liste rouge nationale",
+                "status_type": "LRN",
+            },
+            {
+                "id": "regional",
+                "show": True,
+                "display_name": "Liste rouge régionale",
+                "status_type": "LRR",
+            },
+        ],
+    )
+
+    # --------------------------------------------------------------------
+    # SYNTHESE - OBSERVATIONS LIST
     # Listes des champs renvoyés par l'API synthese '/synthese'
     # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
     # d'abbord s'assurer que ces champs sont bien renvoyé par l'API !
@@ -257,6 +337,9 @@ class Synthese(Schema):
     )
     # Colonnes affichées sur la liste des résultats de la sytnthese
     LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, load_default=DEFAULT_LIST_COLUMN)
+
+    # --------------------------------------------------------------------
+    # SYNTHESE - DOWNLOADS (AKA EXPORTS)
     EXPORT_COLUMNS = fields.List(fields.String(), load_default=DEFAULT_EXPORT_COLUMNS)
     # Certaines colonnes sont obligatoires pour effectuer les filtres CRUVED
     EXPORT_ID_SYNTHESE_COL = fields.String(load_default="id_synthese")
@@ -269,28 +352,28 @@ class Synthese(Schema):
     EXPORT_METADATA_ACTOR_COL = fields.String(load_default="acteurs")
     # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
     EXPORT_FORMAT = fields.List(fields.String(), load_default=["csv", "geojson", "shapefile"])
-    # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
-    TAXON_RESULT_NUMBER = fields.Integer(load_default=20)
+    # Nombre max d'observation dans les exports
+    NB_MAX_OBS_EXPORT = fields.Integer(load_default=50000)
+
+    # --------------------------------------------------------------------
+    # SYNTHESE - OBSERVATION DETAILS
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
     # et sur les filtres taxonomiques avancés
     ID_ATTRIBUT_TAXHUB = fields.List(fields.Integer(), load_default=[102, 103])
-    # nom des colonnes de la table gn_synthese.synthese que l'on veux retirer des filres dynamiques
-    # et de la modale d'information détaillée d'une observation
-    # example = "[non_digital_proof]"
+    # Display email on synthese and validation info obs modal
+    DISPLAY_EMAIL = fields.Boolean(load_default=True)
+
+    # --------------------------------------------------------------------
+    # SYNTHESE - SHARED PARAMETERS
+    # Nom des colonnes de la table gn_synthese.synthese que l'on veux retirer des filtres dynamiques
+    # et de la modale d'information détaillée d'une observation example = "[non_digital_proof]"
     EXCLUDED_COLUMNS = fields.List(fields.String(), load_default=[])
-    # Afficher ou non l'arbre taxonomique
-    DISPLAY_TAXON_TREE = fields.Boolean(load_default=True)
-    # Switch the observer form input in free text input (true) or in select input (false)
-    SEARCH_OBSERVER_WITH_LIST = fields.Boolean(load_default=False)
-    # id of the observer list -- utilisateurs.t_menus
-    ID_SEARCH_OBSERVER_LIST = fields.Integer(load_default=1)
+
     # Nombre max d'observation à afficher sur la carte
     NB_MAX_OBS_MAP = fields.Integer(load_default=50000)
-    # clusteriser les layers sur la carte
+    # Clusteriser les layers sur la carte
     ENABLE_LEAFLET_CLUSTER = fields.Boolean(load_default=True)
-    # Nombre max d'observation dans les exports
-    NB_MAX_OBS_EXPORT = fields.Integer(load_default=50000)
-    # Nombre des "dernières observations" affiché à l'arrive sur la synthese
+    # Nombre des "dernières observations" affichées à l'arrivée sur la synthese
     NB_LAST_OBS = fields.Integer(load_default=100)
 
     # Display email on synthese and validation info obs modal
@@ -301,8 +384,8 @@ class Synthese(Schema):
     DISCUSSION_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
     # Allow disable alert synthese module for synthese or validation or any
     ALERT_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
-    # Add action log API to synthese module
-    LOG_API = fields.Boolean(missing=True)
+    # Allow to activate pin tool for any, some or all VALIDATION, SYNTHESE
+    PIN_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
 
 
 # Map configuration
@@ -311,14 +394,14 @@ BASEMAP = [
         "name": "OpenStreetMap",
         "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
         "options": {
-            "attribution": "&copy OpenStreetMap",
+            "attribution": "<a href='https://www.openstreetmap.org/copyright' target='_blank'>© OpenStreetMap contributors</a>",
         },
     },
     {
         "name": "OpenTopoMap",
         "url": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
         "options": {
-            "attribution": "© OpenTopoMap",
+            "attribution": "Map data: © <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap contributors</a>, SRTM | Map style: © <a href='https://opentopomap.org' target='_blank'>OpenTopoMap</a> (<a href='https://creativecommons.org/licenses/by-sa/3.0/' target='_blank'>CC-BY-SA</a>)",
         },
     },
     {
@@ -326,7 +409,7 @@ BASEMAP = [
         "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
         "options": {
             "subdomains": ["mt0", "mt1", "mt2", "mt3"],
-            "attribution": "© GoogleMap",
+            "attribution": "© Google Maps",
         },
     },
 ]
@@ -340,6 +423,51 @@ class MapConfig(Schema):
     # zoom appliqué sur la carte lorsque l'on clique sur une liste
     # ne s'applique qu'aux points
     ZOOM_ON_CLICK = fields.Integer(load_default=18)
+    # Restreindre la recherche OpenStreetMap (sur la carte dans l'encart "Rechercher un lieu")
+    # à certains pays. Les pays doivent être au format ISO_3166-1 :
+    # https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 et séparés par une virgule.
+    # Exemple : OSM_RESTRICT_COUNTRY_CODES = "fr,es,be,ch" (Restreint à France, Espagne, Belgique
+    # et Suisse)
+    # Laisser à null pour n'avoir aucune restriction
+    OSM_RESTRICT_COUNTRY_CODES = fields.String(load_default=None)
+    REF_LAYERS = fields.List(
+        fields.Dict(),
+        load_default=[
+            {
+                "code": "limitesadministratives",
+                "label": "Limites administratives (IGN)",
+                "type": "wms",
+                "url": "https://wxs.ign.fr/essentiels/geoportail/r/wms",
+                "activate": False,
+                "params": {
+                    "VERSION": "1.3.0",
+                    "crs": "CRS:84",
+                    "dpiMode": 7,
+                    "format": "image/png",
+                    "layers": "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST",
+                    "styles": "",
+                },
+            },
+            {
+                "code": "znieff1",
+                "label": "ZNIEFF1 (INPN)",
+                "type": "wms",
+                "url": "https://ws.carmencarto.fr/WMS/119/fxx_inpn",
+                "activate": False,
+                "params": {
+                    "layers": "znieff1",
+                    "opacity": 0.2,
+                    "crs": "EPSG:4326",
+                    "service": "wms",
+                    "format": "image/png",
+                    "version": "1.3.0",
+                    "request": "GetMap",
+                    "transparent": True,
+                },
+            },
+        ],
+    )
+    REF_LAYERS_LEGEND = fields.Boolean(load_default=False)
 
 
 class TaxHub(Schema):
@@ -360,6 +488,7 @@ class GnGeneralSchemaConf(Schema):
     CODE_APPLICATION = fields.String(load_default="GN")
     XML_NAMESPACE = fields.String(load_default="{http://inpn.mnhn.fr/mtd}")
     MTD_API_ENDPOINT = fields.Url(load_default="https://preprod-inpn.mnhn.fr/mtd")
+    DISABLED_MODULES = fields.List(fields.String(), load_default=[])
     CAS_PUBLIC = fields.Nested(CasFrontend, load_default=CasFrontend().load({}))
     RIGHTS = fields.Nested(RightsSchemaConf, load_default=RightsSchemaConf().load({}))
     FRONTEND = fields.Nested(GnFrontEndConf, load_default=GnFrontEndConf().load({}))
@@ -378,8 +507,9 @@ class GnGeneralSchemaConf(Schema):
     MTD = fields.Nested(MTDSchemaConf, load_default=MTDSchemaConf().load({}))
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
-    PUBLIC_ACCESS = fields.Nested(PublicAccess, load_default=PublicAccess().load({}))
+    PUBLIC_ACCESS_USERNAME = fields.String(load_default="")
     TAXHUB = fields.Nested(TaxHub, load_default=TaxHub().load({}))
+    NOTIFICATIONS_ENABLED = fields.Boolean(load_default=True)
 
     @validates_schema
     def validate_enable_sign_up(self, data, **kwargs):
@@ -405,15 +535,11 @@ class GnGeneralSchemaConf(Schema):
                 "AUTO_ACCOUNT_CREATION, VALIDATOR_EMAIL",
             )
 
-
-class ManifestSchemaConf(Schema):
-    package_format_version = fields.String(required=True)
-    module_code = fields.String(required=True)
-    module_version = fields.String(required=True)
-    min_geonature_version = fields.String(required=True)
-    max_geonature_version = fields.String(required=True)
-    exclude_geonature_versions = fields.List(fields.String)
-
-
-class ManifestSchemaProdConf(Schema):
-    module_code = fields.String(required=True)
+    @post_load
+    def insert_module_config(self, data, **kwargs):
+        for module_code_entry in iter_entry_points("gn_module", "code"):
+            module_code = module_code_entry.resolve()
+            if module_code in data["DISABLED_MODULES"]:
+                continue
+            data[module_code] = get_module_config(module_code_entry.dist)
+        return data

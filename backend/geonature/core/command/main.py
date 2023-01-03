@@ -5,6 +5,7 @@
 import logging
 from os import environ
 from collections import ChainMap
+from pkg_resources import iter_entry_points
 
 import toml
 import click
@@ -12,20 +13,17 @@ from flask.cli import run_command
 
 from geonature.utils.env import GEONATURE_VERSION
 from geonature.utils.command import (
-    start_geonature_front,
-    build_geonature_front,
     create_frontend_config,
-    frontend_routes_templating,
-    tsconfig_templating,
-    tsconfig_app_templating,
-    update_app_configuration,
 )
-from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
 from geonature import create_app
 from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actors
+from geonature.utils.config import config
+from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
+from geonature.utils.command import (
+    create_frontend_module_config,
+    build_frontend,
+)
 
-# from rq import Queue, Connection, Worker
-# import redis
 from flask.cli import FlaskGroup
 
 
@@ -47,32 +45,6 @@ def main(ctx):
     pass
 
 
-# Unused
-# @main.command()
-# def launch_redis_worker():
-#     """ launch redis worker
-#     """
-#     app = create_app()
-#     with app.app_context():
-#         with Connection(redis.Redis(host='localhost', port='6379')):
-#             q = Queue()
-#             w = Worker(q)
-#             w.work()
-
-
-@main.command()
-@click.option("--build", type=bool, required=False, default=True)
-def generate_frontend_config(build):
-    """
-    Génération des fichiers de configurations pour javascript
-    Relance le build du front par defaut
-    """
-    create_frontend_config()
-    if build:
-        build_geonature_front()
-    log.info("Config successfully updated")
-
-
 @main.command()
 @click.option("--host", default="0.0.0.0")
 @click.option("--port", default=8000)
@@ -87,69 +59,78 @@ def dev_back(ctx, host, port):
 
     - geonature dev_back --port=8080 --port=0.0.0.0
     """
-    if not environ.get("FLASK_ENV"):
-        environ["FLASK_ENV"] = "development"
+    if not environ.get("FLASK_DEBUG"):
+        environ["FLASK_DEBUG"] = "true"
     ctx.invoke(run_command, host=host, port=port)
 
 
 @main.command()
-def dev_front():
+@click.option(
+    "--input",
+    "input_file",
+    type=click.File("r"),
+)
+@click.option(
+    "--output",
+    "output_file",
+    type=click.File("w"),
+)
+def generate_frontend_config(input_file, output_file):
     """
-    Démarre le frontend en mode develop
+    Génération des fichiers de configurations pour javascript
     """
-    start_geonature_front()
-
-
-@click.option("--build-sass", type=bool, default=False)
-@main.command()
-def frontend_build(build_sass):
-    """
-    Lance le build du frontend
-    """
-    build_geonature_front(build_sass)
-
-
-@main.command()
-def generate_frontend_modules_route():
-    """
-    Génere le fichier de routing du frontend
-    à partir des modules GeoNature activé
-    """
-    frontend_routes_templating()
+    create_frontend_config(input_file, output_file)
+    click.echo(
+        "Configuration générée. Pensez à rebuilder le frontend pour la production.", err=True
+    )
 
 
 @main.command()
-def generate_frontend_tsconfig():
+@click.argument("module_code")
+@click.option(
+    "--output",
+    "output_file",
+    type=click.File("w"),
+)
+def generate_frontend_module_config(module_code, output_file):
     """
-    Génere tsconfig du frontend
-    """
-    tsconfig_templating()
-
-
-@main.command()
-def generate_frontend_tsconfig_app():
-    """
-    Génere tsconfig.app du frontend/src
-    """
-    tsconfig_app_templating()
-
-
-@main.command()
-@click.option("--build", type=bool, required=False, default=True)
-def update_configuration(build):
-    """
-    Regénère la configuration de l'application
+    Génère la config frontend d'un module
 
     Example:
 
-    - geonature update_configuration
-
-    - geonature update_configuration --build=false (met à jour la configuration sans recompiler le frontend)
+    - geonature generate-frontend-module-config OCCTAX
 
     """
-    # Recréation du fichier de routing car il dépend de la conf
-    frontend_routes_templating()
-    update_app_configuration(build)
+    create_frontend_module_config(module_code, output_file)
+    click.echo(
+        "Configuration générée. Pensez à rebuilder le frontend pour la production.", err=True
+    )
+
+
+@main.command()
+@click.option("--modules", type=bool, required=False, default=True)
+@click.option("--build", type=bool, required=False, default=True)
+def update_configuration(modules, build):
+    """
+    Régénère la configuration du front et lance le rebuild.
+    """
+    click.echo("Génération de la configuration du frontend :")
+    click.echo("  GeoNature … ", nl=False)
+    create_frontend_config()
+    click.secho("OK", fg="green")
+    if modules:
+        for module_code_entry in iter_entry_points("gn_module", "code"):
+            module_code = module_code_entry.resolve()
+            click.echo(f"  Module {module_code} … ", nl=False)
+            if module_code in config["DISABLED_MODULES"]:
+                click.secho("désactivé, ignoré", fg="white")
+                continue
+            click.secho("OK", fg="green")
+            create_frontend_module_config(module_code)
+    if build:
+        click.echo("Rebuild du frontend …")
+        build_frontend()
+        click.secho("Rebuild du frontend terminé.", fg="green")
 
 
 @main.command()

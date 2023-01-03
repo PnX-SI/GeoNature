@@ -3,8 +3,9 @@ import requests
 import json
 
 
-from flask import Blueprint, request, current_app, Response, redirect
+from flask import Blueprint, request, current_app, Response, redirect, g
 from sqlalchemy.sql import distinct, and_
+from werkzeug.exceptions import NotFound, BadRequest, Forbidden
 
 from geonature.utils.env import DB
 from geonature.core.gn_permissions import decorators as permissions
@@ -12,10 +13,9 @@ from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
 from geonature.core.users.models import (
     VUserslistForallMenu,
     CorRole,
-    TListes,
 )
 from geonature.utils.config import config
-from pypnusershub.db.models import Organisme as BibOrganismes
+from pypnusershub.db.models import Organisme, User, UserList
 from geonature.core.users.register_post_actions import (
     validate_temp_user,
     execute_actions_after_validation,
@@ -23,7 +23,7 @@ from geonature.core.users.register_post_actions import (
 )
 
 from pypnusershub.env import REGISTER_POST_ACTION_FCT
-from pypnusershub.db.models import User
+from pypnusershub.db.models import User, Application
 from pypnusershub.db.models_register import TempUser
 from pypnusershub.routes_register import bp as user_api
 from pypnusershub.routes import check_auth
@@ -63,7 +63,7 @@ REGISTER_POST_ACTION_FCT.update(
 
 @routes.route("/menu/<int:id_menu>", methods=["GET"])
 @json_resp
-def getRolesByMenuId(id_menu):
+def get_roles_by_menu_id(id_menu):
     """
     Retourne la liste des roles associés à un menu
 
@@ -86,7 +86,7 @@ def getRolesByMenuId(id_menu):
 
 @routes.route("/menu_from_code/<string:code_liste>", methods=["GET"])
 @json_resp
-def getRolesByMenuCode(code_liste):
+def get_roles_by_menu_code(code_liste):
     """
     Retourne la liste des roles associés à une liste (identifiée par son code)
 
@@ -98,10 +98,10 @@ def getRolesByMenuCode(code_liste):
     """
 
     q = DB.session.query(VUserslistForallMenu).join(
-        TListes,
+        UserList,
         and_(
-            TListes.id_liste == VUserslistForallMenu.id_menu,
-            TListes.code_liste == code_liste,
+            UserList.id_liste == VUserslistForallMenu.id_menu,
+            UserList.code_liste == code_liste,
         ),
     )
 
@@ -116,9 +116,9 @@ def getRolesByMenuCode(code_liste):
 
 @routes.route("/listes", methods=["GET"])
 @json_resp
-def getListes():
+def get_listes():
 
-    q = DB.session.query(TListes)
+    q = DB.session.query(UserList)
     lists = q.all()
     return [l.as_dict() for l in lists]
 
@@ -157,7 +157,7 @@ def get_roles():
             order_col = getattr(User.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
-            log.error("the attribute to order on does not exist")
+            raise BadRequest("the attribute to order on does not exist")
     return [user.as_dict(fields=user_fields) for user in q.all()]
 
 
@@ -171,13 +171,13 @@ def get_organismes():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-    q = BibOrganismes.query
+    q = Organisme.query
     if "orderby" in params:
         try:
-            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
+            order_col = getattr(Organisme.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
-            log.error("the attribute to order on does not exist")
+            raise BadRequest("the attribute to order on does not exist")
     return [organism.as_dict(fields=organism_fields) for organism in q.all()]
 
 
@@ -195,17 +195,17 @@ def get_organismes_jdd():
 
     datasets = [d.id_dataset for d in TDatasets.query.filter_by_readable()]
     q = (
-        DB.session.query(BibOrganismes)
-        .join(CorDatasetActor, BibOrganismes.id_organisme == CorDatasetActor.id_organism)
+        DB.session.query(Organisme)
+        .join(CorDatasetActor, Organisme.id_organisme == CorDatasetActor.id_organism)
         .filter(CorDatasetActor.id_dataset.in_(datasets))
         .distinct()
     )
     if "orderby" in params:
         try:
-            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
+            order_col = getattr(Organisme.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
-            log.error("the attribute to order on does not exist")
+            raise BadRequest("the attribute to order on does not exist")
     return [organism.as_dict(fields=organism_fields) for organism in q.all()]
 
 
@@ -213,7 +213,7 @@ def get_organismes_jdd():
 ### ACCOUNT_MANAGEMENT ROUTES #####
 #########################
 
-
+# TODO: let frontend call UsersHub directly?
 @routes.route("/inscription", methods=["POST"])
 def inscription():
     """
@@ -227,7 +227,11 @@ def inscription():
 
     data = request.get_json()
     # ajout des valeurs non présentes dans le form
-    data["id_application"] = current_app.config["ID_APPLICATION_GEONATURE"]
+    data["id_application"] = (
+        Application.query.filter_by(code_application=current_app.config["CODE_APPLICATION"])
+        .one()
+        .id_application
+    )
     data["groupe"] = False
     data["confirmation_url"] = config["API_ENDPOINT"] + "/users/after_confirmation"
 
@@ -276,7 +280,14 @@ def confirmation():
     if token is None:
         return {"message": "Token introuvable"}, 404
 
-    data = {"token": token, "id_application": current_app.config["ID_APPLICATION_GEONATURE"]}
+    data = {
+        "token": token,
+        "id_application": Application.query.filter_by(
+            code_application=current_app.config["CODE_APPLICATION"]
+        )
+        .one()
+        .id_application,
+    }
 
     r = s.post(
         url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/valid_temp_user",
@@ -293,7 +304,7 @@ def confirmation():
 def after_confirmation():
     data = dict(request.get_json())
     type_action = "valid_temp_user"
-    after_confirmation_fn = function_dict.get(type_action, None)
+    after_confirmation_fn = REGISTER_POST_ACTION_FCT.get(type_action, None)
     result = after_confirmation_fn(data)
     if result != 0 and result["msg"] != "ok":
         msg = f"Problem in GeoNature API after confirmation {type_action} : {result['msg']}"
@@ -303,20 +314,22 @@ def after_confirmation():
 
 
 @routes.route("/role", methods=["PUT"])
-@permissions.check_cruved_scope("R", True)
+@permissions.check_cruved_scope("R")
 @json_resp
-def update_role(info_role):
+def update_role():
     """
     Modifie le role de l'utilisateur du token en cours
     """
     if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
         return {"message": "Page introuvable"}, 404
+
     data = dict(request.get_json())
 
-    user = DB.session.query(User).get(info_role.id_role)
+    user = g.current_user
 
-    if user is None:
-        return {"message": "Droit insuffisant"}, 403
+    # Prevent public-access user from updating its own information
+    if user.is_public:
+        raise Forbidden
 
     attliste = [k for k in data]
     for att in attliste:

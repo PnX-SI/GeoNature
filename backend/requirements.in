@@ -1,27 +1,2 @@
-#flask<2.0
-flask
-flask-sqlalchemy
-flask-cors
-flask-mail
-flask-marshmallow
-flask-migrate
-flask_wtf
-marshmallow-sqlalchemy
-WTForms-SQLAlchemy
-marshmallow
-pillow
-weasyprint<53
-lxml
-xmltodict
-sqlalchemy<1.4
-gunicorn>=19.8.0
-toml
-click>=7.0
-
-utils-flask-sqlalchemy
-utils-flask-sqlalchemy-geo
-pypnnomenclature
-pypnusershub>=1.5.9
-pypn_habref_api
-taxhub
-pypn-ref-geo
+-r requirements-common.in
+-r requirements-dependencies.in

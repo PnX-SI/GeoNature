@@ -4,9 +4,9 @@ import json
 from flask import Blueprint, request, current_app
 from flask.json import jsonify
 import sqlalchemy as sa
-from sqlalchemy import func
+from sqlalchemy import func, distinct, asc, desc
 from sqlalchemy.sql import text
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, undefer
 from werkzeug.exceptions import BadRequest
 
 from geonature.utils.env import db
@@ -53,7 +53,7 @@ def getGeoInfo():
 
     .. :quickref: Ref Geo;
     """
-    if request.json is None:
+    if not request.is_json or request.json is None:
         raise BadRequest("Missing request payload")
     try:
         geojson = request.json["geometry"]
@@ -93,7 +93,7 @@ def getAltitude():
 
     .. :quickref: Ref Geo;
     """
-    if request.json is None:
+    if not request.is_json:
         raise BadRequest("Missing request payload")
     try:
         geojson = request.json["geometry"]
@@ -112,7 +112,7 @@ def getAreasIntersection():
     from l_areas
     .. :quickref: Ref Geo;
     """
-    if request.json is None:
+    if not request.is_json or request.json is None:
         raise BadRequest("Missing request payload")
     try:
         geojson = request.json["geometry"]
@@ -175,6 +175,14 @@ def get_municipalities():
     return [d.as_dict() for d in data]
 
 
+def to_geojson(data):
+    features = []
+    for feature in data:
+        geometry = feature.pop("geojson_4326", None)
+        features.append({"type": "Feature", "properties": feature, "geometry": geometry})
+    return features
+
+
 @routes.route("/areas", methods=["GET"])
 def get_areas():
     """
@@ -218,7 +226,19 @@ def get_areas():
     limit = int(params.get("limit")[0]) if params.get("limit") else 100
 
     data = q.limit(limit)
-    return jsonify([d.as_dict(fields=["area_type.type_code"]) for d in data])
+
+    # allow to format response
+    format = request.args.get("format", default="", type=str)
+
+    fields = {"area_type.type_code"}
+    if format == "geojson":
+        fields |= {"+geojson_4326"}
+        data = data.options(undefer("geojson_4326"))
+    response = [d.as_dict(fields=fields) for d in data]
+    if format == "geojson":
+        # format features as geojson according to standard
+        response = to_geojson(response)
+    return jsonify(response)
 
 
 @routes.route("/area_size", methods=["Post"])
@@ -230,7 +250,7 @@ def get_area_size():
 
     :returns: An area size (int)
     """
-    if request.json is None:
+    if not request.is_json or request.json is None:
         raise BadRequest("Missing request payload")
     try:
         geojson = request.json["geometry"]
@@ -241,3 +261,41 @@ def get_area_size():
     query = db.session.query(area_size_func.params(geojson=geojson))
 
     return jsonify(db.session.execute(query).scalar())
+
+
+@routes.route("/types", methods=["Get"])
+def get_area_types():
+    """
+    Get areas types list
+
+    .. :quickref: Areas;
+
+    :query str code: Type area code (ref_geo.bib_areas_types.type_code)
+    :query str name: Type area name (ref_geo.bib_areas_types.type_name)
+    :query str sort: sort value as ASC - DESC
+    """
+    type_code = request.args.get("code")
+    type_name = request.args.get("name")
+    sort = request.args.get("sort")
+    query = db.session.query(BibAreasTypes)
+    # GET ONLY INFO FOR A SPECIFIC CODE
+    if type_code:
+        code_exists = (
+            db.session.query(BibAreasTypes)
+            .filter(BibAreasTypes.type_code == type_code)
+            .one_or_none()
+        )
+        if not code_exists:
+            raise BadRequest("This area type code does not exist")
+        query = query.filter(BibAreasTypes.type_code == type_code)
+    # FILTER BY NAME
+    if type_name:
+        query = query.filter(BibAreasTypes.type_name.ilike("%{}%".format(type_name)))
+    # SORT
+    if sort == "asc":
+        query = query.order_by(asc("type_name"))
+    if sort == "desc":
+        query = query.order_by(desc("type_name"))
+    # FIELDS
+    fields = ["type_name", "type_code", "id_type"]
+    return jsonify([d.as_dict(fields=fields) for d in query.all()])

@@ -1,14 +1,5 @@
-import {
-  Component,
-  OnInit,
-  OnChanges,
-  Input,
-  ViewChild,
-  AfterViewInit,
-  SimpleChanges,
-  Output,
-  EventEmitter,
-} from '@angular/core';
+import { Component, OnInit, OnChanges, Input, ViewChild, SimpleChanges } from '@angular/core';
+import { Clipboard } from '@angular/cdk/clipboard';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { CommonService } from '@geonature_common/service/common.service';
@@ -17,9 +8,8 @@ import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
-import { constants } from 'crypto';
 import { isEmpty, find } from 'lodash';
-import { GlobalSubService } from '@geonature/services/global-sub.service';
+import { ModuleService } from '@geonature/services/module.service';
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -32,8 +22,9 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   @Input() header: false;
   @Input() mailCustomSubject: string;
   @Input() mailCustomBody: string;
+  @Input() useFrom: 'synthese' | 'validation';
   public selectedObs: any;
-  public validationHistory: Array<any>;
+  public validationHistory: Array<any> = [];
   public selectedObsTaxonDetail: any;
   @ViewChild('tabGroup') tabGroup;
   public APP_CONFIG = AppConfig;
@@ -55,7 +46,9 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public phenology: any[];
   public alertOpen: boolean;
   public alert;
+  public pin;
   public activateAlert = false;
+  public activatePin = false;
   public validationColor = {
     '0': '#FFFFFF',
     '1': '#8BC34A',
@@ -73,15 +66,17 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     public mediaService: MediaService,
     private _commonService: CommonService,
     private _mapService: MapService,
-    private globalSubService: GlobalSubService
+    private _clipboard: Clipboard,
+    private _moduleService: ModuleService
   ) {}
 
   ngOnInit() {
     this.loadAllInfo(this.idSynthese);
-    this.globalSubService.currentModuleSub.subscribe((module) => {
+    this._moduleService.currentModule$.subscribe((module) => {
       if (module) {
         this.moduleInfos = { id: module.id_module, code: module.module_code };
         this.activateAlert = AppConfig.SYNTHESE.ALERT_MODULES.includes(this.moduleInfos?.code);
+        this.activatePin = AppConfig.SYNTHESE.PIN_MODULES.includes(this.moduleInfos?.code);
       }
     });
   }
@@ -114,6 +109,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       .subscribe((data) => {
         this.selectedObs = data['properties'];
         this.alert = find(data.properties.reports, ['report_type.type', 'alert']);
+        this.pin = find(data.properties.reports, ['report_type.type', 'pin']);
         this.selectCdNomenclature = this.selectedObs?.nomenclature_valid_status.cd_nomenclature;
         this.selectedGeom = data;
         this.selectedObs['municipalities'] = [];
@@ -148,8 +144,12 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
             this.selectObsTaxonInfo = taxAttr;
           });
 
-        this.loadValidationHistory(this.selectedObs['unique_id_sinp']);
-        this._gnDataService.getTaxonInfo(this.selectedObs['cd_nom']).subscribe((taxInfo) => {
+        if (this.selectedObs['unique_id_sinp']) {
+          this.loadValidationHistory(this.selectedObs['unique_id_sinp']);
+        }
+        let cdNom = this.selectedObs['cd_nom'];
+        let areasStatus = this.selectedObs['areas'].map((area) => area.id_area);
+        this._gnDataService.getTaxonInfo(cdNom, areasStatus).subscribe((taxInfo) => {
           this.selectedObsTaxonDetail = taxInfo;
           if (this.selectedObs.cor_observers) {
             this.email = this.selectedObs.cor_observers
@@ -287,27 +287,71 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     window.open(url_source + '/' + id_pk_source, '_blank');
   }
 
-  displaySuccessToaster() {
-    this._commonService.translateToaster('info', 'Synthese.copy');
-  }
-
   /**
-   * Get required id_report to delete an alert
+   * This GET is required to get id_report autogenerate on creation, and DELETE with id_report next.
    */
-  getAlert() {
+  getReport(type) {
     this._dataService
-      .getReports(`idSynthese=${this.idSynthese}&type=alert&sort=asc`)
+      .getReports(`idSynthese=${this.idSynthese}&type=${type}&sort=asc`)
       .subscribe((data) => {
-        this.alert = data[0];
+        this[type] = data[0];
       });
   }
 
   openCloseAlert() {
     this.alertOpen = !this.alertOpen;
-    this.getAlert();
+    // avoid useless request
+    if (AppConfig.SYNTHESE?.ALERT_MODULES && AppConfig.SYNTHESE.ALERT_MODULES.length) {
+      this.getReport('alert');
+    }
   }
 
   alertExists() {
     return !isEmpty(this.alert);
+  }
+
+  pinExists() {
+    return !isEmpty(this.pin);
+  }
+
+  /**
+   * Create only one pin by user by id_synthese.
+   * Only owner car delete or create pin for himself.
+   */
+  addPin() {
+    this._dataService
+      .createReport({
+        type: 'pin',
+        item: this.idSynthese,
+        content: '',
+      })
+      .subscribe((success) => {
+        this._commonService.translateToaster('success', 'Epinglé !');
+        this.getReport('pin');
+      });
+  }
+
+  deletePin() {
+    this._dataService.deleteReport(this.pin.id_report).subscribe(() => {
+      this._commonService.translateToaster('info', 'Epingle supprimée !');
+      this.pin = {};
+    });
+  }
+
+  /**
+   * Manage click action on pin button to add or delete pin
+   */
+  pinSelectedObs() {
+    if (isEmpty(this.pin)) {
+      this.addPin();
+    }
+    this.deletePin();
+  }
+
+  copyToClipBoard() {
+    this._clipboard.copy(
+      `${AppConfig.URL_APPLICATION}/#/${this.useFrom}/occurrence/${this.selectedObs.id_synthese}`
+    );
+    this._commonService.translateToaster('info', 'Synthese.copy');
   }
 }

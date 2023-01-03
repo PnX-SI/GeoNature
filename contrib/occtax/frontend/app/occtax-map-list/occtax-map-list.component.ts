@@ -18,8 +18,6 @@ import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.comp
 import { FormGroup } from "@angular/forms";
 import { GenericFormGeneratorComponent } from "@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component";
 import { AppConfig } from "@geonature_config/app.config";
-import { GlobalSubService } from "@geonature/services/global-sub.service";
-import { Subscription } from "rxjs/Subscription";
 import * as moment from "moment";
 import { MediaService } from '@geonature_common/service/media.service';
 import { filter } from 'rxjs/operators';
@@ -27,6 +25,7 @@ import { OcctaxFormReleveService } from "../occtax-form/releve/releve.service";
 import { OcctaxFormOccurrenceService } from "../occtax-form/occurrence/occurrence.service";
 import { OcctaxFormService } from "../occtax-form/occtax-form.service";
 import { OcctaxMapListService } from "./occtax-map-list.service";
+import { ModuleService } from "@geonature/services/module.service"
 
 // /occurrence/occurrence.service";
 
@@ -37,7 +36,7 @@ import { OcctaxMapListService } from "./occtax-map-list.service";
   styleUrls: ["./occtax-map-list.component.scss"],
 })
 export class OcctaxMapListComponent
-  implements OnInit, OnDestroy, AfterViewInit {
+  implements OnInit, AfterViewInit {
   public userCruved: any;
   public displayColumns: Array<any>;
   public availableColumns: Array<any>;
@@ -48,7 +47,6 @@ export class OcctaxMapListComponent
   // public formsDefinition = FILTERSLIST;
   public dynamicFormGroup: FormGroup;
   public formsSelected = [];
-  public moduleSub: Subscription;
   public cardContentHeight: number;
 
   advandedFilterOpen = false;
@@ -67,30 +65,32 @@ export class OcctaxMapListComponent
     private _commonService: CommonService,
     private _mapService: MapService,
     public ngbModal: NgbModal,
-    public globalSub: GlobalSubService,
     private renderer: Renderer2,
     public mediaService: MediaService,
-    public occtaxMapListS: OcctaxMapListService
+    public occtaxMapListS: OcctaxMapListService,
+    private _moduleService: ModuleService
 
   ) { }
 
   ngOnInit() {
+    const currentModule = this._moduleService.currentModule;
+    // get user cruved
+      this.userCruved = currentModule.cruved
+
+    // refresh forms
+    this.refreshForms();
+    this.mapListService.refreshUrlQuery();
     // set zoom on layer to true
     // zoom only when search data
     this.mapListService.zoomOnLayer = true;
     //config
     this.occtaxConfig = ModuleConfig;
     this.mapListService.idName = "id_releve_occtax";
-    this.apiEndPoint = "occtax/releves";
-    // refresh forms
-    this.refreshForms();
-    // get user cruved
-    this.moduleSub = this.globalSub.currentModuleSub
-      // filter undefined or null
-      .pipe(filter((mod) => mod))
-      .subscribe((mod) => {
-        this.userCruved = mod.cruved;
-      });
+    this.apiEndPoint = `occtax/${this._moduleService.currentModule.module_code}/releves`;
+    this.calculateNbRow();
+    const params = [
+      { param: "limit", value: this.occtaxMapListS.rowPerPage },
+    ]
 
     // parameters for maplist
     // columns to be default displayed
@@ -103,7 +103,7 @@ export class OcctaxMapListComponent
     this.calculateNbRow();
     this.mapListService.getData(
       this.apiEndPoint,
-      [{ param: "limit", value: this.occtaxMapListS.rowPerPage }],
+      params,
       this.displayLeafletPopupCallback.bind(this) //afin que le this présent dans displayLeafletPopupCallback soit ce component.
     );
     // end OnInit
@@ -227,7 +227,7 @@ export class OcctaxMapListComponent
     queryString = queryString.delete("offset");
     const url = `${
       AppConfig.API_ENDPOINT
-      }/occtax/export?${queryString.toString()}&format=${format}`;
+      }/occtax/${this._moduleService.currentModule.module_code}/export?${queryString.toString()}&format=${format}`;
 
     document.location.href = url;
   }
@@ -241,10 +241,6 @@ export class OcctaxMapListComponent
       i = i + 1;
     }
     return i === this.mapListService.displayColumns.length ? false : true;
-  }
-
-  ngOnDestroy() {
-    this.moduleSub.unsubscribe();
   }
 
   toggleExpandRow(row) {

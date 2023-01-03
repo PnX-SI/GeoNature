@@ -22,6 +22,8 @@ import { OcctaxFormCountingsService } from "./counting/countings.service";
 import { OcctaxFormMapService } from "./map/occtax-map.service";
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import { filter } from "rxjs/operators";
+import { ModuleService } from "@geonature/services/module.service"
+
 
 
 @Component({
@@ -42,6 +44,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
   public id;
   public disableCancel = false;
   public urlSub: Subscription ;
+  public currentModulePath: string;
   releveUrl: string = null;
   cardHeight: number;
   cardContentHeight: any;
@@ -57,10 +60,15 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     public occtaxTaxaListService: OcctaxTaxaListService,
     private _ds: OcctaxDataService,
     private _commonService: CommonService,
-    private _modalService: NgbModal
+    private _modalService: NgbModal,
+    public moduleService: ModuleService
   ) { }
 
   ngOnInit() {
+    this.moduleService.currentModule$ .subscribe(module => {
+      this.currentModulePath = module.module_path.toLowerCase();
+    })
+    
    
     this.occtaxFormService.idTaxonList = ModuleConfig.id_taxon_list;
     
@@ -85,7 +93,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
         this.occtaxFormService.id_releve_occtax.next(idReleve)
       } else {        
         // if no idReleve on taxon tab -> redirect
-        this._router.navigate(["occtax/form/releve"]);
+        this._router.navigate([`${this.currentModulePath}/form/releve`]);
         this.occtaxFormService.id_releve_occtax.next(null)
         
       }
@@ -101,18 +109,18 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
   }
-  navigate(tab) {    
+  navigate(tab) {
     const idReleve = this.occtaxFormService.id_releve_occtax.getValue();        
     if(tab == "releve") {
       if(idReleve) {
         this._router.navigate(
-          [`occtax/form/releve/${idReleve}`]
+          [`${this.currentModulePath}/form/releve/${idReleve}`]
         )
         this.occtaxFormService.currentTab = 'releve';
       }
     } else {      
       this._router.navigate(
-        [`occtax/form/${idReleve}/taxons`]
+        [`${this.currentModulePath}/form/${idReleve}/taxons`]
       );
       this.occtaxFormService.currentTab = 'taxons';
     }
@@ -158,13 +166,15 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param cancel : boolean. Action vient du bouton annuler = true, sinon false
    */
   leaveTheForm(cancel) {
+
+    
     this.occtaxFormService.disabled = true;
     this.disableCancel = true;
     let url;
     if (this.occtaxFormService.chainRecording) {
-      url = ["/occtax/form"];
+      url = [`/${this.currentModulePath}/form`];
     } else {
-      url = ["/occtax"];
+      url = [`/${this.currentModulePath}`];
       this.occtaxFormService.previousReleve = null;
     }
 

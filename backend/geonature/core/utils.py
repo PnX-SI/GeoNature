@@ -57,17 +57,17 @@ class ModelCruvedAutorization(DB.Model):
             return True
         return False
 
-    def check_if_allowed(self, info_role, action, level_scope):
+    def check_if_allowed(self, role, action, level_scope):
         """
         Return the releve if the user is allowed
         params:
-            info_role: object from Permission
+            role
         """
         user = UserRigth(
-            id_role=info_role.id_role,
+            id_role=role.id_role,
             value_filter=level_scope,
             code_action=action,
-            id_organisme=info_role.id_organisme,
+            id_organisme=role.id_organisme,
         )
         if self.user_is_allowed_to(user, user.value_filter):
             return self

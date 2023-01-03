@@ -1,6 +1,12 @@
-<div class="container">
-  <div style="margin-bottom: 10px">
-    <a mat-raised-button routerLink="/metadata"> <mat-icon> chevron_left</mat-icon> Retour </a>
+<div class="container" data-qa="pnx-dataset-form">
+
+  <div style="margin-bottom: 10px;">
+    <a
+      mat-raised-button
+      routerLink="/metadata"
+    >
+      <mat-icon> chevron_left</mat-icon> Retour
+    </a>
   </div>
 
   <div class="row">
@@ -18,13 +24,21 @@
               bindLabel="acquisition_framework_name"
               bindValue="id_acquisition_framework"
               [disabled]="true"
+              data-qa="pnx-dataset-form-select-cadre-acq"
             >
-              <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-                <span class="pre-wrap">
-                  <span *ngIf="!item.opened"> [Cloturé] </span>
-                  {{ item.acquisition_framework_name }}
+            <ng-template 
+              ng-option-tmp 
+              let-item="item" 
+              let-index="index" 
+              let-search="searchTerm"
+            >
+              <span class="pre-wrap" [attr.data-qa]='"pnx-metadata-jdd-"+item.acquisition_framework_name'> 
+                {{item.acquisition_framework_name}}
+                <span *ngIf="!item.opened">
+                  [Cloturé]
                 </span>
-              </ng-template>
+              </span>
+            </ng-template>
             </ng-select>
           </div>
 
@@ -34,7 +48,8 @@
               class="form-control form-control-sm"
               type="text"
               [formControl]="form.get('dataset_name')"
-            />
+              data-qa="pnx-dataset-form-input-jdd-name"
+            >
             <small
               *ngIf="form.get('dataset_name').errors?.maxlength"
               class="error"
@@ -51,7 +66,8 @@
                 class="form-control form-control-sm"
                 type="text"
                 [formControl]="form.get('dataset_shortname')"
-              />
+                data-qa="pnx-dataset-form-input-jdd-shortname"
+              >
               <small
                 *ngIf="form.get('dataset_shortname').errors?.maxlength"
                 class="error"
@@ -68,7 +84,8 @@
               class="form-control form-control-sm"
               type="text"
               [formControl]="form.get('dataset_desc')"
-            >
+              data-qa="pnx-dataset-form-input-jdd-description"
+              >
             </textarea>
           </div>
 
@@ -109,6 +126,7 @@
                 label="Type de données"
                 [parentFormControl]="form.get('id_nomenclature_data_type')"
                 codeNomenclatureType="DATA_TYP"
+                data-qa="pnx-dataset-form-datatype"
               >
               </pnx-nomenclature>
             </div>
@@ -118,6 +136,7 @@
                 label="Statut source"
                 [parentFormControl]="form.get('id_nomenclature_source_status')"
                 codeNomenclatureType="STATUT_SOURCE"
+                data-qa="pnx-dataset-form-status-source"
               >
               </pnx-nomenclature>
             </div>
@@ -128,7 +147,8 @@
               label="Objectif"
               [parentFormControl]="form.get('id_nomenclature_dataset_objectif')"
               codeNomenclatureType="JDD_OBJECTIFS"
-            >
+              data-qa="pnx-dataset-form-objectif"
+              >
             </pnx-nomenclature>
           </div>
 
@@ -140,6 +160,7 @@
               codeNomenclatureType="TERRITOIRE"
               [bindAllItem]="true"
               [keyValue]="null"
+              data-qa="pnx-dataset-form-territories"
             >
             </pnx-nomenclature>
           </div>
@@ -149,6 +170,7 @@
               label="Méthode de collecte"
               [parentFormControl]="form.get('id_nomenclature_collecting_method')"
               codeNomenclatureType="METHO_RECUEIL"
+              data-qa="pnx-dataset-form-collecting-method"
             >
             </pnx-nomenclature>
           </div>
@@ -159,6 +181,7 @@
                 label="Origine des données"
                 [parentFormControl]="form.get('id_nomenclature_data_origin')"
                 codeNomenclatureType="DS_PUBLIQUE"
+                data-qa="pnx-dataset-form-data-origin"
               >
               </pnx-nomenclature>
             </div>
@@ -168,6 +191,7 @@
                 label="Type de ressource"
                 [parentFormControl]="form.get('id_nomenclature_resource_type')"
                 codeNomenclatureType="RESOURCE_TYP"
+                data-qa="pnx-dataset-form-resource-type"
               >
               </pnx-nomenclature>
             </div>
@@ -298,6 +322,7 @@
       class="button-success ml-1"
       mat-raised-button
       (click)="postDataset()"
+      data-qa="pnx-dataset-form-save-jdd"
     >
       Enregistrer le jeu de données
     </button>

@@ -111,3 +111,14 @@ mat-expansion-panel {
   vertical-align: middle;
   margin-left: 5px;
 }
+
+
+
+[data-qa="pnx-metadata-dataset-name-Mon jeu de données"] .delete-btn {
+  background-color: black!important;
+}
+
+.metadata-area-value {
+  margin-top: 15px;
+  width: 100%;
+}

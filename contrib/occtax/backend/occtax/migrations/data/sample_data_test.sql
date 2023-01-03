@@ -12,6 +12,29 @@ SET search_path = pr_occtax, pg_catalog, public;
 --DATAS--
 ---------
 
+-- ajout d'un module occtax dupliqué
+INSERT INTO gn_commons.t_modules
+(module_code, module_label, module_path, active_frontend, active_backend, ng_module)
+VALUES('OCCTAX_DS', 'Occtax ds',  'occtax_ds', true, false, 'occtax');
+
+-- ajout d’une source pour le module occtax dupliqué
+WITH s AS (
+    SELECT s.*
+    FROM gn_synthese.t_sources s
+    JOIN gn_commons.t_modules USING (id_module)
+    WHERE module_code = 'OCCTAX'
+)
+INSERT INTO
+    gn_synthese.t_sources (name_source, desc_source, entity_source_pk_field, url_source, id_module)
+SELECT
+    s.name_source || ' DS',
+    s.desc_source || ' DS',
+    s.entity_source_pk_field,
+    s.url_source,
+    (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'OCCTAX_DS')
+FROM s;
+
+
 -- Insérer un cadre d'acquisition d'exemple
 
 INSERT INTO gn_meta.t_acquisition_frameworks (
@@ -46,8 +69,42 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
     null,
     '2018-09-01 10:35:08',
     null
-    )
+    );
 ;
+
+INSERT INTO gn_meta.t_acquisition_frameworks (
+    unique_acquisition_framework_id, 
+    acquisition_framework_name, 
+    acquisition_framework_desc, 
+    id_nomenclature_territorial_level, 
+    territory_desc, 
+    keywords, 
+    id_nomenclature_financing_type, 
+    target_description, 
+    ecologic_or_geologic_target, 
+    acquisition_framework_parent_id, 
+    is_parent, 
+    acquisition_framework_start_date, 
+    acquisition_framework_end_date, 
+    meta_create_date, 
+    meta_update_date
+    ) VALUES (
+    '48b7d0f2-4183-4b7b-8f08-6e105d476dd8', 
+    'CA-2-empty',
+    'CA-1-empty',
+    ref_nomenclatures.get_id_nomenclature('NIVEAU_TERRITORIAL', '4'),
+    'Test',
+    'flore, fonge',
+    ref_nomenclatures.get_id_nomenclature('TYPE_FINANCEMENT', '1'),
+    'Tous les taxons',
+    null,
+    null,
+    false,
+    '2002-03-27',
+    null,
+    '2022-09-01 10:35:08',
+    null
+    );
 
 -- Insérer 2 jeux de données d'exemple
 INSERT INTO gn_meta.t_datasets (
@@ -122,8 +179,48 @@ INSERT INTO gn_meta.t_datasets (
     true,
     '2018-09-01 16:59:03.25687',
     null
+    ),
+    (
+    'ac55a073-222a-4acc-8ac7-2b1f622018b2',
+     (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'),
+    'JDD-Occtax-ds',
+    'JDD-Occtax-ds',
+    'JDD-Occtax-ds',
+    ref_nomenclatures.get_id_nomenclature('DATA_TYP', '1'),
+    'Aléatoire, hors protocole, faune, flore, fonge',
+    false,
+    true,
+    ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS', '1.1'),
+    4.85695,
+    6.85654,
+    44.5020,
+    45.25,
+    ref_nomenclatures.get_id_nomenclature('METHO_RECUEIL', '1'),
+    ref_nomenclatures.get_id_nomenclature('DS_PUBLIQUE', 'Pu'),
+    ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'),
+    ref_nomenclatures.get_id_nomenclature('RESOURCE_TYP', '1'),
+    true,
+    true,
+    '2018-09-01 16:57:44.45879',
+    null
     )
 ;
+
+-- ajout des JDD dans les modules occtax et occtax dupliqué
+INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset)
+VALUES (
+    (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'OCCTAX'),
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2')
+),
+(
+    (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'OCCTAX'),
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='dadab32d-5f9e-4dba-aa1f-c06487d536e8')
+),
+(
+    (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'OCCTAX_DS'),
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='ac55a073-222a-4acc-8ac7-2b1f622018b2')
+);
+            
 
 -- Renseigner les tables de correspondance
 INSERT INTO gn_meta.cor_acquisition_framework_voletsinp (id_acquisition_framework, id_nomenclature_voletsinp) VALUES
@@ -200,7 +297,12 @@ INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nome
     NULL,
     (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'Autre'),
     ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6')
-);
+),(    
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='ac55a073-222a-4acc-8ac7-2b1f622018b2'),
+    NULL,
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ma structure test'),
+    ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1'))
+;
 
 INSERT INTO gn_meta.cor_dataset_territory (id_dataset, id_nomenclature_territory, territory_desc) VALUES
 (
@@ -222,16 +324,11 @@ INSERT INTO gn_meta.cor_dataset_protocol (id_dataset, id_protocol) VALUES
     (SELECT id_protocol FROM gn_meta.sinp_datatype_protocols WHERE protocol_name='hors protocole')
 );
 
-INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset)
-SELECT gn_commons.get_id_module_bycode('OCCTAX'), id_dataset
-FROM gn_meta.t_datasets t
-JOIN gn_meta.t_acquisition_frameworks af on t.id_acquisition_framework = af.id_acquisition_framework 
-WHERE active and af.unique_acquisition_framework_id = '57b7d0f2-4183-4b7b-8f08-6e105d476dc5';
-
--- Insérer 2 relevés d'exemple dans Occtax
+-- Insérer 3 relevés d'exemple dans Occtax
 
 INSERT INTO pr_occtax.t_releves_occtax (
   unique_id_sinp_grp,
+  id_module,
   id_dataset,
   id_digitiser,
   id_nomenclature_tech_collect_campanule,
@@ -250,6 +347,7 @@ INSERT INTO pr_occtax.t_releves_occtax (
   precision
   ) VALUES (
       '4f784326-2511-11ec-9fdd-23b0fb947058',
+      (SELECT id_module FROM gn_commons.t_modules WHERE module_code='OCCTAX'),
       (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),
       (SELECT id_role from utilisateurs.t_roles WHERE identifiant='admin'),
       ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
@@ -268,6 +366,7 @@ INSERT INTO pr_occtax.t_releves_occtax (
       10
 ),(
       '4fa06f7c-2511-11ec-93a1-eb4838107091',
+       (SELECT id_module FROM gn_commons.t_modules WHERE module_code='OCCTAX'),
       (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),
       1,
       ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
@@ -284,9 +383,30 @@ INSERT INTO pr_occtax.t_releves_occtax (
       '01010000206A0800002E988D737BCC2D41ECFA38A659805841',
       '0101000020E61000000000000000001A40CDCCCCCCCC6C4640',
       100
-  );
+  ),
+  (
+      '297106a0-4dad-4d44-ae59-2e44a419e11f',
+       (SELECT id_module FROM gn_commons.t_modules WHERE module_code='OCCTAX_DS'),
+      (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='ac55a073-222a-4acc-8ac7-2b1f622018b2'),
+      1,
+      ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
+      ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),
+      ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','In'), -- ?
+      '2017-01-08',
+      '2017-01-08',
+      '20:00:00',
+      '23:00:00',
+      1600,
+      1600,
+      'web',
+      'Autre exemple test',
+      '01010000206A0800002E988D737BCC2D41ECFA38A659805841',
+      '0101000020E61000000000000000001A40CDCCCCCCCC6C4640',
+      100
+  )
+  ;
 
--- Insérer 3 occurrences dans les 2 relevés Occtax
+-- Insérer 4 occurrences dans les 3 relevés Occtax
 
 INSERT INTO pr_occtax.t_occurrences_occtax  (
     unique_id_occurence_occtax,
@@ -371,9 +491,31 @@ VALUES
   '',
   'Poils de plumes',
   'Troisieme test'
-  );
+  ),
+  (
+    '8db83b16-3d88-4af3-85ca-44464daf32c0',
+    (SELECT id_releve_occtax FROM pr_occtax.t_releves_occtax WHERE unique_id_sinp_grp='297106a0-4dad-4d44-ae59-2e44a419e11f'),
+    ref_nomenclatures.get_id_nomenclature('METH_OBS', '23'),
+    ref_nomenclatures.get_id_nomenclature('ETA_BIO', '1'),
+    ref_nomenclatures.get_id_nomenclature('STATUT_BIO', '1'),
+    ref_nomenclatures.get_id_nomenclature('NATURALITE', '1'),
+    ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST', '0'),
+    --ref_nomenclatures.get_id_nomenclature('NIV_PRECIS', '0'),
+    ref_nomenclatures.get_id_nomenclature('STATUT_OBS', 'Pr'),
+    ref_nomenclatures.get_id_nomenclature('DEE_FLOU', 'NON'),
+  'Donovan',
+  ref_nomenclatures.get_id_nomenclature('METH_DETERMIN', '2'),
+  67111,
+  'Ablette',
+  'Taxref V11.0',
+  '',
+  '',
+  'Poils de plumes',
+  'Troisieme test'
+  )
+  ;
 
--- Insérer 1 observateur pour chacun des 2 relevés Occtax
+-- Insérer 1 observateur pour chacun des 3 relevés Occtax
 
 INSERT INTO pr_occtax.cor_role_releves_occtax (id_releve_occtax, id_role) VALUES
 (
@@ -382,9 +524,12 @@ INSERT INTO pr_occtax.cor_role_releves_occtax (id_releve_occtax, id_role) VALUES
 ),(
     (SELECT id_releve_occtax FROM pr_occtax.t_releves_occtax WHERE unique_id_sinp_grp='4fa06f7c-2511-11ec-93a1-eb4838107091'),
     (SELECT id_role from utilisateurs.t_roles WHERE identifiant='admin')
+),(
+    (SELECT id_releve_occtax FROM pr_occtax.t_releves_occtax WHERE unique_id_sinp_grp='297106a0-4dad-4d44-ae59-2e44a419e11f'),
+    (SELECT id_role from utilisateurs.t_roles WHERE identifiant='admin')
 );
 
--- Insérer 3 dénombrements dans les 3 occurrences
+-- Insérer 4 dénombrements dans les 4 occurrences
 
 INSERT INTO  pr_occtax.cor_counting_occtax (
   id_occurrence_occtax,
@@ -422,5 +567,14 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
     ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'Co'),
     1,
     1
+  ),
+    (
+    (SELECT id_occurrence_occtax FROM pr_occtax.t_occurrences_occtax WHERE unique_id_occurence_occtax='8db83b16-3d88-4af3-85ca-44464daf32c0'),
+    ref_nomenclatures.get_id_nomenclature('STADE_VIE', '2') ,
+    ref_nomenclatures.get_id_nomenclature('SEXE', '2') ,
+    ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
+    ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'Co'),
+    5,
+    5
   )
 ;

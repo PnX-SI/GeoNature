@@ -6,6 +6,7 @@ from flask import (
     current_app,
     redirect,
     url_for,
+    g,
 )
 
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
@@ -33,7 +34,7 @@ from geonature.core.gn_permissions.models import (
     VUsersPermissions,
 )
 from geonature.core.users.models import CorRole
-from pypnusershub.db.models import Organisme as BibOrganismes
+from pypnusershub.db.models import Organisme as BibOrganismes, Application
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
 
@@ -48,8 +49,8 @@ routes = Blueprint("gn_permissions_backoffice", __name__, template_folder="templ
     methods=["GET", "POST"],
 )
 @routes.route("cruved_form/module/<int:id_module>/role/<int:id_role>", methods=["GET", "POST"])
-@permissions.check_cruved_scope("R", True, object_code="PERMISSIONS")
-def permission_form(info_role, id_module, id_role, id_object=None):
+@permissions.check_cruved_scope("R", object_code="PERMISSIONS")
+def permission_form(id_module, id_role, id_object=None):
     """
     .. :quickref: View_Permission;
     """
@@ -154,8 +155,8 @@ def permission_form(info_role, id_module, id_role, id_object=None):
 
 
 @routes.route("/users", methods=["GET"])
-@permissions.check_cruved_scope("R", True, object_code="PERMISSIONS")
-def users(info_role):
+@permissions.check_cruved_scope("R", get_scope=True, object_code="PERMISSIONS")
+def users(scope):
     """
     .. :quickref: View_Permission;
     Render a list with all users with their number of cruved
@@ -163,23 +164,28 @@ def users(info_role):
     Only display user which have profil in GeoNature and active user
     """
 
+    id_app = (
+        Application.query.filter_by(code_application=current_app.config["CODE_APPLICATION"])
+        .one()
+        .id_application
+    )
     q = (
         DB.session.query(AppRole, func.count(CorRoleActionFilterModuleObject.id_role))
         .outerjoin(
             CorRoleActionFilterModuleObject,
             CorRoleActionFilterModuleObject.id_role == AppRole.id_role,
         )
-        .filter(AppRole.id_application == current_app.config["ID_APPLICATION_GEONATURE"])
+        .filter(AppRole.id_application == id_app)
         .group_by(AppRole)
         .order_by(AppRole.groupe.desc(), AppRole.nom_role.asc())
     )
     # filter with cruved auth
-    if info_role.value_filter == "2":
-        q = q.join(BibOrganismes, BibOrganismes.id_organisme == info_role.id_organisme).filter(
-            BibOrganismes == info_role.id_organisme
-        )
-    elif info_role.value_filter == "1":
-        q = q.filter(User.id_role == info_role.id_role)
+    if scope == 2:
+        q = q.join(
+            BibOrganismes, BibOrganismes.id_organisme == g.current_user.id_organisme
+        ).filter(BibOrganismes == g.current_user.id_organisme)
+    elif scope == 1:
+        q = q.filter(User.id_role == g.current_user.id_role)
 
     data = q.all()
 
@@ -402,7 +408,7 @@ def delete_filter(id_filter):
     """
     .. :quickref: View_Permission;
     """
-    my_filter = DB.session.query(TFilters).get(id_filter)
+    my_filter = DB.session.query(TFilters).get_or_404(id_filter)
     DB.session.delete(my_filter)
     DB.session.commit()
     flash("Filtre supprimé avec succès")

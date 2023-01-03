@@ -43,7 +43,7 @@ from geonature.core.gn_commons.models import (
 from geonature.utils.env import DB, db
 
 
-@serializable
+@serializable(exclude=["module_url"])
 class TSources(DB.Model):
     __tablename__ = "t_sources"
     __table_args__ = {"schema": "gn_synthese"}
@@ -54,6 +54,15 @@ class TSources(DB.Model):
     url_source = DB.Column(DB.Unicode)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
+    id_module = DB.Column(DB.Integer, ForeignKey(TModules.id_module))
+    module = DB.relationship(TModules, backref="sources")
+
+    @property
+    def module_url(self):
+        if self.module is not None and hasattr(self.module, "generate_module_url_for_source"):
+            return self.module.generate_module_url_for_source(self)
+        else:
+            return None
 
 
 cor_observer_synthese = DB.Table(
@@ -122,6 +131,16 @@ class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
 
 
 @serializable
+class CorAreaSynthese(DB.Model):
+    __tablename__ = "cor_area_synthese"
+    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
+    id_synthese = DB.Column(
+        DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True
+    )
+    id_area = DB.Column(DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True)
+
+
+@serializable
 @geoserializable(geoCol="the_geom_4326", idCol="id_synthese")
 @shapeserializable
 class Synthese(DB.Model):
@@ -155,7 +174,7 @@ class Synthese(DB.Model):
     id_synthese = DB.Column(DB.Integer, primary_key=True)
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
-    id_source = DB.Column(DB.Integer, ForeignKey(TSources.id_source))
+    id_source = DB.Column(DB.Integer, ForeignKey(TSources.id_source), nullable=False)
     source = relationship(TSources)
     id_module = DB.Column(DB.Integer, ForeignKey(TModules.id_module))
     module = DB.relationship(TModules)
@@ -287,7 +306,7 @@ class Synthese(DB.Model):
     the_geom_point = deferred(DB.Column(Geometry("GEOMETRY", 4326)))
     the_geom_local = deferred(DB.Column(Geometry("GEOMETRY")))
     precision = DB.Column(DB.Integer)
-    id_area_attachment = DB.Column(DB.Integer)
+    id_area_attachment = DB.Column(DB.Integer, ForeignKey(LAreas.id_area))
     date_min = DB.Column(DB.DateTime, nullable=False)
     date_max = DB.Column(DB.DateTime, nullable=False)
     validator = DB.Column(DB.Unicode(length=1000))
@@ -304,7 +323,8 @@ class Synthese(DB.Model):
     meta_update_date = DB.Column(DB.DateTime)
     last_action = DB.Column(DB.Unicode)
 
-    areas = relationship(LAreas, secondary=corAreaSynthese)
+    areas = relationship(LAreas, secondary=corAreaSynthese, backref="synthese_obs")
+    area_attachment = relationship(LAreas, foreign_keys=[id_area_attachment])
     validations = relationship(TValidations, backref="attached_row")
     last_validation = relationship(last_validation, uselist=False, viewonly=True)
     medias = relationship(
@@ -324,27 +344,6 @@ class Synthese(DB.Model):
             return self.dataset.has_instance_permission(scope)
         elif scope == 3:
             return True
-
-
-@serializable
-class CorAreaSynthese(DB.Model):
-    __tablename__ = "cor_area_synthese"
-    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
-    id_synthese = DB.Column(
-        DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True
-    )
-    id_area = DB.Column(DB.Integer, ForeignKey(LAreas.id_area), primary_key=True)
-
-
-@serializable
-class CorSensitivitySynthese(DB.Model):
-    __tablename__ = "cor_sensitivity_synthese"
-    __table_args__ = {"schema": "gn_sensitivity"}
-    uuid_attached_row = DB.Column(UUID(as_uuid=True), primary_key=True)
-    id_nomenclature_sensitivity = DB.Column(DB.Integer, primary_key=True)
-    sensitivity_comment = DB.Column(DB.Text)
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
 
 
 @serializable
@@ -398,7 +397,7 @@ class VSyntheseForWebApp(DB.Model):
     )
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
-    id_source = DB.Column(DB.Integer)
+    id_source = DB.Column(DB.Integer, nullable=False)
     entity_source_pk_value = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)
     dataset_name = DB.Column(DB.Integer)
@@ -542,7 +541,7 @@ class VColorAreaTaxon(DB.Model):
 
 
 @serializable
-class TLogSynthese(DB.Model):
+class SyntheseLogEntry(DB.Model):
     """Log synthese table, populated with Delete Triggers on gn_synthes.synthese
     Parameters
     ----------
@@ -556,3 +555,19 @@ class TLogSynthese(DB.Model):
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     last_action = DB.Column(DB.Unicode)
     meta_last_action_date = DB.Column(DB.DateTime)
+
+
+# defined here to avoid circular dependencies
+source_subquery = (
+    select([TSources.id_source, Synthese.id_dataset])
+    .where(TSources.id_source == Synthese.id_source)
+    .distinct()
+    .alias()
+)
+TDatasets.sources = db.relationship(
+    TSources,
+    primaryjoin=TDatasets.id_dataset == source_subquery.c.id_dataset,
+    secondaryjoin=source_subquery.c.id_source == TSources.id_source,
+    secondary=source_subquery,
+    viewonly=True,
+)

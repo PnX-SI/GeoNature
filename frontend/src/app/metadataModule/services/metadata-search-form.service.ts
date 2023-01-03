@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-
 @Injectable()
 export class MetadataSearchFormService {
   public form: FormGroup;
@@ -14,6 +13,7 @@ export class MetadataSearchFormService {
       date: null,
       organism: null,
       person: null,
+      codeTypeArea: null,
     });
     this.rapidSearchControl = new FormControl();
   }

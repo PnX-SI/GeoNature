@@ -14,7 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name : Frontend code formatting check (Prettier)
+      - name: Frontend code formatting check (Prettier)
         uses: creyD/prettier_action@v4.2
         with:
           dry: True
+          prettier_options: --config frontend/.prettierrc --check frontend/src/app/**/*.ts

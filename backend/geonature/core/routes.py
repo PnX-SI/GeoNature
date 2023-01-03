@@ -20,7 +20,7 @@ log = logging.getLogger()
 
 
 @routes.route("/config", methods=["GET"])
-@permissions.check_cruved_scope("R", False, module_code="SUIVIS")
+@permissions.check_cruved_scope("R", module_code="SUIVIS")
 def get_config():
     """
     Parse and return configuration files as toml

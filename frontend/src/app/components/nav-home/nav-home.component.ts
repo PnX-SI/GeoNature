@@ -7,8 +7,9 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { AuthService, User } from '../../components/auth/auth.service';
 import { AppConfig } from '../../../conf/app.config';
-import { GlobalSubService } from '../../services/global-sub.service';
 import { SideNavService } from '../sidenav-items/sidenav-service';
+import { ModuleService } from '../../services/module.service';
+import { NotificationDataService } from '@geonature/components/notification/notification-data.service';
 
 @Component({
   selector: 'pnx-nav-home',
@@ -23,6 +24,8 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   public currentDocUrl: string;
   public locale: string;
   public moduleUrl: string;
+  public notificationNumber: number;
+
   @ViewChild('sidenav', { static: true }) public sidenav: MatSidenav;
 
   constructor(
@@ -30,7 +33,8 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     public authService: AuthService,
     private activatedRoute: ActivatedRoute,
     public sideNavService: SideNavService,
-    private globalSubService: GlobalSubService,
+    private _moduleService: ModuleService,
+    private notificationDataService: NotificationDataService,
     private router: Router
   ) {}
 
@@ -49,6 +53,11 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
     // Put the user name in navbar
     this.currentUser = this.authService.getCurrentUser();
+
+    if (this.appConfig.NOTIFICATIONS_ENABLED == true) {
+      // Update notification count to display in badge
+      this.updateNotificationCount();
+    }
   }
 
   private extractLocaleFromUrl() {
@@ -77,7 +86,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   }
 
   private onModuleChange() {
-    this.globalSubService.currentModuleSub.subscribe((module) => {
+    this._moduleService.currentModule$.subscribe((module) => {
       if (!module) {
         module = this.sideNavService.getHomeItem();
       }
@@ -87,10 +96,29 @@ export class NavHomeComponent implements OnInit, OnDestroy {
         this.currentDocUrl = module.module_doc_url;
       }
     });
+    if (this.appConfig.NOTIFICATIONS_ENABLED == true) {
+      // Update notification count to display in badge
+      this.updateNotificationCount();
+    }
   }
 
   closeSideBar() {
     this.sideNavService.sidenav.toggle();
+    if (this.appConfig.NOTIFICATIONS_ENABLED == true) {
+      // Update notification count to display in badge
+      this.updateNotificationCount();
+    }
+  }
+
+  private updateNotificationCount() {
+    this.notificationDataService.getNotificationsNumber().subscribe((count) => {
+      this.notificationNumber = count;
+    });
+  }
+
+  openNotification() {
+    this.updateNotificationCount();
+    this.router.navigate(['/notification']);
   }
 
   ngOnDestroy() {

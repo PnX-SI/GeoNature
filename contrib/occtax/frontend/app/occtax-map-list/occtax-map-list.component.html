@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" data-qa="pnx-occtax-map-list">
   <div class="map-list-container">
     <div class="float-btns">
 
@@ -23,6 +23,7 @@
         class="btn-action hard-shadow uppercase ml-3"
         data-toggle="collapse"
         data-target="#collapseAvance"
+        data-qa="pnx-occtax-filter"
       >
         Filtrer
         <i
@@ -170,6 +171,7 @@
             >
               <ng-container *ngIf="row.rights.U; else disabledEditBlc">
                 <a
+                  data-qa="edit-releve"
                   class="btn btn-outline-shadow btn-no-padding btn-ghost"
                   [routerLink]="['form/releve', row.id_releve_occtax]"
                 >
@@ -230,12 +232,14 @@
           <ngx-datatable-column maxWidth="10">
             <ng-template
               let-row="row"
+              let-rowIndex="rowIndex"
               ngx-datatable-cell-template
             >
               <button
                 class="btn btn-outline-shadow btn-no-padding btn-ghost"
                 [disabled]="!row.rights.D"
                 (click)="openDeleteModal($event, modalConfirm, iElement, row)"
+                data-qa="pnx-occtax-delete-taxa"
               >
                 <i
                   [ngClass]="{'disabled' : !row.rights.D}"
@@ -369,6 +373,7 @@
               mat-raised-button
               color="warn"
               class="uppercase"
+              data-qa="pnx-occtax-delete"
               (click)="c(); onDeleteReleve(mapListService.selectedRow[0].id_releve_occtax)"
             >
               {{'Delete' | translate }} </button>

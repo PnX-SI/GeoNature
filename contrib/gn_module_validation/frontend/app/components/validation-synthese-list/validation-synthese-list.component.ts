@@ -52,10 +52,11 @@ export class ValidationSyntheseListComponent
   @Output() pageChange: EventEmitter<number>;
   @Output() displayAll = new EventEmitter<any>();
   @Input() idSynthese: any;
-  public alertsData: any;
   public validationStatusAsDict: any;
   public datatable_column_list: Array<any>
   public messages: any;
+  public alertActivate: boolean;
+  public pinActivate: boolean;
 
   constructor(
     public mapListService: MapListService,
@@ -73,6 +74,9 @@ export class ValidationSyntheseListComponent
   ngOnInit() {
     // get app config
     this.appConfig = AppConfig;
+
+    this.alertActivate = AppConfig.SYNTHESE.ALERT_MODULES && AppConfig.SYNTHESE.ALERT_MODULES.includes("VALIDATION");
+    this.pinActivate = AppConfig.SYNTHESE.PIN_MODULES && AppConfig.SYNTHESE.PIN_MODULES.includes("VALIDATION");
 
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
@@ -108,6 +112,10 @@ export class ValidationSyntheseListComponent
   onTableClick() {
     this.setSelectedObs();
     this.mapListService.onTableClick$.subscribe(id => {
+      if(typeof id == 'number') {
+        const selectedLayer = this.mapListService.layerDict[id];
+        selectedLayer.bringToFront();
+      }
       this.setSelectedObs();
       this.setOriginStyleToAll();
       this.setSelectedSyleToSelectedRows();
@@ -232,7 +240,7 @@ export class ValidationSyntheseListComponent
   ngOnChanges(changes) {
     if (changes.inputSyntheseData && changes.inputSyntheseData.currentValue) {
       // reset page 0 when new data appear
-      this.table.offset = 0;
+      if (this.table) {this.table.offset = 0;}
       this.openInfoModal(this.inputSyntheseData.filter(i => i.id_synthese == this?.idSynthese)[0])
     }
     this.deselectAll();
@@ -264,7 +272,8 @@ export class ValidationSyntheseListComponent
       }
     });
     modalRef.componentInstance.onCloseModal.subscribe(() => {
-      this.updateAlerts();
+      // to refresh mapListService table UI
+      this.updateReports();
     });
     modalRef.componentInstance.valDate.subscribe(data => {
       for (let obs in this.mapListService.selectedRow) {
@@ -274,33 +283,38 @@ export class ValidationSyntheseListComponent
     });
   }
 
-  updateAlerts() {
+  /**
+   * Find selected obs row from table list by id synthese, and call reports to update.
+   * This call il required to get report_id value required to use DELETE route
+   */
+  updateReports() {
     if (this.oneSyntheseObs) {
-      const idSynthese = this.oneSyntheseObs.id_synthese;
       const rowIndex = findIndex(
         this.mapListService.tableData, ['id_synthese', this.oneSyntheseObs.id_synthese]
       );
-      const reportPos = findIndex(this.oneSyntheseObs.reports, ['report_type.type', 'alert']);
-      const params = `idSynthese=${idSynthese}&type=alert`;
+      // get all reports
+      const params = `idSynthese=${this.oneSyntheseObs.id_synthese}`;
       this._ds.getReports(params).subscribe(response => {
-        if (isEmpty(response)) {
-          this.mapListService.tableData[rowIndex].reports.splice(reportPos);
-        } else if (reportPos > -1) {
-          this.mapListService.tableData[rowIndex].reports[reportPos] = response[0];
-        } else {
-          this.mapListService.tableData[rowIndex].reports.push(response[0]);
-        }
+        // search alert in table to update and refresh UI
+        this.mapListService.tableData[rowIndex].reports = response;
       });
     }
   }
 
-  findAlertInfo(row, attribute) {
-    const alertItem = find(row.reports, ['report_type.type', 'alert']);
-    if (attribute && !isEmpty(alertItem)) {
-      // search a value 
-      return get(alertItem, `${attribute}`)
+  /**
+   * Catch report by type from selected obs reports list
+   * @param row from selected table line
+   * @param type from report type
+   * @param attribute attribute to match
+   * @returns object from TReport model
+   */
+  findReportInfo(row, type, attribute) {
+    const reportItem = find(row.reports, ['report_type.type', type]);
+    if (attribute && !isEmpty(reportItem)) {
+      // search a value if we search a value and not complet report
+      return get(reportItem, `${attribute}`);
     }
     // search if exists
-    return alertItem;
+    return reportItem;
   }
 }
