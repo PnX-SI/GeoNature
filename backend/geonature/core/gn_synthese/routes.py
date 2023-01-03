@@ -41,7 +41,7 @@ from geonature.core.gn_synthese.models import (
     VSyntheseForWebApp,
     VColorAreaTaxon,
     TReport,
-    TLogSynthese,
+
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 
@@ -1185,39 +1185,38 @@ def delete_report(id_report):
     DB.session.commit()
 
 
-if config["SYNTHESE"]["LOG_API"]:
 
-    @routes.route("/log", methods=["get"])
-    @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
-    @json_resp
-    def list_synthese_log_entries(info_role) -> dict:
-        """Get log history from synthese
 
-        Parameters
-        ----------
-        info_role : VUsersPermissions
-            User permissions
+@routes.route("/log", methods=["get"])
+@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
+@json_resp
+def list_synthese_log_entries(info_role) -> dict:
+    """Get log history from synthese
 
-        Returns
-        -------
-        dict
-            log action list
-        """
+    Parameters
+    ----------
+    info_role : VUsersPermissions
+        User permissions
+    Returns
+    -------
+    dict
+        log action list
+    """
 
-        limit = request.args.get("limit", default=1000, type=int)
-        offset = request.args.get("offset", default=0, type=int)
+    limit = request.args.get("limit", default=1000, type=int)
+    offset = request.args.get("offset", default=0, type=int)
 
-        args = request.args.to_dict()
-        if "limit" in args:
-            args.pop("limit")
-        if "offset" in args:
-            args.pop("offset")
-        filters = {f: args.get(f) for f in args}
+    args = request.args.to_dict()
+    if "limit" in args:
+        args.pop("limit")
+    if "offset" in args:
+        args.pop("offset")
+    filters = {f: args.get(f) for f in args}
 
-        query = GenericQuery(
-            DB, "v_log_synthese", "gn_synthese", filters=filters, limit=limit, offset=offset
-        )
+    query = GenericQuery(
+        DB, "v_log_synthese", "gn_synthese", filters=filters, limit=limit, offset=offset
+    )
 
-        data = query.return_query()
+    data = query.return_query()
 
-        return data
+    return data
