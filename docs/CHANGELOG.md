@@ -1,12 +1,18 @@
 CHANGELOG
 =========
 
-2.11.1.dev0 (unreleased)
+2.12.0.dev0 (unreleased)
 ------------------------
 
-**🐛 Corrections**
+**🚀 Nouveautés**
 
--   
+- Synthèse : Agrégation des observations ayant la même géométrie (#1847) 
+- Synthèse : Possibilité d'afficher les données agrégées par maille (#1878)
+
+**💻 Développement**
+
+- Suppression de l'utilisation de `get_role` dans les modules Synthese & Validation (#2162)
+
 
 2.11.0.post1 (unreleased)
 -------------------------
