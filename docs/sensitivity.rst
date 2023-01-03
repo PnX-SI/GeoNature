@@ -79,16 +79,14 @@ de sensibilité.
 Attribution aux observations de la synthèse
 ```````````````````````````````````````````
 
+La sensibilité des observations de la synthèse est stockée dans la
+colonne ``id_nomenclature_sensitivity``.
+
 A chaque insertion d'une donnée dans la table ``gn_synthese.synthese``,
 un trigger (``tri_insert_calculate_sensitivity``) fait appel à une
 fonction (``fct_tri_cal_sensitivity_on_each_statement``) qui appelle
 elle-même la fonction ``gn_sensitivity.get_id_nomenclature_sensitivity``
 pour le calcul de la sensibilité.
-
-La fonction ``get_id_nomenclature_sensitivity`` calcule le niveau de
-sensibilité en fonction de l'espèce, du type de sensibilité, de la durée
-de validité, de la période d'observation, du statut biologique et du
-comportement de l’occurence.
 
 Gestion du référentiel
 ``````````````````````
@@ -166,3 +164,10 @@ Les valeurs dans la colonne ``id_nomenclature_sensitivity`` des observations sen
 de la table ``gn_synthese.synthese`` auront alors 
 changé. Vous pouvez le vérifier en navigant dans le module Synthèse
 puis dans les détails d'une observation de votre/vos espèce(s).
+
+Utilisation
+```````````
+
+Actuellement, le niveau de sensibilité des observations n’est pas exploité par GeoNature.
+Le floutage des observations en fonction de leur niveau de sensibilité est une fonctionnalité
+souhaitée mais pas encore présente dans GeoNature.

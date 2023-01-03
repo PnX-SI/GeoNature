@@ -1,7 +1,15 @@
 CHANGELOG
 =========
 
-2.11.0 - Ilex aquifolium 🌲 (2022-12-21)
+2.11.0.post1 (unreleased)
+-------------------------
+
+**🐛 Corrections**
+
+- Correction de la documentation de la sensibilité
+
+
+2.11.0 - Ilex aquifolium 🎄 (2022-12-21)
 ----------------------------------------
 
 **⏩ En bref**
@@ -25,9 +33,9 @@ Si vous mettez à jour GeoNature :
 -   Si vous aviez mis en place l'accès public à GeoNature, adaptez sa configuration avec le nouveau paramètre unique ``PUBLIC_ACCESS_USERNAME`` (#2202)
 -   Suivez la procédure de mise à jour classique de GeoNature (<https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application>)
 -   Si vous les utilisez, mettre à jour les modules Dashboard en version 1.2.1 (ou plus) et Monitoring en version 0.4.0 (ou plus), **après** la mise à jour de GeoNature
--   Vous pouvez désactiver les textes de la BDC statuts ne correspondant par à votre territoire. 
+-   Vous pouvez désactiver les textes de la BDC statuts ne correspondant par à votre territoire.
     Voir rubrique "5. Configurer les filtres des statuts de protection et des listes rouges" de https://docs.geonature.fr/admin-manual.html#module-synthese
--   Vous pouvez mettre à jour vos règles de sensibilité si vous utilisez TaxRef versions 14 ou 15 : 
+-   Vous pouvez mettre à jour vos règles de sensibilité si vous utilisez TaxRef versions 14 ou 15 :
 
     -   Désinstallez les règles fournies par Alembic :
         ```bash

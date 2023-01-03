@@ -612,9 +612,6 @@ Il faut donc (1/[1- ``proportion_kept_data`` /100])+1 données pour que des alti
 - 3 données minimum par période/stade si ``proportion_kept_data`` =51
 
 
-.. include:: sensitivity.rst
-
-
 Fonctions
 """""""""
 
