@@ -345,7 +345,6 @@ class Synthese(DB.Model):
             return True
 
 
-
 @serializable
 class DefaultsNomenclaturesValue(DB.Model):
     __tablename__ = "defaults_nomenclatures_value"
@@ -541,7 +540,7 @@ class VColorAreaTaxon(DB.Model):
 
 
 @serializable
-class TLogSynthese(DB.Model):
+class SyntheseLogEntry(DB.Model):
     """Log synthese table, populated with Delete Triggers on gn_synthes.synthese
     Parameters
     ----------
