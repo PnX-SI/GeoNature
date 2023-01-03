@@ -6,7 +6,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "format": "prettier --write '**/*.ts'",
+    "format": "prettier --config .prettierrc --ignore-path .prettierignore --write '**/*.ts' '../contrib/*/frontend/**/*.ts'",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
   },
