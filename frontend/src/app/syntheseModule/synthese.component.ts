@@ -43,7 +43,7 @@ export class SyntheseComponent implements OnInit {
       .set('limit', AppConfig.SYNTHESE.NB_LAST_OBS)
       .set(
         'format',
-        AppConfig.SYNTHESE.ENABLE_AREA_AGGREGATION && AppConfig.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT
+        AppConfig.SYNTHESE.AREA_AGGREGATION_ENABLED && AppConfig.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT
           ? 'grouped_geom_by_areas'
           : 'grouped_geom'
       );

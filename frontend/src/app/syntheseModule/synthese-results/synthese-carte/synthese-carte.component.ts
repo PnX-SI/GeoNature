@@ -96,7 +96,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     private translateService: TranslateService
   ) {
     this.areasEnable =
-      this.config.SYNTHESE.ENABLE_AREA_AGGREGATION &&
+      this.config.SYNTHESE.AREA_AGGREGATION_ENABLED &&
       this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
   }
 
@@ -136,7 +136,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     this.cluserOrSimpleFeatureGroup.addTo(this._ms.map);
 
     // Handle areas button and legend
-    if (this.config.SYNTHESE.ENABLE_AREA_AGGREGATION) {
+    if (this.config.SYNTHESE.AREA_AGGREGATION_ENABLED) {
       this.addAreasButton();
       this.onLanguageChange();
       if (this.areasEnable) {

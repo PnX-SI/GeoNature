@@ -387,7 +387,7 @@ class Synthese(Schema):
     # Allow to activate pin tool for any, some or all VALIDATION, SYNTHESE
     PIN_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
     # Enable areas vizualisation with toggle slide
-    ENABLE_AREA_AGGREGATION = fields.Boolean(load_default=True)
+    AREA_AGGREGATION_ENABLED = fields.Boolean(load_default=True)
     # Choose size of areas
     AREA_AGGREGATION_TYPE = fields.String(load_default="M10")
     # Activate areas mode by default
