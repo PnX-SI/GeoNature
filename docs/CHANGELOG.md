@@ -6,12 +6,21 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
-- Synthèse : Agrégation des observations ayant la même géométrie (#1847) 
+- Synthèse : Agrégation des observations ayant la même géométrie (#1847)
 - Synthèse : Possibilité d'afficher les données agrégées par maille (#1878)
+- Champs additionnels: Les formulaires de type `radio`, `select`, `multiselect` et `checkbox`, attendent désormais une liste de dictionnaire `{value, label}` (voir doc des champs additionnels).
+  La rétrocompatibilité avec des listes simples est maintenue, mais vous êtes invité à modifier ces champs dans le backoffice.
+  Pour conserver le bon affichage lors de l'édition des données, renseignez l'ancienne valeur deux fois dans la clé `value` et la clé `label`.
 
 **💻 Développement**
 
 - Suppression de l'utilisation de `get_role` dans les modules Synthese & Validation (#2162)
+
+**⚠️ Notes de version**
+
+- Les champs additionnels de type `bool_radio` ne sont plus supportés.
+  Si vous utilisiez ce type de widget dans vos champs additionnels d'Occtax, veuillez les remplacer par un widget de type `checkbox`, et de remplir le champs `field_values` de la manière suivante : `[{"label": "Mon label vrai", "value": true }, {"label": "Mon label faux", "value": false }]`.
+  Ceci doit être fait avant la migration, sans quoi la migration de BDD échouera.
 
 
 2.11.2 (2023-01-19)

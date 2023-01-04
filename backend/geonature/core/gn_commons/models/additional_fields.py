@@ -43,8 +43,6 @@ class TAdditionalFields(DB.Model):
     )
     additional_attributes = DB.Column(JSONB)
     multiselect = DB.Column(DB.Boolean)
-    key_label = DB.Column(DB.String)
-    key_value = DB.Column(DB.String)
     api = DB.Column(DB.String)
     default_value = DB.Column(DB.String)
     modules = DB.relationship(
