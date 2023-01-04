@@ -689,7 +689,8 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
         acquisition_framework["closed_title"] = current_app.config["METADATA"]["CLOSED_AF_TITLE"]
 
     # Appel de la methode pour generer un pdf
-    return fm.generate_pdf("acquisition_framework_template_pdf.html", acquisition_framework)
+    pdf_file = fm.generate_pdf("acquisition_framework_template_pdf.html", acquisition_framework)
+    return current_app.response_class(pdf_file, content_type="application/pdf")
 
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>", methods=["GET"])
