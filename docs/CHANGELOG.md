@@ -19,8 +19,8 @@ CHANGELOG
 **⚠️ Notes de version**
 
 - Les champs additionnels de type `bool_radio` ne sont plus supportés.
-  Si vous utilisiez ce type de widget dans vos champs additionnels d'Occtax, veuillez les remplacer par un widget de type `checkbox`, et de remplir le champs `field_values` de la manière suivante : `[{"label": "Mon label vrai", "value": true }, {"label": "Mon label faux", "value": false }]`.
-  Ceci doit être fait avant la migration, sans quoi la migration de BDD échouera.
+  Si vous utilisiez ce type de widget dans vos champs additionnels d'Occtax, ils seront automatiquement remplacés par un widget de type `radio`.
+  Vous devez changer le champs `field_values` sur le modèle suivant : `[{"label": "Mon label vrai", "value": true }, {"label": "Mon label faux", "value": false }]`.
 
 
 2.11.2 (2023-01-19)

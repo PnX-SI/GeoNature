@@ -25,6 +25,13 @@ def upgrade():
         DROP COLUMN key_value;
         """
     )
+    op.execute(
+        """
+            UPDATE gn_commons.t_additional_fields
+            SET id_widget = (SELECT id_widget FROM gn_commons.bib_widgets  WHERE widget_name = 'radio')
+            WHERE id_widget = (SELECT id_widget FROM gn_commons.bib_widgets  WHERE widget_name = 'bool_radio')
+        """
+    )
     op.execute("DELETE FROM gn_commons.bib_widgets WHERE widget_name = 'bool_radio'")
 
 
