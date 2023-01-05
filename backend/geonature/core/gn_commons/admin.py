@@ -1,13 +1,33 @@
-from flask import current_app
-from wtforms import validators
+from flask import current_app, flash
+from wtforms import validators, Form
 
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.form import BaseForm
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.models import TObjects
+from geonature.core.gn_commons.schemas import TAdditionalFieldsSchema
 from geonature.utils.env import DB
 
 
+from marshmallow import ValidationError
+
+
+class TAdditionalFieldsForm(BaseForm):
+    def validate(self, *args, **kwargs):
+        try:
+            TAdditionalFieldsSchema().load(self.data)
+        except ValidationError as e:
+            flash("The form has errors", "error")
+            self.field_values.errors = (
+                f"Value input must contain a list of dict with value/label key for {self.data['type_widget']} widget ",
+            )
+            return False
+
+        return super().validate(*args, **kwargs)
+
+
 class BibFieldAdmin(ModelView):
+    form_base_class = TAdditionalFieldsForm
     form_columns = (
         "field_name",
         "field_label",
@@ -78,30 +98,3 @@ class BibFieldAdmin(ModelView):
         "objects": "Objet(s) auquel le champs est rattaché. *Obligatoire",
         "datasets": "Jeu(x) de donnés auquel le champs est rattaché",
     }
-
-    def on_model_change(self, form, model, is_created):
-        """
-        Check the validity of field_values JSON field for some field types
-        """
-        if form.data["type_widget"].widget_name in ("select", "multiselect", "checkbox", "radio"):
-            if not type(form.data["field_values"]) is list:
-                form.field_values.errors.append(
-                    f"Value items must be a list for {form.data['type_widget'].widget_name} forms"
-                )
-
-            for item in form.data["field_values"]:
-                if not type(item) is dict:
-                    form.field_values.errors.append(
-                        f"List items must be a dict for {form.data['type_widget'].widget_name} forms"
-                    )
-                if type(item) is dict and (
-                    "label" not in item.keys() or "value" not in item.keys()
-                ):
-                    form.field_values.errors.append(
-                        f"Value items must contain a value/label dict for {form.data['type_widget'].widget_name} forms"
-                    )
-
-        if len(form.field_values.errors) > 0:
-            raise validators.ValidationError("The form has errors")
-
-        return super().on_model_change(form, model, is_created)
