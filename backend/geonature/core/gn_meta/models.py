@@ -830,7 +830,7 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
             # Check if joinload
             f &= or_(
                 TAcquisitionFramework.acquisition_framework_name.ilike(f"%{search}%"),
-                TAcquisitionFramework.t_datasets.any(TDatasets.compute_filter(search=search)),
+                TAcquisitionFramework.datasets.any(TDatasets.compute_filter(search=search)),
             )
 
         return f
