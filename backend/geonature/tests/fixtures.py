@@ -181,11 +181,11 @@ def acquisition_frameworks(users):
         TNomenclatures.mnemonique == "Contact principal",
     ).one()
 
-    def create_af(creator=None):
+    def create_af(name, creator):
         with db.session.begin_nested():
             af = TAcquisitionFramework(
-                acquisition_framework_name="test",
-                acquisition_framework_desc="test",
+                acquisition_framework_name=name,
+                acquisition_framework_desc=name,
                 creator=creator,
             )
             db.session.add(af)
@@ -197,13 +197,16 @@ def acquisition_frameworks(users):
         return af
 
     afs = {
-        "own_af": create_af(creator=users["user"]),
-        "associate_af": create_af(creator=users["associate_user"]),
-        "stranger_af": create_af(creator=users["stranger_user"]),
-        "orphan_af": create_af(),
-        "af_1": create_af(),
-        "af_2": create_af(),
-        "af_3": create_af(),
+        name: create_af(name=name, creator=creator)
+        for name, creator in [
+            ("own_af", users["user"]),
+            ("associate_af", users["associate_user"]),
+            ("stranger_af", users["stranger_user"]),
+            ("orphan_af", None),
+            ("af_1", None),
+            ("af_2", None),
+            ("af_3", None),
+        ]
     }
 
     return afs
