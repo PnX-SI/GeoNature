@@ -11,8 +11,6 @@ import {
   filter,
   pairwise,
 } from 'rxjs/operators';
-import { forkJoin, Observable, BehaviorSubject } from 'rxjs';
-import { tap, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 
 import { AppConfig } from '@geonature_config/app.config';
@@ -25,14 +23,9 @@ export class MetadataService {
   public rapidSearchControl: FormControl = new FormControl();
 
   /* données receptionnées par l'API */
-  private _acquisitionFrameworks: BehaviorSubject<any[]> = new BehaviorSubject([]);
-  /* getter this._acquisitionFrameworks */
-  get acquisitionFrameworks() {
-    return this._acquisitionFrameworks.getValue();
-  }
+  public acquisitionFrameworks: BehaviorSubject<any[]> = new BehaviorSubject([]);
 
   /* resultat du filtre sur _acquisitionFrameworks */
-  public filteredAcquisitionFrameworks: Observable<any[]>;
   public isLoading: boolean = false;
   public expandAccordions: boolean = false;
 
@@ -62,7 +55,6 @@ export class MetadataService {
 
     // rapid search event
     //combinaison de la zone de recherche et du chargement des données
-    this.filteredAcquisitionFrameworks = this._acquisitionFrameworks.asObservable();
     this.rapidSearchControl.valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((term) => {
@@ -78,7 +70,6 @@ export class MetadataService {
     const formValue = this.formatFormValue(Object.assign({}, this.form.value));
     const params = {
       ...(term !== '' ? { search: term } : {}),
-      ...APIPARAMS,
       // formValue will always has selector as a non null property: need to
       // filter out when only selector is null
       ...(Object.keys(formValue).length > 1 ? formValue : {}),
@@ -86,28 +77,25 @@ export class MetadataService {
 
     return this.getMetadataObservable(params)
       .pipe(
-        map((afs: any[]): any[] =>
-          term === '' ? afs : this._filterAcquisitionFrameworks(afs, term)
-        ),
         tap(() => {
           this.expandAccordions = term !== '';
         })
       )
       .subscribe(
         (afs) => {
-          this._acquisitionFrameworks.next(afs);
+          this.acquisitionFrameworks.next(afs);
         },
         (err) => (this.isLoading = false)
       );
   }
   //recuperation cadres d'acquisition
-  getMetadata(params = {}, selectors = { datasets: 1, creator: 1, actors: 1 }) {
+  getMetadataObservable(params = {}, selectors = { datasets: 1, creator: 1, actors: 1 }) {
     this.isLoading = true;
-    this._acquisitionFrameworks.next([]);
+    this.acquisitionFrameworks.next([]);
 
     //forkJoin pour lancer les 2 requetes simultanément
     return forkJoin({
-      afs: this.dataFormService.getAcquisitionFrameworksList(apiParams),
+      afs: this.dataFormService.getAcquisitionFrameworksList(selectors, params),
       datasetNbObs: this._syntheseDataService.getObsCountByColumn('id_dataset'),
     }).pipe(
       tap(() => (this.isLoading = false)),
@@ -115,7 +103,7 @@ export class MetadataService {
         //val: {afs: CA[], datasetNbObs: {id_dataset: number, count: number}[]}
         //boucle sur les CA pour attribuer le nombre de données au JDD et création de la clé datasetsTemp
         for (let i = 0; i < val.afs.length; i++) {
-          this.setDsObservationCount(val.afs[i]['t_datasets'], val.datasetNbObs);
+          this.setDsObservationCount(val.afs[i]['datasets'], val.datasetNbObs);
         }
         //renvoie uniquement les CA
         return val.afs;
@@ -123,38 +111,11 @@ export class MetadataService {
     );
   }
 
-  getMetadata(params = {}) {
-    this.getMetadataObservable(params).subscribe(
-      (afs) => this._acquisitionFrameworks.next(afs),
+  getMetadata(params = {}, selectors = { datasets: 1, creator: 1, actors: 1 }) {
+    this.getMetadataObservable(params, selectors).subscribe(
+      (afs) => this.acquisitionFrameworks.next(afs),
       (err) => (this.isLoading = false)
     );
-  }
-
-  /**
-   *  Filtre les éléments CA et JDD selon la valeur de la barre de recherche
-   **/
-  private _filterAcquisitionFrameworks(afs, filterValue) {
-    return afs.filter((af) => {
-      if (filterValue.includes(af.acquisition_framework_name)) {
-        return true;
-      }
-      //on filtre les JDD qui matchent eventuellement.
-      if (af.t_datasets) {
-        const tempDatasets = af.t_datasets.filter((ds) => {
-          return (
-            ds.id_dataset == filterValue ||
-            this._removeAccentAndLower(ds.dataset_name).includes(filterValue) ||
-            this._removeAccentAndLower(ds.unique_dataset_id) == filterValue ||
-            this._removeAccentAndLower(ds.meta_create_date) == filterValue
-          );
-        });
-        if (tempDatasets.length !== 0) {
-          af.t_datasets = tempDatasets;
-        }
-        return af.datasets.length; //On envoie ce test pour garder le CA si un JDD a matché
-      }
-      return false;
-    });
   }
 
   private setDsObservationCount(datasets, dsNbObs) {

@@ -158,7 +158,7 @@
                       *ngIf="APP_CONFIG.METADATA?.ENABLE_CLOSE_AF"
                       type="button"
                       mat-icon-button
-                      [disabled]="!af.cruved.V || !af.opened || af['t_datasets'].length == 0"
+                      [disabled]="!af.cruved.V || !af.opened || af['datasets'].length == 0"
                       (click)="
                         openPublishModalAf($event, af.id_acquisition_framework, publishModal)
                       "
@@ -171,7 +171,7 @@
                       </mat-icon>
                       <ng-template #elifEmpty>
                         <mat-icon
-                          *ngIf="af['t_datasets'].length == 0; else elsePublish"
+                          *ngIf="af['datasets'].length == 0; else elsePublish"
                           matTooltip="Le cadre d'acquisition est vide"
                         >
                           gavel
@@ -197,7 +197,7 @@
                 </thead>
                 <tbody>
                   <tr
-                    *ngFor="let dataset of af.t_datasets; let last = last"
+                    *ngFor="let dataset of af.datasets; let last = last"
                     [attr.data-qa]='"pnx-metadata-dataset-name-"+dataset.dataset_name'
                     pnx-metadata-dataset
                     [dataset]="dataset"
