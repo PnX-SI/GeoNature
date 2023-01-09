@@ -1828,6 +1828,15 @@ Dans l'exemple ci-dessous, remplacez ``<MODULE_PATH>`` par le contenu de la colo
     INSERT INTO gn_synthese.t_sources (name_source,desc_source,entity_source_pk_field,url_source,,id_module) VALUES
     ('Flore station (sous-module Occtax)','Données issues du protocole Flore station','pr_occtax.cor_counting_occtax.id_counting_occtax','#/<MODULE_PATH>/info/id_counting', <ID_MODULE>);
 
+
+Dans la config de GeoNature, rajouter le code du module nouvellement créé dans la liste des modules qui implémente les champs additionnels :
+
+::
+
+  [ADDITIONAL_FIELDS]
+      IMPLEMENTED_MODULES = ["OCCTAX", "<NOUVEAUX_MODULE_CODE>"]
+
+
 Associer des jeux de données et des champs additionnels
 ```````````````````````````````````````````````````````
 
