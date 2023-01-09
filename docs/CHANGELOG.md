@@ -14,12 +14,13 @@ CHANGELOG
 - Suppression de l'utilisation de `get_role` dans les modules Synthese & Validation (#2162)
 
 
-2.11.0.post1 (unreleased)
--------------------------
+2.11.1 (unreleased)
+-------------------
 
 **🐛 Corrections**
 
 - Correction de la documentation de la sensibilité
+- Correction de l’accès aux notifications lorsque la gestion des utilisateurs est activée
 
 
 2.11.0 - Ilex aquifolium 🎄 (2022-12-21)
