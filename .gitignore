@@ -1,6 +1,6 @@
 *.*~
 settings.ini
-config/geonature_config.toml
+config/*_config.toml
 
 **/conf_gn_module.toml
 **/module.config.ts
