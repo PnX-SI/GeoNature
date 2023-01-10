@@ -221,33 +221,8 @@ class CorDatasetTerritory(DB.Model):
     )
 
 
-class CruvedMixin:
-    """
-    Classe abstraite permettant d'ajouter des méthodes de
-    contrôle d'accès à la donnée des class TDatasets et TAcquisitionFramework
-    """
-
-    def get_object_cruved(self, user_cruved):
-        """
-        Return the user's cruved for a Model instance.
-        Use in the map-list interface to allow or not an action
-        params:
-            - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
-            - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
-            - id_role: identifiant de la personne qui demande la route
-            - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
-            - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
-
-        Return: dict {'C': True, 'R': False ...}
-        """
-        return {
-            action: self.has_instance_permission(int(level))
-            for action, level in user_cruved.items()
-        }
-
-
 @serializable
-class TBibliographicReference(CruvedMixin, db.Model):
+class TBibliographicReference(db.Model):
     __tablename__ = "t_bibliographical_references"
     __table_args__ = {"schema": "gn_meta"}
     id_bibliographic_reference = DB.Column(DB.Integer, primary_key=True)
@@ -353,7 +328,7 @@ class TDatasetsQuery(BaseQuery):
 
 
 @serializable(exclude=["user_actors", "organism_actors"])
-class TDatasets(CruvedMixin, FilterMixin, db.Model):
+class TDatasets(FilterMixin, db.Model):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
     query_class = TDatasetsQuery
@@ -599,7 +574,7 @@ class TAcquisitionFrameworkQuery(BaseQuery):
 
 
 @serializable(exclude=["user_actors", "organism_actors"])
-class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
+class TAcquisitionFramework(FilterMixin, db.Model):
     __tablename__ = "t_acquisition_frameworks"
     __table_args__ = {"schema": "gn_meta"}
     query_class = TAcquisitionFrameworkQuery
