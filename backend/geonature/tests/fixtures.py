@@ -18,6 +18,7 @@ from geonature.core.gn_permissions.models import (
     TFilters,
     BibFiltersType,
     CorRoleActionFilterModuleObject,
+    TObjects,
 )
 from geonature.core.gn_commons.models import TModules, TMedias, BibTablesLocation
 from geonature.core.gn_meta.models import (
@@ -49,6 +50,7 @@ __all__ = [
     "filters",
     "medium",
     "module",
+    "perm_object",
 ]
 
 
@@ -85,6 +87,14 @@ def module():
         )
         db.session.add(new_module)
     return new_module
+
+
+@pytest.fixture(scope="function")
+def perm_object():
+    with db.session.begin_nested():
+        new_object = TObjects(code_object="TEST_OBJECT")
+        db.session.add(new_object)
+    return new_object
 
 
 @pytest.fixture(scope="session")

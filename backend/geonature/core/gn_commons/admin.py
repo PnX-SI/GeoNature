@@ -1,3 +1,5 @@
+import logging
+
 from flask import current_app, flash
 from wtforms import validators, Form
 
@@ -11,19 +13,21 @@ from geonature.utils.env import DB
 
 from marshmallow import ValidationError
 
+log = logging.getLogger()
+
 
 class TAdditionalFieldsForm(BaseForm):
-    def validate(self, *args, **kwargs):
+    def validate(self, extra_validators=None):
         try:
             TAdditionalFieldsSchema().load(self.data)
         except ValidationError as e:
+            log.exception("additional field validation error")
             flash("The form has errors", "error")
             self.field_values.errors = (
                 f"Value input must contain a list of dict with value/label key for {self.data['type_widget']} widget ",
             )
             return False
-
-        return super().validate(*args, **kwargs)
+        return super().validate(extra_validators)
 
 
 class BibFieldAdmin(ModelView):
