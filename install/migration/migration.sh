@@ -66,6 +66,14 @@ for static_dir in "${previousdir}"/backend/static/*; do
     cp -a "${static_dir}" .
 done
 
+if [[ ! -f src/assets/config.json ]]; then
+  echo "Création du fichiers de configuration du frontend"
+  cp -n src/assets/config.sample.json src/assets/config.json
+fi
+
+api_end_point=$(geonature get-config API_ENDPOINT)
+sed -i 's|"API_ENDPOINT": .*$|"API_ENDPOINT" : "'${api_end_point}'"|' src/assets/config.json
+
 echo "Mise à jour de node si nécessaire …"
 cd "${currentdir}"/frontend
 export NVM_DIR="$HOME/.nvm"

@@ -13,6 +13,12 @@ CHANGELOG
 
 - Suppression de l'utilisation de `get_role` dans les modules Synthese & Validation (#2162)
 
+Note de version : 
+
+La configuration du frontend change pour ne plus necessiter un rebuild à chaque modification. Elle est maintenant chargée dynamiquement à partir de l'API du backend. Pour cela, désamplez le fichier `frontend/src/assets/config.sample.json` : 
+`cp  frontend/src/assets/config.sample.json frontend/src/assets/config.json`
+et renseignez uniquement l'URL de l'API GeoNature
+
 
 2.11.1 (unreleased)
 -------------------

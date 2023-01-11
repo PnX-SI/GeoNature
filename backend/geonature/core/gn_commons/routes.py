@@ -21,9 +21,11 @@ from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.repositories import get_table_location_id
 from geonature.core.gn_permissions.models import TObjects
 from geonature.utils.env import DB, db, BACKEND_DIR
+from geonature.utils.config import config_frontend, config
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required
 from geonature.core.gn_permissions.tools import get_scopes_by_action
+
 from shapely.geometry import asShape
 from geoalchemy2.shape import from_shape
 from geonature.utils.errors import (
@@ -36,6 +38,14 @@ routes = Blueprint("gn_commons", __name__)
 # import routes sub folder
 from .validation.routes import *
 from .medias.routes import *
+
+
+@routes.route("/config", methods=["GET"])
+def config_route():
+    """
+    Returns geonature configuration
+    """
+    return config_frontend
 
 
 @routes.route("/modules", methods=["GET"])

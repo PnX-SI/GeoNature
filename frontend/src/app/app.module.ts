@@ -48,6 +48,7 @@ import { ModuleGuardService } from '@geonature/routing/module-guard.service';
 import { ModuleService } from './services/module.service';
 import { CruvedStoreService } from './GN2CommonModule/service/cruved-store.service';
 import { SideNavService } from './components/sidenav-items/sidenav-service';
+import { ConfigService } from './services/config.service';
 
 import { MyCustomInterceptor } from './services/http.interceptor';
 import { UnauthorizedInterceptor } from './services/unauthorized.interceptor';
@@ -78,6 +79,13 @@ export function getModulesAndInitRouting(injector) {
         })
       )
       .toPromise();
+  };
+}
+
+export function loadConfig(injector) {
+  return () => {
+    const configService = injector.get(ConfigService);
+    return configService._getConfig().toPromise();
   };
 }
 
@@ -130,13 +138,19 @@ export function getModulesAndInitRouting(injector) {
     CruvedStoreService,
     UserDataService,
     NotificationDataService,
+    ConfigService,
     { provide: APP_CONFIG_TOKEN, useValue: AppConfig },
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
-    // { provide: APP_INITIALIZER, useFactory: get_cruved, deps: [CruvedStoreService], multi: true},
     {
       provide: APP_INITIALIZER,
       useFactory: getModulesAndInitRouting,
+      deps: [Injector],
+      multi: true,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: loadConfig,
       deps: [Injector],
       multi: true,
     },

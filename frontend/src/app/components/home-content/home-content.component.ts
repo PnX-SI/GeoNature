@@ -11,6 +11,7 @@ import { ModuleService } from '../../services/module.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as L from 'leaflet';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-home-content',
@@ -19,7 +20,6 @@ import * as L from 'leaflet';
   providers: [MapService, SyntheseDataService],
 })
 export class HomeContentComponent implements OnInit {
-  public appConfig: any;
   public showLastObsMap: boolean = false;
   public lastObs: any;
   public showGeneralStat: boolean = false;
@@ -35,16 +35,17 @@ export class HomeContentComponent implements OnInit {
     private _syntheseApi: SyntheseDataService,
     private _mapService: MapService,
     private _moduleService: ModuleService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    public cs: ConfigService
   ) {
     // this work here thanks to APP_INITIALIZER on ModuleService
     let synthese_module = this._moduleService.getModule('SYNTHESE');
     let synthese_read_scope = synthese_module ? synthese_module.cruved['R'] : 0;
 
-    if (AppConfig.FRONTEND.DISPLAY_MAP_LAST_OBS && synthese_read_scope > 0) {
+    if (this.cs.config.FRONTEND.DISPLAY_MAP_LAST_OBS && synthese_read_scope > 0) {
       this.showLastObsMap = true;
     }
-    if (AppConfig.FRONTEND.DISPLAY_STAT_BLOC && synthese_read_scope > 0) {
+    if (this.cs.config.FRONTEND.DISPLAY_STAT_BLOC && synthese_read_scope > 0) {
       this.showGeneralStat = true;
     }
   }
@@ -53,7 +54,6 @@ export class HomeContentComponent implements OnInit {
     this.getI18nLocale();
 
     this._SideNavService.sidenav.open();
-    this.appConfig = AppConfig;
 
     if (this.showLastObsMap) {
       this._syntheseApi
