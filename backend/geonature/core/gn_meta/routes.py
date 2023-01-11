@@ -58,10 +58,7 @@ from geonature.core.gn_meta.schemas import (
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
 from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import (
-    cruved_scope_for_user_in_module,
-    get_scopes_by_action,
-)
+from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.core.gn_meta.mtd import mtd_utils
 import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
@@ -147,6 +144,7 @@ def get_dataset(scope, id_dataset):
 
     dataset_schema = DatasetSchema(
         only=[
+            "+cruved",
             "creator",
             "cor_dataset_actor",
             "cor_dataset_actor.nomenclature_actor_role",
@@ -169,15 +167,6 @@ def get_dataset(scope, id_dataset):
             "sources",
         ]
     )
-
-    # TODO: Replace with get_scopes_by_action
-    # check this in front
-    user_cruved = cruved_scope_for_user_in_module(
-        id_role=g.current_user.id_role,
-        module_code="METADATA",
-    )[0]
-    dataset_schema.context = {"user_cruved": user_cruved}
-
     return dataset_schema.jsonify(dataset)
 
 
@@ -485,7 +474,7 @@ def get_acquisition_frameworks(scope):
     Use for AF select in form
     Get the GeoNature CRUVED
     """
-    only = []
+    only = ["+cruved"]
     # QUERY
     af_list = TAcquisitionFramework.query.filter_by_readable()
     if request.method == "POST":
@@ -510,7 +499,7 @@ def get_acquisition_frameworks(scope):
     if request.args.get("datasets", default=False, type=int):
         only.extend(
             [
-                "t_datasets",
+                "t_datasets.+cruved",
             ]
         )
     if request.args.get("creator", default=False, type=int):
@@ -547,11 +536,6 @@ def get_acquisition_frameworks(scope):
                 ),
             )
     af_schema = AcquisitionFrameworkSchema(only=only)
-    user_cruved = cruved_scope_for_user_in_module(
-        id_role=g.current_user.id_role,
-        module_code="METADATA",
-    )[0]
-    af_schema.context = {"user_cruved": user_cruved}
     return af_schema.jsonify(af_list.all(), many=True)
 
 
@@ -562,6 +546,8 @@ def get_acquisition_frameworks_list(scope):
     Get all AF with their datasets
     Use in metadata module for list of AF and DS
     Add the CRUVED permission for each row (Dataset and AD)
+
+    DEPRECATED use get_acquisition_frameworks instead
 
     .. :quickref: Metadata;
 
@@ -575,10 +561,6 @@ def get_acquisition_frameworks_list(scope):
     if "selector" not in params:
         params["selector"] = None
 
-    user_cruved = cruved_scope_for_user_in_module(
-        id_role=g.current_user.id_role,
-        module_code="METADATA",
-    )[0]
     nested_serialization = params.get("nested", False)
     nested_serialization = True if nested_serialization == "true" else False
     exclude_fields = []
@@ -589,8 +571,9 @@ def get_acquisition_frameworks_list(scope):
         # exclude all relationships from serialization if nested = false
         exclude_fields = [db_rel.key for db_rel in inspect(TAcquisitionFramework).relationships]
 
-    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(exclude=exclude_fields)
-    acquisitionFrameworkSchema.context = {"user_cruved": user_cruved}
+    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
+        only=["+cruved"], exclude=exclude_fields
+    )
     return acquisitionFrameworkSchema.jsonify(
         get_metadata_list(g.current_user, scope, params, exclude_fields).all(), many=True
     )
@@ -715,6 +698,7 @@ def get_acquisition_framework(scope, id_acquisition_framework):
     try:
         af_schema = AcquisitionFrameworkSchema(
             only=[
+                "+cruved",
                 "creator",
                 "nomenclature_territorial_level",
                 "nomenclature_financing_type",
@@ -737,13 +721,6 @@ def get_acquisition_framework(scope, id_acquisition_framework):
         )
     except ValueError as e:
         raise BadRequest(str(e))
-
-    user_cruved = cruved_scope_for_user_in_module(
-        id_role=g.current_user.id_role,
-        module_code="METADATA",
-    )[0]
-    af_schema.context = {"user_cruved": user_cruved}
-
     return af_schema.jsonify(af)
 
 
