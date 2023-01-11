@@ -4,7 +4,7 @@ from geonature.core.gn_permissions.tools import get_scopes_by_action
 
 
 class CruvedSchemaMixin:
-    cruved = fields.Method("get_cruved")
+    cruved = fields.Method("get_cruved", metadata={"exclude": True})
 
     def get_cruved(self, obj):
         module_code = self.__module_code__
