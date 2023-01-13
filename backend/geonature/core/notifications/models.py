@@ -3,9 +3,11 @@ Models of gn_notifications schema
 """
 import datetime
 
+import sqlalchemy as sa
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select
 from sqlalchemy.orm import relationship
+from flask import g
 
 from utils_flask_sqla.serializers import serializable
 from pypnusershub.db.models import User
@@ -85,6 +87,28 @@ class Notification(db.Model):
     user = db.relationship(User)
 
 
+class NotificationRuleQuery(db.Query):
+    def filter_by_role_with_defaults(self, id_role=None):
+        if id_role is None:
+            id_role = g.current_user.id_role
+        cte = (
+            NotificationRule.query.filter(
+                sa.or_(
+                    NotificationRule.id_role.is_(None),
+                    NotificationRule.id_role == id_role,
+                )
+            )
+            .distinct(NotificationRule.code_category, NotificationRule.code_method)
+            .order_by(
+                NotificationRule.code_category.desc(),
+                NotificationRule.code_method.desc(),
+                NotificationRule.id_role.asc(),
+            )
+            .cte("cte")
+        )
+        return self.filter(NotificationRule.id == cte.c.id)
+
+
 @serializable
 class NotificationRule(db.Model):
     __tablename__ = "t_notifications_rules"
@@ -92,16 +116,28 @@ class NotificationRule(db.Model):
         db.UniqueConstraint(
             "id_role", "code_method", "code_category", name="un_role_method_category"
         ),
+        db.Index(
+            "un_method_category",
+            "code_method",
+            "code_category",
+            unique=True,
+            postgresql_ops={
+                "where": sa.text("id_role IS NULL"),
+            },
+        ),
         {"schema": "gn_notifications"},
     )
+    query_class = NotificationRuleQuery
+
     id = db.Column(db.Integer, primary_key=True)
-    id_role = db.Column(db.Integer, ForeignKey(User.id_role), nullable=False)
+    id_role = db.Column(db.Integer, ForeignKey(User.id_role), nullable=True)
     code_method = db.Column(db.Unicode, ForeignKey(NotificationMethod.code), nullable=False)
     code_category = db.Column(
         db.Unicode,
         ForeignKey(NotificationCategory.code),
         nullable=False,
     )
+    subscribed = db.Column(db.Boolean, nullable=False)
 
     method = relationship(NotificationMethod)
     category = relationship(NotificationCategory)
