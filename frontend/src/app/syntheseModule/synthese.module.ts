@@ -38,12 +38,6 @@ const routes: Routes = [
     SyntheseModalDownloadComponent,
     TaxonSheetComponent,
   ],
-  entryComponents: [
-    SyntheseInfoObsComponent,
-    SyntheseModalDownloadComponent,
-    DiscussionCardComponent,
-    AlertInfoComponent,
-  ],
   providers: [
     MapService,
     DynamicFormService,

@@ -206,12 +206,6 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     SyntheseDataService,
     TranslateService,
   ],
-  entryComponents: [
-    ConfirmationDialog,
-    MediaDialog,
-    TaxonAdvancedModalComponent,
-    TaxonTreeComponent,
-  ],
   exports: [
     AcquisitionFrameworksComponent,
     AreasComponent,
