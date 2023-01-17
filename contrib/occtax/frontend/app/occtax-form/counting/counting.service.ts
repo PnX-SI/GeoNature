@@ -1,7 +1,7 @@
 import { Injectable} from "@angular/core";
 import {
-  FormBuilder,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormGroup,
   Validators,
   AbstractControl,
 } from "@angular/forms";
@@ -22,12 +22,12 @@ export class OcctaxFormCountingService {
   counting: Subject<any[]> = new Subject();
   synchroCountSub: Subscription;
   additionalFieldsForm: any[] = [];
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public data : any;
 
   constructor(
     public dataFormService: DataFormService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private occtaxFormService: OcctaxFormService,
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxFormCountingsService: OcctaxFormCountingsService,

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
@@ -19,7 +19,7 @@ import { MetadataDataService } from '../services/metadata-data.service';
   providers: [DatasetFormService],
 })
 export class DatasetFormComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   //observable pour la liste déroulantes HTML des AF
   public acquisitionFrameworks: Observable<any>;
   public taxaBibList: number;

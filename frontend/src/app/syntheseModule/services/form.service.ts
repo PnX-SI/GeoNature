@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl, ValidatorFn } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl, ValidatorFn } from '@angular/forms';
 import { AppConfig } from '@geonature_config/app.config';
 import { stringify as toWKT } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
@@ -9,14 +9,14 @@ import { isArray } from 'util';
 
 @Injectable()
 export class SyntheseFormService {
-  public searchForm: FormGroup;
+  public searchForm: UntypedFormGroup;
   public formBuilded = false;
   public selectedtaxonFromComponent = [];
   public selectedCdRefFromTree = [];
   public dynamycFormDef: Array<any>;
 
   constructor(
-    private _fb: FormBuilder,
+    private _fb: UntypedFormBuilder,
     private _dateParser: NgbDateParserFormatter,
     private _periodFormatter: NgbDatePeriodParserFormatter
   ) {
@@ -41,7 +41,7 @@ export class SyntheseFormService {
 
     AppConfig.SYNTHESE.AREA_FILTERS.forEach((area) => {
       const control_name = 'area_' + area['type_code'];
-      this.searchForm.addControl(control_name, new FormControl(new Array()));
+      this.searchForm.addControl(control_name, new UntypedFormControl(new Array()));
       const control = this.searchForm.controls[control_name];
       area['control'] = control;
     });
@@ -108,7 +108,7 @@ export class SyntheseFormService {
   }
 
   periodValidator(): ValidatorFn {
-    return (formGroup: FormGroup): { [key: string]: boolean } => {
+    return (formGroup: UntypedFormGroup): { [key: string]: boolean } => {
       const perioStart = formGroup.controls.period_start.value;
       const periodEnd = formGroup.controls.period_end.value;
       if ((perioStart && !periodEnd) || (!perioStart && periodEnd)) {

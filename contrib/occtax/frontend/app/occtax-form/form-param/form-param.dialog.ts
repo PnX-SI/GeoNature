@@ -6,7 +6,7 @@ import {
   transition,
   trigger,
 } from "@angular/animations";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { combineLatest, Subscription } from "rxjs";
 import { filter, map, tap } from "rxjs/operators";
 import { ModuleConfig } from "../../module.config";
@@ -42,7 +42,7 @@ import { OcctaxFormParamService } from "./form-param.service";
 export class OcctaxFormParamDialog implements OnInit, OnDestroy {
   @ViewChild("modalContent") modalContent;
   public occtaxConfig: any;
-  public paramsForm: FormGroup;
+  public paramsForm: UntypedFormGroup;
   public selectedIndex: number = null;
   public state: string = "collapsed";
 
@@ -64,7 +64,7 @@ export class OcctaxFormParamDialog implements OnInit, OnDestroy {
   }
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private occtaxFormMapService: OcctaxFormMapService,
     public occtaxFormReleveService: OcctaxFormReleveService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,

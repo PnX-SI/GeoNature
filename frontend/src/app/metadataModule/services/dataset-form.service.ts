@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormArray, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap, filter, switchMap, map } from 'rxjs/operators';
@@ -8,14 +8,14 @@ import { ActorFormService } from './actor-form.service';
 
 @Injectable()
 export class DatasetFormService {
-  public form: FormGroup;
-  public genericActorForm: FormArray;
+  public form: UntypedFormGroup;
+  public genericActorForm: UntypedFormArray;
 
   public dataset: BehaviorSubject<any> = new BehaviorSubject(null);
   public otherActorGroupForms: BehaviorSubject<any> = new BehaviorSubject({});
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private _toaster: ToastrService,
     private actorFormS: ActorFormService
   ) {
@@ -112,8 +112,8 @@ export class DatasetFormService {
     this.actors.valueChanges.subscribe((form) => this.setOtherActorGroupForms());
   }
 
-  get actors(): FormArray {
-    return this.form.get('cor_dataset_actor') as FormArray;
+  get actors(): UntypedFormArray {
+    return this.form.get('cor_dataset_actor') as UntypedFormArray;
   }
 
   //ajoute un acteur au formulaire, par défaut un acteur vide est ajouté
@@ -125,7 +125,7 @@ export class DatasetFormService {
     this.actors.push(actorForm);
   }
 
-  removeActor(formArray: FormArray, i: number): void {
+  removeActor(formArray: UntypedFormArray, i: number): void {
     formArray.removeAt(i);
   }
 
@@ -152,11 +152,11 @@ export class DatasetFormService {
   }
 
   reset() {
-    this.clearFormArray(this.form.get('cor_dataset_actor') as FormArray);
+    this.clearFormArray(this.form.get('cor_dataset_actor') as UntypedFormArray);
     this.form.reset();
   }
 
-  private clearFormArray(formArray: FormArray) {
+  private clearFormArray(formArray: UntypedFormArray) {
     while (formArray.length !== 0) {
       formArray.removeAt(0);
     }

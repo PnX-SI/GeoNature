@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { FormControl, Validators } from "@angular/forms";
+import { UntypedFormControl, Validators } from "@angular/forms";
 import { isEqual } from "lodash";
 import { BehaviorSubject, Observable, of } from "rxjs";
 import { filter, map, switchMap } from "rxjs/operators";
@@ -8,7 +8,7 @@ import { OcctaxFormParamService } from "../form-param/form-param.service";
 
 @Injectable()
 export class OcctaxFormMapService {
-  private _geometry: FormControl;
+  private _geometry: UntypedFormControl;
   public geojson: BehaviorSubject<any> = new BehaviorSubject(null);
   public markerCoordinates;
   public leafletDrawGeoJson;
@@ -26,7 +26,7 @@ export class OcctaxFormMapService {
   }
 
   initForm(): void {
-    this._geometry = new FormControl(null, Validators.required);
+    this._geometry = new UntypedFormControl(null, Validators.required);
   }
 
   setGeometryFromMap(geojson) {

@@ -15,7 +15,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { DatatableComponent} from "@swimlane/ngx-datatable";
 import { ModuleConfig } from "../module.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
-import { FormGroup } from "@angular/forms";
+import { UntypedFormGroup } from "@angular/forms";
 import { GenericFormGeneratorComponent } from "@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component";
 import { AppConfig } from "@geonature_config/app.config";
 import * as moment from "moment";
@@ -45,7 +45,7 @@ export class OcctaxMapListComponent
   public apiEndPoint: string;
   public occtaxConfig: any;
   // public formsDefinition = FILTERSLIST;
-  public dynamicFormGroup: FormGroup;
+  public dynamicFormGroup: UntypedFormGroup;
   public formsSelected = [];
   public cardContentHeight: number;
 

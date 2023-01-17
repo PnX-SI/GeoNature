@@ -9,7 +9,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "module": "es2020",
-    "target": "es2015",
+    "target": "es2020",
     "lib": [
       "es2018",
       "dom"

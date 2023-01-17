@@ -8,7 +8,7 @@ import {
   SimpleChanges,
   OnDestroy,
 } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { distinctUntilChanged } from 'rxjs/operators';
@@ -21,7 +21,7 @@ import { Subscription } from 'rxjs';
 })
 export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   @Input() formDef: any;
-  @Input() form: FormGroup;
+  @Input() form: UntypedFormGroup;
 
   @Input() update;
 
@@ -83,7 +83,7 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
     this.form.patchValue(value);
   }
 
-  onCheckChange(event, formControl: FormControl) {
+  onCheckChange(event, formControl: UntypedFormControl) {
     const currentFormValue = Object.assign([], formControl.value);
     // Selected
     if (event.target.checked) {
@@ -104,7 +104,7 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  onRadioChange(val, formControl: FormControl) {
+  onRadioChange(val, formControl: UntypedFormControl) {
     if (formControl.value === val) {
       // quand on clique sur un bouton déjà coché
       // cela décoche ce dernier

@@ -1,7 +1,7 @@
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
 import { Page } from '../../map-list/map-list.service';
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, FormGroup } from '@angular/forms';
 
 import { leafletDrawOptions } from './leaflet-draw.options';
 
@@ -21,7 +21,7 @@ export class GeometryFormComponent implements OnInit {
   public leafletDrawOptions = leafletDrawOptions;
   // Disable the input: default to false
   @Input() disabled = false;
-  @Input() parentFormControl: FormControl;
+  @Input() parentFormControl: UntypedFormControl;
   /** Type de geomtrie parmi : 'Point', 'Polygon', 'LineString' */
   @Input() typeGeometry: string;
   @Input() label: string;

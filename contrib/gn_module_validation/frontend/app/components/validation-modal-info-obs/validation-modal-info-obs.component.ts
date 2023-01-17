@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { ValidationDataService } from "../../services/data.service";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { ModuleConfig } from "../../module.config";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
 import { ValidationService } from "../../services/validation.service";
@@ -19,7 +19,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   public isNextButtonValid: any;
   public isPrevButtonValid: any;
   public VALIDATION_CONFIG = ModuleConfig;
-  public statusForm: FormGroup;
+  public statusForm: UntypedFormGroup;
   public edit = false;
   public validationStatus;
   public MapListService;
@@ -37,7 +37,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     public mapListService: MapListService,
     private _validatioDataService: ValidationDataService,
     public activeModal: NgbActiveModal,
-    private _fb: FormBuilder,
+    private _fb: UntypedFormBuilder,
     private _commonService: CommonService,
     private _validService: ValidationService
   ) {

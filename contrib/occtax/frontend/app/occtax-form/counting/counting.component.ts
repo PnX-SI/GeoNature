@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy, Output, EventEmitter  } from "@angular/core";
-import { FormGroup, FormArray } from "@angular/forms";
+import { UntypedFormGroup, UntypedFormArray } from "@angular/forms";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
 
@@ -27,7 +27,7 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
   public sub: Subscription
   @Output() lifeStageChange = new EventEmitter();
 
-  form: FormGroup;
+  form: UntypedFormGroup;
   get additionalFieldsForm(): any[] { return this.occtaxFormCountingService.additionalFieldsForm; };
 
   constructor(
@@ -50,10 +50,10 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     //delete elem from form.get('cor_counting_occtax')
-    const idx = (this.occtaxFormOccurrenceService.form.get('cor_counting_occtax') as FormArray).controls
+    const idx = (this.occtaxFormOccurrenceService.form.get('cor_counting_occtax') as UntypedFormArray).controls
                   .findIndex(elem => elem === this.form);
     if (idx !== -1) {
-      (this.occtaxFormOccurrenceService.form.get('cor_counting_occtax') as FormArray).removeAt(idx);
+      (this.occtaxFormOccurrenceService.form.get('cor_counting_occtax') as UntypedFormArray).removeAt(idx);
     }
   }
 

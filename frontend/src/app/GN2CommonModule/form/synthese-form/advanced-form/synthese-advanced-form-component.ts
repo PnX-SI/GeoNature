@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, AfterContentInit, Inject } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode, TreeComponent, IActionMapping } from '@circlon/angular-tree-component';
@@ -24,7 +24,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   public selectedNodes = [];
   public expandedNodes = [];
   public taxhubAttributes: any;
-  public attributForm: FormGroup;
+  public attributForm: UntypedFormGroup;
   public formBuilded = false;
   public queryString = { add_rank: true, rank_limit: 'GN' };
   public showTree = false;

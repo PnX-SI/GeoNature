@@ -4,7 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
 import { CommonService } from '@geonature_common/service/common.service';
 import * as L from 'leaflet';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MapService } from '@geonature_common/map/map.service';
 import { Map } from 'leaflet';
 import { delay, finalize } from 'rxjs/operators';
@@ -30,7 +30,7 @@ export class MapListService {
 
   public urlQuery: HttpParams = new HttpParams();
   public page = new Page();
-  public genericFilterInput = new FormControl();
+  public genericFilterInput = new UntypedFormControl();
   public isLoading = false;
   public zoomOnLayer = false;
   filterableColumns: Array<any>;

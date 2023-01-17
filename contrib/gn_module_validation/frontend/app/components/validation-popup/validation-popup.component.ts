@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import { ModuleConfig } from "../../module.config";
-import {  FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {  UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 //import { FILTERSLIST } from "./filters-list";
 import { Router } from "@angular/router";
@@ -21,7 +21,7 @@ export class ValidationPopupComponent {
   error: any;
   public modalRef:any;
   string_observations: string;
-  public statusForm: FormGroup;
+  public statusForm: UntypedFormGroup;
   public VALIDATION_CONFIG = ModuleConfig;
   public status;
   public plurielObservations;
@@ -40,7 +40,7 @@ export class ValidationPopupComponent {
  
   constructor(
     private modalService: NgbModal,
-    private _fb: FormBuilder,
+    private _fb: UntypedFormBuilder,
     public dataService: ValidationDataService,
     private _commonService: CommonService,
     private _validService : ValidationService

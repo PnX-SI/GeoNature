@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } fro
 import { Media } from './media';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { AppConfig } from '@geonature_config/app.config';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MediaService } from '@geonature_common/service/media.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { MediaService } from '@geonature_common/service/media.service';
   // encapsulation: ViewEncapsulation.None
 })
 export class MediasTestComponent implements OnInit {
-  public mediaForm: FormGroup;
+  public mediaForm: UntypedFormGroup;
 
   public appConfig = AppConfig;
 
@@ -39,7 +39,7 @@ export class MediasTestComponent implements OnInit {
   constructor(
     private _route: ActivatedRoute,
     public ms: MediaService,
-    private _formBuilder: FormBuilder
+    private _formBuilder: UntypedFormBuilder
   ) {}
 
   ngOnInit() {
