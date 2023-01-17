@@ -6,8 +6,8 @@ CHANGELOG
 
 **🐛 Corrections**
 
-- Correction de la documentation de la sensibilité
-- Correction de l’accès aux notifications lorsque la gestion des utilisateurs est activée
+- Correction de la documentation de la sensibilité (#2234)
+- Correction de l’accès aux notifications lorsque la gestion des comptes utilisateurs est activée
 
 
 2.11.0 - Ilex aquifolium 🎄 (2022-12-21)
