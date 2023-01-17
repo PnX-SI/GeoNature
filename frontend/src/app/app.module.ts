@@ -2,19 +2,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
 
-import {
-  HttpClientModule,
-  HttpClient,
-  HttpClientXsrfModule,
-  HTTP_INTERCEPTORS,
-} from '@angular/common/http';
+import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // For Angular Dependencies
-import 'hammerjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { ChartModule } from 'angular2-chartjs';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 
@@ -62,7 +54,6 @@ import { NotificationDataService } from './components/notification/notification-
 
 // Config
 import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
-import { Router } from '@angular/router';
 import { UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
 
 export function getModulesAndInitRouting(injector) {
@@ -86,9 +77,7 @@ export function getModulesAndInitRouting(injector) {
     BrowserModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    FlexLayoutModule,
     routing,
-    ChartModule,
     ChartsModule,
     ToastrModule.forRoot({
       positionClass: 'toast-top-center',

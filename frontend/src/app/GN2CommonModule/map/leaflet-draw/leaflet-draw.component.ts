@@ -5,7 +5,6 @@ import { MapService } from '../map.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../../service/common.service';
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
-import { GeoJSON } from '@tmcw/togeojson';
 import { CustomIcon } from '@geonature/utils/leaflet-icon';
 
 import 'leaflet-draw';
@@ -33,7 +32,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   public drawControl;
   /* pour pouvoir cacher / afficher le composant */
   @Input() bEnable = true; //
-  @Input() geojson: GeoJSON;
+  @Input() geojson: any;
   /* Boolean qui controle le zoom au point*/
   @Input() bZoomOnPoint = true;
   @Input() zoomLevelOnPoint = 8;
@@ -48,7 +47,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   @Input() options = leafletDrawOption;
   @Input() zoomLevel = AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE;
   /** Niveau de zoom à partir du quel on peut dessiner sur la carte */
-  @Output() layerDrawed = new EventEmitter<GeoJSON>();
+  @Output() layerDrawed = new EventEmitter<any>();
   @Output() layerDeleted = new EventEmitter<any>();
 
   constructor(public mapservice: MapService, private _commonService: CommonService) {}

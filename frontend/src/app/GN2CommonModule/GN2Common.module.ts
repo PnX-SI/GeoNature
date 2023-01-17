@@ -18,7 +18,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconRegistry } from '@angular/material/icon';
@@ -28,12 +27,11 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-// Third party's modules
-import 'rxjs/Rx';
+// Required modules
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { AutoCompleteModule } from 'primeng/autocomplete';
+
 import { TreeModule } from '@circlon/angular-tree-component';
 
 // Components
@@ -95,7 +93,6 @@ import { StripHtmlPipe } from './pipe/strip-html.pipe';
 
 // Services
 import { CommonService } from './service/common.service';
-import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { DataFormService } from './form/data-form.service';
 import { FormService } from './form/form.service';
 import { MapListService } from './map-list/map-list.service';
@@ -107,7 +104,6 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
 
 @NgModule({
   imports: [
-    AutoCompleteModule,
     CommonModule,
     FormsModule,
     MatAutocompleteModule,
