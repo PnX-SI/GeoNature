@@ -44,7 +44,11 @@ def get_dist_from_code(module_code):
 
 def module_db_upgrade(module_dist):
     module_code = module_dist.load_entry_point("gn_module", "code")
-    module = TModules.query.filter_by(module_code=module_code).one_or_none()
+    module = (
+        TModules.query.with_entities(TModules.id_module)
+        .filter_by(module_code=module_code)
+        .one_or_none()
+    )
     if module is None:
         # add module to database
         try:
