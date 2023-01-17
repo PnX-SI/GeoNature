@@ -1,4 +1,4 @@
-FROM node:16-bullseye AS source
+FROM node:16-bullseye AS source-light
 
 WORKDIR /build/
 
@@ -19,7 +19,7 @@ RUN cp -n src/custom/components/introduction/introduction.component.ts.sample sr
 RUN cp -n src/custom/components/introduction/introduction.component.scss.sample src/custom/components/introduction/introduction.component.scss
 
 
-FROM source AS source-full
+FROM source-light AS source
 
 WORKDIR /build/external_modules/occtax
 COPY ./contrib/occtax/frontend/ .
@@ -37,19 +37,19 @@ RUN --mount=type=cache,target=/root/.npm \
     npm ci --omit=dev
 
 
-FROM source AS build-light
+FROM source-light AS build-light
 
 WORKDIR /build/
 RUN npm run build
 
 
-FROM source-full AS build-full
+FROM source AS build
 
 WORKDIR /build/
 RUN npm run build
 
 
-FROM nginx:mainline-alpine AS prod
+FROM nginx:mainline-alpine AS prod-base
 
 ENV NGINX_PORT 80
 ENV NGINX_HOST localhost
@@ -60,11 +60,11 @@ COPY ./frontend/nginx.conf /etc/nginx/templates/default.conf.template
 EXPOSE 80
 
 
-FROM prod AS prod-light
+FROM prod-base AS prod-light
 
 COPY --from=build-light /build/dist /usr/share/nginx/html
 
 
-FROM prod AS prod-full
+FROM prod-base AS prod
 
-COPY --from=build-full /build/dist /usr/share/nginx/html
+COPY --from=build /build/dist /usr/share/nginx/html

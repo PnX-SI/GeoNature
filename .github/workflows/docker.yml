@@ -69,7 +69,7 @@ jobs:
         with:
           context: .
           file: ./backend/Dockerfile
-          target: prod-full
+          target: prod
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta-prod.outputs.tags }}
           labels: ${{ steps.meta-prod.outputs.labels }}
@@ -181,7 +181,7 @@ jobs:
         with:
           context: .
           file: ./frontend/Dockerfile
-          target: prod-full
+          target: prod
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
