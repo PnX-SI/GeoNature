@@ -159,15 +159,6 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       -
-        name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ghcr.io/${{ github.repository_owner }}/geonature-frontend
-          tags: |
-            type=ref,event=branch
-            type=ref,event=tag
-      -
         name: Login to GHCR
         uses: docker/login-action@v2
         if: github.event_name != 'pull_request'
@@ -176,12 +167,44 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       -
-        name: Build and export
+        name: Generate metadata for source image
+        id: meta-source
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/geonature-frontend
+          flavor: |
+            suffix=-source
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+      -
+        name: Build and export source image
         uses: docker/build-push-action@v3
         with:
           context: .
           file: ./frontend/Dockerfile
-          target: prod
-          push: false
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          target: source
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta-source.outputs.tags }}
+          labels: ${{ steps.meta-source.outputs.labels }}
+      -
+        name: Generate metadata for nginx image
+        id: meta-nginx
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/geonature-frontend
+          flavor: |
+            suffix=-nginx
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+      -
+        name: Build and export nginx image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./frontend/Dockerfile
+          target: prod-base
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta-nginx.outputs.tags }}
+          labels: ${{ steps.meta-nginx.outputs.labels }}
