@@ -1,36 +1,40 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { UntypedFormGroup } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
-import { GeoJSON } from "leaflet";
-import { Subscription } from "rxjs";
-import { map, filter, tap } from "rxjs/operators";
-import { ModuleConfig } from "../../module.config";
-import { CommonService } from "@geonature_common/service/common.service";
-import { DataFormService } from "@geonature_common/form/data-form.service";
-import { OcctaxFormService } from "../occtax-form.service";
-import { OcctaxFormReleveService } from "./releve.service";
-import { OcctaxFormMapService } from "../map/occtax-map.service";
-import { AppConfig } from "@geonature_config/app.config";
-import { ModuleService } from "@geonature/services/module.service"
-import { OcctaxDataService } from "../../services/occtax-data.service";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { UntypedFormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { GeoJSON } from 'leaflet';
+import { Subscription } from 'rxjs';
+import { map, filter, tap } from 'rxjs/operators';
+import { ModuleConfig } from '../../module.config';
+import { CommonService } from '@geonature_common/service/common.service';
+import { DataFormService } from '@geonature_common/form/data-form.service';
+import { OcctaxFormService } from '../occtax-form.service';
+import { OcctaxFormReleveService } from './releve.service';
+import { OcctaxFormMapService } from '../map/occtax-map.service';
+import { AppConfig } from '@geonature_config/app.config';
+import { ModuleService } from '@geonature/services/module.service';
+import { OcctaxDataService } from '../../services/occtax-data.service';
 
 @Component({
-  selector: "pnx-occtax-form-releve",
-  templateUrl: "releve.component.html",
-  styleUrls: ["./releve.component.scss"],
-  providers: []
+  selector: 'pnx-occtax-form-releve',
+  templateUrl: 'releve.component.html',
+  styleUrls: ['./releve.component.scss'],
+  providers: [],
 })
 export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public occtaxConfig: any;
-  public get geojson(): GeoJSON { return this.occtaxFormMapService.geojson.getValue(); };
+  public get geojson(): GeoJSON {
+    return this.occtaxFormMapService.geojson.getValue();
+  }
   public userDatasets: Array<any>;
   public releveForm: UntypedFormGroup;
   public moduleConfig = ModuleConfig;
   public AppConfig = AppConfig;
-  public routeSub: Subscription ;
+  public routeSub: Subscription;
   private _subscriptions: Subscription[] = [];
 
-  get additionalFieldsForm(): any[] { return this.occtaxFormReleveService.additionalFieldsForm; }
+  get additionalFieldsForm(): any[] {
+    return this.occtaxFormReleveService.additionalFieldsForm;
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -39,13 +43,13 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     private occtaxFormMapService: OcctaxFormMapService,
     private commonService: CommonService,
     private _dataService: DataFormService,
-    public moduleService : ModuleService,
-    public occtaxDataService : OcctaxDataService
+    public moduleService: ModuleService,
+    public occtaxDataService: OcctaxDataService
   ) {
     this.occtaxConfig = ModuleConfig;
   }
 
-  ngOnInit() {    
+  ngOnInit() {
     this.releveForm = this.occtaxFormReleveService.releveForm;
     // pass route to releve.service to navigate
     this.occtaxFormReleveService.route = this.route;
@@ -53,14 +57,13 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
 
     // if id_dataset pass as query parameters, pass it to the releve service in the form
     this._subscriptions.push(
-      this.route.queryParams.subscribe(params => {
-        let datasetId = params["id_dataset"];
-        if (datasetId){
+      this.route.queryParams.subscribe((params) => {
+        let datasetId = params['id_dataset'];
+        if (datasetId) {
           this.occtaxFormReleveService.datasetId = datasetId;
-        } 
+        }
       })
     );
-
   } // END INIT
 
   get dataset(): any {
@@ -72,7 +75,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   }
 
   get propertiesForm(): any {
-    return this.releveForm.get("properties");
+    return this.releveForm.get('properties');
   }
 
   formatter(item) {
@@ -89,15 +92,14 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
             if (hab.cd_hab !== undefined && Number.isInteger(hab.cd_hab)) {
               return hab.cd_hab;
             }
-            return null
+            return null;
           })
-        ).subscribe(cd_hab => {
+        )
+        .subscribe((cd_hab) => {
           this.releveForm.get('properties').get('cd_hab').setValue(cd_hab);
         })
     );
-
   }
-
 
   isDatasetUser(id_dataset: number = null): boolean {
     if (id_dataset === null || this.userDatasets === undefined) {
@@ -115,15 +117,14 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.occtaxFormReleveService.reset();
-    this._subscriptions.forEach(s => { s.unsubscribe(); });
+    this._subscriptions.forEach((s) => {
+      s.unsubscribe();
+    });
   }
 
   formDisabled() {
     if (this.occtaxFormService.disabled) {
-      this.commonService.translateToaster(
-        "warning",
-        "Releve.FillGeometryFirst"
-      );
+      this.commonService.translateToaster('warning', 'Releve.FillGeometryFirst');
     }
   }
 

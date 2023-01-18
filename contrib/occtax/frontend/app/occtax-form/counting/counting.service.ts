@@ -1,29 +1,23 @@
-import { Injectable} from "@angular/core";
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-  AbstractControl,
-} from "@angular/forms";
-import { Observable, Subscription, Subject, combineLatest, of } from "rxjs";
-import { map, filter, tap, switchMap, pairwise } from "rxjs/operators";
+import { Injectable } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, AbstractControl } from '@angular/forms';
+import { Observable, Subscription, Subject, combineLatest, of } from 'rxjs';
+import { map, filter, tap, switchMap, pairwise } from 'rxjs/operators';
 import _ from 'lodash';
 
-import { OcctaxFormService } from "../occtax-form.service";
-import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
-import { OcctaxFormParamService } from "../form-param/form-param.service";
+import { OcctaxFormService } from '../occtax-form.service';
+import { OcctaxFormOccurrenceService } from '../occurrence/occurrence.service';
+import { OcctaxFormParamService } from '../form-param/form-param.service';
 import { MediaService } from '@geonature_common/service/media.service';
-import { DataFormService } from "@geonature_common/form/data-form.service";
-import { OcctaxFormCountingsService } from "./countings.service";
+import { DataFormService } from '@geonature_common/form/data-form.service';
+import { OcctaxFormCountingsService } from './countings.service';
 
 @Injectable()
 export class OcctaxFormCountingService {
-
   counting: Subject<any[]> = new Subject();
   synchroCountSub: Subscription;
   additionalFieldsForm: any[] = [];
   public form: UntypedFormGroup;
-  public data : any;
+  public data: any;
 
   constructor(
     public dataFormService: DataFormService,
@@ -32,12 +26,11 @@ export class OcctaxFormCountingService {
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxFormCountingsService: OcctaxFormCountingsService,
     private occtaxParamS: OcctaxFormParamService,
-    private mediaService: MediaService,
+    private mediaService: MediaService
   ) {
     this.initForm();
     this.setObservables();
-    console.log("INIT ??");
-    
+    console.log('INIT ??');
   }
 
   /**
@@ -45,44 +38,43 @@ export class OcctaxFormCountingService {
    * Cette fonction est appelée par occurrence.service
    */
   initForm(): void {
-
     this.form = this.fb.group({
       id_counting_occtax: null,
       id_nomenclature_life_stage: [null, Validators.required],
       id_nomenclature_sex: [null, Validators.required],
       id_nomenclature_obj_count: [null, Validators.required],
       id_nomenclature_type_count: null,
-      count_min: [null, [Validators.required, Validators.pattern("[0-9]+")]],
-      count_max: [null, [Validators.required, Validators.pattern("[0-9]+")]],
+      count_min: [null, [Validators.required, Validators.pattern('[0-9]+')]],
+      count_max: [null, [Validators.required, Validators.pattern('[0-9]+')]],
       medias: [[], this.mediaService.mediasValidator()],
-      additional_fields: this.fb.group({})
-    }); 
+      additional_fields: this.fb.group({}),
+    });
 
     this.form.setValidators([this.countingValidator]);
     this.occtaxFormOccurrenceService.addCountingForm(this.form);
   }
 
   private setObservables() {
-
     /**
      * patch form with eventual additional fields
      */
     combineLatest(
-      this.counting
-        .pipe(
-          switchMap((counting) => !_.isEmpty(counting) ? of(counting) : this.defaultValues),
-        ),
+      this.counting.pipe(
+        switchMap((counting) => (!_.isEmpty(counting) ? of(counting) : this.defaultValues))
+      ),
       this.occtaxFormCountingsService.additionalFields.asObservable()
     )
       .pipe(
         tap(([counting, additional_fields]) => {
           //manage additional_fields
-          additional_fields.forEach(field => {
+          additional_fields.forEach((field) => {
             //Formattage des dates
-            if(field.type_widget == "date"){
+            if (field.type_widget == 'date') {
               //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
-              if(typeof counting.additional_fields[field.attribut_name] !== "object"){
-                counting.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(counting.additional_fields[field.attribut_name]);
+              if (typeof counting.additional_fields[field.attribut_name] !== 'object') {
+                counting.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(
+                  counting.additional_fields[field.attribut_name]
+                );
               }
             }
 
@@ -90,7 +82,7 @@ export class OcctaxFormCountingService {
             if (counting.additional_fields[field.attribut_name] !== undefined) {
               field.value = counting.additional_fields[field.attribut_name];
             }
-          })
+          });
 
           return [counting, additional_fields];
         }),
@@ -100,28 +92,28 @@ export class OcctaxFormCountingService {
         //map for return occurrence data only
         map(([counting, additional_fields]): any => counting)
       )
-      .subscribe(counting => this.form.patchValue(counting));
+      .subscribe((counting) => this.form.patchValue(counting));
 
-    this.form.get("count_min").valueChanges
-      .pipe(
+    this.form
+      .get('count_min')
+      .valueChanges.pipe(
         pairwise(),
         filter(([count_min_prev, count_min_new]) => {
-           return count_min_prev == this.form.value.count_max
-         }),
-      map(([count_min_prev, count_min_new]) => count_min_new)
-      ).subscribe((count_min) => this.form.get("count_max").setValue(count_min))
+          return count_min_prev == this.form.value.count_max;
+        }),
+        map(([count_min_prev, count_min_new]) => count_min_new)
+      )
+      .subscribe((count_min) => this.form.get('count_max').setValue(count_min));
   }
 
-
   countingValidator(countForm: AbstractControl): { [key: string]: boolean } {
-    const countMin = countForm.get("count_min").value;
-    const countMax = countForm.get("count_max").value;
+    const countMin = countForm.get('count_min').value;
+    const countMax = countForm.get('count_max').value;
     if (countMin && countMax) {
       return countMin > countMax ? { invalidCount: true } : null;
     }
     return null;
   }
-
 
   private get defaultValues(): Observable<any> {
     return this.occtaxFormService
@@ -129,24 +121,20 @@ export class OcctaxFormCountingService {
       .pipe(
         map((DATA) => {
           return {
-            count_min: this.occtaxParamS.get("counting.count_min") || 1,
-            count_max: this.occtaxParamS.get("counting.count_max") || 1,
+            count_min: this.occtaxParamS.get('counting.count_min') || 1,
+            count_max: this.occtaxParamS.get('counting.count_max') || 1,
             id_nomenclature_life_stage:
-              this.occtaxParamS.get("counting.id_nomenclature_life_stage") ||
-              DATA["STADE_VIE"],
+              this.occtaxParamS.get('counting.id_nomenclature_life_stage') || DATA['STADE_VIE'],
             id_nomenclature_sex:
-              this.occtaxParamS.get("counting.id_nomenclature_sex") ||
-              DATA["SEXE"],
+              this.occtaxParamS.get('counting.id_nomenclature_sex') || DATA['SEXE'],
             id_nomenclature_obj_count:
-              this.occtaxParamS.get("counting.id_nomenclature_obj_count") ||
-              DATA["OBJ_DENBR"],
+              this.occtaxParamS.get('counting.id_nomenclature_obj_count') || DATA['OBJ_DENBR'],
             id_nomenclature_type_count:
-              this.occtaxParamS.get("counting.id_nomenclature_type_count") ||
-              DATA["TYP_DENBR"],
+              this.occtaxParamS.get('counting.id_nomenclature_type_count') || DATA['TYP_DENBR'],
             id_nomenclature_valid_status:
-              this.occtaxParamS.get("counting.id_nomenclature_valid_status") ||
-              DATA["STATUT_VALID"],
-            additional_fields: {}
+              this.occtaxParamS.get('counting.id_nomenclature_valid_status') ||
+              DATA['STATUT_VALID'],
+            additional_fields: {},
           };
         })
       );

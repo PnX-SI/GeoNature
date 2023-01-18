@@ -1,16 +1,16 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
-import { ValidationDataService } from "../../services/data.service";
-import { MapListService } from "@geonature_common/map-list/map-list.service";
-import { ModuleConfig } from "../../module.config";
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from "@angular/forms";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { CommonService } from "@geonature_common/service/common.service";
-import { ValidationService } from "../../services/validation.service";
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { ValidationDataService } from '../../services/data.service';
+import { MapListService } from '@geonature_common/map-list/map-list.service';
+import { ModuleConfig } from '../../module.config';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { CommonService } from '@geonature_common/service/common.service';
+import { ValidationService } from '../../services/validation.service';
 @Component({
-  selector: "pnx-validation-modal-info-obs",
-  templateUrl: "validation-modal-info-obs.component.html",
-  styleUrls: ["./validation-modal-info-obs.component.scss"],
-  providers: [MapListService]
+  selector: 'pnx-validation-modal-info-obs',
+  templateUrl: 'validation-modal-info-obs.component.html',
+  styleUrls: ['./validation-modal-info-obs.component.scss'],
+  providers: [MapListService],
 })
 export class ValidationModalInfoObsComponent implements OnInit {
   public selectObsTaxonInfo;
@@ -43,13 +43,12 @@ export class ValidationModalInfoObsComponent implements OnInit {
   ) {
     // form used for changing validation status
     this.statusForm = this._fb.group({
-      statut: ["", Validators.required],
-      comment: [""]
+      statut: ['', Validators.required],
+      comment: [''],
     });
   }
 
   ngOnInit() {
-
     // get all id_synthese of the filtered observations:
     this.filteredIds = [];
     for (let id in this.mapListService.tableData) {
@@ -77,7 +76,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
   getStatusNames() {
     this._validatioDataService.getStatusNames().subscribe(
-      result => {
+      (result) => {
         // get status names
         this.validationStatus = result;
         //this.validationStatus[0]
@@ -87,18 +86,18 @@ export class ValidationModalInfoObsComponent implements OnInit {
         // end remove it
         this.validationStatus.shift();
       },
-      err => {
-        if (err.statusText === "Unknown Error") {
+      (err) => {
+        if (err.statusText === 'Unknown Error') {
           // show error message if no connexion
           this._commonService.translateToaster(
-            "error",
-            "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)"
+            'error',
+            'ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)'
           );
         } else {
           // show error message if other server error
-          this._commonService.translateToaster("error", err.error);
+          this._commonService.translateToaster('error', err.error);
         }
-      },
+      }
     );
   }
 
@@ -113,9 +112,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     this.activateNextPrevButton(this.position);
 
     // array value (=id_synthese) of the new position
-    this.id_synthese = this.filteredIds[
-      this.filteredIds.indexOf(this.id_synthese) + 1
-    ];
+    this.id_synthese = this.filteredIds[this.filteredIds.indexOf(this.id_synthese) + 1];
 
     const syntheseRow = this.mapListService.tableData[this.position];
     this.uuidSynthese = syntheseRow.unique_id_sinp;
@@ -129,10 +126,10 @@ export class ValidationModalInfoObsComponent implements OnInit {
   }
 
   backToModule(url_source, id_pk_source) {
-    const link = document.createElement("a");
-    link.target = "_blank";
-    link.href = url_source + "/" + id_pk_source;
-    link.setAttribute("visibility", "hidden");
+    const link = document.createElement('a');
+    link.target = '_blank';
+    link.href = url_source + '/' + id_pk_source;
+    link.setAttribute('visibility', 'hidden');
     link.click();
   }
 
@@ -140,11 +137,11 @@ export class ValidationModalInfoObsComponent implements OnInit {
     // post validation status form ('statusForm') for the current observation
     this._validService
       .postNewValidStatusAndUpdateUI(value, [this.id_synthese])
-      .subscribe(newValidationStatus => {
+      .subscribe((newValidationStatus) => {
         this.setValidationStatus(newValidationStatus);
         this.statusForm.reset();
         this.editStatus();
-      })
+      });
   }
 
   cancel() {
