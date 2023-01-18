@@ -42,7 +42,7 @@ def get_dist_from_code(module_code):
     raise Exception(f"Module with code {module_code} not installed in venv")
 
 
-def module_db_upgrade(module_dist):
+def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]):
     module_code = module_dist.load_entry_point("gn_module", "code")
     module = TModules.query.filter_by(module_code=module_code).one_or_none()
     if module is None:
@@ -74,4 +74,5 @@ def module_db_upgrade(module_dist):
             alembic_branch = module_dist.load_entry_point("gn_module", "alembic_branch")
         except ImportError:
             alembic_branch = module_code.lower()
-        db_upgrade(revision=alembic_branch + "@head")
+        revision = alembic_branch + "@head"
+        db_upgrade(directory, revision, sql, tag, x_arg)
