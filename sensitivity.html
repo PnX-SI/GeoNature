@@ -150,15 +150,13 @@ de sensibilité.</p>
 </section>
 <section id="attribution-aux-observations-de-la-synthese">
 <h3>Attribution aux observations de la synthèse<a class="headerlink" href="#attribution-aux-observations-de-la-synthese" title="Lien permanent vers cette rubrique"></a></h3>
+<p>La sensibilité des observations de la synthèse est stockée dans la
+colonne <code class="docutils literal notranslate"><span class="pre">id_nomenclature_sensitivity</span></code>.</p>
 <p>A chaque insertion d’une donnée dans la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code>,
 un trigger (<code class="docutils literal notranslate"><span class="pre">tri_insert_calculate_sensitivity</span></code>) fait appel à une
 fonction (<code class="docutils literal notranslate"><span class="pre">fct_tri_cal_sensitivity_on_each_statement</span></code>) qui appelle
 elle-même la fonction <code class="docutils literal notranslate"><span class="pre">gn_sensitivity.get_id_nomenclature_sensitivity</span></code>
 pour le calcul de la sensibilité.</p>
-<p>La fonction <code class="docutils literal notranslate"><span class="pre">get_id_nomenclature_sensitivity</span></code> calcule le niveau de
-sensibilité en fonction de l’espèce, du type de sensibilité, de la durée
-de validité, de la période d’observation, du statut biologique et du
-comportement de l’occurence.</p>
 </section>
 <section id="gestion-du-referentiel">
 <h3>Gestion du référentiel<a class="headerlink" href="#gestion-du-referentiel" title="Lien permanent vers cette rubrique"></a></h3>
@@ -226,6 +224,12 @@ observations présentes dans la synthèse. Pour cela, lancez la commande suivant
 de la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code> auront alors
 changé. Vous pouvez le vérifier en navigant dans le module Synthèse
 puis dans les détails d’une observation de votre/vos espèce(s).</p>
+</section>
+<section id="utilisation">
+<h3>Utilisation<a class="headerlink" href="#utilisation" title="Lien permanent vers cette rubrique"></a></h3>
+<p>Actuellement, le niveau de sensibilité des observations n’est pas exploité par GeoNature.
+Le floutage des observations en fonction de leur niveau de sensibilité est une fonctionnalité
+souhaitée mais pas encore présente dans GeoNature.</p>
 </section>
 </section>
 </section>
