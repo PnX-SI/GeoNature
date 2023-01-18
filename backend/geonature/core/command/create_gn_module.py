@@ -23,11 +23,14 @@ from geonature.utils.command import (
 
 
 @main.command()
+@click.option(
+    "-x", "--x-arg", multiple=True, help="Additional arguments consumed by custom env.py scripts"
+)
 @click.argument("module_path")
 @click.argument("module_code")
 @click.option("--build", type=bool, required=False, default=True)
 @click.option("--upgrade-db", type=bool, required=False, default=True)
-def install_gn_module(module_path, module_code, build, upgrade_db):
+def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
     click.echo("Installation du backend…")
     subprocess.run(f"pip install -e '{module_path}'", shell=True, check=True)
 
@@ -66,13 +69,32 @@ def install_gn_module(module_path, module_code, build, upgrade_db):
         click.secho("Rebuild du frontend terminé.", fg="green")
 
     if upgrade_db:
-        click.echo("Installation de la basse de données…")
-        module_db_upgrade(module_dist)
+        click.echo("Installation / mise à jour de la base de données…")
+        if not module_db_upgrade(module_dist, x_arg=x_arg):
+            click.echo(
+                "Le module est déjà déclaré en base. "
+                "Installation de la base de données ignorée."
+            )
 
 
 @main.command()
+@click.option(
+    "-d",
+    "--directory",
+    default=None,
+    help=('Migration script directory (default is "migrations")'),
+)
+@click.option(
+    "--sql", is_flag=True, help=("Don't emit SQL to database - dump to standard output " "instead")
+)
+@click.option(
+    "--tag", default=None, help=('Arbitrary "tag" name - can be used by custom env.py ' "scripts")
+)
+@click.option(
+    "-x", "--x-arg", multiple=True, help="Additional arguments consumed by custom env.py scripts"
+)
 @click.argument("module_codes", metavar="[MODULE_CODE]...", nargs=-1)
-def upgrade_modules_db(module_codes):
+def upgrade_modules_db(directory, sql, tag, x_arg, module_codes):
     for module_code_entry in iter_entry_points("gn_module", "code"):
         module_code = module_code_entry.resolve()
         if module_codes and module_code not in module_codes:
@@ -82,4 +104,8 @@ def upgrade_modules_db(module_codes):
             continue
         click.echo(f"Mise-à-jour du module {module_code}…")
         module_dist = module_code_entry.dist
-        module_db_upgrade(module_dist)
+        if not module_db_upgrade(module_dist, directory, sql, tag, x_arg):
+            click.echo(
+                "Le module est déjà déclaré en base. "
+                "Installation de la base de données ignorée."
+            )
