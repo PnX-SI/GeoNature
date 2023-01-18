@@ -2,6 +2,9 @@ import os
 from pathlib import Path
 from pkg_resources import load_entry_point, get_entry_info, iter_entry_points
 
+from alembic.script import ScriptDirectory
+from alembic.migration import MigrationContext
+from flask import current_app
 from flask_migrate import upgrade as db_upgrade
 
 from geonature.utils.utilstoml import load_and_validate_toml
@@ -42,8 +45,47 @@ def get_dist_from_code(module_code):
     raise Exception(f"Module with code {module_code} not installed in venv")
 
 
+def iterate_revisions(script, base_revision):
+    """
+    Iterate revisions without following depends_on directive.
+    Useful to find all revisions of a given branch.
+    """
+    yelded = set()
+    todo = {base_revision}
+    while todo:
+        rev = todo.pop()
+        yield rev
+        yelded.add(rev)
+        rev = script.get_revision(rev)
+        todo |= rev.nextrev - yelded
+
+
+def alembic_branch_in_use(branch_name, directory, x_arg):
+    """
+    Return true if at least one revision of the given branch is applied.
+    """
+    db = current_app.extensions["sqlalchemy"].db
+    migrate = current_app.extensions["migrate"].migrate
+    config = migrate.get_config(directory, x_arg)
+    script = ScriptDirectory.from_config(config)
+    base_revision = script.get_revision(script.as_revision_number(branch_name))
+    branch_revisions = set(iterate_revisions(script, base_revision.revision))
+    migration_context = MigrationContext.configure(db.session.connection())
+    current_heads = migration_context.get_current_heads()
+    # get_current_heads does not return implicit revision through dependencies, get_all_current does
+    current_heads = set(map(lambda rev: rev.revision, script.get_all_current(current_heads)))
+    return not branch_revisions.isdisjoint(current_heads)
+
+
 def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]):
     module_code = module_dist.load_entry_point("gn_module", "code")
+    if "migrations" in module_dist.get_entry_map("gn_module"):
+        try:
+            alembic_branch = module_dist.load_entry_point("gn_module", "alembic_branch")
+        except ImportError:
+            alembic_branch = module_code.lower()
+    else:
+        alembic_branch = None
     module = TModules.query.filter_by(module_code=module_code).one_or_none()
     if module is None:
         # add module to database
@@ -68,11 +110,15 @@ def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]
         )
         db.session.add(module)
         db.session.commit()
-
-    if "migrations" in module_dist.get_entry_map("gn_module"):
-        try:
-            alembic_branch = module_dist.load_entry_point("gn_module", "alembic_branch")
-        except ImportError:
-            alembic_branch = module_code.lower()
+    elif alembic_branch and not alembic_branch_in_use(alembic_branch, directory, x_arg):
+        """
+        The module branch is not known to be applied by Alembic,
+        but the module is present in gn_commons.t_modules table.
+        Refusing to upgrade the Alembic branch.
+        Upgrading of old module requiring manual stamp?
+        """
+        return False
+    if alembic_branch:
         revision = alembic_branch + "@head"
         db_upgrade(directory, revision, sql, tag, x_arg)
+    return True

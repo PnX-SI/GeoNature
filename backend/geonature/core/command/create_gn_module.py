@@ -69,8 +69,12 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
         click.secho("Rebuild du frontend terminé.", fg="green")
 
     if upgrade_db:
-        click.echo("Installation de la base de données…")
-        module_db_upgrade(module_dist, x_arg=x_arg)
+        click.echo("Installation / mise à jour de la base de données…")
+        if not module_db_upgrade(module_dist, x_arg=x_arg):
+            click.echo(
+                "Le module est déjà déclaré en base. "
+                "Installation de la base de données ignorée."
+            )
 
 
 @main.command()
@@ -100,4 +104,8 @@ def upgrade_modules_db(directory, sql, tag, x_arg, module_codes):
             continue
         click.echo(f"Mise-à-jour du module {module_code}…")
         module_dist = module_code_entry.dist
-        module_db_upgrade(module_dist, directory, sql, tag, x_arg)
+        if not module_db_upgrade(module_dist, directory, sql, tag, x_arg):
+            click.echo(
+                "Le module est déjà déclaré en base. "
+                "Installation de la base de données ignorée."
+            )
