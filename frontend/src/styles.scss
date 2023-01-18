@@ -492,12 +492,7 @@ pnx-root:empty + #cover-spin-removable {
 .ng-select .ng-dropdown-panel {
   z-index: 3001;
 }
-.ng-select.sm,
-.ng-select.sm .ng-select-container,
-.ng-select.auto,
-.ng-select.auto .ng-select-container {
-  min-height: 0px;
-}
+
 .ng-select.sm .ng-select-container {
   height: 24px;
 }
@@ -560,3 +555,7 @@ a.mat-raised-button:hover {
 }
 
 /* .loading screen is visible when app is not bootstrapped yet, my-app is empty */
+
+ngb-modal-backdrop {
+  z-index: 1050 !important;
+}

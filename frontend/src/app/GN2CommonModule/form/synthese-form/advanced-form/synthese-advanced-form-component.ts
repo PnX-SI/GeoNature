@@ -27,7 +27,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   public attributForm: UntypedFormGroup;
   public formBuilded = false;
   public queryString = { add_rank: true, rank_limit: 'GN' };
-  public showTree = false;
+  public isCollapseTree = true;
 
   constructor(
     @Inject(APP_CONFIG_TOKEN) private cfg,
@@ -66,10 +66,6 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   mapFunc(item) {
     item['displayed_name'] = '<b>' + item.lb_nom + ' </b>  <small> (' + item.nom_rang + ')</small>';
     return item;
-  }
-
-  toggleTree() {
-    this.showTree = !this.showTree;
   }
 
   // Algo pour 'expand' tous les noeud fils recursivement à partir un noeud parent

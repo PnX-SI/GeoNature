@@ -90,6 +90,8 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
   @Output() onDelete = new EventEmitter<Taxon>();
 
+  public isCollapseTaxonomy = true;
+
   constructor(private _dfService: DataFormService, private _commonService: CommonService) {}
 
   ngOnInit() {

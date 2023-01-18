@@ -291,7 +291,6 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     ReactiveFormsModule,
     ReadablePropertiePipe,
     SafeHtmlPipe,
-    SyntheseSearchComponent,
     TaxaComponent,
     TaxonAdvancedModalComponent,
     TaxonomyComponent,
