@@ -148,6 +148,7 @@ def post_acquisition_framework(uuid=None):
         uuid (str): uuid of the acquisition framework
     """
     xml_af = None
+    # Récupère un CA localisé dans l'application MTD par son UUID <XML>
     xml_af = get_acquisition_framework(uuid)
 
     if xml_af:
@@ -165,6 +166,7 @@ def post_acquisition_framework(uuid=None):
             )
             DB.session.execute(delete_q)
             DB.session.commit()
+
             create_cor_object_actors(actors, new_af)
             DB.session.merge(new_af)
 

@@ -1,17 +1,19 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
-import { SyntheseStoreService } from '@geonature_common/form/synthese-form/synthese-store.service';
+import { SyntheseStoreService } from './services/store.service';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 import { AppConfig } from '@geonature_config/app.config';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
 import { SyntheseInfoObsComponent } from '../shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
-
+import * as cloneDeep from 'lodash/cloneDeep';
+import { EventToggle } from './synthese-results/synthese-carte/synthese-carte.component';
 @Component({
   selector: 'pnx-synthese',
   styleUrls: ['synthese.component.scss'],
@@ -38,73 +40,160 @@ export class SyntheseComponent implements OnInit {
     private _ngModal: NgbModal
   ) {}
 
-  loadAndStoreData(formParams) {
-    this.searchService.dataLoaded = false;
-    this.searchService.getSyntheseData(formParams).subscribe(
-      (data) => {
-        if (data.length >= AppConfig.SYNTHESE.NB_MAX_OBS_MAP) {
-          const modalRef = this._modalService.open(SyntheseModalDownloadComponent, {
-            size: 'lg',
-          });
-          const formatedParams = this._fs.formatParams();
-          modalRef.componentInstance.queryString = this.searchService.buildQueryUrl(formatedParams);
-          modalRef.componentInstance.tooManyObs = true;
-        }
-        this._mapListService.geojsonData = data;
-        this._mapListService.tableData = data;
-        this._mapListService.loadTableData(data);
-        this._mapListService.idName = 'id';
-        this.searchService.dataLoaded = true;
-        // store the list of id_synthese for exports
-        this._syntheseStore.idSyntheseList = data['features'].map((row) => {
-          return row['properties']['id'];
-        });
-      },
-      (error) => {
-        this.searchService.dataLoaded = true;
-
-        if (error.status == 400) {
-          this._commonService.regularToaster('error', error.error.description);
-        }
-      }
-    );
-    if (this.firstLoad && 'limit' in formParams) {
-      //toaster
-      this._toasterService.info(
-        `Les ${AppConfig.SYNTHESE.NB_LAST_OBS} dernières observations de la synthèse`,
-        ''
-      );
-    }
-    this.firstLoad = false;
-  }
-
   ngOnInit() {
+    this._fs.selectors = this._fs.selectors
+      .set('limit', AppConfig.SYNTHESE.NB_LAST_OBS)
+      .set(
+        'format',
+        AppConfig.SYNTHESE.AREA_AGGREGATION_ENABLED &&
+          AppConfig.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT
+          ? 'grouped_geom_by_areas'
+          : 'grouped_geom'
+      );
     this._route.queryParamMap.subscribe((params) => {
-      let initialFilter = {};
+      if (params.get('id_dataset')) {
+        this._fs.searchForm.patchValue({ id_dataset: params.get('id_dataset') });
+      }
+      if (params.get('id_acquisition_framework')) {
+        this._fs.searchForm.patchValue({
+          id_acquisition_framework: params.get('id_acquisition_framework'),
+        });
+      }
       const idSynthese = this._route.snapshot.paramMap.get('id_synthese');
+
       if (idSynthese) {
-        initialFilter['id_synthese'] = idSynthese;
+        this._fs.searchForm.patchValue({ id_synthese: params.get('idSynthese') });
         this.openInfoModal(idSynthese);
       }
 
-      if (params.get('id_acquisition_framework')) {
-        initialFilter['id_acquisition_framework'] = params.get('id_acquisition_framework');
-      } else if (params.get('id_dataset')) {
-        initialFilter['id_dataset'] = params.get('id_dataset');
-      } else {
-        initialFilter['limit'] = AppConfig.SYNTHESE.NB_LAST_OBS;
-      }
-
-      // reinitialize the form
-      this._fs.searchForm.reset();
       this._fs.selectedCdRefFromTree = [];
       this._fs.selectedTaxonFromRankInput = [];
       this._fs.selectedtaxonFromComponent = [];
       this._fs.selectedRedLists = [];
       this._fs.selectedStatus = [];
       this._fs.selectedTaxRefAttributs = [];
-      this.loadAndStoreData(initialFilter);
+      this.loadAndStoreData(this._fs.formatParams());
+      // remove initial parameter passed by url
+      this._fs.searchForm.patchValue({
+        id_dataset: null,
+        id_acquisition_framework: null,
+      });
     });
+  }
+
+  loadAndStoreData(formParams) {
+    this.searchService.dataLoaded = false;
+    this._fs.searchForm.markAsPristine();
+
+    this.searchService.getSyntheseData(formParams, this._fs.selectors).subscribe(
+      (data) => {
+        // mark the form pristine at each search in order to manage store data
+        if (this._fs.selectors.get('format') == 'grouped_geom_by_areas') {
+          this._syntheseStore.gridData = data;
+        } else {
+          this._syntheseStore.pointData = data;
+        }
+        // Store the list of id_synthese for exports
+        this._syntheseStore.idSyntheseList = this.extractSyntheseIds(data);
+
+        // Check if synthese observations limit is reach
+        if (this._syntheseStore.idSyntheseList.length >= AppConfig.SYNTHESE.NB_MAX_OBS_MAP) {
+          const modalRef = this._modalService.open(SyntheseModalDownloadComponent, {
+            size: 'lg',
+          });
+          modalRef.componentInstance.queryString = this.searchService.buildQueryUrl(formParams);
+          modalRef.componentInstance.tooManyObs = true;
+        }
+
+        // Store geojson
+        this._mapListService.geojsonData = this.simplifyGeoJson(cloneDeep(data));
+        this.formatDataForTable(data);
+
+        this._mapListService.idName = 'id';
+        this.searchService.dataLoaded = true;
+      },
+      (error) => {
+        this.searchService.dataLoaded = true;
+      }
+    );
+
+    if (this.firstLoad && this._fs.selectors.has('limit')) {
+      //toaster
+      let limit = this._fs.selectors.get('limit');
+      this._toasterService.info(`Les ${limit} dernières observations de la synthèse`, '');
+    }
+    this.firstLoad = false;
+  }
+
+  /** table data expect an array obs observation
+   * the geojson get from API is a list of features whith an observation list
+   */
+  formatDataForTable(geojson) {
+    this._mapListService.tableData = [];
+    const idSynthese = new Set();
+    geojson.features.forEach((feature) => {
+      feature.properties.observations.forEach((obs) => {
+        if (!idSynthese.has(obs.id)) {
+          this._mapListService.tableData.push(obs);
+          idSynthese.add(obs.id);
+        }
+      });
+    });
+  }
+
+  fetchOrRenderData(event: EventToggle) {
+    // if the form has change reload data
+    // else load data from cache if already loaded
+    if (this._fs.searchForm.dirty) {
+      this.loadAndStoreData(this._fs.formatParams());
+    } else {
+      if (event == 'point') {
+        if (this._syntheseStore.pointData) {
+          this._mapListService.geojsonData = this.simplifyGeoJson(
+            cloneDeep(this._syntheseStore.pointData)
+          );
+        } else {
+          this.loadAndStoreData(this._fs.formatParams());
+        }
+      } else {
+        if (this._syntheseStore.gridData) {
+          this._mapListService.geojsonData = this.simplifyGeoJson(
+            cloneDeep(this._syntheseStore.gridData)
+          );
+        } else {
+          this.loadAndStoreData(this._fs.formatParams());
+        }
+      }
+    }
+  }
+  onSearchEvent() {
+    // on search button click, clean cache and call loadAndStoreData
+    this._syntheseStore.gridData = null;
+    this._syntheseStore.pointData = null;
+    this.loadAndStoreData(this._fs.formatParams());
+  }
+
+  private extractSyntheseIds(geojson) {
+    let ids = [];
+    for (let feature of geojson.features) {
+      feature.properties.observations.forEach((obs) => {
+        ids.push(obs['id']);
+      });
+    }
+    return ids;
+  }
+
+  private simplifyGeoJson(geojson) {
+    for (let feature of geojson.features) {
+      let ids = [];
+      for (let obs of Object.values(feature.properties.observations)) {
+        if (obs['id']) {
+          ids.push(obs['id']);
+        }
+      }
+      feature.properties.observations = { id: ids };
+    }
+    return geojson;
   }
 
   openInfoModal(idSynthese) {

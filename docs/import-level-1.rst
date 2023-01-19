@@ -58,7 +58,7 @@ Par exemple ici ``ref_nomenclatures.v_data_typ``.
 Ou bien l'Admin des nomenclatures disponible dans GeoNature.
 
 Il est aussi possible d'utiliser les codes des nomenclatures pour retrouver leurs id (ceci étant variables d'une instance à l'autre), 
-en utilisant la fonction ``ref_nomencltaure.get_id_nomenclature``.
+en utilisant la fonction ``ref_nomenclatures.get_id_nomenclature``.
 
 Insertion des données dans la Synthèse
 ``````````````````````````````````````
@@ -69,7 +69,7 @@ Insertion des données dans la Synthèse
   unique_id_sinp,
   id_source,
   id_dataset,
-  id_nomenclature_obs_meth,
+  id_nomenclature_obs_technique,
   count_min,
   count_max,
   cd_nom,
@@ -90,8 +90,8 @@ Insertion des données dans la Synthèse
 	2 AS id_source,
 	3 AS id_dataset,
 	CASE
-	  WHEN critere = 'Vu' THEN (41) -- Ou bien ref_nomencltaure.get_id_nomenclature
-	  WHEN critere = 'Entendu' THEN (42)
+	  WHEN critere = 'Vu' THEN (select ref_nomenclatures.get_id_nomenclature('METH_OBS','0'))
+	  WHEN critere = 'Entendu' THEN (select ref_nomenclatures.get_id_nomenclature('METH_OBS','1'))
 	  ELSE (gn_synthese.get_default_nomenclature_value('METH_OBS'))
 	END AS id_nomenclature_obs_meth,
 	effectif::integer,

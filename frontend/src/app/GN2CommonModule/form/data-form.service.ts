@@ -4,6 +4,7 @@ import {
   HttpParams,
   HttpEventType,
   HttpErrorResponse,
+  HttpHeaders,
   HttpEvent,
 } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
@@ -470,9 +471,22 @@ export class DataFormService {
     );
   }
 
-  uploadCanvas(img: any) {
-    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/meta/upload_canvas`, img);
+  exportPDF(img, endPoint, prefix) {
+    const source = this._http.post(
+      endPoint,
+      {
+        chart: img,
+      },
+      {
+        observe: 'events',
+        responseType: 'blob',
+        reportProgress: false,
+      }
+    );
+
+    this.subscribeAndDownload(source, prefix, 'pdf');
   }
+
   getTaxaDistribution(taxa_rank, params?: ParamsDict) {
     let queryString = new HttpParams();
     queryString = queryString.set('taxa_rank', taxa_rank);
@@ -535,16 +549,12 @@ export class DataFormService {
     const subscription = source.subscribe(
       (event) => {
         if (event.type === HttpEventType.Response) {
-          this._blob = new Blob([event.body], { type: event.headers.get('Content-Type') });
+          this._blob = event.body;
         }
       },
-      (e: HttpErrorResponse) => {
-        //this._commonService.translateToaster('error', 'ErrorMessage');
-        //this.isDownloading = false;
-      },
+      (e: HttpErrorResponse) => {},
       // response OK
       () => {
-        //this.isDownloading = false;
         const date = new Date();
         const extension = format === 'shapefile' ? 'zip' : format;
         this.saveBlob(this._blob, `${fileName}_${date.toISOString()}.${extension}`);
@@ -552,18 +562,12 @@ export class DataFormService {
       }
     );
   }
-
   saveBlob(blob, filename) {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.setAttribute('visibility', 'hidden');
     link.download = filename;
-    link.onload = () => {
-      URL.revokeObjectURL(link.href);
-    };
-    document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
   }
 
   //liste des lieux

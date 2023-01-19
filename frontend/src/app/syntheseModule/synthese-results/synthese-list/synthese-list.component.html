@@ -13,6 +13,9 @@
   [count]="mapListService.tableData.length"
   [limit]="rowNumber"
   [rowClass]="getRowClass"
+  [reorderable]="true"
+  sortType="multi"
+  (sort)="onSort($event)"
   (select)="mapListService.onRowSelect($event)"
 >
   <ngx-datatable-column [maxWidth]="5">

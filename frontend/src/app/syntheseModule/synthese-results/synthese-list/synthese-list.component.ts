@@ -61,17 +61,31 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     this.rowNumber = Math.trunc(h / 37);
 
     // On map click, select on the list a change the page
-    this.mapListService.onMapClik$.subscribe((id) => {
-      this.mapListService.selectedRow = []; // clear selected list
-      const integerId = parseInt(id);
-      let i;
-      for (i = 0; i < this.mapListService.tableData.length; i++) {
-        if (this.mapListService.tableData[i]['id'] === integerId) {
-          this.mapListService.selectedRow.push(this.mapListService.tableData[i]);
-          break;
+    this.mapListService.onMapClik$.subscribe((ids) => {
+      this.resetSorting();
+
+      this.mapListService.tableData.map((row) => {
+        // mandatory to sort (each row must have a selected attr)
+        row.selected = false;
+        if (ids.includes(row.id)) {
+          row.selected = true;
         }
-      }
-      const page = Math.trunc(i / this.rowNumber);
+      });
+
+      let observations = this.mapListService.tableData.filter((e) => {
+        return ids.includes(e.id);
+      });
+
+      this.mapListService.tableData.sort((a, b) => {
+        return b.selected - a.selected;
+      });
+      this.mapListService.tableData = [...this.mapListService.tableData];
+      this.mapListService.selectedRow = observations;
+      const page = Math.trunc(
+        this.mapListService.tableData.findIndex((e) => {
+          return e.id === ids[0];
+        }) / this.rowNumber
+      );
       this.table.offset = page;
     });
   }
@@ -83,6 +97,22 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
         this.table.recalculate();
         this.ref.markForCheck();
       }
+    }
+  }
+
+  private resetSorting() {
+    this.table.sorts = [];
+  }
+
+  /**
+   * Restore previous selected rows when sort state return to 'undefined'.
+   * With ngx-datable sortType must be 'multi' to use 3 states : asc, desc and undefined !
+   * @param event sort event infos.
+   */
+  onSort(event) {
+    if (event.newValue === undefined) {
+      let selectedObsIds = this.mapListService.selectedRow.map((obs) => obs.id);
+      this.mapListService.mapSelected.next(selectedObsIds);
     }
   }
 
@@ -105,11 +135,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     document.body.appendChild(link);
     link.click();
     link.remove();
-  }
-
-  getQueryString(): HttpParams {
-    const formatedParams = this._fs.formatParams();
-    return this._ds.buildQueryUrl(formatedParams);
   }
 
   openInfoModal(row) {

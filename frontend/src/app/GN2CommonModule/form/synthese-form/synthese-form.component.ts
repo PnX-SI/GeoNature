@@ -76,13 +76,10 @@ export class SyntheseSearchComponent implements OnInit {
       if (this.params.id_dataset) {
         this.formService.searchForm.controls.id_dataset.setValue([+this.params.id_dataset]);
       }
-      this.formService.searchForm.markAsDirty();
     }
   }
 
   onSubmitForm() {
-    // mark as dirty to avoid set limit=100 when download
-    this.formService.searchForm.markAsDirty();
     const updatedParams = this.formService.formatParams();
     this.searchClicked.emit(updatedParams);
   }

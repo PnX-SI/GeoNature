@@ -51,14 +51,14 @@ def loginCas():
         )
 
         response = utilsrequests.get(url_validate)
-        user = None
+        data = None
         xml_dict = xmltodict.parse(response.content)
         resp = xml_dict["cas:serviceResponse"]
         if "cas:authenticationSuccess" in resp:
-            user = resp["cas:authenticationSuccess"]["cas:user"]
-        if user:
+            data = resp["cas:authenticationSuccess"]["cas:user"]
+        if data:
             ws_user_url = "{url}/{user}/?verify=false".format(
-                url=config_cas["CAS_USER_WS"]["URL"], user=user
+                url=config_cas["CAS_USER_WS"]["URL"], user=data
             )
             try:
                 response = utilsrequests.get(
@@ -75,7 +75,7 @@ def loginCas():
                     "Error with the inpn authentification service", status_code=500
                 )
             info_user = response.json()
-            user = insert_user_and_org(info_user)
+            data = insert_user_and_org(info_user)
             db.session.commit()
 
             # creation de la Response
@@ -90,7 +90,7 @@ def loginCas():
                 .one()
                 .id_application
             )
-            token = encode_token(user)
+            token = encode_token(data)
             response.set_cookie("token", token, expires=cookie_exp)
 
             # User cookie
@@ -98,8 +98,8 @@ def loginCas():
             if not organism_id:
                 organism_id = Organisme.query.filter_by(nom_organisme="Autre").one().id_organisme
             current_user = {
-                "user_login": user["identifiant"],
-                "id_role": user["id_role"],
+                "user_login": data["identifiant"],
+                "id_role": data["id_role"],
                 "id_organisme": organism_id,
             }
             response.set_cookie("current_user", str(current_user), expires=cookie_exp)

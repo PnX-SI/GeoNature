@@ -10,6 +10,7 @@ import { SideNavService } from '../sidenav-items/sidenav-service';
 import { ModuleService } from '../../services/module.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'pnx-home-content',
@@ -25,6 +26,9 @@ export class HomeContentComponent implements OnInit {
   public generalStat: any;
   public locale: string;
   public destroy$: Subject<boolean> = new Subject<boolean>();
+  public cluserOrSimpleFeatureGroup = AppConfig.SYNTHESE.ENABLE_LEAFLET_CLUSTER
+    ? (L as any).markerClusterGroup()
+    : new L.FeatureGroup();
 
   constructor(
     private _SideNavService: SideNavService,
@@ -52,9 +56,11 @@ export class HomeContentComponent implements OnInit {
     this.appConfig = AppConfig;
 
     if (this.showLastObsMap) {
-      this._syntheseApi.getSyntheseData({ limit: 100 }).subscribe((data) => {
-        this.lastObs = data;
-      });
+      this._syntheseApi
+        .getSyntheseData({}, { limit: 100, format: 'ungrouped_geom' })
+        .subscribe((data) => {
+          this.lastObs = data;
+        });
     }
 
     if (this.showGeneralStat) {
@@ -89,23 +95,11 @@ export class HomeContentComponent implements OnInit {
 
     if (needToRefreshStats) {
       // Get general stats from Server
-      this._syntheseApi
-        .getSyntheseGeneralStat()
-        // .map(stat => {
-        //   // eslint-disable-next-line guard-for-in
-        //   for (const key in stat) {
-        //     // Pretty the number with spaces
-        //     if (stat[key]) {
-        //       stat[key] = stat[key].toLocaleString('fr-FR');
-        //     }
-        //   }
-        //   return stat;
-        // })
-        .subscribe((stats) => {
-          stats['createdDate'] = new Date().toUTCString();
-          localStorage.setItem('homePage.stats', JSON.stringify(stats));
-          this.generalStat = stats;
-        });
+      this._syntheseApi.getSyntheseGeneralStat().subscribe((stats) => {
+        stats['createdDate'] = new Date().toUTCString();
+        localStorage.setItem('homePage.stats', JSON.stringify(stats));
+        this.generalStat = stats;
+      });
     }
   }
 
@@ -133,5 +127,7 @@ export class HomeContentComponent implements OnInit {
         layer.bindPopup(popup).openPopup();
       },
     });
+    this.cluserOrSimpleFeatureGroup.addLayer(layer);
+    this.cluserOrSimpleFeatureGroup.addTo(this._mapService.map);
   }
 }

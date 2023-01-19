@@ -196,7 +196,10 @@
     "ExportModuleName": "Export module"
   },
   "Synthese": {
-    "DeleteObs": "Delete this observation"
+    "DeleteObs": "Delete this observation",
+    "Map": {
+      "AreasToggleBtn": "Areas"
+    }
   },
   "MyAccount": "My account",
   "CreateAccount": "Create an account",

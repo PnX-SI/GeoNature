@@ -36,7 +36,6 @@ const routes: Routes = [
     ValidationDefinitionsComponent,
     ValidationModalInfoObsComponent,
   ],
-
   imports: [
     GN2CommonModule,
     SharedSyntheseModule,

@@ -38,65 +38,66 @@
 
       <ng-container
         *ngIf="
-          !appConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION &&
-            appConfig.PUBLIC_ACCESS_USERNAME != currentUser?.user_login &&
-            appConfig.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT;
-          else noUserManagement
+          appConfig.PUBLIC_ACCESS_USERNAME != currentUser?.user_login;
+          else publicAccessUser
         "
       >
-        <button
-          class="mx-1"
-          mat-raised-button
-          matTooltip="Ouvrir le menu de mon profil"
-          [matMenuTriggerFor]="userMenu"
-        >
-          <mat-icon> person </mat-icon>
-          <span class="user-name">
-            {{ currentUser?.user_login }}
-          </span>
-        </button>
-
-        <mat-menu #userMenu>
-          <a
-            mat-menu-item
-            matTooltip="Accéder aux paramètres de mon compte"
-            matTooltipPosition="before"
-            routerLink="/user"
-          >
-            {{ 'MyAccount' | translate }}
-          </a>
-        </mat-menu>
-      </ng-container>
-
-      <ng-template #noUserManagement>
         <ng-container
           *ngIf="
-            appConfig.PUBLIC_ACCESS_USERNAME != currentUser?.user_login;
-            else publicAccessUser
+            !appConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION &&
+              appConfig.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT;
+            else noUserManagement
           "
         >
+          <button
+            class="mx-1"
+            mat-raised-button
+            matTooltip="Ouvrir le menu de mon profil"
+            [matMenuTriggerFor]="userMenu"
+          >
+            <mat-icon> person </mat-icon>
+            <span class="user-name">
+              {{ currentUser?.user_login }}
+            </span>
+          </button>
+
+          <mat-menu #userMenu>
+            <a
+              mat-menu-item
+              matTooltip="Accéder aux paramètres de mon compte"
+              matTooltipPosition="before"
+              routerLink="/user"
+            >
+              {{ 'MyAccount' | translate }}
+            </a>
+          </mat-menu>
+        </ng-container>
+
+        <ng-template #noUserManagement>
           <mat-icon> person </mat-icon>
           <span class="user-name">
             {{ currentUser?.user_login }}
           </span>
-          <!-- add notification only if user connected and notification enabled -->
-          <ng-container *ngIf="appConfig.NOTIFICATIONS_ENABLED == true">
-            <a
-              class="mx-2 mat-elevation-z1"
-              mat-icon-button
-              matTooltip="Accéder aux notifications"
-              matBadge="{{ notificationNumber }}"
-              matBadgeHidden="{{ notificationNumber == 0 }}"
-              (click)="openNotification()"
-            >
-              <mat-icon>notifications</mat-icon>
-            </a>
-          </ng-container>
-        </ng-container>
-        <ng-template #publicAccessUser>
-          <mat-icon> accessibility_new </mat-icon>
-          <span class="user-name">Accès public</span>
         </ng-template>
+
+        <!-- add notification only if notification enabled -->
+        <ng-container *ngIf="appConfig.NOTIFICATIONS_ENABLED == true">
+          <a
+            class="mx-2 mat-elevation-z1"
+            mat-icon-button
+            matTooltip="Accéder aux notifications"
+            matBadge="{{ notificationNumber }}"
+            matBadgeHidden="{{ notificationNumber == 0 }}"
+            (click)="openNotification()"
+          >
+            <mat-icon>notifications</mat-icon>
+          </a>
+        </ng-container>
+      </ng-container>
+
+      <ng-template #publicAccessUser>
+        <mat-icon> accessibility_new </mat-icon>
+        <span class="user-name">Accès public</span>
       </ng-template>
 
       <ng-container *ngIf="appConfig.FRONTEND.MULTILINGUAL">

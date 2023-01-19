@@ -5,7 +5,12 @@ from werkzeug.exceptions import Forbidden, Unauthorized
 
 from pypnusershub.db.models import User
 
-from geonature.core.gn_permissions.models import CorRoleActionFilterModuleObject, TFilters
+from geonature.core.gn_permissions.models import (
+    CorRoleActionFilterModuleObject,
+    TFilters,
+    TActions,
+)
+from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.tools import (
     cruved_scope_for_user_in_module,
     get_user_from_token_and_raise,
@@ -220,8 +225,25 @@ class TestGnPermissionsView:
 
         admin_user = users["admin_user"]
         set_logged_user_cookie(self.client, admin_user)
-        one_filter = filters[list(filters.keys())[0]]
-        valid_data = {"module": "1", "action": "1", "filter": one_filter.id_filter}
+        one_filter = next(iter(filters.values()))
+        module = TModules.query.first()
+        action = TActions.query.first()
+        CorRoleActionFilterModuleObject.query.filter_by(
+            id_role=admin_user.id_role,
+            id_action=action.id_action,
+            id_filter=one_filter.id_filter,
+            id_module=module.id_module,
+        ).delete()
+        CorRoleActionFilterModuleObject.query.filter_by(
+            id_role=admin_user.id_role,
+            id_action=action.id_action,
+            id_module=module.id_module,
+        ).delete()
+        valid_data = {
+            "module": str(module.id_module),
+            "action": str(action.id_action),
+            "filter": one_filter.id_filter,
+        }
 
         response = self.client.post(
             url_for(
@@ -247,9 +269,13 @@ class TestGnPermissionsView:
         )
         id_permission = permission.id_permission
         # Take the last filter so that we cannot have a SCOPE filter type
-        one_filter = filters[list(filters.keys())[-1]]
+        one_filter = next(iter(filters.values()))
         # change action and filter
-        update_data = {"module": "1", "action": "1", "filter": one_filter.id_filter}
+        update_data = {
+            "module": str(permission.id_module),
+            "action": str(permission.id_action),
+            "filter": one_filter.id_filter,
+        }
 
         response = self.client.post(
             url_for(

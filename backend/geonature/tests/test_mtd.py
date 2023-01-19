@@ -7,7 +7,7 @@ from geonature.core.gn_meta.models import TDatasets
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestMTD:
-    @pytest.mark.xfail(reason="must fix CI on http request")  # FIXME
+    @pytest.mark.skip(reason="must fix CI on http request")  # FIXME
     def test_mtd(self):
         add_unexisting_digitizer(10991)
         post_jdd_from_user(id_user=10991)

@@ -143,10 +143,10 @@ export class AfCardComponent implements OnInit {
   }
 
   getPdf() {
-    const url = `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${this.af.id_acquisition_framework}`;
-    const chart_img = this.chart ? this.chart.ctx['canvas'].toDataURL('image/png') : '';
-    this._dfs.uploadCanvas(chart_img).subscribe((data) => {
-      window.open(url);
-    });
+    this._dfs.exportPDF(
+      this.chart ? this.chart.toBase64Image() : '',
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${this.af.id_acquisition_framework}`,
+      'af'
+    );
   }
 }

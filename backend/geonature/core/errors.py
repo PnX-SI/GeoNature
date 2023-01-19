@@ -1,9 +1,12 @@
+from pprint import pformat
 from urllib.parse import urlparse
 import sys
 
 from flask import current_app, request, json, redirect
-from werkzeug.exceptions import Unauthorized, InternalServerError, HTTPException
+from werkzeug.exceptions import Unauthorized, InternalServerError, HTTPException, BadRequest
 from werkzeug.urls import url_encode
+from marshmallow.exceptions import ValidationError
+
 
 # Unauthorized means disconnected
 # (logged but not allowed to perform an action = Forbidden)
@@ -31,6 +34,13 @@ def handle_unauthenticated_request(e):
             next_url = request.url
         query_string = url_encode({"next": next_url})
         return redirect(f"{base_url}{login_path}?{query_string}")
+
+
+@current_app.errorhandler(ValidationError)
+def handle_validation_error(e):
+    return handle_http_exception(
+        BadRequest(description=pformat(e.messages)).with_traceback(sys.exc_info()[2])
+    )
 
 
 @current_app.errorhandler(HTTPException)

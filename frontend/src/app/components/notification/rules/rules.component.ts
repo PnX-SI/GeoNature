@@ -55,23 +55,24 @@ export class RulesComponent implements OnInit {
    * Create a rule for un user
    * data inclue code_category and code_method
    */
-  createRule(data) {
-    this.notificationDataService.createRule(data).subscribe((response) => {});
+  subscribe(category, method) {
+    this.notificationDataService.subscribe(category, method).subscribe((response) => {});
   }
 
   /**
    * delete one rule with its id
    */
-  deleteRule(idRule) {
-    this.notificationDataService.deleteRule(idRule).subscribe((response) => {});
+  unsubscribe(category, method) {
+    this.notificationDataService.unsubscribe(category, method).subscribe((response) => {});
   }
 
   /**
    * delete all user rules
    */
-  deleteRules() {
-    this.notificationDataService.deleteRules().subscribe((response) => {
+  clearSubscriptions() {
+    this.notificationDataService.clearSubscriptions().subscribe((response) => {
       // refresh rules values
+      //this.getRules();  -- this does not trigger update of checkboxes
       this.ngOnInit();
     });
   }
@@ -79,22 +80,16 @@ export class RulesComponent implements OnInit {
   /**
    * Action from checkbox to create or delete a rule depending on checkbox value
    *
-   * @param categorie notification code_category
+   * @param category notification code_category
    * @param method notification code_method
    * @param event event to get checkbox
    */
-  updateRule(categorie, method, event) {
+  updateRule(category, method, event) {
     // if checkbox is checked add rule
     if (event.target.checked) {
-      this.createRule({ code_method: method, code_category: categorie });
+      this.subscribe(category, method);
     } else {
-      // if checkbox not checked remove rule
-      for (var rule of this.userRules) {
-        if (rule.code_category == categorie && rule.code_method == method) {
-          this.deleteRule(rule.id);
-          break;
-        }
-      }
+      this.unsubscribe(category, method);
     }
   }
 
@@ -105,12 +100,11 @@ export class RulesComponent implements OnInit {
    * @returns boolean
    */
   hasUserSubscribed(categorie, method) {
-    let checked: boolean = false;
     for (var rule of this.userRules) {
       if (rule.code_category == categorie && rule.code_method == method) {
-        return (checked = true);
+        return rule.subscribed;
       }
     }
-    return checked;
+    return false;
   }
 }

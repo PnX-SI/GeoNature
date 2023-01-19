@@ -4,20 +4,12 @@
 import datetime as dt
 import json
 import logging
-import threading
-from pathlib import Path
-from binascii import a2b_base64
-
-import click
 from lxml import etree as ET
 
 from flask import (
     Blueprint,
     current_app,
     request,
-    render_template,
-    send_from_directory,
-    copy_current_request_context,
     Response,
     g,
 )
@@ -66,10 +58,7 @@ from geonature.core.gn_meta.schemas import (
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
 from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import (
-    cruved_scope_for_user_in_module,
-    get_scopes_by_action,
-)
+from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.core.gn_meta.mtd import mtd_utils
 import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
@@ -155,6 +144,7 @@ def get_dataset(scope, id_dataset):
 
     dataset_schema = DatasetSchema(
         only=[
+            "+cruved",
             "creator",
             "cor_dataset_actor",
             "cor_dataset_actor.nomenclature_actor_role",
@@ -177,29 +167,7 @@ def get_dataset(scope, id_dataset):
             "sources",
         ]
     )
-
-    # TODO: Replace with get_scopes_by_action
-    # check this in front
-    user_cruved = cruved_scope_for_user_in_module(
-        id_role=g.current_user.id_role,
-        module_code="METADATA",
-    )[0]
-    dataset_schema.context = {"user_cruved": user_cruved}
-
     return dataset_schema.jsonify(dataset)
-
-
-@routes.route("/upload_canvas", methods=["POST"])
-def upload_canvas():
-    """Upload the canvas as a temporary image used while generating the pdf file"""
-    data = request.data[22:]
-    filepath = str(Path(current_app.static_folder) / "images" / "taxa.png")
-    fm.remove_file(filepath)
-    if data:
-        binary_data = a2b_base64(data)
-        with open(filepath, "wb") as fd:
-            fd.write(binary_data)
-    return "", 204
 
 
 @routes.route("/dataset/<int:ds_id>", methods=["DELETE"])
@@ -450,7 +418,7 @@ def update_dataset(id_dataset, scope):
     return DatasetSchema().jsonify(datasetHandler(dataset=dataset, data=request.get_json()))
 
 
-@routes.route("/dataset/export_pdf/<id_dataset>", methods=["GET"])
+@routes.route("/dataset/export_pdf/<id_dataset>", methods=["GET", "POST"])
 @permissions.check_cruved_scope("E", get_scope=True, module_code="METADATA")
 def get_export_pdf_dataset(id_dataset, scope):
     """
@@ -459,17 +427,18 @@ def get_export_pdf_dataset(id_dataset, scope):
     dataset = TDatasets.query.get_or_404(id_dataset)
     if not dataset.has_instance_permission(scope=scope):
         raise Forbidden("Vous n'avez pas les droits d'exporter ces informations")
-
     dataset_schema = DatasetSchema(
         only=[
             "nomenclature_data_type",
             "nomenclature_dataset_objectif",
             "nomenclature_collecting_method",
             "acquisition_framework",
+            "cor_dataset_actor.nomenclature_actor_role",
+            "cor_dataset_actor.organism",
+            "cor_dataset_actor.role",
         ]
     )
     dataset = dataset_schema.dump(dataset)
-
     if len(dataset.get("dataset_desc")) > 240:
         dataset["dataset_desc"] = dataset.get("dataset_desc")[:240] + "..."
 
@@ -486,20 +455,12 @@ def get_export_pdf_dataset(id_dataset, scope):
         "url": current_app.config["URL_APPLICATION"] + "/#/metadata/dataset_detail/" + id_dataset,
         "date": date,
     }
-
-    filename = "jdd_{}_{}_{}.pdf".format(
-        id_dataset,
-        secure_filename(dataset["dataset_shortname"]),
-        dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
-    )
-
-    dataset["chart"] = (Path(current_app.static_folder) / "images" / "taxa.png").exists()
-
-    # Appel de la methode pour generer un pdf
-    pdf_file = fm.generate_pdf("dataset_template_pdf.html", dataset, filename)
-    pdf_file_posix = Path(pdf_file)
-
-    return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
+    # chart
+    if request.is_json and request.json is not None:
+        dataset["chart"] = request.json["chart"]
+    # create PDF file
+    pdf_file = fm.generate_pdf("dataset_template_pdf.html", dataset)
+    return current_app.response_class(pdf_file, content_type="application/pdf")
 
 
 @routes.route("/acquisition_frameworks", methods=["GET", "POST"])
@@ -513,7 +474,7 @@ def get_acquisition_frameworks(scope):
     Use for AF select in form
     Get the GeoNature CRUVED
     """
-    only = []
+    only = ["+cruved"]
     # QUERY
     af_list = TAcquisitionFramework.query.filter_by_readable()
     if request.method == "POST":
@@ -538,7 +499,7 @@ def get_acquisition_frameworks(scope):
     if request.args.get("datasets", default=False, type=int):
         only.extend(
             [
-                "t_datasets",
+                "t_datasets.+cruved",
             ]
         )
     if request.args.get("creator", default=False, type=int):
@@ -575,11 +536,6 @@ def get_acquisition_frameworks(scope):
                 ),
             )
     af_schema = AcquisitionFrameworkSchema(only=only)
-    user_cruved = cruved_scope_for_user_in_module(
-        id_role=g.current_user.id_role,
-        module_code="METADATA",
-    )[0]
-    af_schema.context = {"user_cruved": user_cruved}
     return af_schema.jsonify(af_list.all(), many=True)
 
 
@@ -590,6 +546,8 @@ def get_acquisition_frameworks_list(scope):
     Get all AF with their datasets
     Use in metadata module for list of AF and DS
     Add the CRUVED permission for each row (Dataset and AD)
+
+    DEPRECATED use get_acquisition_frameworks instead
 
     .. :quickref: Metadata;
 
@@ -603,10 +561,6 @@ def get_acquisition_frameworks_list(scope):
     if "selector" not in params:
         params["selector"] = None
 
-    user_cruved = cruved_scope_for_user_in_module(
-        id_role=g.current_user.id_role,
-        module_code="METADATA",
-    )[0]
     nested_serialization = params.get("nested", False)
     nested_serialization = True if nested_serialization == "true" else False
     exclude_fields = []
@@ -617,20 +571,20 @@ def get_acquisition_frameworks_list(scope):
         # exclude all relationships from serialization if nested = false
         exclude_fields = [db_rel.key for db_rel in inspect(TAcquisitionFramework).relationships]
 
-    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(exclude=exclude_fields)
-    acquisitionFrameworkSchema.context = {"user_cruved": user_cruved}
+    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
+        only=["+cruved"], exclude=exclude_fields
+    )
     return acquisitionFrameworkSchema.jsonify(
         get_metadata_list(g.current_user, scope, params, exclude_fields).all(), many=True
     )
 
 
-@routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["GET"])
+@routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["POST"])
 @permissions.check_cruved_scope("E", module_code="METADATA")
 def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     """
     Get a PDF export of one acquisition
     """
-
     # Recuperation des données
     af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
     acquisition_framework = af.as_dict(True, depth=2)
@@ -671,6 +625,9 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
         "nb_habitats": nb_habitat,
     }
 
+    if request.is_json and request.json is not None:
+        acquisition_framework["chart"] = request.json["chart"]
+
     if acquisition_framework:
         acquisition_framework[
             "nomenclature_territorial_level"
@@ -699,8 +656,6 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
             + id_acquisition_framework,
             "date": date,
         }
-        params = {"id_acquisition_frameworks": id_acquisition_framework}
-
     else:
         return (
             render_template(
@@ -714,26 +669,11 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
         acquisition_framework["initial_closing_date"] = af.initial_closing_date.strftime(
             "%d-%m-%Y %H:%M"
         )
-        filename = "{}_{}_{}.pdf".format(
-            id_acquisition_framework,
-            secure_filename(acquisition_framework["acquisition_framework_name"][0:31]),
-            af.initial_closing_date.strftime("%d%m%Y_%H%M%S"),
-        )
         acquisition_framework["closed_title"] = current_app.config["METADATA"]["CLOSED_AF_TITLE"]
 
-    else:
-        filename = "{}_{}_{}.pdf".format(
-            id_acquisition_framework,
-            secure_filename(acquisition_framework["acquisition_framework_name"][0:31]),
-            dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
-        )
-
     # Appel de la methode pour generer un pdf
-    pdf_file = fm.generate_pdf(
-        "acquisition_framework_template_pdf.html", acquisition_framework, filename
-    )
-    pdf_file_posix = Path(pdf_file)
-    return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
+    pdf_file = fm.generate_pdf("acquisition_framework_template_pdf.html", acquisition_framework)
+    return current_app.response_class(pdf_file, content_type="application/pdf")
 
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>", methods=["GET"])
@@ -758,6 +698,7 @@ def get_acquisition_framework(scope, id_acquisition_framework):
     try:
         af_schema = AcquisitionFrameworkSchema(
             only=[
+                "+cruved",
                 "creator",
                 "nomenclature_territorial_level",
                 "nomenclature_financing_type",
@@ -780,13 +721,6 @@ def get_acquisition_framework(scope, id_acquisition_framework):
         )
     except ValueError as e:
         raise BadRequest(str(e))
-
-    user_cruved = cruved_scope_for_user_in_module(
-        id_role=g.current_user.id_role,
-        module_code="METADATA",
-    )[0]
-    af_schema.context = {"user_cruved": user_cruved}
-
     return af_schema.jsonify(af)
 
 
@@ -902,9 +836,9 @@ def get_acquisition_framework_stats(id_acquisition_framework):
         .distinct()
         .count()
     )
-    nb_observations = (
-        DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
-    )
+    nb_observations = Synthese.query.filter(
+        Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework)
+    ).count()
     nb_habitat = 0
 
     # Check if pr_occhab exist

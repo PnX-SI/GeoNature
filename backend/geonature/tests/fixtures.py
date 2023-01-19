@@ -49,7 +49,6 @@ __all__ = [
     "filters",
     "medium",
     "module",
-    "isolate_synthese",
 ]
 
 
@@ -93,8 +92,7 @@ def users(app):
     app = Application.query.filter(Application.code_application == "GN").one()
     profil = Profil.query.filter(Profil.nom_profil == "Lecteur").one()
 
-    modules_codes = ["GEONATURE", "SYNTHESE", "IMPORT", "OCCTAX", "METADATA"]
-    modules = TModules.query.filter(TModules.module_code.in_(modules_codes)).all()
+    modules = TModules.query.all()
 
     actions = {
         code: TActions.query.filter(TActions.code_action == code).one() for code in "CRUVED"
@@ -138,7 +136,7 @@ def users(app):
 
     users_to_create = [
         ("noright_user", organisme, scope_filters[0]),
-        ("stranger_user",),
+        ("stranger_user", None, scope_filters[2]),
         ("associate_user", organisme, scope_filters[2]),
         ("self_user", organisme, scope_filters[1]),
         ("user", organisme, scope_filters[2]),
@@ -195,6 +193,7 @@ def acquisition_frameworks(users):
         "orphan_af": create_af(),
         "af_1": create_af(),
         "af_2": create_af(),
+        "af_3": create_af(),
     }
 
     return afs
@@ -233,6 +232,7 @@ def datasets(users, acquisition_frameworks, module):
     af = acquisition_frameworks["orphan_af"]
     af_1 = acquisition_frameworks["af_1"]
     af_2 = acquisition_frameworks["af_2"]
+    af_3 = acquisition_frameworks["af_3"]
 
     datasets = {
         name: create_dataset(name, id_af, digitizer)
@@ -241,8 +241,9 @@ def datasets(users, acquisition_frameworks, module):
             ("associate_dataset", af.id_acquisition_framework, users["associate_user"]),
             ("stranger_dataset", af.id_acquisition_framework, users["stranger_user"]),
             ("orphan_dataset", af.id_acquisition_framework, None),
-            ("belong_af_1", af_1.id_acquisition_framework, None),
-            ("belong_af_2", af_2.id_acquisition_framework, None),
+            ("belong_af_1", af_1.id_acquisition_framework, users["stranger_user"]),
+            ("belong_af_2", af_2.id_acquisition_framework, users["stranger_user"]),
+            ("belong_af_3", af_3.id_acquisition_framework, users["stranger_user"]),
         ]
     }
     datasets["with_module_1"] = create_dataset(
@@ -281,47 +282,32 @@ def create_synthese(geom, taxon, user, dataset, source, uuid):
 
 @pytest.fixture()
 def synthese_data(app, users, datasets, source):
-    map_center_point = Point(
-        app.config["MAPCONFIG"]["CENTER"][1],
-        app.config["MAPCONFIG"]["CENTER"][0],
-    )
-    geom_4326 = from_shape(map_center_point, srid=4326)
-    data = []
+    point1 = Point(5.92, 45.56)
+    point2 = Point(-1.54, 46.85)
+    point3 = Point(-3.486786, 48.832182)
+    data = {}
     with db.session.begin_nested():
-        for cd_nom in [713776, 2497]:
-            taxon = Taxref.query.filter_by(cd_nom=cd_nom).one()
+        for (name, cd_nom, point, ds) in [
+            ("obs1", 713776, point1, datasets["own_dataset"]),
+            ("obs2", 212, point2, datasets["own_dataset"]),
+            ("obs3", 2497, point3, datasets["own_dataset"]),
+            ("p1_af1", 713776, point1, datasets["belong_af_1"]),
+            ("p1_af1_2", 212, point1, datasets["belong_af_1"]),
+            ("p1_af2", 212, point1, datasets["belong_af_2"]),
+            ("p2_af2", 2497, point2, datasets["belong_af_2"]),
+            ("p2_af1", 2497, point2, datasets["belong_af_1"]),
+            ("p3_af3", 2497, point3, datasets["belong_af_3"]),
+        ]:
+
             unique_id_sinp = (
                 "f4428222-d038-40bc-bc5c-6e977bbbc92b" if not data else func.uuid_generate_v4()
             )
-            s = create_synthese(
-                geom_4326,
-                taxon,
-                users["self_user"],
-                datasets["own_dataset"],
-                source,
-                unique_id_sinp,
-            )
+            geom = from_shape(point, srid=4326)
+            taxon = Taxref.query.filter_by(cd_nom=cd_nom).one()
+            s = create_synthese(geom, taxon, users["self_user"], ds, source, unique_id_sinp)
             db.session.add(s)
-            data.append(s)
+            data[name] = s
     return data
-
-
-@pytest.fixture()
-def isolate_synthese(users, datasets, source):
-    map_center_point = Point(-3.486786, 48.832182)
-    geom_4326 = from_shape(map_center_point, srid=4326)
-    taxon = Taxref.query.filter_by(cd_nom=79306).one()
-    with db.session.begin_nested():
-        s = create_synthese(
-            geom_4326,
-            taxon,
-            users["self_user"],
-            datasets["belong_af_1"],
-            source,
-            func.uuid_generate_v4(),
-        )
-        db.session.add(s)
-    return s
 
 
 @pytest.fixture(scope="function")
@@ -396,9 +382,7 @@ def reports_data(users, synthese_data):
         db.session.add(new_report)
         return new_report
 
-    ids = []
-    for el in synthese_data:
-        ids.append(el.id_synthese)
+    ids = [s.id_synthese for s in synthese_data.values()]
     # get id by type
     discussionId = (
         BibReportsTypes.query.filter(BibReportsTypes.type == "discussion").first().id_type

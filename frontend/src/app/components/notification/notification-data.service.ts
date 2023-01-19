@@ -43,6 +43,7 @@ export interface NotificationRule {
   code_method: string;
   method?: NotificationMethod;
   category?: NotificationCategory;
+  subscribed: boolean;
 }
 
 @Injectable()
@@ -75,13 +76,6 @@ export class NotificationDataService {
     );
   }
 
-  // Create rules
-  createRule(data) {
-    return this._api.put(`${AppConfig.API_ENDPOINT}/notifications/rules`, data, {
-      headers: new HttpHeaders().set('Content-Type', 'application/json'),
-    });
-  }
-
   // returns all rules for current user
   getRules() {
     return this._api.get<NotificationRule[]>(`${AppConfig.API_ENDPOINT}/notifications/rules`);
@@ -99,11 +93,21 @@ export class NotificationDataService {
     return this._api.get<NotificationMethod[]>(`${AppConfig.API_ENDPOINT}/notifications/methods`);
   }
 
-  deleteRules() {
-    return this._api.delete<{}>(`${AppConfig.API_ENDPOINT}/notifications/rules`);
+  subscribe(category, method) {
+    return this._api.post(
+      `${AppConfig.API_ENDPOINT}/notifications/rules/category/${category}/method/${method}/subscribe`,
+      null
+    );
   }
 
-  deleteRule(id: number) {
-    return this._api.delete<{}>(`${AppConfig.API_ENDPOINT}/notifications/rules/${id}`);
+  unsubscribe(category, method) {
+    return this._api.post(
+      `${AppConfig.API_ENDPOINT}/notifications/rules/category/${category}/method/${method}/unsubscribe`,
+      null
+    );
+  }
+
+  clearSubscriptions() {
+    return this._api.delete<any>(`${AppConfig.API_ENDPOINT}/notifications/rules`);
   }
 }

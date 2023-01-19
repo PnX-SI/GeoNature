@@ -205,18 +205,16 @@
                     <div class="map"></div>
                 </div> -->
         <!-- A modifier lorsque la carte sera prete -->
-
         {% if data['chart']: %}
         <div class="repartition">
           <p class="repartition-especes">Répartition des espèces</p>
           <img
             class="taxons"
-            src="{{url_for('static', filename='images/taxa.png')}}"
             alt="Pas d'espèces à afficher."
+            src="{{data['chart']}}"
           >
         </div>
         {% endif %}
-
         <div class="ca">
           <hr class="ligne-titre main-color">
           <p class="ca-initial">Cadre d'acquisition</p>
