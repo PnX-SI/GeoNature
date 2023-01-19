@@ -6,8 +6,8 @@ CHANGELOG
 
 **🐛 Corrections**
 
-- Correction d'un import manquant dans un fichier de migration des données d'exemple d'Occtax
-- Correction d'un problème d'installation en mode développement
+- Correction d'un import manquant dans un fichier de migration des données d'exemple d'Occtax (#2285)
+- Correction d'un problème de l'installation globale en mode développement
 
 
 2.11.1 (2023-01-18)
