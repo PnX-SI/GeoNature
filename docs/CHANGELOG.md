@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+2.11.2 (unreleased)
+-------------------
+
+**🐛 Corrections**
+
+- Correction d'un import manquant dans un fichier de migration des données d'exemple d'Occtax
+
+
 2.11.1 (2023-01-18)
 -------------------
 
