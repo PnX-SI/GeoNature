@@ -69,5 +69,8 @@
     "cypress": "^9.2.1",
     "cypress-promise": "^1.1.0",
     "prettier": "^2.5.0"
-  }
+  },
+  "workspaces": [
+    "./external_modules/*"
+  ]
 }
