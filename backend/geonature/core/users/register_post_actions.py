@@ -160,7 +160,6 @@ def send_email_for_recovery(data):
     its password
     """
     user = data["role"]
-    recipients = current_app.config["MAIL_CONFIG"]["MAIL_USERNAME"]
     url_password = (
         current_app.config["URL_APPLICATION"] + "/#/login/new-password?token=" + data["token"]
     )
