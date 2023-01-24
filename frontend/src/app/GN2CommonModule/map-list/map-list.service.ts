@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { AppConfig } from '../../../conf/app.config';
 import { CommonService } from '@geonature_common/service/common.service';
 import * as L from 'leaflet';
 import { FormControl } from '@angular/forms';
 import { MapService } from '@geonature_common/map/map.service';
 import { Map } from 'leaflet';
 import { delay, finalize } from 'rxjs/operators';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class MapListService {
@@ -55,8 +55,8 @@ export class MapListService {
 
   constructor(
     private _http: HttpClient,
-    private _commonService: CommonService,
-    private _ms: MapService
+    private _ms: MapService,
+    public cs: ConfigService
   ) {
     this.columns = [];
     this.page.pageNumber = 0;
@@ -137,7 +137,7 @@ export class MapListService {
   dataService() {
     this.isLoading = true;
     return this._http
-      .get<any>(`${AppConfig.API_ENDPOINT}/${this.endPoint}`, { params: this.urlQuery })
+      .get<any>(`${this.cs.API_ENDPOINT}/${this.endPoint}`, { params: this.urlQuery })
       .pipe(
         delay(200),
         finalize(() => (this.isLoading = false))

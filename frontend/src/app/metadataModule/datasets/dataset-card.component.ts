@@ -1,18 +1,17 @@
-import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
-import { BehaviorSubject } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
-import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '@geonature_common/service/common.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { MetadataDataService } from '../services/metadata-data.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-datasets-card',
@@ -83,7 +82,8 @@ export class DatasetCardComponent implements OnInit {
     public _dataService: SyntheseDataService,
     private _router: Router,
     public dialog: MatDialog,
-    public metadataDataS: MetadataDataService
+    public metadataDataS: MetadataDataService,
+    public cs: ConfigService
   ) {}
 
   ngOnInit() {
@@ -143,7 +143,7 @@ export class DatasetCardComponent implements OnInit {
   getPdf() {
     this._dfs.exportPDF(
       this.chart ? this.chart.toBase64Image() : '',
-      `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`,
+      `${this.cs.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`,
       'jdd'
     );
   }

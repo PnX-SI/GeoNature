@@ -1,15 +1,18 @@
 import { HttpClient } from '@angular/common/http';
-import { mergeMap, map, catchError, filter } from 'rxjs/operators';
-import { of, throwError } from 'rxjs';
+import { mergeMap, map, catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { ModuleService } from './module.service';
 import { ToastrService } from 'ngx-toastr';
 
-@Injectable()
-export class ConfigService {
-  constructor(private _http: HttpClient, private _toaster: ToastrService) {}
+class config {
+  [key:string]: any
+}
 
-  config: any = {};
+@Injectable()
+export class ConfigService extends config {
+  constructor(private _http: HttpClient, private _toaster: ToastrService) {
+    super()
+  }
 
   private _getConfig() {
     return this._http.get('./assets/config.json').pipe(
@@ -21,7 +24,7 @@ export class ConfigService {
         if ('API_ENDPOINT' in config) {
           return this._http.get(`${config.API_ENDPOINT}/gn_commons/config`).pipe(
             map((fullConfig) => {
-              this.config = fullConfig;
+              Object.assign(this, fullConfig);
             }),
             catchError((error) => {
               this._toaster.error(

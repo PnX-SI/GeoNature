@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { AppConfig } from '@geonature_config/app.config';
-import { AuthService, User } from '@geonature/components/auth/auth.service';
-import { Role, RoleFormService } from './services/form.service';
+import { AuthService } from '@geonature/components/auth/auth.service';
+import { RoleFormService } from './services/form.service';
 import { UserDataService } from './services/user-data.service';
 
 @Component({

@@ -1,4 +1,3 @@
-import { Observable, Subscription } from 'rxjs';
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Media } from './media';
@@ -15,8 +14,6 @@ import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.servi
   styleUrls: ['./media.scss'],
 })
 export class MediaComponent implements OnInit {
-  // public mediaSave: Media = new Media();
-
   public mediaForm: FormGroup;
 
   public mediaFormDefinition = null;

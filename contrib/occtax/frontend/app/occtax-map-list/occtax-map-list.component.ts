@@ -1,7 +1,6 @@
 import {
   Component,
   OnInit,
-  OnDestroy,
   AfterViewInit,
   HostListener,
   ViewChild,
@@ -17,15 +16,11 @@ import { ModuleConfig } from '../module.config';
 import { TaxonomyComponent } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { FormGroup } from '@angular/forms';
 import { GenericFormGeneratorComponent } from '@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component';
-import { AppConfig } from '@geonature_config/app.config';
 import * as moment from 'moment';
 import { MediaService } from '@geonature_common/service/media.service';
-import { filter } from 'rxjs/operators';
-import { OcctaxFormReleveService } from '../occtax-form/releve/releve.service';
-import { OcctaxFormOccurrenceService } from '../occtax-form/occurrence/occurrence.service';
-import { OcctaxFormService } from '../occtax-form/occtax-form.service';
 import { OcctaxMapListService } from './occtax-map-list.service';
 import { ModuleService } from '@geonature/services/module.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 // /occurrence/occurrence.service";
 
@@ -66,7 +61,8 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     private renderer: Renderer2,
     public mediaService: MediaService,
     public occtaxMapListS: OcctaxMapListService,
-    private _moduleService: ModuleService
+    private _moduleService: ModuleService,
+    public cs: ConfigService
   ) {}
 
   ngOnInit() {
@@ -208,7 +204,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     //https://github.com/angular/angular/issues/20430
     let queryString = this.mapListService.urlQuery.delete('limit');
     queryString = queryString.delete('offset');
-    const url = `${AppConfig.API_ENDPOINT}/occtax/${
+    const url = `${this.cs.API_ENDPOINT}/occtax/${
       this._moduleService.currentModule.module_code
     }/export?${queryString.toString()}&format=${format}`;
 

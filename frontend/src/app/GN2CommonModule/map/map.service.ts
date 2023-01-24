@@ -1,20 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Map, GeoJSON, Layer, FeatureGroup, Marker, LatLng } from 'leaflet';
+import { Map, GeoJSON, FeatureGroup, Marker } from 'leaflet';
 import { Subject, Observable } from 'rxjs';
 import { find } from 'lodash';
 
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../service/common.service';
-import { Feature } from 'geojson';
 import { CustomMarkerIcon } from '@geonature_common/map/marker/marker.component';
+import { ConfigService } from '@geonature/services/config.service';
+
 @Injectable()
 export class MapService {
   public map: Map;
   public baseMaps: any;
-  private currentLayer: GeoJSON;
   public marker: Marker;
   public editingMarker = true;
   public leafletDrawFeatureGroup: FeatureGroup;
@@ -49,7 +48,7 @@ export class MapService {
     color: 'green',
   };
 
-  constructor(private _httpClient: HttpClient, private _commonService: CommonService) {
+  constructor(private _httpClient: HttpClient, private _commonService: CommonService, public cs: ConfigService) {
     this.fileLayerFeatureGroup = new L.FeatureGroup();
   }
 
@@ -59,7 +58,7 @@ export class MapService {
       queryString = queryString.set(key, params[key]);
     }
 
-    return this._httpClient.get<any>(`${AppConfig.API_ENDPOINT}/geo/areas`, {
+    return this._httpClient.get<any>(`${this.cs.API_ENDPOINT}/geo/areas`, {
       params: queryString,
     });
   };
@@ -224,8 +223,8 @@ export class MapService {
         geometry: { type: 'Point', coordinates: [markerCoord.lng, markerCoord.lat] },
       };
       this.setGeojsonCoord(geojson);
-      this.marker.on('moveend', (event: L.LeafletMouseEvent) => {
-        if (this.map.getZoom() < AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE) {
+      this.marker.on('moveend', () => {
+        if (this.map.getZoom() < this.cs.MAPCONFIG.ZOOM_LEVEL_RELEVE) {
           this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         } else {
           markerCoord = this.marker.getLatLng();
@@ -321,7 +320,7 @@ export class MapService {
    * @returns
    */
   createOverLayers(map) {
-    const OVERLAYERS = JSON.parse(JSON.stringify(AppConfig.MAPCONFIG.REF_LAYERS));
+    const OVERLAYERS = JSON.parse(JSON.stringify(this.cs.MAPCONFIG.REF_LAYERS));
     const overlaysLayers = {};
     OVERLAYERS.map((lyr) => [lyr, this.getLayerCreator(lyr.type)(lyr)])
       .filter((l) => l[1])
@@ -339,7 +338,7 @@ export class MapService {
           legendUrl = `${layerLeaf._url}?TRANSPARENT=TRUE&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=${layerLeaf.options.layers}&FORMAT=image%2Fpng&LEGEND_OPTIONS=forceLabels%3Aon%3BfontAntiAliasing%3Atrue`;
         }
         // leaflet layers controler required object
-        if (AppConfig.MAPCONFIG?.REF_LAYERS_LEGEND) {
+        if (this.cs.MAPCONFIG?.REF_LAYERS_LEGEND) {
           overlaysLayers[this.getLegendBox({ title: title, ...style, legendUrl: legendUrl })] =
             lyr[1];
         } else {
@@ -360,7 +359,7 @@ export class MapService {
    */
   loadOverlay(overlay) {
     let overlayer = overlay?.layer || overlay;
-    let cfgLayer = JSON.parse(JSON.stringify(AppConfig.MAPCONFIG.REF_LAYERS));
+    let cfgLayer = JSON.parse(JSON.stringify(this.cs.MAPCONFIG.REF_LAYERS));
     let layerAdded = cfgLayer.filter((o) => o.code === overlayer.configId)[0];
 
     if (['wms'].includes(layerAdded.type) || overlayer.getLayers().length) return;

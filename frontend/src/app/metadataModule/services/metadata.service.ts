@@ -1,21 +1,18 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { forkJoin, Observable, BehaviorSubject, combineLatest, of } from 'rxjs';
+import { forkJoin, Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import {
   tap,
   map,
   startWith,
   distinctUntilChanged,
   debounceTime,
-  filter,
-  switchMap,
 } from 'rxjs/operators';
-import { PageEvent, MatPaginator } from '@angular/material/paginator';
 
-import { AppConfig } from '@geonature_config/app.config';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class MetadataService {
@@ -37,7 +34,7 @@ export class MetadataService {
   public formBuilded = false;
 
   pageSizeOptions: number[] = [10, 25, 50, 100];
-  pageSize: BehaviorSubject<number> = new BehaviorSubject(AppConfig.METADATA.NB_AF_DISPLAYED);
+  pageSize: BehaviorSubject<number> = null;
   pageIndex: BehaviorSubject<number> = new BehaviorSubject(0);
   activePage: BehaviorSubject<number> = new BehaviorSubject(0);
 
@@ -45,8 +42,11 @@ export class MetadataService {
     private _fb: FormBuilder,
     public dateParser: NgbDateParserFormatter,
     private dataFormService: DataFormService,
-    private _syntheseDataService: SyntheseDataService
+    private _syntheseDataService: SyntheseDataService,
+    public cs: ConfigService
   ) {
+    this.pageSize = new BehaviorSubject(this.cs.METADATA.NB_AF_DISPLAYED);
+
     this.form = this._fb.group({
       selector: 'ds',
       uuid: null,
@@ -94,7 +94,7 @@ export class MetadataService {
         tap((term) => (this.expandAccordions = term !== ''))
       )
       .subscribe(() => this.pageIndex.next(0));
-    AppConfig.METADATA.METADATA_AREA_FILTERS.forEach((area) => {
+      this.cs.METADATA.METADATA_AREA_FILTERS.forEach((area) => {
       const control_name = 'area_' + area['type_code'].toLowerCase();
       this.form.addControl(control_name, new FormControl(new Array()));
       const control = this.form.controls[control_name];

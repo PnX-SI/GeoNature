@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angu
 import { Map } from 'leaflet';
 
 import { MapService } from '../map.service';
-import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../../service/common.service';
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
 import { GeoJSON } from '@tmcw/togeojson';
@@ -10,6 +9,7 @@ import { CustomIcon } from '@geonature/utils/leaflet-icon';
 
 import 'leaflet-draw';
 import * as L from 'leaflet';
+import { ConfigService } from '@geonature/services/config.service';
 
 delete L.Icon.Default.prototype['_getIconUrl'];
 
@@ -46,17 +46,18 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
    * <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/occtax/occtax-map-form/occtax-map-form.component.ts#L27>`_
    */
   @Input() options = leafletDrawOption;
-  @Input() zoomLevel = AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE;
+  @Input() zoomLevel = null;
   /** Niveau de zoom à partir du quel on peut dessiner sur la carte */
   @Output() layerDrawed = new EventEmitter<GeoJSON>();
   @Output() layerDeleted = new EventEmitter<any>();
 
-  constructor(public mapservice: MapService, private _commonService: CommonService) {}
+  constructor(public mapservice: MapService, private _commonService: CommonService, public cs: ConfigService) {}
 
   ngOnInit() {
     // HACK for leaflet draw compatibility
     (window as any).type = true;
     this.map = this.mapservice.map;
+    this.zoomLevel = this.zoomLevel || this.cs.MAPCONFIG.ZOOM_LEVEL_RELEVE
     this._Le = L as any;
     this.enableLeafletDraw();
   }

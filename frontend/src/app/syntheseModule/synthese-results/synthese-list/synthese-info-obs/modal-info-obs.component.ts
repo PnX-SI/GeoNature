@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-synthese-modal-info-obs',
@@ -16,14 +16,17 @@ export class ModalInfoObsComponent implements OnInit {
   public selectedObs;
   public selectedObsTaxonDetail;
   public formatedAreas = [];
-  public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
+  public SYNTHESE_CONFIG = null;
   public isLoading = false;
   constructor(
     private _gnDataService: DataFormService,
     private _dataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
-    public mediaService: MediaService
-  ) {}
+    public mediaService: MediaService,
+    public cs: ConfigService
+  ) {
+    this.SYNTHESE_CONFIG = this.cs.SYNTHESE;
+  }
 
   ngOnInit() {
     this.loadOneSyntheseReleve(this.syntheseObs);

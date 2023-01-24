@@ -6,13 +6,12 @@ import { Subscription } from 'rxjs';
 import { map, filter, tap } from 'rxjs/operators';
 import { ModuleConfig } from '../../module.config';
 import { CommonService } from '@geonature_common/service/common.service';
-import { DataFormService } from '@geonature_common/form/data-form.service';
 import { OcctaxFormService } from '../occtax-form.service';
 import { OcctaxFormReleveService } from './releve.service';
 import { OcctaxFormMapService } from '../map/occtax-map.service';
-import { AppConfig } from '@geonature_config/app.config';
 import { ModuleService } from '@geonature/services/module.service';
 import { OcctaxDataService } from '../../services/occtax-data.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-occtax-form-releve',
@@ -28,7 +27,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public userDatasets: Array<any>;
   public releveForm: FormGroup;
   public moduleConfig = ModuleConfig;
-  public AppConfig = AppConfig;
+  public AppConfig = null;
   public routeSub: Subscription;
   private _subscriptions: Subscription[] = [];
 
@@ -42,10 +41,11 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     public occtaxFormReleveService: OcctaxFormReleveService,
     private occtaxFormMapService: OcctaxFormMapService,
     private commonService: CommonService,
-    private _dataService: DataFormService,
     public moduleService: ModuleService,
-    public occtaxDataService: OcctaxDataService
+    public occtaxDataService: OcctaxDataService,
+    public cs: ConfigService
   ) {
+    this.AppConfig = this.cs;
     this.occtaxConfig = ModuleConfig;
   }
 

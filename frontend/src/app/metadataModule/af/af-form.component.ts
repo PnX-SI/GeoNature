@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { ToastrService } from 'ngx-toastr';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { of, Observable } from 'rxjs';
@@ -9,7 +7,6 @@ import { switchMap, tap, map } from 'rxjs/operators';
 
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import { AppConfig } from '@geonature_config/app.config';
 import { ActorFormService } from '../services/actor-form.service';
 import { AcquisitionFrameworkFormService } from '../services/af-form.service';
 import { MetadataService } from '../services/metadata.service';
@@ -30,9 +27,7 @@ export class AfFormComponent implements OnInit {
     private _dfs: DataFormService,
     private _commonService: CommonService,
     private _route: ActivatedRoute,
-    private _api: HttpClient,
     private _router: Router,
-    private _toaster: ToastrService,
     private dateParser: NgbDateParserFormatter,
     public afFormS: AcquisitionFrameworkFormService,
     private actorFormS: ActorFormService,

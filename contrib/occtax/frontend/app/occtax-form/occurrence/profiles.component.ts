@@ -12,10 +12,10 @@ import { FormArray } from '@angular/forms';
 import { Observable, empty, Subscription } from 'rxjs';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
-import { AppConfig } from '@geonature_config/app.config';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { OcctaxFormOccurrenceService } from './occurrence.service';
 import { OcctaxFormService } from '../occtax-form.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-occtax-profiles',
@@ -23,7 +23,7 @@ import { OcctaxFormService } from '../occtax-form.service';
   styleUrls: ['./profiles.component.scss'],
 })
 export class OcctaxProfilesComponent implements OnInit, OnDestroy {
-  private appConfig = AppConfig;
+  private appConfig = null;
   public profilErrors: any[] = [];
   public taxon: any = null;
   private _sub: Array<Subscription> = [];
@@ -32,8 +32,11 @@ export class OcctaxProfilesComponent implements OnInit, OnDestroy {
     private dateParser: NgbDateParserFormatter,
     private _dataS: DataFormService,
     public occtaxFormService: OcctaxFormService,
-    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService
-  ) {}
+    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    public cs: ConfigService
+  ) {
+    this.appConfig = this.cs;
+  }
 
   ngOnInit() {
     const lifeStageObservable = this.occtaxFormOccurrenceService.lifeStage.pipe(

@@ -1,16 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { DataFormService, FormatMapMime } from '@geonature_common/form/data-form.service';
-
-import { AppConfig } from '@geonature_config/app.config';
-import { ModuleConfig } from '../module.config';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { DataFormService } from '@geonature_common/form/data-form.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class OccHabDataService {
-  constructor(private _http: HttpClient, private _gnDataService: DataFormService) {}
+  constructor(private _http: HttpClient, private _gnDataService: DataFormService, public cs: ConfigService) {}
 
   postStation(data) {
-    return this._http.post(`${AppConfig.API_ENDPOINT}/occhab/station`, data);
+    return this._http.post(`${this.cs.API_ENDPOINT}/occhab/station`, data);
   }
 
   getStations(params?) {
@@ -20,22 +18,22 @@ export class OccHabDataService {
         queryString = queryString.set(key, params[key]);
       }
     }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/occhab/stations`, {
+    return this._http.get<any>(`${this.cs.API_ENDPOINT}/occhab/stations`, {
       params: queryString,
     });
   }
 
   getOneStation(idStation) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/occhab/station/${idStation}`);
+    return this._http.get<any>(`${this.cs.API_ENDPOINT}/occhab/station/${idStation}`);
   }
 
   deleteOneStation(idStation) {
-    return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/occhab/station/${idStation}`);
+    return this._http.delete<any>(`${this.cs.API_ENDPOINT}/occhab/station/${idStation}`);
   }
 
   exportStations(export_format, idsStation?: Array<number>) {
     const sub = this._http.post(
-      `${AppConfig.API_ENDPOINT}/occhab/export_stations/${export_format}`,
+      `${this.cs.API_ENDPOINT}/occhab/export_stations/${export_format}`,
       { idsStation: idsStation },
       {
         observe: 'events',

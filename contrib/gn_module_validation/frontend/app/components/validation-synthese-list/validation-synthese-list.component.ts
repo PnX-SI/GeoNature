@@ -1,4 +1,3 @@
-import { AppConfig } from '@geonature_config/app.config';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -15,15 +14,15 @@ import {
 } from '@angular/core';
 import { MapService } from '@geonature_common/map/map.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CommonService } from '@geonature_common/service/common.service';
 import { ModuleConfig } from '../../module.config';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { ValidationModalInfoObsComponent } from '../validation-modal-info-obs/validation-modal-info-obs.component';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
-import { Router } from '@angular/router';
 import { find, isEmpty, get, findIndex } from 'lodash';
+import { ConfigService } from '@geonature/services/config.service';
+
 @Component({
   selector: 'pnx-validation-synthese-list',
   templateUrl: 'validation-synthese-list.component.html',
@@ -61,21 +60,21 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
     private translate: TranslateService,
     private _ds: SyntheseDataService,
     public ngbModal: NgbModal,
-    private _commonService: CommonService,
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
     private _ms: MapService,
-    public formService: SyntheseFormService
+    public formService: SyntheseFormService,
+    public cs: ConfigService
   ) {}
 
   ngOnInit() {
     // get app config
-    this.appConfig = AppConfig;
+    this.appConfig = this.cs;
 
     this.alertActivate =
-      AppConfig.SYNTHESE.ALERT_MODULES && AppConfig.SYNTHESE.ALERT_MODULES.includes('VALIDATION');
+    this.cs.SYNTHESE.ALERT_MODULES && this.cs.SYNTHESE.ALERT_MODULES.includes('VALIDATION');
     this.pinActivate =
-      AppConfig.SYNTHESE.PIN_MODULES && AppConfig.SYNTHESE.PIN_MODULES.includes('VALIDATION');
+    this.cs.SYNTHESE.PIN_MODULES && this.cs.SYNTHESE.PIN_MODULES.includes('VALIDATION');
 
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;

@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import { CanActivate, Router} from '@angular/router';
 
-import { AppConfig } from '../../../conf/app.config';
-import { AuthService, User } from '@geonature/components/auth/auth.service';
+import { AuthService } from '@geonature/components/auth/auth.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class SignUpGuard implements CanActivate {
-  constructor(private _router: Router) {}
+  constructor(private _router: Router, public cs: ConfigService) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false) {
+  canActivate() {
+    if (this.cs['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false) {
       return true;
     } else {
       this._router.navigate(['/login']);
@@ -20,10 +20,10 @@ export class SignUpGuard implements CanActivate {
 
 @Injectable()
 export class UserManagementGuard implements CanActivate {
-  constructor(private _router: Router) {}
+  constructor(private _router: Router, public cs: ConfigService) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false) {
+  canActivate() {
+    if (this.cs['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false) {
       return true;
     } else {
       this._router.navigate(['/login']);
@@ -39,12 +39,12 @@ export class UserPublicGuard implements CanActivate {
   - Used to prevent public user from accessing the "/user" route in which the user can see and change its own information
   */
 
-  constructor(private _router: Router, public authService: AuthService) {}
+  constructor(private _router: Router, public authService: AuthService, public cs: ConfigService) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  canActivate() {
     if (
-      AppConfig['PUBLIC_ACCESS_USERNAME'] &&
-      AppConfig['PUBLIC_ACCESS_USERNAME'] == this.authService.getCurrentUser().user_login
+      this.cs['PUBLIC_ACCESS_USERNAME'] &&
+      this.cs['PUBLIC_ACCESS_USERNAME'] == this.authService.getCurrentUser().user_login
     ) {
       this._router.navigate(['/']);
       return false;

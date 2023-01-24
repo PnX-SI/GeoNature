@@ -8,10 +8,10 @@ import {
   IterableDiffer,
 } from '@angular/core';
 import { DataFormService } from '../data-form.service';
-import { AppConfig } from '../../../../conf/app.config';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { CommonService } from '../../service/common.service';
 import { DatasetStoreService } from './dataset.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 /**
  *  Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
@@ -61,7 +61,8 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     private _dfs: DataFormService,
     private _commonService: CommonService,
     private _iterableDiffers: IterableDiffers,
-    public datasetStore: DatasetStoreService
+    public datasetStore: DatasetStoreService,
+    public cs: ConfigService
   ) {
     super();
     this.iterableDiffer = this._iterableDiffers.find([]).create(null);
@@ -91,7 +92,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
       },
       (error) => {
         if (error.status === 404) {
-          if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
+          if (this.cs.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
             this._commonService.translateToaster('warning', 'MetaData.NoJDDMTD');
           } else {
             this._commonService.translateToaster('warning', 'MetaData.NoJDD');

@@ -5,7 +5,6 @@ import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { MapService } from '@geonature_common/map/map.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
-import { AppConfig } from '../../../conf/app.config';
 import { SideNavService } from '../sidenav-items/sidenav-service';
 import { ModuleService } from '../../services/module.service';
 import { Subject } from 'rxjs';
@@ -26,9 +25,7 @@ export class HomeContentComponent implements OnInit {
   public generalStat: any;
   public locale: string;
   public destroy$: Subject<boolean> = new Subject<boolean>();
-  public cluserOrSimpleFeatureGroup = AppConfig.SYNTHESE.ENABLE_LEAFLET_CLUSTER
-    ? (L as any).markerClusterGroup()
-    : new L.FeatureGroup();
+  public cluserOrSimpleFeatureGroup = null;
 
   constructor(
     private _SideNavService: SideNavService,
@@ -42,12 +39,16 @@ export class HomeContentComponent implements OnInit {
     let synthese_module = this._moduleService.getModule('SYNTHESE');
     let synthese_read_scope = synthese_module ? synthese_module.cruved['R'] : 0;
 
-    if (this.cs.config.FRONTEND.DISPLAY_MAP_LAST_OBS && synthese_read_scope > 0) {
+    if (this.cs.FRONTEND.DISPLAY_MAP_LAST_OBS && synthese_read_scope > 0) {
       this.showLastObsMap = true;
     }
-    if (this.cs.config.FRONTEND.DISPLAY_STAT_BLOC && synthese_read_scope > 0) {
+    if (this.cs.FRONTEND.DISPLAY_STAT_BLOC && synthese_read_scope > 0) {
       this.showGeneralStat = true;
     }
+
+    this.cluserOrSimpleFeatureGroup = this.cs.SYNTHESE.ENABLE_LEAFLET_CLUSTER
+    ? (L as any).markerClusterGroup()
+    : new L.FeatureGroup();
   }
 
   ngOnInit() {
@@ -84,7 +85,7 @@ export class HomeContentComponent implements OnInit {
       // Compute refresh need
       const currentDatetime = new Date();
       const cacheEndDatetime = new Date(stats.createdDate);
-      const milliSecondsTtl = AppConfig.FRONTEND.STAT_BLOC_TTL * 1000;
+      const milliSecondsTtl = this.cs.FRONTEND.STAT_BLOC_TTL * 1000;
       const futureTimestamp = cacheEndDatetime.getTime() + milliSecondsTtl;
       cacheEndDatetime.setTime(futureTimestamp);
 

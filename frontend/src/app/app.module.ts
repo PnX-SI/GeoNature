@@ -5,7 +5,6 @@ import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
 import {
   HttpClientModule,
   HttpClient,
-  HttpClientXsrfModule,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
 
@@ -14,7 +13,7 @@ import 'hammerjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ChartModule } from 'angular2-chartjs';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 
@@ -63,29 +62,31 @@ import { NotificationDataService } from './components/notification/notification-
 
 // Config
 import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
-import { Router } from '@angular/router';
 import { UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
 
 export function getModulesAndInitRouting(injector) {
-  return () => {
-    // return moduleService.fetchModulesAndSetRouting().toPromise();
-    const moduleService = injector.get(ModuleService);
-    const routingService = injector.get(RoutingService);
-    return moduleService
-      .loadModules()
-      .pipe(
-        tap((modules) => {
-          routingService.loadRoutes(modules);
-        })
-      )
-      .toPromise();
-  };
+  // return moduleService.fetchModulesAndSetRouting().toPromise();
+  const moduleService = injector.get(ModuleService);
+  const routingService = injector.get(RoutingService);
+  return moduleService
+    .loadModules()
+    .pipe(
+      tap((modules) => {
+        routingService.loadRoutes(modules);
+      })
+    )
+    .toPromise();
 }
 
 export function loadConfig(injector) {
-  return () => {
-    const configService = injector.get(ConfigService);
-    return configService._getConfig().toPromise();
+  const configService = injector.get(ConfigService);
+  return configService._getConfig().toPromise();
+}
+
+export function initApp(injector) {
+  return async () => {
+    await loadConfig(injector);
+    return getModulesAndInitRouting(injector);
   };
 }
 
@@ -144,13 +145,7 @@ export function loadConfig(injector) {
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
     {
       provide: APP_INITIALIZER,
-      useFactory: getModulesAndInitRouting,
-      deps: [Injector],
-      multi: true,
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: loadConfig,
+      useFactory: initApp,
       deps: [Injector],
       multi: true,
     },

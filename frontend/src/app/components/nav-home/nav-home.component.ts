@@ -6,10 +6,10 @@ import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 import { AuthService, User } from '../../components/auth/auth.service';
-import { AppConfig } from '../../../conf/app.config';
 import { SideNavService } from '../sidenav-items/sidenav-service';
 import { ModuleService } from '../../services/module.service';
 import { NotificationDataService } from '@geonature/components/notification/notification-data.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-nav-home',
@@ -35,12 +35,13 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     public sideNavService: SideNavService,
     private _moduleService: ModuleService,
     private notificationDataService: NotificationDataService,
-    private router: Router
+    private router: Router,
+    public cs: ConfigService
   ) {}
 
   ngOnInit() {
     // Inject App config to use in the template
-    this.appConfig = AppConfig;
+    this.appConfig = this.cs;
 
     // Subscribe to router event
     this.extractLocaleFromUrl();

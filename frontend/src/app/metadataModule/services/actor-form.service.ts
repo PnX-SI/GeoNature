@@ -1,18 +1,15 @@
 import { Injectable } from '@angular/core';
 import {
   FormGroup,
-  FormControl,
   FormArray,
   FormBuilder,
   Validators,
-  ValidatorFn,
   AbstractControl,
 } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { AppConfig } from '../../../conf/app.config';
 
 // export const ID_ROLE_DATASET_ACTORS = ["5", "6", "7"]; //['Contact principal', 'Fournisseur du jeu de données', 'Producteur du jeu de données']
 // export const ID_ROLE_AF_ACTORS = ["2", "3", "4"]; //['Contact principal', 'Fournisseur du jeu de données', 'Producteur du jeu de données']

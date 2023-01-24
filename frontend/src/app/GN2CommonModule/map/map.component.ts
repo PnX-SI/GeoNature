@@ -1,8 +1,6 @@
 import { Component, Input, OnInit, ViewChild, Injectable } from '@angular/core';
 import { MapService } from './map.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Map, LatLngExpression, LatLngBounds } from 'leaflet';
-import { AppConfig } from '@geonature_config/app.config';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import * as L from 'leaflet';
 import { CommonService } from '../service/common.service';
@@ -17,29 +15,35 @@ import {
   tap,
   switchMap,
   map,
-  timeout,
 } from 'rxjs/operators';
+import { ConfigService } from '@geonature/services/config.service';
 
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
-const PARAMS = new HttpParams({
+
+
+@Injectable()
+export class NominatimService {
+  PARAMS = null;
+
+  constructor(private http: HttpClient,
+    public cs: ConfigService
+    ) {
+this.PARAMS=new HttpParams({
   fromObject: {
     format: 'json',
     limit: '10',
     polygon_geojson: '1',
-    countrycodes: AppConfig.MAPCONFIG.OSM_RESTRICT_COUNTRY_CODES,
+    countrycodes: this.cs.MAPCONFIG.OSM_RESTRICT_COUNTRY_CODES,
   },
-});
-
-@Injectable()
-export class NominatimService {
-  constructor(private http: HttpClient) {}
+})
+    }
 
   search(term: string) {
     if (term === '') {
       return of([]);
     }
 
-    return this.http.get(NOMINATIM_URL, { params: PARAMS.set('q', term) }).pipe(map((res) => res));
+    return this.http.get(NOMINATIM_URL, { params: this.PARAMS.set('q', term) }).pipe(map((res) => res));
   }
 }
 
@@ -60,7 +64,7 @@ export class MapComponent implements OnInit {
    */
   @Input() center: Array<number>;
   /** Niveaux de zoom à l'initialisation de la carte */
-  @Input() zoom: number = AppConfig.MAPCONFIG.ZOOM_LEVEL;
+  @Input() zoom: number = null;
   /** Hauteur de la carte (obligatoire) */
   @Input() height: string;
 
@@ -78,10 +82,11 @@ export class MapComponent implements OnInit {
   constructor(
     private mapService: MapService,
     private _commonService: CommonService,
-    private _http: HttpClient,
-    private _nominatim: NominatimService
+    private _nominatim: NominatimService,
+    public cs: ConfigService
   ) {
     this.searchLocation = '';
+    this.zoom = this.cs.MAPCONFIG.ZOOM_LEVEL
   }
 
   ngOnInit() {
@@ -126,7 +131,7 @@ export class MapComponent implements OnInit {
     if (this.center !== undefined) {
       center = L.latLng(this.center[0], this.center[1]);
     } else {
-      center = L.latLng(AppConfig.MAPCONFIG.CENTER[0], AppConfig.MAPCONFIG.CENTER[1]);
+      center = L.latLng(this.cs.MAPCONFIG.CENTER[0], this.cs.MAPCONFIG.CENTER[1]);
     }
     // MAP
     const map = L.map(this.mapContainer.nativeElement, {
@@ -147,7 +152,7 @@ export class MapComponent implements OnInit {
     // LAYERS CONTROL
     // Baselayers
     const baseControl = {};
-    const BASEMAP = JSON.parse(JSON.stringify(AppConfig.MAPCONFIG.BASEMAP));
+    const BASEMAP = JSON.parse(JSON.stringify(this.cs.MAPCONFIG.BASEMAP));
     BASEMAP.forEach((basemap, index) => {
       const formatedBasemap = this.formatBaseMapConfig(basemap);
       if (basemap.service === 'wms') {

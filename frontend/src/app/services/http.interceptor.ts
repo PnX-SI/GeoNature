@@ -10,11 +10,11 @@ import {
 } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from './config.service';
 
 @Injectable()
 export class MyCustomInterceptor implements HttpInterceptor {
-  constructor(public inj: Injector, public router: Router, private _toastrService: ToastrService) {}
+  constructor(public inj: Injector, public router: Router, private _toastrService: ToastrService, public cs: ConfigService) {}
 
   private handleError(error: any) {
     let errTitle: string;
@@ -52,7 +52,7 @@ export class MyCustomInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // set withCredential = true to send and accept cookie from the API
-    if (this.extractHostname(AppConfig.API_ENDPOINT) == this.extractHostname(request.url)) {
+    if (this.cs.API_ENDPOINT && this.extractHostname(this.cs.API_ENDPOINT) == this.extractHostname(request.url)) {
       request = request.clone({
         withCredentials: true,
       });

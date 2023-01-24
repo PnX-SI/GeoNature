@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/services/config.service';
 import { ModuleService } from '../../services/module.service';
 import { SideNavService } from './sidenav-service';
 
@@ -11,11 +11,16 @@ import { SideNavService } from './sidenav-service';
 export class SidenavItemsComponent implements OnInit {
   public nav = [{}];
   public appConfig: any;
-  public version = AppConfig.GEONATURE_VERSION;
+  public version = null;
   public home_page: any;
   public exportModule: any;
 
-  constructor(public moduleService: ModuleService, public _sidenavService: SideNavService) {}
+  constructor(public moduleService: ModuleService, public _sidenavService: SideNavService,
+    public cs: ConfigService
+    ) {
+  this.version = this.cs.GEONATURE_VERSION;
+
+    }
 
   ngOnInit() {
     this.home_page = this._sidenavService.getHomeItem();

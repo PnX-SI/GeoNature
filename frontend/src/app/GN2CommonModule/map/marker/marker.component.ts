@@ -3,10 +3,10 @@ import { Map, Marker, Icon } from 'leaflet';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { MapService } from '../map.service';
-import { AppConfig } from '@geonature_config/app.config';
 import * as L from 'leaflet';
 import { CommonService } from '../../service/common.service';
 import { GeoJson } from '@tmcw/togeojson';
+import { ConfigService } from '@geonature/services/config.service';
 
 const iconRetinaUrl = 'assets/marker-icon-2x.png';
 const iconUrl = 'assets/marker-icon.png';
@@ -50,11 +50,11 @@ export class MarkerComponent implements OnInit, OnChanges {
   /** Contrôle si le marker est activé par défaut au lancement du composant */
   @Input() defaultEnable = true;
   @Output() markerChanged = new EventEmitter<GeoJson>();
-  constructor(public mapservice: MapService, private _commonService: CommonService) {}
+  constructor(public mapservice: MapService, private _commonService: CommonService, public cs: ConfigService) {}
 
   ngOnInit() {
     this.map = this.mapservice.map;
-    this.zoomLevel = this.zoomLevel || AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE;
+    this.zoomLevel = this.zoomLevel || this.cs.MAPCONFIG.ZOOM_LEVEL_RELEVE;
     this.setMarkerLegend();
     // activation or not of the marker
     if (this.defaultEnable) {

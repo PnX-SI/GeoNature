@@ -8,8 +8,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { CommonService } from '@geonature_common/service/common.service';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/services/config.service';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
@@ -90,7 +89,9 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
   @Output() onDelete = new EventEmitter<Taxon>();
 
-  constructor(private _dfService: DataFormService, private _commonService: CommonService) {}
+  constructor(private _dfService: DataFormService, 
+    public cs: ConfigService
+    ) {}
 
   ngOnInit() {
     if (!this.apiEndPoint) {
@@ -127,9 +128,9 @@ export class TaxonomyComponent implements OnInit, OnChanges {
 
   setApiEndPoint(idList) {
     if (idList) {
-      this.apiEndPoint = `${AppConfig.API_TAXHUB}/taxref/allnamebylist/${idList}`;
+      this.apiEndPoint = `${this.cs.API_TAXHUB}/taxref/allnamebylist/${idList}`;
     } else {
-      this.apiEndPoint = `${AppConfig.API_TAXHUB}/taxref/allnamebylist`;
+      this.apiEndPoint = `${this.cs.API_TAXHUB}/taxref/allnamebylist`;
     }
   }
 

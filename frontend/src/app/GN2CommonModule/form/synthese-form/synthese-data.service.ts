@@ -7,11 +7,10 @@ import {
   HttpErrorResponse,
   HttpEvent,
 } from '@angular/common/http';
-import { GeoJSON } from 'leaflet';
-import { AppConfig } from '@geonature_config/app.config';
 import { BehaviorSubject } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 import { Observable } from 'rxjs';
+import { ConfigService } from '@geonature/services/config.service';
 
 export const FormatMapMime = new Map([
   ['csv', 'text/csv'],
@@ -25,7 +24,9 @@ export class SyntheseDataService {
   public isDownloading: Boolean = false;
   public downloadProgress: BehaviorSubject<number>;
   private _blob: Blob;
-  constructor(private _api: HttpClient, private _commonService: CommonService) {
+  constructor(private _api: HttpClient, 
+    public cs: ConfigService
+    ) {
     this.downloadProgress = <BehaviorSubject<number>>new BehaviorSubject(0.0);
   }
 
@@ -44,13 +45,13 @@ export class SyntheseDataService {
   }
 
   getSyntheseData(filters, selectors) {
-    return this._api.post<any>(`${AppConfig.API_ENDPOINT}/synthese/for_web`, filters, {
+    return this._api.post<any>(`${this.cs.API_ENDPOINT}/synthese/for_web`, filters, {
       params: selectors,
     });
   }
 
   getSyntheseGeneralStat() {
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/general_stats`);
+    return this._api.get<any>(`${this.cs.API_ENDPOINT}/synthese/general_stats`);
   }
 
   getTaxaCount(params = {}) {
@@ -58,7 +59,7 @@ export class SyntheseDataService {
     for (let key in params) {
       queryString = queryString.set(key, params[key].toString());
     }
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_count`, {
+    return this._api.get<any>(`${this.cs.API_ENDPOINT}/synthese/taxa_count`, {
       params: queryString,
     });
   }
@@ -68,7 +69,7 @@ export class SyntheseDataService {
     for (let key in params) {
       queryString = queryString.set(key, params[key].toString());
     }
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/observation_count`, {
+    return this._api.get<any>(`${this.cs.API_ENDPOINT}/synthese/observation_count`, {
       params: queryString,
     });
   }
@@ -78,32 +79,32 @@ export class SyntheseDataService {
     for (let key in params) {
       queryString = queryString.set(key, params[key].toString());
     }
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/observations_bbox`, {
+    return this._api.get<any>(`${this.cs.API_ENDPOINT}/synthese/observations_bbox`, {
       params: queryString,
     });
   }
 
   getObsCountByColumn(column) {
     return this._api.get<any>(
-      `${AppConfig.API_ENDPOINT}/synthese/observation_count_per_column/${column}`
+      `${this.cs.API_ENDPOINT}/synthese/observation_count_per_column/${column}`
     );
   }
 
   getOneSyntheseObservation(id_synthese) {
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/vsynthese/${id_synthese}`);
+    return this._api.get<any>(`${this.cs.API_ENDPOINT}/synthese/vsynthese/${id_synthese}`);
   }
 
   // validation data
   getDefinitionData() {
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/validation/definitions`);
+    return this._api.get<any>(`${this.cs.API_ENDPOINT}/validation/definitions`);
   }
 
   getStatusNames() {
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/validation/statusNames`);
+    return this._api.get<any>(`${this.cs.API_ENDPOINT}/validation/statusNames`);
   }
 
   getTaxonTree() {
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxons_tree`);
+    return this._api.get<any>(`${this.cs.API_ENDPOINT}/synthese/taxons_tree`);
   }
 
   downloadObservations(idSyntheseList: Array<number>, format: string) {
@@ -111,7 +112,7 @@ export class SyntheseDataService {
     const queryString = new HttpParams().set('export_format', format);
 
     const source = this._api.post(
-      `${AppConfig.API_ENDPOINT}/synthese/export_observations`,
+      `${this.cs.API_ENDPOINT}/synthese/export_observations`,
       idSyntheseList,
       {
         params: queryString,
@@ -129,7 +130,7 @@ export class SyntheseDataService {
     this.isDownloading = true;
 
     const source = this._api.post(
-      `${AppConfig.API_ENDPOINT}/synthese/export_taxons`,
+      `${this.cs.API_ENDPOINT}/synthese/export_taxons`,
       idSyntheseList,
       {
         headers: new HttpHeaders().set('Content-Type', 'application/json'),
@@ -159,7 +160,7 @@ export class SyntheseDataService {
     for (const key in args) {
       queryString = queryString.set(key, args[key].toString());
     }
-    const source = this._api.get(`${AppConfig.API_ENDPOINT}/meta/uuid_report`, {
+    const source = this._api.get(`${this.cs.API_ENDPOINT}/meta/uuid_report`, {
       headers: new HttpHeaders().set('Content-Type', 'text/csv'),
       observe: 'events',
       responseType: 'blob',
@@ -175,7 +176,7 @@ export class SyntheseDataService {
     for (const key in args) {
       queryString = queryString.set(key, args[key].toString());
     }
-    const source = this._api.get(`${AppConfig.API_ENDPOINT}/meta/sensi_report`, {
+    const source = this._api.get(`${this.cs.API_ENDPOINT}/meta/sensi_report`, {
       headers: new HttpHeaders().set('Content-Type', 'text/csv'),
       observe: 'events',
       responseType: 'blob',
@@ -228,18 +229,18 @@ export class SyntheseDataService {
   }
 
   getReports(params) {
-    return this._api.get(`${AppConfig.API_ENDPOINT}/synthese/reports?${params}`);
+    return this._api.get(`${this.cs.API_ENDPOINT}/synthese/reports?${params}`);
   }
 
   createReport(params) {
-    return this._api.post(`${AppConfig.API_ENDPOINT}/synthese/reports`, params);
+    return this._api.post(`${this.cs.API_ENDPOINT}/synthese/reports`, params);
   }
 
   deleteReport(id) {
-    return this._api.delete(`${AppConfig.API_ENDPOINT}/synthese/reports/${id}`);
+    return this._api.delete(`${this.cs.API_ENDPOINT}/synthese/reports/${id}`);
   }
 
   modifyReport(id, params) {
-    return this._api.put(`${AppConfig.API_ENDPOINT}/synthese/reports/${id}`, params);
+    return this._api.put(`${this.cs.API_ENDPOINT}/synthese/reports/${id}`, params);
   }
 }

@@ -1,12 +1,11 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
-import { AppConfig } from '@geonature_config/app.config';
 import { AuthService, User } from '@geonature/components/auth/auth.service';
-import { DataFormService } from '@geonature_common/form/data-form.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { isEmpty, uniqueId } from 'lodash';
 import * as moment from 'moment';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-discussion-card',
@@ -20,7 +19,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   public commentForm: FormGroup;
   public open = false;
   public currentUser: User;
-  public appConfig = AppConfig;
+  public appConfig = null;
   public discussions: any;
   public allow = false;
   public sort = 'desc';
@@ -28,8 +27,10 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     private _authService: AuthService,
     private _formBuilder: FormBuilder,
     private _commonService: CommonService,
-    private _syntheseDataService: SyntheseDataService
+    private _syntheseDataService: SyntheseDataService,
+    public cs: ConfigService
   ) {
+    this.appConfig = this.cs;
     this.commentForm = this._formBuilder.group({
       content: ['', Validators.required],
       item: [this.idSynthese],
