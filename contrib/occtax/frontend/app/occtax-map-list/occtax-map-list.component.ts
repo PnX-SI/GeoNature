@@ -1,7 +1,6 @@
 import {
   Component,
   OnInit,
-  OnDestroy,
   AfterViewInit,
   HostListener,
   ViewChild,
@@ -15,15 +14,11 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { ModuleConfig } from '../module.config';
 import { TaxonomyComponent } from '@geonature_common/form/taxonomy/taxonomy.component';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { GenericFormGeneratorComponent } from '@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component';
 import { AppConfig } from '@geonature_config/app.config';
 import * as moment from 'moment';
 import { MediaService } from '@geonature_common/service/media.service';
-import { filter } from 'rxjs/operators';
-import { OcctaxFormReleveService } from '../occtax-form/releve/releve.service';
-import { OcctaxFormOccurrenceService } from '../occtax-form/occurrence/occurrence.service';
-import { OcctaxFormService } from '../occtax-form/occtax-form.service';
 import { OcctaxMapListService } from './occtax-map-list.service';
 import { ModuleService } from '@geonature/services/module.service';
 
@@ -43,9 +38,11 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
   public apiEndPoint: string;
   public occtaxConfig: any;
   // public formsDefinition = FILTERSLIST;
-  public dynamicFormGroup: FormGroup;
+  public dynamicFormGroup: UntypedFormGroup;
   public formsSelected = [];
   public cardContentHeight: number;
+
+  public isCollapseAvance = true;
 
   advandedFilterOpen = false;
   @ViewChild(NgbModal)

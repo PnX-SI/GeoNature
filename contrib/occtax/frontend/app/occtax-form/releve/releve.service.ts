@@ -1,5 +1,10 @@
 import { Injectable, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  UntypedFormControl,
+  Validators,
+} from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subscription, of, combineLatest, forkJoin } from 'rxjs';
 import {
@@ -29,10 +34,10 @@ import { ModuleService } from '@geonature/services/module.service';
 export class OcctaxFormReleveService {
   public userReleveRigth: any;
 
-  public propertiesForm: FormGroup;
-  public habitatForm = new FormControl();
+  public propertiesForm: UntypedFormGroup;
+  public habitatForm = new UntypedFormControl();
   public releve: any;
-  public releveForm: FormGroup;
+  public releveForm: UntypedFormGroup;
   //custom additional fields
   public additionalFieldsForm: Array<any> = [];
 
@@ -47,7 +52,7 @@ export class OcctaxFormReleveService {
 
   constructor(
     private router: Router,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private _commonService: CommonService,
     private dateParser: NgbDateParserFormatter,
     private coreFormService: FormService,

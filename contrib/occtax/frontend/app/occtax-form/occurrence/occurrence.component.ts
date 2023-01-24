@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, FormArray, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { map, filter, tap } from 'rxjs/operators';
 import { OcctaxFormService } from '../occtax-form.service';
@@ -39,8 +39,8 @@ import { MatDialog } from '@angular/material/dialog';
 export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public occtaxConfig = ModuleConfig;
   public appConfig = AppConfig;
-  public occurrenceForm: FormGroup;
-  public taxonForm: FormControl; //control permettant de rechercher un taxon TAXREF
+  public occurrenceForm: UntypedFormGroup;
+  public taxonForm: UntypedFormControl; //control permettant de rechercher un taxon TAXREF
   public taxonFormFocus: boolean = false; //pour mieux gérer l'affichage de l'erreur required
   public advanced: string = 'collapsed';
   private _subscriptions: Subscription[] = [];
@@ -100,7 +100,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   }
 
   initTaxrefSearch() {
-    this.taxonForm = new FormControl(null, [
+    this.taxonForm = new UntypedFormControl(null, [
       Validators.required,
       this._coreFormService.taxonValidator,
     ]);

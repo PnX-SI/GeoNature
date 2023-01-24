@@ -1,5 +1,5 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { DynamicFormService } from './dynamic-form.service';
 import * as equal from 'fast-deep-equal/es6';
 import { filter } from 'rxjs/operators';
@@ -15,7 +15,7 @@ import { filter } from 'rxjs/operators';
 })
 export class GenericFormGeneratorComponent implements OnInit, OnChanges {
   public formControlBuilded = false;
-  public selectControl = new FormControl();
+  public selectControl = new UntypedFormControl();
 
   public formsHidden = [];
   public formsDisplayed = [];
@@ -23,7 +23,7 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
   public oldValue = {};
   public update;
 
-  @Input() myFormGroup: FormGroup;
+  @Input() myFormGroup: UntypedFormGroup;
   @Output() myFormGroupChange = new EventEmitter<any>();
 
   @Input() formsDefinition: Array<any>;

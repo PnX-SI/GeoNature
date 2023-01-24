@@ -8,23 +8,31 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "module": "es2020",
-    "target": "es2015",
+    "module": "ES2022",
+    "target": "ES2022",
     "lib": [
-      "es2018",
+      "ES2022",
       "dom"
     ],
     "typeRoots": [
       "node_modules/@types"
     ],
-    "types":[
-    ],
+    "types": [],
     "baseUrl": "./",
     "paths": {
-      "@geonature_common/*" : ["src/app/GN2CommonModule/*"],
-      "@geonature/*" : ["src/app/*"],
-      "@geonature_config/*" : ["src/conf/*"],
-      "@librairies/*" : ["./node_modules/*"]
-    }
+      "@geonature_common/*": [
+        "src/app/GN2CommonModule/*"
+      ],
+      "@geonature/*": [
+        "src/app/*"
+      ],
+      "@geonature_config/*": [
+        "src/conf/*"
+      ],
+      "@librairies/*": [
+        "./node_modules/*"
+      ]
+    },
+    "useDefineForClassFields": false
   }
 }

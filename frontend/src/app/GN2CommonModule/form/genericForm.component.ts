@@ -10,7 +10,7 @@ import {
   SimpleChange,
   OnDestroy,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
@@ -19,7 +19,7 @@ import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
   template: '',
 })
 export class GenericFormComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
-  @Input() parentFormControl: FormControl;
+  @Input() parentFormControl: UntypedFormControl;
   @Input() label: string;
   @Input() class: string = 'auto';
 

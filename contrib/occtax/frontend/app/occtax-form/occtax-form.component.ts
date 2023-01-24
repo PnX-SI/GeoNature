@@ -136,9 +136,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   openParametersDialog(modalComponent): void {
-    this._modalService.open(modalComponent.modalContent, {
-      windowClass: 'large-modal',
-    });
+    this._modalService.open(modalComponent.modalContent, { windowClass: 'large-modal' });
   }
   /**
    *

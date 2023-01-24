@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { ToastrService } from 'ngx-toastr';
@@ -16,14 +16,14 @@ import { AuthService } from '../../../components/auth/auth.service';
   styleUrls: ['./sign-up.component.scss'],
 })
 export class SignUpComponent implements OnInit {
-  form: FormGroup;
-  dynamicFormGroup: FormGroup;
+  form: UntypedFormGroup;
+  dynamicFormGroup: UntypedFormGroup;
   public disableSubmit = false;
   public formControlBuilded = false;
   public FORM_CONFIG = AppConfig.ACCOUNT_MANAGEMENT.ACCOUNT_FORM;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private _authService: AuthService,
     private _router: Router,
     private _toasterService: ToastrService,

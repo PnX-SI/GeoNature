@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 /**
  * Ce composant permet d'afficher un input de type multiselect à partir
@@ -25,10 +25,10 @@ import { FormControl } from '@angular/forms';
 })
 export class MultiSelectComponent implements OnInit {
   public selectedItems = [];
-  public searchControl = new FormControl();
+  public searchControl = new UntypedFormControl();
   public formControlValue = [];
 
-  @Input() parentFormControl: FormControl;
+  @Input() parentFormControl: UntypedFormControl;
   /** Valeurs à afficher dans la liste déroulante. Doit être un tableau
    * de dictionnaire.
    */

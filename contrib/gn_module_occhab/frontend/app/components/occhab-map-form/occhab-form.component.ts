@@ -38,6 +38,9 @@ export class OccHabFormComponent implements OnInit {
   // boolean tocheck if the station has at least one hab (control the validity of the form)
   public atLeastOneHab = false;
 
+  public isCollapseDepth = true;
+  public isCollaspeTypo = true;
+
   constructor(
     public occHabForm: OcchabFormService,
     private _occHabDataService: OccHabDataService,

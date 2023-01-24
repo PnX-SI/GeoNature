@@ -13,61 +13,59 @@
           </div>
           <div class="panel-body">
             <ng-container *ngIf="!login_or_pass_recovery; else logPwdRecoBlock">
-              <mat-horizontal-stepper linear #stepper="matHorizontalStepper">
-                <mat-step [stepControl]="identifiant">
-                  <form (ngSubmit)="register(userForm.value)" #userForm="ngForm">
-                    <!-- <div class="form-group inner-addon right-addon">
+              <form (ngSubmit)="register(userForm.value)" #userForm="ngForm">
+                <!-- <div class="form-group inner-addon right-addon">
                                         <i class="fa fa-user"></i>
                                         <input type="text" class="form-control" name="username" placeholder="Identifiant" ngModel>
                                     </div> -->
-                    <div class="form-group">
-                      <i class="addon fa fa-user"></i>
-                      <input
-                        type="text"
-                        id="login"
-                        class="form-control"
-                        name="username"
-                        ngModel
-                        placeholder="Identifiant"
-                        autofocus
-                        data-qa="gn-connection-id"
-                      >
-                    </div>
-                    <div class="form-group">
-                      <i class="addon fa fa-lock"></i>
-                      <input
-                        type="password"
-                        name="password"
-                        class="form-control"
-                        placeholder="Mot de passe"
-                        ngModel
-                        data-qa="gn-connection-pwd"
-                      >
-                    </div>
-                    <div
-                      *ngIf="enable_user_management"
-                      class="forgot"
-                      (click)="login_or_pass_recovery = true"
-                    >
-                      {{ 'ForgotPasswordOrLogin' | translate }}
-                    </div>
+                <div class="form-group">
+                  <i class="addon fa fa-user"></i>
+                  <input
+                    type="text"
+                    id="login"
+                    class="form-control"
+                    name="username"
+                    ngModel
+                    placeholder="Identifiant"
+                    autofocus
+                    data-qa="gn-connection-id"
+                  />
+                </div>
+                <div class="form-group">
+                  <i class="addon fa fa-lock"></i>
+                  <input
+                    type="password"
+                    name="password"
+                    class="form-control"
+                    placeholder="Mot de passe"
+                    ngModel
+                    data-qa="gn-connection-pwd"
+                  />
+                </div>
+                <div
+                  *ngIf="enable_user_management"
+                  class="forgot"
+                  (click)="login_or_pass_recovery = true"
+                >
+                  {{ 'ForgotPasswordOrLogin' | translate }}
+                </div>
 
-                    <button
-                      class="btn btn-lg btn-success btn-block text-uppercase"
-                      type="submit"
-                      data-qa="gn-connection-button"
-                    >Se connecter</button>
-                    <br>
-                    
-                    <div *ngIf="enable_sign_up">
-                      <div class="inscription">
-                        <a routerLink="/login/inscription">{{ 'CreateAccount' | translate }}</a>
-                      </div>
-                    </div>
-                    <!-- <input type="submit" class="btn btn-success" value="Connexion"> -->
-                  </form>
-                </mat-step>
-              </mat-horizontal-stepper>
+                <button
+                  class="btn btn-lg btn-success btn-block text-uppercase"
+                  type="submit"
+                  data-qa="gn-connection-button"
+                >
+                  Se connecter
+                </button>
+                <br />
+
+                <div *ngIf="enable_sign_up">
+                  <div class="inscription">
+                    <a routerLink="/login/inscription">{{ 'CreateAccount' | translate }}</a>
+                  </div>
+                </div>
+                <!-- <input type="submit" class="btn btn-success" value="Connexion"> -->
+              </form>
             </ng-container>
 
             <ng-template #logPwdRecoBlock>

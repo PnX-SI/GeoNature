@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { ModuleConfig } from '../../module.config';
 import { TaxonomyComponent } from '@geonature_common/form/taxonomy/taxonomy.component';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { FILTERSLIST } from './filters-list';
 import { HttpParams } from '@angular/common/http';
@@ -16,7 +16,7 @@ import { ModuleService } from '@geonature/services/module.service';
 })
 export class OcctaxMapListFilterComponent implements OnInit {
   public formsDefinition = FILTERSLIST;
-  public dynamicFormGroup: FormGroup;
+  public dynamicFormGroup: UntypedFormGroup;
   public formsSelected = [];
   public displayParams: HttpParams = new HttpParams();
   public occtaxConfig: any;
@@ -27,7 +27,7 @@ export class OcctaxMapListFilterComponent implements OnInit {
 
   constructor(
     private mapListService: MapListService,
-    private _fb: FormBuilder,
+    private _fb: UntypedFormBuilder,
     private _dateParser: NgbDateParserFormatter,
     public occtaxMapListService: OcctaxMapListService,
     public moduleService: ModuleService

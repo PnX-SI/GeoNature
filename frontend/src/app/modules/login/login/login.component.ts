@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from '@geonature_common/service/common.service';
@@ -18,15 +18,15 @@ export class LoginComponent implements OnInit {
   public casLogin: boolean;
   public disableSubmit = false;
   public enablePublicAccess = AppConfig.PUBLIC_ACCESS_USERNAME;
-  identifiant: FormGroup;
-  password: FormGroup;
-  form: FormGroup;
+  identifiant: UntypedFormGroup;
+  password: UntypedFormGroup;
+  form: UntypedFormGroup;
   login_or_pass_recovery: boolean = false;
   public APP_NAME = AppConfig.appName;
 
   constructor(
     private _authService: AuthService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private _toasterService: ToastrService,
     private _commonService: CommonService
   ) {

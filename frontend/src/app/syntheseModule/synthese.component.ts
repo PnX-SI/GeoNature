@@ -26,6 +26,8 @@ export class SyntheseComponent implements OnInit {
   public firstLoad = true;
   public CONFIG = AppConfig;
 
+  public isCollapseSyntheseNavBar = false;
+
   constructor(
     public searchService: SyntheseDataService,
     public _mapListService: MapListService,

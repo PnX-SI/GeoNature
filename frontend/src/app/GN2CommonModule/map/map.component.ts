@@ -8,7 +8,7 @@ import * as L from 'leaflet';
 import { CommonService } from '../service/common.service';
 
 import 'leaflet-draw';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import {
   catchError,
@@ -73,7 +73,7 @@ export class MapComponent implements OnInit {
   searchLocation: string;
   public searching = false;
   public searchFailed = false;
-  public locationControl = new FormControl();
+  public locationControl = new UntypedFormControl();
   public map: Map;
   constructor(
     private mapService: MapService,

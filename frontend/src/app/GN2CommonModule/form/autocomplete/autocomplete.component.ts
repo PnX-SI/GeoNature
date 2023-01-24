@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output, KeyValueDiffers } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { CommonService } from '@geonature_common/service/common.service';
 import { Observable } from 'rxjs';
@@ -27,7 +27,7 @@ import {
 export class AutoCompleteComponent implements OnInit {
   /** URL de l'API à appeler */
   @Input() apiEndPoint: string;
-  @Input() parentFormControl: FormControl;
+  @Input() parentFormControl: UntypedFormControl;
   @Input() label: string;
   @Input() charNumber = 2;
   @Input() placeholder = '';

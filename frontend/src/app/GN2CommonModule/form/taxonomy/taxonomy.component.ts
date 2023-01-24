@@ -7,7 +7,7 @@ import {
   Output,
   ViewEncapsulation,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { CommonService } from '@geonature_common/service/common.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
@@ -65,7 +65,7 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   /**
    * Reactive form
    */
-  @Input() parentFormControl: FormControl;
+  @Input() parentFormControl: UntypedFormControl;
   @Input() label: string;
   // api endpoint for the automplete ressource
   @Input() apiEndPoint: string;
@@ -82,13 +82,15 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   searchString: any;
   filteredTaxons: any;
   regnes = new Array();
-  regneControl = new FormControl(null);
-  groupControl = new FormControl(null);
+  regneControl = new UntypedFormControl(null);
+  groupControl = new UntypedFormControl(null);
   regnesAndGroup: any;
   noResult: boolean;
   isLoading = false;
   @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
   @Output() onDelete = new EventEmitter<Taxon>();
+
+  public isCollapseTaxonomy = true;
 
   constructor(private _dfService: DataFormService, private _commonService: CommonService) {}
 

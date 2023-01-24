@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin, Observable, BehaviorSubject, combineLatest, of } from 'rxjs';
 import {
@@ -19,8 +19,8 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 
 @Injectable()
 export class MetadataService {
-  public form: FormGroup;
-  public rapidSearchControl: FormControl = new FormControl();
+  public form: UntypedFormGroup;
+  public rapidSearchControl: UntypedFormControl = new UntypedFormControl();
 
   /* données receptionnées par l'API */
   private _acquisitionFrameworks: BehaviorSubject<any[]> = new BehaviorSubject([]);
@@ -42,7 +42,7 @@ export class MetadataService {
   activePage: BehaviorSubject<number> = new BehaviorSubject(0);
 
   constructor(
-    private _fb: FormBuilder,
+    private _fb: UntypedFormBuilder,
     public dateParser: NgbDateParserFormatter,
     private dataFormService: DataFormService,
     private _syntheseDataService: SyntheseDataService
@@ -96,7 +96,7 @@ export class MetadataService {
       .subscribe(() => this.pageIndex.next(0));
     AppConfig.METADATA.METADATA_AREA_FILTERS.forEach((area) => {
       const control_name = 'area_' + area['type_code'].toLowerCase();
-      this.form.addControl(control_name, new FormControl(new Array()));
+      this.form.addControl(control_name, new UntypedFormControl(new Array()));
       const control = this.form.controls[control_name];
       area['control'] = control;
     });

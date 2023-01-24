@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DataFormService } from '../data-form.service';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { CommonService } from '@geonature_common/service/common.service';
 import { Observable } from 'rxjs';
 
@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./municipalities.component.scss'],
 })
 export class MunicipalitiesComponent implements OnInit {
-  @Input() parentFormControl: FormControl;
+  @Input() parentFormControl: UntypedFormControl;
   @Input() label: string;
   /**
    * @deprecated Do not use this input
