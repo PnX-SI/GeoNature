@@ -27,16 +27,13 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output() change = new EventEmitter<any>();
 
-  public appConfig = null;
   public rand = Math.ceil(Math.random() * 1e10);
 
   public formDefComp = {};
   public isValInSelectList: boolean = true;
   private _sub: Subscription;
 
-  constructor(private _dynformService: DynamicFormService, public cs: ConfigService) {
-    this.appConfig = this.cs;
-  }
+  constructor(private _dynformService: DynamicFormService, public cs: ConfigService) {}
 
   ngOnInit() {
     this.setFormDefComp(true);

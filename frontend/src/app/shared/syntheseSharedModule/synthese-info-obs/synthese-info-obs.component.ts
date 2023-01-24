@@ -27,7 +27,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public validationHistory: Array<any> = [];
   public selectedObsTaxonDetail: any;
   @ViewChild('tabGroup') tabGroup;
-  public APP_CONFIG = null;
   public selectedGeom;
   // public chartType = 'line';
   public profileDataChecks: any;
@@ -36,7 +35,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public selectObsTaxonInfo;
   public selectCdNomenclature;
   public formatedAreas = [];
-  public CONFIG = null;
   public isLoading = false;
   public email;
   public mailto: string;
@@ -69,10 +67,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     private _clipboard: Clipboard,
     private _moduleService: ModuleService,
     public cs: ConfigService
-  ) {
-    this.APP_CONFIG = this.cs;
-    this.CONFIG = this.cs;
-  }
+  ) {}
 
   ngOnInit() {
     this.loadAllInfo(this.idSynthese);
@@ -92,7 +87,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   }
 
   // HACK to display a second map on validation tab
-  setValidationTab(event) {
+  setValidationTab() {
     this.showValidation = true;
     if (this._mapService.map) {
       setTimeout(() => {
@@ -185,7 +180,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       const d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };
       if (this.selectedObs.source.url_source) {
         d['data_link'] = [
-          this.APP_CONFIG.URL_APPLICATION,
+          this.cs.URL_APPLICATION,
           this.selectedObs.source.url_source,
           this.selectedObs.entity_source_pk_value,
         ].join('/');

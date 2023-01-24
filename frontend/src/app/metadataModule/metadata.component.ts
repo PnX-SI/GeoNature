@@ -41,7 +41,6 @@ export class MetadataComponent implements OnInit {
   afPublishModalId: number;
   afPublishModalLabel: string;
   afPublishModalContent: string;
-  APP_CONFIG = null;
 
   pageSize: number;
   pageIndex: number;
@@ -53,9 +52,7 @@ export class MetadataComponent implements OnInit {
     public metadataService: MetadataService,
     private _commonService: CommonService,
     public cs: ConfigService
-  ) {
-    this.APP_CONFIG = this.cs;
-  }
+  ) {}
 
   ngOnInit() {
     this._dfs.getOrganisms().subscribe((organisms) => (this.organisms = organisms));

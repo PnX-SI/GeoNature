@@ -17,7 +17,6 @@ import { ConfigService } from '@geonature/services/config.service';
 })
 export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
   public occtaxConfig = ModuleConfig;
-  public appConfig = null;
   public data: any;
 
   @Input('value')
@@ -37,9 +36,7 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxFormCountingService: OcctaxFormCountingService,
     public cs: ConfigService
-  ) {
-    this.appConfig = this.cs;
-  }
+  ) {}
 
   ngOnInit() {
     this.form = this.occtaxFormCountingService.form;

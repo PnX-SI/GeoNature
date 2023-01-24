@@ -20,7 +20,6 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   public moduleName = 'Accueil';
   private subscription: Subscription;
   public currentUser: User;
-  public appConfig: any;
   public currentDocUrl: string;
   public locale: string;
   public moduleUrl: string;
@@ -40,9 +39,6 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    // Inject App config to use in the template
-    this.appConfig = this.cs;
-
     // Subscribe to router event
     this.extractLocaleFromUrl();
 
@@ -55,7 +51,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     // Put the user name in navbar
     this.currentUser = this.authService.getCurrentUser();
 
-    if (this.appConfig.NOTIFICATIONS_ENABLED == true) {
+    if (this.cs.NOTIFICATIONS_ENABLED == true) {
       // Update notification count to display in badge
       this.updateNotificationCount();
     }
@@ -97,7 +93,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
         this.currentDocUrl = module.module_doc_url;
       }
     });
-    if (this.appConfig.NOTIFICATIONS_ENABLED == true) {
+    if (this.cs.NOTIFICATIONS_ENABLED == true) {
       // Update notification count to display in badge
       this.updateNotificationCount();
     }
@@ -105,7 +101,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
   closeSideBar() {
     this.sideNavService.sidenav.toggle();
-    if (this.appConfig.NOTIFICATIONS_ENABLED == true) {
+    if (this.cs.NOTIFICATIONS_ENABLED == true) {
       // Update notification count to display in badge
       this.updateNotificationCount();
     }

@@ -23,7 +23,6 @@ import { ConfigService } from '@geonature/services/config.service';
   styleUrls: ['./profiles.component.scss'],
 })
 export class OcctaxProfilesComponent implements OnInit, OnDestroy {
-  private appConfig = null;
   public profilErrors: any[] = [];
   public taxon: any = null;
   private _sub: Array<Subscription> = [];
@@ -34,9 +33,7 @@ export class OcctaxProfilesComponent implements OnInit, OnDestroy {
     public occtaxFormService: OcctaxFormService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public cs: ConfigService
-  ) {
-    this.appConfig = this.cs;
-  }
+  ) {}
 
   ngOnInit() {
     const lifeStageObservable = this.occtaxFormOccurrenceService.lifeStage.pipe(
@@ -62,7 +59,7 @@ export class OcctaxProfilesComponent implements OnInit, OnDestroy {
       //reinitialisation view variable
       tap(() => (this.taxon = null)),
       //filter on param
-      filter(() => this.appConfig.FRONTEND['ENABLE_PROFILES']),
+      filter(() => this.cs.FRONTEND['ENABLE_PROFILES']),
       //filter on data
       filter((taxon) => taxon !== null && taxon.cd_ref),
       //set variable for view usage

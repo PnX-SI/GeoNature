@@ -38,7 +38,6 @@ import { ConfigService } from '@geonature/services/config.service';
 })
 export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public occtaxConfig = ModuleConfig;
-  public appConfig = null;
   public occurrenceForm: FormGroup;
   public taxonForm: FormControl; //control permettant de rechercher un taxon TAXREF
   public taxonFormFocus: boolean = false; //pour mieux gérer l'affichage de l'erreur required
@@ -61,9 +60,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     private _occtaxTaxaListService: OcctaxTaxaListService,
     public dialog: MatDialog,
     public cs: ConfigService
-  ) {
-    this.appConfig = this.cs;
-  }
+  ) {}
 
   ngOnInit() {
     this.occurrenceForm = this.occtaxFormOccurrenceService.form;

@@ -23,7 +23,6 @@ export class SyntheseComponent implements OnInit {
   public searchBarHidden = false;
   public marginButton: number;
   public firstLoad = true;
-  public CONFIG = null;
 
   constructor(
     public searchService: SyntheseDataService,
@@ -35,9 +34,7 @@ export class SyntheseComponent implements OnInit {
     private _route: ActivatedRoute,
     private _ngModal: NgbModal,
     public cs: ConfigService
-  ) {
-    this.CONFIG = this.cs;
-  }
+  ) {}
 
   ngOnInit() {
     this._fs.selectors = this._fs.selectors
@@ -110,7 +107,7 @@ export class SyntheseComponent implements OnInit {
         this._mapListService.idName = 'id';
         this.searchService.dataLoaded = true;
       },
-      (error) => {
+      () => {
         this.searchService.dataLoaded = true;
       }
     );

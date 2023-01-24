@@ -10,7 +10,6 @@ import { ConfigService } from '@geonature/services/config.service';
   styleUrls: ['./occhab-map-list-filter.component.scss'],
 })
 export class OcchabMapListFilterComponent implements OnInit {
-  public appConfig = null;
   public moduleConfig = ModuleConfig;
   @Output() onSearch = new EventEmitter<any>();
 
@@ -18,9 +17,7 @@ export class OcchabMapListFilterComponent implements OnInit {
     public mapListFormService: OccHabMapListService,
     private _dateParser: NgbDateParserFormatter,
     public cs: ConfigService
-  ) {
-    this.appConfig = this.cs;
-  }
+  ) {}
 
   ngOnInit() {}
 

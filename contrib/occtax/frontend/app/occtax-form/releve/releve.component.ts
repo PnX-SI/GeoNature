@@ -27,7 +27,6 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public userDatasets: Array<any>;
   public releveForm: FormGroup;
   public moduleConfig = ModuleConfig;
-  public AppConfig = null;
   public routeSub: Subscription;
   private _subscriptions: Subscription[] = [];
 
@@ -45,7 +44,6 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     public occtaxDataService: OcctaxDataService,
     public cs: ConfigService
   ) {
-    this.AppConfig = this.cs;
     this.occtaxConfig = ModuleConfig;
   }
 

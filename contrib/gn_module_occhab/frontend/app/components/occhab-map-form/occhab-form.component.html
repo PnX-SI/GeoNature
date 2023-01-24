@@ -427,7 +427,7 @@
             <div class="form-row">
               <div class="col-6 inline">
                 <pnx-autocomplete
-                  apiEndPoint="{{appConfig.API_ENDPOINT}}/habref/habitats/autocomplete"
+                  apiEndPoint="{{cs.API_ENDPOINT}}/habref/habitats/autocomplete"
                   [searchAsParameter]="false"
                   [parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('habref')"
                   queryParamSearch="search_name"

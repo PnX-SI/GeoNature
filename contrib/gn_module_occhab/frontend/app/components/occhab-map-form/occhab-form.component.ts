@@ -24,7 +24,6 @@ export class OccHabFormComponent implements OnInit {
   public MAP_SMALL_HEIGHT = '50vh !important;';
   public MAP_FULL_HEIGHT = '87vh';
   public mapHeight = this.MAP_FULL_HEIGHT;
-  public appConfig = null;
   public moduleConfig = ModuleConfig;
   public showHabForm = false;
   public showTabHab = false;
@@ -45,9 +44,7 @@ export class OccHabFormComponent implements OnInit {
     private _router: Router,
     private _commonService: CommonService,
     public cs: ConfigService
-  ) {
-    this.appConfig = this.cs;
-  }
+  ) {}
 
   ngOnInit() {
     this.leafletDrawOptions;

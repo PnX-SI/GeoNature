@@ -324,7 +324,7 @@
   <div class="col-6">
     <pnx-autocomplete
       *ngIf="occtaxConfig.form_fields.habitat"
-      apiEndPoint="{{AppConfig.API_ENDPOINT}}/habref/habitats/autocomplete"
+      apiEndPoint="{{cs.API_ENDPOINT}}/habref/habitats/autocomplete"
       [searchAsParameter]="false"
       [parentFormControl]="occtaxFormReleveService.habitatForm"
       queryParamSearch="search_name"

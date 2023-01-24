@@ -17,7 +17,6 @@ import { ConfigService } from '@geonature/services/config.service';
   encapsulation: ViewEncapsulation.None,
 })
 export class SyntheseSearchComponent implements OnInit {
-  public AppConfig = null;
   public organisms: Array<any>;
   public taxonApiEndPoint = null;
   public validationStatus: Array<any>;
@@ -40,8 +39,7 @@ export class SyntheseSearchComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       this.params = params;
     });
-    this.AppConfig = this.cs;
-    this.taxonApiEndPoint = `${this.AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
+    this.taxonApiEndPoint = `${this.cs.API_ENDPOINT}/synthese/taxons_autocomplete`;
   }
 
   ngOnInit() {

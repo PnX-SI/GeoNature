@@ -31,7 +31,6 @@ import { ConfigService } from '@geonature/services/config.service';
 export class ValidationSyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
   public VALIDATION_CONFIG = ModuleConfig;
   public oneSyntheseObs: any;
-  public appConfig: any;
   selectedObs: Array<number> = []; // list of id_synthese values for selected rows
   selectedIndex: Array<number> = [];
   selectedPages = [];
@@ -68,9 +67,6 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
   ) {}
 
   ngOnInit() {
-    // get app config
-    this.appConfig = this.cs;
-
     this.alertActivate =
       this.cs.SYNTHESE.ALERT_MODULES && this.cs.SYNTHESE.ALERT_MODULES.includes('VALIDATION');
     this.pinActivate =

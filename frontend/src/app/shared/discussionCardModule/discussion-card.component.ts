@@ -19,7 +19,6 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   public commentForm: FormGroup;
   public open = false;
   public currentUser: User;
-  public appConfig = null;
   public discussions: any;
   public allow = false;
   public sort = 'desc';
@@ -30,7 +29,6 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     private _syntheseDataService: SyntheseDataService,
     public cs: ConfigService
   ) {
-    this.appConfig = this.cs;
     this.commentForm = this._formBuilder.group({
       content: ['', Validators.required],
       item: [this.idSynthese],
@@ -76,8 +74,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   isValid() {
     return (
       this.commentForm.valid &&
-      this.commentForm.get('content').value.length <=
-        this.appConfig?.SYNTHESE?.DISCUSSION_MAX_LENGTH
+      this.commentForm.get('content').value.length <= this.cs?.SYNTHESE?.DISCUSSION_MAX_LENGTH
     );
   }
 
