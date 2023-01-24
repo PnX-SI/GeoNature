@@ -1861,19 +1861,18 @@ Un champ additionnel est définit par:
 
 Exemples de configuration :
 
-- Un champs type "select" :
+Pour les champs de type "select", "multiselect", "checkbox" et "radio", le champs "valeur" doit être rempli par un JSON représentant une liste de dictionnaire "label" (représentant la valeur affiché), et "valeur" (représentant la valeur écrite en base de données).
+Exemple : `[{"label": "Trois", "value": 3}, {"label": "Quatre", "value": 4}]`
 
-.. image :: _static/select_exemple.png
+- Un champs type "multiselect": 
 
-- Un champs type "multiselect" (la clé "value" est obligatoire dans le dictionnaire de valeurs) : 
-
-.. image :: _static/multiselect3.png
+.. image :: _static/label_value_multiselect.png
 
 - Un champs type "html". C'est un champs de type "présentation", aucune valeur ne sera enregistré en base de données pour ce champs :
 
 .. image :: _static/html1.png
 
-- Un champs de type "datalist". Ce champs permet de générer une liste de valeurs à partir d'une API. Dans le champ "attributs additionnels", renseignez les éléments suivants : 
+- Un champs de type "datalist". Ce champs permet de générer une liste de valeurs à partir d'une API (non porté sur Occtax-mobile). Dans le champ "attributs additionnels", renseignez les éléments suivants : 
 
 ::
 

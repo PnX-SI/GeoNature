@@ -92,8 +92,8 @@
         [formControl]="form.get(formDefComp['attribut_name'])"
       >
         <option [ngValue]="null" *ngIf="!formDefComp['noNullOption']">-</option>
-        <option *ngFor="let val of formDefComp['values']" [value]="val">
-          {{ val }}
+        <option *ngFor="let item of formDefComp['values']" [value]="item.value">
+          {{ item.label }}
         </option>
       </select>
 
@@ -129,7 +129,7 @@
           id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
           class="custom-control-input"
           [name]="formDefComp['attribut_name']"
-          [value]="formDefComp['values'][0]"
+          [value]="formDefComp['values'][0].value"
           (change)="onCheckChange($event, form.get(formDefComp['attribut_name']))"
         />
         <label class="custom-control-label" for="{{ formDefComp['attribut_name'] }}_{{ rand }}">
@@ -138,20 +138,20 @@
       </div>
       <ng-template #elseBlock>
         <div
-          *ngFor="let val of formDefComp['values']; let index = index"
+          *ngFor="let item of formDefComp['values']; let index = index"
           class="custom-control custom-checkbox"
           [ngClass]="{ 'ng-invalid': form.get(formDefComp['attribut_name']).invalid }"
         >
           <input
             class="custom-control-input"
             type="checkbox"
-            id="{{ val }}_{{ rand }}"
+            id="{{ item.label }}_{{ rand }}"
             [name]="formDefComp['attribut_name']"
-            [value]="val"
+            [value]="item.value"
             (change)="onCheckChange($event, form.get(formDefComp['attribut_name']))"
           />
-          <label for="{{ val }}_{{ rand }}" class="custom-control-label">
-            <span [innerHTML]="val"></span>
+          <label for="{{ item.label }}_{{ rand }}" class="custom-control-label">
+            <span [innerHTML]="item.label"></span>
           </label>
         </div>
       </ng-template>
@@ -179,7 +179,7 @@
 
     <div *ngSwitchCase="'radio'">
       <div
-        *ngFor="let val of formDefComp['values']"
+        *ngFor="let item of formDefComp['values']"
         class="custom-control custom-radio"
         [ngClass]="{ 'ng-invalid': form.get(formDefComp['attribut_name']).invalid }"
       >
@@ -189,18 +189,19 @@
           (click)="onRadioChange(val, form.get(formDefComp['attribut_name']))"
           class="custom-control-input"
           name="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ val }}"
-          [value]="val"
+          [value]="item.value"
           [formControl]="form.get(formDefComp['attribut_name'])"
         />
         <label
           class="custom-control-label"
           for="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ val }}"
         >
-          <span [innerHTML]="val"></span>
+          <span [innerHTML]="item.label"></span>
         </label>
       </div>
     </div>
 
+    <!-- deprecated -->
     <div *ngSwitchCase="'bool_radio'">
       <div
         class="custom-control custom-radio"
@@ -315,7 +316,7 @@
       *ngSwitchCase="'multiselect'"
       [values]="formDefComp['values']"
       [parentFormControl]="form.get(formDefComp['attribut_name'])"
-      keyLabel="value"
+      keyLabel="label"
       keyValue="value"
       [label]="formDefComp['attribut_label']"
       [searchBar]="false"

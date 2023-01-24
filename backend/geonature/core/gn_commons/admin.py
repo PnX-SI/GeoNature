@@ -1,12 +1,37 @@
-from flask import current_app
+import logging
+
+from flask import current_app, flash
+from wtforms import validators, Form
 
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.form import BaseForm
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.models import TObjects
+from geonature.core.gn_commons.schemas import TAdditionalFieldsSchema
 from geonature.utils.env import DB
 
 
+from marshmallow import ValidationError
+
+log = logging.getLogger()
+
+
+class TAdditionalFieldsForm(BaseForm):
+    def validate(self, extra_validators=None):
+        try:
+            TAdditionalFieldsSchema().load(self.data)
+        except ValidationError as e:
+            log.exception("additional field validation error")
+            flash("The form has errors", "error")
+            self.field_values.errors = (
+                f"Value input must contain a list of dict with value/label key for {self.data['type_widget']} widget ",
+            )
+            return False
+        return super().validate(extra_validators)
+
+
 class BibFieldAdmin(ModelView):
+    form_base_class = TAdditionalFieldsForm
     form_columns = (
         "field_name",
         "field_label",
@@ -68,7 +93,8 @@ class BibFieldAdmin(ModelView):
         "bib_nomenclature_type": "Si Type widget = Nomenclature",
         "field_label": "Label du champ en interface",
         "field_name": "Nom du champ en base de donnée",
-        "field_values": "Obligatoire si widget = select/radio/bool_radio (Format JSON : tableau de valeurs ou tableau clé/valeur. Utilisez des doubles quotes pour les valeurs et les clés)",
+        "field_values": """Obligatoire si widget = select/multiselect/checkbox,radio (Format JSON : tableau de 'value/label'.Utilisez des doubles quotes pour les valeurs et les clés). 
+            Exemple [{"label": "trois", "value": 3}, {"label": "quatre", "value": 4}]""",
         "default_value": "La valeur par défaut doit être une des valeurs du champs 'Valeurs' ci dessus",
         "id_list": "Identifiant en BDD de la liste (pour Type widget = taxonomy/observers)",
         "field_order": "Numéro d'ordonnancement du champs (si plusieurs champs pour le même module/objet/JDD)",
