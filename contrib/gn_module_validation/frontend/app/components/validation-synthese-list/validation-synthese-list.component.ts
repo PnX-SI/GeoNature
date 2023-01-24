@@ -72,9 +72,9 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
     this.appConfig = this.cs;
 
     this.alertActivate =
-    this.cs.SYNTHESE.ALERT_MODULES && this.cs.SYNTHESE.ALERT_MODULES.includes('VALIDATION');
+      this.cs.SYNTHESE.ALERT_MODULES && this.cs.SYNTHESE.ALERT_MODULES.includes('VALIDATION');
     this.pinActivate =
-    this.cs.SYNTHESE.PIN_MODULES && this.cs.SYNTHESE.PIN_MODULES.includes('VALIDATION');
+      this.cs.SYNTHESE.PIN_MODULES && this.cs.SYNTHESE.PIN_MODULES.includes('VALIDATION');
 
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;

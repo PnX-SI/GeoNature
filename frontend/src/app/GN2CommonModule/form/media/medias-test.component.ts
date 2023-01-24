@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormGroup, FormBuilder} from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { MediaService } from '@geonature_common/service/media.service';
 
 @Component({
@@ -35,9 +35,8 @@ export class MediasTestComponent implements OnInit {
   constructor(
     private _route: ActivatedRoute,
     public ms: MediaService,
-    private _formBuilder: FormBuilder,
-  ) {
-  }
+    private _formBuilder: FormBuilder
+  ) {}
 
   ngOnInit() {
     // test TODO remove

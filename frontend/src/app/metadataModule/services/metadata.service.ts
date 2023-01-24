@@ -2,13 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin, Observable, BehaviorSubject, combineLatest } from 'rxjs';
-import {
-  tap,
-  map,
-  startWith,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
+import { tap, map, startWith, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
@@ -94,7 +88,7 @@ export class MetadataService {
         tap((term) => (this.expandAccordions = term !== ''))
       )
       .subscribe(() => this.pageIndex.next(0));
-      this.cs.METADATA.METADATA_AREA_FILTERS.forEach((area) => {
+    this.cs.METADATA.METADATA_AREA_FILTERS.forEach((area) => {
       const control_name = 'area_' + area['type_code'].toLowerCase();
       this.form.addControl(control_name, new FormControl(new Array()));
       const control = this.form.controls[control_name];

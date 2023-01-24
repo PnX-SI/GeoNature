@@ -20,30 +20,29 @@ import { ConfigService } from '@geonature/services/config.service';
 
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
 
-
 @Injectable()
 export class NominatimService {
   PARAMS = null;
 
-  constructor(private http: HttpClient,
-    public cs: ConfigService
-    ) {
-this.PARAMS=new HttpParams({
-  fromObject: {
-    format: 'json',
-    limit: '10',
-    polygon_geojson: '1',
-    countrycodes: this.cs.MAPCONFIG.OSM_RESTRICT_COUNTRY_CODES,
-  },
-})
-    }
+  constructor(private http: HttpClient, public cs: ConfigService) {
+    this.PARAMS = new HttpParams({
+      fromObject: {
+        format: 'json',
+        limit: '10',
+        polygon_geojson: '1',
+        countrycodes: this.cs.MAPCONFIG.OSM_RESTRICT_COUNTRY_CODES,
+      },
+    });
+  }
 
   search(term: string) {
     if (term === '') {
       return of([]);
     }
 
-    return this.http.get(NOMINATIM_URL, { params: this.PARAMS.set('q', term) }).pipe(map((res) => res));
+    return this.http
+      .get(NOMINATIM_URL, { params: this.PARAMS.set('q', term) })
+      .pipe(map((res) => res));
   }
 }
 
@@ -86,7 +85,7 @@ export class MapComponent implements OnInit {
     public cs: ConfigService
   ) {
     this.searchLocation = '';
-    this.zoom = this.cs.MAPCONFIG.ZOOM_LEVEL
+    this.zoom = this.cs.MAPCONFIG.ZOOM_LEVEL;
   }
 
   ngOnInit() {

@@ -1,9 +1,5 @@
 import { DomSanitizer } from '@angular/platform-browser';
-import {
-  Component,
-  Input,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -31,7 +27,12 @@ export class DisplayMediasComponent {
   public bInitialized = false;
   public innerHTMLPDF = {};
 
-  constructor(public ms: MediaService, public dialog: MatDialog, public _sanitizer: DomSanitizer, public cs: ConfigService) {}
+  constructor(
+    public ms: MediaService,
+    public dialog: MatDialog,
+    public _sanitizer: DomSanitizer,
+    public cs: ConfigService
+  ) {}
 
   ngOnInit() {
     this.initMedias();

@@ -2,11 +2,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
 
-import {
-  HttpClientModule,
-  HttpClient,
-  HTTP_INTERCEPTORS,
-} from '@angular/common/http';
+import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // For Angular Dependencies
 import 'hammerjs';

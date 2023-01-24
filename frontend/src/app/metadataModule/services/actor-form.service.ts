@@ -1,11 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  FormGroup,
-  FormArray,
-  FormBuilder,
-  Validators,
-  AbstractControl,
-} from '@angular/forms';
+import { FormGroup, FormArray, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 

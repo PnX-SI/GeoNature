@@ -183,5 +183,5 @@ export class MetadataComponent implements OnInit {
   }
 
   displayMetaAreaFilters = () =>
-  this.cs.METADATA?.METADATA_AREA_FILTERS && this.cs.METADATA?.METADATA_AREA_FILTERS.length;
+    this.cs.METADATA?.METADATA_AREA_FILTERS && this.cs.METADATA?.METADATA_AREA_FILTERS.length;
 }

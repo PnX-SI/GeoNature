@@ -401,18 +401,14 @@ export class DataFormService {
    * @param id_af: id of acquisition_framework
    */
   getAcquisitionFrameworkStats(id_af) {
-    return this._http.get<any>(
-      `${this.cs.API_ENDPOINT}/meta/acquisition_framework/${id_af}/stats`
-    );
+    return this._http.get<any>(`${this.cs.API_ENDPOINT}/meta/acquisition_framework/${id_af}/stats`);
   }
 
   /**
    * @param id_af: id of acquisition_framework
    */
   getAcquisitionFrameworkBbox(id_af) {
-    return this._http.get<any>(
-      `${this.cs.API_ENDPOINT}/meta/acquisition_framework/${id_af}/bbox`
-    );
+    return this._http.get<any>(`${this.cs.API_ENDPOINT}/meta/acquisition_framework/${id_af}/bbox`);
   }
 
   getOrganisms(orderByName = true) {

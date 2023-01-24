@@ -12,9 +12,7 @@ import { ConfigService } from './services/config.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  constructor(private translate: TranslateService,
-    public cs: ConfigService
-    ) {
+  constructor(private translate: TranslateService, public cs: ConfigService) {
     // Register all locales (default 'en') used by GeoNature for Angular Pipes
     registerLocaleData(localeFr, 'fr');
     registerLocaleData(localeZh, 'zh');

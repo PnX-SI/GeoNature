@@ -5,7 +5,11 @@ import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class OccHabDataService {
-  constructor(private _http: HttpClient, private _gnDataService: DataFormService, public cs: ConfigService) {}
+  constructor(
+    private _http: HttpClient,
+    private _gnDataService: DataFormService,
+    public cs: ConfigService
+  ) {}
 
   postStation(data) {
     return this._http.post(`${this.cs.API_ENDPOINT}/occhab/station`, data);

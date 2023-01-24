@@ -13,7 +13,7 @@ export class OcchabMapListFilterComponent implements OnInit {
   public appConfig = null;
   public moduleConfig = ModuleConfig;
   @Output() onSearch = new EventEmitter<any>();
-  
+
   constructor(
     public mapListFormService: OccHabMapListService,
     private _dateParser: NgbDateParserFormatter,

@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service';
@@ -48,7 +43,10 @@ export class MediasComponent implements OnInit {
     }
     for (const index in this.parentFormControl.value) {
       if (!(this.parentFormControl.value[index] instanceof Media)) {
-        this.parentFormControl.value[index] = new Media(this.parentFormControl.value[index], this.cs);
+        this.parentFormControl.value[index] = new Media(
+          this.parentFormControl.value[index],
+          this.cs
+        );
       }
     }
   }

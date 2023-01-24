@@ -50,7 +50,11 @@ export class MarkerComponent implements OnInit, OnChanges {
   /** Contrôle si le marker est activé par défaut au lancement du composant */
   @Input() defaultEnable = true;
   @Output() markerChanged = new EventEmitter<GeoJson>();
-  constructor(public mapservice: MapService, private _commonService: CommonService, public cs: ConfigService) {}
+  constructor(
+    public mapservice: MapService,
+    private _commonService: CommonService,
+    public cs: ConfigService
+  ) {}
 
   ngOnInit() {
     this.map = this.mapservice.map;

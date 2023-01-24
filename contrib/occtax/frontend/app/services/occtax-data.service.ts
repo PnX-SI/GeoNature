@@ -8,7 +8,11 @@ import { ConfigService } from '@geonature/services/config.service';
 })
 export class OcctaxDataService {
   private currentModule;
-  constructor(private _api: HttpClient, private _moduleService: ModuleService, public cs: ConfigService) {
+  constructor(
+    private _api: HttpClient,
+    private _moduleService: ModuleService,
+    public cs: ConfigService
+  ) {
     this.currentModule = this._moduleService.currentModule;
   }
 

@@ -15,12 +15,13 @@ export class SidenavItemsComponent implements OnInit {
   public home_page: any;
   public exportModule: any;
 
-  constructor(public moduleService: ModuleService, public _sidenavService: SideNavService,
+  constructor(
+    public moduleService: ModuleService,
+    public _sidenavService: SideNavService,
     public cs: ConfigService
-    ) {
-  this.version = this.cs.GEONATURE_VERSION;
-
-    }
+  ) {
+    this.version = this.cs.GEONATURE_VERSION;
+  }
 
   ngOnInit() {
     this.home_page = this._sidenavService.getHomeItem();

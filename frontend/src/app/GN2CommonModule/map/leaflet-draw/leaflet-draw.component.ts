@@ -51,13 +51,17 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   @Output() layerDrawed = new EventEmitter<GeoJSON>();
   @Output() layerDeleted = new EventEmitter<any>();
 
-  constructor(public mapservice: MapService, private _commonService: CommonService, public cs: ConfigService) {}
+  constructor(
+    public mapservice: MapService,
+    private _commonService: CommonService,
+    public cs: ConfigService
+  ) {}
 
   ngOnInit() {
     // HACK for leaflet draw compatibility
     (window as any).type = true;
     this.map = this.mapservice.map;
-    this.zoomLevel = this.zoomLevel || this.cs.MAPCONFIG.ZOOM_LEVEL_RELEVE
+    this.zoomLevel = this.zoomLevel || this.cs.MAPCONFIG.ZOOM_LEVEL_RELEVE;
     this._Le = L as any;
     this.enableLeafletDraw();
   }

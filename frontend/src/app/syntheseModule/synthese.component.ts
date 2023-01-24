@@ -44,8 +44,7 @@ export class SyntheseComponent implements OnInit {
       .set('limit', this.cs.SYNTHESE.NB_LAST_OBS)
       .set(
         'format',
-        this.cs.SYNTHESE.AREA_AGGREGATION_ENABLED &&
-        this.cs.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT
+        this.cs.SYNTHESE.AREA_AGGREGATION_ENABLED && this.cs.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT
           ? 'grouped_geom_by_areas'
           : 'grouped_geom'
       );

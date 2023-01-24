@@ -86,7 +86,11 @@ export class ActorComponent implements OnInit {
 
   @Input() parentFormArray: FormArray;
 
-  constructor(public dialog: MatDialog, private actorFormS: ActorFormService, public cs: ConfigService) {}
+  constructor(
+    public dialog: MatDialog,
+    private actorFormS: ActorFormService,
+    public cs: ConfigService
+  ) {}
 
   ngOnInit() {
     if (!this.actorForm.get('id_organism').value && !this.actorForm.get('id_role').value) {

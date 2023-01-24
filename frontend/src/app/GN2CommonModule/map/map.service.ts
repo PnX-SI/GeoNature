@@ -48,7 +48,11 @@ export class MapService {
     color: 'green',
   };
 
-  constructor(private _httpClient: HttpClient, private _commonService: CommonService, public cs: ConfigService) {
+  constructor(
+    private _httpClient: HttpClient,
+    private _commonService: CommonService,
+    public cs: ConfigService
+  ) {
     this.fileLayerFeatureGroup = new L.FeatureGroup();
   }
 

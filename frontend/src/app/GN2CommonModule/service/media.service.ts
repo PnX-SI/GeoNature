@@ -1,9 +1,9 @@
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { ValidatorFn, AbstractControl} from '@angular/forms';
+import { ValidatorFn, AbstractControl } from '@angular/forms';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpParams, HttpRequest } from '@angular/common/http';
-import { Observable, of} from '@librairies/rxjs';
-import { switchMap} from 'rxjs/operators';
+import { Observable, of } from '@librairies/rxjs';
+import { switchMap } from 'rxjs/operators';
 import { Media } from '@geonature_common/form/media/media';
 import { ConfigService } from '@geonature/services/config.service';
 

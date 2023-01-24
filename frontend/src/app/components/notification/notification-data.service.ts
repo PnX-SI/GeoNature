@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpClient,
-  HttpHeaders,
-} from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 import { ConfigService } from '@geonature/services/config.service';
@@ -42,15 +39,11 @@ export interface NotificationRule {
 
 @Injectable()
 export class NotificationDataService {
-  constructor(private _api: HttpClient,
-    public cs: ConfigService
-    ) {}
+  constructor(private _api: HttpClient, public cs: ConfigService) {}
 
   // returns notifications content for this user
   getNotifications(): Observable<NotificationCard[]> {
-    return this._api.get<NotificationCard[]>(
-      `${this.cs.API_ENDPOINT}/notifications/notifications`
-    );
+    return this._api.get<NotificationCard[]>(`${this.cs.API_ENDPOINT}/notifications/notifications`);
   }
 
   // returns number of notification for this user
@@ -64,12 +57,9 @@ export class NotificationDataService {
 
   // update notification status
   updateNotification(idNotification) {
-    return this._api.post(
-      `${this.cs.API_ENDPOINT}/notifications/notifications/${idNotification}`,
-      {
-        headers: new HttpHeaders().set('Content-Type', 'application/json'),
-      }
-    );
+    return this._api.post(`${this.cs.API_ENDPOINT}/notifications/notifications/${idNotification}`, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json'),
+    });
   }
 
   // Create rules

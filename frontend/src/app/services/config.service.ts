@@ -5,13 +5,13 @@ import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 class config {
-  [key:string]: any
+  [key: string]: any;
 }
 
 @Injectable()
 export class ConfigService extends config {
   constructor(private _http: HttpClient, private _toaster: ToastrService) {
-    super()
+    super();
   }
 
   private _getConfig() {

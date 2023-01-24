@@ -41,7 +41,7 @@ export class SyntheseSearchComponent implements OnInit {
       this.params = params;
     });
     this.AppConfig = this.cs;
-    this.taxonApiEndPoint = `${this.AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`
+    this.taxonApiEndPoint = `${this.AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
   }
 
   ngOnInit() {

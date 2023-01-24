@@ -47,8 +47,8 @@ export class HomeContentComponent implements OnInit {
     }
 
     this.cluserOrSimpleFeatureGroup = this.cs.SYNTHESE.ENABLE_LEAFLET_CLUSTER
-    ? (L as any).markerClusterGroup()
-    : new L.FeatureGroup();
+      ? (L as any).markerClusterGroup()
+      : new L.FeatureGroup();
   }
 
   ngOnInit() {

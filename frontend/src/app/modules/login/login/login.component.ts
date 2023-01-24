@@ -32,8 +32,7 @@ export class LoginComponent implements OnInit {
     this.APP_NAME = this.cs.appName;
     this.casLogin = this.cs.CAS_PUBLIC.CAS_AUTHENTIFICATION;
     this.enable_sign_up = this.cs['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false;
-    this.enable_user_management =
-    this.cs['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false;
+    this.enable_user_management = this.cs['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false;
   }
 
   ngOnInit() {
