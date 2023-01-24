@@ -114,9 +114,11 @@ RUN --mount=type=cache,target=/root/.cache \
     pip install --upgrade pip setuptools wheel
 
 WORKDIR /dist
-ENV GEONATURE_STATIC_FOLDER=/dist/static/
+ENV GEONATURE_STATIC_PATH=/dist/static/
 COPY /backend/static/ ./static/
 COPY --from=node /dist/node_modules/ ./static/node_modules/
+ENV GEONATURE_MEDIA_PATH=/dist/media/
+COPY /backend/media/ ./media/
 
 WORKDIR /dist/geonature
 

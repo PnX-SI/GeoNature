@@ -5,7 +5,7 @@
         <ng-container *ngIf="ms.typeMedia(media) === 'Photo'">
           <img
             class="media-mini"
-            [src]="media.href(config.API_ENDPOINT,config.UPLOAD_FOLDER,50)"
+            [src]="media.href(config.API_ENDPOINT,config.MEDIA_URL,50)"
             alt="{{ media.title_fr }}"
             [ngClass]="{ 'media-diapo-link': !!diaporama }"
             matTooltip="{{ diaporama ? ('Media.diaporama' | translate) : '' }}"
@@ -44,17 +44,17 @@
           </ng-container>
 
           <ng-container *ngIf="ms.typeMedia(media) === 'Vidéo (fichier)'">
-            <video class="media-center" controls [src]="media.href(config.API_ENDPOINT,config.UPLOAD_FOLDER)"></video>
+            <video class="media-center" controls [src]="media.href(config.API_ENDPOINT,config.MEDIA_URL)"></video>
           </ng-container>
 
           <ng-container *ngIf="ms.typeMedia(media) === 'Audio'">
-            <audio class="media-center" controls [src]="media.href(config.API_ENDPOINT,config.UPLOAD_FOLDER)"></audio>
+            <audio class="media-center" controls [src]="media.href(config.API_ENDPOINT,config.MEDIA_URL)"></audio>
           </ng-container>
           <ng-container *ngIf="ms.typeMedia(media) === 'Photo'">
             <img
               *ngIf="['medium', 'small'].includes(display)"
               class="media-center"
-              [src]="media.href(config.API_ENDPOINT,config.UPLOAD_FOLDER,thumbnailHeight)"
+              [src]="media.href(config.API_ENDPOINT,config.MEDIA_URL,thumbnailHeight)"
               [ngClass]="{ 'media-diapo-link': !!diaporama }"
               alt="{{ media.title_fr }}"
               matTooltip="{{ diaporama ? ('Media.diaporama' | translate) : '' }}"
@@ -63,7 +63,7 @@
             <img
               *ngIf="display === 'diaporama'"
               class="media-diaporama media-center"
-              [src]="media.href(config.API_ENDPOINT,config.UPLOAD_FOLDER)"
+              [src]="media.href(config.API_ENDPOINT,config.MEDIA_URL)"
               alt="{{ media.title_fr }}"
             />
           </ng-container>

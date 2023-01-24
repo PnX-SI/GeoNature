@@ -1,3 +1,4 @@
+from pathlib import Path
 import tempfile
 
 import pytest
@@ -98,13 +99,17 @@ class TestMedia:
         assert resp_json["title_fr"] == medium.title_fr
         assert resp_json["unique_id_media"] == str(medium.unique_id_media)
 
-    def test_delete_media(self, medium):
+    def test_delete_media(self, app, medium):
         id_media = int(medium.id_media)
 
         response = self.client.delete(url_for("gn_commons.delete_media", id_media=id_media))
 
         assert response.status_code == 200
         assert response.json["resp"] == f"media {id_media} deleted"
+
+        # Re-move file in other side to does not break TemporaryFile context manager
+        media_path = medium.base_dir() / medium.media_path
+        media_path.rename(media_path.parent / media_path.name[len("deleted_") :])
 
     def test_create_media(self, medium):
         title_fr = "test_test"
@@ -166,7 +171,7 @@ class TestMedia:
         )
 
         assert response.status_code == 404
-        assert response.json["msg"] == "Media introuvable"
+        assert response.json["description"] == "Media introuvable"
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")

@@ -17,11 +17,8 @@ data/migrations/v1tov2/old/v1_compat.log
 data/migrations/v1tov2/migratetoV2.ini
 
 config.py
-backend/static/medias/*
-backend/static/shapefiles/*
-backend/static/geopackages/*
 backend/static/node_modules
-backend/static/configs/*
+backend/media
 
 backend/run.py
 
@@ -153,8 +150,6 @@ install_all/install_all.log
 
 # Pycharm
 .idea/
-
-backend/static/images/taxa.png
 
 *.swp
 *.swo

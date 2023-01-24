@@ -1,7 +1,8 @@
 import json
 from operator import or_
+from pathlib import Path
 
-from flask import Blueprint, request, current_app, g
+from flask import Blueprint, request, current_app, g, url_for
 from flask.json import jsonify
 from werkzeug.exceptions import Forbidden, Conflict
 import requests
@@ -190,16 +191,13 @@ def get_t_mobile_apps():
         app_dict["settings"] = {}
         #  if local
         if app.relative_path_apk:
-            app_dict["url_apk"] = "{}/{}".format(
-                current_app.config["API_ENDPOINT"], app.relative_path_apk
+            relative_apk_path = Path("mobile", app.relative_path_apk)
+            app_dict["url_apk"] = url_for("media", filename=str(relative_apk_path), _external=True)
+            relative_settings_path = relative_apk_path.parent / "settings.json"
+            app_dict["url_settings"] = url_for(
+                "media", filename=relative_settings_path, _external=True
             )
-            relative_path_dir = app.relative_path_apk.rsplit("/", 1)[0]
-            app_dict["url_settings"] = "{}/{}/{}".format(
-                current_app.config["API_ENDPOINT"],
-                relative_path_dir,
-                "settings.json",
-            )
-            settings_file = BACKEND_DIR / relative_path_dir / "settings.json"
+            settings_file = Path(current_app.config["MEDIA_FOLDER"]) / relative_settings_path
             with settings_file.open() as f:
                 app_dict["settings"] = json.load(f)
         mobile_apps.append(app_dict)

@@ -109,7 +109,7 @@ class TModules(DB.Model):
         return self.module_label.capitalize()
 
 
-@serializable
+@serializable(exclude=["base_dir"])
 class TMedias(DB.Model):
     __tablename__ = "t_medias"
     __table_args__ = {"schema": "gn_commons"}
@@ -139,31 +139,38 @@ class TMedias(DB.Model):
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
 
+    @staticmethod
+    def base_dir():
+        return Path(current_app.config["MEDIA_FOLDER"]) / "attachments"
+
     def __before_commit_delete__(self):
         # déclenché sur un DELETE : on supprime le fichier
-        if self.media_path and os.path.exists(
-            os.path.join(current_app.config["BASE_DIR"] + "/" + self.media_path)
-        ):
+        if self.media_path and (self.base_dir() / self.media_path).exists():
             # delete file
             self.remove_file()
             # delete thumbnail
             self.remove_thumbnails()
 
-    def remove_file(self):
+    def remove_file(self, move=True):
         if not self.media_path:
             return
-        path = Path(current_app.config["BASE_DIR"]) / self.media_path
-        new_path = path.parent / path.rename(f"deleted_{path.name}")
-        self.media_path = str(new_path.relative_to(current_app.config["BASE_DIR"]))
+        path = self.base_dir() / self.media_path
+        if move:
+            new_path = path.parent / f"deleted_{path.name}"
+            path.rename(new_path)
+            self.media_path = str(new_path.relative_to(self.base_dir()))
+        else:
+            path.unlink()
 
     def remove_thumbnails(self):
         # delete thumbnail test sur nom des fichiers avec id dans le dossier thumbnail
         dir_thumbnail = os.path.join(
-            current_app.config["BASE_DIR"],
-            current_app.config["UPLOAD_FOLDER"],
+            str(self.base_dir()),
             "thumbnails",
             str(self.id_table_location),
         )
+        if not os.path.isdir(dir_thumbnail):
+            return
         for f in os.listdir(dir_thumbnail):
             if f.split("_")[0] == str(self.id_media):
                 abs_path = os.path.join(dir_thumbnail, f)

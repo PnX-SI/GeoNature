@@ -7,7 +7,7 @@ from itertools import chain
 from pkg_resources import iter_entry_points, load_entry_point
 from importlib import import_module
 
-from flask import Flask, g, request, current_app
+from flask import Flask, g, request, current_app, send_from_directory
 from flask.json.provider import DefaultJSONProvider
 from flask_mail import Message
 from flask_cors import CORS
@@ -74,8 +74,13 @@ class MyJSONProvider(DefaultJSONProvider):
 
 
 def create_app(with_external_mods=True):
-    static_folder = os.environ.get("GEONATURE_STATIC_FOLDER", "../static")
-    app = Flask(__name__.split(".")[0], static_folder=static_folder)
+    app = Flask(
+        __name__.split(".")[0],
+        root_path=config["ROOT_PATH"],
+        static_folder=config["STATIC_FOLDER"],
+        static_url_path=config["STATIC_URL"],
+        template_folder="geonature/templates",
+    )
 
     app.config.update(config)
 
@@ -149,6 +154,13 @@ def create_app(with_external_mods=True):
                 )
 
     admin.init_app(app)
+
+    # Enable serving of media files
+    app.add_url_rule(
+        f"{config['MEDIA_URL']}/<path:filename>",
+        view_func=lambda filename: send_from_directory(config["MEDIA_FOLDER"], filename),
+        endpoint="media",
+    )
 
     for blueprint_path, url_prefix in [
         ("pypnusershub.routes:routes", "/auth"),

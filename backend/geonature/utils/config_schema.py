@@ -20,7 +20,7 @@ from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_LIST_COLUMN,
     DEFAULT_COLUMNS_API_SYNTHESE,
 )
-from geonature.utils.env import GEONATURE_VERSION
+from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR
 from geonature.utils.module import get_module_config
 from geonature.utils.utilsmails import clean_recipients
 from geonature.utils.utilstoml import load_and_validate_toml
@@ -196,11 +196,9 @@ class GnPySchemaConf(Schema):
     COOKIE_AUTORENEW = fields.Boolean(load_default=True)
     TRAP_ALL_EXCEPTIONS = fields.Boolean(load_default=False)
     SENTRY_DSN = fields.String()
-
-    UPLOAD_FOLDER = fields.String(load_default="static/medias")
-    BASE_DIR = fields.String(
-        load_default=os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-    )
+    ROOT_PATH = fields.String(load_default=BACKEND_DIR)
+    STATIC_FOLDER = fields.String(load_default="static")
+    MEDIA_FOLDER = fields.String(load_default="media")
     CAS = fields.Nested(CasSchemaConf, load_default=CasSchemaConf().load({}))
     MAIL_ON_ERROR = fields.Boolean(load_default=False)
     MAIL_CONFIG = fields.Nested(MailConfig, load_default=MailConfig().load({}))
@@ -215,6 +213,12 @@ class GnPySchemaConf(Schema):
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
     ALEMBIC = fields.Nested(AlembicConfig, load_default=AlembicConfig().load({}))
+
+    @post_load()
+    def folders(self, data, **kwargs):
+        data["STATIC_FOLDER"] = os.path.join(data["ROOT_PATH"], data["STATIC_FOLDER"])
+        data["MEDIA_FOLDER"] = os.path.join(data["ROOT_PATH"], data["MEDIA_FOLDER"])
+        return data
 
     @post_load()
     def unwrap_usershub(self, data, **kwargs):
@@ -528,7 +532,8 @@ class GnGeneralSchemaConf(Schema):
         AccountManagement, load_default=AccountManagement().load({})
     )
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
-    UPLOAD_FOLDER = fields.String(load_default="static/medias")
+    STATIC_URL = fields.String(load_default="/static")
+    MEDIA_URL = fields.String(load_default="/media")
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     MTD = fields.Nested(MTDSchemaConf, load_default=MTDSchemaConf().load({}))
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)

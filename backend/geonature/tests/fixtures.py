@@ -370,7 +370,7 @@ def create_media(media_path=""):
 @pytest.fixture
 def medium(app):
     image = Image.new("RGBA", size=(1, 1), color=(155, 0, 0))
-    with tempfile.NamedTemporaryFile() as f:
+    with tempfile.NamedTemporaryFile(dir=TMedias.base_dir(), suffix=".png") as f:
         image.save(f, "png")
         yield create_media(media_path=str(f.name))
 
