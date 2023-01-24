@@ -35,6 +35,7 @@ export interface NotificationRule {
   code_method: string;
   method?: NotificationMethod;
   category?: NotificationCategory;
+  subscribed: boolean;
 }
 
 @Injectable()
@@ -92,5 +93,23 @@ export class NotificationDataService {
 
   deleteRule(id: number) {
     return this._api.delete<{}>(`${this.cs.API_ENDPOINT}/notifications/rules/${id}`);
+  }
+
+  subscribe(category, method) {
+    return this._api.post(
+      `${this.cs.API_ENDPOINT}/notifications/rules/category/${category}/method/${method}/subscribe`,
+      null
+    );
+  }
+
+  unsubscribe(category, method) {
+    return this._api.post(
+      `${this.cs.API_ENDPOINT}/notifications/rules/category/${category}/method/${method}/unsubscribe`,
+      null
+    );
+  }
+
+  clearSubscriptions() {
+    return this._api.delete<any>(`${this.cs.API_ENDPOINT}/notifications/rules`);
   }
 }

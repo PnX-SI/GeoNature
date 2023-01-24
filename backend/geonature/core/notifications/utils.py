@@ -2,6 +2,7 @@ from itertools import chain, product
 
 from jinja2 import Template
 from flask import current_app
+import sqlalchemy as sa
 
 from pypnusershub.db.models import User
 
@@ -40,9 +41,9 @@ def dispatch_notification(category, role, title=None, url=None, *, content=None,
     # add role, title and url to rendering context
     context = {"role": role, "title": title, "url": url, **context}
 
-    rules = NotificationRule.query.filter(
-        NotificationRule.id_role == role.id_role,
+    rules = NotificationRule.query.filter_by_role_with_defaults(role.id_role).filter(
         NotificationRule.code_category == category.code,
+        NotificationRule.subscribed.is_(sa.true()),
     )
     for rule in rules.all():
         if content:

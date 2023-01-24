@@ -107,7 +107,7 @@ RUN --mount=type=cache,target=/root/.npm \
     npm ci --omit=dev
 
 
-FROM python:3.9-bullseye AS wheels
+FROM python:3.9-bullseye AS wheels-light
 
 ENV PIP_ROOT_USER_ACTION=ignore
 RUN --mount=type=cache,target=/root/.cache \
@@ -142,7 +142,14 @@ EXPOSE 8000
 CMD ["gunicorn", "geonature:create_app()", "--bind=0.0.0.0:8000", "--access-logfile=-"]
 
 
-FROM wheels AS prod-light
+FROM wheels-light AS wheels
+
+COPY --from=build-occtax /build/dist/*.whl .
+COPY --from=build-occhab /build/dist/*.whl .
+COPY --from=build-validation /build/dist/*.whl .
+
+
+FROM wheels-light AS prod-light
 
 WORKDIR /dist/geonature
 RUN --mount=type=cache,target=/root/.cache \
@@ -150,12 +157,9 @@ RUN --mount=type=cache,target=/root/.cache \
 RUN rm -f *.whl
 
 
-FROM wheels AS prod-full
+FROM wheels AS prod
 
 WORKDIR /dist/geonature
-COPY --from=build-occtax /build/dist/*.whl .
-COPY --from=build-occhab /build/dist/*.whl .
-COPY --from=build-validation /build/dist/*.whl .
 RUN --mount=type=cache,target=/root/.cache \
     pip install *.whl
 RUN rm -f *.whl

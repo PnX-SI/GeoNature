@@ -20,13 +20,24 @@ La configuration du frontend change pour ne plus necessiter un rebuild à chaque
 et renseignez uniquement l'URL de l'API GeoNature
 
 
-2.11.1 (unreleased)
+2.11.2 (2023-01-19)
 -------------------
 
 **🐛 Corrections**
 
-- Correction de la documentation de la sensibilité
-- Correction de l’accès aux notifications lorsque la gestion des utilisateurs est activée
+- Correction d'un import manquant dans un fichier de migration des données d'exemple d'Occtax (#2285)
+- Correction d'un problème de l'installation globale en mode développement
+
+
+2.11.1 (2023-01-18)
+-------------------
+
+**🐛 Corrections**
+
+- Correction de la documentation de la sensibilité (#2234)
+- Correction de l’accès aux notifications lorsque la gestion des comptes utilisateurs est activée
+- Correction des migrations Alembic des données d’exemple Occtax afin de supporter les migrations depuis GeoNature ≤ 2.9 (#2240, #2248)
+- Correction de la commande ``upgrade-modules-db`` afin de supporter les anciens modules dont le passage à Alembic nécessite un stamp manuel
 
 
 2.11.0 - Ilex aquifolium 🎄 (2022-12-21)
