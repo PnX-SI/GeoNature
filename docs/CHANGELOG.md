@@ -10,6 +10,7 @@ CHANGELOG
 - Personnalisation de la page d’accueil : ajout d’une section `[HOME]` contenant les paramètres `TITLE`, `INTRODUCTION` et `FOOTER`. Ceux-ci peuvent contenir du code HTML qui est chargé dynamiquement avec la configuration, évitant ainsi la nécessité d’un rebuild du frontend (#2300)
 - Synthèse : Agrégation des observations ayant la même géométrie (#1847)
 - Synthèse : Possibilité d'afficher les données agrégées par maille (#1878)
+- Synthèse : Possibilité de définir des filtres par défaut (#2261)
 - Champs additionnels: Les formulaires de type `radio`, `select`, `multiselect` et `checkbox`, attendent désormais une liste de dictionnaire `{value, label}` (voir doc des champs additionnels).
   La rétrocompatibilité avec des listes simples est maintenue, mais vous êtes invité à modifier ces champs dans le backoffice.
   Pour conserver le bon affichage lors de l'édition des données, renseignez l'ancienne valeur deux fois dans la clé `value` et la clé `label`.

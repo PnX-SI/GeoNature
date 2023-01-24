@@ -455,6 +455,13 @@ NOTIFICATIONS_ENABLED = true
         { min = 0, color = "#FFEDA0" }
     ]
 
+    [SYNTHESE.DEFAULT_FILTERS]
+        # Tous les statuts de validation sauf invalide '4'
+        # Il faut bien les renseigner en tant que chaîne de caractère (et non en tant que nombre)
+        cd_nomenclature_valid_status = ['0', '1', '2', '3', '5', '6']
+        # Seulement les données de présence
+        cd_nomenclature_observation_status = ['Pr']
+
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
     # Activer l'affichage du lien vers le formulaire d'inscription
