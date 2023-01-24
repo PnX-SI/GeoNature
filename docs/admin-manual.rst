@@ -2195,6 +2195,26 @@ Exemple de requête de mise à jour de la table ``taxonomie.bdc_statut_texte`` :
 
 Il est aussi possible de désactiver les textes en fonction du territoire auquel elles s'appliquent (par exemple en utilisant le champs ``cd_sig`` de la table ``taxonomie.bdc_statut_text``.
 
+**6.** Définir des filtres par défaut
+
+Il s'agit du paramètre ``DEFAULT_FILTERS``.
+C'est un dictionnaire qui liste la valeur des champs par défaut.
+Il faut fournir le code des nomenclature par default (liste de chaîne de caractère)
+(On prend les champs en ``id_nomenclature_...`` et on remplace ``id_nomenclature_`` par ``cd_nomenclature_``)
+
+Exemple de filtres par défaut
+
+::
+  [SYNTHESE]
+  ...
+  [SYNTHESE.DEFAULT_FILTERS]
+      # Tous les statuts de validation sauf invalide '4'
+      # Il faut bien les renseigner en tant que chaîne de caractère (et non en tant que nombre)
+      cd_nomenclature_valid_status = ['0', '1', '2', '3', '5', '6']
+      # Seulement les données de présence
+      cd_nomenclature_observation_status = ['Pr']
+
+
 D'autres élements sont paramètrables dans le module synthese. La liste complète est disponible dans le fichier ``config/geonature_config.toml`` rubrique ``SYNTHESE``.
 
 Module VALIDATION
