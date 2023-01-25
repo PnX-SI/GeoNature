@@ -185,16 +185,16 @@
       >
         <input
           type="radio"
-          id="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ val }}"
-          (click)="onRadioChange(val, form.get(formDefComp['attribut_name']))"
+          id="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ item.value }}"
+          (click)="onRadioChange(item.value, form.get(formDefComp['attribut_name']))"
           class="custom-control-input"
-          name="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ val }}"
+          name="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ item.value }}"
           [value]="item.value"
           [formControl]="form.get(formDefComp['attribut_name'])"
         />
         <label
           class="custom-control-label"
-          for="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ val }}"
+          for="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ item.value }}"
         >
           <span [innerHTML]="item.label"></span>
         </label>
