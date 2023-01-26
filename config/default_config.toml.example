@@ -585,3 +585,9 @@ NOTIFICATIONS_ENABLED = true
         { "label" = "Départements", "type_code"= "DEP" },
         { "label" = "Régions", "type_code"= "REG" }
     ]
+
+# Page d’accueil
+[HOME]
+    TITLE = "Bienvenue dans GeoNature"
+    INTRODUCTION = ""
+    FOOTER = ""

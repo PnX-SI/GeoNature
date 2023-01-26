@@ -49,14 +49,6 @@ cp ${previousdir}/frontend/src/favicon.ico frontend/src/favicon.ico
 # Handle frontend custom components
 cp -r ${previousdir}/frontend/src/custom/* frontend/src/custom/
 
-echo "Création des fichiers des nouveaux composants personnalisables du frontend..."
-custom_component_dir="${currentdir}/frontend/src/custom/components/"
-for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
-    if [[ ! -f "${file%.sample}" ]]; then
-        cp "${file}" "${file%.sample}"
-    fi
-done
-
 echo "Récupération des fichiers statiques …"
 cd "${currentdir}/backend/static"
 for static_dir in "${previousdir}"/backend/static/*; do

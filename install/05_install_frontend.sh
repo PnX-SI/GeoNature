@@ -74,12 +74,6 @@ if [[ ! -f src/assets/custom.css ]]; then
   cp -n src/assets/custom.sample.css src/assets/custom.css
 
 fi
-custom_component_dir="src/custom/components/"
-for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
-  if [[ ! -f "${file%.sample}" ]]; then
-    cp "${file}" "${file%.sample}"
-  fi
-done
 
 if [[ -z "${CI}" || "${CI}" == false ]] ; then
   echo "Activation du venv..."

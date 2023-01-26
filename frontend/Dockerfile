@@ -12,11 +12,6 @@ COPY ./frontend/tsconfig.json .
 COPY ./frontend/external_modules external_modules
 COPY ./frontend/src src
 RUN cp -n src/assets/custom.sample.css src/assets/custom.css
-RUN cp -n src/custom/components/footer/footer.component.html.sample src/custom/components/footer/footer.component.html
-RUN cp -n src/custom/components/footer/footer.component.ts.sample src/custom/components/footer/footer.component.ts
-RUN cp -n src/custom/components/introduction/introduction.component.html.sample src/custom/components/introduction/introduction.component.html
-RUN cp -n src/custom/components/introduction/introduction.component.ts.sample src/custom/components/introduction/introduction.component.ts
-RUN cp -n src/custom/components/introduction/introduction.component.scss.sample src/custom/components/introduction/introduction.component.scss
 
 
 FROM source-light AS source

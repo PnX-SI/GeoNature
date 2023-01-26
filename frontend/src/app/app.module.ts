@@ -25,8 +25,8 @@ import { NotificationComponent } from './components/notification/notification.co
 import { RulesComponent } from './components/notification/rules/rules.component';
 
 // Custom component (footer, presentation etc...)
-import { FooterComponent } from '../custom/components/footer/footer.component';
-import { IntroductionComponent } from '../custom/components/introduction/introduction.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { IntroductionComponent } from './components/introduction/introduction.component';
 
 // Service
 import { AuthService } from './components/auth/auth.service';
