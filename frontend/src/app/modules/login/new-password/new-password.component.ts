@@ -24,7 +24,7 @@ export class NewPasswordComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private _toasterService: ToastrService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
     this.activatedRoute.queryParams.subscribe((params) => {
       let token = params['token'];
@@ -33,7 +33,7 @@ export class NewPasswordComponent implements OnInit {
       }
       this.token = token;
     });
-    this.casLogin = this.cs.CAS_PUBLIC.CAS_AUTHENTIFICATION;
+    this.casLogin = this.config.CAS_PUBLIC.CAS_AUTHENTIFICATION;
   }
 
   ngOnInit() {

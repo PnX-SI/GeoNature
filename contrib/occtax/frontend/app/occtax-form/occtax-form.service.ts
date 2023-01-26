@@ -45,7 +45,7 @@ export class OcctaxFormService {
     private _dataS: OcctaxDataService,
     private dataFormService: DataFormService,
     private _moduleService: ModuleService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
     this.currentUser = this._auth.getCurrentUser();
 
@@ -90,7 +90,7 @@ export class OcctaxFormService {
     if (regne) {
       params = params.append('group2_inpn', group2_inpn);
     }
-    return this._http.get<any>(`${this.cs.API_ENDPOINT}/occtax/defaultNomenclatures`, {
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/occtax/defaultNomenclatures`, {
       params: params,
     });
   }

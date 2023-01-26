@@ -19,9 +19,9 @@ export class SyntheseModalDownloadComponent {
     public _dataService: SyntheseDataService,
     private _fs: SyntheseFormService,
     private _storeService: SyntheseStoreService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
-    this.syntheseConfig = this.cs.SYNTHESE;
+    this.syntheseConfig = this.config.SYNTHESE;
   }
 
   downloadObservations(format) {
@@ -35,7 +35,7 @@ export class SyntheseModalDownloadComponent {
   downloadStatusOrMetadata(url, filename) {
     const params = this._fs.formatParams();
     this._dataService.downloadStatusOrMetadata(
-      `${this.cs.API_ENDPOINT}/${url}`,
+      `${this.config.API_ENDPOINT}/${url}`,
       'csv',
       params,
       filename

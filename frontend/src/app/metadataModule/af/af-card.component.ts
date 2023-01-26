@@ -63,17 +63,14 @@ export class AfCardComponent implements OnInit {
   };
 
   public spinner = true;
-  public APP_CONFIG = null;
 
   constructor(
     private _dfs: DataFormService,
     private _route: ActivatedRoute,
     private _router: Router,
     private _commonService: CommonService,
-    public cs: ConfigService
-  ) {
-    this.APP_CONFIG = cs;
-  }
+    public config: ConfigService
+  ) {}
 
   ngOnInit() {
     this._route.params.subscribe((params) => {
@@ -148,7 +145,7 @@ export class AfCardComponent implements OnInit {
   getPdf() {
     this._dfs.exportPDF(
       this.chart ? this.chart.toBase64Image() : '',
-      `${this.cs.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${this.af.id_acquisition_framework}`,
+      `${this.config.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${this.af.id_acquisition_framework}`,
       'af'
     );
   }

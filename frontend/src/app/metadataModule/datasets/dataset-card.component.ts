@@ -83,7 +83,7 @@ export class DatasetCardComponent implements OnInit {
     private _router: Router,
     public dialog: MatDialog,
     public metadataDataS: MetadataDataService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -143,7 +143,7 @@ export class DatasetCardComponent implements OnInit {
   getPdf() {
     this._dfs.exportPDF(
       this.chart ? this.chart.toBase64Image() : '',
-      `${this.cs.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`,
+      `${this.config.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`,
       'jdd'
     );
   }

@@ -18,9 +18,9 @@ export class SidenavItemsComponent implements OnInit {
   constructor(
     public moduleService: ModuleService,
     public _sidenavService: SideNavService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
-    this.version = this.cs.GEONATURE_VERSION;
+    this.version = this.config.GEONATURE_VERSION;
   }
 
   ngOnInit() {

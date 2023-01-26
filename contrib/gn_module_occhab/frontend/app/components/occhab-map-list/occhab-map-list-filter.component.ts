@@ -16,7 +16,7 @@ export class OcchabMapListFilterComponent implements OnInit {
   constructor(
     public mapListFormService: OccHabMapListService,
     private _dateParser: NgbDateParserFormatter,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   ngOnInit() {}

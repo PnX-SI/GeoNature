@@ -27,7 +27,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     private _formBuilder: FormBuilder,
     private _commonService: CommonService,
     private _syntheseDataService: SyntheseDataService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
     this.commentForm = this._formBuilder.group({
       content: ['', Validators.required],
@@ -74,7 +74,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   isValid() {
     return (
       this.commentForm.valid &&
-      this.commentForm.get('content').value.length <= this.cs?.SYNTHESE?.DISCUSSION_MAX_LENGTH
+      this.commentForm.get('content').value.length <= this.config?.SYNTHESE?.DISCUSSION_MAX_LENGTH
     );
   }
 

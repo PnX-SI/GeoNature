@@ -66,7 +66,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     private _mapService: MapService,
     private _clipboard: Clipboard,
     private _moduleService: ModuleService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -74,8 +74,8 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     this._moduleService.currentModule$.subscribe((module) => {
       if (module) {
         this.moduleInfos = { id: module.id_module, code: module.module_code };
-        this.activateAlert = this.cs.SYNTHESE.ALERT_MODULES.includes(this.moduleInfos?.code);
-        this.activatePin = this.cs.SYNTHESE.PIN_MODULES.includes(this.moduleInfos?.code);
+        this.activateAlert = this.config.SYNTHESE.ALERT_MODULES.includes(this.moduleInfos?.code);
+        this.activatePin = this.config.SYNTHESE.PIN_MODULES.includes(this.moduleInfos?.code);
       }
     });
   }
@@ -138,7 +138,10 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         }
 
         this._gnDataService
-          .getTaxonAttributsAndMedia(this.selectedObs.cd_nom, this.cs.SYNTHESE.ID_ATTRIBUT_TAXHUB)
+          .getTaxonAttributsAndMedia(
+            this.selectedObs.cd_nom,
+            this.config.SYNTHESE.ID_ATTRIBUT_TAXHUB
+          )
           .subscribe((taxAttr) => {
             this.selectObsTaxonInfo = taxAttr;
           });
@@ -180,7 +183,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       const d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };
       if (this.selectedObs.source.url_source) {
         d['data_link'] = [
-          this.cs.URL_APPLICATION,
+          this.config.URL_APPLICATION,
           this.selectedObs.source.url_source,
           this.selectedObs.entity_source_pk_value,
         ].join('/');
@@ -300,7 +303,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   openCloseAlert() {
     this.alertOpen = !this.alertOpen;
     // avoid useless request
-    if (this.cs.SYNTHESE?.ALERT_MODULES && this.cs.SYNTHESE.ALERT_MODULES.length) {
+    if (this.config.SYNTHESE?.ALERT_MODULES && this.config.SYNTHESE.ALERT_MODULES.length) {
       this.getReport('alert');
     }
   }
@@ -349,7 +352,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
 
   copyToClipBoard() {
     this._clipboard.copy(
-      `${this.cs.URL_APPLICATION}/#/${this.useFrom}/occurrence/${this.selectedObs.id_synthese}`
+      `${this.config.URL_APPLICATION}/#/${this.useFrom}/occurrence/${this.selectedObs.id_synthese}`
     );
     this._commonService.translateToaster('info', 'Synthese.copy');
   }

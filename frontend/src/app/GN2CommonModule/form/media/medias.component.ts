@@ -28,7 +28,7 @@ export class MediasComponent implements OnInit {
 
   public bInitialized: boolean;
 
-  constructor(public ms: MediaService, public cs: ConfigService) {}
+  constructor(public ms: MediaService, public config: ConfigService) {}
 
   ngOnInit() {
     this.ms.getNomenclatures().subscribe(() => {
@@ -45,7 +45,7 @@ export class MediasComponent implements OnInit {
       if (!(this.parentFormControl.value[index] instanceof Media)) {
         this.parentFormControl.value[index] = new Media(
           this.parentFormControl.value[index],
-          this.cs
+          this.config
         );
       }
     }
@@ -63,7 +63,7 @@ export class MediasComponent implements OnInit {
     if (!this.parentFormControl.value) {
       this.parentFormControl.patchValue([]);
     }
-    this.parentFormControl.value.push(new Media(null, this.cs));
+    this.parentFormControl.value.push(new Media(null, this.config));
     this.parentFormControl.patchValue(this.parentFormControl.value);
   }
 

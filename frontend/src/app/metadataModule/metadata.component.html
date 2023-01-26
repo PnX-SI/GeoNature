@@ -155,7 +155,7 @@
                       <mat-icon> create</mat-icon>
                     </a>
                     <button
-                      *ngIf="APP_CONFIG.METADATA?.ENABLE_CLOSE_AF"
+                      *ngIf="config.METADATA?.ENABLE_CLOSE_AF"
                       type="button"
                       mat-icon-button
                       [disabled]="!af.cruved.V || !af.opened || af['t_datasets'].length == 0"

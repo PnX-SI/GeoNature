@@ -53,12 +53,12 @@ export class MarkerComponent implements OnInit, OnChanges {
   constructor(
     public mapservice: MapService,
     private _commonService: CommonService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
     this.map = this.mapservice.map;
-    this.zoomLevel = this.zoomLevel || this.cs.MAPCONFIG.ZOOM_LEVEL_RELEVE;
+    this.zoomLevel = this.zoomLevel || this.config.MAPCONFIG.ZOOM_LEVEL_RELEVE;
     this.setMarkerLegend();
     // activation or not of the marker
     if (this.defaultEnable) {

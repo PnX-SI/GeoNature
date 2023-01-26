@@ -89,7 +89,7 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
   @Output() onDelete = new EventEmitter<Taxon>();
 
-  constructor(private _dfService: DataFormService, public cs: ConfigService) {}
+  constructor(private _dfService: DataFormService, public config: ConfigService) {}
 
   ngOnInit() {
     if (!this.apiEndPoint) {
@@ -126,9 +126,9 @@ export class TaxonomyComponent implements OnInit, OnChanges {
 
   setApiEndPoint(idList) {
     if (idList) {
-      this.apiEndPoint = `${this.cs.API_TAXHUB}/taxref/allnamebylist/${idList}`;
+      this.apiEndPoint = `${this.config.API_TAXHUB}/taxref/allnamebylist/${idList}`;
     } else {
-      this.apiEndPoint = `${this.cs.API_TAXHUB}/taxref/allnamebylist`;
+      this.apiEndPoint = `${this.config.API_TAXHUB}/taxref/allnamebylist`;
     }
   }
 

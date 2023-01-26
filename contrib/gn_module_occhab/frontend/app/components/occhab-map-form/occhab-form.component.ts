@@ -43,7 +43,7 @@ export class OccHabFormComponent implements OnInit {
     private _route: ActivatedRoute,
     private _router: Router,
     private _commonService: CommonService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   ngOnInit() {

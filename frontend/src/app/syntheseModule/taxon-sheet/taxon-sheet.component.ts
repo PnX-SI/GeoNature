@@ -18,7 +18,7 @@ export class TaxonSheetComponent implements OnInit {
     private _route: ActivatedRoute,
     private _ds: DataFormService,
     private _commonService: CommonService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -33,10 +33,10 @@ export class TaxonSheetComponent implements OnInit {
               this.profilArea = profil;
               this._ds.getTaxonAttributsAndMedia(taxon.cd_ref).subscribe((taxonAttrAndMedias) => {
                 const media = taxonAttrAndMedias.medias.find(
-                  (m) => m.id_type == this.cs['TAXHUB']['ID_TYPE_MAIN_PHOTO']
+                  (m) => m.id_type == this.config['TAXHUB']['ID_TYPE_MAIN_PHOTO']
                 );
                 if (media) {
-                  this.mediaUrl = `${this.cs.API_TAXHUB}/tmedias/thumbnail/${media.id_media}?h=300&w300`;
+                  this.mediaUrl = `${this.config.API_TAXHUB}/tmedias/thumbnail/${media.id_media}?h=300&w300`;
                 }
               });
             },

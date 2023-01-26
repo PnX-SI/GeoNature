@@ -33,20 +33,20 @@ export class HomeContentComponent implements OnInit {
     private _mapService: MapService,
     private _moduleService: ModuleService,
     private translateService: TranslateService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
     // this work here thanks to APP_INITIALIZER on ModuleService
     let synthese_module = this._moduleService.getModule('SYNTHESE');
     let synthese_read_scope = synthese_module ? synthese_module.cruved['R'] : 0;
 
-    if (this.cs.FRONTEND.DISPLAY_MAP_LAST_OBS && synthese_read_scope > 0) {
+    if (this.config.FRONTEND.DISPLAY_MAP_LAST_OBS && synthese_read_scope > 0) {
       this.showLastObsMap = true;
     }
-    if (this.cs.FRONTEND.DISPLAY_STAT_BLOC && synthese_read_scope > 0) {
+    if (this.config.FRONTEND.DISPLAY_STAT_BLOC && synthese_read_scope > 0) {
       this.showGeneralStat = true;
     }
 
-    this.cluserOrSimpleFeatureGroup = this.cs.SYNTHESE.ENABLE_LEAFLET_CLUSTER
+    this.cluserOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
       ? (L as any).markerClusterGroup()
       : new L.FeatureGroup();
   }
@@ -85,7 +85,7 @@ export class HomeContentComponent implements OnInit {
       // Compute refresh need
       const currentDatetime = new Date();
       const cacheEndDatetime = new Date(stats.createdDate);
-      const milliSecondsTtl = this.cs.FRONTEND.STAT_BLOC_TTL * 1000;
+      const milliSecondsTtl = this.config.FRONTEND.STAT_BLOC_TTL * 1000;
       const futureTimestamp = cacheEndDatetime.getTime() + milliSecondsTtl;
       cacheEndDatetime.setTime(futureTimestamp);
 

@@ -18,7 +18,7 @@ export class MyCustomInterceptor implements HttpInterceptor {
     public inj: Injector,
     public router: Router,
     private _toastrService: ToastrService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   private handleError(error: any) {
@@ -58,8 +58,8 @@ export class MyCustomInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // set withCredential = true to send and accept cookie from the API
     if (
-      this.cs.API_ENDPOINT &&
-      this.extractHostname(this.cs.API_ENDPOINT) == this.extractHostname(request.url)
+      this.config.API_ENDPOINT &&
+      this.extractHostname(this.config.API_ENDPOINT) == this.extractHostname(request.url)
     ) {
       request = request.clone({
         withCredentials: true,

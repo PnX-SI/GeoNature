@@ -55,7 +55,7 @@
         class="no-link-style"
         ngbTooltip="{{ 'Synthese.GnRecord' | translate }}"
         placement="bottom"
-        *ngIf="selectedObsTaxonDetail && cs.FRONTEND['ENABLE_PROFILES']"
+        *ngIf="selectedObsTaxonDetail && config.FRONTEND['ENABLE_PROFILES']"
         [routerLink]="['/synthese/taxon', selectedObsTaxonDetail?.cd_ref]"
         target="_blank"
       >
@@ -80,7 +80,7 @@
           <mat-icon>edit</mat-icon>
         </button>
         <button
-          *ngIf="selectedObs?.cor_observers?.length > 0 && cs.FRONTEND.DISPLAY_EMAIL_INFO_OBS"
+          *ngIf="selectedObs?.cor_observers?.length > 0 && config.FRONTEND.DISPLAY_EMAIL_INFO_OBS"
           mat-mini-fab
           ngbTooltip="{{ 'Synthese.Mailto' | translate }}"
           placement="bottom"
@@ -169,7 +169,7 @@
       <a
         color="primary"
         class="btn btn-xs align-self-start mr-2 link-infos"
-        *ngIf="selectedObsTaxonDetail && cs.FRONTEND['ENABLE_PROFILES']"
+        *ngIf="selectedObsTaxonDetail && config.FRONTEND['ENABLE_PROFILES']"
         [routerLink]="['/synthese/taxon', selectedObsTaxonDetail?.cd_ref]"
         target="_blank"
         mat-stroked-button
@@ -544,7 +544,7 @@
         </tbody>
       </table>
 
-      <div *ngIf="cs.FRONTEND.ENABLE_PROFILES">
+      <div *ngIf="config.FRONTEND.ENABLE_PROFILES">
         <div *ngIf="profile; else noProfile">
           <h3>Profil du taxon</h3>
           <div class="row row-sm">
@@ -635,7 +635,7 @@
 
   <mat-tab
     label="{{ 'Synthese.Discussion' | translate }}"
-    *ngIf="cs.SYNTHESE.DISCUSSION_MODULES.includes(moduleInfos.code)"
+    *ngIf="config.SYNTHESE.DISCUSSION_MODULES.includes(moduleInfos.code)"
   >
     <pnx-discussion-card
       [validationColor]="validationColor"

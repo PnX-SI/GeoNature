@@ -6,10 +6,10 @@ import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class SignUpGuard implements CanActivate {
-  constructor(private _router: Router, public cs: ConfigService) {}
+  constructor(private _router: Router, public config: ConfigService) {}
 
   canActivate() {
-    if (this.cs['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false) {
+    if (this.config['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false) {
       return true;
     } else {
       this._router.navigate(['/login']);
@@ -20,10 +20,10 @@ export class SignUpGuard implements CanActivate {
 
 @Injectable()
 export class UserManagementGuard implements CanActivate {
-  constructor(private _router: Router, public cs: ConfigService) {}
+  constructor(private _router: Router, public config: ConfigService) {}
 
   canActivate() {
-    if (this.cs['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false) {
+    if (this.config['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false) {
       return true;
     } else {
       this._router.navigate(['/login']);
@@ -39,12 +39,16 @@ export class UserPublicGuard implements CanActivate {
   - Used to prevent public user from accessing the "/user" route in which the user can see and change its own information
   */
 
-  constructor(private _router: Router, public authService: AuthService, public cs: ConfigService) {}
+  constructor(
+    private _router: Router,
+    public authService: AuthService,
+    public config: ConfigService
+  ) {}
 
   canActivate() {
     if (
-      this.cs['PUBLIC_ACCESS_USERNAME'] &&
-      this.cs['PUBLIC_ACCESS_USERNAME'] == this.authService.getCurrentUser().user_login
+      this.config['PUBLIC_ACCESS_USERNAME'] &&
+      this.config['PUBLIC_ACCESS_USERNAME'] == this.authService.getCurrentUser().user_login
     ) {
       this._router.navigate(['/']);
       return false;

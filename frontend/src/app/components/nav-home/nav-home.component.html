@@ -24,28 +24,28 @@
       <img
         id="logo-structure"
         class="mx-2"
-        src="custom/images/{{ cs.LOGO_STRUCTURE_FILE }}"
+        src="custom/images/{{ config.LOGO_STRUCTURE_FILE }}"
         alt=""
       />
 
       <span class="toolbar-spacer"></span>
       <div></div>
       <span id="appName">
-        <h3>{{ cs.appName }}</h3>
+        <h3>{{ config.appName }}</h3>
       </span>
 
       <span class="toolbar-spacer"></span>
 
       <ng-container
         *ngIf="
-          cs.PUBLIC_ACCESS_USERNAME != currentUser?.user_login;
+          config.PUBLIC_ACCESS_USERNAME != currentUser?.user_login;
           else publicAccessUser
         "
       >
         <ng-container
           *ngIf="
-            !cs.CAS_PUBLIC.CAS_AUTHENTIFICATION &&
-              cs.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT;
+            !config.CAS_PUBLIC.CAS_AUTHENTIFICATION &&
+              config.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT;
             else noUserManagement
           "
         >
@@ -81,7 +81,7 @@
         </ng-template>
 
         <!-- add notification only if notification enabled -->
-        <ng-container *ngIf="cs.NOTIFICATIONS_ENABLED == true">
+        <ng-container *ngIf="config.NOTIFICATIONS_ENABLED == true">
           <a
             class="mx-2 mat-elevation-z1"
             mat-icon-button
@@ -100,7 +100,7 @@
         <span class="user-name">Accès public</span>
       </ng-template>
 
-      <ng-container *ngIf="cs.FRONTEND.MULTILINGUAL">
+      <ng-container *ngIf="config.FRONTEND.MULTILINGUAL">
         <button
           class="mx-2 mat-elevation-z1"
           mat-icon-button

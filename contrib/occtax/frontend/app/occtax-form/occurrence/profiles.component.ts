@@ -32,7 +32,7 @@ export class OcctaxProfilesComponent implements OnInit, OnDestroy {
     private _dataS: DataFormService,
     public occtaxFormService: OcctaxFormService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -59,7 +59,7 @@ export class OcctaxProfilesComponent implements OnInit, OnDestroy {
       //reinitialisation view variable
       tap(() => (this.taxon = null)),
       //filter on param
-      filter(() => this.cs.FRONTEND['ENABLE_PROFILES']),
+      filter(() => this.config.FRONTEND['ENABLE_PROFILES']),
       //filter on data
       filter((taxon) => taxon !== null && taxon.cd_ref),
       //set variable for view usage

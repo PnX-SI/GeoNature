@@ -33,15 +33,16 @@ export class SyntheseComponent implements OnInit {
     private _toasterService: ToastrService,
     private _route: ActivatedRoute,
     private _ngModal: NgbModal,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
     this._fs.selectors = this._fs.selectors
-      .set('limit', this.cs.SYNTHESE.NB_LAST_OBS)
+      .set('limit', this.config.SYNTHESE.NB_LAST_OBS)
       .set(
         'format',
-        this.cs.SYNTHESE.AREA_AGGREGATION_ENABLED && this.cs.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT
+        this.config.SYNTHESE.AREA_AGGREGATION_ENABLED &&
+          this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT
           ? 'grouped_geom_by_areas'
           : 'grouped_geom'
       );
@@ -92,7 +93,7 @@ export class SyntheseComponent implements OnInit {
         this._syntheseStore.idSyntheseList = this.extractSyntheseIds(data);
 
         // Check if synthese observations limit is reach
-        if (this._syntheseStore.idSyntheseList.length >= this.cs.SYNTHESE.NB_MAX_OBS_MAP) {
+        if (this._syntheseStore.idSyntheseList.length >= this.config.SYNTHESE.NB_MAX_OBS_MAP) {
           const modalRef = this._modalService.open(SyntheseModalDownloadComponent, {
             size: 'lg',
           });

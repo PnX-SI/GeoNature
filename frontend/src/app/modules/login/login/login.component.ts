@@ -26,19 +26,20 @@ export class LoginComponent implements OnInit {
   constructor(
     private _authService: AuthService,
     private _commonService: CommonService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
-    this.enablePublicAccess = this.cs.PUBLIC_ACCESS_USERNAME;
-    this.APP_NAME = this.cs.appName;
-    this.casLogin = this.cs.CAS_PUBLIC.CAS_AUTHENTIFICATION;
-    this.enable_sign_up = this.cs['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false;
-    this.enable_user_management = this.cs['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false;
+    this.enablePublicAccess = this.config.PUBLIC_ACCESS_USERNAME;
+    this.APP_NAME = this.config.appName;
+    this.casLogin = this.config.CAS_PUBLIC.CAS_AUTHENTIFICATION;
+    this.enable_sign_up = this.config['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false;
+    this.enable_user_management =
+      this.config['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false;
   }
 
   ngOnInit() {
-    if (this.cs.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
+    if (this.config.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
       // if token not here here, redirection to CAS login page
-      const url_redirection_cas = `${this.cs.CAS_PUBLIC.CAS_URL_LOGIN}?service=${this.cs.API_ENDPOINT}/gn_auth/login_cas`;
+      const url_redirection_cas = `${this.config.CAS_PUBLIC.CAS_URL_LOGIN}?service=${this.config.API_ENDPOINT}/gn_auth/login_cas`;
       document.location.href = url_redirection_cas;
     }
   }

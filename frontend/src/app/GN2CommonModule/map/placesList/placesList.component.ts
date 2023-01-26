@@ -35,9 +35,9 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
     public modalService: NgbModal,
     public commonService: CommonService,
     private _dfs: DataFormService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
-    super(mapService, commonService, cs);
+    super(mapService, commonService, config);
   }
 
   ngOnInit() {

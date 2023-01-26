@@ -35,7 +35,7 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
     public occtaxFormService: OcctaxFormService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxFormCountingService: OcctaxFormCountingService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   ngOnInit() {

@@ -23,9 +23,9 @@ export class ModalInfoObsComponent implements OnInit {
     private _dataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
     public mediaService: MediaService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
-    this.SYNTHESE_CONFIG = this.cs.SYNTHESE;
+    this.SYNTHESE_CONFIG = this.config.SYNTHESE;
   }
 
   ngOnInit() {

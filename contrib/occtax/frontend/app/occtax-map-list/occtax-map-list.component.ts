@@ -62,7 +62,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     public mediaService: MediaService,
     public occtaxMapListS: OcctaxMapListService,
     private _moduleService: ModuleService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -204,7 +204,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     //https://github.com/angular/angular/issues/20430
     let queryString = this.mapListService.urlQuery.delete('limit');
     queryString = queryString.delete('offset');
-    const url = `${this.cs.API_ENDPOINT}/occtax/${
+    const url = `${this.config.API_ENDPOINT}/occtax/${
       this._moduleService.currentModule.module_code
     }/export?${queryString.toString()}&format=${format}`;
 

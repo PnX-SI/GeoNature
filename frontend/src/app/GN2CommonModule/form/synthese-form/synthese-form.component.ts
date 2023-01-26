@@ -34,12 +34,12 @@ export class SyntheseSearchComponent implements OnInit {
     private _storeService: TaxonAdvancedStoreService,
     private _api: DataFormService,
     private route: ActivatedRoute,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
     this.route.queryParams.subscribe((params) => {
       this.params = params;
     });
-    this.taxonApiEndPoint = `${this.cs.API_ENDPOINT}/synthese/taxons_autocomplete`;
+    this.taxonApiEndPoint = `${this.config.API_ENDPOINT}/synthese/taxons_autocomplete`;
   }
 
   ngOnInit() {

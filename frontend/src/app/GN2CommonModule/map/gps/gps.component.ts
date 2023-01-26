@@ -23,9 +23,9 @@ export class GPSComponent extends MarkerComponent implements OnInit {
     public modalService: NgbModal,
     public commonService: CommonService,
     private _mapListServive: MapListService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
-    super(mapService, commonService, cs);
+    super(mapService, commonService, config);
   }
 
   ngOnInit() {

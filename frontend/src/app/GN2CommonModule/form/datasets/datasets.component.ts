@@ -62,7 +62,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     private _commonService: CommonService,
     private _iterableDiffers: IterableDiffers,
     public datasetStore: DatasetStoreService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
     super();
     this.iterableDiffer = this._iterableDiffers.find([]).create(null);
@@ -92,7 +92,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
       },
       (error) => {
         if (error.status === 404) {
-          if (this.cs.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
+          if (this.config.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
             this._commonService.translateToaster('warning', 'MetaData.NoJDDMTD');
           } else {
             this._commonService.translateToaster('warning', 'MetaData.NoJDD');

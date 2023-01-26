@@ -24,13 +24,13 @@ const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
 export class NominatimService {
   PARAMS = null;
 
-  constructor(private http: HttpClient, public cs: ConfigService) {
+  constructor(private http: HttpClient, public config: ConfigService) {
     this.PARAMS = new HttpParams({
       fromObject: {
         format: 'json',
         limit: '10',
         polygon_geojson: '1',
-        countrycodes: this.cs.MAPCONFIG.OSM_RESTRICT_COUNTRY_CODES,
+        countrycodes: this.config.MAPCONFIG.OSM_RESTRICT_COUNTRY_CODES,
       },
     });
   }
@@ -82,10 +82,10 @@ export class MapComponent implements OnInit {
     private mapService: MapService,
     private _commonService: CommonService,
     private _nominatim: NominatimService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
     this.searchLocation = '';
-    this.zoom = this.cs.MAPCONFIG.ZOOM_LEVEL;
+    this.zoom = this.config.MAPCONFIG.ZOOM_LEVEL;
   }
 
   ngOnInit() {
@@ -130,7 +130,7 @@ export class MapComponent implements OnInit {
     if (this.center !== undefined) {
       center = L.latLng(this.center[0], this.center[1]);
     } else {
-      center = L.latLng(this.cs.MAPCONFIG.CENTER[0], this.cs.MAPCONFIG.CENTER[1]);
+      center = L.latLng(this.config.MAPCONFIG.CENTER[0], this.config.MAPCONFIG.CENTER[1]);
     }
     // MAP
     const map = L.map(this.mapContainer.nativeElement, {
@@ -151,7 +151,7 @@ export class MapComponent implements OnInit {
     // LAYERS CONTROL
     // Baselayers
     const baseControl = {};
-    const BASEMAP = JSON.parse(JSON.stringify(this.cs.MAPCONFIG.BASEMAP));
+    const BASEMAP = JSON.parse(JSON.stringify(this.config.MAPCONFIG.BASEMAP));
     BASEMAP.forEach((basemap, index) => {
       const formatedBasemap = this.formatBaseMapConfig(basemap);
       if (basemap.service === 'wms') {

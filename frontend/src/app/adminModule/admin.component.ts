@@ -12,9 +12,9 @@ export class AdminComponent implements OnInit {
   URL_NOMENCLATURE_ADMIN = null;
   URL_BACKOFFICE_PERM = null;
 
-  constructor(public _cruvedStore: CruvedStoreService, public cs: ConfigService) {
-    this.URL_NOMENCLATURE_ADMIN = this.cs.API_ENDPOINT + '/admin/';
-    this.URL_BACKOFFICE_PERM = this.cs.API_ENDPOINT + '/permissions_backoffice/users';
+  constructor(public _cruvedStore: CruvedStoreService, public config: ConfigService) {
+    this.URL_NOMENCLATURE_ADMIN = this.config.API_ENDPOINT + '/admin/';
+    this.URL_BACKOFFICE_PERM = this.config.API_ENDPOINT + '/permissions_backoffice/users';
   }
 
   ngOnInit() {}

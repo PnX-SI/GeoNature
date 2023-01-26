@@ -53,7 +53,7 @@ export class MapListService {
     fill: true,
   };
 
-  constructor(private _http: HttpClient, private _ms: MapService, public cs: ConfigService) {
+  constructor(private _http: HttpClient, private _ms: MapService, public config: ConfigService) {
     this.columns = [];
     this.page.pageNumber = 0;
     this.page.size = 12;
@@ -133,7 +133,7 @@ export class MapListService {
   dataService() {
     this.isLoading = true;
     return this._http
-      .get<any>(`${this.cs.API_ENDPOINT}/${this.endPoint}`, { params: this.urlQuery })
+      .get<any>(`${this.config.API_ENDPOINT}/${this.endPoint}`, { params: this.urlQuery })
       .pipe(
         delay(200),
         finalize(() => (this.isLoading = false))

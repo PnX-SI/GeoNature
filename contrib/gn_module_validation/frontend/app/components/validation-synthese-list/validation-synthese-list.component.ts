@@ -63,14 +63,15 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
     public ref: ChangeDetectorRef,
     private _ms: MapService,
     public formService: SyntheseFormService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
     this.alertActivate =
-      this.cs.SYNTHESE.ALERT_MODULES && this.cs.SYNTHESE.ALERT_MODULES.includes('VALIDATION');
+      this.config.SYNTHESE.ALERT_MODULES &&
+      this.config.SYNTHESE.ALERT_MODULES.includes('VALIDATION');
     this.pinActivate =
-      this.cs.SYNTHESE.PIN_MODULES && this.cs.SYNTHESE.PIN_MODULES.includes('VALIDATION');
+      this.config.SYNTHESE.PIN_MODULES && this.config.SYNTHESE.PIN_MODULES.includes('VALIDATION');
 
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;

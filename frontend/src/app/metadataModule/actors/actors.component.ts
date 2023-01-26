@@ -43,15 +43,15 @@ export class ActorComponent implements OnInit {
         } else {
           if (
             this.metadataType == 'dataset' &&
-            this.cs.METADATA.CD_NOMENCLATURE_ROLE_TYPE_DS.length > 0
+            this.config.METADATA.CD_NOMENCLATURE_ROLE_TYPE_DS.length > 0
           ) {
-            return this.cs.METADATA.CD_NOMENCLATURE_ROLE_TYPE_DS.includes(e.cd_nomenclature);
+            return this.config.METADATA.CD_NOMENCLATURE_ROLE_TYPE_DS.includes(e.cd_nomenclature);
           }
           if (
             this.metadataType == 'af' &&
-            this.cs.METADATA.CD_NOMENCLATURE_ROLE_TYPE_AF.length > 0
+            this.config.METADATA.CD_NOMENCLATURE_ROLE_TYPE_AF.length > 0
           ) {
-            return this.cs.METADATA.CD_NOMENCLATURE_ROLE_TYPE_AF.includes(e.cd_nomenclature);
+            return this.config.METADATA.CD_NOMENCLATURE_ROLE_TYPE_AF.includes(e.cd_nomenclature);
           }
         }
         return true;
@@ -89,7 +89,7 @@ export class ActorComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private actorFormS: ActorFormService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   ngOnInit() {

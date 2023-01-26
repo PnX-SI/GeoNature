@@ -37,9 +37,9 @@ export class MetadataService {
     public dateParser: NgbDateParserFormatter,
     private dataFormService: DataFormService,
     private _syntheseDataService: SyntheseDataService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
-    this.pageSize = new BehaviorSubject(this.cs.METADATA.NB_AF_DISPLAYED);
+    this.pageSize = new BehaviorSubject(this.config.METADATA.NB_AF_DISPLAYED);
 
     this.form = this._fb.group({
       selector: 'ds',
@@ -88,7 +88,7 @@ export class MetadataService {
         tap((term) => (this.expandAccordions = term !== ''))
       )
       .subscribe(() => this.pageIndex.next(0));
-    this.cs.METADATA.METADATA_AREA_FILTERS.forEach((area) => {
+    this.config.METADATA.METADATA_AREA_FILTERS.forEach((area) => {
       const control_name = 'area_' + area['type_code'].toLowerCase();
       this.form.addControl(control_name, new FormControl(new Array()));
       const control = this.form.controls[control_name];

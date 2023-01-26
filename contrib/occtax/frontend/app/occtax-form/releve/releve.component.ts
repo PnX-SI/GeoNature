@@ -42,7 +42,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     public moduleService: ModuleService,
     public occtaxDataService: OcctaxDataService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
     this.occtaxConfig = ModuleConfig;
   }

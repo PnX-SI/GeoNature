@@ -8,11 +8,11 @@ export class OccHabDataService {
   constructor(
     private _http: HttpClient,
     private _gnDataService: DataFormService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   postStation(data) {
-    return this._http.post(`${this.cs.API_ENDPOINT}/occhab/station`, data);
+    return this._http.post(`${this.config.API_ENDPOINT}/occhab/station`, data);
   }
 
   getStations(params?) {
@@ -22,22 +22,22 @@ export class OccHabDataService {
         queryString = queryString.set(key, params[key]);
       }
     }
-    return this._http.get<any>(`${this.cs.API_ENDPOINT}/occhab/stations`, {
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/occhab/stations`, {
       params: queryString,
     });
   }
 
   getOneStation(idStation) {
-    return this._http.get<any>(`${this.cs.API_ENDPOINT}/occhab/station/${idStation}`);
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/occhab/station/${idStation}`);
   }
 
   deleteOneStation(idStation) {
-    return this._http.delete<any>(`${this.cs.API_ENDPOINT}/occhab/station/${idStation}`);
+    return this._http.delete<any>(`${this.config.API_ENDPOINT}/occhab/station/${idStation}`);
   }
 
   exportStations(export_format, idsStation?: Array<number>) {
     const sub = this._http.post(
-      `${this.cs.API_ENDPOINT}/occhab/export_stations/${export_format}`,
+      `${this.config.API_ENDPOINT}/occhab/export_stations/${export_format}`,
       { idsStation: idsStation },
       {
         observe: 'events',

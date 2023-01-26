@@ -51,7 +51,7 @@ export class MapService {
   constructor(
     private _httpClient: HttpClient,
     private _commonService: CommonService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
     this.fileLayerFeatureGroup = new L.FeatureGroup();
   }
@@ -62,7 +62,7 @@ export class MapService {
       queryString = queryString.set(key, params[key]);
     }
 
-    return this._httpClient.get<any>(`${this.cs.API_ENDPOINT}/geo/areas`, {
+    return this._httpClient.get<any>(`${this.config.API_ENDPOINT}/geo/areas`, {
       params: queryString,
     });
   };
@@ -228,7 +228,7 @@ export class MapService {
       };
       this.setGeojsonCoord(geojson);
       this.marker.on('moveend', () => {
-        if (this.map.getZoom() < this.cs.MAPCONFIG.ZOOM_LEVEL_RELEVE) {
+        if (this.map.getZoom() < this.config.MAPCONFIG.ZOOM_LEVEL_RELEVE) {
           this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         } else {
           markerCoord = this.marker.getLatLng();
@@ -324,7 +324,7 @@ export class MapService {
    * @returns
    */
   createOverLayers(map) {
-    const OVERLAYERS = JSON.parse(JSON.stringify(this.cs.MAPCONFIG.REF_LAYERS));
+    const OVERLAYERS = JSON.parse(JSON.stringify(this.config.MAPCONFIG.REF_LAYERS));
     const overlaysLayers = {};
     OVERLAYERS.map((lyr) => [lyr, this.getLayerCreator(lyr.type)(lyr)])
       .filter((l) => l[1])
@@ -342,7 +342,7 @@ export class MapService {
           legendUrl = `${layerLeaf._url}?TRANSPARENT=TRUE&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=${layerLeaf.options.layers}&FORMAT=image%2Fpng&LEGEND_OPTIONS=forceLabels%3Aon%3BfontAntiAliasing%3Atrue`;
         }
         // leaflet layers controler required object
-        if (this.cs.MAPCONFIG?.REF_LAYERS_LEGEND) {
+        if (this.config.MAPCONFIG?.REF_LAYERS_LEGEND) {
           overlaysLayers[this.getLegendBox({ title: title, ...style, legendUrl: legendUrl })] =
             lyr[1];
         } else {
@@ -363,7 +363,7 @@ export class MapService {
    */
   loadOverlay(overlay) {
     let overlayer = overlay?.layer || overlay;
-    let cfgLayer = JSON.parse(JSON.stringify(this.cs.MAPCONFIG.REF_LAYERS));
+    let cfgLayer = JSON.parse(JSON.stringify(this.config.MAPCONFIG.REF_LAYERS));
     let layerAdded = cfgLayer.filter((o) => o.code === overlayer.configId)[0];
 
     if (['wms'].includes(layerAdded.type) || overlayer.getLayers().length) return;

@@ -7,10 +7,10 @@ import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class UserDataService {
-  constructor(private _http: HttpClient, public cs: ConfigService) {}
+  constructor(private _http: HttpClient, public config: ConfigService) {}
 
   getRole(id: number) {
-    return this._http.get<any>(`${this.cs.API_ENDPOINT}/users/role/${id}`);
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/role/${id}`);
   }
 
   getRoles(params?: any) {
@@ -21,12 +21,12 @@ export class UserDataService {
         queryString = queryString.set(key, params[key]);
       }
     }
-    return this._http.get<any>(`${this.cs.API_ENDPOINT}/users/roles`, { params: queryString });
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/roles`, { params: queryString });
   }
 
   putRole(role: Role): Observable<Role> {
     const options = role;
-    return this._http.put<any>(`${this.cs.API_ENDPOINT}/users/role`, options).pipe(
+    return this._http.put<any>(`${this.config.API_ENDPOINT}/users/role`, options).pipe(
       map((res: Role) => {
         return res;
       })
@@ -35,7 +35,7 @@ export class UserDataService {
 
   putPassword(role: Role): Observable<any> {
     const options = role;
-    return this._http.put<any>(`${this.cs.API_ENDPOINT}/users/password/change`, options).pipe(
+    return this._http.put<any>(`${this.config.API_ENDPOINT}/users/password/change`, options).pipe(
       map((res: Role) => {
         return res;
       })

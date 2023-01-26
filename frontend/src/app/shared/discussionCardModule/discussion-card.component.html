@@ -22,7 +22,7 @@
           <mat-label class="gn-color">Commentaire :</mat-label>
           <textarea
             matInput
-            [maxlength]="cs.SYNTHESE?.DISCUSSION_MAX_LENGTH"
+            [maxlength]="config.SYNTHESE?.DISCUSSION_MAX_LENGTH"
             placeholder="Votre commentaire...."
             [formControl]="commentForm.get('content')"
           ></textarea>

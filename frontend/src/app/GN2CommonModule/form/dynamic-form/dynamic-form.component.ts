@@ -33,7 +33,7 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   public isValInSelectList: boolean = true;
   private _sub: Subscription;
 
-  constructor(private _dynformService: DynamicFormService, public cs: ConfigService) {}
+  constructor(private _dynformService: DynamicFormService, public config: ConfigService) {}
 
   ngOnInit() {
     this.setFormDefComp(true);

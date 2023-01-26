@@ -25,10 +25,10 @@ export class SignUpComponent implements OnInit {
     private _authService: AuthService,
     private _router: Router,
     private _commonService: CommonService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {
-    this.FORM_CONFIG = this.cs.ACCOUNT_MANAGEMENT.ACCOUNT_FORM;
-    if (!(this.cs['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false)) {
+    this.FORM_CONFIG = this.config.ACCOUNT_MANAGEMENT.ACCOUNT_FORM;
+    if (!(this.config['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false)) {
       this._router.navigate(['/login']);
     }
   }
@@ -60,13 +60,13 @@ export class SignUpComponent implements OnInit {
       this.disableSubmit = true;
       const finalForm = Object.assign({}, this.form.value);
       // concatenate two forms
-      if (this.cs.ACCOUNT_MANAGEMENT.ACCOUNT_FORM.length > 0) {
+      if (this.config.ACCOUNT_MANAGEMENT.ACCOUNT_FORM.length > 0) {
         finalForm['champs_addi'] = this.dynamicFormGroup.value;
       }
       this._authService
         .signupUser(finalForm)
         .subscribe(() => {
-          const callbackMessage = this.cs.ACCOUNT_MANAGEMENT.AUTO_ACCOUNT_CREATION
+          const callbackMessage = this.config.ACCOUNT_MANAGEMENT.AUTO_ACCOUNT_CREATION
             ? 'AutoAccountEmailConfirmation'
             : 'AdminAccountEmailConfirmation';
           this._commonService.translateToaster('info', callbackMessage);

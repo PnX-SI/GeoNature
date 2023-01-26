@@ -26,7 +26,7 @@ class Media {
   public details: boolean;
   public sent: boolean;
 
-  constructor(values = {}, public cs: ConfigService) {
+  constructor(values = {}, public config: ConfigService) {
     this.setValues(values);
   }
 
@@ -67,7 +67,7 @@ class Media {
     if (this.media_path) {
       filePath = this.media_path;
     } else if (this.media_url) {
-      filePath = `${this.cs.UPLOAD_FOLDER}/${this.id_table_location}/${this.id_media}`;
+      filePath = `${this.config.UPLOAD_FOLDER}/${this.id_table_location}/${this.id_media}`;
     }
 
     if (thumbnailHeight) {
@@ -79,9 +79,9 @@ class Media {
 
   href(thumbnailHeight = null): string {
     if (thumbnailHeight) {
-      return `${this.cs.API_ENDPOINT}/${this.filePath(thumbnailHeight)}`;
+      return `${this.config.API_ENDPOINT}/${this.filePath(thumbnailHeight)}`;
     }
-    return this.media_path ? `${this.cs.API_ENDPOINT}/${this.media_path}` : this.media_url;
+    return this.media_path ? `${this.config.API_ENDPOINT}/${this.media_path}` : this.media_url;
   }
 
   valid(): boolean {

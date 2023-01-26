@@ -59,7 +59,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     private _coreFormService: FormService,
     private _occtaxTaxaListService: OcctaxTaxaListService,
     public dialog: MatDialog,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   ngOnInit() {

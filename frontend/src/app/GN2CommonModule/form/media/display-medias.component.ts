@@ -31,7 +31,7 @@ export class DisplayMediasComponent {
     public ms: MediaService,
     public dialog: MatDialog,
     public _sanitizer: DomSanitizer,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -45,7 +45,7 @@ export class DisplayMediasComponent {
     for (const index in this.medias) {
       if (true) {
         if (!(this.medias[index] instanceof Media)) {
-          this.medias[index] = new Media(this.medias[index], this.cs);
+          this.medias[index] = new Media(this.medias[index], this.config);
         }
         this.medias[index].safeUrl = this.getSafeUrl(index);
         this.medias[index].safeEmbedUrl = this.getSafeEmbedUrl(index);

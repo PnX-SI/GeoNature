@@ -7,40 +7,40 @@ import { ConfigService } from '@geonature/services/config.service';
 export class ValidationDataService {
   public dataLoaded: Boolean = false;
 
-  constructor(private _http: HttpClient, public cs: ConfigService) {}
+  constructor(private _http: HttpClient, public config: ConfigService) {}
 
   getSyntheseData(params) {
-    return this._http.post<any>(`${this.cs.API_ENDPOINT}/validation`, params);
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/validation`, params);
   }
 
   postStatus(data: any, endpoint: Array<number>) {
-    const urlStatus = `${this.cs.API_ENDPOINT}/validation/${endpoint}`;
+    const urlStatus = `${this.config.API_ENDPOINT}/validation/${endpoint}`;
     return this._http.post<Nomenclature>(urlStatus, data);
   }
 
   getValidationDate(uuid) {
-    return this._http.get<any>(`${this.cs.API_ENDPOINT}/validation/date/${uuid}`);
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/validation/date/${uuid}`);
   }
 
   getStatusNames() {
-    return this._http.get<any>(`${this.cs.API_ENDPOINT}/validation/statusNames`);
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/validation/statusNames`);
   }
 
   getTaxonTree() {
-    return this._http.get<any>(`${this.cs.API_ENDPOINT}/synthese/taxons_tree`);
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/synthese/taxons_tree`);
   }
 
   getReports(params) {
-    return this._http.get(`${this.cs.API_ENDPOINT}/synthese/reports?${params}`);
+    return this._http.get(`${this.config.API_ENDPOINT}/synthese/reports?${params}`);
   }
 
   createReport(params) {
-    return this._http.put(`${this.cs.API_ENDPOINT}/synthese/reports`, params, {
+    return this._http.put(`${this.config.API_ENDPOINT}/synthese/reports`, params, {
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
   }
 
   deleteReport(id) {
-    return this._http.delete(`${this.cs.API_ENDPOINT}/synthese/reports/${id}`);
+    return this._http.delete(`${this.config.API_ENDPOINT}/synthese/reports/${id}`);
   }
 }

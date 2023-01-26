@@ -35,7 +35,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     private _moduleService: ModuleService,
     private notificationDataService: NotificationDataService,
     private router: Router,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -51,7 +51,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     // Put the user name in navbar
     this.currentUser = this.authService.getCurrentUser();
 
-    if (this.cs.NOTIFICATIONS_ENABLED == true) {
+    if (this.config.NOTIFICATIONS_ENABLED == true) {
       // Update notification count to display in badge
       this.updateNotificationCount();
     }
@@ -93,7 +93,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
         this.currentDocUrl = module.module_doc_url;
       }
     });
-    if (this.cs.NOTIFICATIONS_ENABLED == true) {
+    if (this.config.NOTIFICATIONS_ENABLED == true) {
       // Update notification count to display in badge
       this.updateNotificationCount();
     }
@@ -101,7 +101,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
   closeSideBar() {
     this.sideNavService.sidenav.toggle();
-    if (this.cs.NOTIFICATIONS_ENABLED == true) {
+    if (this.config.NOTIFICATIONS_ENABLED == true) {
       // Update notification count to display in badge
       this.updateNotificationCount();
     }

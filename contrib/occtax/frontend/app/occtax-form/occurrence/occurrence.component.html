@@ -396,7 +396,7 @@
 
 </mat-accordion>
 
-<pnx-occtax-profiles *ngIf="cs.FRONTEND['ENABLE_PROFILES']"></pnx-occtax-profiles>
+<pnx-occtax-profiles *ngIf="config.FRONTEND['ENABLE_PROFILES']"></pnx-occtax-profiles>
 
 <div class="bloc-button">
   <ng-container *ngIf="!(occtaxFormOccurrenceService.occurrence|async); else modifButton">

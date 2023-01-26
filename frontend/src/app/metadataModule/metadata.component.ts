@@ -51,7 +51,7 @@ export class MetadataComponent implements OnInit {
     private modal: NgbModal,
     public metadataService: MetadataService,
     private _commonService: CommonService,
-    public cs: ConfigService
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -59,8 +59,8 @@ export class MetadataComponent implements OnInit {
 
     this._dfs.getRoles({ group: false }).subscribe((roles) => (this.roles = roles));
 
-    this.afPublishModalLabel = this.cs.METADATA.CLOSED_MODAL_LABEL;
-    this.afPublishModalContent = this.cs.METADATA.CLOSED_MODAL_CONTENT;
+    this.afPublishModalLabel = this.config.METADATA.CLOSED_MODAL_LABEL;
+    this.afPublishModalContent = this.config.METADATA.CLOSED_MODAL_CONTENT;
 
     //Combinaison des observables pour afficher les éléments filtrés en fonction de l'état du paginator
     this.acquisitionFrameworks = combineLatest(
@@ -73,7 +73,7 @@ export class MetadataComponent implements OnInit {
       )
     );
     // format areas filter
-    this.areaFilters = this.cs.METADATA.METADATA_AREA_FILTERS.map((area) => {
+    this.areaFilters = this.config.METADATA.METADATA_AREA_FILTERS.map((area) => {
       if (typeof area['type_code'] === 'string') {
         area['type_code_array'] = [area['type_code']];
       } else {
@@ -180,5 +180,6 @@ export class MetadataComponent implements OnInit {
   }
 
   displayMetaAreaFilters = () =>
-    this.cs.METADATA?.METADATA_AREA_FILTERS && this.cs.METADATA?.METADATA_AREA_FILTERS.length;
+    this.config.METADATA?.METADATA_AREA_FILTERS &&
+    this.config.METADATA?.METADATA_AREA_FILTERS.length;
 }
