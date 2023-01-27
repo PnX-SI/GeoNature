@@ -24,6 +24,8 @@ export class SyntheseComponent implements OnInit {
   public marginButton: number;
   public firstLoad = true;
 
+  public isCollapseSyntheseNavBar = false;
+
   constructor(
     public searchService: SyntheseDataService,
     public _mapListService: MapListService,

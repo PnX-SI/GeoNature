@@ -5,7 +5,6 @@ import { filter } from 'rxjs/operators';
 import { MapService } from '../map.service';
 import * as L from 'leaflet';
 import { CommonService } from '../../service/common.service';
-import { GeoJson } from '@tmcw/togeojson';
 import { ConfigService } from '@geonature/services/config.service';
 
 const iconRetinaUrl = 'assets/marker-icon-2x.png';
@@ -49,7 +48,7 @@ export class MarkerComponent implements OnInit, OnChanges {
   @Input() zoomLevel: number;
   /** Contrôle si le marker est activé par défaut au lancement du composant */
   @Input() defaultEnable = true;
-  @Output() markerChanged = new EventEmitter<GeoJson>();
+  @Output() markerChanged = new EventEmitter<any>();
   constructor(
     public mapservice: MapService,
     private _commonService: CommonService,

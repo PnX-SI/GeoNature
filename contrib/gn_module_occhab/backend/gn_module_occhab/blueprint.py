@@ -22,6 +22,7 @@ from pypnnomenclature.models import TNomenclatures
 from utils_flask_sqla.response import json_resp, to_csv_resp, to_json_resp
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 from utils_flask_sqla_geo.generic import GenericTableGeo
+from ref_geo.utils import get_local_srid
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
@@ -207,13 +208,12 @@ def export_all_habitats(
 
     data = request.get_json()
 
-    DB.session.execute(func.Find_SRID("gn_synthese", "synthese", "the_geom_local")).scalar()
     export_view = GenericTableGeo(
         tableName="v_export_sinp",
         schemaName="pr_occhab",
         engine=DB.engine,
         geometry_field="geom_local",
-        srid=srid,
+        srid=get_local_srid(DB.session),
     )
 
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")

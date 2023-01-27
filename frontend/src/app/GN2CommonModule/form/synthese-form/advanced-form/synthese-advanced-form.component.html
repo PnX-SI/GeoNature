@@ -28,12 +28,12 @@
         *ngIf="formService.selectedTaxonFromRankInput.length > 0"
       >
         <h5><small>Taxon(s) recherché(s):</small></h5>
-        <ul class="list-group d-flex flex-row flex-wrap" >
+        <ul class="list-group d-flex flex-row flex-wrap">
           <li
             class="list-group-item d-flex justify-content-between w-50"
             *ngFor="let taxon of formService.selectedTaxonFromRankInput; let i = index"
           >
-            {{taxon.lb_nom}}
+            {{ taxon.lb_nom }}
             <i
               (click)="formService.removeTaxon(i, formService.selectedTaxonFromRankInput)"
               class="fa fa-times clickable"
@@ -43,27 +43,21 @@
       </div>
     </div>
 
-  <div [hidden]="!storeService.displayTaxonTree" class="form-group">
-    <button
-      (click)="toggleTree()"
-      id="btn-tree"
-      class="btn btn-sm btn-outline-primary"
-      data-toggle="collapse"
-      data-target="#collapseTree"
-    >
-      Arbre taxonomique
-      <i *ngIf="showTree" class="fa fa-chevron-down" aria-expanded="false"> </i>
-      <i *ngIf="!showTree" class="fa fa-chevron-right" aria-expanded="false"> </i>
-    </button>
-
-      <div
-        class="collapse"
-        id="collapseTree"
+    <div [hidden]="!storeService.displayTaxonTree" class="form-group">
+      <button
+        (click)="isCollapseTree = !isCollapseTree"
+        [attr.aria-expanded]="!isCollapseTree"
+        id="btn-tree"
+        class="btn btn-sm btn-outline-primary"
       >
-        <small>
-          Selectionner un ou plusieurs taxons à partir de la hierarchie taxonomique
-        </small>
-        <br>
+        Arbre taxonomique
+        <i *ngIf="isCollapseTree" class="fa fa-chevron-down" aria-expanded="false"> </i>
+        <i *ngIf="!isCollapseTree" class="fa fa-chevron-right" aria-expanded="false"> </i>
+      </button>
+
+      <div [(ngbCollapse)]="isCollapseTree">
+        <small> Selectionner un ou plusieurs taxons à partir de la hierarchie taxonomique </small>
+        <br />
         <div class="card">
           <div class="card-body tree-wrapper">
             <tree-root
@@ -73,21 +67,9 @@
               [nodes]="storeService.taxonTree"
               [options]="treeOptions"
             >
-              <ng-template
-                #treeNodeTemplate
-                let-node
-                let-index="index"
-              >
-                <i
-                  *ngIf="!node.data.leaf"
-                  class="fa fa-folder-o"
-                  aria-hidden="true"
-                ></i>
-                <i
-                  *ngIf="node.data.leaf"
-                  class="fa fa-hand-o-right"
-                  aria-hidden="true"
-                ></i>
+              <ng-template #treeNodeTemplate let-node let-index="index">
+                <i *ngIf="!node.data.leaf" class="fa fa-folder-o" aria-hidden="true"></i>
+                <i *ngIf="node.data.leaf" class="fa fa-hand-o-right" aria-hidden="true"></i>
                 <span [ngClass]="node.data.classes">{{ node.data.name }}</span>
               </ng-template>
             </tree-root>
@@ -107,10 +89,7 @@
 
   <div *ngIf="formService.formBuilded && formService.statusFilters.length > 0">
     <h5>Statuts</h5>
-    <div
-      class="form-group"
-      *ngFor="let status of formService.statusFilters; let i = index"
-    >
+    <div class="form-group" *ngFor="let status of formService.statusFilters; let i = index">
       <pnx-multiselect
         *ngIf="status.show && status.status_types.length > 1"
         [values]="status.values"
@@ -123,10 +102,7 @@
       >
       </pnx-multiselect>
 
-      <div
-        *ngIf="status.show && status.status_types.length == 1"
-        class="form-group"
-      >
+      <div *ngIf="status.show && status.status_types.length == 1" class="form-group">
         <div class="custom-control custom-checkbox">
           <input
             type="checkbox"
@@ -140,70 +116,70 @@
             <small>{{ status.display_name }}</small>
           </label>
         </div>
+      </div>
     </div>
-  </div>
 
-  <div *ngIf="formService.formBuilded && formService.redListsFilters.length > 0">
-    <h5>Listes rouges</h5>
-    <div
-      class="form-group"
-      *ngFor="let redList of formService.redListsFilters; let i = index"
-    >
-      <pnx-multiselect
-        *ngIf="redList.show"
-        [values]="redList.values"
-        [parentFormControl]="redList.control"
-        keyLabel="display"
-        keyValue="code_statut"
-        [label]="redList.display_name"
-        (onChange)="$event.statusType = redList.status_type ; onRedListsSelected($event)"
-        (onDelete)="$event.statusType = redList.status_type ; onRedListsDeleted($event)"
+    <div *ngIf="formService.formBuilded && formService.redListsFilters.length > 0">
+      <h5>Listes rouges</h5>
+      <div class="form-group" *ngFor="let redList of formService.redListsFilters; let i = index">
+        <pnx-multiselect
+          *ngIf="redList.show"
+          [values]="redList.values"
+          [parentFormControl]="redList.control"
+          keyLabel="display"
+          keyValue="code_statut"
+          [label]="redList.display_name"
+          (onChange)="$event.statusType = redList.status_type; onRedListsSelected($event)"
+          (onDelete)="$event.statusType = redList.status_type; onRedListsDeleted($event)"
+        >
+        </pnx-multiselect>
+      </div>
+    </div>
+
+    <div *ngIf="storeService.formBuilded">
+      <h5>Attributs TaxRef</h5>
+
+      <div class="form-group">
+        <pnx-multiselect
+          [values]="storeService.taxonomyHab"
+          [parentFormControl]="formService.searchForm.controls.taxonomy_id_hab"
+          keyLabel="nom_habitat"
+          keyValue="id_habitat"
+          label="Habitat"
+          (onChange)="onTaxRefAttributsSelected($event.id_habitat)"
+          (onDelete)="onTaxRefAttributsDeleted($event.value.id_habitat)"
+        >
+        </pnx-multiselect>
+      </div>
+
+      <div class="form-group">
+        <pnx-multiselect
+          [values]="storeService.taxonomyGroup2Inpn"
+          [parentFormControl]="formService.searchForm.controls.taxonomy_group2_inpn"
+          keyLabel="value"
+          keyValue="value"
+          label="Groupe 2 INPN"
+          (onChange)="onTaxRefAttributsSelected($event.value)"
+          (onDelete)="onTaxRefAttributsDeleted($event.value.value)"
+        >
+        </pnx-multiselect>
+      </div>
+    </div>
+
+    <div *ngIf="storeService.formBuilded && storeService.taxhubAttributes.length > 0">
+      <h5>Attributs TaxHub</h5>
+      <div
+        class="dynamic-form padding-sm"
+        *ngFor="let formDef of storeService.taxhubAttributes; let i = index"
       >
-      </pnx-multiselect>
+        <pnx-dynamic-form [formDef]="formDef" [form]="formService.searchForm"> </pnx-dynamic-form>
+      </div>
     </div>
   </div>
 
-  <div *ngIf="storeService.formBuilded">
-    <h5>Attributs TaxRef</h5>
-
-    <div class="form-group">
-      <pnx-multiselect
-        [values]="storeService.taxonomyHab"
-        [parentFormControl]="formService.searchForm.controls.taxonomy_id_hab"
-        keyLabel="nom_habitat"
-        keyValue="id_habitat"
-        label="Habitat"
-        (onChange)="onTaxRefAttributsSelected($event.id_habitat)"
-        (onDelete)="onTaxRefAttributsDeleted($event.value.id_habitat)"
-      >
-      </pnx-multiselect>
-    </div>
-
-    <div class="form-group">
-      <pnx-multiselect
-        [values]="storeService.taxonomyGroup2Inpn"
-        [parentFormControl]="formService.searchForm.controls.taxonomy_group2_inpn"
-        keyLabel="value"
-        keyValue="value"
-        label="Groupe 2 INPN"
-        (onChange)="onTaxRefAttributsSelected($event.value)"
-        (onDelete)="onTaxRefAttributsDeleted($event.value.value)"
-      >
-      </pnx-multiselect>
-    </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="onCloseModal()">
+      Valider et fermer
+    </button>
   </div>
-
-  <div *ngIf="storeService.formBuilded && storeService.taxhubAttributes.length > 0">
-    <h5>Attributs TaxHub</h5>
-    <div
-      class="dynamic-form padding-sm"
-      *ngFor="let formDef of storeService.taxhubAttributes; let i = index"
-    >
-      <pnx-dynamic-form [formDef]="formDef" [form]="formService.searchForm"> </pnx-dynamic-form>
-    </div>
-  </div>
-</div>
-
-<div class="modal-footer">
-  <button type="button" class="btn btn-success" (click)="onCloseModal()">Valider et fermer</button>
 </div>

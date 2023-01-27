@@ -1,9 +1,15 @@
-from marshmallow import pre_load, fields, EXCLUDE
+from marshmallow import Schema, pre_load, fields, EXCLUDE
 
 from pypnnomenclature.schemas import NomenclatureSchema
 from pypnusershub.schemas import UserSchema
 from geonature.utils.env import MA
-from geonature.core.gn_commons.models import TModules, TMedias, TValidations
+from geonature.core.gn_commons.models import (
+    TModules,
+    TMedias,
+    TValidations,
+    TAdditionalFields,
+    BibWidgets,
+)
 
 
 class ModuleSchema(MA.SQLAlchemyAutoSchema):
@@ -49,3 +55,25 @@ class TValidationSchema(MA.SQLAlchemyAutoSchema):
         include_fk = True
         validation_label = fields.Nested(NomenclatureSchema, dump_only=True)
         validator_role = MA.Nested(UserSchema, dump_only=True)
+
+
+class BibWidgetSchema(MA.SQLAlchemyAutoSchema):
+    class Meta:
+        model = BibWidgets
+        load_instance = True
+
+
+class LabelValueDict(Schema):
+    label = fields.Str()
+    value = fields.Raw()
+
+
+class TAdditionalFieldsSchema(MA.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TAdditionalFields
+        load_instance = True
+
+    def load(self, data, *, many=None, **kwargs):
+        if data["type_widget"].widget_name in ("select", "checkbox", "radio", "multiselect"):
+            LabelValueDict(many=True).load(data["field_values"])
+        return super().load(data, many=many, unknown=EXCLUDE)

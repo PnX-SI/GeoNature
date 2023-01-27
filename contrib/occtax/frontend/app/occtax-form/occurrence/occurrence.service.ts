@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {
-  FormBuilder,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormGroup,
   Validators,
-  FormArray,
+  UntypedFormArray,
   ValidatorFn,
   ValidationErrors,
   AbstractControl,
@@ -21,7 +21,7 @@ import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class OcctaxFormOccurrenceService {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public taxref: BehaviorSubject<any> = new BehaviorSubject(null);
   public lifeStage: BehaviorSubject<any> = new BehaviorSubject(null);
   public occurrence: BehaviorSubject<any> = new BehaviorSubject(null);
@@ -38,7 +38,7 @@ export class OcctaxFormOccurrenceService {
   public formFieldsStatus: any;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private commonService: CommonService,
     private occtaxFormService: OcctaxFormService,
     private occtaxFormCountingsService: OcctaxFormCountingsService,
@@ -252,8 +252,8 @@ export class OcctaxFormOccurrenceService {
       );
   }
 
-  addCountingForm(form: FormGroup): void {
-    (this.form.get('cor_counting_occtax') as FormArray).push(form);
+  addCountingForm(form: UntypedFormGroup): void {
+    (this.form.get('cor_counting_occtax') as UntypedFormArray).push(form);
   }
 
   getCdNomenclatureById(IdNomenclature, DATA) {
@@ -353,7 +353,7 @@ export class OcctaxFormOccurrenceService {
     this.occurrence.next(null);
   }
 
-  private clearFormArray(formArray: FormArray) {
+  private clearFormArray(formArray: UntypedFormArray) {
     while (formArray.length !== 0) {
       formArray.removeAt(0);
     }
@@ -369,7 +369,7 @@ export class OcctaxFormOccurrenceService {
 }
 
 export const proofRequiredValidator: ValidatorFn = (
-  control: FormGroup
+  control: UntypedFormGroup
 ): ValidationErrors | null => {
   const digital_proof = control.get('digital_proof');
   const non_digital_proof = control.get('non_digital_proof');

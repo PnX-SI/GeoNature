@@ -40,7 +40,7 @@ describe('Testing adding an observation in OccTax', () => {
   it('should not be possible to add data if any geometry had been selected', () => {
     // Un recouvrement des champs de saisie (overlay) existe à l'arrivée sur la page
     cy.get("div[data-qa='overlay']").click();
-    cy.get("div#toast-container .toast-warning div[role='alertdialog']").should('exist');
+    cy.get("div#toast-container .toast-warning div[role='alert']").should('exist');
 
     // Après un zoom sur la carte suffisant sur la carte et la sélection d'un point ou la sélection d'une géométrie, le recouvrement des champs de saisie n'existe plus
     const plus = cy.get(

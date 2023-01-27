@@ -30,3 +30,11 @@
 .mat-card-image {
   margin-bottom: 0px;
 }
+
+mat-card {
+  a {
+    img {
+      width: 100%;
+    }
+  }
+}

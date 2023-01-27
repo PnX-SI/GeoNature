@@ -133,17 +133,17 @@ describe('Tests gn_synthese', () => {
     // le date est présente est présent et correspond à celle de l'observation sur la liste
     cy.get('[data-qa="synthese-info-obs-date"]').invoke('text').should('not.equal', '');
     // vérification de la présence de l'onglet metadonnées
-    cy.get('.mat-tab-label').contains('Métadonnées').click();
+    cy.get('.mat-mdc-tab').contains('Métadonnées').click({ force: true });
     cy.get('[data-qa="synthese-obs-detail-jdd"]').invoke('text').should('not.equal', '');
     cy.get('[data-qa="synthese-obs-detail-ca"]').invoke('text').should('not.equal', '');
     // vérification de la présence de l'onglet taxonomie
-    cy.get('.mat-tab-label').contains('Taxonomie').click();
+    cy.get('.mat-mdc-tab').contains('Taxonomie').click({ force: true });
     cy.get('[data-qa="synthese-obs-detail-taxo-familly"]').invoke('text').should('not.equal', '');
     // vérification de la présence de l'onglet zonage
-    cy.get('.mat-tab-label').contains('Zonage').click();
+    cy.get('.mat-mdc-tab').contains('Zonage').click({ force: true });
     cy.get('[data-qa="synthese-obs-detail-area"]');
     // vérification de la présence de l'onglet validation
-    cy.get('.mat-tab-label').contains('Validation').click();
+    cy.get('.mat-mdc-tab').contains('Validation').click({ force: true });
     cy.get('[data-qa="synthese-obs-detail-validation-title"]');
 
     cy.get('[data-qa="synthese-info-obs-close-btn"]').click();

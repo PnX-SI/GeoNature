@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import {
-  FormBuilder,
-  FormGroup,
-  FormControl,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  UntypedFormControl,
   Validators,
   AbstractControl,
-  FormArray,
+  UntypedFormArray,
 } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { FormService } from '@geonature_common/form/form.service';
@@ -15,12 +15,12 @@ import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class OcchabFormService {
-  public stationForm: FormGroup;
-  public typoHabControl = new FormControl();
+  public stationForm: UntypedFormGroup;
+  public typoHabControl = new UntypedFormControl();
   public selectedTypo: any;
   public currentEditingHabForm = null;
   constructor(
-    private _fb: FormBuilder,
+    private _fb: UntypedFormBuilder,
     private _dateParser: NgbDateParserFormatter,
     private _gn_dataSerice: DataFormService,
     private _storeService: OcchabStoreService,
@@ -33,7 +33,7 @@ export class OcchabFormService {
     });
   }
 
-  initStationForm(): FormGroup {
+  initStationForm(): UntypedFormGroup {
     const stationForm = this._fb.group({
       id_station: null,
       unique_id_sinp_station: null,
@@ -76,7 +76,7 @@ export class OcchabFormService {
     });
   }
 
-  initHabForm(defaultNomenclature): FormGroup {
+  initHabForm(defaultNomenclature): UntypedFormGroup {
     const habForm = this._fb.group({
       id_station: null,
       id_habitat: null,
@@ -129,7 +129,7 @@ export class OcchabFormService {
 
   addNewHab() {
     const currentHabNumber = this.stationForm.value.t_habitats.length - 1;
-    const habFormArray = this.stationForm.controls.t_habitats as FormArray;
+    const habFormArray = this.stationForm.controls.t_habitats as UntypedFormArray;
     habFormArray.insert(0, this.initHabForm(this._storeService.defaultNomenclature));
     this.currentEditingHabForm = 0;
   }
@@ -156,7 +156,7 @@ export class OcchabFormService {
    * @param index index of the habitat to delete
    */
   deleteHab(index) {
-    const habArrayForm = this.stationForm.controls.t_habitats as FormArray;
+    const habArrayForm = this.stationForm.controls.t_habitats as UntypedFormArray;
     habArrayForm.removeAt(index);
   }
 
@@ -192,7 +192,7 @@ export class OcchabFormService {
   }
 
   patchNomCite($event) {
-    const habArrayForm = this.stationForm.controls.t_habitats as FormArray;
+    const habArrayForm = this.stationForm.controls.t_habitats as UntypedFormArray;
     habArrayForm.controls[this.currentEditingHabForm].patchValue({
       nom_cite: $event.item.search_name,
     });
@@ -246,7 +246,7 @@ export class OcchabFormService {
   patchStationForm(oneStation) {
     // create t_habitat formArray
     for (let i = 0; i < oneStation.properties.t_one_habitats.length; i++) {
-      (this.stationForm.controls.t_habitats as FormArray).push(
+      (this.stationForm.controls.t_habitats as UntypedFormArray).push(
         this.initHabForm(this._storeService.defaultNomenclature)
       );
     }

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { AuthService, User } from '@geonature/components/auth/auth.service';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { isEmpty, uniqueId } from 'lodash';
@@ -16,7 +16,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   @Input() idSynthese: number;
   @Input() additionalData: any;
   @Input() validationColor: any;
-  public commentForm: FormGroup;
+  public commentForm: UntypedFormGroup;
   public open = false;
   public currentUser: User;
   public discussions: any;
@@ -24,7 +24,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   public sort = 'desc';
   constructor(
     private _authService: AuthService,
-    private _formBuilder: FormBuilder,
+    private _formBuilder: UntypedFormBuilder,
     private _commonService: CommonService,
     private _syntheseDataService: SyntheseDataService,
     public config: ConfigService

@@ -20,6 +20,9 @@ export class OccHabMapListComponent implements OnInit {
   public rowNumber: number;
   public dataLoading = true;
   public deleteOne: any;
+
+  public isCollapseFilter = true;
+
   constructor(
     public storeService: OcchabStoreService,
     private _occHabDataService: OccHabDataService,

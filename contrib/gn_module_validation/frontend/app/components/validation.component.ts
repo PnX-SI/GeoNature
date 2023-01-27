@@ -17,6 +17,8 @@ export class ValidationComponent implements OnInit {
   public searchBarHidden: boolean = true;
   public idSynthese: any;
 
+  public isCollapseValidationNavBar = false;
+
   constructor(
     private _route: ActivatedRoute,
     private _router: Router,

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MediaService } from '@geonature_common/service/media.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { MediaService } from '@geonature_common/service/media.service';
   // encapsulation: ViewEncapsulation.None
 })
 export class MediasTestComponent implements OnInit {
-  public mediaForm: FormGroup;
+  public mediaForm: UntypedFormGroup;
 
   bInitialized = false;
 
@@ -35,7 +35,7 @@ export class MediasTestComponent implements OnInit {
   constructor(
     private _route: ActivatedRoute,
     public ms: MediaService,
-    private _formBuilder: FormBuilder
+    private _formBuilder: UntypedFormBuilder
   ) {}
 
   ngOnInit() {

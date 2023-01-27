@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { GeoJSON } from 'leaflet';
 import { Subscription } from 'rxjs';
@@ -24,7 +24,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     return this.occtaxFormMapService.geojson.getValue();
   }
   public userDatasets: Array<any>;
-  public releveForm: FormGroup;
+  public releveForm: UntypedFormGroup;
   public moduleConfig = ModuleConfig;
   public routeSub: Subscription;
   private _subscriptions: Subscription[] = [];

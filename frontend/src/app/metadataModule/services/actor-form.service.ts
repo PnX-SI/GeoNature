@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormArray, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import {
+  UntypedFormGroup,
+  UntypedFormArray,
+  UntypedFormBuilder,
+  Validators,
+  AbstractControl,
+} from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -39,7 +45,7 @@ export class ActorFormService {
     return this._role_types.getValue().find((e) => e.id_nomenclature == id);
   }
 
-  constructor(private fb: FormBuilder, private dfs: DataFormService) {
+  constructor(private fb: UntypedFormBuilder, private dfs: DataFormService) {
     this.dfs.getOrganisms().subscribe((organisms: any[]) => this._organisms.next(organisms));
 
     this.dfs.getRoles({ group: false }).subscribe((roles: any[]) => this._roles.next(roles));
@@ -50,7 +56,7 @@ export class ActorFormService {
       .subscribe((role_types: any[]) => this._role_types.next(role_types));
   }
 
-  createForm(): FormGroup {
+  createForm(): UntypedFormGroup {
     //FORM
     const form = this.fb.group({
       id_nomenclature_actor_role: [null, Validators.required],
@@ -93,14 +99,14 @@ export class ActorFormService {
   /**
    * Validateur pour s'assurer d'avoir au moins un contact principal (JDD et CA)
    */
-  mainContactRequired(actors: FormArray): { [key: string]: boolean } {
+  mainContactRequired(actors: UntypedFormArray): { [key: string]: boolean } {
     return this.nbMainContact(actors.value) == 0 ? { mainContactRequired: true } : null;
   }
 
   /**
    * Validateur pour s'assurer d'avoir au plus un contact principla (CA)
    */
-  uniqueMainContactvalidator(actors: FormArray): { [key: string]: boolean } {
+  uniqueMainContactvalidator(actors: UntypedFormArray): { [key: string]: boolean } {
     return this.nbMainContact(actors.value) > 1 ? { uniqueMainContactvalidator: true } : null;
   }
 
@@ -108,7 +114,7 @@ export class ActorFormService {
    * Validateur pour empêcher d'avoir deux acteur identiques (test sur role, organisme, nomenclature)
    * retourne l'index du doublons le plus bas dans la liste
    */
-  checkDoublonsValidator(actors: FormArray): { [key: string]: any } {
+  checkDoublonsValidator(actors: UntypedFormArray): { [key: string]: any } {
     // pour tous les acteurs
     for (let i = 0; i < actors.value.length - 1; i = i + 1) {
       // test sur les suivants de i

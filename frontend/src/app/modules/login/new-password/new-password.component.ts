@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 
 import { ToastrService } from 'ngx-toastr';
 import { similarValidator } from '@geonature/services/validators';
@@ -15,12 +15,12 @@ import { ConfigService } from '@geonature/services/config.service';
 })
 export class NewPasswordComponent implements OnInit {
   token: string;
-  form: FormGroup;
+  form: UntypedFormGroup;
   public casLogin;
 
   constructor(
     private _authService: AuthService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private _toasterService: ToastrService,

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { of, Observable } from 'rxjs';
@@ -19,7 +19,7 @@ import { MetadataDataService } from '../services/metadata-data.service';
   providers: [AcquisitionFrameworkFormService],
 })
 export class AfFormComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   //observable pour la liste déroulantes HTML des AF parents
   public acquisitionFrameworkParents: Observable<any>;
 
@@ -68,7 +68,7 @@ export class AfFormComponent implements OnInit {
     );
   }
 
-  addContact(formArray: FormArray, mainContact: boolean) {
+  addContact(formArray: UntypedFormArray, mainContact: boolean) {
     let value = null;
     if (mainContact) {
       value = { id_nomenclature_actor_role: this.actorFormS.getIDRoleTypeByCdNomenclature('1') };

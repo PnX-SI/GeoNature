@@ -33,8 +33,6 @@ const routes: Routes = [
     OccHabDatasetMapOverlayComponent,
   ],
   imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes), NgbModule],
-  entryComponents: [OccHabModalDownloadComponent],
-
   providers: [OccHabDataService, OcchabStoreService, OccHabMapListService],
   bootstrap: [],
 })

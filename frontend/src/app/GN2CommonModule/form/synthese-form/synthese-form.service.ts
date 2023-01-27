@@ -1,5 +1,10 @@
 import { Inject, Injectable } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl, ValidatorFn } from '@angular/forms';
+import {
+  UntypedFormGroup,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  ValidatorFn,
+} from '@angular/forms';
 import { HttpParams } from '@angular/common/http';
 
 import { stringify } from 'wellknown';
@@ -11,7 +16,7 @@ import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-da
 
 @Injectable()
 export class SyntheseFormService {
-  public searchForm: FormGroup;
+  public searchForm: UntypedFormGroup;
   public selectors = new HttpParams();
   public formBuilded = false;
   public selectedtaxonFromComponent = [];
@@ -27,7 +32,7 @@ export class SyntheseFormService {
 
   constructor(
     @Inject(APP_CONFIG_TOKEN) private cfg,
-    private _fb: FormBuilder,
+    private _fb: UntypedFormBuilder,
     private _dateParser: NgbDateParserFormatter,
     private _periodFormatter: NgbDatePeriodParserFormatter
   ) {
@@ -63,7 +68,7 @@ export class SyntheseFormService {
     this.statusFilters = Object.assign([], this.cfg.SYNTHESE.STATUS_FILTERS);
     this.statusFilters.forEach((status) => {
       const control_name = `${status.id}_protection_status`;
-      this.searchForm.addControl(control_name, new FormControl(new Array()));
+      this.searchForm.addControl(control_name, new UntypedFormControl(new Array()));
       status['control_name'] = control_name;
       status['control'] = this.searchForm.controls[control_name];
     });
@@ -72,7 +77,7 @@ export class SyntheseFormService {
     this.redListsFilters = Object.assign([], this.cfg.SYNTHESE.RED_LISTS_FILTERS);
     this.redListsFilters.forEach((redList) => {
       const control_name = `${redList.id}_red_lists`;
-      this.searchForm.addControl(control_name, new FormControl(new Array()));
+      this.searchForm.addControl(control_name, new UntypedFormControl(new Array()));
       redList['control'] = this.searchForm.controls[control_name];
     });
 
@@ -80,7 +85,7 @@ export class SyntheseFormService {
     this.areasFilters = Object.assign([], this.cfg.SYNTHESE.AREA_FILTERS);
     this.cfg.SYNTHESE.AREA_FILTERS.forEach((area) => {
       const control_name = 'area_' + area['type_code'];
-      this.searchForm.addControl(control_name, new FormControl(new Array()));
+      this.searchForm.addControl(control_name, new UntypedFormControl(new Array()));
       area['control'] = this.searchForm.controls[control_name];
     });
 
@@ -158,7 +163,7 @@ export class SyntheseFormService {
   }
 
   periodValidator(): ValidatorFn {
-    return (formGroup: FormGroup): { [key: string]: boolean } => {
+    return (formGroup: UntypedFormGroup): { [key: string]: boolean } => {
       const perioStart = formGroup.controls.period_start.value;
       const periodEnd = formGroup.controls.period_end.value;
       if ((perioStart && !periodEnd) || (!perioStart && periodEnd)) {

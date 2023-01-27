@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service';
 import { ConfigService } from '@geonature/services/config.service';
@@ -18,7 +18,7 @@ export class MediasComponent implements OnInit {
 
   @Input() default: Object = {};
 
-  @Input() parentFormControl: FormControl;
+  @Input() parentFormControl: UntypedFormControl;
   @Input() details = [];
 
   @Input() disabled = false;

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 
 export interface Role {
@@ -16,13 +16,13 @@ export interface Role {
 
 @Injectable()
 export class RoleFormService {
-  private roleForm: FormGroup;
+  private roleForm: UntypedFormGroup;
 
-  constructor(private fb: FormBuilder, private dataService: DataFormService) {
+  constructor(private fb: UntypedFormBuilder, private dataService: DataFormService) {
     this.setForm();
   }
 
-  getForm(role?: number): FormGroup {
+  getForm(role?: number): UntypedFormGroup {
     if (role !== null) {
       this.getRole(role);
     }

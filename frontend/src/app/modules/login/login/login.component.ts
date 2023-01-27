@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
 import { CommonService } from '@geonature_common/service/common.service';
 
@@ -17,9 +17,9 @@ export class LoginComponent implements OnInit {
   public casLogin: boolean;
   public disableSubmit = false;
   public enablePublicAccess = null;
-  identifiant: FormGroup;
-  password: FormGroup;
-  form: FormGroup;
+  identifiant: UntypedFormGroup;
+  password: UntypedFormGroup;
+  form: UntypedFormGroup;
   login_or_pass_recovery: boolean = false;
   public APP_NAME = null;
 

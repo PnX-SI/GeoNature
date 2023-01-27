@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -14,7 +14,7 @@ import { ConfigService } from '@geonature/services/config.service';
 })
 export class ActorComponent implements OnInit {
   //formulaire acteur demandé par le componenent dataset-form.component ou af-form.component
-  @Input() actorForm: FormGroup;
+  @Input() actorForm: UntypedFormGroup;
   @Input() isRemovable: boolean = true;
   @Output() actorFormSubmit = new EventEmitter<boolean>();
   @Output() actorFormRemove = new EventEmitter<boolean>();
@@ -84,7 +84,7 @@ export class ActorComponent implements OnInit {
     return this._toggleButtonValue.getValue();
   }
 
-  @Input() parentFormArray: FormArray;
+  @Input() parentFormArray: UntypedFormArray;
 
   constructor(
     public dialog: MatDialog,

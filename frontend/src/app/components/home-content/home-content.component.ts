@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
@@ -18,9 +18,8 @@ import { ConfigService } from '@geonature/services/config.service';
   styleUrls: ['./home-content.component.scss'],
   providers: [MapService, SyntheseDataService],
 })
-export class HomeContentComponent implements OnInit {
+export class HomeContentComponent implements OnInit, AfterViewInit {
   public showLastObsMap: boolean = false;
-  public lastObs: any;
   public showGeneralStat: boolean = false;
   public generalStat: any;
   public locale: string;
@@ -56,22 +55,46 @@ export class HomeContentComponent implements OnInit {
 
     this._SideNavService.sidenav.open();
 
-    if (this.showLastObsMap) {
-      this._syntheseApi
-        .getSyntheseData({}, { limit: 100, format: 'ungrouped_geom' })
-        .subscribe((data) => {
-          this.lastObs = data;
-        });
-    }
-
     if (this.showGeneralStat) {
       this.computeStatsBloc();
+    }
+  }
+
+  ngAfterViewInit() {
+    if (this.showLastObsMap) {
+      this.computeMapBloc();
     }
   }
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+  }
+
+  private computeMapBloc() {
+    this.cluserOrSimpleFeatureGroup.addTo(this._mapService.map);
+    this._syntheseApi
+      .getSyntheseData({}, { limit: 100, format: 'ungrouped_geom' })
+      .subscribe((data) => {
+        let geojsonLayer = this._mapService.createGeojson(data, true, this.onEachFeature);
+        this.cluserOrSimpleFeatureGroup.addLayer(geojsonLayer);
+        this._mapService.map.addLayer(this.cluserOrSimpleFeatureGroup);
+      });
+  }
+
+  private onEachFeature(feature, layer) {
+    // Event from the map
+    layer.on({
+      click: () => {
+        // Open popup
+        const popup = `
+          ${feature.properties.nom_vern_or_lb_nom} <br>
+          <b> Observé le: </b> ${feature.properties.date_min} <br>
+          <b> Par</b>:  ${feature.properties.observers}
+        `;
+        layer.bindPopup(popup).openPopup();
+      },
+    });
   }
 
   private computeStatsBloc() {
@@ -112,23 +135,5 @@ export class HomeContentComponent implements OnInit {
       .subscribe((langChangeEvent: LangChangeEvent) => {
         this.locale = langChangeEvent.lang;
       });
-  }
-
-  onEachFeature(feature, layer) {
-    layer.setStyle(this._mapService.originStyle);
-    // Event from the map
-    layer.on({
-      click: () => {
-        // Open popup
-        const popup = `
-          ${feature.properties.nom_vern_or_lb_nom} <br>
-          <b> Observé le: </b> ${feature.properties.date_min} <br>
-          <b> Par</b>:  ${feature.properties.observers}
-        `;
-        layer.bindPopup(popup).openPopup();
-      },
-    });
-    this.cluserOrSimpleFeatureGroup.addLayer(layer);
-    this.cluserOrSimpleFeatureGroup.addTo(this._mapService.map);
   }
 }

@@ -5,10 +5,7 @@ import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // For Angular Dependencies
-import 'hammerjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { ChartModule } from 'angular2-chartjs';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
@@ -91,9 +88,7 @@ export function initApp(injector) {
     BrowserModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    FlexLayoutModule,
     routing,
-    ChartModule,
     ChartsModule,
     ToastrModule.forRoot({
       positionClass: 'toast-top-center',

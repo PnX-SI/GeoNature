@@ -13,15 +13,13 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { TaxonomyComponent } from '@geonature_common/form/taxonomy/taxonomy.component';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { GenericFormGeneratorComponent } from '@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component';
 import * as moment from 'moment';
 import { MediaService } from '@geonature_common/service/media.service';
 import { OcctaxMapListService } from './occtax-map-list.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
-
-// /occurrence/occurrence.service";
 
 @Component({
   selector: 'pnx-occtax-map-list',
@@ -35,9 +33,11 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
   public pathEdit: string;
   public pathInfo: string;
   public apiEndPoint: string;
-  public dynamicFormGroup: FormGroup;
+  public dynamicFormGroup: UntypedFormGroup;
   public formsSelected = [];
   public cardContentHeight: number;
+
+  public isCollapseAvance = true;
 
   advandedFilterOpen = false;
   @ViewChild(NgbModal)

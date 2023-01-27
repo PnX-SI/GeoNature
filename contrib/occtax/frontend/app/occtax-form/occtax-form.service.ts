@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { filter, tap, skip, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
@@ -23,7 +23,7 @@ export class OcctaxFormService {
   public disabled = true;
   public editionMode: BehaviorSubject<boolean> = new BehaviorSubject(false); // boolean to check if its editionMode
   public chainRecording: boolean = false; // boolean to check if chain the recording is activate
-  public stayOnFormInterface = new FormControl(false);
+  public stayOnFormInterface = new UntypedFormControl(false);
   public currentIdDataset: any;
   public previousReleve = null;
   // public globalOccurrenceAddFields: Array<any>= [];

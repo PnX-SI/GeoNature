@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ValidationDataService } from '../../services/data.service';
 import { ValidationService } from '../../services/validation.service';
 import { ConfigService } from '@geonature/services/config.service';
@@ -16,7 +16,7 @@ export class ValidationPopupComponent {
   error: any;
   public modalRef: any;
   string_observations: string;
-  public statusForm: FormGroup;
+  public statusForm: UntypedFormGroup;
   public status;
   public plurielObservations;
   public plurielNbOffPage;
@@ -34,7 +34,7 @@ export class ValidationPopupComponent {
 
   constructor(
     private modalService: NgbModal,
-    private _fb: FormBuilder,
+    private _fb: UntypedFormBuilder,
     public dataService: ValidationDataService,
     private _validService: ValidationService,
     public config: ConfigService

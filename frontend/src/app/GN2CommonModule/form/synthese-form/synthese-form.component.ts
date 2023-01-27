@@ -22,6 +22,9 @@ export class SyntheseSearchComponent implements OnInit {
   public validationStatus: Array<any>;
   private params: any;
 
+  public isCollapsePeriod = true;
+  public isCollapseScore = true;
+
   @Input() displayValidation = false;
   @Output() searchClicked = new EventEmitter();
   @Output() resetFilter = new EventEmitter();

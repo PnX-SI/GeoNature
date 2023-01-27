@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MarkerComponent } from '../marker/marker.component';
 import { MapService } from '../map.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -20,7 +20,7 @@ import { ConfigService } from '@geonature/services/config.service';
 })
 export class PlacesComponent extends MarkerComponent implements OnInit, OnDestroy {
   @ViewChild('modalContent', { static: false }) public modalContent: any;
-  public placeForm = new FormControl();
+  public placeForm = new UntypedFormControl();
   private geojsonSubscription$: Subscription;
   public geojson: GeoJSON.Feature;
   constructor(

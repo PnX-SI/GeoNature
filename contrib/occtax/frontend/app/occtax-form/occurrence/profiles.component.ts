@@ -8,7 +8,7 @@ import {
   catchError,
   skip,
 } from 'rxjs/operators';
-import { FormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
 import { Observable, empty, Subscription } from 'rxjs';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
@@ -97,7 +97,7 @@ export class OcctaxProfilesComponent implements OnInit, OnDestroy {
     // find all distinct id_nomenclature_life_stage if countings
     let idNomenclaturesLifeStage = new Set();
     (
-      this.occtaxFormOccurrenceService.form.get('cor_counting_occtax') as FormArray
+      this.occtaxFormOccurrenceService.form.get('cor_counting_occtax') as UntypedFormArray
     ).controls.forEach((counting) => {
       const control = counting.get('id_nomenclature_life_stage');
       if (control) {

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { OcctaxFormMapService } from '../map/occtax-map.service';
@@ -32,7 +32,7 @@ import { ConfigService } from '@geonature/services/config.service';
 })
 export class OcctaxFormParamDialog implements OnInit, OnDestroy {
   @ViewChild('modalContent') modalContent;
-  public paramsForm: FormGroup;
+  public paramsForm: UntypedFormGroup;
   public selectedIndex: number = null;
   public state: string = 'collapsed';
 
@@ -54,7 +54,7 @@ export class OcctaxFormParamDialog implements OnInit, OnDestroy {
   }
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private occtaxFormMapService: OcctaxFormMapService,
     public occtaxFormReleveService: OcctaxFormReleveService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,

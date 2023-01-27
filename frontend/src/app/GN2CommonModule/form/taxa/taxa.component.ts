@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DataFormService } from '../data-form.service';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { CommonService } from '@geonature_common/service/common.service';
 
 /**
@@ -44,7 +44,7 @@ export class TaxaComponent implements OnInit {
   /** Passer une instance de FormControl afin de pouvoir valider le
    * formulaire et récupérer la valeur de ce champ.
    */
-  @Input() parentFormControl: FormControl;
+  @Input() parentFormControl: UntypedFormControl;
   /** Indique si tout l'objet correspondant à la sélection doit être
    * passé au formControl (=true) ou seulement la valeur de la propriété
    * "cd_nom" (=false).

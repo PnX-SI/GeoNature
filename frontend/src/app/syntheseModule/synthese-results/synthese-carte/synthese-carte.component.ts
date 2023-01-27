@@ -284,7 +284,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     this.layerDictCache(feature.properties.observations.id, layer);
     // set style
     if (this.areasEnable) {
-      this.setAreasStyle(layer, feature.properties.observations.length);
+      this.setAreasStyle(layer, feature.properties.observations.id.length);
     }
     if (feature.geometry.type == 'Point' || feature.geometry.type == 'MultiPoint') {
       this.markerStyle(layer, countObs);
@@ -346,8 +346,8 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
-  private setAreasStyle(layer, nbObs) {
-    this.originAreasStyle['fillColor'] = this.getColor(nbObs);
+  private setAreasStyle(layer, obsNbr) {
+    this.originAreasStyle['fillColor'] = this.getColor(obsNbr);
     layer.setStyle(this.originAreasStyle);
   }
 
@@ -393,7 +393,6 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     // restore inital style
     let originStyle = this.areasEnable ? this.originAreasStyle : this.originDefaultStyle;
     if (this.selectedLayers.length > 0) {
-      // originStyle['fillColor'] = this.mapListService.selectedLayer.options.fillColor;
       this.selectedLayers.forEach((layer) => {
         if ('setStyle' in layer) {
           (layer as L.GeoJSON).setStyle(originStyle);
@@ -404,7 +403,6 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     }
     // Apply new selected layer
     this.selectedLayers = currentSelectedLayers;
-    console.log(currentSelectedLayers);
 
     let selectedStyle = this.areasEnable ? this.selectedAreasStyle : this.selectedDefaultStyle;
     this.selectedLayers.forEach((layer) => {
