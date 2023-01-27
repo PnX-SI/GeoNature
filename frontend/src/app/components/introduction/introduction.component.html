@@ -3,20 +3,8 @@
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 padding-sm">
 
     <div class="panel panel-default">
-      <div class="panel-heading">
-         Bienvenue dans GeoNature V2
-      </div>
-
-      <div class="panel-body">
-          <p>
-              Cette zone permet d'afficher un message aux utilisateurs, configurable pour le modifier régulièrement ou le
-              masquer.
-            </p>
-            <p>
-    
-            </p>
-      </div>
-
+      <div class="panel-heading" [innerHTML]="config.HOME.TITLE"></div>
+      <div class="panel-body" [innerHTML]="config.HOME.INTRODUCTION"></div>
     </div>
   </div>
 </div>
