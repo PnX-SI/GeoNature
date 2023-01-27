@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { OcctaxFormService } from '../occtax-form.service';
-import { ModuleConfig } from '../../module.config';
 import { OcctaxFormOccurrenceService } from '../occurrence/occurrence.service';
 import { OcctaxFormCountingService } from './counting.service';
 import { ConfigService } from '@geonature/services/config.service';
@@ -16,7 +15,6 @@ import { ConfigService } from '@geonature/services/config.service';
   providers: [OcctaxFormCountingService],
 })
 export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
-  public occtaxConfig = ModuleConfig;
   public data: any;
 
   @Input('value')

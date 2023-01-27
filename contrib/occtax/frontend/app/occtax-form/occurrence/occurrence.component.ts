@@ -4,7 +4,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { map, filter, tap } from 'rxjs/operators';
 import { OcctaxFormService } from '../occtax-form.service';
-import { ModuleConfig } from '../../module.config';
 import { OcctaxFormOccurrenceService } from './occurrence.service';
 import { OcctaxFormCountingsService } from '../counting/countings.service';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
@@ -37,7 +36,6 @@ import { ConfigService } from '@geonature/services/config.service';
   ],
 })
 export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
-  public occtaxConfig = ModuleConfig;
   public occurrenceForm: FormGroup;
   public taxonForm: FormControl; //control permettant de rechercher un taxon TAXREF
   public taxonFormFocus: boolean = false; //pour mieux gérer l'affichage de l'erreur required

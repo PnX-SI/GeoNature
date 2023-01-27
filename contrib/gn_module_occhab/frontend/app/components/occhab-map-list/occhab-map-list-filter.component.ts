@@ -1,7 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { OccHabMapListService } from '../../services/occhab-map-list.service';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { ModuleConfig } from '../../module.config';
 import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
@@ -10,7 +9,6 @@ import { ConfigService } from '@geonature/services/config.service';
   styleUrls: ['./occhab-map-list-filter.component.scss'],
 })
 export class OcchabMapListFilterComponent implements OnInit {
-  public moduleConfig = ModuleConfig;
   @Output() onSearch = new EventEmitter<any>();
 
   constructor(

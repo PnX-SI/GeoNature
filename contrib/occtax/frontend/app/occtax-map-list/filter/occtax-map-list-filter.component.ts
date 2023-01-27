@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
-import { ModuleConfig } from '../../module.config';
 import { TaxonomyComponent } from '@geonature_common/form/taxonomy/taxonomy.component';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { FILTERSLIST } from './filters-list';
 import { HttpParams } from '@angular/common/http';
 import { OcctaxMapListService } from '../occtax-map-list.service';
 import { ModuleService } from '@geonature/services/module.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-occtax-map-list-filter',
@@ -19,7 +19,6 @@ export class OcctaxMapListFilterComponent implements OnInit {
   public dynamicFormGroup: FormGroup;
   public formsSelected = [];
   public displayParams: HttpParams = new HttpParams();
-  public occtaxConfig: any;
   @ViewChild(TaxonomyComponent)
   public taxonomyComponent: TaxonomyComponent;
 
@@ -27,15 +26,13 @@ export class OcctaxMapListFilterComponent implements OnInit {
 
   constructor(
     private mapListService: MapListService,
-    private _fb: FormBuilder,
     private _dateParser: NgbDateParserFormatter,
     public occtaxMapListService: OcctaxMapListService,
-    public moduleService: ModuleService
+    public moduleService: ModuleService,
+    public config: ConfigService
   ) {}
 
-  ngOnInit() {
-    this.occtaxConfig = ModuleConfig;
-  }
+  ngOnInit() {}
 
   searchData() {
     this.mapListService.zoomOnLayer = true;

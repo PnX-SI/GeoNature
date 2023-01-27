@@ -7,7 +7,7 @@ import { OccHabModalDownloadComponent } from './modal-download.component';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
 import * as moment from 'moment';
-import { ModuleConfig } from '../../module.config';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-occhab-map-list',
@@ -25,8 +25,10 @@ export class OccHabMapListComponent implements OnInit {
     private _occHabDataService: OccHabDataService,
     public mapListService: MapListService,
     private _ngbModal: NgbModal,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    public config: ConfigService
   ) {}
+
   ngOnInit() {
     if (this.storeService.firstMessageMapList) {
       this._commonService.regularToaster('info', 'Les 50 dernières stations saisies');
@@ -68,7 +70,7 @@ export class OccHabMapListComponent implements OnInit {
     this._occHabDataService.getStations(params).subscribe(
       (featuresCollection) => {
         // store the idsStation in the store service
-        if (featuresCollection.features.length === ModuleConfig.NB_MAX_MAP_LIST) {
+        if (featuresCollection.features.length === this.config.OCCHAB.NB_MAX_MAP_LIST) {
           this.openModal(true);
         }
         this.storeService.idsStation = featuresCollection.features.map((feature) => feature.id);

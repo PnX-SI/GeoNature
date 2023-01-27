@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { ModuleConfig } from '../module.config';
-import { OccHabDataService } from './data.service';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class OcchabStoreService {
@@ -14,10 +13,7 @@ export class OcchabStoreService {
   public idsStation: Array<number>;
   private _defaultNomenclature$: BehaviorSubject<any> = new BehaviorSubject(null);
   public defaultNomenclature$: Observable<any> = this._defaultNomenclature$.asObservable();
-  constructor(
-    private _gnDataService: DataFormService,
-    private _occHabDataService: OccHabDataService
-  ) {
+  constructor(private _gnDataService: DataFormService, public config: ConfigService) {
     this._gnDataService
       .getNomenclatures([
         'METHOD_CALCUL_SURFACE',
@@ -34,7 +30,7 @@ export class OcchabStoreService {
           this.nomenclatureItems[element.mnemonique] = element.values;
         });
       });
-    this._gnDataService.getTypologyHabitat(ModuleConfig.ID_LIST_HABITAT).subscribe((data) => {
+    this._gnDataService.getTypologyHabitat(this.config.OCCHAB.ID_LIST_HABITAT).subscribe((data) => {
       this.typoHabitat = data;
     });
     this._gnDataService.getDefaultNomenclatureValue('occhab').subscribe((data) => {

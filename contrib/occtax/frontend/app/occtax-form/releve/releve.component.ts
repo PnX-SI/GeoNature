@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { GeoJSON } from 'leaflet';
 import { Subscription } from 'rxjs';
-import { map, filter, tap } from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
 import { ModuleConfig } from '../../module.config';
 import { CommonService } from '@geonature_common/service/common.service';
 import { OcctaxFormService } from '../occtax-form.service';
@@ -20,7 +20,6 @@ import { ConfigService } from '@geonature/services/config.service';
   providers: [],
 })
 export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
-  public occtaxConfig: any;
   public get geojson(): GeoJSON {
     return this.occtaxFormMapService.geojson.getValue();
   }
@@ -43,9 +42,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     public moduleService: ModuleService,
     public occtaxDataService: OcctaxDataService,
     public config: ConfigService
-  ) {
-    this.occtaxConfig = ModuleConfig;
-  }
+  ) {}
 
   ngOnInit() {
     this.releveForm = this.occtaxFormReleveService.releveForm;

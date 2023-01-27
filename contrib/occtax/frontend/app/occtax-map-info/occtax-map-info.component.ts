@@ -1,16 +1,16 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, BehaviorSubject } from 'rxjs';
-import { map, filter, tap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { map, filter } from 'rxjs/operators';
 import { isEqual } from 'lodash';
 import { MapService } from '@geonature_common/map/map.service';
 import { OcctaxDataService } from '../services/occtax-data.service';
-import { ModuleConfig } from '../module.config';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
 import { MediaService } from '@geonature_common/service/media.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 const NOMENCLATURES = [
   'TECHNIQUE_OBS',
@@ -39,7 +39,6 @@ const NOMENCLATURES = [
   styleUrls: ['./occtax-map-info.component.scss'],
 })
 export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
-  public occtaxConfig = ModuleConfig;
   public occtaxData: BehaviorSubject<any> = new BehaviorSubject(null);
   nomenclatures: Array<any> = [];
   public cardHeight: number;
@@ -49,6 +48,7 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
   public releveAddFields: Array<any> = [];
   public occurrenceAddFields: Array<any> = [];
   public countingAddFields: Array<any> = [];
+
   get releve() {
     return this.occtaxData.getValue() ? this.occtaxData.getValue().properties : null;
   }
@@ -87,7 +87,8 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
     private _commonService: CommonService,
     private dataFormS: DataFormService,
     public ms: MediaService,
-    private _moduleService: ModuleService
+    private _moduleService: ModuleService,
+    public config: ConfigService
   ) {}
 
   ngOnInit() {

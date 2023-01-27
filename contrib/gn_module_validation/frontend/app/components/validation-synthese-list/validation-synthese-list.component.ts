@@ -14,7 +14,6 @@ import {
 } from '@angular/core';
 import { MapService } from '@geonature_common/map/map.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModuleConfig } from '../../module.config';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { ValidationModalInfoObsComponent } from '../validation-modal-info-obs/validation-modal-info-obs.component';
@@ -29,7 +28,6 @@ import { ConfigService } from '@geonature/services/config.service';
   styleUrls: ['validation-synthese-list.component.scss'],
 })
 export class ValidationSyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
-  public VALIDATION_CONFIG = ModuleConfig;
   public oneSyntheseObs: any;
   selectedObs: Array<number> = []; // list of id_synthese values for selected rows
   selectedIndex: Array<number> = [];
@@ -131,7 +129,7 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
   setOriginStyleToAll() {
     for (let obs in this.mapListService.layerDict) {
       this.mapListService.layerDict[obs].setStyle(
-        this.VALIDATION_CONFIG.MAP_POINT_STYLE.originStyle
+        this.config.VALIDATION.MAP_POINT_STYLE.originStyle
       );
     }
   }
@@ -139,7 +137,7 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
   setSelectedSyleToSelectedRows() {
     for (let obs of this.selectedObs) {
       this.mapListService.layerDict[obs].setStyle(
-        this.VALIDATION_CONFIG.MAP_POINT_STYLE.selectedStyle
+        this.config.VALIDATION.MAP_POINT_STYLE.selectedStyle
       );
     }
   }

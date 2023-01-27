@@ -6,7 +6,6 @@ import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { CommonService } from '@geonature_common/service/common.service';
-import { ModuleConfig } from '../../module.config';
 import { filter } from 'rxjs/operators';
 import { ConfigService } from '@geonature/services/config.service';
 
@@ -24,7 +23,6 @@ export class OccHabFormComponent implements OnInit {
   public MAP_SMALL_HEIGHT = '50vh !important;';
   public MAP_FULL_HEIGHT = '87vh';
   public mapHeight = this.MAP_FULL_HEIGHT;
-  public moduleConfig = ModuleConfig;
   public showHabForm = false;
   public showTabHab = false;
   public showDepth = false;
