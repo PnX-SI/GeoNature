@@ -1,4 +1,12 @@
-<div id="login-body">
+<div
+  id="login-body"
+  style="
+    background:
+      url({{ config.API_ENDPOINT }}/static/custom/login_background.jpg),
+      url({{ config.API_ENDPOINT }}/static/custom/login_background_default.jpg)
+      center 10% no-repeat;
+  "
+>
   <div *ngIf="!casLogin" class="container">
     <div class="row">
       <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">

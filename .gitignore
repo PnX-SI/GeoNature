@@ -17,6 +17,8 @@ data/migrations/v1tov2/old/v1_compat.log
 data/migrations/v1tov2/migratetoV2.ini
 
 config.py
+backend/static/custom/*
+!backend/static/custom/*_default*
 backend/static/medias/*
 backend/static/shapefiles/*
 backend/static/geopackages/*
