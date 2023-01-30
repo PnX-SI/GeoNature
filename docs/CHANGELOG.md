@@ -23,6 +23,9 @@ CHANGELOG
 - La configuration dynamique nécessite de renseigner l’URL de l’API dans un nouveau fichier.
   Pour cela, désamplez le fichier `frontend/src/assets/config.sample.json` : `cp  frontend/src/assets/config.sample.json frontend/src/assets/config.json` et renseignez uniquement l'URL de l'API GeoNature (identique au paramètre `API_ENDPOINT` dans la configuration du backend).
 
+- Si vous aviez surcouché la page d’accueil de GeoNature en modifiant les composants `frontend/src/custom/introduction.component.html` et `frontend/src/custom/footer.component.html`, il vous faut déplacer votre code dans les paramètres `TITLE`, `INTRODUCTION` et `FOOTER` de la nouvelle section `[HOME]` de la configuration de GeoNature.
+  Vous pouvez renseigner du code HTML sur plusieurs lignes en le plaçant entre triple quote (`"""<b>Hello</b>"""`).
+
 - Les champs additionnels de type `bool_radio` ne sont plus supportés.
   Si vous utilisiez ce type de widget dans vos champs additionnels d'Occtax, ils seront automatiquement remplacés par un widget de type `radio`.
   Vous devez changer le champs `field_values` sur le modèle suivant : `[{"label": "Mon label vrai", "value": true }, {"label": "Mon label faux", "value": false }]`.
