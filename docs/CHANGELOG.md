@@ -6,6 +6,8 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
+- Configuration dynamique du frontend : le frontend récupère dynamiquement sa configuration depuis le backend. Pour cela, il nécessite uniquement l’adresse de l’``API_ENDPOINT`` qui doit être renseigné dans le fichier ``frontend/src/assets/config.json``. En conséquence, il n’est plus nécessaire de rebuilder le frontend lors d’une modification de la configuration (#2205)
+- Personnalisation de la page d’accueil : ajout d’une section `[HOME]` contenant les paramètres `TITLE`, `INTRODUCTION` et `FOOTER`. Ceux-ci peuvent contenir du code HTML qui est chargé dynamiquement avec la configuration, évitant ainsi la nécessité d’un rebuild du frontend (#2300)
 - Synthèse : Agrégation des observations ayant la même géométrie (#1847)
 - Synthèse : Possibilité d'afficher les données agrégées par maille (#1878)
 - Champs additionnels: Les formulaires de type `radio`, `select`, `multiselect` et `checkbox`, attendent désormais une liste de dictionnaire `{value, label}` (voir doc des champs additionnels).
@@ -18,7 +20,8 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
-- La configuration du frontend change pour ne plus necessiter un rebuild à chaque modification. Elle est maintenant chargée dynamiquement à partir de l'API du backend. Pour cela, désamplez le fichier `frontend/src/assets/config.sample.json` : `cp  frontend/src/assets/config.sample.json frontend/src/assets/config.json` et renseignez uniquement l'URL de l'API GeoNature
+- La configuration dynamique nécessite de renseigner l’URL de l’API dans un nouveau fichier.
+  Pour cela, désamplez le fichier `frontend/src/assets/config.sample.json` : `cp  frontend/src/assets/config.sample.json frontend/src/assets/config.json` et renseignez uniquement l'URL de l'API GeoNature (identique au paramètre `API_ENDPOINT` dans la configuration du backend).
 
 - Les champs additionnels de type `bool_radio` ne sont plus supportés.
   Si vous utilisiez ce type de widget dans vos champs additionnels d'Occtax, ils seront automatiquement remplacés par un widget de type `radio`.
