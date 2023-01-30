@@ -18,6 +18,8 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
+- La configuration du frontend change pour ne plus necessiter un rebuild à chaque modification. Elle est maintenant chargée dynamiquement à partir de l'API du backend. Pour cela, désamplez le fichier `frontend/src/assets/config.sample.json` : `cp  frontend/src/assets/config.sample.json frontend/src/assets/config.json` et renseignez uniquement l'URL de l'API GeoNature
+
 - Les champs additionnels de type `bool_radio` ne sont plus supportés.
   Si vous utilisiez ce type de widget dans vos champs additionnels d'Occtax, ils seront automatiquement remplacés par un widget de type `radio`.
   Vous devez changer le champs `field_values` sur le modèle suivant : `[{"label": "Mon label vrai", "value": true }, {"label": "Mon label faux", "value": false }]`.

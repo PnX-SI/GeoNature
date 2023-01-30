@@ -1,14 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModuleConfig } from '../../module.config';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-//import { FILTERSLIST } from "./filters-list";
-import { Router } from '@angular/router';
 import { ValidationDataService } from '../../services/data.service';
-import { CommonService } from '@geonature_common/service/common.service';
 import { ValidationService } from '../../services/validation.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-validation-popup',
@@ -21,7 +17,6 @@ export class ValidationPopupComponent {
   public modalRef: any;
   string_observations: string;
   public statusForm: UntypedFormGroup;
-  public VALIDATION_CONFIG = ModuleConfig;
   public status;
   public plurielObservations;
   public plurielNbOffPage;
@@ -41,8 +36,8 @@ export class ValidationPopupComponent {
     private modalService: NgbModal,
     private _fb: UntypedFormBuilder,
     public dataService: ValidationDataService,
-    private _commonService: CommonService,
-    private _validService: ValidationService
+    private _validService: ValidationService,
+    public config: ConfigService
   ) {
     // form used for changing validation status
     this.statusForm = this._fb.group({

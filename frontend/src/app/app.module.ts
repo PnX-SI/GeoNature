@@ -25,8 +25,8 @@ import { NotificationComponent } from './components/notification/notification.co
 import { RulesComponent } from './components/notification/rules/rules.component';
 
 // Custom component (footer, presentation etc...)
-import { FooterComponent } from '../custom/components/footer/footer.component';
-import { IntroductionComponent } from '../custom/components/introduction/introduction.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { IntroductionComponent } from './components/introduction/introduction.component';
 
 // Service
 import { AuthService } from './components/auth/auth.service';
@@ -40,6 +40,7 @@ import { ModuleGuardService } from '@geonature/routing/module-guard.service';
 import { ModuleService } from './services/module.service';
 import { CruvedStoreService } from './GN2CommonModule/service/cruved-store.service';
 import { SideNavService } from './components/sidenav-items/sidenav-service';
+import { ConfigService } from './services/config.service';
 
 import { MyCustomInterceptor } from './services/http.interceptor';
 import { UnauthorizedInterceptor } from './services/unauthorized.interceptor';
@@ -52,23 +53,31 @@ export function createTranslateLoader(http: HttpClient) {
 import { UserDataService } from './userModule/services/user-data.service';
 import { NotificationDataService } from './components/notification/notification-data.service';
 
-// Config
-import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
 import { UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
 
 export function getModulesAndInitRouting(injector) {
-  return () => {
-    // return moduleService.fetchModulesAndSetRouting().toPromise();
-    const moduleService = injector.get(ModuleService);
-    const routingService = injector.get(RoutingService);
-    return moduleService
-      .loadModules()
-      .pipe(
-        tap((modules) => {
-          routingService.loadRoutes(modules);
-        })
-      )
-      .toPromise();
+  // return moduleService.fetchModulesAndSetRouting().toPromise();
+  const moduleService = injector.get(ModuleService);
+  const routingService = injector.get(RoutingService);
+  return moduleService
+    .loadModules()
+    .pipe(
+      tap((modules) => {
+        routingService.loadRoutes(modules);
+      })
+    )
+    .toPromise();
+}
+
+export function loadConfig(injector) {
+  const configService = injector.get(ConfigService);
+  return configService._getConfig().toPromise();
+}
+
+export function initApp(injector) {
+  return async () => {
+    await loadConfig(injector);
+    return getModulesAndInitRouting(injector);
   };
 }
 
@@ -119,13 +128,12 @@ export function getModulesAndInitRouting(injector) {
     CruvedStoreService,
     UserDataService,
     NotificationDataService,
-    { provide: APP_CONFIG_TOKEN, useValue: AppConfig },
+    ConfigService,
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
-    // { provide: APP_INITIALIZER, useFactory: get_cruved, deps: [CruvedStoreService], multi: true},
     {
       provide: APP_INITIALIZER,
-      useFactory: getModulesAndInitRouting,
+      useFactory: initApp,
       deps: [Injector],
       multi: true,
     },

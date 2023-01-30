@@ -1,4 +1,3 @@
-import { AppConfig } from '@geonature_config/app.config';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -15,24 +14,21 @@ import {
 } from '@angular/core';
 import { MapService } from '@geonature_common/map/map.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CommonService } from '@geonature_common/service/common.service';
-import { ModuleConfig } from '../../module.config';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { ValidationModalInfoObsComponent } from '../validation-modal-info-obs/validation-modal-info-obs.component';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
-import { Router } from '@angular/router';
 import { find, isEmpty, get, findIndex } from 'lodash';
+import { ConfigService } from '@geonature/services/config.service';
+
 @Component({
   selector: 'pnx-validation-synthese-list',
   templateUrl: 'validation-synthese-list.component.html',
   styleUrls: ['validation-synthese-list.component.scss'],
 })
 export class ValidationSyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
-  public VALIDATION_CONFIG = ModuleConfig;
   public oneSyntheseObs: any;
-  public appConfig: any;
   selectedObs: Array<number> = []; // list of id_synthese values for selected rows
   selectedIndex: Array<number> = [];
   selectedPages = [];
@@ -61,21 +57,19 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
     private translate: TranslateService,
     private _ds: SyntheseDataService,
     public ngbModal: NgbModal,
-    private _commonService: CommonService,
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
     private _ms: MapService,
-    public formService: SyntheseFormService
+    public formService: SyntheseFormService,
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
-    // get app config
-    this.appConfig = AppConfig;
-
     this.alertActivate =
-      AppConfig.SYNTHESE.ALERT_MODULES && AppConfig.SYNTHESE.ALERT_MODULES.includes('VALIDATION');
+      this.config.SYNTHESE.ALERT_MODULES &&
+      this.config.SYNTHESE.ALERT_MODULES.includes('VALIDATION');
     this.pinActivate =
-      AppConfig.SYNTHESE.PIN_MODULES && AppConfig.SYNTHESE.PIN_MODULES.includes('VALIDATION');
+      this.config.SYNTHESE.PIN_MODULES && this.config.SYNTHESE.PIN_MODULES.includes('VALIDATION');
 
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
@@ -135,7 +129,7 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
   setOriginStyleToAll() {
     for (let obs in this.mapListService.layerDict) {
       this.mapListService.layerDict[obs].setStyle(
-        this.VALIDATION_CONFIG.MAP_POINT_STYLE.originStyle
+        this.config.VALIDATION.MAP_POINT_STYLE.originStyle
       );
     }
   }
@@ -143,7 +137,7 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
   setSelectedSyleToSelectedRows() {
     for (let obs of this.selectedObs) {
       this.mapListService.layerDict[obs].setStyle(
-        this.VALIDATION_CONFIG.MAP_POINT_STYLE.selectedStyle
+        this.config.VALIDATION.MAP_POINT_STYLE.selectedStyle
       );
     }
   }

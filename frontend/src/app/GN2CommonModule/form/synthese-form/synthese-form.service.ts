@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   UntypedFormGroup,
   UntypedFormBuilder,
@@ -10,9 +10,9 @@ import { HttpParams } from '@angular/common/http';
 import { stringify } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
-import { APP_CONFIG_TOKEN } from '@geonature_config/app.config';
 import { DYNAMIC_FORM_DEF } from '@geonature_common/form/synthese-form/dynamicFormConfig';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class SyntheseFormService {
@@ -31,10 +31,10 @@ export class SyntheseFormService {
   public selectedTaxRefAttributs = [];
 
   constructor(
-    @Inject(APP_CONFIG_TOKEN) private cfg,
     private _fb: UntypedFormBuilder,
     private _dateParser: NgbDateParserFormatter,
-    private _periodFormatter: NgbDatePeriodParserFormatter
+    private _periodFormatter: NgbDatePeriodParserFormatter,
+    public config: ConfigService
   ) {
     this.searchForm = this._fb.group({
       cd_nom: null,
@@ -65,7 +65,7 @@ export class SyntheseFormService {
     this.searchForm.setValidators([this.periodValidator()]);
 
     // Add protection status filters defined in configuration parameters
-    this.statusFilters = Object.assign([], this.cfg.SYNTHESE.STATUS_FILTERS);
+    this.statusFilters = Object.assign([], this.config.SYNTHESE.STATUS_FILTERS);
     this.statusFilters.forEach((status) => {
       const control_name = `${status.id}_protection_status`;
       this.searchForm.addControl(control_name, new UntypedFormControl(new Array()));
@@ -74,7 +74,7 @@ export class SyntheseFormService {
     });
 
     // Add red lists filters defined in configuration parameters
-    this.redListsFilters = Object.assign([], this.cfg.SYNTHESE.RED_LISTS_FILTERS);
+    this.redListsFilters = Object.assign([], this.config.SYNTHESE.RED_LISTS_FILTERS);
     this.redListsFilters.forEach((redList) => {
       const control_name = `${redList.id}_red_lists`;
       this.searchForm.addControl(control_name, new UntypedFormControl(new Array()));
@@ -82,17 +82,17 @@ export class SyntheseFormService {
     });
 
     // Add areas filters defined in configuration parameters
-    this.areasFilters = Object.assign([], this.cfg.SYNTHESE.AREA_FILTERS);
-    this.cfg.SYNTHESE.AREA_FILTERS.forEach((area) => {
+    this.areasFilters = Object.assign([], this.config.SYNTHESE.AREA_FILTERS);
+    this.config.SYNTHESE.AREA_FILTERS.forEach((area) => {
       const control_name = 'area_' + area['type_code'];
       this.searchForm.addControl(control_name, new UntypedFormControl(new Array()));
       area['control'] = this.searchForm.controls[control_name];
     });
 
     // Init the dynamic form with the user parameters
-    // remove the filters which are in AppConfig.SYNTHESE.EXCLUDED_COLUMNS
+    // remove the filters which are in config.SYNTHESE.EXCLUDED_COLUMNS
     this.dynamycFormDef = DYNAMIC_FORM_DEF.filter((formDef) => {
-      return this.cfg.SYNTHESE.EXCLUDED_COLUMNS.indexOf(formDef.attribut_name) === -1;
+      return this.config.SYNTHESE.EXCLUDED_COLUMNS.indexOf(formDef.attribut_name) === -1;
     });
     this.formBuilded = true;
   }

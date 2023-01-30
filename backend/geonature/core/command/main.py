@@ -158,3 +158,22 @@ def default_config():
     frontend_defaults = GnGeneralSchemaConf().load({}, partial=required_fields)
     defaults = ChainMap(backend_defaults, frontend_defaults)
     print(toml.dumps(defaults))
+
+
+@click.argument("key", type=str, required=False)
+@main.command()
+def get_config(key=None):
+    """
+    Afficher l’ensemble des paramètres
+    """
+    printed_config = config.copy()
+    if key:
+        try:
+            printed_config = printed_config[key]
+        except KeyError:
+            click.secho(f"The key {key} does not exist in config", fg="red")
+            return
+    if type(printed_config) is dict:
+        print(toml.dumps(printed_config))
+    else:
+        print(printed_config)

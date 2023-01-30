@@ -2,13 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { ToastrService } from 'ngx-toastr';
-
-import { AppConfig } from '@geonature_config/app.config';
 import { similarValidator } from '@geonature/services/validators/validators';
 import { CommonService } from '@geonature_common/service/common.service';
 
 import { AuthService } from '../../../components/auth/auth.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-signup',
@@ -20,16 +18,17 @@ export class SignUpComponent implements OnInit {
   dynamicFormGroup: UntypedFormGroup;
   public disableSubmit = false;
   public formControlBuilded = false;
-  public FORM_CONFIG = AppConfig.ACCOUNT_MANAGEMENT.ACCOUNT_FORM;
+  public FORM_CONFIG = null;
 
   constructor(
     private fb: UntypedFormBuilder,
     private _authService: AuthService,
     private _router: Router,
-    private _toasterService: ToastrService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    public config: ConfigService
   ) {
-    if (!(AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false)) {
+    this.FORM_CONFIG = this.config.ACCOUNT_MANAGEMENT.ACCOUNT_FORM;
+    if (!(this.config['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false)) {
       this._router.navigate(['/login']);
     }
   }
@@ -61,13 +60,13 @@ export class SignUpComponent implements OnInit {
       this.disableSubmit = true;
       const finalForm = Object.assign({}, this.form.value);
       // concatenate two forms
-      if (AppConfig.ACCOUNT_MANAGEMENT.ACCOUNT_FORM.length > 0) {
+      if (this.config.ACCOUNT_MANAGEMENT.ACCOUNT_FORM.length > 0) {
         finalForm['champs_addi'] = this.dynamicFormGroup.value;
       }
       this._authService
         .signupUser(finalForm)
-        .subscribe((res) => {
-          const callbackMessage = AppConfig.ACCOUNT_MANAGEMENT.AUTO_ACCOUNT_CREATION
+        .subscribe(() => {
+          const callbackMessage = this.config.ACCOUNT_MANAGEMENT.AUTO_ACCOUNT_CREATION
             ? 'AutoAccountEmailConfirmation'
             : 'AdminAccountEmailConfirmation';
           this._commonService.translateToaster('info', callbackMessage);

@@ -7,7 +7,7 @@ import * as L from 'leaflet';
 import { Subscription } from 'rxjs/Subscription';
 import { GeoJSON } from 'leaflet';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { timeStamp } from 'console';
+import { ConfigService } from '@geonature/services/config.service';
 
 /**
  * Affiche une modale permettant d'aficher la liste des lieux enregistrés pour l'utilisateur actif, puis affiche le lieux sélectionnés sur la carte.
@@ -20,7 +20,6 @@ import { timeStamp } from 'console';
 })
 export class PlacesListComponent extends MarkerComponent implements OnInit {
   @ViewChild('modalContent', { static: false }) public modalContent: any;
-  private geojsonSubscription$: Subscription;
   public geojson: any;
   public places: any[];
   public listPlacesSub: Subscription;
@@ -35,9 +34,10 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
     public mapService: MapService,
     public modalService: NgbModal,
     public commonService: CommonService,
-    private _dfs: DataFormService
+    private _dfs: DataFormService,
+    public config: ConfigService
   ) {
-    super(mapService, commonService);
+    super(mapService, commonService, config);
   }
 
   ngOnInit() {

@@ -5,12 +5,12 @@ import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { MapService } from '@geonature_common/map/map.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
-import { AppConfig } from '../../../conf/app.config';
 import { SideNavService } from '../sidenav-items/sidenav-service';
 import { ModuleService } from '../../services/module.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as L from 'leaflet';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-home-content',
@@ -19,40 +19,41 @@ import * as L from 'leaflet';
   providers: [MapService, SyntheseDataService],
 })
 export class HomeContentComponent implements OnInit, AfterViewInit {
-  public appConfig: any;
   public showLastObsMap: boolean = false;
   public showGeneralStat: boolean = false;
   public generalStat: any;
   public locale: string;
   public destroy$: Subject<boolean> = new Subject<boolean>();
-  public cluserOrSimpleFeatureGroup = AppConfig.SYNTHESE.ENABLE_LEAFLET_CLUSTER
-    ? (L as any).markerClusterGroup()
-    : new L.FeatureGroup();
+  public cluserOrSimpleFeatureGroup = null;
 
   constructor(
     private _SideNavService: SideNavService,
     private _syntheseApi: SyntheseDataService,
     private _mapService: MapService,
     private _moduleService: ModuleService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    public config: ConfigService
   ) {
     // this work here thanks to APP_INITIALIZER on ModuleService
     let synthese_module = this._moduleService.getModule('SYNTHESE');
     let synthese_read_scope = synthese_module ? synthese_module.cruved['R'] : 0;
 
-    if (AppConfig.FRONTEND.DISPLAY_MAP_LAST_OBS && synthese_read_scope > 0) {
+    if (this.config.FRONTEND.DISPLAY_MAP_LAST_OBS && synthese_read_scope > 0) {
       this.showLastObsMap = true;
     }
-    if (AppConfig.FRONTEND.DISPLAY_STAT_BLOC && synthese_read_scope > 0) {
+    if (this.config.FRONTEND.DISPLAY_STAT_BLOC && synthese_read_scope > 0) {
       this.showGeneralStat = true;
     }
+
+    this.cluserOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
+      ? (L as any).markerClusterGroup()
+      : new L.FeatureGroup();
   }
 
   ngOnInit() {
     this.getI18nLocale();
 
     this._SideNavService.sidenav.open();
-    this.appConfig = AppConfig;
 
     if (this.showGeneralStat) {
       this.computeStatsBloc();
@@ -107,7 +108,7 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
       // Compute refresh need
       const currentDatetime = new Date();
       const cacheEndDatetime = new Date(stats.createdDate);
-      const milliSecondsTtl = AppConfig.FRONTEND.STAT_BLOC_TTL * 1000;
+      const milliSecondsTtl = this.config.FRONTEND.STAT_BLOC_TTL * 1000;
       const futureTimestamp = cacheEndDatetime.getTime() + milliSecondsTtl;
       cacheEndDatetime.setTime(futureTimestamp);
 

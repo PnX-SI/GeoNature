@@ -10,9 +10,9 @@ import {
 } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.service';
-import { AppConfig } from '@geonature_config/app.config';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-dynamic-form',
@@ -27,14 +27,13 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output() change = new EventEmitter<any>();
 
-  public appConfig = AppConfig;
   public rand = Math.ceil(Math.random() * 1e10);
 
   public formDefComp: any = {};
   public isValInSelectList: boolean = true;
   private _sub: Subscription;
 
-  constructor(private _dynformService: DynamicFormService) {}
+  constructor(private _dynformService: DynamicFormService, public config: ConfigService) {}
 
   ngOnInit() {
     this.setFormDefComp(true);

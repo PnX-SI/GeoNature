@@ -1,33 +1,33 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { AppConfig } from '@geonature_config/app.config';
+import { HttpClient } from '@angular/common/http';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MetadataDataService {
-  constructor(private _api: HttpClient) {}
+  constructor(private _api: HttpClient, public config: ConfigService) {}
 
   createAF(value) {
-    return this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework`, value);
+    return this._api.post<any>(`${this.config.API_ENDPOINT}/meta/acquisition_framework`, value);
   }
 
   updateAF(id_af, value) {
     return this._api.post<any>(
-      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`,
+      `${this.config.API_ENDPOINT}/meta/acquisition_framework/${id_af}`,
       value
     );
   }
 
   createDataset(value) {
-    return this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/dataset`, value);
+    return this._api.post<any>(`${this.config.API_ENDPOINT}/meta/dataset`, value);
   }
 
   updateDataset(id_dataset, value) {
-    return this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${id_dataset}`, value);
+    return this._api.post<any>(`${this.config.API_ENDPOINT}/meta/dataset/${id_dataset}`, value);
   }
 
   patchDataset(id_dataset, value) {
-    return this._api.patch<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${id_dataset}`, value);
+    return this._api.patch<any>(`${this.config.API_ENDPOINT}/meta/dataset/${id_dataset}`, value);
   }
 }

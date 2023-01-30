@@ -12,10 +12,10 @@ import { UntypedFormArray } from '@angular/forms';
 import { Observable, empty, Subscription } from 'rxjs';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
-import { AppConfig } from '@geonature_config/app.config';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { OcctaxFormOccurrenceService } from './occurrence.service';
 import { OcctaxFormService } from '../occtax-form.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-occtax-profiles',
@@ -23,7 +23,6 @@ import { OcctaxFormService } from '../occtax-form.service';
   styleUrls: ['./profiles.component.scss'],
 })
 export class OcctaxProfilesComponent implements OnInit, OnDestroy {
-  private appConfig = AppConfig;
   public profilErrors: any[] = [];
   public taxon: any = null;
   private _sub: Array<Subscription> = [];
@@ -32,7 +31,8 @@ export class OcctaxProfilesComponent implements OnInit, OnDestroy {
     private dateParser: NgbDateParserFormatter,
     private _dataS: DataFormService,
     public occtaxFormService: OcctaxFormService,
-    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService
+    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -59,7 +59,7 @@ export class OcctaxProfilesComponent implements OnInit, OnDestroy {
       //reinitialisation view variable
       tap(() => (this.taxon = null)),
       //filter on param
-      filter(() => this.appConfig.FRONTEND['ENABLE_PROFILES']),
+      filter(() => this.config.FRONTEND['ENABLE_PROFILES']),
       //filter on data
       filter((taxon) => taxon !== null && taxon.cd_ref),
       //set variable for view usage

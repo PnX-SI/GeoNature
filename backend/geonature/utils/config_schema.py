@@ -142,6 +142,12 @@ class AdditionalFields(Schema):
     )
 
 
+class HomeConfig(Schema):
+    TITLE = fields.String(load_default="Bienvenue dans GeoNature")
+    INTRODUCTION = fields.String(load_default="")
+    FOOTER = fields.String(load_default="")
+
+
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(load_default=50, validate=OneOf([10, 25, 50, 100]))
     ENABLE_CLOSE_AF = fields.Boolean(load_default=False)
@@ -529,6 +535,7 @@ class GnGeneralSchemaConf(Schema):
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
     PUBLIC_ACCESS_USERNAME = fields.String(load_default="")
     TAXHUB = fields.Nested(TaxHub, load_default=TaxHub().load({}))
+    HOME = fields.Nested(HomeConfig, load_default=HomeConfig().load({}))
     NOTIFICATIONS_ENABLED = fields.Boolean(load_default=True)
 
     @validates_schema

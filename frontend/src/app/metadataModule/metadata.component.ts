@@ -1,16 +1,15 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
-import { AppConfig } from '@geonature_config/app.config';
-import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, combineLatest, of } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import { map, distinctUntilChanged } from 'rxjs/operators';
-import { omitBy, isEmpty } from 'lodash';
+import { omitBy } from 'lodash';
 
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { MetadataService } from './services/metadata.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-metadata',
@@ -42,7 +41,6 @@ export class MetadataComponent implements OnInit {
   afPublishModalId: number;
   afPublishModalLabel: string;
   afPublishModalContent: string;
-  APP_CONFIG = AppConfig;
 
   pageSize: number;
   pageIndex: number;
@@ -50,10 +48,10 @@ export class MetadataComponent implements OnInit {
   constructor(
     public _cruvedStore: CruvedStoreService,
     private _dfs: DataFormService,
-    private _router: Router,
     private modal: NgbModal,
     public metadataService: MetadataService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -61,8 +59,8 @@ export class MetadataComponent implements OnInit {
 
     this._dfs.getRoles({ group: false }).subscribe((roles) => (this.roles = roles));
 
-    this.afPublishModalLabel = AppConfig.METADATA.CLOSED_MODAL_LABEL;
-    this.afPublishModalContent = AppConfig.METADATA.CLOSED_MODAL_CONTENT;
+    this.afPublishModalLabel = this.config.METADATA.CLOSED_MODAL_LABEL;
+    this.afPublishModalContent = this.config.METADATA.CLOSED_MODAL_CONTENT;
 
     //Combinaison des observables pour afficher les éléments filtrés en fonction de l'état du paginator
     this.acquisitionFrameworks = combineLatest(
@@ -75,7 +73,7 @@ export class MetadataComponent implements OnInit {
       )
     );
     // format areas filter
-    this.areaFilters = AppConfig.METADATA.METADATA_AREA_FILTERS.map((area) => {
+    this.areaFilters = this.config.METADATA.METADATA_AREA_FILTERS.map((area) => {
       if (typeof area['type_code'] === 'string') {
         area['type_code_array'] = [area['type_code']];
       } else {
@@ -182,5 +180,6 @@ export class MetadataComponent implements OnInit {
   }
 
   displayMetaAreaFilters = () =>
-    AppConfig.METADATA?.METADATA_AREA_FILTERS && AppConfig.METADATA?.METADATA_AREA_FILTERS.length;
+    this.config.METADATA?.METADATA_AREA_FILTERS &&
+    this.config.METADATA?.METADATA_AREA_FILTERS.length;
 }

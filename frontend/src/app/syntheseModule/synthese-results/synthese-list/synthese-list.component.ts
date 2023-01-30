@@ -14,7 +14,6 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
-import { AppConfig } from '@geonature_config/app.config';
 import { HttpParams } from '@angular/common/http/';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
@@ -23,13 +22,14 @@ import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
+import { ConfigService } from '@geonature/services/config.service';
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
   styleUrls: ['synthese-list.component.scss'],
 })
 export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
-  public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
+  public SYNTHESE_CONFIG = null;
   public selectedObs: any;
   public selectObsTaxonInfo: any;
   public selectedObsTaxonDetail: any;
@@ -46,14 +46,14 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   private _latestWidth: number;
   constructor(
     public mapListService: MapListService,
-    private _ds: SyntheseDataService,
     public ngbModal: NgbModal,
-    private _commonService: CommonService,
-    private _fs: SyntheseFormService,
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
-    public _cruvedStore: CruvedStoreService
-  ) {}
+    public _cruvedStore: CruvedStoreService,
+    public config: ConfigService
+  ) {
+    this.SYNTHESE_CONFIG = this.config.SYNTHESE;
+  }
 
   ngOnInit() {
     // get wiewport height to set the number of rows in the tabl

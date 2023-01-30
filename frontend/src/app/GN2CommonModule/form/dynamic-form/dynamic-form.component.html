@@ -238,7 +238,7 @@
         *ngSwitchCase="'medias'"
         [schemaDotTable]="formDefComp['schema_dot_table']"
         [parentFormControl]="form.get(formDefComp['attribut_name'])"
-        [sizeMax]="appConfig.MEDIAS.MEDIAS_SIZE_MAX"
+        [sizeMax]="config.MEDIAS.MEDIAS_SIZE_MAX"
         [default]="formDefComp['default'] || {}"
         [details]="formDefComp['details']"
         [hideDetailsFields]="formDefComp['hide_details_fields']"

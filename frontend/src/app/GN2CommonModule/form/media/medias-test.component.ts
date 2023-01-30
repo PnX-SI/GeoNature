@@ -1,8 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
-import { Media } from './media';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { AppConfig } from '@geonature_config/app.config';
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MediaService } from '@geonature_common/service/media.service';
 
 @Component({
@@ -13,8 +11,6 @@ import { MediaService } from '@geonature_common/service/media.service';
 })
 export class MediasTestComponent implements OnInit {
   public mediaForm: UntypedFormGroup;
-
-  public appConfig = AppConfig;
 
   bInitialized = false;
 

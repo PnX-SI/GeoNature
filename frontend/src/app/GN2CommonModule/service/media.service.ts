@@ -1,12 +1,11 @@
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { ValidatorFn, AbstractControl } from '@angular/forms';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpParams, HttpRequest } from '@angular/common/http';
-import { Observable, of, Subject } from '@librairies/rxjs';
-import { map, filter, switchMap, tap, pairwise, retry } from 'rxjs/operators';
-import { AppConfig } from '@geonature_config/app.config';
+import { Observable, of } from '@librairies/rxjs';
+import { switchMap } from 'rxjs/operators';
 import { Media } from '@geonature_common/form/media/media';
-import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { ConfigService } from '@geonature/services/config.service';
 
 const _NOMENCLATURES = ['TYPE_MEDIA'];
 /**
@@ -33,7 +32,7 @@ export class MediaService {
   constructor(
     private _http: HttpClient,
     private _dataFormService: DataFormService,
-    private dateParser: NgbDateParserFormatter
+    public config: ConfigService
   ) {
     // initialisation des nomenclatures
     this.getNomenclatures().subscribe(() => {
@@ -75,7 +74,7 @@ export class MediaService {
   }
 
   getMedias(uuidAttachedRow): Observable<any> {
-    return this._http.get(`${AppConfig.API_ENDPOINT}/gn_commons/medias/${uuidAttachedRow}`);
+    return this._http.get(`${this.config.API_ENDPOINT}/gn_commons/medias/${uuidAttachedRow}`);
   }
 
   postMedia(file: File, media): Observable<HttpEvent<any>> {
@@ -90,19 +89,18 @@ export class MediaService {
     formData.append('file', file);
     const params = new HttpParams();
 
-    const url = `${AppConfig.API_ENDPOINT}/gn_commons/media`;
+    const url = `${this.config.API_ENDPOINT}/gn_commons/media`;
 
     const req = new HttpRequest('POST', url, formData, {
       params: params,
       reportProgress: true,
       responseType: 'json',
     });
-    const id_request = String(Math.random());
     return this._http.request(req);
   }
 
   deleteMedia(idMedia) {
-    return this._http.delete(`${AppConfig.API_ENDPOINT}/gn_commons/media/${idMedia}`);
+    return this._http.delete(`${this.config.API_ENDPOINT}/gn_commons/media/${idMedia}`);
   }
 
   getIdTableLocation(schemaDotTable): Observable<number> {
@@ -111,7 +109,7 @@ export class MediaService {
       return of(idTableLocation);
     } else {
       return this._http
-        .get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/get_id_table_location/${schemaDotTable}`)
+        .get<any>(`${this.config.API_ENDPOINT}/gn_commons/get_id_table_location/${schemaDotTable}`)
         .pipe(
           switchMap((idTableLocation) => {
             this.idTableLocations[schemaDotTable] = idTableLocation;
@@ -126,7 +124,7 @@ export class MediaService {
       !medias ||
       !medias.length ||
       medias.every((mediaData) => {
-        const media = new Media(mediaData);
+        const media = new Media(mediaData, this.config);
         return media.valid();
       })
     );
@@ -137,7 +135,7 @@ export class MediaService {
       !medias ||
       !medias.length ||
       medias.every((mediaData) => {
-        const media = new Media(mediaData);
+        const media = new Media(mediaData, this.config);
         return media.valid() || media.bLoading;
       })
     );
@@ -152,14 +150,14 @@ export class MediaService {
 
   href(media, thumbnail = null) {
     if (!(media instanceof Media)) {
-      media = new Media(media);
+      media = new Media(media, this.config);
     }
     return media.href(thumbnail);
   }
 
   embedHref(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media);
+      media = new Media(media, this.config);
     }
     if (['Vidéo Youtube'].includes(this.typeMedia(media))) {
       const v_href = media.href().split('/');
@@ -191,7 +189,7 @@ export class MediaService {
 
   icon(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media);
+      media = new Media(media, this.config);
     }
     const typeMedia = this.typeMedia(media);
     if (typeMedia === 'PDF') {
@@ -215,7 +213,7 @@ export class MediaService {
 
   toString(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media);
+      media = new Media(media, this.config);
     }
     const description = media.description_fr ? ` : ${media.description_fr}` : '';
     const details =
@@ -229,7 +227,7 @@ export class MediaService {
 
   toHTML(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media);
+      media = new Media(media, this.config);
     }
     return `<a target="_blank" href="${media.href()}">${media.title_fr}</a> : ${
       media.description_fr
@@ -238,7 +236,7 @@ export class MediaService {
 
   typeMedia(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media);
+      media = new Media(media, this.config);
     }
     return this.getNomenclature(media.id_nomenclature_media_type).label_fr;
   }
@@ -249,7 +247,7 @@ export class MediaService {
 
   tooltip(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media);
+      media = new Media(media, this.config);
     }
     let tooltip = `<a
     href=${media.href()}

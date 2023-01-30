@@ -34,7 +34,7 @@
     <button
       (click)="isCollapseScore = !isCollapseScore"
       [attr.aria-expanded]="!isCollapseScore"
-      *ngIf="AppConfig.FRONTEND['ENABLE_PROFILES']"
+      *ngIf="config.FRONTEND['ENABLE_PROFILES']"
       class="btn btn-sm btn-outline-shadow profile float-right"
       matTooltip="Filtrer selon le profil du taxon"
       matTooltipClass="validation-tooltip"
@@ -119,7 +119,7 @@
       label="{{ 'Taxon.Taxon' | translate }} "
       [parentFormControl]="formService.searchForm.controls.cd_nom"
       [charNumber]="3"
-      [listLength]="AppConfig.SYNTHESE.TAXON_RESULT_NUMBER"
+      [listLength]="config.SYNTHESE.TAXON_RESULT_NUMBER"
       [apiEndPoint]="taxonApiEndPoint"
       (onChange)="formService.getCurrentTaxon($event)"
     >
@@ -285,11 +285,11 @@
   <fieldset>
     <legend>Qui ?</legend>
 
-    <ng-container *ngIf="AppConfig.SYNTHESE.SEARCH_OBSERVER_WITH_LIST; else observersTxtBlock">
+    <ng-container *ngIf="config.SYNTHESE.SEARCH_OBSERVER_WITH_LIST; else observersTxtBlock">
       <pnx-observers
         [multiSelect]="true"
         [parentFormControl]="formService.searchForm.get('observers_list')"
-        [idMenu]="AppConfig.SYNTHESE.ID_SEARCH_OBSERVER_LIST"
+        [idMenu]="config.SYNTHESE.ID_SEARCH_OBSERVER_LIST"
         [label]="'Releve.Observers' | translate"
         [bindAllItem]="true"
       >

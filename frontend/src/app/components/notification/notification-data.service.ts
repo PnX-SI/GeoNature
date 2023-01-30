@@ -1,16 +1,8 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpClient,
-  HttpParams,
-  HttpHeaders,
-  HttpEventType,
-  HttpErrorResponse,
-  HttpEvent,
-} from '@angular/common/http';
-
-import { AppConfig } from '../../../conf/app.config';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
+import { ConfigService } from '@geonature/services/config.service';
 
 /** Interface to display notifications */
 export interface NotificationCard {
@@ -48,66 +40,81 @@ export interface NotificationRule {
 
 @Injectable()
 export class NotificationDataService {
-  constructor(private _api: HttpClient) {}
+  constructor(private _api: HttpClient, public config: ConfigService) {}
 
   // returns notifications content for this user
   getNotifications(): Observable<NotificationCard[]> {
     return this._api.get<NotificationCard[]>(
-      `${AppConfig.API_ENDPOINT}/notifications/notifications`
+      `${this.config.API_ENDPOINT}/notifications/notifications`
     );
   }
 
   // returns number of notification for this user
   getNotificationsNumber(): any {
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/notifications/count`);
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/notifications/count`);
   }
 
   deleteNotifications() {
-    return this._api.delete<any>(`${AppConfig.API_ENDPOINT}/notifications/notifications`);
+    return this._api.delete<any>(`${this.config.API_ENDPOINT}/notifications/notifications`);
   }
 
   // update notification status
   updateNotification(idNotification) {
     return this._api.post(
-      `${AppConfig.API_ENDPOINT}/notifications/notifications/${idNotification}`,
+      `${this.config.API_ENDPOINT}/notifications/notifications/${idNotification}`,
       {
         headers: new HttpHeaders().set('Content-Type', 'application/json'),
       }
     );
   }
 
+  // Create rules
+  createRule(data) {
+    return this._api.put(`${this.config.API_ENDPOINT}/notifications/rules`, data, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json'),
+    });
+  }
+
   // returns all rules for current user
   getRules() {
-    return this._api.get<NotificationRule[]>(`${AppConfig.API_ENDPOINT}/notifications/rules`);
+    return this._api.get<NotificationRule[]>(`${this.config.API_ENDPOINT}/notifications/rules`);
   }
 
   // returns notifications content for this user
   getRulesCategories() {
     return this._api.get<NotificationCategory[]>(
-      `${AppConfig.API_ENDPOINT}/notifications/categories`
+      `${this.config.API_ENDPOINT}/notifications/categories`
     );
   }
 
   // returns notifications content for this user
   getRulesMethods() {
-    return this._api.get<NotificationMethod[]>(`${AppConfig.API_ENDPOINT}/notifications/methods`);
+    return this._api.get<NotificationMethod[]>(`${this.config.API_ENDPOINT}/notifications/methods`);
+  }
+
+  deleteRules() {
+    return this._api.delete<{}>(`${this.config.API_ENDPOINT}/notifications/rules`);
+  }
+
+  deleteRule(id: number) {
+    return this._api.delete<{}>(`${this.config.API_ENDPOINT}/notifications/rules/${id}`);
   }
 
   subscribe(category, method) {
     return this._api.post(
-      `${AppConfig.API_ENDPOINT}/notifications/rules/category/${category}/method/${method}/subscribe`,
+      `${this.config.API_ENDPOINT}/notifications/rules/category/${category}/method/${method}/subscribe`,
       null
     );
   }
 
   unsubscribe(category, method) {
     return this._api.post(
-      `${AppConfig.API_ENDPOINT}/notifications/rules/category/${category}/method/${method}/unsubscribe`,
+      `${this.config.API_ENDPOINT}/notifications/rules/category/${category}/method/${method}/unsubscribe`,
       null
     );
   }
 
   clearSubscriptions() {
-    return this._api.delete<any>(`${AppConfig.API_ENDPOINT}/notifications/rules`);
+    return this._api.delete<any>(`${this.config.API_ENDPOINT}/notifications/rules`);
   }
 }

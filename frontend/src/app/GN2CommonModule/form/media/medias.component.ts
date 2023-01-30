@@ -1,15 +1,8 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  ViewEncapsulation,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-medias',
@@ -35,7 +28,7 @@ export class MediasComponent implements OnInit {
 
   public bInitialized: boolean;
 
-  constructor(public ms: MediaService) {}
+  constructor(public ms: MediaService, public config: ConfigService) {}
 
   ngOnInit() {
     this.ms.getNomenclatures().subscribe(() => {
@@ -50,7 +43,10 @@ export class MediasComponent implements OnInit {
     }
     for (const index in this.parentFormControl.value) {
       if (!(this.parentFormControl.value[index] instanceof Media)) {
-        this.parentFormControl.value[index] = new Media(this.parentFormControl.value[index]);
+        this.parentFormControl.value[index] = new Media(
+          this.parentFormControl.value[index],
+          this.config
+        );
       }
     }
   }
@@ -67,7 +63,7 @@ export class MediasComponent implements OnInit {
     if (!this.parentFormControl.value) {
       this.parentFormControl.patchValue([]);
     }
-    this.parentFormControl.value.push(new Media());
+    this.parentFormControl.value.push(new Media(null, this.config));
     this.parentFormControl.patchValue(this.parentFormControl.value);
   }
 

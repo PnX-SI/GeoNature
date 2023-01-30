@@ -3,7 +3,6 @@ import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, NavigationEnd } from '@angular/router';
 import { CommonService } from '@geonature_common/service/common.service';
-import { ModuleConfig } from '../module.config';
 import { OcctaxFormService } from './occtax-form.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { OcctaxFormParamService } from './form-param/form-param.service';
@@ -17,6 +16,7 @@ import { OcctaxFormMapService } from './map/occtax-map.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { filter } from 'rxjs/operators';
 import { ModuleService } from '@geonature/services/module.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-occtax-form',
@@ -32,7 +32,6 @@ import { ModuleService } from '@geonature/services/module.service';
   ],
 })
 export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
-  public occtaxConfig = ModuleConfig;
   public id;
   public disableCancel = false;
   public urlSub: Subscription;
@@ -53,7 +52,8 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     private _ds: OcctaxDataService,
     private _commonService: CommonService,
     private _modalService: NgbModal,
-    public moduleService: ModuleService
+    public moduleService: ModuleService,
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -61,7 +61,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
       this.currentModulePath = module.module_path.toLowerCase();
     });
 
-    this.occtaxFormService.idTaxonList = ModuleConfig.id_taxon_list;
+    this.occtaxFormService.idTaxonList = this.config.OCCTAX.id_taxon_list;
 
     // set id_releve and tab on initalization (refresh page)
     this.setCurrentTabAndIdReleve(this._router.routerState.snapshot.url);

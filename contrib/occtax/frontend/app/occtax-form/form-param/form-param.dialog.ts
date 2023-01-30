@@ -2,12 +2,12 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { combineLatest, Subscription } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
-import { ModuleConfig } from '../../module.config';
+import { filter, map } from 'rxjs/operators';
 import { OcctaxFormMapService } from '../map/occtax-map.service';
 import { OcctaxFormReleveService } from '../releve/releve.service';
 import { OcctaxFormOccurrenceService } from '../occurrence/occurrence.service';
 import { OcctaxFormParamService } from './form-param.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-occtax-form-param',
@@ -32,7 +32,6 @@ import { OcctaxFormParamService } from './form-param.service';
 })
 export class OcctaxFormParamDialog implements OnInit, OnDestroy {
   @ViewChild('modalContent') modalContent;
-  public occtaxConfig: any;
   public paramsForm: UntypedFormGroup;
   public selectedIndex: number = null;
   public state: string = 'collapsed';
@@ -59,10 +58,9 @@ export class OcctaxFormParamDialog implements OnInit, OnDestroy {
     private occtaxFormMapService: OcctaxFormMapService,
     public occtaxFormReleveService: OcctaxFormReleveService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
-    public occtaxFormParamService: OcctaxFormParamService
-  ) {
-    this.occtaxConfig = ModuleConfig;
-  }
+    public occtaxFormParamService: OcctaxFormParamService,
+    public config: ConfigService
+  ) {}
 
   ngOnInit() {
     this.paramsForm = this.fb.group({

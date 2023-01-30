@@ -49,14 +49,6 @@ cp ${previousdir}/frontend/src/favicon.ico frontend/src/favicon.ico
 # Handle frontend custom components
 cp -r ${previousdir}/frontend/src/custom/* frontend/src/custom/
 
-echo "Création des fichiers des nouveaux composants personnalisables du frontend..."
-custom_component_dir="${currentdir}/frontend/src/custom/components/"
-for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
-    if [[ ! -f "${file%.sample}" ]]; then
-        cp "${file}" "${file%.sample}"
-    fi
-done
-
 echo "Récupération des fichiers statiques …"
 cd "${currentdir}/backend/static"
 for static_dir in "${previousdir}"/backend/static/*; do
@@ -65,6 +57,14 @@ for static_dir in "${previousdir}"/backend/static/*; do
     fi
     cp -a "${static_dir}" .
 done
+
+if [[ ! -f src/assets/config.json ]]; then
+  echo "Création du fichiers de configuration du frontend"
+  cp -n src/assets/config.sample.json src/assets/config.json
+fi
+
+api_end_point=$(geonature get-config API_ENDPOINT)
+sed -i 's|"API_ENDPOINT": .*$|"API_ENDPOINT" : "'${api_end_point}'"|' src/assets/config.json
 
 echo "Mise à jour de node si nécessaire …"
 cd "${currentdir}"/frontend

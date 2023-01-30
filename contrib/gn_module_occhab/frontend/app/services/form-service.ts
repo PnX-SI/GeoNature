@@ -11,7 +11,7 @@ import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { FormService } from '@geonature_common/form/form.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { OcchabStoreService } from './store.service';
-import { ModuleConfig } from '../module.config';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class OcchabFormService {
@@ -24,7 +24,8 @@ export class OcchabFormService {
     private _dateParser: NgbDateParserFormatter,
     private _gn_dataSerice: DataFormService,
     private _storeService: OcchabStoreService,
-    private _formService: FormService
+    private _formService: FormService,
+    public config: ConfigService
   ) {
     // get selected cd_typo to filter the habref autcomplete
     this.typoHabControl.valueChanges.subscribe((data) => {
@@ -39,8 +40,8 @@ export class OcchabFormService {
       id_dataset: [null, Validators.required],
       date_min: [null, Validators.required],
       date_max: [null, Validators.required],
-      observers: [null, !ModuleConfig.OBSERVER_AS_TXT ? Validators.required : null],
-      observers_txt: [null, ModuleConfig.OBSERVER_AS_TXT ? Validators.required : null],
+      observers: [null, !this.config.OCCHAB.OBSERVER_AS_TXT ? Validators.required : null],
+      observers_txt: [null, this.config.OCCHAB.OBSERVER_AS_TXT ? Validators.required : null],
       is_habitat_complex: false,
       id_nomenclature_exposure: null,
       altitude_min: null,
