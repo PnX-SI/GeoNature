@@ -118,6 +118,8 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/${{ github.repository_owner }}/geonature-frontend
+          flavor: |
+            suffix=-nginx
           tags: |
             type=ref,event=branch
             type=ref,event=tag
@@ -131,3 +133,22 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta-nginx.outputs.tags }}
           labels: ${{ steps.meta-nginx.outputs.labels }}
+      -
+        name: Generate metadata for prod image
+        id: meta-prod
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/geonature-frontend
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+      -
+        name: Build and export prod image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./frontend/Dockerfile
+          target: prod
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta-prod.outputs.tags }}
+          labels: ${{ steps.meta-prod.outputs.labels }}
