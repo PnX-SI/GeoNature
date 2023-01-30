@@ -15,6 +15,7 @@ from flask import (
     g,
 )
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
+from werkzeug.datastructures import MultiDict
 from sqlalchemy import distinct, func, desc, asc, select, case
 from sqlalchemy.orm import joinedload, lazyload, selectinload
 from geojson import FeatureCollection, Feature
@@ -40,9 +41,17 @@ from geonature.core.gn_synthese.models import (
     VSyntheseForWebApp,
     VColorAreaTaxon,
     TReport,
+    SyntheseLogEntry,
+    SyntheseQuery,
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
-
+from geonature.core.gn_synthese.utils.routes import (
+    filter_params,
+    get_sort,
+    paginate,
+    get_limit_page,
+    sort,
+)
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_permissions import decorators as permissions
@@ -1181,3 +1190,50 @@ def delete_report(id_report):
     else:
         DB.session.delete(reportItem)
     DB.session.commit()
+
+
+@routes.route("/log", methods=["get"])
+@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
+@json_resp
+def list_synthese_log_entries(info_role) -> dict:
+    """Get log history from synthese
+    Parameters
+    ----------
+    info_role : VUsersPermissions
+        User permissions
+    Returns
+    -------
+    dict
+        log action list
+    """
+
+    params = MultiDict(request.args)
+    limit, page = get_limit_page(params=params)
+    sort_label, sort_dir = get_sort(
+        params=params, default_sort="meta_last_action_date", default_direction="desc"
+    )
+    q1 = SyntheseLogEntry.query.with_entities(
+        SyntheseLogEntry.id_synthese,
+        SyntheseLogEntry.unique_id_sinp,
+        SyntheseLogEntry.last_action,
+        SyntheseLogEntry.meta_last_action_date,
+    )
+
+    q2 = Synthese.query.with_entities(
+        Synthese.id_synthese,
+        Synthese.unique_id_sinp,
+        Synthese.last_action,
+        func.coalesce(Synthese.meta_update_date, Synthese.meta_create_date),
+    )
+
+    q3 = q1.union(q2)
+
+    query = filter_params(query=q3, params=params)
+    query = sort(query=query, sort=sort_label, sort_dir=sort_dir)
+    data = paginate(
+        query=query,
+        limit=limit,
+        page=page,
+    )
+
+    return data

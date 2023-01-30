@@ -1,8 +1,9 @@
 from collections import OrderedDict
 
+
 import sqlalchemy as sa
 import datetime
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, Unicode, and_
 from sqlalchemy.orm import (
     relationship,
     column_property,
@@ -20,6 +21,7 @@ from geojson import Feature
 from flask import g
 from flask_sqlalchemy import BaseQuery
 
+from werkzeug.datastructures import MultiDict
 from werkzeug.exceptions import NotFound
 
 from pypnnomenclature.models import TNomenclatures
@@ -128,6 +130,38 @@ class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
             )
         return self
 
+    def _get_entity(self, entity):
+        if hasattr(entity, "_entities"):
+            return self._get_entity(entity._entities[0])
+        return entity.entities[0]
+
+    def _get_model(self):
+        # When sqlalchemy is updated:
+        # return self._raw_columns[0].entity_namespace
+        # But for now:
+        entity = self._get_entity(self)
+        return entity.c
+
+    def filter_by_params(self, params: MultiDict = None):
+        model = self._get_model()
+        and_list = []
+        for key, value in params.items():
+            column = getattr(model, key)
+            if isinstance(column.type, Unicode):
+                and_list.append(column.ilike(f"%{value}%"))
+            else:
+                and_list.append(column == value)
+        and_query = and_(*and_list)
+        return self.filter(and_query)
+
+    def sort(self, label: str, direction: str):
+        model = self._get_model()
+        order_by = getattr(model, label)
+        if direction == "desc":
+            order_by = order_by.desc()
+
+        return self.order_by(order_by)
+
 
 @serializable
 class CorAreaSynthese(DB.Model):
@@ -210,9 +244,7 @@ class Synthese(DB.Model):
     nomenclature_naturalness = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_naturalness]
     )
-    id_nomenclature_valid_status = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
-    )
+    id_nomenclature_valid_status = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
     nomenclature_valid_status = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_valid_status]
     )
@@ -251,9 +283,7 @@ class Synthese(DB.Model):
         TNomenclatures, foreign_keys=[id_nomenclature_observation_status]
     )
     id_nomenclature_blurring = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_blurring = db.relationship(
-        TNomenclatures, foreign_keys=[id_nomenclature_blurring]
-    )
+    nomenclature_blurring = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_blurring])
     id_nomenclature_source_status = db.Column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
     )
@@ -537,6 +567,24 @@ class VColorAreaTaxon(DB.Model):
     nb_obs = DB.Column(DB.Integer())
     last_date = DB.Column(DB.DateTime())
     color = DB.Column(DB.Unicode())
+
+
+@serializable
+class SyntheseLogEntry(DB.Model):
+    """Log synthese table, populated with Delete Triggers on gn_synthes.synthese
+    Parameters
+    ----------
+    DB:
+        Flask SQLAlchemy controller
+    """
+
+    __tablename__ = "t_log_synthese"
+    __table_args__ = {"schema": "gn_synthese"}
+    query_class = SyntheseQuery
+    id_synthese = DB.Column(DB.Integer(), primary_key=True)
+    unique_id_sinp = DB.Column(UUID(as_uuid=True))
+    last_action = DB.Column(DB.Unicode)
+    meta_last_action_date = DB.Column(DB.DateTime)
 
 
 # defined here to avoid circular dependencies
