@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { GeoJSON } from 'leaflet';
 import { Subscription } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
-import { ModuleConfig } from '../../module.config';
 import { CommonService } from '@geonature_common/service/common.service';
 import { OcctaxFormService } from '../occtax-form.service';
 import { OcctaxFormReleveService } from './releve.service';
@@ -25,7 +24,6 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   }
   public userDatasets: Array<any>;
   public releveForm: UntypedFormGroup;
-  public moduleConfig = ModuleConfig;
   public routeSub: Subscription;
   private _subscriptions: Subscription[] = [];
 
