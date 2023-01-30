@@ -10,7 +10,6 @@ import { SideNavService } from './sidenav-service';
 })
 export class SidenavItemsComponent implements OnInit {
   public nav = [{}];
-  public appConfig: any;
   public version = null;
   public home_page: any;
   public exportModule: any;

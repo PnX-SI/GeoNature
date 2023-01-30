@@ -1,6 +1,5 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 
-import { APP_CONFIG_TOKEN } from '@geonature_config/app.config';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
@@ -8,6 +7,7 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
 import { TreeModel } from '@circlon/angular-tree-component';
 import { formatTaxonTree } from '@geonature_common/form/taxon-tree/taxon-tree.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class TaxonAdvancedStoreService {
@@ -22,14 +22,14 @@ export class TaxonAdvancedStoreService {
   public redListsValues: any = {};
 
   constructor(
-    @Inject(APP_CONFIG_TOKEN) private cfg,
     private _dataService: DataFormService,
     private _validationDataService: SyntheseDataService,
     private _formService: SyntheseFormService,
-    private _formGen: DynamicFormService
+    private _formGen: DynamicFormService,
+    public config: ConfigService
   ) {
     // Set taxon tree if needed
-    if (this.cfg.SYNTHESE.DISPLAY_TAXON_TREE) {
+    if (this.config.SYNTHESE.DISPLAY_TAXON_TREE) {
       this.displayTaxonTree = true;
       this._validationDataService.getTaxonTree().subscribe((data) => {
         this.taxonTree = formatTaxonTree(data);
@@ -55,7 +55,7 @@ export class TaxonAdvancedStoreService {
       // Display only the taxhub attributes set in the config
       this.taxhubAttributes = attrs
         .filter((attr) => {
-          return this.cfg.SYNTHESE.ID_ATTRIBUT_TAXHUB.indexOf(attr.id_attribut) !== -1;
+          return this.config.SYNTHESE.ID_ATTRIBUT_TAXHUB.indexOf(attr.id_attribut) !== -1;
         })
         .map((attr) => {
           // Format attributes to fit with the GeoNature dynamicFormComponent

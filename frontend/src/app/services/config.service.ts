@@ -4,12 +4,12 @@ import { throwError } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
-class config {
+class Config {
   [key: string]: any;
 }
 
 @Injectable()
-export class ConfigService extends config {
+export class ConfigService extends Config {
   constructor(private _http: HttpClient, private _toaster: ToastrService) {
     super();
   }

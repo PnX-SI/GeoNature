@@ -1,13 +1,13 @@
-import { Component, OnInit, ViewChild, AfterContentInit, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode, TreeComponent, IActionMapping } from '@circlon/angular-tree-component';
 
-import { APP_CONFIG_TOKEN } from '@geonature_config/app.config';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-validation-taxon-advanced',
@@ -30,13 +30,13 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   public isCollapseTree = true;
 
   constructor(
-    @Inject(APP_CONFIG_TOKEN) private cfg,
     public activeModal: NgbActiveModal,
     public formService: SyntheseFormService,
-    public storeService: TaxonAdvancedStoreService
+    public storeService: TaxonAdvancedStoreService,
+    public config: ConfigService
   ) {
     // Set config parameters
-    this.URL_AUTOCOMPLETE = this.cfg.API_TAXHUB + '/taxref/search/lb_nom';
+    this.URL_AUTOCOMPLETE = this.config.API_TAXHUB + '/taxref/search/lb_nom';
 
     const actionMapping: IActionMapping = {
       mouse: {

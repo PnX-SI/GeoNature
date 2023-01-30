@@ -6,7 +6,6 @@ import {
   EventEmitter,
   OnChanges,
   Output,
-  Inject,
   OnDestroy,
 } from '@angular/core';
 import { GeoJSON } from 'leaflet';
@@ -15,11 +14,11 @@ import { MapService } from '@geonature_common/map/map.service';
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import { APP_CONFIG_TOKEN } from '@geonature_config/app.config';
 import * as L from 'leaflet';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { ConfigService } from '@geonature/services/config.service';
 
 export type EventToggle = 'grid' | 'point';
 
@@ -33,11 +32,8 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   public leafletDrawOptions = leafletDrawOption;
   public currentLeafletDrawCoord: any;
   public firstFileLayerMessage = true;
-  public SYNTHESE_CONFIG = this.config.SYNTHESE;
-  // set a new featureGroup - cluster or not depending of the synthese config
-  public cluserOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
-    ? (L as any).markerClusterGroup()
-    : new L.FeatureGroup();
+  public SYNTHESE_CONFIG = null;
+  public cluserOrSimpleFeatureGroup = null;
 
   private destroy$: Subject<boolean> = new Subject<boolean>();
 
@@ -88,13 +84,18 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   @Output() onAreasToggle = new EventEmitter<EventToggle>();
 
   constructor(
-    @Inject(APP_CONFIG_TOKEN) private config,
     public mapListService: MapListService,
     private _ms: MapService,
     public formService: SyntheseFormService,
     private _commonService: CommonService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    public config: ConfigService
   ) {
+    this.SYNTHESE_CONFIG = this.config.SYNTHESE;
+    // set a new featureGroup - cluster or not depending of the synthese config
+    this.cluserOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
+      ? (L as any).markerClusterGroup()
+      : new L.FeatureGroup();
     this.areasEnable =
       this.config.SYNTHESE.AREA_AGGREGATION_ENABLED &&
       this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;

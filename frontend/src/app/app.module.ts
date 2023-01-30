@@ -53,8 +53,6 @@ export function createTranslateLoader(http: HttpClient) {
 import { UserDataService } from './userModule/services/user-data.service';
 import { NotificationDataService } from './components/notification/notification-data.service';
 
-// Config
-import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
 import { UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
 
 export function getModulesAndInitRouting(injector) {
@@ -131,7 +129,6 @@ export function initApp(injector) {
     UserDataService,
     NotificationDataService,
     ConfigService,
-    { provide: APP_CONFIG_TOKEN, useValue: AppConfig },
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
     {

@@ -5,12 +5,11 @@ import {
   UntypedFormControl,
   ValidatorFn,
 } from '@angular/forms';
-import { AppConfig } from '@geonature_config/app.config';
 import { stringify as toWKT } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 import { DYNAMIC_FORM_DEF } from '@geonature_common/form/synthese-form/dynamicFormConfig';
-import { isArray } from 'util';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class SyntheseFormService {
@@ -23,7 +22,8 @@ export class SyntheseFormService {
   constructor(
     private _fb: UntypedFormBuilder,
     private _dateParser: NgbDateParserFormatter,
-    private _periodFormatter: NgbDatePeriodParserFormatter
+    private _periodFormatter: NgbDatePeriodParserFormatter,
+    public config: ConfigService
   ) {
     this.searchForm = this._fb.group({
       cd_nom: null,
@@ -44,16 +44,16 @@ export class SyntheseFormService {
 
     this.searchForm.setValidators([this.periodValidator()]);
 
-    AppConfig.SYNTHESE.AREA_FILTERS.forEach((area) => {
+    this.config.SYNTHESE.AREA_FILTERS.forEach((area) => {
       const control_name = 'area_' + area['type_code'];
       this.searchForm.addControl(control_name, new UntypedFormControl(new Array()));
       const control = this.searchForm.controls[control_name];
       area['control'] = control;
     });
     // init the dynamic form with the user parameters
-    // remove the filters which are in AppConfig.SYNTHESE.EXCLUDED_COLUMNS
+    // remove the filters which are in config.SYNTHESE.EXCLUDED_COLUMNS
     this.dynamycFormDef = DYNAMIC_FORM_DEF.filter((formDef) => {
-      return AppConfig.SYNTHESE.EXCLUDED_COLUMNS.indexOf(formDef.attribut_name) === -1;
+      return this.config.SYNTHESE.EXCLUDED_COLUMNS.indexOf(formDef.attribut_name) === -1;
     });
     this.formBuilded = true;
   }
@@ -85,7 +85,7 @@ export class SyntheseFormService {
       } else if (key === 'geoIntersection' && params['geoIntersection']) {
         const wktArray = [];
         // if geointersection is an array of geojson (from filelayer) convert each one in WKT
-        if (isArray(params['geoIntersection'])) {
+        if (Array.isArray(params['geoIntersection'])) {
           params['geoIntersection'].forEach((geojson) => {
             wktArray.push(toWKT(geojson));
           });
