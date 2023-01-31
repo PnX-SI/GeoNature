@@ -3,40 +3,47 @@ from urllib.parse import urljoin
 import requests
 from lxml import etree
 
-from flask import current_app
-from sqlalchemy.dialects.postgresql import insert as pg_insert
-from sqlalchemy.sql import func, update
+from datetime import *
+
+import time
 
 from geonature.utils.config import config
 from geonature.utils.env import db
 from geonature.core.gn_meta.models import (
-    TAcquisitionFramework,
-    TDatasets,
     CorAcquisitionFrameworkActor,
     CorDatasetActor,
 )
 from geonature.core.auth.routes import insert_user_and_org
 
-from pypnusershub.db.models import User, Organisme
+from pypnusershub.db.models import User
 
-from .xml_parser import parse_acquisition_framework, parse_jdd_xml
-from .mtd_utils import create_cor_object_actors, NOMENCLATURE_MAPPING, NOMENCLATURE_ORIGIN_MAPING
+from pypnnomenclature.models import TNomenclatures
+
+from .xml_parser import parse_acquisition_framework, parse_jdd_xml, parse_acquisition_framwork_xml
+from .mtd_utils import sync_af, sync_ds, associate_actors
 
 
 class MTDInstanceApi:
     af_path = "/mtd/cadre/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}"
     ds_path = "/mtd/cadre/jdd/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}"
-
-    def __init__(self, api_endpoint, instance_id):
+    ds_user_path = "/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id={ID_ROLE}"
+    single_af_path = "/mtd/cadre/export/xml/GetRecordById?id={ID_AF}"
+    # https://inpn.mnhn.fr/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id=41542"
+    def __init__(self, api_endpoint, instance_id, id_role=None):
         self.api_endpoint = api_endpoint
         self.instance_id = instance_id
+        self.id_role = id_role
+
+    def _get_xml_by_url(self, url):
+        print(url)
+        response = requests.get(url)
+        response.raise_for_status()
+        return response.content
 
     def _get_xml(self, path):
         url = urljoin(self.api_endpoint, path)
         url = url.format(ID_INSTANCE=self.instance_id)
-        response = requests.get(url)
-        response.raise_for_status()
-        return response.content
+        return self._get_xml_by_url(url)
 
     def _get_af_xml(self):
         return self._get_xml(self.af_path)
@@ -56,6 +63,18 @@ class MTDInstanceApi:
     def get_ds_list(self):
         xml = self._get_ds_xml()
         return parse_jdd_xml(xml)
+
+    def get_ds_user_list(self):
+        url = urljoin(self.api_endpoint, self.ds_user_path)
+        url = url.format(ID_ROLE=self.id_role)
+        xml = self._get_xml_by_url(url)
+        return parse_jdd_xml(xml)
+
+    def get_user_af_list(self, af_uuid):
+        url = urljoin(self.api_endpoint, self.single_af_path)
+        url = url.format(ID_AF=af_uuid)
+        xml = self._get_xml_by_url(url)
+        return parse_acquisition_framwork_xml(xml)
 
 
 class INPNCAS:
@@ -77,7 +96,13 @@ class INPNCAS:
 
 
 def add_unexisting_digitizer(id_digitizer):
+    """
+    Method to trigger global MTD sync.
+
+    :param id_digitizer: as id role from meta info
+    """
     if not db.session.query(User.query.filter_by(id_role=id_digitizer).exists()).scalar():
+        # not fast - need perf optimization on user call
         user = INPNCAS.get_user(id_digitizer)
         # to avoid to create org
         if user.get("codeOrganisme"):
@@ -86,145 +111,28 @@ def add_unexisting_digitizer(id_digitizer):
         insert_user_and_org(user)
 
 
-def add_or_update_organism(uuid, nom, email):
-    # Test if actor already exists to avoid nextVal increase
-    org = Organisme.query.filter_by(uuid_organisme=uuid).first() is not None
-    if org:
-        statement = (
-            update(Organisme)
-            .where(Organisme.uuid_organisme == uuid)
-            .values(
-                dict(
-                    nom_organisme=nom,
-                    email_organisme=email,
-                )
-            )
-            .returning(Organisme.id_organisme)
-        )
-    else:
-        statement = (
-            pg_insert(Organisme)
-            .values(
-                uuid_organisme=uuid,
-                nom_organisme=nom,
-                email_organisme=email,
-            )
-            .on_conflict_do_nothing(index_elements=["uuid_organisme"])
-            .returning(Organisme.id_organisme)
-        )
-    return db.session.execute(statement).scalar()
+def process_af_and_ds(af_list, ds_list, id_role=None):
+    """
+    Synchro AF<array>, Synchro DS<array>
 
-
-def associate_actors(actors, CorActor, pk_name, pk_value):
-    for actor in actors:
-        if not actor["uuid_organism"]:
-            continue
-        # test if actor already exists
-        with db.session.begin_nested():
-            # create or update organisme
-            id_organism = add_or_update_organism(
-                uuid=actor["uuid_organism"],
-                nom=actor["organism"] or "",
-                email=actor["email"],
-            )
-        # Test if actor already exists to avoid nextVal increase
-        statement = (
-            pg_insert(CorActor)
-            .values(
-                id_organism=id_organism,
-                id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-                    "ROLE_ACTEUR", actor["actor_role"]
-                ),
-                **{pk_name: pk_value},
-            )
-            .on_conflict_do_nothing(
-                index_elements=[pk_name, "id_organism", "id_nomenclature_actor_role"],
-            )
-        )
-        db.session.execute(statement)
-
-
-def sync_af(af):
-    with db.session.begin_nested():
-        add_unexisting_digitizer(af["id_digitizer"])
-
-    af_uuid = af["unique_acquisition_framework_id"]
-    af_exists = (
-        TAcquisitionFramework.query.filter_by(unique_acquisition_framework_id=af_uuid).first()
-        is not None
-    )
-    if af_exists:
-        # this avoid useless nextval sequence
-        statement = (
-            update(TAcquisitionFramework)
-            .where(TAcquisitionFramework.unique_acquisition_framework_id == af_uuid)
-            .values(af)
-            .returning(TAcquisitionFramework.id_acquisition_framework)
-        )
-    else:
-        statement = (
-            pg_insert(TAcquisitionFramework)
-            .values(**af)
-            .on_conflict_do_nothing(index_elements=["unique_acquisition_framework_id"])
-            .returning(TAcquisitionFramework.id_acquisition_framework)
-        )
-    af_id = db.session.execute(statement).scalar()
-    af = TAcquisitionFramework.query.get(af_id)
-    return af
-
-
-def sync_ds(ds):
-    if ds["id_nomenclature_data_origin"] not in NOMENCLATURE_ORIGIN_MAPING:
-        return
-
-    # CREATE DIGITIZER
-    with db.session.begin_nested():
-        add_unexisting_digitizer(ds["id_digitizer"])
-
-    # CONTROL AF
-    af_uuid = ds.pop("uuid_acquisition_framework")
-    af = TAcquisitionFramework.query.filter_by(unique_acquisition_framework_id=af_uuid).first()
-
-    if af is None:
-        return
-
-    ds["id_acquisition_framework"] = af.id_acquisition_framework
-    ds = {
-        k: func.ref_nomenclatures.get_id_nomenclature(NOMENCLATURE_MAPPING[k], v)
-        if k.startswith("id_nomenclature")
-        else v
-        for k, v in ds.items()
-        if v is not None
-    }
-
-    ds_exists = (
-        TDatasets.query.filter_by(unique_dataset_id=ds["unique_dataset_id"]).first() is not None
-    )
-
-    if ds_exists:
-        statement = (
-            update(TDatasets)
-            .where(TDatasets.unique_dataset_id == ds["unique_dataset_id"])
-            .values(**ds)
-        )
-    else:
-        statement = (
-            pg_insert(TDatasets)
-            .values(**ds)
-            .on_conflict_do_nothing(index_elements=["unique_dataset_id"])
-        )
-    db.session.execute(statement)
-    return TDatasets.query.filter_by(unique_dataset_id=ds["unique_dataset_id"]).first()
-
-
-def sync_af_and_ds():
-    print("-------> SYNC - MTD : START <-------")
+    :param af_list: list af
+    :param ds_list: list ds
+    :param id_role: use role id pass on user authent only
+    """
     cas_api = INPNCAS()
-    mtd_api = MTDInstanceApi(config["MTD_API_ENDPOINT"], config["MTD"]["ID_INSTANCE_FILTER"])
-    af_list = mtd_api.get_af_list()
     print("-------> SYNC - AF : START <-------")
+    # read nomenclatures from DB to avoid errors if GN nomenclature is not the same
+    list_cd_nomenclature = [
+        record[0] for record in db.session.query(TNomenclatures.cd_nomenclature).distinct()
+    ]
+    user_add_total_time = 0
     for af in af_list:
         actors = af.pop("actors")
+        with db.session.begin_nested():
+            if not id_role:
+                start_add_user_time = time.time()
+                add_unexisting_digitizer(af["id_digitizer"])
+                user_add_total_time += time.time() - start_add_user_time
         af = sync_af(af)
         associate_actors(
             actors,
@@ -234,14 +142,91 @@ def sync_af_and_ds():
         )
         # TODO: remove actors removed from MTD
     db.session.commit()
-    print("-------> SYNC - AF : END <-------")
-    ds_list = mtd_api.get_ds_list()
     print("-------> SYNC - DS : START <-------")
     for ds in ds_list:
         actors = ds.pop("actors")
-        ds = sync_ds(ds)
+        # CREATE DIGITIZER
+        with db.session.begin_nested():
+            if not id_role:
+                start_add_user_time = time.time()
+                add_unexisting_digitizer(ds["id_digitizer"])
+                user_add_total_time += time.time() - start_add_user_time
+        ds = sync_ds(ds, list_cd_nomenclature)
         if ds is not None:
             associate_actors(actors, CorDatasetActor, "id_dataset", ds.id_dataset)
+
+    user_add_total_time = round(user_add_total_time, 2)
+    print("USERS CREATION TIME USE : %s sec." % (user_add_total_time))
     db.session.commit()
-    print("-------> SYNC - DS : END <-------")
-    print("-------> SYNC - MTD : END <-------")
+
+
+def sync_af_and_ds():
+    """
+    Method to trigger global MTD sync.
+    """
+    start_time = time.time()
+    print(
+        "-------> SYNC GLOBAL - MTD : SCRIPT START "
+        + datetime.now().strftime("%H:%M -- %d/%m/%Y")
+        + "<-------"
+    )
+    mtd_api = MTDInstanceApi(config["MTD_API_ENDPOINT"], config["MTD"]["ID_INSTANCE_FILTER"])
+
+    start_time_list = time.time()
+    af_list = mtd_api.get_af_list()
+    request_list = round(time.time() - start_time_list, 2)
+    print("TIME REQUEST AF LIST: %s sec." % (request_list))
+
+    start_time_list = time.time()
+    ds_list = mtd_api.get_ds_list()
+    request_list = round(time.time() - start_time_list, 2)
+    print("TIME REQUEST DS LIST : %s  sec." % (request_list))
+
+    # synchro a partir des listes
+    process_af_and_ds(af_list, ds_list)
+    print(
+        "-------> SYNC GLOBAL - MTD : SCRIPT FINISH : %s sec. <-------"
+        % (time.time() - start_time)
+    )
+
+
+def sync_af_and_ds_by_user(id_role):
+    """
+    Method to trigger MTD sync on user authent.
+    """
+    start_time = time.time()
+    print(
+        "-------> SYNC GLOBAL - MTD : SCRIPT START "
+        + datetime.now().strftime("%H:%M -- %d/%m/%Y")
+        + "<-------"
+    )
+
+    mtd_api = MTDInstanceApi(
+        config["MTD_API_ENDPOINT"], config["MTD"]["ID_INSTANCE_FILTER"], id_role
+    )
+
+    start_time_list = time.time()
+    ds_list = mtd_api.get_ds_user_list()
+    request_list = round(time.time() - start_time_list, 2)
+    print("TIME REQUEST DS LIST: %s sec." % (request_list))
+
+    user_af_uuids = [ds["uuid_acquisition_framework"] for ds in ds_list]
+
+    # TODO - voir avec INPN pourquoi les AF par user ne sont pas dans l'appel global des AF
+    # Ce code ne fonctionne pas pour cette raison -> AF manquants
+    # af_list = mtd_api.get_af_list()
+    # af_list = [af for af in af_list if af["unique_acquisition_framework_id"] in user_af_uuids]
+
+    # call INPN API for each AF to retrieve info
+    start_time_list = time.time()
+    af_list = [mtd_api.get_user_af_list(af_uuid) for af_uuid in user_af_uuids]
+    request_list = round(time.time() - start_time_list, 2)
+    print("TIME REQUEST AF LIST: %s sec." % (request_list))
+
+    # start AF and DS lists
+    print(len(ds_list))
+    print(len(af_list))
+    process_af_and_ds(af_list, ds_list, id_role)
+    print(
+        "-------> SYNC USER - MTD : SCRIPT FINISH : %s sec. <-------" % (time.time() - start_time)
+    )
