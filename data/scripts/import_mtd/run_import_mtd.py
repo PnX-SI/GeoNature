@@ -214,6 +214,7 @@ def update_sinp_datatype_publications(cur_publication, cur_url):
 Actors : organisms (bib_organismes) and persons (t_roles)
 """
 
+
 # Organisms
 def get_known_organisms():
     cursor.execute("SELECT DISTINCT uuid_organisme FROM utilisateurs.bib_organismes")
@@ -317,6 +318,7 @@ def update_person(cur_person_name, cur_person_mail):
 """
 Acquisition frameworks
 """
+
 
 # Check existing to avoid duplicates
 def get_known_af():
