@@ -30,10 +30,11 @@ export class MyCustomInterceptor implements HttpInterceptor {
     if (error instanceof HttpErrorResponse) {
       if ([404].includes(error.status)) return;
       if ([401].includes(error.status)) {
-        const searchParams = new URLSearchParams(window.location.toString().split('?')[1]);
+        const location = window.location.toString()
+        const searchParams = new URLSearchParams(location.split('?')[1]);
         const accessParam = searchParams.get('access');
         if (accessParam && accessParam === 'public' && this.config.PUBLIC_ACCESS_USERNAME) {
-          this.authService.signinPublicUser();
+          this.authService.signinPublicUser(location);
         }
         return;
       }

@@ -73,7 +73,7 @@ export class AuthService {
     return this._http.put<any>(`${this.config.API_ENDPOINT}/users/password/new`, data);
   }
 
-  manageUser(data): any {
+  manageUser(data,location?:string): any {
     const userForFront = {
       user_login: data.user.identifiant,
       prenom_role: data.user.prenom_role,
@@ -95,6 +95,9 @@ export class AuthService {
       let route = this.route.snapshot.queryParams['route'];
       // next means redirect to url
       // route means navigate to angular route
+      if (location) {
+        this.router.navigateByUrl(location.split("#")[1]);
+      } else
       if (next) {
         if (route) {
           window.location.href = next + '#' + route;
@@ -126,9 +129,9 @@ export class AuthService {
     );
   }
 
-  signinPublicUser() {
+  signinPublicUser(location?:string) {
     this._http.post<any>(`${this.config.API_ENDPOINT}/auth/public_login`, {}).subscribe(
-      (data) => this.manageUser(data),
+      (data) => this.manageUser(data, location),
       // error callback
       () => {
         this.isLoading = false;
