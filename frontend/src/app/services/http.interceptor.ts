@@ -9,16 +9,18 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ConfigService } from './config.service';
+import { AuthService } from '@geonature/components/auth/auth.service';
 
 @Injectable()
 export class MyCustomInterceptor implements HttpInterceptor {
   constructor(
     public inj: Injector,
-    public router: Router,
+    public route: ActivatedRoute,
     private _toastrService: ToastrService,
-    public config: ConfigService
+    public config: ConfigService,
+    private authService: AuthService
   ) {}
 
   private handleError(error: any) {
@@ -26,7 +28,15 @@ export class MyCustomInterceptor implements HttpInterceptor {
     let errMsg: string;
     let enableHtml: boolean = false;
     if (error instanceof HttpErrorResponse) {
-      if ([401, 404].includes(error.status)) return;
+      if ([404].includes(error.status)) return;
+      if ([401].includes(error.status)) {
+        const searchParams = new URLSearchParams(window.location.toString().split('?')[1]);
+        const accessParam = searchParams.get('access');
+        if (accessParam && accessParam === 'public' && this.config.PUBLIC_ACCESS_USERNAME) {
+          this.authService.signinPublicUser();
+        }
+        return;
+      }
       if (
         typeof error.error === 'object' &&
         'name' in error.error &&

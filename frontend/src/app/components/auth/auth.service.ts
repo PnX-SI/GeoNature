@@ -37,18 +37,7 @@ export class AuthService {
     private _routingService: RoutingService,
     private moduleService: ModuleService,
     public config: ConfigService
-  ) {
-    // Allow to use public access via a direct url, with query param "access=public"
-    this.route.queryParams.subscribe((params) => {
-      if (
-        'access' in params &&
-        params['access'] == 'public' &&
-        this.config.PUBLIC_ACCESS_USERNAME
-      ) {
-        this.signinPublicUser();
-      }
-    });
-  }
+  ) {}
 
   setCurrentUser(user) {
     localStorage.setItem('current_user', JSON.stringify(user));
