@@ -367,7 +367,6 @@ def sensi_report():
 
 
 def my_csv_resp(filename, data, columns, _header, separator=";"):
-
     headers = Headers()
     headers.add("Content-Type", "text/plain")
     headers.add("Content-Disposition", "attachment", filename="export_%s.csv" % filename)
@@ -748,7 +747,6 @@ def delete_acquisition_framework(scope, af_id):
 
 
 def acquisitionFrameworkHandler(request, *, acquisition_framework):
-
     # Test des droits d'édition du acquisition framework si modification
     if acquisition_framework.id_acquisition_framework is not None:
         user_cruved = get_scopes_by_action(module_code="META_DATA")

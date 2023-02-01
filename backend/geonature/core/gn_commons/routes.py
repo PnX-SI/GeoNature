@@ -141,7 +141,6 @@ def get_additional_fields():
                 q = q.filter(TAdditionalFields.datasets.any(id_dataset=params["id_dataset"]))
     if "module_code" in params:
         if len(params["module_code"].split(",")) > 1:
-
             ors = [
                 TAdditionalFields.modules.any(module_code=module_code)
                 for module_code in params["module_code"].split(",")
@@ -216,7 +215,6 @@ def get_t_mobile_apps():
 @json_resp
 # schema_dot_table gn_commons.t_modules
 def api_get_id_table_location(schema_dot_table):
-
     schema_name = schema_dot_table.split(".")[0]
     table_name = schema_dot_table.split(".")[1]
     return get_table_location_id(schema_name, table_name)

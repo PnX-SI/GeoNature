@@ -22,10 +22,8 @@ COLUMN_NAME = "id_area"
 
 
 def upgrade():
-
     op.create_index(INDEX_NAME, schema=SCHEMA_NAME, table_name=TABLE_NAME, columns=[COLUMN_NAME])
 
 
 def downgrade():
-
     op.drop_index(INDEX_NAME, schema=SCHEMA_NAME, table_name=TABLE_NAME)

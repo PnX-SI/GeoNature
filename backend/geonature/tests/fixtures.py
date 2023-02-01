@@ -297,7 +297,7 @@ def synthese_data(app, users, datasets, source):
     point3 = Point(-3.486786, 48.832182)
     data = {}
     with db.session.begin_nested():
-        for (name, cd_nom, point, ds) in [
+        for name, cd_nom, point, ds in [
             ("obs1", 713776, point1, datasets["own_dataset"]),
             ("obs2", 212, point2, datasets["own_dataset"]),
             ("obs3", 2497, point3, datasets["own_dataset"]),
@@ -308,7 +308,6 @@ def synthese_data(app, users, datasets, source):
             ("p2_af1", 2497, point2, datasets["belong_af_1"]),
             ("p3_af3", 2497, point3, datasets["belong_af_3"]),
         ]:
-
             unique_id_sinp = (
                 "f4428222-d038-40bc-bc5c-6e977bbbc92b" if not data else func.uuid_generate_v4()
             )
@@ -379,6 +378,7 @@ def medium(app):
 @pytest.fixture()
 def reports_data(users, synthese_data):
     data = []
+
     # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
     def create_report(id_synthese, id_role, content, id_type, deleted):
         new_report = TReport(

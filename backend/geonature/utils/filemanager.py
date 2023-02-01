@@ -37,7 +37,6 @@ def rename_file(old_chemin, old_title, new_title):
 
 
 def upload_file(file, id_media, cd_ref, titre):
-
     filename = ("{cd_ref}_{id_media}_{title}.{ext}").format(
         cd_ref=str(cd_ref),
         id_media=str(id_media),

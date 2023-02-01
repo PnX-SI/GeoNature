@@ -330,7 +330,6 @@ class TestNotification:
         ).scalar()
 
     def test_list_methods(self, users, rule_method):
-
         # Init data for test
         url = "notifications.list_notification_methods"
         log.debug("Url d'appel %s", url_for(url))
@@ -347,7 +346,6 @@ class TestNotification:
         assert len(data) > 0
 
     def test_list_notification_categories(self, users):
-
         # Init data for test
         url = "notifications.list_notification_categories"
         log.debug("Url d'appel %s", url_for(url))
@@ -365,7 +363,6 @@ class TestNotification:
 
     # test only notification insertion in database whitout dispatch
     def test_send_db_notification(self, users):
-
         result = utils.send_db_notification(
             users["admin_user"], "test creation", "no templating", "https://geonature.fr"
         )

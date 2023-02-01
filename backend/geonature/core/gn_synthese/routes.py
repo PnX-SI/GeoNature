@@ -214,7 +214,7 @@ def get_observations_for_web(scope):
 
     # Build final GeoJson
     geojson_features = []
-    for (geom_as_geojson, properties) in results:
+    for geom_as_geojson, properties in results:
         geojson_features.append(
             Feature(
                 geometry=json.loads(geom_as_geojson),

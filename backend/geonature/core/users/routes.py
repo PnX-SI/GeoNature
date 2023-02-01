@@ -117,7 +117,6 @@ def get_roles_by_menu_code(code_liste):
 @routes.route("/listes", methods=["GET"])
 @json_resp
 def get_listes():
-
     q = DB.session.query(UserList)
     lists = q.all()
     return [l.as_dict() for l in lists]
@@ -212,6 +211,7 @@ def get_organismes_jdd():
 #########################
 ### ACCOUNT_MANAGEMENT ROUTES #####
 #########################
+
 
 # TODO: let frontend call UsersHub directly?
 @routes.route("/inscription", methods=["POST"])

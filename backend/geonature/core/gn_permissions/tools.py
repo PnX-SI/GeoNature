@@ -90,7 +90,6 @@ class UserCruved:
     def __init__(
         self, id_role, code_filter_type, module_code=None, object_code=None, append_to_select=None
     ):
-
         self._id_role = id_role
         self._code_filter_type = code_filter_type
         if module_code:
@@ -103,7 +102,6 @@ class UserCruved:
         self._permission_select = self._build_permission_select_list(append_to_select)
 
     def _build_permission_select_list(self, append_to_select):
-
         # Construction de la liste des couples module_code, object_code
         #   a récupérer pour générer le cruved
         #   append_to_select => Ajout de selection pour complexifié l'héritage

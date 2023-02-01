@@ -22,7 +22,6 @@ SCHEMA_NAME = "gn_notifications"
 
 
 def upgrade():
-
     # Create new schema
     logger.info("Create schema " + SCHEMA_NAME)
     op.execute("CREATE SCHEMA " + SCHEMA_NAME)
@@ -163,6 +162,5 @@ def upgrade():
 
 
 def downgrade():
-
     logger.info("DROP SCHEMA " + SCHEMA_NAME + " CASCADE")
     op.execute("DROP SCHEMA " + SCHEMA_NAME + " CASCADE")

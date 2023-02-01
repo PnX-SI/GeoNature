@@ -161,7 +161,6 @@ class TMediaRepository:
         return True
 
     def test_url(self):
-
         try:
             if not self.data["media_url"]:
                 return
@@ -350,7 +349,6 @@ class TMediaRepository:
         initial_path = self.media.media_path
 
         if self.media.media_path and not current_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]:
-
             try:
                 self.media.__before_commit_delete__()
 
@@ -423,7 +421,7 @@ class TMediumRepository:
         search_path = pathlib.Path(
             current_app.config["BASE_DIR"], current_app.config["UPLOAD_FOLDER"]
         )
-        for (repertoire, sous_repertoires, fichiers) in os.walk(search_path):
+        for repertoire, sous_repertoires, fichiers in os.walk(search_path):
             for f in fichiers:
                 id_media = f.split("_")[0]
                 try:

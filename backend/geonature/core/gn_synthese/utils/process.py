@@ -13,7 +13,6 @@ def import_from_table(schema_name, table_name, field_name, value, limit=50):
     for all rows satisfying the condition : <field_name> = <value>
     """
     try:
-
         # TODO get nb
         txt = """SELECT COUNT(*) FROM {}.{} WHERE {}::varchar = '{}'""".format(
             schema_name, table_name, field_name, value
@@ -26,7 +25,6 @@ def import_from_table(schema_name, table_name, field_name, value, limit=50):
 
         # on procède ici par boucle pour traiter un nombre raisonnable de donnée à la fois
         while limit * i < nb_data:
-
             txt = """SELECT gn_synthese.import_row_from_table(
                     '{}',
                     '{}',

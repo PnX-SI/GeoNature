@@ -45,7 +45,6 @@ def filter_query_with_cruved(
             )
         )
     if user.value_filter in ("1", "2"):
-
         sub_query_id_role = (
             DB.session.query(CorStationObserverOccHab)
             .filter(CorStationObserverOccHab.id_role == user.id_role)

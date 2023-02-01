@@ -722,7 +722,6 @@ class TestGNMeta:
             get_af_from_id(id_af=id_af, af_list=af_list)
 
     def test__get_create_scope(self, app, users):
-
         modcode = "METADATA"
 
         with app.test_request_context(headers=logged_user_headers(users["user"])):

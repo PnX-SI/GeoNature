@@ -26,11 +26,11 @@ from geonature.core.notifications.models import (
 routes = Blueprint("notifications", __name__)
 log = logging.getLogger()
 
+
 # Get all database notification for current user
 @routes.route("/notifications", methods=["GET"])
 @permissions.login_required
 def list_database_notification():
-
     notifications = Notification.query.filter(Notification.id_role == g.current_user.id_role)
     notifications = notifications.order_by(
         Notification.code_status.desc(), Notification.creation_date.desc()
@@ -56,7 +56,6 @@ def list_database_notification():
 @routes.route("/count", methods=["GET"])
 @permissions.login_required
 def count_notification():
-
     notificationNumber = Notification.query.filter(
         Notification.id_role == g.current_user.id_role, Notification.code_status == "UNREAD"
     ).count()
@@ -67,7 +66,6 @@ def count_notification():
 @routes.route("/notifications/<int:id_notification>", methods=["POST"])
 @permissions.login_required
 def update_notification(id_notification):
-
     notification = Notification.query.get_or_404(id_notification)
     if notification.id_role != g.current_user.id_role:
         raise Forbidden
