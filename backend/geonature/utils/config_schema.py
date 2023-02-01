@@ -71,6 +71,7 @@ class CasSchemaConf(Schema):
 class MTDSchemaConf(Schema):
     JDD_MODULE_CODE_ASSOCIATION = fields.List(fields.String, load_default=["OCCTAX", "OCCHAB"])
     ID_INSTANCE_FILTER = fields.Integer(load_default=None)
+    SYNC_LOG_LEVEL = fields.String(load_default="INFO")
 
 
 class BddConfig(Schema):

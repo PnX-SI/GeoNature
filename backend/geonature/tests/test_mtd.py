@@ -12,9 +12,7 @@ from geonature.utils.env import db
 class TestMTD:
     @pytest.mark.skip(reason="must fix CI on http request")  # FIXME
     def test_mtd(self):
-        mtd_api = MTDInstanceApi(
-            config["MTD_API_ENDPOINT"], config["MTD"]["ID_INSTANCE_FILTER"]
-        )
+        mtd_api = MTDInstanceApi(config["MTD_API_ENDPOINT"], config["MTD"]["ID_INSTANCE_FILTER"])
         af_list = mtd_api.get_af_list()
         af = af_list[0]
         if not af:

@@ -13,6 +13,9 @@ from flask import (
     Response,
     g,
 )
+
+import click
+
 from flask.json import jsonify
 from sqlalchemy import inspect, and_, or_
 from sqlalchemy.sql import text, exists, select, update
@@ -22,6 +25,7 @@ from werkzeug.exceptions import Conflict, BadRequest, Forbidden, NotFound
 from werkzeug.datastructures import Headers, MultiDict
 from werkzeug.utils import secure_filename
 from marshmallow import ValidationError, EXCLUDE
+
 
 from geonature.utils.config import config
 from geonature.utils.env import DB, db
@@ -1002,14 +1006,14 @@ def publish_acquisition_framework(af_id):
 
 
 @routes.cli.command()
-@click.argument('id_role', nargs=1, required=False, default=None)
+@click.argument("id_role", nargs=1, required=False, default=None)
 def mtd_sync(id_role):
     """
     Trigger global sync or a sync for a given user only.
 
-    :param id_role: user id 
+    :param id_role: user id
     """
     if id_role:
         return sync_af_and_ds_by_user(id_role)
-    else :
+    else:
         return mtd_sync_af_and_ds()

@@ -144,6 +144,7 @@ NOTIFICATIONS_ENABLED = true
     JDD_MODULE_CODE_ASSOCIATION = ["OCCTAX", "OCCHAB"]
     # Filter les JDD par id_instance
     ID_INSTANCE_FILTER = "null"
+    SYNC_LOG_LEVEL = "INFO"
 
 [BDD]
     id_area_type_municipality = 25

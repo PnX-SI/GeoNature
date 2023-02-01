@@ -16,7 +16,6 @@ from geonature.utils.command import (
     create_frontend_config,
 )
 from geonature import create_app
-from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actors
 from geonature.utils.config import config
 from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
 from geonature.utils.command import (
@@ -131,15 +130,6 @@ def update_configuration(modules, build):
         click.echo("Rebuild du frontend …")
         build_frontend()
         click.secho("Rebuild du frontend terminé.", fg="green")
-
-
-@main.command()
-@click.argument("table_name")
-def import_jdd_from_mtd(table_name):
-    """
-    Import les JDD et CA (et acters associé) à partir d'une table (ou vue) listant les UUID des JDD dans MTD
-    """
-    import_all_dataset_af_and_actors(table_name)
 
 
 @main.command()
