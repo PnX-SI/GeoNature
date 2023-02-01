@@ -23,18 +23,20 @@ export class ConfigService extends Config {
       mergeMap((config: any) => {
         if ('API_ENDPOINT' in config) {
           return this._http
-            .get(`${config.API_ENDPOINT}/gn_commons/config`, { headers: { "not-to-handle": 'true' } })
+            .get(`${config.API_ENDPOINT}/gn_commons/config`, {
+              headers: { 'not-to-handle': 'true' },
+            })
             .pipe(
               map((fullConfig) => {
                 Object.assign(this, fullConfig);
               }),
-            catchError((error) => {
-              this._toaster.error(
-                'Can not load config from API. Maybe API is down ' + error.error.description
-              );
-              return throwError(error);
-            })
-          );
+              catchError((error) => {
+                this._toaster.error(
+                  'Can not load config from API. Maybe API is down ' + error.error.description
+                );
+                return throwError(error);
+              })
+            );
         } else {
           this._toaster.error("Missing 'API_ENDPOINT' in config.json");
           return throwError("Missing 'API_ENDPOINT' in config.json");
