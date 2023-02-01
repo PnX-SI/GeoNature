@@ -74,7 +74,7 @@ class MTDSchemaConf(Schema):
 
 
 class BddConfig(Schema):
-    ID_USER_SOCLE_1 = fields.Integer(load_default=8)
+    ID_USER_SOCLE_1 = fields.Integer(load_default=7)
     ID_USER_SOCLE_2 = fields.Integer(load_default=6)
 
 
