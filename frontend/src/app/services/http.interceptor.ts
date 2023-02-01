@@ -81,7 +81,9 @@ export class MyCustomInterceptor implements HttpInterceptor {
     // and intercept error
     return next.handle(request).pipe(
       catchError((err) => {
-        this.handleError(err);
+        if (!request.headers.get('not-to-handle')) {
+          this.handleError(err);
+        }
         return throwError(err);
       })
     );
