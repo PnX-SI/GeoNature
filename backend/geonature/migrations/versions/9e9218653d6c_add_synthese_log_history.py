@@ -30,57 +30,33 @@ def upgrade():
     op.execute(
         """
     CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_log_delete_on_synthese() RETURNS TRIGGER AS
-$BODY$
-DECLARE
-BEGIN
-    -- log id/uuid of deleted datas into specific log table
-    IF (TG_OP = 'DELETE') THEN
-        INSERT INTO gn_synthese.t_log_synthese
-        SELECT
-            o.id_synthese    AS id_synthese
-            , o.unique_id_sinp AS unique_id_sinp
-            , 'D'                AS last_action
-            , now()              AS meta_last_action_date
-        from old_table o
-        ON CONFLICT (id_synthese)
-        DO UPDATE SET last_action = 'D', meta_last_action_date = now();
-    END IF;
-    RETURN NULL;
-END;
-$BODY$ LANGUAGE plpgsql COST 100
-;
-DROP TRIGGER IF EXISTS tri_log_delete_synthese ON gn_synthese.synthese;
-CREATE TRIGGER tri_log_delete_synthese
-    AFTER DELETE
-    ON gn_synthese.synthese
-    REFERENCING OLD TABLE AS old_table
-    FOR EACH STATEMENT
-EXECUTE FUNCTION gn_synthese.fct_tri_log_delete_on_synthese()
-;
-CREATE VIEW gn_synthese.v_log_synthese AS
-(
-WITH
-    t1 AS (SELECT
-               id_synthese
-             , unique_id_sinp
-             , last_action
-             , meta_last_action_date
-               FROM
-                   gn_synthese.t_log_synthese
-           UNION
-           SELECT
-               id_synthese
-             , unique_id_sinp
-             , last_action
-             , coalesce(meta_update_date, meta_create_date)
-               FROM
-                   gn_synthese.synthese)
-SELECT *
-    FROM
-        t1
-    ORDER BY
-        meta_last_action_date DESC)
-;
+    $BODY$
+    DECLARE
+    BEGIN
+        -- log id/uuid of deleted datas into specific log table
+        IF (TG_OP = 'DELETE') THEN
+            INSERT INTO gn_synthese.t_log_synthese
+            SELECT
+                o.id_synthese    AS id_synthese
+                , o.unique_id_sinp AS unique_id_sinp
+                , 'D'                AS last_action
+                , now()              AS meta_last_action_date
+            from old_table o
+            ON CONFLICT (id_synthese)
+            DO UPDATE SET last_action = 'D', meta_last_action_date = now();
+        END IF;
+        RETURN NULL;
+    END;
+    $BODY$ LANGUAGE plpgsql COST 100
+    ;
+    DROP TRIGGER IF EXISTS tri_log_delete_synthese ON gn_synthese.synthese;
+    CREATE TRIGGER tri_log_delete_synthese
+        AFTER DELETE
+        ON gn_synthese.synthese
+        REFERENCING OLD TABLE AS old_table
+        FOR EACH STATEMENT
+    EXECUTE FUNCTION gn_synthese.fct_tri_log_delete_on_synthese()
+    ;
     """
     )
 
@@ -89,7 +65,6 @@ def downgrade():
     op.drop_table("t_log_synthese", schema="gn_synthese")
     op.execute(
         """
-    DROP VIEW IF EXISTS gn_synthese.v_log_synthese;
     DROP TRIGGER IF EXISTS tri_log_delete_synthese ON gn_synthese.synthese;
     DROP FUNCTION gn_synthese.fct_tri_log_delete_on_synthese();    
     """

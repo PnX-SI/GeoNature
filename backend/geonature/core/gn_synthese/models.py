@@ -3,7 +3,7 @@ from packaging import version
 
 import sqlalchemy as sa
 import datetime
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, Unicode, and_
 from sqlalchemy.orm import (
     relationship,
     column_property,
@@ -27,6 +27,7 @@ else:
     from flask_sqlalchemy import BaseQuery as Query
 
 from werkzeug.exceptions import NotFound
+from werkzeug.datastructures import MultiDict
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
@@ -134,6 +135,37 @@ class SyntheseQuery(GeoFeatureCollectionMixin, Query):
             )
         return self
 
+    def _get_entity(self, entity):
+        if hasattr(entity, "_entities"):
+            return self._get_entity(entity._entities[0])
+        return entity.entities[0]
+
+    def _get_model(self):
+        # When sqlalchemy is updated:
+        # return self._raw_columns[0].entity_namespace
+        # But for now:
+        entity = self._get_entity(self)
+        return entity.c
+
+    def filter_by_params(self, params: MultiDict = None):
+        model = self._get_model()
+        and_list = []
+        for key, value in params.items():
+            column = getattr(model, key)
+            if isinstance(column.type, Unicode):
+                and_list.append(column.ilike(f"%{value}%"))
+            else:
+                and_list.append(column == value)
+        and_query = and_(*and_list)
+        return self.filter(and_query)
+
+    def sort(self, label: str, direction: str):
+        model = self._get_model()
+        order_by = getattr(model, label)
+        if direction == "desc":
+            order_by = order_by.desc()
+
+        return self.order_by(order_by)
 
 @serializable
 class CorAreaSynthese(DB.Model):
@@ -556,6 +588,7 @@ class SyntheseLogEntry(DB.Model):
 
     __tablename__ = "t_log_synthese"
     __table_args__ = {"schema": "gn_synthese"}
+    query_class = SyntheseQuery
     id_synthese = DB.Column(DB.Integer(), primary_key=True)
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     last_action = DB.Column(DB.Unicode)
