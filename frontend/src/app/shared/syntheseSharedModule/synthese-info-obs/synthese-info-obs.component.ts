@@ -222,16 +222,12 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
           mailto += `?subject=${new Function('d', 'return ' + '`' + this.mailCustomSubject + '`')(
             d
           )}`;
-        } catch (error) {
-          console.log('ERROR : unable to eval mail subject');
-        }
+        } catch (error) {}
       }
       if (this.mailCustomBody !== undefined) {
         try {
           mailto += `&body=${new Function('d', 'return ' + '`' + this.mailCustomBody + '`')(d)}`;
-        } catch (error) {
-          console.log('ERROR : unable to eval mail body');
-        }
+        } catch (error) {}
       }
 
       mailto = encodeURI(mailto);
@@ -271,7 +267,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         this.profile = data;
       },
       (err) => {
-        console.log(err);
         if (err.status === 404) {
           this._commonService.translateToaster('warning', 'Aucun profile');
         } else if (err.statusText === 'Unknown Error') {

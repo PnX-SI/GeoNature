@@ -340,9 +340,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
           } else {
             this.enableFitBounds = true;
           }
-        } catch (error) {
-          console.log('no layer in feature group');
-        }
+        } catch (error) {}
       }
     }
   }

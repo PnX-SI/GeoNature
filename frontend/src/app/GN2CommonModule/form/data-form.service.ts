@@ -511,7 +511,6 @@ export class DataFormService {
   }
 
   getModuleByCodeName(module_code): Observable<any> {
-    console.log('WARNING: use moduleService.getModule(module_code) instead?');
     return this._http.get<any>(`${this.config.API_ENDPOINT}/gn_commons/modules/${module_code}`);
   }
 

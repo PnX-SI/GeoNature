@@ -99,9 +99,6 @@ export class DynamicFormService {
         if (cond_max) {
           validators.push(Validators.max(formDef.max));
         }
-        if (formDef.attribut_name == 'file') {
-          console.log(validators);
-        }
       }
 
       // Constraint pattern for the "text"
@@ -110,9 +107,7 @@ export class DynamicFormService {
           try {
             new RegExp(formDef.pattern);
             validators.push(Validators.pattern(formDef.pattern));
-          } catch (e) {
-            console.log('invalid regular expression');
-          }
+          } catch (e) {}
         }
       }
 

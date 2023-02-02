@@ -299,8 +299,7 @@ export class OcctaxFormReleveService {
     this.propertiesForm
       .get('hour_min')
       .valueChanges.pipe(
-        filter((hour) => !this.occtaxFormService.editionMode.getValue() && hour != null),
-        tap((hour) => console.log(hour))
+        filter((hour) => !this.occtaxFormService.editionMode.getValue() && hour != null)
       )
       .subscribe((hour) => {
         if (

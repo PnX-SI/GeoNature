@@ -78,9 +78,7 @@ export class MediasComponent implements OnInit {
 
     // si le media existe déjà en base => route DELETE
     if (media.id_media) {
-      this.ms.deleteMedia(media.id_media).subscribe(() => {
-        console.log(`delete media ${media.id_media}`);
-      });
+      this.ms.deleteMedia(media.id_media).subscribe();
     }
     this.parentFormControl.patchValue(this.parentFormControl.value);
   }

@@ -43,8 +43,6 @@ export class OcchabMapListFilterComponent implements OnInit {
         if (key == 'habitat') {
           cleanedObject['cd_hab'] = this.mapListFormService.searchForm.value[key]['cd_hab'];
         } else if (key === 'date_low' || key === 'date_up') {
-          console.log(this.mapListFormService.searchForm.value[key]);
-
           cleanedObject[key] = this._dateParser.format(
             this.mapListFormService.searchForm.value[key]
           );

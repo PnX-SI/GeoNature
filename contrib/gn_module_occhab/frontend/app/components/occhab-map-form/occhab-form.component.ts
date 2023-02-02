@@ -147,10 +147,6 @@ export class OccHabFormComponent implements OnInit {
     return item.search_name;
   }
 
-  loadDatasetGeom(event) {
-    console.log(event);
-  }
-
   ngOnDestroy() {
     this._sub.unsubscribe();
   }

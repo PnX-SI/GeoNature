@@ -41,7 +41,6 @@ export class TaxonSheetComponent implements OnInit {
               });
             },
             (errors) => {
-              console.log(errors);
               if (errors.status == 404) {
                 this._commonService.regularToaster('warning', 'Aucune donnée pour ce taxon');
               }

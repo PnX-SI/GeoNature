@@ -93,7 +93,6 @@ export class AcquisitionFrameworkFormService {
         map((value) => {
           if (value.cor_af_actor) {
             if (this.actorFormS.nbMainContact(value.cor_af_actor) == 0) {
-              console.log(value.cor_af_actor);
               value.cor_af_actor.push({
                 id_nomenclature_actor_role: this.actorFormS.getIDRoleTypeByCdNomenclature('1'),
               });
