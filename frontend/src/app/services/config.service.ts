@@ -31,9 +31,9 @@ export class ConfigService extends Config {
                 Object.assign(this, fullConfig);
               }),
               catchError((error) => {
-                this._toaster.error(
-                  'Can not load config from API. Maybe API is down ' + error.error.description
-                );
+                this._toaster.error('Can not load config from API. Maybe API is down.', 'Erreur', {
+                  disableTimeOut: true,
+                });
                 return throwError(error);
               })
             );
