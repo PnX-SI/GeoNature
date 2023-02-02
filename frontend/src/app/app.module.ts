@@ -45,8 +45,6 @@ import { ConfigService } from './services/config.service';
 import { MyCustomInterceptor } from './services/http.interceptor';
 import { UnauthorizedInterceptor } from './services/unauthorized.interceptor';
 import { GlobalSubService } from './services/global-sub.service';
-import { tap } from 'rxjs/operators';
-import { RoutingService } from './routing/routing.service';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -54,20 +52,6 @@ import { UserDataService } from './userModule/services/user-data.service';
 import { NotificationDataService } from './components/notification/notification-data.service';
 
 import { UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
-
-export function getModulesAndInitRouting(injector) {
-  // return moduleService.fetchModulesAndSetRouting().toPromise();
-  const moduleService = injector.get(ModuleService);
-  const routingService = injector.get(RoutingService);
-  return moduleService
-    .loadModules()
-    .pipe(
-      tap((modules) => {
-        routingService.loadRoutes(modules);
-      })
-    )
-    .toPromise();
-}
 
 export function loadConfig(injector) {
   const configService = injector.get(ConfigService);
@@ -77,7 +61,6 @@ export function loadConfig(injector) {
 export function initApp(injector) {
   return async () => {
     await loadConfig(injector);
-    return getModulesAndInitRouting(injector);
   };
 }
 

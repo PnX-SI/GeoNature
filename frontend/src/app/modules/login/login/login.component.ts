@@ -5,6 +5,8 @@ import { CommonService } from '@geonature_common/service/common.service';
 
 import { AuthService } from '../../../components/auth/auth.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { ModuleService } from '@geonature/services/module.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'pnx-login',
@@ -26,7 +28,10 @@ export class LoginComponent implements OnInit {
   constructor(
     private _authService: AuthService,
     private _commonService: CommonService,
-    public config: ConfigService
+    public config: ConfigService,
+    private moduleService: ModuleService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.enablePublicAccess = this.config.PUBLIC_ACCESS_USERNAME;
     this.APP_NAME = this.config.appName;
@@ -44,12 +49,26 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  register(user) {
-    this._authService.signinUser(user);
+  async register(user) {
+    this._authService.handleLoader();
+    const data = await this._authService
+      .signinUser(user)
+      .toPromise()
+      .catch(() => {
+        this._authService.handleLoginError();
+      });
+    this.handleRegister(data);
+    this._authService.handleLoader();
   }
 
-  registerPublic() {
-    this._authService.signinPublicUser();
+  async registerPublic() {
+    const data = await this._authService
+      .signinPublicUser()
+      .toPromise()
+      .catch(() => {
+        this._authService.handleLoginError();
+      });
+    this.handleRegister(data);
   }
 
   loginOrPwdRecovery(data) {
@@ -62,5 +81,27 @@ export class LoginComponent implements OnInit {
       .add(() => {
         this.disableSubmit = false;
       });
+  }
+
+  async handleRegister(data) {
+    if (data) {
+      await this._authService.manageUser(data).toPromise();
+      await this.moduleService.loadModules().toPromise();
+      let next = this.route.snapshot.queryParams['next'];
+      let route = this.route.snapshot.queryParams['route'];
+      // next means redirect to url
+      // route means navigate to angular route
+      if (next) {
+        if (route) {
+          window.location.href = next + '#' + route;
+        } else {
+          window.location.href = next;
+        }
+      } else if (route) {
+        this.router.navigateByUrl(route);
+      } else {
+        this.router.navigate(['']);
+      }
+    }
   }
 }

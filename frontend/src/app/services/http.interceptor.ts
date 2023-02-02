@@ -11,7 +11,6 @@ import {
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
 import { ConfigService } from './config.service';
-import { AuthService } from '@geonature/components/auth/auth.service';
 
 @Injectable()
 export class MyCustomInterceptor implements HttpInterceptor {
@@ -19,8 +18,7 @@ export class MyCustomInterceptor implements HttpInterceptor {
     public inj: Injector,
     public route: ActivatedRoute,
     private _toastrService: ToastrService,
-    public config: ConfigService,
-    private authService: AuthService
+    public config: ConfigService
   ) {}
 
   private handleError(error: any) {
@@ -28,16 +26,7 @@ export class MyCustomInterceptor implements HttpInterceptor {
     let errMsg: string;
     let enableHtml: boolean = false;
     if (error instanceof HttpErrorResponse) {
-      if ([404].includes(error.status)) return;
-      if ([401].includes(error.status)) {
-        const location = window.location.toString();
-        const searchParams = new URLSearchParams(location.split('?')[1]);
-        const accessParam = searchParams.get('access');
-        if (accessParam && accessParam === 'public' && this.config.PUBLIC_ACCESS_USERNAME) {
-          this.authService.signinPublicUser(location);
-        }
-        return;
-      }
+      if ([401].includes(error.status) || [404].includes(error.status)) return;
       if (
         typeof error.error === 'object' &&
         'name' in error.error &&

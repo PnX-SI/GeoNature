@@ -73,7 +73,7 @@ export class AuthService {
     return this._http.put<any>(`${this.config.API_ENDPOINT}/users/password/new`, data);
   }
 
-  manageUser(data, location?: string): any {
+  manageUser(data): any {
     const userForFront = {
       user_login: data.user.identifiant,
       prenom_role: data.user.prenom_role,
@@ -85,59 +85,26 @@ export class AuthService {
     this.setCurrentUser(userForFront);
     this.loginError = false;
     // Now that we are logged, we fetch the cruved again, and redirect once received
-    forkJoin({
+    return forkJoin({
       modules: this.moduleService
         .loadModules()
         .pipe(tap((modules) => this._routingService.loadRoutes(modules))),
-    }).subscribe(() => {
-      this.isLoading = false;
-      let next = this.route.snapshot.queryParams['next'];
-      let route = this.route.snapshot.queryParams['route'];
-      // next means redirect to url
-      // route means navigate to angular route
-      if (location) {
-        this.router.navigateByUrl(location.split('#')[1]);
-      } else if (next) {
-        if (route) {
-          window.location.href = next + '#' + route;
-        } else {
-          window.location.href = next;
-        }
-      } else if (route) {
-        this.router.navigateByUrl(route);
-      } else {
-        this.router.navigate(['']);
-      }
     });
   }
 
   signinUser(user: any) {
-    this.isLoading = true;
-
     const options = {
       login: user.username,
       password: user.password,
     };
-    this._http.post<any>(`${this.config.API_ENDPOINT}/auth/login`, options).subscribe(
-      (data) => this.manageUser(data),
-      // error callback
-      () => {
-        this.isLoading = false;
-        this.loginError = true;
-      }
-    );
+
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/auth/login`, options);
   }
 
-  signinPublicUser(location?: string) {
-    this._http.post<any>(`${this.config.API_ENDPOINT}/auth/public_login`, {}).subscribe(
-      (data) => this.manageUser(data, location),
-      // error callback
-      () => {
-        this.isLoading = false;
-        this.loginError = true;
-      }
-    );
+  signinPublicUser(): Observable<any> {
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/auth/public_login`, {});
   }
+
   signupUser(data: any): Observable<any> {
     const options = data;
     return this._http.post<any>(`${this.config.API_ENDPOINT}/users/inscription`, options);
@@ -193,5 +160,14 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return this._cookie.get('token') !== null;
+  }
+
+  handleLoginError() {
+    this.isLoading = false;
+    this.loginError = true;
+  }
+
+  handleLoader() {
+    this.isLoading = !this.isLoading;
   }
 }
