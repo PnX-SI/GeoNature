@@ -559,3 +559,12 @@ a.mat-raised-button:hover {
 ngb-modal-backdrop {
   z-index: 1050 !important;
 }
+
+.list-option-without-radio {
+  span .mdc-list-item__primary-text {
+    display:flex;
+  }
+  span.mdc-list-item__end.ng-star-inserted {
+    display:none;
+  }
+}

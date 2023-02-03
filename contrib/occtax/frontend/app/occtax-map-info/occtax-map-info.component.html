@@ -139,11 +139,11 @@
               </mat-card>
 
               <mat-card id="card-occ" class="mt-1">
-                  <span [matBadge]="occurrences?.length" matBadgeOverlap="false"> {{ 'Taxon.ObservedTaxon' | translate }}  </span>
+                  <span class="observed-taxon" [matBadge]="occurrences?.length" matBadgeOverlap="false"> {{ 'Taxon.ObservedTaxon' | translate }}  </span>
                     <mat-selection-list dense [multiple]="false">
-                      <mat-list-option *ngFor="let occ of occurrences; let i = index" (click)="displayOccurrence.next(occ)">
-                        {{(occ.taxref?.nom_vern!==null) ? occ.taxref?.nom_vern+' - ' : ''}}{{occ.taxref?.nom_complet}}
+                      <mat-list-option class="observed-taxon-option list-option-without-radio" *ngFor="let occ of occurrences; let i = index" (click)="displayOccurrence.next(occ)">
                         <mat-icon matListIcon>visibility</mat-icon>
+                        {{(occ.taxref?.nom_vern!==null) ? occ.taxref?.nom_vern+' - ' : ''}}{{occ.taxref?.nom_complet}}
                       </mat-list-option>
                     </mat-selection-list>
               </mat-card>
