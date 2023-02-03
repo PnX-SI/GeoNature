@@ -84,12 +84,6 @@ export class AuthService {
     };
     this.setCurrentUser(userForFront);
     this.loginError = false;
-    // Now that we are logged, we fetch the cruved again, and redirect once received
-    return forkJoin({
-      modules: this.moduleService
-        .loadModules()
-        .pipe(tap((modules) => this._routingService.loadRoutes(modules))),
-    });
   }
 
   signinUser(user: any) {
