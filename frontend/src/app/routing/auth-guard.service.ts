@@ -9,6 +9,7 @@ import { Injectable, Injector } from '@angular/core';
 import { AuthService } from '@geonature/components/auth/auth.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { RoutingService } from './routing.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild {
@@ -18,6 +19,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     const authService = this._injector.get(AuthService);
     const moduleService = this._injector.get(ModuleService);
     const configService = this._injector.get(ConfigService);
+    const routingService = this._injector.get(RoutingService);
 
     if (authService.getToken() === null) {
       if (
@@ -34,7 +36,8 @@ export class AuthGuard implements CanActivate, CanActivateChild {
           });
         if (data) {
           await authService.manageUser(data).toPromise();
-          await moduleService.loadModules().toPromise();
+          const modules = await moduleService.loadModules().toPromise();
+          routingService.loadRoutes(modules, route._routerState.url);
         } else {
           return false;
         }
@@ -45,7 +48,8 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         return false;
       }
     } else if (moduleService.shouldLoadModules) {
-      await moduleService.loadModules().toPromise();
+      const modules = await moduleService.loadModules().toPromise();
+      routingService.loadRoutes(modules, route._routerState.url);
     }
 
     return true;

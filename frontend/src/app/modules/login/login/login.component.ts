@@ -7,6 +7,7 @@ import { AuthService } from '../../../components/auth/auth.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RoutingService } from '@geonature/routing/routing.service';
 
 @Component({
   selector: 'pnx-login',
@@ -31,7 +32,8 @@ export class LoginComponent implements OnInit {
     public config: ConfigService,
     private moduleService: ModuleService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private _routingService: RoutingService
   ) {
     this.enablePublicAccess = this.config.PUBLIC_ACCESS_USERNAME;
     this.APP_NAME = this.config.appName;
@@ -85,8 +87,9 @@ export class LoginComponent implements OnInit {
 
   async handleRegister(data) {
     if (data) {
-      await this._authService.manageUser(data).toPromise();
-      await this.moduleService.loadModules().toPromise();
+      this._authService.manageUser(data);
+      const modules = await this.moduleService.loadModules().toPromise();
+      await this._routingService.loadRoutes(modules);
       let next = this.route.snapshot.queryParams['next'];
       let route = this.route.snapshot.queryParams['route'];
       // next means redirect to url
