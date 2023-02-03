@@ -13,6 +13,7 @@ from flask_mail import Message
 from flask_cors import CORS
 from flask_sqlalchemy import before_models_committed
 from werkzeug.middleware.proxy_fix import ProxyFix
+from werkzeug.middleware.shared_data import SharedDataMiddleware
 from psycopg2.errors import UndefinedTable
 from sqlalchemy.exc import OperationalError, ProgrammingError
 from sqlalchemy.orm.exc import NoResultFound
@@ -95,6 +96,14 @@ def create_app(with_external_mods=True):
     app.wsgi_app = SchemeFix(app.wsgi_app, scheme=config.get("PREFERRED_URL_SCHEME"))
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
     app.wsgi_app = RequestID(app.wsgi_app)
+
+    if config.get("CUSTOM_STATIC_FOLDER"):
+        app.wsgi_app = SharedDataMiddleware(
+            app.wsgi_app,
+            {
+                "/static": config["CUSTOM_STATIC_FOLDER"],
+            },
+        )
 
     app.json = MyJSONProvider(app)
 

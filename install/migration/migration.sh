@@ -30,6 +30,11 @@ echo "Copie des fichiers de configuration…"
 # Copy all config files (installation, GeoNature, modules)
 cp ${previousdir}/config/*.{ini,toml} config/
 
+if [ -d "${previousdir}/custm" ]; do
+    echo "Copie de la customisation…"
+    cp ${previousdir}/custom/* custom/
+done
+
 echo "Vérification de la robustesse de la SECRET_KEY…"
 sk_len=$(grep -E '^SECRET_KEY' config/geonature_config.toml | tail -n 1 | sed 's/SECRET_KEY = ['\''"]\(.*\)['\''"]/\1/' | wc -c)
 if [ $sk_len -lt 20 ]; then

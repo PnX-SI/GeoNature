@@ -117,8 +117,10 @@ WORKDIR /dist
 ENV GEONATURE_STATIC_PATH=/dist/static/
 COPY /backend/static/ ./static/
 COPY --from=node /dist/node_modules/ ./static/node_modules/
+ENV GEONATURE_CUSTOM_STATIC_PATH=/dist/custom/
+RUN mkdir custom
 ENV GEONATURE_MEDIA_PATH=/dist/media/
-COPY /backend/media/ ./media/
+RUN mkdir -p media/attachments
 
 WORKDIR /dist/geonature
 

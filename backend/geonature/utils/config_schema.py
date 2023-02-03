@@ -20,7 +20,7 @@ from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_LIST_COLUMN,
     DEFAULT_COLUMNS_API_SYNTHESE,
 )
-from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR
+from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
 from geonature.utils.module import get_module_config
 from geonature.utils.utilsmails import clean_recipients
 from geonature.utils.utilstoml import load_and_validate_toml
@@ -198,6 +198,7 @@ class GnPySchemaConf(Schema):
     SENTRY_DSN = fields.String()
     ROOT_PATH = fields.String(load_default=BACKEND_DIR)
     STATIC_FOLDER = fields.String(load_default="static")
+    CUSTOM_STATIC_FOLDER = fields.String(load_default=ROOT_DIR / "custom")
     MEDIA_FOLDER = fields.String(load_default="media")
     CAS = fields.Nested(CasSchemaConf, load_default=CasSchemaConf().load({}))
     MAIL_ON_ERROR = fields.Boolean(load_default=False)
@@ -217,6 +218,10 @@ class GnPySchemaConf(Schema):
     @post_load()
     def folders(self, data, **kwargs):
         data["STATIC_FOLDER"] = os.path.join(data["ROOT_PATH"], data["STATIC_FOLDER"])
+        if "CUSTOM_STATIC_FOLDER" in data:
+            data["CUSTOM_STATIC_FOLDER"] = os.path.join(
+                data["ROOT_PATH"], data["CUSTOM_STATIC_FOLDER"]
+            )
         data["MEDIA_FOLDER"] = os.path.join(data["ROOT_PATH"], data["MEDIA_FOLDER"])
         return data
 
