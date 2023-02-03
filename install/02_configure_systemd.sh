@@ -8,7 +8,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 . "${SCRIPT_DIR}/utils"
 
 
-if [[ "${MODE}" != "prod" ]]; then
+if [[ "${MODE}" = "dev" ]]; then
     echo "Skip configuration of systemd as not in prod mode"
     exit 0
 fi
