@@ -63,7 +63,7 @@ export class MediasComponent implements OnInit {
     if (!this.parentFormControl.value) {
       this.parentFormControl.patchValue([]);
     }
-    this.parentFormControl.value.push(new Media(null, this.config));
+    this.parentFormControl.value.push(new Media({}, this.config));
     this.parentFormControl.patchValue(this.parentFormControl.value);
   }
 

@@ -10,6 +10,7 @@ import {
 } from '@angular/forms';
 import { BehaviorSubject, Observable, of, forkJoin, combineLatest } from 'rxjs';
 import { map, filter, switchMap, tap, pairwise, retry, catchError } from 'rxjs/operators';
+import * as cloneDeep from 'lodash/cloneDeep';
 import { CommonService } from '@geonature_common/service/common.service';
 import { OcctaxFormService } from '../occtax-form.service';
 import { OcctaxFormCountingsService } from '../counting/countings.service';
@@ -333,7 +334,12 @@ export class OcctaxFormOccurrenceService {
   }
 
   occurrenceFormValue() {
-    let value = JSON.parse(JSON.stringify(this.form.value));
+    const formValue = cloneDeep(this.form.value);
+    formValue.cor_counting_occtax.forEach((occtax) => {
+      occtax.medias.forEach((media) => delete media.config);
+    });
+
+    let value = JSON.parse(JSON.stringify(formValue));
 
     /* Champs additionnels - formatter les dates et les nomenclatures */
     this.additionalFieldsForm.forEach((fieldForm: any) => {
