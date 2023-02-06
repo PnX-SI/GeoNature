@@ -1,7 +1,7 @@
 """add synthese log history
 
 Revision ID: 9e9218653d6c
-Revises: ca0fe5d21ea2
+Revises: 0cae32a010ea
 Create Date: 2022-04-06 15:39:37.428357
 
 """
@@ -13,7 +13,7 @@ from sqlalchemy.sql.expression import null
 
 # revision identifiers, used by Alembic.
 revision = "9e9218653d6c"
-down_revision = "ca0fe5d21ea2"
+down_revision = "0cae32a010ea"
 branch_labels = None
 depends_on = None
 
