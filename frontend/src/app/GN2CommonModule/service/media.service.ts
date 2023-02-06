@@ -124,7 +124,7 @@ export class MediaService {
       !medias ||
       !medias.length ||
       medias.every((mediaData) => {
-        const media = new Media(mediaData, this.config);
+        const media = new Media(mediaData);
         return media.valid();
       })
     );
@@ -135,7 +135,7 @@ export class MediaService {
       !medias ||
       !medias.length ||
       medias.every((mediaData) => {
-        const media = new Media(mediaData, this.config);
+        const media = new Media(mediaData);
         return media.valid() || media.bLoading;
       })
     );
@@ -150,17 +150,17 @@ export class MediaService {
 
   href(media, thumbnail = null) {
     if (!(media instanceof Media)) {
-      media = new Media(media, this.config);
+      media = new Media(media);
     }
     return media.href(thumbnail);
   }
 
   embedHref(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media, this.config);
+      media = new Media(media);
     }
     if (['Vidéo Youtube'].includes(this.typeMedia(media))) {
-      const v_href = media.href().split('/');
+      const v_href = media.href(this.config.API_ENDPOINT, this.config.UPLOAD_FOLDER).split('/');
       const urlLastPart = v_href[v_href.length - 1];
       const videoId = urlLastPart.includes('?')
         ? urlLastPart.includes('v=')
@@ -173,23 +173,23 @@ export class MediaService {
       return `https://www.youtube.com/embed/${videoId}`;
     }
     if (['Vidéo Dailymotion'].includes(this.typeMedia(media))) {
-      const v = media.href().split('/');
+      const v = media.href(this.config.API_ENDPOINT, this.config.UPLOAD_FOLDER).split('/');
       const videoId = v[v.length - 1].split('?')[0];
       return `https://www.dailymotion.com/embed/video/${videoId}`;
     }
 
     if (['Vidéo Vimeo'].includes(this.typeMedia(media))) {
-      const v = media.href().split('/');
+      const v = media.href(this.config.API_ENDPOINT, this.config.UPLOAD_FOLDER).split('/');
       const videoId = v[v.length - 1].split('?')[0];
       return `https://player.vimeo.com/video/${videoId}`;
     }
 
-    return media.href();
+    return media.href(this.config.API_ENDPOINT, this.config.UPLOAD_FOLDER);
   }
 
   icon(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media, this.config);
+      media = new Media(media);
     }
     const typeMedia = this.typeMedia(media);
     if (typeMedia === 'PDF') {
@@ -213,7 +213,7 @@ export class MediaService {
 
   toString(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media, this.config);
+      media = new Media(media);
     }
     const description = media.description_fr ? ` : ${media.description_fr}` : '';
     const details =
@@ -227,16 +227,19 @@ export class MediaService {
 
   toHTML(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media, this.config);
+      media = new Media(media);
     }
-    return `<a target="_blank" href="${media.href()}">${media.title_fr}</a> : ${
-      media.description_fr
-    } (${this.getNomenclature(media.id_nomenclature_media_type).label_fr}, ${media.author})`;
+    return `<a target="_blank" href="${media.href(
+      this.config.API_ENDPOINT,
+      this.config.UPLOAD_FOLDER
+    )}">${media.title_fr}</a> : ${media.description_fr} (${
+      this.getNomenclature(media.id_nomenclature_media_type).label_fr
+    }, ${media.author})`;
   }
 
   typeMedia(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media, this.config);
+      media = new Media(media);
     }
     return this.getNomenclature(media.id_nomenclature_media_type).label_fr;
   }
@@ -247,10 +250,10 @@ export class MediaService {
 
   tooltip(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media, this.config);
+      media = new Media(media);
     }
     let tooltip = `<a
-    href=${media.href()}
+    href=${media.href(this.config.API_ENDPOINT, this.config.UPLOAD_FOLDER)}
     title="${this.toString(media)}"
     target="_blank"
     style="margin: 0 2px"

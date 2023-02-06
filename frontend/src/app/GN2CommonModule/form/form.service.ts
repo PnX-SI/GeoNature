@@ -12,8 +12,8 @@ export class FormService {
       const dateMin = dateMinControl.value;
       const dateMax = dateMaxControl.value;
       if (dateMin && dateMax) {
-        const formatedDateMin = new Date(dateMin.year, dateMin.month-1, dateMin.day);
-        const formatedDateMax = new Date(dateMax.year, dateMax.month-1, dateMax.day);
+        const formatedDateMin = new Date(dateMin.year, dateMin.month - 1, dateMin.day);
+        const formatedDateMax = new Date(dateMax.year, dateMax.month - 1, dateMax.day);
         if (formatedDateMax < formatedDateMin) {
           return {
             invalidDate: true,

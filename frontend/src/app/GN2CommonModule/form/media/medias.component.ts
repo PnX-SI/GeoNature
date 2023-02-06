@@ -43,10 +43,7 @@ export class MediasComponent implements OnInit {
     }
     for (const index in this.parentFormControl.value) {
       if (!(this.parentFormControl.value[index] instanceof Media)) {
-        this.parentFormControl.value[index] = new Media(
-          this.parentFormControl.value[index],
-          this.config
-        );
+        this.parentFormControl.value[index] = new Media(this.parentFormControl.value[index]);
       }
     }
   }
@@ -63,7 +60,7 @@ export class MediasComponent implements OnInit {
     if (!this.parentFormControl.value) {
       this.parentFormControl.patchValue([]);
     }
-    this.parentFormControl.value.push(new Media({}, this.config));
+    this.parentFormControl.value.push(new Media({}));
     this.parentFormControl.patchValue(this.parentFormControl.value);
   }
 

@@ -1,6 +1,5 @@
 import { Subscription } from 'rxjs';
 import { SafeResourceUrl } from '@angular/platform-browser';
-import { ConfigService } from '@geonature/services/config.service';
 
 class Media {
   // media data
@@ -26,7 +25,7 @@ class Media {
   public details: boolean;
   public sent: boolean;
 
-  constructor(values = {}, public config: ConfigService) {
+  constructor(values = {}) {
     this.setValues(values);
   }
 
@@ -62,12 +61,12 @@ class Media {
     return data;
   }
 
-  filePath(thumbnailHeight = null) {
+  filePath(UPLOAD_FOLDER: string, thumbnailHeight = null) {
     let filePath;
     if (this.media_path) {
       filePath = this.media_path;
     } else if (this.media_url) {
-      filePath = `${this.config.UPLOAD_FOLDER}/${this.id_table_location}/${this.id_media}`;
+      filePath = `${UPLOAD_FOLDER}/${this.id_table_location}/${this.id_media}`;
     }
 
     if (thumbnailHeight) {
@@ -77,11 +76,11 @@ class Media {
     return filePath;
   }
 
-  href(thumbnailHeight = null): string {
+  href(API_ENDPOINT: string, UPLOAD_FOLDER: string, thumbnailHeight = null): string {
     if (thumbnailHeight) {
-      return `${this.config.API_ENDPOINT}/${this.filePath(thumbnailHeight)}`;
+      return `${API_ENDPOINT}/${this.filePath(UPLOAD_FOLDER, thumbnailHeight)}`;
     }
-    return this.media_path ? `${this.config.API_ENDPOINT}/${this.media_path}` : this.media_url;
+    return this.media_path ? `${API_ENDPOINT}/${this.media_path}` : this.media_url;
   }
 
   valid(): boolean {

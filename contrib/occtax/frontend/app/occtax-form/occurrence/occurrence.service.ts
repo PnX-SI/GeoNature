@@ -334,12 +334,7 @@ export class OcctaxFormOccurrenceService {
   }
 
   occurrenceFormValue() {
-    const formValue = cloneDeep(this.form.value);
-    formValue.cor_counting_occtax.forEach((occtax) => {
-      occtax.medias.forEach((media) => delete media.config);
-    });
-
-    let value = JSON.parse(JSON.stringify(formValue));
+    let value = JSON.parse(JSON.stringify(this.form.value));
 
     /* Champs additionnels - formatter les dates et les nomenclatures */
     this.additionalFieldsForm.forEach((fieldForm: any) => {

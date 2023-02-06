@@ -45,7 +45,7 @@ export class DisplayMediasComponent {
     for (const index in this.medias) {
       if (true) {
         if (!(this.medias[index] instanceof Media)) {
-          this.medias[index] = new Media(this.medias[index], this.config);
+          this.medias[index] = new Media(this.medias[index]);
         }
         this.medias[index].safeUrl = this.getSafeUrl(index);
         this.medias[index].safeEmbedUrl = this.getSafeEmbedUrl(index);
@@ -78,7 +78,9 @@ export class DisplayMediasComponent {
   }
 
   getSafeUrl(index) {
-    return this._sanitizer.bypassSecurityTrustResourceUrl(this.medias[index].href());
+    return this._sanitizer.bypassSecurityTrustResourceUrl(
+      this.medias[index].href(this.config.API_ENDPOINT, this.config.UPLOAD_FOLDER)
+    );
   }
 
   getSafeEmbedUrl(index) {

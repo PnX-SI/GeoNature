@@ -15,7 +15,7 @@
     ></pnx-display-medias>
     <!-- <img *ngIf='ms.isImg(media)' mat-card-image [src]="media.href()" /> -->
     <mat-card-content>
-      <a *ngIf="media.href()" target="_blank" class="link-media float-right" [href]="media.href()">
+      <a *ngIf="media.href(config.API_ENDPOINT,config.UPLOAD_FOLDER)" target="_blank" class="link-media float-right" [href]="media.href(config.API_ENDPOINT,config.UPLOAD_FOLDER)">
         <mat-icon matTooltip="{{ 'Media.link' | translate }}">link</mat-icon>
       </a>
       {{ media.description_fr }}
