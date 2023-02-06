@@ -67,7 +67,9 @@ class Media {
       let filePath = `gn_commons/media/thumbnails/${this.id_media}/${thumbnailHeight}`;
       return `${API_ENDPOINT}/${filePath}`;
     }
-    return this.media_path ? `${API_ENDPOINT}/${MEDIA_URL}/attachments/${this.media_path}` : this.media_url;
+    return this.media_path
+      ? `${API_ENDPOINT}/${MEDIA_URL}/attachments/${this.media_path}`
+      : this.media_url;
   }
 
   valid(): boolean {
