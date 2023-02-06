@@ -590,7 +590,6 @@ class SyntheseLogEntry(DB.Model):
     __table_args__ = {"schema": "gn_synthese"}
     query_class = SyntheseQuery
     id_synthese = DB.Column(DB.Integer(), primary_key=True)
-    unique_id_sinp = DB.Column(UUID(as_uuid=True))
     last_action = DB.Column(DB.Unicode)
     meta_last_action_date = DB.Column(DB.DateTime)
 

@@ -1217,14 +1217,12 @@ def list_synthese_log_entries(info_role) -> dict:
     )
     q1 = SyntheseLogEntry.query.with_entities(
         SyntheseLogEntry.id_synthese,
-        SyntheseLogEntry.unique_id_sinp,
         SyntheseLogEntry.last_action,
         SyntheseLogEntry.meta_last_action_date,
     )
 
     q2 = Synthese.query.with_entities(
         Synthese.id_synthese,
-        Synthese.unique_id_sinp,
         Synthese.last_action,
         func.coalesce(Synthese.meta_update_date, Synthese.meta_create_date),
     )

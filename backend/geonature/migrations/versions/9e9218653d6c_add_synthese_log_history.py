@@ -22,7 +22,6 @@ def upgrade():
     op.create_table(
         "t_log_synthese",
         sa.Column("id_synthese", sa.Integer, primary_key=True),
-        sa.Column("unique_id_sinp", UUID(as_uuid=True), nullable=False),
         sa.Column("last_action", sa.CHAR(1), nullable=False),
         sa.Column("meta_last_action_date", sa.TIMESTAMP, server_default=sa.func.now()),
         schema="gn_synthese",
@@ -38,7 +37,6 @@ def upgrade():
             INSERT INTO gn_synthese.t_log_synthese
             SELECT
                 o.id_synthese    AS id_synthese
-                , o.unique_id_sinp AS unique_id_sinp
                 , 'D'                AS last_action
                 , now()              AS meta_last_action_date
             from old_table o
