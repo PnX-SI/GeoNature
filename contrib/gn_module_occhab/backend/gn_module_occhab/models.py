@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import current_app, g
 from geoalchemy2 import Geometry
 import sqlalchemy as sa
@@ -31,6 +33,22 @@ cor_station_observer = db.Table(
 
 
 class StationQuery(GeoFeatureCollectionMixin, BaseQuery):
+    def filter_by_params(self, params):
+        qs = self
+        id_dataset = params.get("id_dataset", type=int)
+        if id_dataset:
+            qs = qs.filter_by(id_dataset=id_dataset)
+        cd_hab = params.get("cd_hab", type=int)
+        if cd_hab:
+            qs = qs.filter(Station.habitats.any(OccurenceHabitat.cd_hab == cd_hab))
+        date_low = params.get("date_low", type=lambda x: datetime.strptime(x, "%Y-%m-%d"))
+        if date_low:
+            qs = qs.filter(Station.date_min >= date_low)
+        date_up = params.get("date_up", type=lambda x: datetime.strptime(x, "%Y-%m-%d"))
+        if date_up:
+            qs = qs.filter(Station.date_max <= date_up)
+        return qs
+
     def filter_by_scope(self, scope, user=None):
         if user is None:
             user = g.current_user
