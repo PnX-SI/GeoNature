@@ -414,7 +414,7 @@ class TMediumRepository:
                 os.remove(f_data["path"])
             else:
                 p = Path(f_data["path"])
-                p.rename(f"deleted_{p.name}")
+                p.rename(p.parent / f"deleted_{p.name}")
 
 
 def get_table_location_id(schema_name, table_name):
