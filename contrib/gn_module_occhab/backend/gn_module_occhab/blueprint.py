@@ -245,27 +245,15 @@ def export_all_habitats(
             FeatureCollection(features), as_file=True, filename=file_name, indent=4
         )
     else:
-        try:
-            dir_name, file_name = export_as_geo_file(
-                export_format=export_format,
-                export_view=export_view,
-                db_cols=db_cols_for_shape,
-                geojson_col=None,
-                data=results,
-                file_name=file_name,
-            )
-            return send_from_directory(dir_name, file_name, as_attachment=True)
-
-        except GeonatureApiError as e:
-            message = str(e)
-
-        return render_template(
-            "error.html",
-            error=message,
-            redirect=current_app.config["URL_APPLICATION"]
-            + "/#/"
-            + blueprint.config["MODULE_URL"],
+        dir_name, file_name = export_as_geo_file(
+            export_format=export_format,
+            export_view=export_view,
+            db_cols=db_cols_for_shape,
+            geojson_col=None,
+            data=results,
+            file_name=file_name,
         )
+        return send_from_directory(dir_name, file_name, as_attachment=True)
 
 
 @blueprint.route("/defaultNomenclatures", methods=["GET"])
