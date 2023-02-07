@@ -279,7 +279,7 @@
                           <div>
                             <div class="label"> {{ 'Media.Media' | translate }} {{ i + 1 }}/{{ counting.medias.length}} : </div>
                             <div class="value">                     <a
-                              [href]="ms.href(media)" target=blank
+                              [href]="media.href(this.config.API_ENDPOINT,this.config.MEDIA_FOLDER)" target=blank
                               >{{ media.title_fr }}</a> 
                               <i>
                                 ({{ ms.typeMedia(media) }}, {{ media.author }})

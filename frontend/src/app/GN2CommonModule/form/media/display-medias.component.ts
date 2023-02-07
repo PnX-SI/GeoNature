@@ -79,7 +79,7 @@ export class DisplayMediasComponent {
 
   getSafeUrl(index) {
     return this._sanitizer.bypassSecurityTrustResourceUrl(
-      this.medias[index].href(this.config.API_ENDPOINT, this.config.UPLOAD_FOLDER)
+      this.medias[index].href(this.config.API_ENDPOINT, this.config.MEDIA_FOLDER)
     );
   }
 
