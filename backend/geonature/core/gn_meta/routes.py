@@ -107,14 +107,33 @@ def get_datasets():
         query = TDatasets.query.filter_by_creatable(params.pop("create"))
     else:
         query = TDatasets.query.filter_by_readable()
-    query = query.filter_by_params(params)
-    data = [d.as_dict(fields=fields) for d in query.all()]
+
+    query = query.filter_by_params(params).options(
+        Load(TDatasets).raiseload("*"),
+        joinedload("cor_dataset_actor").options(
+            joinedload("role"),
+            joinedload("organism"),
+        ),
+    )
+
+    # TODO: Need to add cor_dataset_actor
+    dataset_schema = DatasetSchema(
+        only=[
+            "+cruved",
+            "cor_dataset_actor",
+            "cor_dataset_actor.nomenclature_actor_role",
+            "cor_dataset_actor.organism",
+            "cor_dataset_actor.role",
+        ]
+    )
+    data = dataset_schema.jsonify(query.all(), many=True)
+
     user_agent = request.headers.get("User-Agent")
     if (
         user_agent and user_agent.split("/")[0].lower() == "okhttp"
     ):  # retro-compatibility for mobile app
-        return jsonify({"data": data})
-    return jsonify(data)
+        return jsonify({"data": data.json})
+    return data
 
 
 def get_af_from_id(id_af, af_list):
@@ -805,7 +824,7 @@ def updateAcquisitionFramework(id_acquisition_framework, scope):
     if not af.has_instance_permission(scope=scope):
         raise Forbidden(
             f"User {g.current_user} cannot update "
-            "acquisition framework {af.id_acquisition_framework}"
+            f"acquisition framework {af.id_acquisition_framework}"
         )
     return AcquisitionFrameworkSchema().dump(
         acquisitionFrameworkHandler(request=request, acquisition_framework=af)
