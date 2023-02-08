@@ -7,12 +7,13 @@ from itertools import chain
 from pkg_resources import iter_entry_points, load_entry_point
 from importlib import import_module
 
-from flask import Flask, g, request, current_app
+from flask import Flask, g, request, current_app, send_from_directory
 from flask.json.provider import DefaultJSONProvider
 from flask_mail import Message
 from flask_cors import CORS
 from flask_sqlalchemy import before_models_committed
 from werkzeug.middleware.proxy_fix import ProxyFix
+from werkzeug.middleware.shared_data import SharedDataMiddleware
 from psycopg2.errors import UndefinedTable
 from sqlalchemy.exc import OperationalError, ProgrammingError
 from sqlalchemy.orm.exc import NoResultFound
@@ -74,8 +75,13 @@ class MyJSONProvider(DefaultJSONProvider):
 
 
 def create_app(with_external_mods=True):
-    static_folder = os.environ.get("GEONATURE_STATIC_FOLDER", "../static")
-    app = Flask(__name__.split(".")[0], static_folder=static_folder)
+    app = Flask(
+        __name__.split(".")[0],
+        root_path=config["ROOT_PATH"],
+        static_folder=config["STATIC_FOLDER"],
+        static_url_path=config["STATIC_URL"],
+        template_folder="geonature/templates",
+    )
 
     app.config.update(config)
 
@@ -90,6 +96,14 @@ def create_app(with_external_mods=True):
     app.wsgi_app = SchemeFix(app.wsgi_app, scheme=config.get("PREFERRED_URL_SCHEME"))
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
     app.wsgi_app = RequestID(app.wsgi_app)
+
+    if config.get("CUSTOM_STATIC_FOLDER"):
+        app.wsgi_app = SharedDataMiddleware(
+            app.wsgi_app,
+            {
+                "/static": config["CUSTOM_STATIC_FOLDER"],
+            },
+        )
 
     app.json = MyJSONProvider(app)
 
@@ -150,6 +164,13 @@ def create_app(with_external_mods=True):
 
     admin.init_app(app)
 
+    # Enable serving of media files
+    app.add_url_rule(
+        f"{config['MEDIA_URL']}/<path:filename>",
+        view_func=lambda filename: send_from_directory(config["MEDIA_FOLDER"], filename),
+        endpoint="media",
+    )
+
     for blueprint_path, url_prefix in [
         ("pypnusershub.routes:routes", "/auth"),
         ("pypn_habref_api.routes:routes", "/habref"),
@@ -158,7 +179,6 @@ def create_app(with_external_mods=True):
         ("geonature.core.gn_commons.routes:routes", "/gn_commons"),
         ("geonature.core.gn_permissions.routes:routes", "/permissions"),
         ("geonature.core.gn_permissions.backoffice.views:routes", "/permissions_backoffice"),
-        ("geonature.core.routes:routes", "/"),
         ("geonature.core.users.routes:routes", "/users"),
         ("geonature.core.gn_synthese.routes:routes", "/synthese"),
         ("geonature.core.gn_meta.routes:routes", "/meta"),

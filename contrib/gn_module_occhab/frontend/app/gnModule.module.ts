@@ -14,12 +14,22 @@ import { OccHabModalDownloadComponent } from './components/occhab-map-list/modal
 import { OcchabInfoComponent } from './components/occhab-info/occhab-info.component';
 import { ModalDeleteStation } from './components/delete-modal/delete-modal.component';
 import { OccHabDatasetMapOverlayComponent } from './components/occhab-map-form/dataset-map-overlay/dataset-map-overlay.component';
+import { StationResolver } from './resolvers/station.resolver';
+
 // my module routing
 const routes: Routes = [
-  { path: 'form', component: OccHabFormComponent },
-  { path: 'form/:id_station', component: OccHabFormComponent },
   { path: '', component: OccHabMapListComponent },
-  { path: 'info/:id_station', component: OcchabInfoComponent },
+  { path: 'add', component: OccHabFormComponent },
+  {
+    path: 'edit/:id_station',
+    component: OccHabFormComponent,
+    resolve: { station: StationResolver },
+  },
+  {
+    path: 'info/:id_station',
+    component: OcchabInfoComponent,
+    resolve: { station: StationResolver },
+  },
 ];
 
 @NgModule({
@@ -35,7 +45,7 @@ const routes: Routes = [
   imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes), NgbModule],
   entryComponents: [OccHabModalDownloadComponent],
 
-  providers: [OccHabDataService, OcchabStoreService, OccHabMapListService],
+  providers: [OccHabDataService, OcchabStoreService, OccHabMapListService, StationResolver],
   bootstrap: [],
 })
 export class GeonatureModule {}

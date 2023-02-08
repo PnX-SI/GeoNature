@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { filter, tap, skip, mergeMap, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { filter, tap, skip, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
-import { AppConfig } from '@geonature_config/app.config';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService, User } from '@geonature/components/auth/auth.service';
@@ -11,6 +10,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { OcctaxDataService } from '../services/occtax-data.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class OcctaxFormService {
@@ -23,7 +23,7 @@ export class OcctaxFormService {
   public disabled = true;
   public editionMode: BehaviorSubject<boolean> = new BehaviorSubject(false); // boolean to check if its editionMode
   public chainRecording: boolean = false; // boolean to check if chain the recording is activate
-  public stayOnFormInterface = new FormControl(false);
+  public stayOnFormInterface = new UntypedFormControl(false);
   public currentIdDataset: any;
   public previousReleve = null;
   // public globalOccurrenceAddFields: Array<any>= [];
@@ -44,7 +44,8 @@ export class OcctaxFormService {
     private _commonService: CommonService,
     private _dataS: OcctaxDataService,
     private dataFormService: DataFormService,
-    private _moduleService: ModuleService
+    private _moduleService: ModuleService,
+    public config: ConfigService
   ) {
     this.currentUser = this._auth.getCurrentUser();
 
@@ -89,7 +90,7 @@ export class OcctaxFormService {
     if (regne) {
       params = params.append('group2_inpn', group2_inpn);
     }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/occtax/defaultNomenclatures`, {
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/occtax/defaultNomenclatures`, {
       params: params,
     });
   }

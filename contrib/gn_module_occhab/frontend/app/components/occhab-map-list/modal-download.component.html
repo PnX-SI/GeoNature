@@ -29,7 +29,7 @@
       role="alert"
     >
       Vous pouvez néamoins exporter les données, dans une limite de <b>
-        {{MODULE_CONFIG.NB_MAX_EXPORT}} </b>
+        {{config.OCCHAB.NB_MAX_EXPORT}} </b>
       stations en cliquant sur les liens ci-dessous
     </div>
 
@@ -38,7 +38,7 @@
       role="alert"
     >
       En fermant cette fenêtre vous pouvez visualiser <b> seulement</b> les
-      {{MODULE_CONFIG.NB_MAX_MAP_LIST}} dernières
+      {{config.OCCHAB.NB_MAX_MAP_LIST}} dernières
       stations correspondant à votre requête. <br>
     </div>
 
@@ -53,10 +53,10 @@
       Votre recherche comporte {{storeService.idsStation.length}} station(s) d'habitat
     </p>
     <p *ngIf="!tooManyObs">
-      <b>NB: </b> Le limite du nombre d'habitat exportables est de {{MODULE_CONFIG.NB_MAX_EXPORT}}
+      <b>NB: </b> Le limite du nombre d'habitat exportables est de {{config.OCCHAB.NB_MAX_EXPORT}}
     </p>
     <button
-      *ngFor="let format of MODULE_CONFIG.EXPORT_FORMAT"
+      *ngFor="let format of config.OCCHAB.EXPORT_FORMAT"
       style="margin-left: 5px;"
       class="buttonLoad"
       (click)="downloadStations(format)"

@@ -3,8 +3,8 @@ import { ValidationDataService } from '../services/data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import { ModuleConfig } from '../module.config';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-validation',
@@ -17,13 +17,16 @@ export class ValidationComponent implements OnInit {
   public searchBarHidden: boolean = true;
   public idSynthese: any;
 
+  public isCollapseValidationNavBar = false;
+
   constructor(
     private _route: ActivatedRoute,
     private _router: Router,
     public _ds: ValidationDataService,
     public _mapListService: MapListService,
     private _commonService: CommonService,
-    private _fs: SyntheseFormService
+    private _fs: SyntheseFormService,
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -36,7 +39,7 @@ export class ValidationComponent implements OnInit {
     this._commonService.translateToaster(
       'info',
       "La limite de nombre d'observations affichable dans le module est de " +
-        ModuleConfig.NB_MAX_OBS_MAP
+        this.config.VALIDATION.NB_MAX_OBS_MAP
     );
     this._commonService.translateToaster('info', 'Les 100 dernières observations');
     this.idSynthese = this._route.snapshot.paramMap.get('id_synthese');
@@ -112,7 +115,7 @@ export class ValidationComponent implements OnInit {
   customColumns(feature) {
     // function pass to the LoadTableData maplist service function to format date
     if (feature.properties.validation_auto === true) {
-      feature.properties.validation_auto = ModuleConfig.ICON_FOR_AUTOMATIC_VALIDATION;
+      feature.properties.validation_auto = this.config.VALIDATION.ICON_FOR_AUTOMATIC_VALIDATION;
     }
     if (feature.properties.validation_auto === false) {
       feature.properties.validation_auto = '';

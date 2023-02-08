@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { AppConfig } from '@geonature_config/app.config';
-import { AuthService, User } from '@geonature/components/auth/auth.service';
-import { Role, RoleFormService } from './services/form.service';
+import { UntypedFormGroup } from '@angular/forms';
+import { AuthService } from '@geonature/components/auth/auth.service';
+import { RoleFormService } from './services/form.service';
 import { UserDataService } from './services/user-data.service';
 
 @Component({
@@ -12,7 +10,7 @@ import { UserDataService } from './services/user-data.service';
   styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit {
-  form: FormGroup;
+  form: UntypedFormGroup;
 
   constructor(
     private authService: AuthService,
@@ -28,7 +26,7 @@ export class UserComponent implements OnInit {
     this.form = this.getForm(this.authService.getCurrentUser().id_role);
   }
 
-  getForm(role: number): FormGroup {
+  getForm(role: number): UntypedFormGroup {
     return this.roleFormService.getForm(role);
   }
 

@@ -1,26 +1,17 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin, Observable, BehaviorSubject, combineLatest } from 'rxjs';
-import {
-  tap,
-  map,
-  startWith,
-  distinctUntilChanged,
-  debounceTime,
-  filter,
-  pairwise,
-} from 'rxjs/operators';
-import { PageEvent, MatPaginator } from '@angular/material/paginator';
+import { tap, map, startWith, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
-import { AppConfig } from '@geonature_config/app.config';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class MetadataService {
-  public form: FormGroup;
-  public rapidSearchControl: FormControl = new FormControl();
+  public form: UntypedFormGroup;
+  public rapidSearchControl: UntypedFormControl = new UntypedFormControl();
 
   /* données receptionnées par l'API */
   public acquisitionFrameworks: BehaviorSubject<any[]> = new BehaviorSubject([]);
@@ -32,16 +23,19 @@ export class MetadataService {
   public formBuilded = false;
 
   pageSizeOptions: number[] = [10, 25, 50, 100];
-  pageSize: BehaviorSubject<number> = new BehaviorSubject(AppConfig.METADATA.NB_AF_DISPLAYED);
+  pageSize: BehaviorSubject<number> = null;
   pageIndex: BehaviorSubject<number> = new BehaviorSubject(0);
   activePage: BehaviorSubject<number> = new BehaviorSubject(0);
 
   constructor(
-    private _fb: FormBuilder,
+    private _fb: UntypedFormBuilder,
     public dateParser: NgbDateParserFormatter,
     private dataFormService: DataFormService,
-    private _syntheseDataService: SyntheseDataService
+    private _syntheseDataService: SyntheseDataService,
+    public config: ConfigService
   ) {
+    this.pageSize = new BehaviorSubject(this.config.METADATA.NB_AF_DISPLAYED);
+
     this.form = this._fb.group({
       selector: 'ds',
       uuid: null,
@@ -63,6 +57,13 @@ export class MetadataService {
           this.pageIndex.next(0);
         }
       });
+    this.config.METADATA.METADATA_AREA_FILTERS.forEach((area) => {
+        const control_name = 'area_' + area['type_code'].toLowerCase();
+        this.form.addControl(control_name, new UntypedFormControl(new Array()));
+        const control = this.form.controls[control_name];
+        area['control'] = control;
+      });
+      this.formBuilded = true;
   }
 
   search(term: string) {

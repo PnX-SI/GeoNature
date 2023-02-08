@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
-import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { ValidationDataService } from '../../services/data.service';
 import { CommonService } from '@geonature_common/service/common.service';
-
-import { ModuleConfig } from '../../module.config';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-validation-definitions',
@@ -14,11 +12,14 @@ import { ModuleConfig } from '../../module.config';
 export class ValidationDefinitionsComponent {
   public definitions;
   public showDefinitions: Boolean = false;
-  public VALIDATION_CONFIG = ModuleConfig;
 
-  constructor(public searchService: ValidationDataService, private _commonService: CommonService) {}
+  constructor(
+    public searchService: ValidationDataService,
+    private _commonService: CommonService,
+    public config: ConfigService
+  ) {}
 
-  getDefinitions(param) {
+  getDefinitions() {
     this.showDefinitions = !this.showDefinitions;
     this.searchService.getStatusNames().subscribe(
       (result) => {

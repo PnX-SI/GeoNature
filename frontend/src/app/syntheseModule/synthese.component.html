@@ -1,26 +1,22 @@
 <div id="cover-spin" *ngIf="!searchService.dataLoaded">
   <div class="alert alert-warning" id="cover-message">
-    <span >Chargement des données en cours (cela peut prendre du temps)…</span>
+    <span>Chargement des données en cours (cela peut prendre du temps)…</span>
   </div>
 </div>
 
-<div class="wrapper" data-qa='pnx-synthese'>
-  <nav
-    #navBar
-    id="sidebar"
-    class="collapse show"
-  >
+<div class="wrapper" data-qa="pnx-synthese">
+  <nav [(ngbCollapse)]="isCollapseSyntheseNavBar" #navBar>
+    <!-- <pnx-synthese-search (searchClicked)="loadAndStoreData($event)"></pnx-synthese-search> -->
     <pnx-synthese-search (searchClicked)="onSearchEvent()"> </pnx-synthese-search>
   </nav>
 
   <div class="row row-sm page-content">
     <button
+      (click)="isCollapseSyntheseNavBar = !isCollapseSyntheseNavBar"
+      [attr.aria-expanded]="!isCollapseSyntheseNavBar"
       #buttonToggle
       [style.left.px]="marginButton"
       (click)="mooveButton()"
-      data-toggle="collapse"
-      data-target="#sidebar"
-      aria-controls="sidebar"
       type="button"
       id="sidebarCollapse"
       class="btn btn-toogle-sidenav box-shadow"

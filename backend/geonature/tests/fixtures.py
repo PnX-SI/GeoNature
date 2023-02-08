@@ -18,6 +18,7 @@ from geonature.core.gn_permissions.models import (
     TFilters,
     BibFiltersType,
     CorRoleActionFilterModuleObject,
+    TObjects,
 )
 from geonature.core.gn_commons.models import TModules, TMedias, BibTablesLocation
 from geonature.core.gn_meta.models import (
@@ -49,6 +50,7 @@ __all__ = [
     "filters",
     "medium",
     "module",
+    "perm_object",
 ]
 
 
@@ -85,6 +87,14 @@ def module():
         )
         db.session.add(new_module)
     return new_module
+
+
+@pytest.fixture(scope="function")
+def perm_object():
+    with db.session.begin_nested():
+        new_object = TObjects(code_object="TEST_OBJECT")
+        db.session.add(new_object)
+    return new_object
 
 
 @pytest.fixture(scope="session")
@@ -290,7 +300,7 @@ def synthese_data(app, users, datasets, source):
     point3 = Point(-3.486786, 48.832182)
     data = {}
     with db.session.begin_nested():
-        for (name, cd_nom, point, ds) in [
+        for name, cd_nom, point, ds in [
             ("obs1", 713776, point1, datasets["own_dataset"]),
             ("obs2", 212, point2, datasets["own_dataset"]),
             ("obs3", 2497, point3, datasets["own_dataset"]),
@@ -301,7 +311,6 @@ def synthese_data(app, users, datasets, source):
             ("p2_af1", 2497, point2, datasets["belong_af_1"]),
             ("p3_af3", 2497, point3, datasets["belong_af_3"]),
         ]:
-
             unique_id_sinp = (
                 "f4428222-d038-40bc-bc5c-6e977bbbc92b" if not data else func.uuid_generate_v4()
             )
@@ -364,7 +373,7 @@ def create_media(media_path=""):
 @pytest.fixture
 def medium(app):
     image = Image.new("RGBA", size=(1, 1), color=(155, 0, 0))
-    with tempfile.NamedTemporaryFile() as f:
+    with tempfile.NamedTemporaryFile(dir=TMedias.base_dir(), suffix=".png") as f:
         image.save(f, "png")
         yield create_media(media_path=str(f.name))
 
@@ -372,6 +381,7 @@ def medium(app):
 @pytest.fixture()
 def reports_data(users, synthese_data):
     data = []
+
     # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
     def create_report(id_synthese, id_role, content, id_type, deleted):
         new_report = TReport(

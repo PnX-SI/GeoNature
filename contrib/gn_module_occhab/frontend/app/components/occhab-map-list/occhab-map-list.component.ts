@@ -7,7 +7,7 @@ import { OccHabModalDownloadComponent } from './modal-download.component';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
 import * as moment from 'moment';
-import { ModuleConfig } from '../../module.config';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-occhab-map-list',
@@ -20,13 +20,18 @@ export class OccHabMapListComponent implements OnInit {
   public rowNumber: number;
   public dataLoading = true;
   public deleteOne: any;
+
+  public isCollapseFilter = true;
+
   constructor(
     public storeService: OcchabStoreService,
     private _occHabDataService: OccHabDataService,
     public mapListService: MapListService,
     private _ngbModal: NgbModal,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    public config: ConfigService
   ) {}
+
   ngOnInit() {
     if (this.storeService.firstMessageMapList) {
       this._commonService.regularToaster('info', 'Les 50 dernières stations saisies');
@@ -64,11 +69,12 @@ export class OccHabMapListComponent implements OnInit {
   }
 
   getStations(params?) {
+    params['habitats'] = 1;
     this.dataLoading = true;
-    this._occHabDataService.getStations(params).subscribe(
+    this._occHabDataService.listStations(params).subscribe(
       (featuresCollection) => {
         // store the idsStation in the store service
-        if (featuresCollection.features.length === ModuleConfig.NB_MAX_MAP_LIST) {
+        if (featuresCollection.features.length === this.config.OCCHAB.NB_MAX_MAP_LIST) {
           this.openModal(true);
         }
         this.storeService.idsStation = featuresCollection.features.map((feature) => feature.id);
@@ -110,11 +116,11 @@ export class OccHabMapListComponent implements OnInit {
 
   displayHabTooltip(row): string[] {
     let tooltip = [];
-    if (row.t_habitats === undefined) {
+    if (row.habitats === undefined) {
       tooltip.push('Aucun habitat');
     } else {
-      for (let i = 0; i < row.t_habitats.length; i++) {
-        let occ = row.t_habitats[i];
+      for (let i = 0; i < row.habitats.length; i++) {
+        let occ = row.habitats[i];
         tooltip.push(occ.nom_cite);
       }
     }

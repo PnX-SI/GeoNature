@@ -3,15 +3,14 @@ import { combineLatest } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MatDialog } from '@angular/material/dialog';
-import { MatTabChangeEvent } from '@angular/material/tabs';
 import { TranslateService } from '@ngx-translate/core';
 import { OcctaxFormService } from '../occtax-form.service';
 import { OcctaxFormOccurrenceService } from '../occurrence/occurrence.service';
 import { OcctaxTaxaListService } from './taxa-list.service';
 import { MediaService } from '@geonature_common/service/media.service';
-import { ModuleConfig } from '../../module.config';
 
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-occtax-form-taxa-list',
@@ -21,8 +20,6 @@ import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/
 export class OcctaxFormTaxaListComponent implements OnInit {
   @ViewChild('tabOccurence') tabOccurence: ElementRef;
 
-  public ModuleConfig = ModuleConfig;
-
   constructor(
     public ngbModal: NgbModal,
     public dialog: MatDialog,
@@ -30,7 +27,8 @@ export class OcctaxFormTaxaListComponent implements OnInit {
     private occtaxFormService: OcctaxFormService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxTaxaListService: OcctaxTaxaListService,
-    public ms: MediaService
+    public ms: MediaService,
+    public config: ConfigService
   ) {}
 
   ngOnInit() {

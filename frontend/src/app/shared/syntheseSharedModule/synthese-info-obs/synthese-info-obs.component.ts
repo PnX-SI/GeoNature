@@ -4,12 +4,12 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { MapService } from '@geonature_common/map/map.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
 import { isEmpty, find } from 'lodash';
 import { ModuleService } from '@geonature/services/module.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -27,7 +27,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public validationHistory: Array<any> = [];
   public selectedObsTaxonDetail: any;
   @ViewChild('tabGroup') tabGroup;
-  public APP_CONFIG = AppConfig;
   public selectedGeom;
   // public chartType = 'line';
   public profileDataChecks: any;
@@ -36,7 +35,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public selectObsTaxonInfo;
   public selectCdNomenclature;
   public formatedAreas = [];
-  public CONFIG = AppConfig;
   public isLoading = false;
   public email;
   public mailto: string;
@@ -67,7 +65,8 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     private _commonService: CommonService,
     private _mapService: MapService,
     private _clipboard: Clipboard,
-    private _moduleService: ModuleService
+    private _moduleService: ModuleService,
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -75,8 +74,8 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     this._moduleService.currentModule$.subscribe((module) => {
       if (module) {
         this.moduleInfos = { id: module.id_module, code: module.module_code };
-        this.activateAlert = AppConfig.SYNTHESE.ALERT_MODULES.includes(this.moduleInfos?.code);
-        this.activatePin = AppConfig.SYNTHESE.PIN_MODULES.includes(this.moduleInfos?.code);
+        this.activateAlert = this.config.SYNTHESE.ALERT_MODULES.includes(this.moduleInfos?.code);
+        this.activatePin = this.config.SYNTHESE.PIN_MODULES.includes(this.moduleInfos?.code);
       }
     });
   }
@@ -88,7 +87,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   }
 
   // HACK to display a second map on validation tab
-  setValidationTab(event) {
+  setValidationTab() {
     this.showValidation = true;
     if (this._mapService.map) {
       setTimeout(() => {
@@ -139,7 +138,10 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         }
 
         this._gnDataService
-          .getTaxonAttributsAndMedia(this.selectedObs.cd_nom, AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB)
+          .getTaxonAttributsAndMedia(
+            this.selectedObs.cd_nom,
+            this.config.SYNTHESE.ID_ATTRIBUT_TAXHUB
+          )
           .subscribe((taxAttr) => {
             this.selectObsTaxonInfo = taxAttr;
           });
@@ -181,7 +183,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       const d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };
       if (this.selectedObs.source.url_source) {
         d['data_link'] = [
-          this.APP_CONFIG.URL_APPLICATION,
+          this.config.URL_APPLICATION,
           this.selectedObs.source.url_source,
           this.selectedObs.entity_source_pk_value,
         ].join('/');
@@ -220,16 +222,12 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
           mailto += `?subject=${new Function('d', 'return ' + '`' + this.mailCustomSubject + '`')(
             d
           )}`;
-        } catch (error) {
-          console.log('ERROR : unable to eval mail subject');
-        }
+        } catch (error) {}
       }
       if (this.mailCustomBody !== undefined) {
         try {
           mailto += `&body=${new Function('d', 'return ' + '`' + this.mailCustomBody + '`')(d)}`;
-        } catch (error) {
-          console.log('ERROR : unable to eval mail body');
-        }
+        } catch (error) {}
       }
 
       mailto = encodeURI(mailto);
@@ -269,7 +267,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         this.profile = data;
       },
       (err) => {
-        console.log(err);
         if (err.status === 404) {
           this._commonService.translateToaster('warning', 'Aucun profile');
         } else if (err.statusText === 'Unknown Error') {
@@ -301,7 +298,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   openCloseAlert() {
     this.alertOpen = !this.alertOpen;
     // avoid useless request
-    if (AppConfig.SYNTHESE?.ALERT_MODULES && AppConfig.SYNTHESE.ALERT_MODULES.length) {
+    if (this.config.SYNTHESE?.ALERT_MODULES && this.config.SYNTHESE.ALERT_MODULES.length) {
       this.getReport('alert');
     }
   }
@@ -325,7 +322,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         item: this.idSynthese,
         content: '',
       })
-      .subscribe((success) => {
+      .subscribe(() => {
         this._commonService.translateToaster('success', 'Epinglé !');
         this.getReport('pin');
       });
@@ -350,7 +347,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
 
   copyToClipBoard() {
     this._clipboard.copy(
-      `${AppConfig.URL_APPLICATION}/#/${this.useFrom}/occurrence/${this.selectedObs.id_synthese}`
+      `${this.config.URL_APPLICATION}/#/${this.useFrom}/occurrence/${this.selectedObs.id_synthese}`
     );
     this._commonService.translateToaster('info', 'Synthese.copy');
   }

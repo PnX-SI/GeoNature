@@ -1,19 +1,14 @@
-import { Injectable, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, Subscription, of, combineLatest, forkJoin } from 'rxjs';
+import { Injectable } from '@angular/core';
 import {
-  filter,
-  map,
-  switchMap,
-  tap,
-  skip,
-  concatMap,
-  distinctUntilChanged,
-  pairwise,
-} from 'rxjs/operators';
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  UntypedFormControl,
+  Validators,
+} from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Observable, of, forkJoin } from 'rxjs';
+import { filter, map, switchMap, tap, skip, distinctUntilChanged, pairwise } from 'rxjs/operators';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { ModuleConfig } from '../../module.config';
 import { CommonService } from '@geonature_common/service/common.service';
 import { FormService } from '@geonature_common/form/form.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
@@ -21,18 +16,18 @@ import { OcctaxFormService } from '../occtax-form.service';
 import { OcctaxFormMapService } from '../map/occtax-map.service';
 import { OcctaxDataService } from '../../services/occtax-data.service';
 import { OcctaxFormParamService } from '../form-param/form-param.service';
-import { DatasetStoreService } from '@geonature_common/form/datasets/dataset.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { ModuleService } from '@geonature/services/module.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class OcctaxFormReleveService {
   public userReleveRigth: any;
 
-  public propertiesForm: FormGroup;
-  public habitatForm = new FormControl();
+  public propertiesForm: UntypedFormGroup;
+  public habitatForm = new UntypedFormControl();
   public releve: any;
-  public releveForm: FormGroup;
+  public releveForm: UntypedFormGroup;
   //custom additional fields
   public additionalFieldsForm: Array<any> = [];
 
@@ -47,7 +42,7 @@ export class OcctaxFormReleveService {
 
   constructor(
     private router: Router,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private _commonService: CommonService,
     private dateParser: NgbDateParserFormatter,
     private coreFormService: FormService,
@@ -56,10 +51,9 @@ export class OcctaxFormReleveService {
     private occtaxFormMapService: OcctaxFormMapService,
     private occtaxDataService: OcctaxDataService,
     private occtaxParamS: OcctaxFormParamService,
-    private _datasetStoreService: DatasetStoreService,
-    private _cd: ChangeDetectorRef,
     private _mapService: MapService,
-    public moduleService: ModuleService
+    public moduleService: ModuleService,
+    public config: ConfigService
   ) {
     this.initPropertiesForm();
     this.setObservables();
@@ -101,8 +95,8 @@ export class OcctaxFormReleveService {
       comment: null,
       cd_hab: null,
       id_nomenclature_tech_collect_campanule: null,
-      observers: [null, !ModuleConfig.observers_txt ? Validators.required : null],
-      observers_txt: [null, ModuleConfig.observers_txt ? Validators.required : null],
+      observers: [null, !this.config.OCCTAX.observers_txt ? Validators.required : null],
+      observers_txt: [null, this.config.OCCTAX.observers_txt ? Validators.required : null],
       id_nomenclature_grp_typ: null,
       grp_method: null,
       id_nomenclature_geo_object_nature: null,
@@ -142,7 +136,7 @@ export class OcctaxFormReleveService {
     // if(currentDataset && currentDataset.id_taxa_list) {
     //   this.occtaxFormService.idTaxonList = currentDataset.id_taxa_list;
     // } else {
-    //   this.occtaxFormService.idTaxonList = ModuleConfig.id_taxon_list
+    //   this.occtaxFormService.idTaxonList = this.config.OCCTAX.id_taxon_list
     // }
     this.occtaxFormService
       .getAdditionnalFields(['OCCTAX_RELEVE'], idDataset)
@@ -305,8 +299,7 @@ export class OcctaxFormReleveService {
     this.propertiesForm
       .get('hour_min')
       .valueChanges.pipe(
-        filter((hour) => !this.occtaxFormService.editionMode.getValue() && hour != null),
-        tap((hour) => console.log(hour))
+        filter((hour) => !this.occtaxFormService.editionMode.getValue() && hour != null)
       )
       .subscribe((hour) => {
         if (
@@ -350,7 +343,7 @@ export class OcctaxFormReleveService {
   }
 
   private defaultDateWithToday() {
-    if (!ModuleConfig.DATE_FORM_WITH_TODAY) {
+    if (!this.config.OCCTAX.DATE_FORM_WITH_TODAY) {
       return null;
     } else {
       const today = new Date();
@@ -363,7 +356,7 @@ export class OcctaxFormReleveService {
   }
 
   getPreviousReleve(previousReleve) {
-    if (previousReleve && !ModuleConfig.ENABLE_SETTINGS_TOOLS) {
+    if (previousReleve && !this.config.OCCTAX.ENABLE_SETTINGS_TOOLS) {
       return {
         id_dataset: previousReleve.properties.id_dataset,
         observers: previousReleve.properties.observers,
@@ -416,11 +409,13 @@ export class OcctaxFormReleveService {
             observers:
               this.occtaxParamS.get('releve.observers') ||
               previousReleve.observers ||
-              (ModuleConfig.observers_txt ? null : [this.occtaxFormService.currentUser]),
+              (this.config.OCCTAX.observers_txt ? null : [this.occtaxFormService.currentUser]),
             observers_txt:
               this.occtaxParamS.get('releve.observers_txt') ||
               previousReleve.observers_txt ||
-              (ModuleConfig.observers_txt ? this.occtaxFormService.currentUser.nom_complet : null),
+              (this.config.OCCTAX.observers_txt
+                ? this.occtaxFormService.currentUser.nom_complet
+                : null),
             id_nomenclature_grp_typ:
               this.occtaxParamS.get('releve.id_nomenclature_grp_typ') || data['TYP_GRP'],
             grp_method: this.occtaxParamS.get('releve.grp_method'),
@@ -441,7 +436,7 @@ export class OcctaxFormReleveService {
 
     value.properties.date_min = this.dateParser.format(value.properties.date_min);
     value.properties.date_max = this.dateParser.format(value.properties.date_max);
-    if (!ModuleConfig.observers_txt) {
+    if (!this.config.OCCTAX.observers_txt) {
       value.properties.observers = value.properties.observers.map((observer) => observer.id_role);
     }
     /* Champs additionnels - formatter les dates et les nomenclatures */

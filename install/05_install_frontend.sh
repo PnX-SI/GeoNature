@@ -58,17 +58,22 @@ write_log "Préparation du frontend..."
 cd "${BASE_DIR}/frontend"
 mkdir -p "src/external_assets"
 
+# create config.json
+if [[ ! -f src/assets/config.json ]]; then
+  write_log "Création des fichiers de configuration du frontend"
+  cp -n src/assets/config.sample.json src/assets/config.json
+fi
+api_end_point=$(geonature get-config API_ENDPOINT)
+echo "REMPLACE API ENDPOINT"
+echo $api_end_point
+sed -i 's|"API_ENDPOINT": .*$|"API_ENDPOINT" : "'${api_end_point}'"|' src/assets/config.json
+cat src/assets/config.json
 # Copy the custom components
 if [[ ! -f src/assets/custom.css ]]; then
   write_log "Création des fichiers de customisation du frontend..."
   cp -n src/assets/custom.sample.css src/assets/custom.css
+
 fi
-custom_component_dir="src/custom/components/"
-for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
-  if [[ ! -f "${file%.sample}" ]]; then
-    cp "${file}" "${file%.sample}"
-  fi
-done
 
 if [[ -z "${CI}" || "${CI}" == false ]] ; then
   echo "Activation du venv..."

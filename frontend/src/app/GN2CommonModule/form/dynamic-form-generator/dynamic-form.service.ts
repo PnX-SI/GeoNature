@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {
-  FormControl,
-  FormGroup,
-  FormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
+  UntypedFormBuilder,
   Validators,
   AbstractControl,
   ValidatorFn,
@@ -15,7 +15,7 @@ import { MediaService } from '@geonature_common/service/media.service';
 
 @Injectable()
 export class DynamicFormService {
-  constructor(private _mediaService: MediaService, private _formBuilder: FormBuilder) {}
+  constructor(private _mediaService: MediaService, private _formBuilder: UntypedFormBuilder) {}
 
   initFormGroup() {
     return this._formBuilder.group({});
@@ -27,7 +27,7 @@ export class DynamicFormService {
     formsDef.forEach((form) => {
       group[form.attribut_name] = this.createControl(form);
     });
-    return new FormGroup(group);
+    return new UntypedFormGroup(group);
   }
 
   /** revoie la valeur d'un attribut d'une definition de formulaire (formDef)
@@ -99,9 +99,6 @@ export class DynamicFormService {
         if (cond_max) {
           validators.push(Validators.max(formDef.max));
         }
-        if (formDef.attribut_name == 'file') {
-          console.log(validators);
-        }
       }
 
       // Constraint pattern for the "text"
@@ -110,9 +107,7 @@ export class DynamicFormService {
           try {
             new RegExp(formDef.pattern);
             validators.push(Validators.pattern(formDef.pattern));
-          } catch (e) {
-            console.log('invalid regular expression');
-          }
+          } catch (e) {}
         }
       }
 
@@ -131,13 +126,13 @@ export class DynamicFormService {
   }
 
   createControl(formDef): AbstractControl {
-    const formControl = new FormControl();
+    const formControl = new UntypedFormControl();
     const value = formDef.value || null;
     this.setControl(formControl, formDef, value);
     return formControl;
   }
 
-  addNewControl(formDef, formGroup: FormGroup) {
+  addNewControl(formDef, formGroup: UntypedFormGroup) {
     //Mise en fonction des valeurs des dynamic-form ex: "hidden: "({value}) => value.monChamps != 'maValeur'""
     for (const keyParam of Object.keys(formDef)) {
       const func = this.toFunction(formDef[keyParam]);

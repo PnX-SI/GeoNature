@@ -7,7 +7,7 @@ import {
   ElementRef,
   OnDestroy,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { NgbDateFRParserFormatter } from './ngb-date-custom-parser-formatter';
@@ -42,7 +42,7 @@ export class DateComponent implements OnInit, OnDestroy {
   @Input() label: string;
   @Input() isInvalid: string;
   @Input() disabled: boolean;
-  @Input() parentFormControl: FormControl;
+  @Input() parentFormControl: UntypedFormControl;
   @Input() defaultToday = false;
   @Input() minDate = { year: 1735, month: 1, day: 1 };
   @Input() maxDate;

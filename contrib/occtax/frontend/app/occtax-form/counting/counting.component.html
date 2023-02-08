@@ -1,6 +1,6 @@
 <div class="row">
   <div
-    *ngIf="occtaxConfig.form_fields.obj_count"
+    *ngIf="config.OCCTAX.form_fields.obj_count"
     class="col-lg-4 col-sm-6"
   >
     <pnx-nomenclature
@@ -12,7 +12,7 @@
     </pnx-nomenclature>
   </div>
   <div
-    *ngIf="occtaxConfig.form_fields.type_count"
+    *ngIf="config.OCCTAX.form_fields.type_count"
     class="col-lg-4 col-sm-6"
   >
     <pnx-nomenclature
@@ -37,7 +37,7 @@
 <div class="row">
 
   <div 
-    *ngIf="occtaxConfig.form_fields.count_min" 
+    *ngIf="config.OCCTAX.form_fields.count_min" 
     class="col-3"
   >
     <small> {{ 'Counting.NumberMin' | translate }} </small>
@@ -52,7 +52,7 @@
   </div>
 
   <div 
-    *ngIf="occtaxConfig.form_fields.count_max" 
+    *ngIf="config.OCCTAX.form_fields.count_max" 
     class="col-3"
   >
     <small> {{ 'Counting.NumberMax' | translate }} </small>
@@ -74,7 +74,7 @@
   </div>
 
   <div
-    *ngIf="occtaxConfig.form_fields.life_stage"
+    *ngIf="config.OCCTAX.form_fields.life_stage"
     class="col-3"
   >
     <pnx-nomenclature
@@ -93,7 +93,7 @@
     </small>
   </div>
   <div
-    *ngIf="occtaxConfig.form_fields.sex"
+    *ngIf="config.OCCTAX.form_fields.sex"
     class="col-3"
   >
     <pnx-nomenclature
@@ -125,7 +125,7 @@
 <div class="row">
   <div 
     id='occurrence-medias' 
-    *ngIf="occtaxConfig.ENABLE_MEDIAS" 
+    *ngIf="config.OCCTAX.ENABLE_MEDIAS" 
     class="col-sm-12"
   >
 
@@ -141,9 +141,9 @@
     <pnx-medias
       schemaDotTable="pr_occtax.cor_counting_occtax"
       [parentFormControl]="form.controls.medias"
-      [sizeMax]="appConfig.MEDIAS.MEDIAS_SIZE_MAX"
+      [sizeMax]="config.MEDIAS.MEDIAS_SIZE_MAX"
       [default]="defaultsMedia()"
-      [details]="occtaxConfig.MEDIA_FIELDS_DETAILS"
+      [details]="config.OCCTAX.MEDIA_FIELDS_DETAILS"
       [disabled]="!taxref"
       disabledTxt="Veuillez choisir un taxon avant de renseigner les médias"
     ></pnx-medias>

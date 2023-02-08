@@ -1,30 +1,32 @@
 import { Injectable } from '@angular/core';
 import {
-  FormBuilder,
-  FormGroup,
-  FormControl,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  UntypedFormControl,
   Validators,
   AbstractControl,
-  FormArray,
+  UntypedFormArray,
 } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { FormService } from '@geonature_common/form/form.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { OcchabStoreService } from './store.service';
-import { ModuleConfig } from '../module.config';
+import { ConfigService } from '@geonature/services/config.service';
+import { Station, StationFeature } from '../models';
 
 @Injectable()
 export class OcchabFormService {
-  public stationForm: FormGroup;
-  public typoHabControl = new FormControl();
+  public stationForm: UntypedFormGroup;
+  public typoHabControl = new UntypedFormControl();
   public selectedTypo: any;
   public currentEditingHabForm = null;
   constructor(
-    private _fb: FormBuilder,
+    private _fb: UntypedFormBuilder,
     private _dateParser: NgbDateParserFormatter,
     private _gn_dataSerice: DataFormService,
     private _storeService: OcchabStoreService,
-    private _formService: FormService
+    private _formService: FormService,
+    public config: ConfigService
   ) {
     // get selected cd_typo to filter the habref autcomplete
     this.typoHabControl.valueChanges.subscribe((data) => {
@@ -32,15 +34,15 @@ export class OcchabFormService {
     });
   }
 
-  initStationForm(): FormGroup {
+  initStationForm(): UntypedFormGroup {
     const stationForm = this._fb.group({
       id_station: null,
       unique_id_sinp_station: null,
       id_dataset: [null, Validators.required],
       date_min: [null, Validators.required],
       date_max: [null, Validators.required],
-      observers: [null, !ModuleConfig.OBSERVER_AS_TXT ? Validators.required : null],
-      observers_txt: [null, ModuleConfig.OBSERVER_AS_TXT ? Validators.required : null],
+      observers: [null, !this.config.OCCHAB.OBSERVER_AS_TXT ? Validators.required : null],
+      observers_txt: [null, this.config.OCCHAB.OBSERVER_AS_TXT ? Validators.required : null],
       is_habitat_complex: false,
       id_nomenclature_exposure: null,
       altitude_min: null,
@@ -52,7 +54,7 @@ export class OcchabFormService {
       id_nomenclature_geographic_object: [null, Validators.required],
       geom_4326: [null, Validators.required],
       comment: null,
-      t_habitats: this._fb.array([]),
+      habitats: this._fb.array([]),
     });
     stationForm.setValidators([
       this._formService.dateValidator(stationForm.get('date_min'), stationForm.get('date_max')),
@@ -75,9 +77,8 @@ export class OcchabFormService {
     });
   }
 
-  initHabForm(defaultNomenclature): FormGroup {
+  initHabForm(defaultNomenclature): UntypedFormGroup {
     const habForm = this._fb.group({
-      id_station: null,
       id_habitat: null,
       unique_id_sinp_hab: null,
       nom_cite: null,
@@ -127,8 +128,8 @@ export class OcchabFormService {
   }
 
   addNewHab() {
-    const currentHabNumber = this.stationForm.value.t_habitats.length - 1;
-    const habFormArray = this.stationForm.controls.t_habitats as FormArray;
+    const currentHabNumber = this.stationForm.value.habitats.length - 1;
+    const habFormArray = this.stationForm.controls.habitats as UntypedFormArray;
     habFormArray.insert(0, this.initHabForm(this._storeService.defaultNomenclature));
     this.currentEditingHabForm = 0;
   }
@@ -155,7 +156,7 @@ export class OcchabFormService {
    * @param index index of the habitat to delete
    */
   deleteHab(index) {
-    const habArrayForm = this.stationForm.controls.t_habitats as FormArray;
+    const habArrayForm = this.stationForm.controls.habitats as UntypedFormArray;
     habArrayForm.removeAt(index);
   }
 
@@ -191,7 +192,7 @@ export class OcchabFormService {
   }
 
   patchNomCite($event) {
-    const habArrayForm = this.stationForm.controls.t_habitats as FormArray;
+    const habArrayForm = this.stationForm.controls.habitats as UntypedFormArray;
     habArrayForm.controls[this.currentEditingHabForm].patchValue({
       nom_cite: $event.item.search_name,
     });
@@ -218,34 +219,43 @@ export class OcchabFormService {
    */
   formatStationAndHabtoPatch(station) {
     // me
-    const formatedHabitats = station.t_one_habitats.map((hab) => {
+    const formatedHabitats = station.habitats.map((hab) => {
       // hab.habref["search_name"] = hab.nom_cite;
       return {
         ...hab,
-        id_nomenclature_determination_type: this.getOrNull(hab, 'determination_method'),
-        id_nomenclature_collection_technique: this.getOrNull(hab, 'collection_technique'),
-        id_nomenclature_abundance: this.getOrNull(hab, 'abundance'),
+        id_nomenclature_determination_type: this.getOrNull(
+          hab,
+          'nomenclature_determination_method'
+        ),
+        id_nomenclature_collection_technique: this.getOrNull(
+          hab,
+          'nomenclature_collection_technique'
+        ),
+        id_nomenclature_abundance: this.getOrNull(hab, 'nomenclature_abundance'),
       };
     });
-    station.t_habitats.forEach((hab, index) => {
+    station.habitats.forEach((hab, index) => {
       formatedHabitats[index]['habref'] = hab.habref || {};
       formatedHabitats[index]['habref']['search_name'] = hab.nom_cite;
     });
-    station['t_habitats'] = formatedHabitats;
+    station['habitats'] = formatedHabitats;
     return {
       ...station,
       date_min: this._dateParser.parse(station.date_min),
       date_max: this._dateParser.parse(station.date_max),
-      id_nomenclature_geographic_object: this.getOrNull(station, 'geographic_object'),
-      id_nomenclature_area_surface_calculation: this.getOrNull(station, 'area_surface_calculation'),
-      id_nomenclature_exposure: this.getOrNull(station, 'exposure'),
+      id_nomenclature_geographic_object: this.getOrNull(station, 'nomenclature_geographic_object'),
+      id_nomenclature_area_surface_calculation: this.getOrNull(
+        station,
+        'nomenclature_area_surface_calculation'
+      ),
+      id_nomenclature_exposure: this.getOrNull(station, 'nomenclature_exposure'),
     };
   }
 
   patchStationForm(oneStation) {
-    // create t_habitat formArray
-    for (let i = 0; i < oneStation.properties.t_one_habitats.length; i++) {
-      (this.stationForm.controls.t_habitats as FormArray).push(
+    // create habitat formArray
+    for (let i = 0; i < oneStation.properties.habitats.length; i++) {
+      (this.stationForm.controls.habitats as UntypedFormArray).push(
         this.initHabForm(this._storeService.defaultNomenclature)
       );
     }
@@ -259,10 +269,10 @@ export class OcchabFormService {
   }
 
   /** Format a station before post */
-  formatStationBeforePost() {
+  formatStationBeforePost(): StationFeature {
     let formData = Object.assign({}, this.stationForm.value);
     //format cd_hab
-    formData.t_habitats.forEach((element) => {
+    formData.habitats.forEach((element) => {
       if (element.habref) {
         element.cd_hab = element.habref.cd_hab;
         delete element['habref'];
@@ -277,7 +287,7 @@ export class OcchabFormService {
 
     // format habitat nomenclatures
 
-    formData.t_habitats.forEach((element) => {
+    formData.habitats.forEach((element) => {
       this.formatNomenclature(element);
     });
 

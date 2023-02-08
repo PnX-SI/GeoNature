@@ -3,7 +3,7 @@
   #table
   class="material striped margin-top-xs table-size expandable"
   [rows]="mapListService.tableData"
-  [columns]="VALIDATION_CONFIG.COLUMN_LIST"
+  [columns]="config.VALIDATION.COLUMN_LIST"
   [columnMode]="'force'"
   [headerHeight]="50"
   [footerHeight]="35"
@@ -107,7 +107,7 @@
       <div class="statusContent">
         <span
           class="validationCircle"
-          [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
+          [ngStyle]="{'background': config.VALIDATION.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
         >
           <i
             *ngIf="row.last_validation?.validation_auto"
@@ -115,7 +115,7 @@
           >computer</i>
         </span>
         <div
-          [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
+          [ngStyle]="{'background': config.VALIDATION.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
           class="statusName"
         >
           <span>{{row.nomenclature_valid_status.mnemonique}}</span>
@@ -127,7 +127,7 @@
 
 
   <ngx-datatable-column
-    *ngFor="let col of VALIDATION_CONFIG.COLUMN_LIST"
+    *ngFor="let col of config.VALIDATION.COLUMN_LIST"
     name="{{col.column_label}}"
     prop="{{col.column_name }}"
     maxWidth="{{col.max_width||10000}}"
@@ -155,7 +155,7 @@
       <div class="statusContent">
         <span
           class="validationCircle"
-          [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
+          [ngStyle]="{'background': config.VALIDATION.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
         >
           <i
             *ngIf="row.last_validation?.validation_auto"
@@ -163,7 +163,7 @@
           >computer</i>
         </span>
         <div
-          [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
+          [ngStyle]="{'background': config.VALIDATION.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
           class="statusName"
         >
           <span>{{row.nomenclature_valid_status.mnemonique}}</span>
@@ -174,7 +174,7 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column
-    *ngIf="appConfig.FRONTEND['ENABLE_PROFILES']"
+    *ngIf="config.FRONTEND['ENABLE_PROFILES']"
     minWidth="10"
     [maxWidth]="100"
   >

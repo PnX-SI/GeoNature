@@ -81,14 +81,14 @@ MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
 # Chemin du dossier où stocker les fichiers depuis la racine du dossier 'backend'
 UPLOAD_FOLDER = "static/medias"
 
-# Configuration de l'accès sans authentication
+# Configuration de l'accès sans authentication. Renseigner l’identifiant de l’utilisateur public.
 PUBLIC_ACCESS_USERNAME = ""
 
 # Active (=true) ou pas (=false) l'envoi d'email pour chaque erreur du backend de GeoNature
 # Attention : si activé, il est nécessaire de remplir la secetion 'MAIL_CONFIG'.
 MAIL_ON_ERROR = false
 
-# Notifications
+# Notifications (true / false)
 NOTIFICATIONS_ENABLED = true
 
 [USERSHUB]
@@ -585,3 +585,9 @@ NOTIFICATIONS_ENABLED = true
         { "label" = "Départements", "type_code"= "DEP" },
         { "label" = "Régions", "type_code"= "REG" }
     ]
+
+# Page d’accueil
+[HOME]
+    TITLE = "Bienvenue dans GeoNature"
+    INTRODUCTION = ""
+    FOOTER = ""

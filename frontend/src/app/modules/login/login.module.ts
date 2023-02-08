@@ -15,6 +15,5 @@ import { SignUpGuard, UserManagementGuard } from './routes-guard.service';
   imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes)],
   declarations: [LoginComponent, NewPasswordComponent, SignUpComponent],
   providers: [SignUpGuard, UserManagementGuard],
-  entryComponents: [],
 })
 export class LoginModule {}

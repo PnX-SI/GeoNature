@@ -10,6 +10,7 @@ from .models import (
     TBibliographicReference,
 )
 from geonature.utils.env import MA
+from geonature.utils.schema import CruvedSchemaMixin
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_commons.schemas import ModuleSchema
 from geonature.core.gn_synthese.schemas import SourceSchema
@@ -18,15 +19,6 @@ from geonature.core.gn_permissions.tools import get_scopes_by_action
 from utils_flask_sqla.schema import SmartRelationshipsMixin
 from pypnusershub.schemas import UserSchema, OrganismeSchema
 from pypnnomenclature.schemas import NomenclatureSchema
-
-
-class CruvedSchemaMixin:
-    cruved = fields.Method("get_user_cruved")
-
-    def get_user_cruved(self, obj):
-        if "user_cruved" in self.context:
-            return obj.get_object_cruved(self.context["user_cruved"])
-        return None
 
 
 class DatasetActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
@@ -51,6 +43,8 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
         model = TDatasets
         load_instance = True
         include_fk = True
+
+    __module_code__ = "METADATA"
 
     meta_create_date = fields.DateTime(dump_only=True)
     meta_update_date = fields.DateTime(dump_only=True)
@@ -89,9 +83,7 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
         return item
 
 
-class BibliographicReferenceSchema(
-    CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema
-):
+class BibliographicReferenceSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
     class Meta:
         model = TBibliographicReference
         load_instance = True
@@ -131,6 +123,8 @@ class AcquisitionFrameworkSchema(
         model = TAcquisitionFramework
         load_instance = True
         include_fk = True
+
+    __module_code__ = "METADATA"
 
     meta_create_date = fields.DateTime(dump_only=True)
     meta_update_date = fields.DateTime(dump_only=True)

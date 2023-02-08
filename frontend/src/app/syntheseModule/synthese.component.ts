@@ -1,19 +1,18 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
-import { HttpParams } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
 import { MapListService } from '@geonature_common/map-list/map-list.service';
-import { CommonService } from '@geonature_common/service/common.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { SyntheseStoreService } from './services/store.service';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
-import { AppConfig } from '@geonature_config/app.config';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
 import { SyntheseInfoObsComponent } from '../shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import * as cloneDeep from 'lodash/cloneDeep';
 import { EventToggle } from './synthese-results/synthese-carte/synthese-carte.component';
+import { ConfigService } from '@geonature/services/config.service';
+
 @Component({
   selector: 'pnx-synthese',
   styleUrls: ['synthese.component.scss'],
@@ -24,27 +23,28 @@ export class SyntheseComponent implements OnInit {
   public searchBarHidden = false;
   public marginButton: number;
   public firstLoad = true;
-  public CONFIG = AppConfig;
+
+  public isCollapseSyntheseNavBar = false;
 
   constructor(
     public searchService: SyntheseDataService,
     public _mapListService: MapListService,
-    private _commonService: CommonService,
     private _modalService: NgbModal,
     private _fs: SyntheseFormService,
     private _syntheseStore: SyntheseStoreService,
     private _toasterService: ToastrService,
     private _route: ActivatedRoute,
-    private _ngModal: NgbModal
+    private _ngModal: NgbModal,
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
     this._fs.selectors = this._fs.selectors
-      .set('limit', AppConfig.SYNTHESE.NB_LAST_OBS)
+      .set('limit', this.config.SYNTHESE.NB_LAST_OBS)
       .set(
         'format',
-        AppConfig.SYNTHESE.AREA_AGGREGATION_ENABLED &&
-          AppConfig.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT
+        this.config.SYNTHESE.AREA_AGGREGATION_ENABLED &&
+          this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT
           ? 'grouped_geom_by_areas'
           : 'grouped_geom'
       );
@@ -95,7 +95,7 @@ export class SyntheseComponent implements OnInit {
         this._syntheseStore.idSyntheseList = this.extractSyntheseIds(data);
 
         // Check if synthese observations limit is reach
-        if (this._syntheseStore.idSyntheseList.length >= AppConfig.SYNTHESE.NB_MAX_OBS_MAP) {
+        if (this._syntheseStore.idSyntheseList.length >= this.config.SYNTHESE.NB_MAX_OBS_MAP) {
           const modalRef = this._modalService.open(SyntheseModalDownloadComponent, {
             size: 'lg',
           });
@@ -110,7 +110,7 @@ export class SyntheseComponent implements OnInit {
         this._mapListService.idName = 'id';
         this.searchService.dataLoaded = true;
       },
-      (error) => {
+      () => {
         this.searchService.dataLoaded = true;
       }
     );

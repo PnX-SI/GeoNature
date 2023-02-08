@@ -17,7 +17,12 @@ from utils_flask_sqla.response import json_resp
 
 routes = Blueprint("ref_geo", __name__)
 
-altitude_stmt = sa.select([sa.column("altitude_min"), sa.column("altitude_max"),]).select_from(
+altitude_stmt = sa.select(
+    [
+        sa.column("altitude_min"),
+        sa.column("altitude_max"),
+    ]
+).select_from(
     func.ref_geo.fct_get_altitude_intersection(
         func.ST_SetSRID(
             func.ST_GeomFromGeoJSON(sa.bindparam("geojson")),

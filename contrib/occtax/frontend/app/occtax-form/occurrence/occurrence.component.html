@@ -9,7 +9,7 @@
       [parentFormControl]="taxonForm"
       [idList]="fs.idTaxonList" 
       [charNumber]="3" 
-      [listLength]="occtaxConfig.taxon_result_number" 
+      [listLength]="config.OCCTAX.taxon_result_number" 
       [displayAdvancedFilters]="false"
       displayedLabel="search_name"
       (onChange)="selectAddOcc($event)"
@@ -31,7 +31,7 @@
     </small>
   </div>
   <div 
-    *ngIf="occtaxConfig.form_fields.display_nom_valide" 
+    *ngIf="config.OCCTAX.form_fields.display_nom_valide" 
     class="col-sm-6"
   >
     <small> TAXREF - Nom valide </small>
@@ -46,7 +46,7 @@
 
 <div class="row" data-qa="pnx-nomenclature-info-comp">
   <div 
-    *ngIf="occtaxConfig.form_fields.obs_tech" 
+    *ngIf="config.OCCTAX.form_fields.obs_tech" 
     class="col-lg-4 col-sm-6"
   >
     <pnx-nomenclature 
@@ -68,7 +68,7 @@
     </small>
   </div>
   <div 
-    *ngIf="occtaxConfig.form_fields.bio_condition" 
+    *ngIf="config.OCCTAX.form_fields.bio_condition" 
     class="col-lg-4 col-sm-6"
   >
     <pnx-nomenclature 
@@ -107,7 +107,7 @@
 <div [@detailExpand]='advanced'>
   <div class="row">
     <div 
-      *ngIf="occtaxConfig.form_fields.determiner" 
+      *ngIf="config.OCCTAX.form_fields.determiner" 
       class="col-lg-4 col-sm-6"
     >
       <small> {{ 'Taxon.Determiner' | translate }} </small>
@@ -127,7 +127,7 @@
       </small>
     </div>
       <div 
-        *ngIf="occtaxConfig.form_fields.determination_method" 
+        *ngIf="config.OCCTAX.form_fields.determination_method" 
         class="col-lg-8 col-sm-6"
       >
         <pnx-nomenclature 
@@ -148,7 +148,7 @@
   </div>
   <div class="row">
     <div 
-      *ngIf="occtaxConfig.form_fields.observation_status" 
+      *ngIf="config.OCCTAX.form_fields.observation_status" 
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature 
@@ -167,7 +167,7 @@
     </div>
 
     <div 
-      *ngIf="occtaxConfig.form_fields.naturalness" 
+      *ngIf="config.OCCTAX.form_fields.naturalness" 
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature 
@@ -186,7 +186,7 @@
       class="col-lg-4 col-sm-6"
     -->
     <div
-      *ngIf="occtaxConfig.form_fields.bio_status"
+      *ngIf="config.OCCTAX.form_fields.bio_status"
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
@@ -199,7 +199,7 @@
     </div>
 
     <div 
-      *ngIf="occtaxConfig.form_fields.behaviour" 
+      *ngIf="config.OCCTAX.form_fields.behaviour" 
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature 
@@ -212,7 +212,7 @@
       </pnx-nomenclature>
     </div>
     <div 
-      *ngIf="occtaxConfig.form_fields.source_status" 
+      *ngIf="config.OCCTAX.form_fields.source_status" 
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature 
@@ -224,7 +224,7 @@
     </div>
 
     <div 
-      *ngIf="occtaxConfig.form_fields.blurring" 
+      *ngIf="config.OCCTAX.form_fields.blurring" 
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature 
@@ -237,7 +237,7 @@
   </div>
   <div class="row">
     <div 
-      *ngIf="occtaxConfig.form_fields.exist_proof" 
+      *ngIf="config.OCCTAX.form_fields.exist_proof" 
       class="col-lg-4 col-sm-6" 
       style="margin-bottom: 1rem;"
     >
@@ -253,7 +253,7 @@
     </div>
 
     <div 
-      *ngIf="occtaxConfig.form_fields.digital_proof" 
+      *ngIf="config.OCCTAX.form_fields.digital_proof" 
       class="col-lg-4 col-sm-6"
       [ngClass]="{'d-none': !displayProofFromElements && !occurrenceForm.get('digital_proof').hasError('proofNotNull')}"
     >
@@ -275,7 +275,7 @@
       </small>
     </div>
     <div 
-      *ngIf="occtaxConfig.form_fields.non_digital_proof" 
+      *ngIf="config.OCCTAX.form_fields.non_digital_proof" 
       class="col-lg-4 col-sm-6"
       [ngClass]="{'d-none': !displayProofFromElements && !occurrenceForm.get('non_digital_proof').hasError('proofNotNull')}"
     >
@@ -307,7 +307,7 @@
   </div>
 
 
-  <div *ngIf="occtaxConfig.form_fields.comment_occ">
+  <div *ngIf="config.OCCTAX.form_fields.comment_occ">
     <textarea 
       placeholder="{{ 'Taxon.Comment' | translate }}" 
       class="form-control"
@@ -396,7 +396,7 @@
 
 </mat-accordion>
 
-<pnx-occtax-profiles *ngIf="appConfig.FRONTEND['ENABLE_PROFILES']"></pnx-occtax-profiles>
+<pnx-occtax-profiles *ngIf="config.FRONTEND['ENABLE_PROFILES']"></pnx-occtax-profiles>
 
 <div class="bloc-button">
   <ng-container *ngIf="!(occtaxFormOccurrenceService.occurrence|async); else modifButton">

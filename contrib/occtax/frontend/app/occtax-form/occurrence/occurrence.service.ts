@@ -1,39 +1,28 @@
 import { Injectable } from '@angular/core';
 import {
-  FormBuilder,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormGroup,
   Validators,
-  FormArray,
+  UntypedFormArray,
   ValidatorFn,
   ValidationErrors,
   AbstractControl,
 } from '@angular/forms';
 import { BehaviorSubject, Observable, of, forkJoin, combineLatest } from 'rxjs';
-import {
-  map,
-  filter,
-  switchMap,
-  tap,
-  pairwise,
-  retry,
-  mergeMap,
-  distinctUntilChanged,
-  first,
-  catchError,
-} from 'rxjs/operators';
+import { map, filter, switchMap, tap, pairwise, retry, catchError } from 'rxjs/operators';
+import * as cloneDeep from 'lodash/cloneDeep';
 import { CommonService } from '@geonature_common/service/common.service';
 import { OcctaxFormService } from '../occtax-form.service';
 import { OcctaxFormCountingsService } from '../counting/countings.service';
 import { OcctaxDataService } from '../../services/occtax-data.service';
 import { OcctaxFormParamService } from '../form-param/form-param.service';
 import { OcctaxTaxaListService } from '../taxa-list/taxa-list.service';
-import { DataFormService } from '@geonature_common/form/data-form.service';
-import { ModuleConfig } from '../../module.config';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class OcctaxFormOccurrenceService {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public taxref: BehaviorSubject<any> = new BehaviorSubject(null);
   public lifeStage: BehaviorSubject<any> = new BehaviorSubject(null);
   public occurrence: BehaviorSubject<any> = new BehaviorSubject(null);
@@ -50,7 +39,7 @@ export class OcctaxFormOccurrenceService {
   public formFieldsStatus: any;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private commonService: CommonService,
     private occtaxFormService: OcctaxFormService,
     private occtaxFormCountingsService: OcctaxFormCountingsService,
@@ -58,7 +47,7 @@ export class OcctaxFormOccurrenceService {
     private occtaxParamS: OcctaxFormParamService,
     private occtaxTaxaListService: OcctaxTaxaListService,
     private dateParser: NgbDateParserFormatter,
-    private _dataS: DataFormService
+    public config: ConfigService
   ) {
     this.initForm();
     this.setObservables();
@@ -177,7 +166,7 @@ export class OcctaxFormOccurrenceService {
           this.form
             .get('digital_proof')
             .setValidators(
-              ModuleConfig.digital_proof_validator
+              this.config.OCCTAX.digital_proof_validator
                 ? Validators.pattern('^(http://|https://|ftp://){1}.+$')
                 : []
             );
@@ -264,8 +253,8 @@ export class OcctaxFormOccurrenceService {
       );
   }
 
-  addCountingForm(form: FormGroup): void {
-    (this.form.get('cor_counting_occtax') as FormArray).push(form);
+  addCountingForm(form: UntypedFormGroup): void {
+    (this.form.get('cor_counting_occtax') as UntypedFormArray).push(form);
   }
 
   getCdNomenclatureById(IdNomenclature, DATA) {
@@ -365,7 +354,7 @@ export class OcctaxFormOccurrenceService {
     this.occurrence.next(null);
   }
 
-  private clearFormArray(formArray: FormArray) {
+  private clearFormArray(formArray: UntypedFormArray) {
     while (formArray.length !== 0) {
       formArray.removeAt(0);
     }
@@ -381,7 +370,7 @@ export class OcctaxFormOccurrenceService {
 }
 
 export const proofRequiredValidator: ValidatorFn = (
-  control: FormGroup
+  control: UntypedFormGroup
 ): ValidationErrors | null => {
   const digital_proof = control.get('digital_proof');
   const non_digital_proof = control.get('non_digital_proof');

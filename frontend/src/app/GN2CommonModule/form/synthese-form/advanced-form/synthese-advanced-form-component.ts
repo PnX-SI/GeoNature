@@ -1,13 +1,13 @@
-import { Component, OnInit, ViewChild, AfterContentInit, Inject } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
+import { UntypedFormGroup } from '@angular/forms';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode, TreeComponent, IActionMapping } from '@circlon/angular-tree-component';
 
-import { APP_CONFIG_TOKEN } from '@geonature_config/app.config';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-validation-taxon-advanced',
@@ -24,19 +24,19 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   public selectedNodes = [];
   public expandedNodes = [];
   public taxhubAttributes: any;
-  public attributForm: FormGroup;
+  public attributForm: UntypedFormGroup;
   public formBuilded = false;
   public queryString = { add_rank: true, rank_limit: 'GN' };
-  public showTree = false;
+  public isCollapseTree = true;
 
   constructor(
-    @Inject(APP_CONFIG_TOKEN) private cfg,
     public activeModal: NgbActiveModal,
     public formService: SyntheseFormService,
-    public storeService: TaxonAdvancedStoreService
+    public storeService: TaxonAdvancedStoreService,
+    public config: ConfigService
   ) {
     // Set config parameters
-    this.URL_AUTOCOMPLETE = this.cfg.API_TAXHUB + '/taxref/search/lb_nom';
+    this.URL_AUTOCOMPLETE = this.config.API_TAXHUB + '/taxref/search/lb_nom';
 
     const actionMapping: IActionMapping = {
       mouse: {
@@ -66,10 +66,6 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   mapFunc(item) {
     item['displayed_name'] = '<b>' + item.lb_nom + ' </b>  <small> (' + item.nom_rang + ')</small>';
     return item;
-  }
-
-  toggleTree() {
-    this.showTree = !this.showTree;
   }
 
   // Algo pour 'expand' tous les noeud fils recursivement à partir un noeud parent

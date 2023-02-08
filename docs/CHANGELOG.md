@@ -6,21 +6,49 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
-- Synthèse : Agrégation des observations ayant la même géométrie (#1847) 
+- Configuration dynamique du frontend : le frontend récupère dynamiquement sa configuration depuis le backend. Pour cela, il nécessite uniquement l’adresse de l’``API_ENDPOINT`` qui doit être renseigné dans le fichier ``frontend/src/assets/config.json``. En conséquence, il n’est plus nécessaire de rebuilder le frontend lors d’une modification de la configuration (#2205)
+- Personnalisation de la page d’accueil : ajout d’une section `[HOME]` contenant les paramètres `TITLE`, `INTRODUCTION` et `FOOTER`. Ceux-ci peuvent contenir du code HTML qui est chargé dynamiquement avec la configuration, évitant ainsi la nécessité d’un rebuild du frontend (#2300)
+- Synthèse : Agrégation des observations ayant la même géométrie (#1847)
 - Synthèse : Possibilité d'afficher les données agrégées par maille (#1878)
+- Champs additionnels: Les formulaires de type `radio`, `select`, `multiselect` et `checkbox`, attendent désormais une liste de dictionnaire `{value, label}` (voir doc des champs additionnels).
+  La rétrocompatibilité avec des listes simples est maintenue, mais vous êtes invité à modifier ces champs dans le backoffice.
+  Pour conserver le bon affichage lors de l'édition des données, renseignez l'ancienne valeur deux fois dans la clé `value` et la clé `label`.
 
 **💻 Développement**
 
 - Suppression de l'utilisation de `get_role` dans les modules Synthese & Validation (#2162)
 
+**⚠️ Notes de version**
 
-2.11.1 (unreleased)
+- La configuration dynamique nécessite de renseigner l’URL de l’API dans un nouveau fichier.
+  Pour cela, désamplez le fichier `frontend/src/assets/config.sample.json` : `cp  frontend/src/assets/config.sample.json frontend/src/assets/config.json` et renseignez uniquement l'URL de l'API GeoNature (identique au paramètre `API_ENDPOINT` dans la configuration du backend).
+
+- Si vous aviez surcouché la page d’accueil de GeoNature en modifiant les composants `frontend/src/custom/introduction.component.html` et `frontend/src/custom/footer.component.html`, il vous faut déplacer votre code dans les paramètres `TITLE`, `INTRODUCTION` et `FOOTER` de la nouvelle section `[HOME]` de la configuration de GeoNature.
+  Vous pouvez renseigner du code HTML sur plusieurs lignes en le plaçant entre triple quote (`"""<b>Hello</b>"""`).
+
+- Les champs additionnels de type `bool_radio` ne sont plus supportés.
+  Si vous utilisiez ce type de widget dans vos champs additionnels d'Occtax, ils seront automatiquement remplacés par un widget de type `radio`.
+  Vous devez changer le champs `field_values` sur le modèle suivant : `[{"label": "Mon label vrai", "value": true }, {"label": "Mon label faux", "value": false }]`.
+
+
+2.11.2 (2023-01-19)
 -------------------
 
 **🐛 Corrections**
 
-- Correction de la documentation de la sensibilité
-- Correction de l’accès aux notifications lorsque la gestion des utilisateurs est activée
+- Correction d'un import manquant dans un fichier de migration des données d'exemple d'Occtax (#2285)
+- Correction d'un problème de l'installation globale en mode développement
+
+
+2.11.1 (2023-01-18)
+-------------------
+
+**🐛 Corrections**
+
+- Correction de la documentation de la sensibilité (#2234)
+- Correction de l’accès aux notifications lorsque la gestion des comptes utilisateurs est activée
+- Correction des migrations Alembic des données d’exemple Occtax afin de supporter les migrations depuis GeoNature ≤ 2.9 (#2240, #2248)
+- Correction de la commande ``upgrade-modules-db`` afin de supporter les anciens modules dont le passage à Alembic nécessite un stamp manuel
 
 
 2.11.0 - Ilex aquifolium 🎄 (2022-12-21)

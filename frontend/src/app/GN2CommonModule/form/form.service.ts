@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, ValidatorFn, FormGroup, FormControl } from '@angular/forms';
+import { AbstractControl, ValidatorFn, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 // import { FormGroup, FormControl } from "@angular/forms/src/model";
 import { Subscription } from 'rxjs';
 
@@ -8,12 +8,12 @@ export class FormService {
   constructor() {}
 
   dateValidator(dateMinControl: AbstractControl, dateMaxControl: AbstractControl): ValidatorFn {
-    return (formGroup: FormGroup): { [key: string]: boolean } => {
+    return (formGroup: UntypedFormGroup): { [key: string]: boolean } => {
       const dateMin = dateMinControl.value;
       const dateMax = dateMaxControl.value;
       if (dateMin && dateMax) {
-        const formatedDateMin = new Date(dateMin.year, dateMin.month, dateMin.day);
-        const formatedDateMax = new Date(dateMax.year, dateMax.month, dateMax.day);
+        const formatedDateMin = new Date(dateMin.year, dateMin.month - 1, dateMin.day);
+        const formatedDateMax = new Date(dateMax.year, dateMax.month - 1, dateMax.day);
         if (formatedDateMax < formatedDateMin) {
           return {
             invalidDate: true,
@@ -37,7 +37,7 @@ export class FormService {
     maxControl: AbstractControl,
     validatorKeyName: string
   ): ValidatorFn {
-    return (formGroup: FormGroup): { [key: string]: boolean } => {
+    return (formGroup: UntypedFormGroup): { [key: string]: boolean } => {
       const altMin = minControl.value;
       const altMax = maxControl.value;
       if (altMin && altMax && altMin > altMax) {
@@ -56,7 +56,7 @@ export class FormService {
     hourMinControl: AbstractControl,
     hourMaxControl: AbstractControl
   ) {
-    return (formGroup: FormGroup): { [key: string]: boolean } => {
+    return (formGroup: UntypedFormGroup): { [key: string]: boolean } => {
       const invalidHour = this.invalidHour(
         dateMinControl,
         dateMaxControl,
@@ -132,7 +132,7 @@ export class FormService {
     dateMaxControlName = 'date_max'
   ): Subscription {
     // date max autocomplete
-    const dateMinControl: FormControl = formControl.get(dateMinControlName);
+    const dateMinControl: UntypedFormControl = formControl.get(dateMinControlName);
     const subscription = dateMinControl.valueChanges.subscribe((newvalue) => {
       // Get mindate and maxdate value before mindate change
       let oldmindate = formControl.value['date_min'];

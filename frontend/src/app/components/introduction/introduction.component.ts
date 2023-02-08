@@ -1,17 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-introduction',
   styleUrls: ['introduction.component.scss'],
-  templateUrl: 'introduction.component.html'
+  templateUrl: 'introduction.component.html',
 })
 export class IntroductionComponent implements OnInit {
-  constructor() {}
+  constructor(public config: ConfigService) {}
 
-  ngOnInit() {
-
-  }
-
-
+  ngOnInit() {}
 }

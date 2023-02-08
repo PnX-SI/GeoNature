@@ -8,11 +8,11 @@ import {
   SimpleChanges,
   OnDestroy,
 } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.service';
-import { AppConfig } from '@geonature_config/app.config';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-dynamic-form',
@@ -21,20 +21,19 @@ import { Subscription } from 'rxjs';
 })
 export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   @Input() formDef: any;
-  @Input() form: FormGroup;
+  @Input() form: UntypedFormGroup;
 
   @Input() update;
 
   @Output() change = new EventEmitter<any>();
 
-  public appConfig = AppConfig;
   public rand = Math.ceil(Math.random() * 1e10);
 
-  public formDefComp = {};
+  public formDefComp: any = {};
   public isValInSelectList: boolean = true;
   private _sub: Subscription;
 
-  constructor(private _dynformService: DynamicFormService) {}
+  constructor(private _dynformService: DynamicFormService, public config: ConfigService) {}
 
   ngOnInit() {
     this.setFormDefComp(true);
@@ -54,7 +53,7 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   setFormDefComp(withDefaultValue = false) {
-    this.formDefComp = {};
+    const formDefComp: any = {};
     for (const key of Object.keys(this.formDef)) {
       this.formDefComp[key] = this._dynformService.getFormDefValue(
         this.formDef,
@@ -62,6 +61,17 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
         this.form.value
       );
     }
+
+    // traitement de values pour le type radio, select et multiselect
+    // si on a une liste de valeur
+    // - on la transforme en liste de dictionnaire [...{label, value}...]
+    if (['radio', 'multiselect', 'select', 'checkbox'].includes(this.formDefComp.type_widget)) {
+      this.formDefComp.values = this.formDefComp.values.map((val) => {
+        let isValObject = typeof val === 'object' && !Array.isArray(val) && val !== null;
+        return isValObject ? val : { label: val, value: val };
+      });
+    }
+
     if (this.form !== undefined) {
       // on met à jour les contraintes
       this._dynformService.setControl(
@@ -83,7 +93,7 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
     this.form.patchValue(value);
   }
 
-  onCheckChange(event, formControl: FormControl) {
+  onCheckChange(event, formControl: UntypedFormControl) {
     const currentFormValue = Object.assign([], formControl.value);
     // Selected
     if (event.target.checked) {
@@ -104,7 +114,7 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  onRadioChange(val, formControl: FormControl) {
+  onRadioChange(val, formControl: UntypedFormControl) {
     if (formControl.value === val) {
       // quand on clique sur un bouton déjà coché
       // cela décoche ce dernier

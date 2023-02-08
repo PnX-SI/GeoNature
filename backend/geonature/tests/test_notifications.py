@@ -24,6 +24,16 @@ log = logging.getLogger()
 
 
 @pytest.fixture()
+def notifications_enabled(monkeypatch):
+    monkeypatch.setitem(current_app.config, "NOTIFICATIONS_ENABLED", True)
+
+
+@pytest.fixture(scope="class")
+def clear_default_notification_rules():
+    NotificationRule.query.filter(NotificationRule.id_role.is_(None)).delete()
+
+
+@pytest.fixture()
 def notification_data(users):
     with db.session.begin_nested():
         new_notification = Notification(
@@ -98,17 +108,18 @@ def notification_rule(users, rule_method, rule_category):
             id_role=users["admin_user"].id_role,
             code_method=rule_method.code,
             code_category=rule_category.code,
+            subscribed=True,
         )
         db.session.add(new_notification_rule)
     return new_notification_rule
 
 
-@pytest.fixture()
-def notifications_enabled(monkeypatch):
-    monkeypatch.setitem(current_app.config, "NOTIFICATIONS_ENABLED", True)
-
-
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures(
+    "client_class",
+    "temporary_transaction",
+    "notifications_enabled",
+    "clear_default_notification_rules",
+)
 class TestNotification:
     def test_list_database_notification(self, users, notification_data):
         # Init data for test
@@ -237,47 +248,53 @@ class TestNotification:
         data = response.get_json()
         assert len(data) == 1
 
-    def test_create_rule_ko(self, users, rule_method, rule_category):
-        # Init data for test
-        url = "notifications.create_rule"
-        log.debug("Url d'appel %s", url_for(url))
+    def test_update_rule(self, users, rule_method, rule_category):
+        role = users["user"]
+        subscribe_url = url_for(
+            "notifications.update_rule",
+            code_method=rule_method.code,
+            code_category=rule_category.code,
+            subscribe=True,
+        )
+        unsubscribe_url = url_for(
+            "notifications.update_rule",
+            code_method=rule_method.code,
+            code_category=rule_category.code,
+            subscribe=False,
+        )
 
-        # TEST NO USER
-        response = self.client.put(url_for(url), content_type="application/json")
-        assert response.status_code == 401
+        assert not db.session.query(
+            NotificationRule.query.filter_by(
+                id_role=role.id_role,
+                method=rule_method,
+                category=rule_category,
+            ).exists()
+        ).scalar()
 
-        # TEST CONNECTED USER WITHOUT DATA
-        set_logged_user_cookie(self.client, users["admin_user"])
-        response = self.client.put(url_for(url))
-        assert response.status_code == 400
+        response = self.client.post(subscribe_url)
+        assert response.status_code == Unauthorized.code, response.data
 
-        # TEST CONNECTED USER WITH DATA BUT WRONG KEY
-        set_logged_user_cookie(self.client, users["admin_user"])
-        data = {"method": rule_method.code, "categorie": rule_category.code}
-        response = self.client.put(url_for(url), json=data, content_type="application/json")
-        assert response.status_code == BadRequest.code
+        set_logged_user_cookie(self.client, role)
 
-        # TEST CONNECTED USER WITH DATA BUT WRONG VALUE
-        set_logged_user_cookie(self.client, users["admin_user"])
-        data = {"code_method": 1, "code_category": rule_category.code}
-        response = self.client.put(url_for(url), json=data, content_type="application/json")
-        assert response.status_code == BadRequest.code
-
-    def test_create_rule_ok(self, users, rule_method, rule_category):
-
-        url = "notifications.create_rule"
-        log.debug("Url d'appel %s", url_for(url))
-
-        # TEST SUCCESSFULL RULE CREATION
-        set_logged_user_cookie(self.client, users["user"])
-        data = {"code_method": rule_method.code, "code_category": rule_category.code}
-        response = self.client.put(url_for(url), json=data, content_type="application/json")
+        response = self.client.post(subscribe_url)
         assert response.status_code == 200, response.data
 
-        newRule = response.get_json()
-        assert newRule.get("code_method") == rule_method.code
-        assert newRule.get("code_category") == rule_category.code
-        assert newRule.get("id_role") == users["user"].id_role
+        rule = NotificationRule.query.filter_by(
+            id_role=role.id_role,
+            method=rule_method,
+            category=rule_category,
+        ).one()
+        assert rule.subscribed
+
+        response = self.client.post(unsubscribe_url)
+        assert response.status_code == 200, response.data
+
+        rule = NotificationRule.query.filter_by(
+            id_role=role.id_role,
+            method=rule_method,
+            category=rule_category,
+        ).one()
+        assert not rule.subscribed
 
     def test_delete_all_rules(self, users, notification_rule):
         # Init data for test
@@ -312,37 +329,7 @@ class TestNotification:
             ).exists()
         ).scalar()
 
-    def test_delete_rule(self, users, notification_rule):
-        # Init data for test
-        url = "notifications.delete_rule"
-        log.debug("Url d'appel %s", url_for(url, id=1))
-
-        # TEST NO USER
-        response = self.client.delete(url_for(url, id=1))
-        assert response.status_code == Unauthorized.code
-
-        # TEST CONNECTED USER WITHOUT RULE
-        set_logged_user_cookie(self.client, users["user"])
-        response = self.client.delete(url_for(url, id=notification_rule.id))
-        assert response.status_code == Forbidden.code
-        assert db.session.query(
-            NotificationRule.query.filter_by(
-                id=notification_rule.id,
-            ).exists()
-        ).scalar()
-
-        # TEST CONNECTED USER WITH RULE
-        set_logged_user_cookie(self.client, users["admin_user"])
-        response = self.client.delete(url_for(url, id=notification_rule.id))
-        assert response.status_code == 204
-        assert not db.session.query(
-            NotificationRule.query.filter_by(
-                id=notification_rule.id,
-            ).exists()
-        ).scalar()
-
     def test_list_methods(self, users, rule_method):
-
         # Init data for test
         url = "notifications.list_notification_methods"
         log.debug("Url d'appel %s", url_for(url))
@@ -359,7 +346,6 @@ class TestNotification:
         assert len(data) > 0
 
     def test_list_notification_categories(self, users):
-
         # Init data for test
         url = "notifications.list_notification_categories"
         log.debug("Url d'appel %s", url_for(url))
@@ -377,7 +363,6 @@ class TestNotification:
 
     # test only notification insertion in database whitout dispatch
     def test_send_db_notification(self, users):
-
         result = utils.send_db_notification(
             users["admin_user"], "test creation", "no templating", "https://geonature.fr"
         )
@@ -397,6 +382,7 @@ class TestNotification:
                 id_role=role.id_role,
                 code_method="DB",
                 code_category=rule_category_1.code,
+                subscribed=True,
             )
             db.session.add(new_rule)
 
@@ -428,7 +414,7 @@ class TestNotification:
         assert notif.code_status == "UNREAD"
 
     def test_dispatch_notifications_database_with_like(
-        self, users, rule_category, rule_category_1, rule_template, notifications_enabled
+        self, users, rule_category, rule_category_1, rule_template
     ):
         role = users["user"]
 
@@ -438,6 +424,7 @@ class TestNotification:
                 id_role=role.id_role,
                 code_method="DB",
                 code_category=rule_category_1.code,
+                subscribed=True,
             )
             db.session.add(new_rule)
 
@@ -469,7 +456,7 @@ class TestNotification:
         assert notif.code_status == "UNREAD"
 
     def test_dispatch_notifications_mail_with_template(
-        self, users, rule_category, rule_mail_template, notifications_enabled, celery_eager
+        self, users, rule_category, rule_mail_template, celery_eager
     ):
         with db.session.begin_nested():
             users["user"].email = "user@geonature.fr"
@@ -479,6 +466,7 @@ class TestNotification:
                     id_role=users["user"].id_role,
                     code_method="EMAIL",
                     code_category=rule_category.code,
+                    subscribed=True,
                 )
             )
             db.session.add(
@@ -486,6 +474,7 @@ class TestNotification:
                     id_role=users["admin_user"].id_role,
                     code_method="EMAIL",
                     code_category=rule_category.code,
+                    subscribed=True,
                 )
             )
 

@@ -73,7 +73,6 @@ def parse_acquisition_framwork_xml(xml):
 
 
 def parse_acquisition_framework(ca):
-
     # We extract all the required informations from the different tags of the XML file
     ca_uuid = get_tag_content(ca, "identifiantCadre")
     ca_name_max_length = TAcquisitionFramework.acquisition_framework_name.property.columns[

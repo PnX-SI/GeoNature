@@ -1,47 +1,46 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { AppConfig } from '@geonature_config/app.config';
-import { CommonService } from '@geonature_common/service/common.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Nomenclature } from '@geonature_common/interfaces';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class ValidationDataService {
   public dataLoaded: Boolean = false;
 
-  constructor(private _http: HttpClient, private _commonService: CommonService) {}
+  constructor(private _http: HttpClient, public config: ConfigService) {}
 
   getSyntheseData(params) {
-    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/validation`, params);
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/validation`, params);
   }
 
   postStatus(data: any, endpoint: Array<number>) {
-    const urlStatus = `${AppConfig.API_ENDPOINT}/validation/${endpoint}`;
+    const urlStatus = `${this.config.API_ENDPOINT}/validation/${endpoint}`;
     return this._http.post<Nomenclature>(urlStatus, data);
   }
 
   getValidationDate(uuid) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/validation/date/${uuid}`);
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/validation/date/${uuid}`);
   }
 
   getStatusNames() {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/validation/statusNames`);
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/validation/statusNames`);
   }
 
   getTaxonTree() {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxons_tree`);
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/synthese/taxons_tree`);
   }
 
   getReports(params) {
-    return this._http.get(`${AppConfig.API_ENDPOINT}/synthese/reports?${params}`);
+    return this._http.get(`${this.config.API_ENDPOINT}/synthese/reports?${params}`);
   }
 
   createReport(params) {
-    return this._http.put(`${AppConfig.API_ENDPOINT}/synthese/reports`, params, {
+    return this._http.put(`${this.config.API_ENDPOINT}/synthese/reports`, params, {
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
   }
 
   deleteReport(id) {
-    return this._http.delete(`${AppConfig.API_ENDPOINT}/synthese/reports/${id}`);
+    return this._http.delete(`${this.config.API_ENDPOINT}/synthese/reports/${id}`);
   }
 }

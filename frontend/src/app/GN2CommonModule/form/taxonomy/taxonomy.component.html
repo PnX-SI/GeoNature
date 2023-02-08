@@ -1,4 +1,4 @@
-<div class="collapse" id="collapseExample">
+<div [(ngbCollapse)]="isCollapseTaxonomy">
   <div class="well well-sm well-margin">
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -46,11 +46,9 @@
   />
   <div class="input-group-append" *ngIf="displayAdvancedFilters">
     <button
+      (click)="isCollapseTaxonomy = !isCollapseTaxonomy"
+      [attr.aria-expanded]="!isCollapseTaxonomy"
       class="btn btn-sm btn-outline-shadow"
-      data-toggle="collapse"
-      data-target="#collapseExample"
-      aria-expanded="false"
-      aria-controls="collapseExample"
       matTooltip="Filtrer les taxons proposés à l'autocompletion  par règne et groupe INPN"
     >
       <i class="fa fa-filter" aria-hidden="true"></i>

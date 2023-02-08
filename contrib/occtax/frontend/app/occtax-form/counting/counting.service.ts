@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Observable, Subscription, Subject, combineLatest, of } from 'rxjs';
 import { map, filter, tap, switchMap, pairwise } from 'rxjs/operators';
 import _ from 'lodash';
@@ -16,12 +16,12 @@ export class OcctaxFormCountingService {
   counting: Subject<any[]> = new Subject();
   synchroCountSub: Subscription;
   additionalFieldsForm: any[] = [];
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public data: any;
 
   constructor(
     public dataFormService: DataFormService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private occtaxFormService: OcctaxFormService,
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxFormCountingsService: OcctaxFormCountingsService,
@@ -30,7 +30,6 @@ export class OcctaxFormCountingService {
   ) {
     this.initForm();
     this.setObservables();
-    console.log('INIT ??');
   }
 
   /**

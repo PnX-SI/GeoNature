@@ -30,6 +30,11 @@ echo "Copie des fichiers de configuration…"
 # Copy all config files (installation, GeoNature, modules)
 cp ${previousdir}/config/*.{ini,toml} config/
 
+if [ -d "${previousdir}/custm" ]; do
+    echo "Copie de la customisation…"
+    cp ${previousdir}/custom/* custom/
+done
+
 echo "Vérification de la robustesse de la SECRET_KEY…"
 sk_len=$(grep -E '^SECRET_KEY' config/geonature_config.toml | tail -n 1 | sed 's/SECRET_KEY = ['\''"]\(.*\)['\''"]/\1/' | wc -c)
 if [ $sk_len -lt 20 ]; then
@@ -49,14 +54,6 @@ cp ${previousdir}/frontend/src/favicon.ico frontend/src/favicon.ico
 # Handle frontend custom components
 cp -r ${previousdir}/frontend/src/custom/* frontend/src/custom/
 
-echo "Création des fichiers des nouveaux composants personnalisables du frontend..."
-custom_component_dir="${currentdir}/frontend/src/custom/components/"
-for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
-    if [[ ! -f "${file%.sample}" ]]; then
-        cp "${file}" "${file%.sample}"
-    fi
-done
-
 echo "Récupération des fichiers statiques …"
 cd "${currentdir}/backend/static"
 for static_dir in "${previousdir}"/backend/static/*; do
@@ -65,6 +62,14 @@ for static_dir in "${previousdir}"/backend/static/*; do
     fi
     cp -a "${static_dir}" .
 done
+
+if [[ ! -f src/assets/config.json ]]; then
+  echo "Création du fichiers de configuration du frontend"
+  cp -n src/assets/config.sample.json src/assets/config.json
+fi
+
+api_end_point=$(geonature get-config API_ENDPOINT)
+sed -i 's|"API_ENDPOINT": .*$|"API_ENDPOINT" : "'${api_end_point}'"|' src/assets/config.json
 
 echo "Mise à jour de node si nécessaire …"
 cd "${currentdir}"/frontend
@@ -145,7 +150,7 @@ echo "Mise à jour de la base de données…"
 # *avant* de mettre à jour GeoNature (contrainte NOT NULL sur id_source dans la synthèse)
 # Voir https://github.com/PnX-SI/GeoNature/issues/2186#issuecomment-1337684933
 geonature db heads | grep "(occtax)" > /dev/null && geonature db upgrade occtax@4c97453a2d1a
-geonature db autoupgrade
+geonature db autoupgrade || exit 1
 geonature upgrade-modules-db
 
 echo "Redémarrage des services…"

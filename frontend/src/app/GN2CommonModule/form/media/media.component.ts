@@ -1,13 +1,12 @@
-import { Observable, Subscription } from 'rxjs';
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { Media } from './media';
 import { mediaFormDefinitionsDict } from './media-form-definition';
-import { FormBuilder } from '@angular/forms';
 import { MediaService } from '@geonature_common/service/media.service';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { CommonService } from '@geonature_common/service/common.service';
 import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-media',
@@ -15,9 +14,7 @@ import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.servi
   styleUrls: ['./media.scss'],
 })
 export class MediaComponent implements OnInit {
-  // public mediaSave: Media = new Media();
-
-  public mediaForm: FormGroup;
+  public mediaForm: UntypedFormGroup;
 
   public mediaFormDefinition = null;
 
@@ -46,10 +43,10 @@ export class MediaComponent implements OnInit {
   @Input() hideDetailsFields: boolean = false;
 
   constructor(
-    private _formBuilder: FormBuilder,
     public ms: MediaService,
     private _commonService: CommonService,
-    private _dynformService: DynamicFormService
+    private _dynformService: DynamicFormService,
+    public config: ConfigService
   ) {}
 
   ngOnInit() {

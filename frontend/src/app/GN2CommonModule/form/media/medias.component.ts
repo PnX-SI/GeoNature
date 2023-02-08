@@ -1,15 +1,8 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  ViewEncapsulation,
-  SimpleChanges,
-} from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
 import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-medias',
@@ -25,7 +18,7 @@ export class MediasComponent implements OnInit {
 
   @Input() default: Object = {};
 
-  @Input() parentFormControl: FormControl;
+  @Input() parentFormControl: UntypedFormControl;
   @Input() details = [];
 
   @Input() disabled = false;
@@ -35,7 +28,7 @@ export class MediasComponent implements OnInit {
 
   public bInitialized: boolean;
 
-  constructor(public ms: MediaService) {}
+  constructor(public ms: MediaService, public config: ConfigService) {}
 
   ngOnInit() {
     this.ms.getNomenclatures().subscribe(() => {
@@ -67,7 +60,7 @@ export class MediasComponent implements OnInit {
     if (!this.parentFormControl.value) {
       this.parentFormControl.patchValue([]);
     }
-    this.parentFormControl.value.push(new Media());
+    this.parentFormControl.value.push(new Media({}));
     this.parentFormControl.patchValue(this.parentFormControl.value);
   }
 
@@ -82,9 +75,7 @@ export class MediasComponent implements OnInit {
 
     // si le media existe déjà en base => route DELETE
     if (media.id_media) {
-      this.ms.deleteMedia(media.id_media).subscribe(() => {
-        console.log(`delete media ${media.id_media}`);
-      });
+      this.ms.deleteMedia(media.id_media).subscribe();
     }
     this.parentFormControl.patchValue(this.parentFormControl.value);
   }

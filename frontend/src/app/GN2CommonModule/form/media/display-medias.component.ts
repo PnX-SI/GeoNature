@@ -1,18 +1,10 @@
 import { DomSanitizer } from '@angular/platform-browser';
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  ViewEncapsulation,
-  SimpleChanges,
-  Inject,
-} from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MediaDialog } from './media-dialog.component';
+import { ConfigService } from '@geonature/services/config.service';
 
 export interface MediaDialogData {
   medias: Array<Media>;
@@ -35,7 +27,12 @@ export class DisplayMediasComponent {
   public bInitialized = false;
   public innerHTMLPDF = {};
 
-  constructor(public ms: MediaService, public dialog: MatDialog, public _sanitizer: DomSanitizer) {}
+  constructor(
+    public ms: MediaService,
+    public dialog: MatDialog,
+    public _sanitizer: DomSanitizer,
+    public config: ConfigService
+  ) {}
 
   ngOnInit() {
     this.initMedias();
@@ -81,7 +78,9 @@ export class DisplayMediasComponent {
   }
 
   getSafeUrl(index) {
-    return this._sanitizer.bypassSecurityTrustResourceUrl(this.medias[index].href());
+    return this._sanitizer.bypassSecurityTrustResourceUrl(
+      this.medias[index].href(this.config.API_ENDPOINT, this.config.MEDIA_FOLDER)
+    );
   }
 
   getSafeEmbedUrl(index) {

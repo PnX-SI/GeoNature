@@ -32,7 +32,7 @@
       >
         <label
           [ngStyle]="{
-            'background-color': VALIDATION_CONFIG.STATUS_INFO[item.cd_nomenclature]?.color,
+            'background-color': config.VALIDATION.STATUS_INFO[item.cd_nomenclature]?.color,
             'color': ['0', '6'].includes(item.cd_nomenclature) ? 'darkslategray' : 'white',
             'border-color': ['0', '6'].includes(item.cd_nomenclature) ? 'rgba(0,0,0,0.2)' : 'transparent'
           }"
@@ -92,8 +92,8 @@
 <pnx-synthese-info-obs
   *ngIf="!edit"
   [idSynthese]="id_synthese"
-  [mailCustomSubject]="VALIDATION_CONFIG.MAIL_SUBJECT"
-  [mailCustomBody]="VALIDATION_CONFIG.MAIL_BODY"
+  [mailCustomSubject]="config.VALIDATION.MAIL_SUBJECT"
+  [mailCustomBody]="config.VALIDATION.MAIL_BODY"
   useFrom="validation"
 >
   <button

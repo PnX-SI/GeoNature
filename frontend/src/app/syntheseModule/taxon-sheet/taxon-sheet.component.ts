@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ConfigService } from '@geonature/services/config.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '@geonature_common/service/common.service';
 
 @Component({
@@ -17,7 +17,8 @@ export class TaxonSheetComponent implements OnInit {
   constructor(
     private _route: ActivatedRoute,
     private _ds: DataFormService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -32,15 +33,14 @@ export class TaxonSheetComponent implements OnInit {
               this.profilArea = profil;
               this._ds.getTaxonAttributsAndMedia(taxon.cd_ref).subscribe((taxonAttrAndMedias) => {
                 const media = taxonAttrAndMedias.medias.find(
-                  (m) => m.id_type == AppConfig['TAXHUB']['ID_TYPE_MAIN_PHOTO']
+                  (m) => m.id_type == this.config['TAXHUB']['ID_TYPE_MAIN_PHOTO']
                 );
                 if (media) {
-                  this.mediaUrl = `${AppConfig.API_TAXHUB}/tmedias/thumbnail/${media.id_media}?h=300&w300`;
+                  this.mediaUrl = `${this.config.API_TAXHUB}/tmedias/thumbnail/${media.id_media}?h=300&w300`;
                 }
               });
             },
             (errors) => {
-              console.log(errors);
               if (errors.status == 404) {
                 this._commonService.regularToaster('warning', 'Aucune donnée pour ce taxon');
               }

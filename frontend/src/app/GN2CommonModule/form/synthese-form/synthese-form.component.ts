@@ -2,12 +2,12 @@ import { Component, OnInit, Output, EventEmitter, Input, ViewEncapsulation } fro
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AppConfig } from '@geonature_config/app.config';
 import { MapService } from '@geonature_common/map/map.service';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ActivatedRoute } from '@angular/router';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-synthese-search',
@@ -17,11 +17,13 @@ import { ActivatedRoute } from '@angular/router';
   encapsulation: ViewEncapsulation.None,
 })
 export class SyntheseSearchComponent implements OnInit {
-  public AppConfig = AppConfig;
   public organisms: Array<any>;
-  public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
+  public taxonApiEndPoint = null;
   public validationStatus: Array<any>;
   private params: any;
+
+  public isCollapsePeriod = true;
+  public isCollapseScore = true;
 
   @Input() displayValidation = false;
   @Output() searchClicked = new EventEmitter();
@@ -34,11 +36,13 @@ export class SyntheseSearchComponent implements OnInit {
     public mapService: MapService,
     private _storeService: TaxonAdvancedStoreService,
     private _api: DataFormService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public config: ConfigService
   ) {
     this.route.queryParams.subscribe((params) => {
       this.params = params;
     });
+    this.taxonApiEndPoint = `${this.config.API_ENDPOINT}/synthese/taxons_autocomplete`;
   }
 
   ngOnInit() {

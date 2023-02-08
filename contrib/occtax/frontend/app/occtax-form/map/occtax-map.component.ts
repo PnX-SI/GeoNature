@@ -1,10 +1,9 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
 import { CommonService } from '@geonature_common/service/common.service';
-import { ModuleConfig } from '../../module.config';
 import { MapService } from '@geonature_common/map/map.service';
 import { OcctaxFormMapService } from './occtax-map.service';
-import { OcctaxFormService } from '../occtax-form.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-occtax-form-map',
@@ -13,7 +12,6 @@ import { OcctaxFormService } from '../occtax-form.service';
 export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy {
   public leafletDrawOptions: any;
   public firstFileLayerMessage = true;
-  public occtaxConfig = ModuleConfig;
 
   public coordinates = null;
   public geometry = null;
@@ -22,8 +20,8 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
   constructor(
     public ms: OcctaxFormMapService,
     private _commonService: CommonService,
-    private _occtaxFormService: OcctaxFormService,
-    private _mapService: MapService
+    private _mapService: MapService,
+    public config: ConfigService
   ) {}
 
   ngOnInit() {

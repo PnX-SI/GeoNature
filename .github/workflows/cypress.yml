@@ -106,13 +106,13 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: install frontend
+      - name: generate frontend config
         run: |
           cp ./config/settings.ini.sample ./config/settings.ini 
           geonature generate_frontend_config
           ./install/05_install_frontend.sh --ci
         env:
-          GEONATURE_CONFIG_FILE: config/test_config.toml
+          GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
       - name: Show generated frontend config
         run: |
           cat ./frontend/src/conf/app.config.ts
@@ -135,6 +135,5 @@ jobs:
           wait-on: http://127.0.0.1:4200
           headless: true
         env:
-          is_master:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

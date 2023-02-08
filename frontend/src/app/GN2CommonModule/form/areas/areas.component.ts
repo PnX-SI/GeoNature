@@ -8,10 +8,8 @@ import {
   tap,
   catchError,
   map,
-  distinct,
 } from 'rxjs/operators';
 
-import { AppConfig } from '@geonature_config/app.config';
 import { DataFormService } from '../data-form.service';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # backend
-black --config pyproject.toml backend/geonature contrib/*/backend
+black .
 
 # frontend
 cd frontend
