@@ -33,7 +33,6 @@ from .models import (
     TRelevesOccurrence,
     TOccurrencesOccurrence,
     CorCountingOccurrence,
-    VReleveOccurrence,
     DefaultNomenclaturesValue,
 )
 from .repositories import (
@@ -219,66 +218,6 @@ def getOneReleve(id_releve, info_role):
     }
 
     return releveCruvedSchema.dump(releve_cruved)
-
-
-@blueprint.route("/<module_code>/vreleveocctax", methods=["GET"])
-@blueprint.route("/vreleveocctax", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
-@json_resp
-def getViewReleveOccurrence(info_role):
-    """
-    Deprecated
-    """
-    releve_repository = ReleveRepository(VReleveOccurrence)
-    q = releve_repository.get_filtered_query(info_role)
-
-    parameters = request.args
-
-    nbResultsWithoutFilter = DB.session.query(VReleveOccurrence).count()
-
-    limit = int(parameters.get("limit")) if parameters.get("limit") else 100
-    page = int(parameters.get("offset")) if parameters.get("offset") else 0
-
-    # Filters
-    for param in parameters:
-        if param in VReleveOccurrence.__table__.columns:
-            col = getattr(VReleveOccurrence.__table__.columns, param)
-            q = q.filter(col == parameters[param])
-
-    # Order by
-    if "orderby" in parameters:
-        if parameters.get("orderby") in VReleveOccurrence.__table__.columns:
-            orderCol = getattr(VReleveOccurrence.__table__.columns, parameters["orderby"])
-
-        if "order" in parameters:
-            if parameters["order"] == "desc":
-                orderCol = orderCol.desc()
-
-        q = q.order_by(orderCol)
-
-    data = q.limit(limit).offset(page * limit).all()
-
-    user = info_role
-    user_cruved = get_or_fetch_user_cruved(
-        session=session,
-        id_role=info_role.id_role,
-        module_code=g.current_module.module_code,
-        id_application_parent=current_app.config["ID_APPLICATION_GEONATURE"],
-    )
-    featureCollection = []
-
-    for n in data:
-        releve_cruved = n.get_releve_cruved(user, user_cruved)
-        feature = n.get_geofeature()
-        feature["properties"]["rights"] = releve_cruved
-        featureCollection.append(feature)
-
-    if data:
-        return {
-            "items": FeatureCollection(featureCollection),
-            "total": nbResultsWithoutFilter,
-        }
-    return {"message": "not found"}, 404
 
 
 @blueprint.route("/<module_code>/releve", methods=["POST"])

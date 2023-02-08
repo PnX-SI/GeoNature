@@ -271,47 +271,6 @@ class TRelevesOccurrence(ReleveModel):
 
 
 @serializable
-@geoserializable
-class VReleveOccurrence(ReleveModel):
-    __tablename__ = "v_releve_occtax"
-    __table_args__ = {"schema": "pr_occtax"}
-    id_releve_occtax = DB.Column(DB.Integer)
-    id_dataset = DB.Column(DB.Integer)
-    id_digitiser = DB.Column(DB.Integer)
-    date_min = DB.Column(DB.DateTime)
-    date_max = DB.Column(DB.DateTime)
-    altitude_min = DB.Column(DB.Integer)
-    altitude_max = DB.Column(DB.Integer)
-    depth_min = DB.Column(DB.Integer)
-    depth_max = DB.Column(DB.Integer)
-    place_name = DB.Column(DB.Unicode)
-    meta_device_entry = DB.Column(DB.Unicode)
-    comment = DB.Column(DB.Unicode)
-    geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
-    id_occurrence_occtax = DB.Column(DB.Integer, primary_key=True)
-    cd_nom = DB.Column(DB.Integer)
-    nom_cite = DB.Column(DB.Unicode)
-    lb_nom = DB.Column(DB.Unicode)
-    nom_valide = DB.Column(DB.Unicode)
-    nom_vern = DB.Column(DB.Unicode)
-    leaflet_popup = DB.Column(DB.Unicode)
-    observateurs = DB.Column(DB.Unicode)
-    observers = DB.relationship(
-        User,
-        secondary=corRoleRelevesOccurrence.__table__,
-        primaryjoin=(corRoleRelevesOccurrence.id_releve_occtax == id_releve_occtax),
-        secondaryjoin=(corRoleRelevesOccurrence.id_role == User.id_role),
-        foreign_keys=[
-            corRoleRelevesOccurrence.id_releve_occtax,
-            corRoleRelevesOccurrence.id_role,
-        ],
-    )
-
-    def get_geofeature(self, recursif=True):
-        return self.as_geofeature("geom_4326", "id_occurrence_occtax", recursif)
-
-
-@serializable
 class DefaultNomenclaturesValue(DB.Model):
     __tablename__ = "defaults_nomenclatures_value"
     __table_args__ = {"schema": "pr_occtax"}
