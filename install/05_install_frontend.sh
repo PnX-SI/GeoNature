@@ -53,10 +53,10 @@ parseScriptOptions "${@}"
 
 
 write_log "Préparation du frontend..."
-
-# Create external assets directory
 cd "${BASE_DIR}/frontend"
-mkdir -p "src/external_assets"
+
+echo "Activation du venv..."
+source "${BASE_DIR}/backend/venv/bin/activate"
 
 # create config.json
 if [[ ! -f src/assets/config.json ]]; then
@@ -74,18 +74,12 @@ if [[ ! -f src/assets/custom.css ]]; then
   cp -n src/assets/custom.sample.css src/assets/custom.css
 
 fi
+echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
+# Generate the app.config.ts
+geonature generate-frontend-config
 
-if [[ -z "${CI}" || "${CI}" == false ]] ; then
-  echo "Activation du venv..."
-  source "${BASE_DIR}/backend/venv/bin/activate"
-
-  echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
-  # Generate the app.config.ts
-  geonature generate-frontend-config
-
-  echo "Désactivation du venv..."
-  deactivate
-fi
+echo "Désactivation du venv..."
+deactivate
 
 if [[ "${CI}" == true ]] ; then
   echo "Cypress dans Github action se charge de lancer Npm build et install"
