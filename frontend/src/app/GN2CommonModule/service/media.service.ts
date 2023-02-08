@@ -262,7 +262,9 @@ export class MediaService {
       tooltip += `<img style='
       height: 50px; width: 50px; border-radius: 25px; object-fit: cover;
       '
-      src='${media.href(this.config.API_ENDPOINT, this.config.MEDIA_URL, 50)}' alt='${media.title_fr}' >`; // TODO PARAMETERS => taille des thumbnails
+      src='${media.href(this.config.API_ENDPOINT, this.config.MEDIA_URL, 50)}' alt='${
+        media.title_fr
+      }' >`; // TODO PARAMETERS => taille des thumbnails
     } else {
       tooltip += `
       <div style='
