@@ -340,6 +340,8 @@ def _get_scopes_by_action(id_role, module_code, object_code):
 def get_scopes_by_action(id_role=None, module_code=None, object_code=None):
     if id_role is None:
         id_role = g.current_user.id_role
+    if module_code is None and hasattr(g, "current_module"):
+        module_code = g.current_module.module_code
     if "scopes_by_action" not in g:
         g.scopes_by_action = dict()
     key = (id_role, module_code, object_code)
