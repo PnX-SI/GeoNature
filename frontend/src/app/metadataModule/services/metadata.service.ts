@@ -67,15 +67,15 @@ export class MetadataService {
   }
 
   search(term: string) {
-    //TODO: add advanced search query strings here
-    const formValue = this.formatFormValue(Object.assign({}, this.form.value));
+    //Add advanced search query strings here but omit the selector since 
+    // quick search must return AF and DS
+    const {selector, ...formValue} = this.formatFormValue({...this.form.value});
     const params = {
       ...(term !== '' ? { search: term } : {}),
       // formValue will always has selector as a non null property: need to
       // filter out when only selector is null
-      ...(Object.keys(formValue).length > 1 ? formValue : {}),
+      ...(formValue),
     };
-
     return this.getMetadataObservable(params)
       .pipe(
         tap(() => {
@@ -104,7 +104,7 @@ export class MetadataService {
         //val: {afs: CA[], datasetNbObs: {id_dataset: number, count: number}[]}
         //boucle sur les CA pour attribuer le nombre de données au JDD et création de la clé datasetsTemp
         for (let i = 0; i < val.afs.length; i++) {
-          this.setDsObservationCount(val.afs[i]['datasets'], val.datasetNbObs);
+          this.setDsObservationCount(val.afs[i]['t_datasets'], val.datasetNbObs);
         }
         //renvoie uniquement les CA
         return val.afs;
@@ -134,7 +134,7 @@ export class MetadataService {
       .replace(/[\u0300-\u036f]/g, '');
   }
 
-  formatFormValue(formValue) {
+  formatFormValue(formValue): any {
     const formatedForm = {};
     Object.keys(formValue).forEach((key) => {
       if (key == 'date' && formValue['date']) {
