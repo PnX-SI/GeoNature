@@ -58,23 +58,23 @@ export class MetadataService {
         }
       });
     this.config.METADATA.METADATA_AREA_FILTERS.forEach((area) => {
-        const control_name = 'area_' + area['type_code'].toLowerCase();
-        this.form.addControl(control_name, new UntypedFormControl(new Array()));
-        const control = this.form.controls[control_name];
-        area['control'] = control;
-      });
-      this.formBuilded = true;
+      const control_name = 'area_' + area['type_code'].toLowerCase();
+      this.form.addControl(control_name, new UntypedFormControl(new Array()));
+      const control = this.form.controls[control_name];
+      area['control'] = control;
+    });
+    this.formBuilded = true;
   }
 
   search(term: string) {
-    //Add advanced search query strings here but omit the selector since 
+    //Add advanced search query strings here but omit the selector since
     // quick search must return AF and DS
-    const {selector, ...formValue} = this.formatFormValue({...this.form.value});
+    const { selector, ...formValue } = this.formatFormValue({ ...this.form.value });
     const params = {
       ...(term !== '' ? { search: term } : {}),
       // formValue will always has selector as a non null property: need to
       // filter out when only selector is null
-      ...(formValue),
+      ...formValue,
     };
     return this.getMetadataObservable(params)
       .pipe(
