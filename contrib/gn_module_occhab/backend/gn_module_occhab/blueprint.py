@@ -1,7 +1,6 @@
 import datetime
 import json
 import geojson
-from jsonschema import validate as validate_json, ValidationError
 from marshmallow import EXCLUDE, INCLUDE
 
 from flask import (
