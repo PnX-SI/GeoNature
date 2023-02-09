@@ -14,9 +14,6 @@ Installer les paquets suivants :
   $ sudo apt install unzip git postgresql postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis
 
 
-Note : le paquet ``redis`` n’est pas nécessaire si vous ne souhaitez pas installer le worker celery.
-
-
 Installation de l'application
 -----------------------------
 
@@ -69,14 +66,14 @@ Configuration Apache
 
 * Copiez et adaptez le fichier de configuration d’exemple d’Apache de GeoNature :
 
-  ::
+  .. code:: console
 
     $ sudo cp install/assets/geonature_apache.conf /etc/apache2/sites-available/geonature.conf
     $ sudo nano /etc/apache2/sites-available/geonature.conf
 
 * Activez les modules suivants :
 
-  ::
+  .. code:: console
 
     $ sudo a2enmod rewrite
     $ sudo a2enmod proxy
@@ -84,13 +81,13 @@ Configuration Apache
 
 * Activez la nouvelle configuration:
 
-  ::
+  .. code:: console
 
     $ sudo a2ensite geonature.conf
 
 * et redémarrez Apache:
 
-  ::
+  .. code:: console
 
     $ sudo systemctl restart apache2
 
@@ -130,19 +127,17 @@ Lancer le script d'installation de l'application :
 
 ::
 
-    mkdir var 
-    mkdir var/log
-    touch var/log/install_app.log
-    ./install_app.sh 2>&1 | tee var/log/install_app.log
+    ./install_app.sh 2>&1 | tee install_app.log
 
-Suite à l'execution de ce script, l'application Taxhub a été lancé automatiquement par le superviseur et est disponible à l'adresse ``127.0.0.1:5000`` (et l'API, à ``127.0.0.1:5000/api``)
+Suite à l'execution de ce script, l'application Taxhub a été lancé automatiquement par le superviseur et est disponible à l'adresse ``http://127.0.0.1:5000`` (et l'API, à ``http://127.0.0.1:5000/api``)
 
 Voir la doc d'installation de TaxHub : http://taxhub.readthedocs.io/
 
 Voir la doc d'installation de UsersHub : http://usershub.readthedocs.io/
 
+
 Passer en mode développement
----------------------------------
+----------------------------
 
 .. Note::
     Consultez le guide :ref:`mode-dev` de GeoNature.

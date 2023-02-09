@@ -14,14 +14,14 @@ Les applications suivantes seront installées :
 Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre la documentation :ref:`installation-standalone`.
 
 
-Installation de l'application
+Installation des applications
 -----------------------------
 
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur dédié précédemment créé lors de l’étape de :ref:`preparation-server` (usuellement ``geonatureadmin``).
 
 * Se placer à la racine du ``home`` de l'utilisateur puis récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). Ces scripts installent les applications GeoNature, TaxHub et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :
  
-::
+  .. code:: console
 
     $ wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini
     $ wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh
@@ -30,9 +30,9 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur d�
 	
 * Configurez votre installation en adaptant le fichier ``install_all.ini`` :
  
-::
+  .. code:: console
     
-    nano install_all.ini
+    $ nano install_all.ini
 
 Renseignez à minima votre utilisateur linux, l'URL (ou IP) de votre serveur (avec un ``/`` à la fin) ainsi que l'utilisateur PostgreSQL que vous souhaitez et son mot de passe. Le script se chargera d'installer PostgreSQL et de créer l'utilisateur de base de données que vous avez renseigné. Pour une installation de développement, pensez à renseigner ``mode=dev``.
 
@@ -40,17 +40,17 @@ Pour la définition des numéros de version des dépendances, voir le `tableau d
 
 * Lancer l'installation :
  
-::
+  .. code:: console
 
-    touch install_all.log
-    chmod +x install_all.sh
-    ./install_all.sh 2>&1 | tee install_all.log
+    $ touch install_all.log
+    $ chmod +x install_all.sh
+    $ ./install_all.sh 2>&1 | tee install_all.log
 
 Une fois l'installation terminée, lancez la commande suivante:
 
-::
+  .. code:: console
 
-    exec bash
+    $ exec bash
 
 
 Les applications sont disponibles aux adresses suivantes :
@@ -70,19 +70,27 @@ Vous pouvez vous connecter avec l'utilisateur intégré par défaut (admin/admin
     * GeoNature-atlas compatible avec GeoNature V2 est disponible sur https://github.com/PnX-SI/GeoNature-atlas
     * Vous pouvez utiliser le schéma ``ref_geo`` de GeoNature pour votre territoire, les communes et les mailles.
     
-Si vous rencontrez une erreur, se reporter aux fichiers de logs :
-
-- Logs de l'installation de la base de données : ``/home/`whoami`/geonature/var/log/install_db.log``
-- Log général de l'installation de l'application : ``/home/`whoami`/install_all.log``
-
-Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre adresse, editez le fichier de configuration Apache (``/etc/apache2/sites-available/geonature.conf``) en modifiant l'alias :
-
-- Pour ``/``: ``Alias / /home/test/geonature/frontend/dist``
-- Pour ``/saisie`` : ``Alias /saisie /home/test/geonature/frontend/dist``
+Si vous rencontrez une erreur, se reporter aux fichiers de logs ``/home/`whoami`/install_all.log``.
 
 :Note:
 
-    Par défaut et par mesure de sécurité, la base de données est accessible uniquement localement par la machine où elle est installée. Pour accéder à la BDD depuis une autre machine (pour s'y connecter avec QGIS, pgAdmin ou autre), vous pouvez consulter cette documentation https://github.com/PnX-SI/Ressources-techniques/blob/master/PostgreSQL/acces-bdd.rst. Attention si vous redémarrez PostgreSQL (``sudo service postgresql restart``), il faut ensuite redémarrer les API de GeoNature, UsersHub et TaxHub (``sudo systemctl restart geonature.service``, ``sudo systemctl restart usershub.service`` et ``sudo systemctl restart taxhub.service``). Attention, exposer la base de données sur internet n'est pas recommandé. Il est préférable de se connecter via un tunnel SSH. QGIS et la plupart des outils d'administration de base de données permettent d'établir une connexion à la base de cette manière.
+    Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre adresse, editez le fichier de configuration Apache (``/etc/apache2/sites-available/geonature.conf``) en modifiant l'alias :
+
+    - Pour ``/``: ``Alias / /home/test/geonature/frontend/dist``
+    - Pour ``/saisie`` : ``Alias /saisie /home/test/geonature/frontend/dist``
+
+:Note:
+
+    Par défaut et par mesure de sécurité, la base de données est accessible uniquement localement par la machine où elle est installée. Pour accéder à la BDD depuis une autre machine (pour s'y connecter avec QGIS, pgAdmin ou autre), vous pouvez consulter cette documentation https://github.com/PnX-SI/Ressources-techniques/blob/master/PostgreSQL/acces-bdd.rst.
+    Attention, exposer la base de données sur internet n'est pas recommandé. Il est préférable de se connecter via un tunnel SSH. QGIS et la plupart des outils d'administration de base de données permettent d'établir une connexion à la base de cette manière.
+    Attention si vous redémarrez PostgreSQL (``sudo service postgresql restart``), il faut ensuite redémarrer les API de GeoNature, UsersHub et TaxHub :
+
+    .. code:: console
+
+        $ sudo systemctl restart geonature
+        $ sudo systemctl restart geonature-worker
+        $ sudo systemctl restart usershub
+        $ sudo systemctl restart taxhub
 
 :Note:
 
