@@ -155,7 +155,6 @@ export class MetadataComponent implements OnInit {
             };
       }
       this.metadataService.addDatasetToAcquisitionFramework(af, params);
-      console.log(af);
     }
   }
 

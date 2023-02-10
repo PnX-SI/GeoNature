@@ -1,16 +1,8 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { forkJoin, Observable, BehaviorSubject, combineLatest } from 'rxjs';
-import {
-  filter,
-  tap,
-  map,
-  startWith,
-  distinctUntilChanged,
-  debounceTime,
-  mergeMap,
-} from 'rxjs/operators';
+import { forkJoin, BehaviorSubject } from 'rxjs';
+import { tap, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
