@@ -273,9 +273,7 @@ class TDatasetsQuery(BaseQuery):
         return self
 
     def filter_by_params(self, params: MultiDict = MultiDict()):
-        if "active" in params:
-            self = self.filter(TDatasets.active == bool(params["active"]))
-            params.pop("active")
+        f = TDatasets.compute_filter(**params)
         table_columns = TDatasets.__table__.columns
         if "orderby" in params:
             try:
@@ -283,22 +281,8 @@ class TDatasetsQuery(BaseQuery):
                 self = self.order_by(orderCol)
             except AttributeError:
                 raise BadRequest("the attribute to order on does not exist")
-        if "module_code" in params:
-            self = self.filter(TDatasets.modules.any(module_code=params.pop("module_code")))
-        # Generic Filters
-        for key, values in params.lists():
-            try:
-                col = getattr(TDatasets, key)
-            except AttributeError:
-                raise BadRequest(f"Column {key} does not exist")
-            col = getattr(table_columns, key)
-            for v in values:
-                testT = testDataType(v, col.type, key)
-                if testT:
-                    raise BadRequest(testT)
-            ors = [col == v for v in values]
-            self = self.filter(or_(*ors))
-        return self
+
+        return self.filter(f)
 
     def filter_by_readable(self, user=None):
         """
@@ -498,7 +482,14 @@ class TDatasets(FilterMixin, db.Model):
     @classmethod
     def compute_filter(cls, **kwargs):
         f = super().compute_filter(**kwargs)
-        uuid = kwargs.get("uuid")
+
+        if "active" in kwargs:
+            f &= TDatasets.active == bool(kwargs["active"])
+            kwargs.pop("active")
+        if "module_code" in kwargs:
+            f &= TDatasets.modules.any(module_code=kwargs.pop("module_code"))
+
+        uuid = kwargs.pop("uuid", None)
         if uuid is not None:
             try:
                 uuid = UUID(uuid.strip())
@@ -506,14 +497,16 @@ class TDatasets(FilterMixin, db.Model):
                 pass
             else:
                 f &= TDatasets.unique_dataset_id == uuid
-        name = kwargs.get("name")
+
+        name = kwargs.pop("name", None)
         if name is not None:
             f &= TDatasets.dataset_name.ilike(f"%{name}%")
 
-        search = kwargs.get("search")
+        search = kwargs.pop("search", None)
         if search is not None:
-            # Check if joinload
+            # TODO: add other filters? Otherwise same as name so to be removed
             f &= TDatasets.dataset_name.ilike(f"%{search}%")
+
         return f
 
 
