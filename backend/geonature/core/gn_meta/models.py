@@ -282,6 +282,19 @@ class TDatasetsQuery(BaseQuery):
             except AttributeError:
                 raise BadRequest("the attribute to order on does not exist")
 
+        for key, values in params.lists():
+            try:
+                col = getattr(TDatasets, key)
+            except AttributeError:
+                raise BadRequest(f"Column {key} does not exist")
+            col = getattr(table_columns, key)
+            for v in values:
+                testT = testDataType(v, col.type, key)
+                if testT:
+                    raise BadRequest(testT)
+            ors = [col == v for v in values]
+            self = self.filter(or_(*ors))
+
         return self.filter(f)
 
     def filter_by_readable(self, user=None):
