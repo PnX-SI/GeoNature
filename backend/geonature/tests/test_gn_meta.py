@@ -668,6 +668,30 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
         assert response.status_code == 200
 
+    def test_get_dataset_filter_active(self, users, datasets, module):
+        set_logged_user_cookie(self.client, users["admin_user"])
+
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            query_string=MultiDict([("active", True)]),
+        )
+
+        expected_ds = {dataset.id_dataset for dataset in datasets.values() if dataset.active}
+        filtered_ds = {ds["id_dataset"] for ds in response.json}
+        assert expected_ds.issubset(filtered_ds)
+
+    def test_get_dataset_filter_module_code(self, users, datasets, module):
+        set_logged_user_cookie(self.client, users["admin_user"])
+
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            query_string=MultiDict([("module_code", module.module_code)]),
+        )
+
+        expected_ds = {datasets["with_module_1"].id_dataset}
+        filtered_ds = {ds["id_dataset"] for ds in response.json}
+        assert expected_ds.issubset(filtered_ds)
+
     def test_get_dataset_forbidden_ds(self, users, datasets):
         ds = datasets["own_dataset"]
         self_user = users["self_user"]
