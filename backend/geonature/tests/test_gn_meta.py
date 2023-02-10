@@ -607,19 +607,12 @@ class TestGNMeta:
         expected_ds = {dataset.id_dataset for dataset in datasets.values()}
         resp_ds = {ds["id_dataset"] for ds in response.json}
         assert expected_ds.issubset(resp_ds)
+
+        afs = [acquisition_frameworks["af_1"], acquisition_frameworks["af_2"]]
         filtered_response = self.client.get(
             url_for("gn_meta.get_datasets"),
             query_string=MultiDict(
-                [
-                    (
-                        "id_acquisition_framework",
-                        acquisition_frameworks["af_1"].id_acquisition_framework,
-                    ),
-                    (
-                        "id_acquisition_framework",
-                        acquisition_frameworks["af_2"].id_acquisition_framework,
-                    ),
-                ]
+                [("id_acquisition_framework", af.id_acquisition_framework) for af in afs]
             ),
         )
         assert filtered_response.status_code == 200
@@ -631,11 +624,7 @@ class TestGNMeta:
         filtered_ds = {ds["id_dataset"] for ds in filtered_response.json}
         assert expected_ds.issubset(filtered_ds)
         assert all(
-            dataset["id_acquisition_framework"]
-            in [
-                acquisition_frameworks["af_1"].id_acquisition_framework,
-                acquisition_frameworks["af_2"].id_acquisition_framework,
-            ]
+            dataset["id_acquisition_framework"] in [af.id_acquisition_framework for af in afs]
             for dataset in filtered_response.json
         )
 
