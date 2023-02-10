@@ -630,6 +630,14 @@ class TestGNMeta:
         }
         filtered_ds = {ds["id_dataset"] for ds in filtered_response.json}
         assert expected_ds.issubset(filtered_ds)
+        assert all(
+            dataset["id_acquisition_framework"]
+            in [
+                acquisition_frameworks["af_1"].id_acquisition_framework,
+                acquisition_frameworks["af_2"].id_acquisition_framework,
+            ]
+            for dataset in filtered_response.json
+        )
 
     def test_list_datasets_mobile(self, users, datasets, acquisition_frameworks):
         set_logged_user_cookie(self.client, users["admin_user"])
