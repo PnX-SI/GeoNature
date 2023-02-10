@@ -2,11 +2,26 @@ import { Injectable } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin, Observable, BehaviorSubject, combineLatest } from 'rxjs';
-import { tap, map, startWith, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import {
+  filter,
+  tap,
+  map,
+  startWith,
+  distinctUntilChanged,
+  debounceTime,
+  mergeMap,
+} from 'rxjs/operators';
 
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ConfigService } from '@geonature/services/config.service';
+
+type DataSetObsCount = {
+  count: number;
+  id_dataset: number;
+};
+
+const SELECTORS = { datasets: false, creator: 1, actors: 1 };
 
 @Injectable()
 export class MetadataService {
@@ -21,6 +36,8 @@ export class MetadataService {
   public expandAccordions: boolean = false;
 
   public formBuilded = false;
+
+  private _datasetNbObs: DataSetObsCount[] = [];
 
   pageSizeOptions: number[] = [10, 25, 50, 100];
   pageSize: BehaviorSubject<number> = null;
@@ -90,7 +107,7 @@ export class MetadataService {
       );
   }
   //recuperation cadres d'acquisition
-  getMetadataObservable(params = {}, selectors = { datasets: 1, creator: 1, actors: 1 }) {
+  getMetadataObservable(params = {}, selectors = SELECTORS) {
     this.isLoading = true;
     this.acquisitionFrameworks.next([]);
 
@@ -101,22 +118,32 @@ export class MetadataService {
     }).pipe(
       tap(() => (this.isLoading = false)),
       map((val) => {
-        //val: {afs: CA[], datasetNbObs: {id_dataset: number, count: number}[]}
-        //boucle sur les CA pour attribuer le nombre de données au JDD et création de la clé datasetsTemp
-        for (let i = 0; i < val.afs.length; i++) {
-          this.setDsObservationCount(val.afs[i]['t_datasets'], val.datasetNbObs);
-        }
-        //renvoie uniquement les CA
+        this._datasetNbObs = val.datasetNbObs;
         return val.afs;
       })
     );
   }
 
-  getMetadata(params = {}, selectors = { datasets: 1, creator: 1, actors: 1 }) {
+  getMetadata(params = {}, selectors = SELECTORS) {
     this.getMetadataObservable(params, selectors).subscribe(
       (afs) => this.acquisitionFrameworks.next(afs),
       (err) => (this.isLoading = false)
     );
+  }
+
+  addDatasetToAcquisitionFramework(af, params) {
+    //TODO: keep in mind that acquisistionframeworks is
+    // a behaviour subject and so filter it with rxjs and
+    // pipe the getDatasets then subscribe at the end
+    this.dataFormService
+      .getDatasets({
+        id_acquisition_frameworks: [af.id_acquisition_framework],
+        ...params,
+      })
+      .subscribe((datasets) => {
+        af.t_datasets = datasets;
+        this.setDsObservationCount(datasets, this._datasetNbObs);
+      });
   }
 
   private setDsObservationCount(datasets, dsNbObs) {
@@ -124,14 +151,6 @@ export class MetadataService {
       let idx = dsNbObs.findIndex((e) => e.id_dataset == ds.id_dataset);
       ds.observation_count = idx > -1 ? dsNbObs[idx]['count'] : 0;
     });
-  }
-
-  private _removeAccentAndLower(value): string {
-    return String(value)
-      .toLocaleLowerCase()
-      .trim()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
   }
 
   formatFormValue(formValue): any {

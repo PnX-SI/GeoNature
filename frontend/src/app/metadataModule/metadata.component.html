@@ -89,6 +89,7 @@
             <mat-expansion-panel
               [expanded]="expandAccordions"
               [attr.data-qa]='"pnx-metadata-acq-framework"'
+              (opened)="onOpenExpansionPanel(af)"
             >
               <mat-expansion-panel-header
                 collapsedHeight="*"

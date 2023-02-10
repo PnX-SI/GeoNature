@@ -11,6 +11,14 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { MetadataService } from './services/metadata.service';
 import { ConfigService } from '@geonature/services/config.service';
 
+function _removeAccentAndLower(value): string {
+  return String(value)
+    .toLocaleLowerCase()
+    .trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
 @Component({
   selector: 'pnx-metadata',
   templateUrl: './metadata.component.html',
@@ -132,6 +140,23 @@ export class MetadataComponent implements OnInit {
 
   closeSearchModal() {
     this.modal.dismissAll();
+  }
+
+  onOpenExpansionPanel(af: any) {
+    if (af.t_datasets === undefined) {
+      let params = {};
+      if (this.metadataService.rapidSearchControl.value) {
+        const term: string = _removeAccentAndLower(this.metadataService.rapidSearchControl.value);
+        const afName: string = _removeAccentAndLower(af.acquisition_framework_name);
+        params = afName.includes(term)
+          ? {}
+          : {
+              search: this.metadataService.rapidSearchControl.value,
+            };
+      }
+      this.metadataService.addDatasetToAcquisitionFramework(af, params);
+      console.log(af);
+    }
   }
 
   // isDisplayed(idx: number) {
