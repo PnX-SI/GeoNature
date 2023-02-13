@@ -176,7 +176,7 @@ def get_query_occtax_filters(
 
     if "organism" in params:
         q = q.join(CorDatasetActor, CorDatasetActor.id_dataset == mappedView.id_dataset).filter(
-            CorDatasetActor.id_actor == int(params.pop("organism"))
+            CorDatasetActor.id_organism == int(params.pop("organism"))
         )
 
     if "observers_txt" in params:
