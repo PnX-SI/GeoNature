@@ -135,7 +135,6 @@ class SyntheseQuery(GeoFeatureCollectionMixin, Query):
             )
         return self
 
-
     def filter_by_params(self, params: MultiDict = None):
         model = Synthese
         and_list = []
@@ -155,6 +154,7 @@ class SyntheseQuery(GeoFeatureCollectionMixin, Query):
             order_by = order_by.desc()
 
         return self.order_by(order_by)
+
 
 @serializable
 class CorAreaSynthese(DB.Model):

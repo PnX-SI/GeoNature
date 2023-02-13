@@ -7,8 +7,6 @@ Create Date: 2022-04-06 15:39:37.428357
 """
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.sql.expression import null
 
 
 # revision identifiers, used by Alembic.
@@ -28,7 +26,7 @@ def upgrade():
     )
     op.execute(
         """
-    CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_log_delete_on_synthese() RETURNS TRIGGER AS
+    CREATE FUNCTION gn_synthese.fct_tri_log_delete_on_synthese() RETURNS TRIGGER AS
     $BODY$
     DECLARE
     BEGIN
@@ -47,13 +45,12 @@ def upgrade():
     END;
     $BODY$ LANGUAGE plpgsql COST 100
     ;
-    DROP TRIGGER IF EXISTS tri_log_delete_synthese ON gn_synthese.synthese;
     CREATE TRIGGER tri_log_delete_synthese
         AFTER DELETE
         ON gn_synthese.synthese
         REFERENCING OLD TABLE AS old_table
         FOR EACH STATEMENT
-    EXECUTE FUNCTION gn_synthese.fct_tri_log_delete_on_synthese()
+        EXECUTE FUNCTION gn_synthese.fct_tri_log_delete_on_synthese()
     ;
     """
     )

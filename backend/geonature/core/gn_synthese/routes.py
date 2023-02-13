@@ -21,12 +21,11 @@ from sqlalchemy.orm import joinedload, lazyload, selectinload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 
-from utils_flask_sqla.generic import serializeQuery, GenericTable, GenericQuery
+from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo
 
 from geonature.utils import filemanager
-from geonature.utils.config import config
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
@@ -43,8 +42,6 @@ from geonature.core.gn_synthese.models import (
     VColorAreaTaxon,
     TReport,
     SyntheseLogEntry,
-    SyntheseQuery,
-
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 
@@ -1192,8 +1189,6 @@ def delete_report(id_report):
     DB.session.commit()
 
 
-
-
 @routes.route("/log", methods=["get"])
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
@@ -1224,7 +1219,9 @@ def list_synthese_log_entries(info_role) -> dict:
     q2 = Synthese.query.with_entities(
         Synthese.id_synthese,
         Synthese.last_action,
-        func.coalesce(Synthese.meta_update_date, Synthese.meta_create_date),
+        func.coalesce(Synthese.meta_update_date, Synthese.meta_create_date).label(
+            "meta_last_action_date"
+        ),
     )
 
     q3 = q1.union(q2)
