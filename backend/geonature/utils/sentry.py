@@ -9,8 +9,8 @@ def start_sentry_child(*args, **kwargs):
 
     from sentry_sdk import Hub
 
-    transaction = Hub.current.scope.transaction
-    if transaction is None:
+    span = Hub.current.scope.span
+    if span is None:
         return nullcontext()
 
-    return transaction.start_child(*args, **kwargs)
+    return span.start_child(*args, **kwargs)
