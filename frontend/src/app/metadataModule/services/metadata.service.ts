@@ -86,11 +86,6 @@ export class MetadataService {
       ...formValue,
     };
     return this.getMetadataObservable(params)
-      .pipe(
-        tap(() => {
-          this.expandAccordions = term !== '';
-        })
-      )
       .subscribe(
         (afs) => {
           this.acquisitionFrameworks.next(afs);

@@ -130,7 +130,6 @@ export class MetadataComponent implements OnInit {
     let finalFormValue = { ...omited, areas: areas.length ? areas : null };
     this.metadataService.formatFormValue(Object.assign({}, formValues));
     this.metadataService.getMetadata(finalFormValue);
-    this.metadataService.expandAccordions = true;
   }
 
   openSearchModal(searchModal) {
@@ -146,13 +145,9 @@ export class MetadataComponent implements OnInit {
     if (af.t_datasets === undefined) {
       let params = {};
       if (this.metadataService.rapidSearchControl.value) {
-        const term: string = _removeAccentAndLower(this.metadataService.rapidSearchControl.value);
-        const afName: string = _removeAccentAndLower(af.acquisition_framework_name);
-        params = afName.includes(term)
-          ? {}
-          : {
-              search: this.metadataService.rapidSearchControl.value,
-            };
+        params = {
+          search: this.metadataService.rapidSearchControl.value,
+        };
       }
       this.metadataService.addDatasetToAcquisitionFramework(af, params);
     }
