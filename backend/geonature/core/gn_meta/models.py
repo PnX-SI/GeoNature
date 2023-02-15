@@ -9,7 +9,7 @@ from geonature.core.gn_permissions.tools import (
 )
 from geonature.utils.errors import GeonatureApiError
 import sqlalchemy as sa
-from sqlalchemy import ForeignKey, or_
+from sqlalchemy import ForeignKey, or_, and_
 from sqlalchemy.sql import select, func, exists
 from sqlalchemy.orm import relationship, exc, synonym
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
@@ -286,8 +286,21 @@ class TDatasetsQuery(BaseQuery):
         if "module_code" in params:
             self = self.filter(TDatasets.modules.any(module_code=params.pop("module_code")))
         if "search" in params:
+            search = params.pop("search")
+            or_query = (TDatasets.dataset_name.ilike(f"%{search}%"),)
+            if "id_acquisition_framework" in params:
+                or_query = or_query + (
+                    and_(
+                        TAcquisitionFramework.id_acquisition_framework
+                        == params["id_acquisition_framework"],
+                        or_(
+                            # TAcquisitionFramework.acquisition_framework_start_date == search,
+                            TAcquisitionFramework.acquisition_framework_name.ilike(f"%{search}%"),
+                        ),
+                    ),
+                )
             # TODO: add other filters? Otherwise same as name so to be removed
-            self = self.filter(TDatasets.dataset_name.ilike(f"%{params.pop('search')}%"))
+            self = self.filter(or_(*or_query))
 
         # Generic Filters
         for key, values in params.lists():
