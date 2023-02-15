@@ -702,6 +702,72 @@ class TestGNMeta:
         filtered_ds = {ds["id_dataset"] for ds in response.json}
         assert expected_ds.issubset(filtered_ds)
 
+    def test_get_dataset_filter_af_matches(self, users, datasets, acquisition_frameworks):
+        dataset = datasets["belong_af_1"]
+        acquisition_framework = [
+            af
+            for af in acquisition_frameworks.values()
+            if af.id_acquisition_framework == dataset.id_acquisition_framework
+        ][0]
+        set_logged_user_cookie(self.client, users["admin_user"])
+
+        # If Acquisition Framework matches, returns all datasets
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            query_string=MultiDict(
+                [
+                    ("id_acquisition_framework", dataset.id_acquisition_framework),
+                    ("search", acquisition_framework.acquisition_framework_name),
+                ]
+            ),
+        )
+
+        assert {ds["id_acquisition_framework"] for ds in response.json} == {
+            ds.id_acquisition_framework for ds in acquisition_framework.datasets
+        }
+
+    def test_get_dataset_filter_ds_matches(self, users, datasets, acquisition_frameworks):
+        dataset = datasets["belong_af_1"]
+        set_logged_user_cookie(self.client, users["admin_user"])
+
+        # If Acquisition Framework matches, returns all datasets
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            query_string=MultiDict(
+                [
+                    ("id_acquisition_framework", dataset.id_acquisition_framework),
+                    ("search", dataset.dataset_name),
+                ]
+            ),
+        )
+
+        assert len(response.json) == 1
+        assert response.json[0]["dataset_name"] == dataset.dataset_name
+
+    def test_get_dataset_filter_ds_and_af_matches(self, users, datasets, acquisition_frameworks):
+        dataset = datasets["belong_af_1"]
+        acquisition_framework = [
+            af
+            for af in acquisition_frameworks.values()
+            if af.id_acquisition_framework == dataset.id_acquisition_framework
+        ][0]
+        set_logged_user_cookie(self.client, users["admin_user"])
+
+        # If Acquisition Framework matches, returns all datasets
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            query_string=MultiDict(
+                [
+                    ("id_acquisition_framework", dataset.id_acquisition_framework),
+                    ("search", dataset.dataset_name[-4:]),
+                ]
+            ),
+        )
+
+        assert {ds["id_acquisition_framework"] for ds in response.json} == {
+            ds.id_acquisition_framework for ds in acquisition_framework.datasets
+        }
+
     def test_get_dataset_forbidden_ds(self, users, datasets):
         ds = datasets["own_dataset"]
         self_user = users["self_user"]
