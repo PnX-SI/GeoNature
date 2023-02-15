@@ -450,6 +450,33 @@ class TestGNMeta:
         assert af1.id_acquisition_framework in af_list
         assert af2.id_acquisition_framework not in af_list
 
+    def test_get_acquisition_frameworks_search_af_uuid(self, users, acquisition_frameworks):
+        set_logged_user_cookie(self.client, users["admin_user"])
+
+        af1 = acquisition_frameworks["af_1"]
+
+        response = self.client.post(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            json={"search": str(af1.unique_acquisition_framework_id)[:5]},
+        )
+
+        assert {af["id_acquisition_framework"] for af in response.json} == {
+            af1.id_acquisition_framework
+        }
+
+    def test_get_acquisition_frameworks_search_af_date(self, users, acquisition_frameworks):
+        set_logged_user_cookie(self.client, users["admin_user"])
+
+        af1 = acquisition_frameworks["af_1"]
+
+        response = self.client.post(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            json={"search": str(af1.acquisition_framework_start_date)},
+        )
+
+        expected = {af1.id_acquisition_framework}
+        assert {af["id_acquisition_framework"] for af in response.json}.issubset(expected)
+
     def test_get_export_pdf_acquisition_frameworks(self, users, acquisition_frameworks):
         af_id = acquisition_frameworks["own_af"].id_acquisition_framework
 
@@ -689,7 +716,7 @@ class TestGNMeta:
         filtered_ds = {ds["id_dataset"] for ds in response.json}
         assert expected_ds.issubset(filtered_ds)
 
-    def test_get_dataset_filter_search(self, users, datasets, module):
+    def test_get_dataset_search(self, users, datasets, module):
         set_logged_user_cookie(self.client, users["admin_user"])
         ds = datasets["with_module_1"]
 
@@ -702,7 +729,33 @@ class TestGNMeta:
         filtered_ds = {ds["id_dataset"] for ds in response.json}
         assert expected_ds.issubset(filtered_ds)
 
-    def test_get_dataset_filter_af_matches(self, users, datasets, acquisition_frameworks):
+    def test_get_dataset_search_uuid(self, users, datasets):
+        ds = datasets["own_dataset"]
+        set_logged_user_cookie(self.client, users["admin_user"])
+
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            query_string=MultiDict([("search", str(ds.unique_dataset_id)[:5])]),
+        )
+
+        expected_ds = {ds.id_dataset}
+        filtered_ds = {dataset["id_dataset"] for dataset in response.json}
+        assert expected_ds == filtered_ds
+
+    # def test_get_dataset_search_date(self, users, datasets):
+    #     ds = datasets["own_dataset"]
+    #     set_logged_user_cookie(self.client, users["admin_user"])
+
+    #     response = self.client.get(
+    #         url_for("gn_meta.get_datasets"),
+    #         query_string=MultiDict([("search", str(ds.meta_create_date))]),
+    #     )
+
+    #     expected_ds = {ds.id_dataset}
+    #     filtered_ds = {dataset["id_dataset"] for dataset in response.json}
+    #     assert expected_ds.issubset(filtered_ds)
+
+    def test_get_dataset_search_af_matches(self, users, datasets, acquisition_frameworks):
         dataset = datasets["belong_af_1"]
         acquisition_framework = [
             af
@@ -726,7 +779,7 @@ class TestGNMeta:
             ds.id_acquisition_framework for ds in acquisition_framework.datasets
         }
 
-    def test_get_dataset_filter_ds_matches(self, users, datasets, acquisition_frameworks):
+    def test_get_dataset_search_ds_matches(self, users, datasets, acquisition_frameworks):
         dataset = datasets["belong_af_1"]
         set_logged_user_cookie(self.client, users["admin_user"])
 
@@ -744,7 +797,7 @@ class TestGNMeta:
         assert len(response.json) == 1
         assert response.json[0]["dataset_name"] == dataset.dataset_name
 
-    def test_get_dataset_filter_ds_and_af_matches(self, users, datasets, acquisition_frameworks):
+    def test_get_dataset_search_ds_and_af_matches(self, users, datasets, acquisition_frameworks):
         dataset = datasets["belong_af_1"]
         acquisition_framework = [
             af
