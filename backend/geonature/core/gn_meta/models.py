@@ -287,15 +287,14 @@ class TDatasetsQuery(BaseQuery):
             self = self.filter(TDatasets.modules.any(module_code=params.pop("module_code")))
         if "search" in params:
             search = params.pop("search")
-            or_query = (TDatasets.dataset_name.ilike(f"%{search}%"),)
+            or_query = TDatasets.search_query(search)
             if "id_acquisition_framework" in params:
                 or_query = or_query + (
                     and_(
                         TAcquisitionFramework.id_acquisition_framework
                         == params["id_acquisition_framework"],
                         or_(
-                            # TAcquisitionFramework.acquisition_framework_start_date == search,
-                            TAcquisitionFramework.acquisition_framework_name.ilike(f"%{search}%"),
+                            *TAcquisitionFramework.search_query(search=search),
                         ),
                     ),
                 )
@@ -528,6 +527,15 @@ class TDatasets(FilterMixin, db.Model):
             f &= TDatasets.dataset_name.ilike(f"%{name}%")
 
         return f
+
+    @classmethod
+    def search_query(cls, search: str):
+        return (
+            TDatasets.dataset_name.ilike(f"%{search}%"),
+            sa.cast(TDatasets.id_dataset, sa.String) == search,
+            sa.cast(TDatasets.unique_dataset_id, sa.String).like(f"{search}%"),
+            sa.cast(TDatasets.meta_create_date, sa.String) == search,
+        )
 
 
 class TAcquisitionFrameworkQuery(BaseQuery):
@@ -817,11 +825,22 @@ class TAcquisitionFramework(FilterMixin, db.Model):
         if search is not None:
             # Check if joinload
             f &= or_(
-                TAcquisitionFramework.acquisition_framework_name.ilike(f"%{search}%"),
-                TAcquisitionFramework.datasets.any(TDatasets.dataset_name.ilike(f"%{search}%")),
+                *TAcquisitionFramework.search_query(search=search),
+                TAcquisitionFramework.datasets.any(or_(*TDatasets.search_query(search=search))),
             )
 
         return f
+
+    @classmethod
+    def search_query(cls, search: str):
+        return (
+            TAcquisitionFramework.acquisition_framework_name.ilike(f"%{search}%"),
+            sa.cast(TAcquisitionFramework.id_acquisition_framework, sa.String) == search,
+            sa.cast(TAcquisitionFramework.acquisition_framework_start_date, sa.String) == search,
+            sa.cast(TAcquisitionFramework.unique_acquisition_framework_id, sa.String).like(
+                f"{search}%"
+            ),
+        )
 
 
 @serializable
