@@ -248,7 +248,10 @@ class GnPySchemaConf(Schema):
                 or data["USERSHUB"].get("ADMIN_APPLICATION_PASSWORD", None) is None
             ):
                 raise ValidationError(
-                    "URL_USERSHUB, ADMIN_APPLICATION_LOGIN et ADMIN_APPLICATION_PASSWORD sont necessaires si ENABLE_SIGN_UP=True",
+                    (
+                        "URL_USERSHUB, ADMIN_APPLICATION_LOGIN et ADMIN_APPLICATION_PASSWORD sont necessaires si ENABLE_SIGN_UP=True "
+                        "ou si ENABLE_USER_MANAGEMENT=True"
+                    ),
                     "URL_USERSHUB",
                 )
             if data["MAIL_CONFIG"].get("MAIL_SERVER", None) is None:
