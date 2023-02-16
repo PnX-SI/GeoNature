@@ -85,13 +85,12 @@ export class MetadataService {
       // filter out when only selector is null
       ...formValue,
     };
-    return this.getMetadataObservable(params)
-      .subscribe(
-        (afs) => {
-          this.acquisitionFrameworks.next(afs);
-        },
-        (err) => (this.isLoading = false)
-      );
+    return this.getMetadataObservable(params).subscribe(
+      (afs) => {
+        this.acquisitionFrameworks.next(afs);
+      },
+      (err) => (this.isLoading = false)
+    );
   }
   //recuperation cadres d'acquisition
   getMetadataObservable(params = {}, selectors = SELECTORS) {
