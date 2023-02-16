@@ -11,14 +11,6 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { MetadataService } from './services/metadata.service';
 import { ConfigService } from '@geonature/services/config.service';
 
-function _removeAccentAndLower(value): string {
-  return String(value)
-    .toLocaleLowerCase()
-    .trim()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
-}
-
 @Component({
   selector: 'pnx-metadata',
   templateUrl: './metadata.component.html',
@@ -152,16 +144,6 @@ export class MetadataComponent implements OnInit {
       this.metadataService.addDatasetToAcquisitionFramework(af, params);
     }
   }
-
-  // isDisplayed(idx: number) {
-  //   //numero du CA à partir de 1
-  //   let element = idx + 1;
-  //   //calcul des tranches active à afficher
-  //   let idxMin = this.pageSize * this.activePage;
-  //   let idxMax = this.pageSize * (this.activePage + 1);
-
-  //   return idxMin < element && element <= idxMax;
-  // }
 
   changePaginator(event: PageEvent) {
     this.metadataService.pageSize.next(event.pageSize);
