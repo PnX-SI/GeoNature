@@ -13,7 +13,7 @@ type DataSetObsCount = {
   id_dataset: number;
 };
 
-const SELECTORS = { datasets: false, creator: 1, actors: 1 };
+const SELECTORS = { datasets: 0, creator: 1, actors: 1 };
 
 @Injectable()
 export class MetadataService {
