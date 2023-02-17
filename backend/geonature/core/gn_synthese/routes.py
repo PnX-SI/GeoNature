@@ -46,13 +46,6 @@ from geonature.core.gn_synthese.models import (
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
-from geonature.core.gn_synthese.utils.routes import (
-    filter_params,
-    get_sort,
-    paginate,
-    get_limit_page,
-    sort,
-)
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_scopes_by_action
@@ -1191,7 +1184,6 @@ def delete_report(id_report):
 
 @routes.route("/log", methods=["get"])
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
-@json_resp
 def list_synthese_log_entries(info_role) -> dict:
     """Get log history from synthese
 
@@ -1205,11 +1197,63 @@ def list_synthese_log_entries(info_role) -> dict:
         log action list
     """
 
+    is_params_in_url = False
+    is_params_with_filter_operator = False
+    is_params_other_filters = False
     params = MultiDict(request.args)
-    limit, page = get_limit_page(params=params)
-    sort_label, sort_dir = get_sort(
-        params=params, default_sort="meta_last_action_date", default_direction="desc"
-    )
+
+    # Clean params of LIMIT, OFFSET(page) and SORT
+    limit, page = int(params.pop("limit", 50)), int(params.pop("page", 1))
+    sort_list = params.poplist("sort")
+
+    # Check if params in url
+    if len(params) != 0:
+        is_params_in_url = True
+
+    # Transform params tuple ('sort','column:asc') equivalent to query 'ORDER BY COLUMN ASC'
+    if sort_list != []:
+        try:
+            sort_list_query = SyntheseLogEntry.query.sort_list_query(sort_list)
+
+        except ValueError as err:
+            return (
+                jsonify(
+                    {
+                        "error": "Bad Request. " + str(err),
+                        "params_exemple": "?sort=column:asc' or'?column:gt=dd-mm-YYYY' ",
+                    }
+                ),
+                400,
+            )
+
+    # Transform params tuple ('column:gt','date_string') or ('column:gt','date_string') equivalent to query 'WHERE COLUMN < date-iso' or 'WHERE COLUMN > date-iso'
+    #  And extract only filter with operator
+    if is_params_in_url:
+        params, filters_with_operators = SyntheseLogEntry.query.get_filters_with_operator(params)
+
+        # Check if params with filters operator
+        if len(params) != 0:
+            is_params_other_filters = True
+
+        # Check if params with filters operator
+        if len(filters_with_operators) != 0:
+            is_params_with_filter_operator = True
+
+        try:
+            filter_date_list_query = SyntheseLogEntry.query.filter_list_date(
+                filters_with_operators
+            )
+        except ValueError as err:
+            return (
+                jsonify(
+                    {
+                        "error": "Bad Request. " + str(err),
+                        "params_exemple": "?sort=column:asc' or'?column:gt=dd-mm-YYYY' ",
+                    }
+                ),
+                400,
+            )
+
     q1 = SyntheseLogEntry.query.with_entities(
         SyntheseLogEntry.id_synthese,
         SyntheseLogEntry.last_action,
@@ -1226,12 +1270,27 @@ def list_synthese_log_entries(info_role) -> dict:
 
     q3 = q1.union(q2)
 
-    query = filter_params(query=q3, params=params)
-    query = sort(query=query, sort=sort_label, sort_dir=sort_dir)
-    data = paginate(
-        query=query,
-        limit=limit,
-        page=page,
-    )
+    # WHERE PARAMS FILTER WITRH OPERATOR
+    if is_params_with_filter_operator:
+        query = q3.filter(filter_date_list_query)
+    else:
+        query = q3
 
-    return data
+    # WHERE PARAMS OTHER FILTERS
+    if is_params_other_filters:
+        query = query.filter_by_params(params)
+
+    # SORT (ORDER BY)  -
+    # sort by sort_params if exist
+    # and if not default sort by 'meta_last_action_date', 'desc'
+    if len(sort_list) != 0:
+        for sort_item in sort_list_query:
+            query = query.order_by(sort_item)
+    else:
+        query = query.sort()
+
+    # LIMIT ET OFFSET (dans query)
+    results = query.paginate(page=page, error_out=False, per_page=limit)
+    data = dict(items=results.items, total=results.total, limit=limit, page=page)
+
+    return jsonify(data)
