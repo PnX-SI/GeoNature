@@ -222,6 +222,10 @@ class TestSynthese:
         filters = {"protections_protection_status": ["PN"]}
         r = self.client.get(url, json=filters)
         assert r.status_code == 200
+        # test status protection and znieff
+        filters = {"protections_protection_status": ["PN"], "znief_protection_status": True}
+        r = self.client.get(url, json=filters)
+        assert r.status_code == 200
         # test LR
         filters = {"worldwide_red_lists": ["LC"]}
         r = self.client.get(url, json=filters)
