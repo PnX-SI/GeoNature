@@ -42,7 +42,7 @@ jobs:
       -
         name: Build and export wheels image
         id: build-wheels
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./backend/Dockerfile
@@ -62,7 +62,7 @@ jobs:
       -
         name: Build and export prod image
         id: build-prod
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./backend/Dockerfile
@@ -104,7 +104,7 @@ jobs:
             type=ref,event=tag
       -
         name: Build and export source image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./frontend/Dockerfile
@@ -125,7 +125,7 @@ jobs:
             type=ref,event=tag
       -
         name: Build and export nginx image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./frontend/Dockerfile
@@ -144,7 +144,7 @@ jobs:
             type=ref,event=tag
       -
         name: Build and export prod image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./frontend/Dockerfile
