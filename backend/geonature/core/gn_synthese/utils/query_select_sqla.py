@@ -196,6 +196,7 @@ class SyntheseQuery:
             )
 
         aliased_cor_taxon_attr = {}
+        protection_status_value = []
         for colname, value in self.filters.items():
             if colname.startswith("taxhub_attribut"):
                 self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
@@ -255,7 +256,6 @@ class SyntheseQuery:
                         red_list_cte.c.id_area == CorAreaSynthese.id_area,
                     ],
                 )
-
             elif colname.endswith("_protection_status"):
                 status_id = colname.replace("_protection_status", "")
                 all_status_cfg = current_app.config["SYNTHESE"]["STATUS_FILTERS"]
@@ -269,38 +269,42 @@ class SyntheseQuery:
                     and len(status_cfg["status_types"]) == 1
                 ):
                     value = status_cfg["status_types"]
-                status_cte = (
-                    select([TaxrefBdcStatutTaxon.cd_ref, bdc_statut_cor_text_area.c.id_area])
-                    .select_from(
-                        TaxrefBdcStatutTaxon.__table__.join(
-                            TaxrefBdcStatutCorTextValues,
-                            TaxrefBdcStatutCorTextValues.id_value_text
-                            == TaxrefBdcStatutTaxon.id_value_text,
-                        )
-                        .join(
-                            TaxrefBdcStatutText,
-                            TaxrefBdcStatutText.id_text == TaxrefBdcStatutCorTextValues.id_text,
-                        )
-                        .join(
-                            bdc_statut_cor_text_area,
-                            bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutText.id_text,
-                        )
+
+                protection_status_value += value
+
+        if protection_status_value:
+            status_cte = (
+                select([TaxrefBdcStatutTaxon.cd_ref, bdc_statut_cor_text_area.c.id_area])
+                .select_from(
+                    TaxrefBdcStatutTaxon.__table__.join(
+                        TaxrefBdcStatutCorTextValues,
+                        TaxrefBdcStatutCorTextValues.id_value_text
+                        == TaxrefBdcStatutTaxon.id_value_text,
                     )
-                    .where(TaxrefBdcStatutText.cd_type_statut.in_(value))
-                    .where(TaxrefBdcStatutText.enable == True)
-                    .distinct()
-                    .cte(name=f"{status_id}_protection_status")
+                    .join(
+                        TaxrefBdcStatutText,
+                        TaxrefBdcStatutText.id_text == TaxrefBdcStatutCorTextValues.id_text,
+                    )
+                    .join(
+                        bdc_statut_cor_text_area,
+                        bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutText.id_text,
+                    )
                 )
-                # cas_status = aliased(CorAreaSynthese)
-                self.add_join(CorAreaSynthese, CorAreaSynthese.id_synthese, self.model.id_synthese)
-                self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
-                self.add_join_multiple_cond(
-                    status_cte,
-                    [
-                        status_cte.c.cd_ref == Taxref.cd_ref,
-                        status_cte.c.id_area == CorAreaSynthese.id_area,
-                    ],
-                )
+                .where(TaxrefBdcStatutText.cd_type_statut.in_(protection_status_value))
+                .where(TaxrefBdcStatutText.enable == True)
+                .distinct()
+                .cte(name=f"taxref_protection_status")
+            )
+
+            self.add_join(CorAreaSynthese, CorAreaSynthese.id_synthese, self.model.id_synthese)
+            self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
+            self.add_join_multiple_cond(
+                status_cte,
+                [
+                    status_cte.c.cd_ref == Taxref.cd_ref,
+                    status_cte.c.id_area == CorAreaSynthese.id_area,
+                ],
+            )
 
         # remove attributes taxhub from filters
         self.filters = {
