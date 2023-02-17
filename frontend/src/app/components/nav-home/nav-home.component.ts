@@ -1,24 +1,23 @@
-import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { MatSidenav } from '@angular/material/sidenav';
 
-import { Subscription } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+
+import { MatSidenav } from '@angular/material/sidenav';
 
 import { AuthService, User } from '../../components/auth/auth.service';
 import { SideNavService } from '../sidenav-items/sidenav-service';
 import { ModuleService } from '../../services/module.service';
 import { NotificationDataService } from '@geonature/components/notification/notification-data.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { LocaleService } from '../../services/locale.service';
 
 @Component({
   selector: 'pnx-nav-home',
   templateUrl: './nav-home.component.html',
   styleUrls: ['./nav-home.component.scss'],
 })
-export class NavHomeComponent implements OnInit, OnDestroy {
+export class NavHomeComponent implements OnInit {
   public moduleName = 'Accueil';
-  private subscription: Subscription;
   public currentUser: User;
   public currentDocUrl: string;
   public locale: string;
@@ -28,19 +27,18 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   @ViewChild('sidenav', { static: true }) public sidenav: MatSidenav;
 
   constructor(
-    private translateService: TranslateService,
     public authService: AuthService,
-    private activatedRoute: ActivatedRoute,
     public sideNavService: SideNavService,
     private _moduleService: ModuleService,
     private notificationDataService: NotificationDataService,
+    public config: ConfigService,
     private router: Router,
-    public config: ConfigService
+    private localeService: LocaleService
   ) {}
 
   ngOnInit() {
     // Subscribe to router event
-    this.extractLocaleFromUrl();
+    this.loadLocale();
 
     // Set the current module name in the navbar
     this.onModuleChange();
@@ -52,29 +50,13 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     this.currentUser = this.authService.getCurrentUser();
   }
 
-  private extractLocaleFromUrl() {
-    this.subscription = this.activatedRoute.queryParams.subscribe((param: any) => {
-      const locale = param['locale'];
-      if (locale !== undefined) {
-        this.defineLanguage(locale);
-      } else {
-        this.locale = this.translateService.getDefaultLang();
-      }
-    });
+  private loadLocale() {
+    this.locale = this.localeService.currentLocale;
   }
 
   changeLanguage(lang) {
-    this.defineLanguage(lang);
-    const prev = this.router.url;
-    this.router.navigate(['/']).then((data) => {
-      this.router.navigate([prev]);
-    });
-  }
-
-  private defineLanguage(lang) {
+    this.localeService.setLocale(lang);
     this.locale = lang;
-    this.translateService.use(lang);
-    this.translateService.setDefaultLang(lang);
   }
 
   private onModuleChange() {
@@ -113,10 +95,5 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   openNotification() {
     this.updateNotificationCount();
     this.router.navigate(['/notification']);
-  }
-
-  ngOnDestroy() {
-    // Prevent memory leak by unsubscribing
-    this.subscription.unsubscribe();
   }
 }

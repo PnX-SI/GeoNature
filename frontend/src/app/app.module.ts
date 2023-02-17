@@ -52,6 +52,7 @@ import { UserDataService } from './userModule/services/user-data.service';
 import { NotificationDataService } from './components/notification/notification-data.service';
 
 import { UserCasGuard, UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
+import { LocaleProvider } from './locale.provider';
 
 export function loadConfig(injector) {
   const configService = injector.get(ConfigService);
@@ -133,6 +134,7 @@ export function initApp(injector) {
       deps: [Injector],
       multi: true,
     },
+    LocaleProvider,
   ],
   bootstrap: [AppComponent],
 })
