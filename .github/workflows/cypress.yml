@@ -45,11 +45,11 @@ jobs:
           psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
         env:
           PGPASSWORD: geonatpasswd
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: recursive
       - name: Set up Python 3.9
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.9
           # cache: 'pip'
@@ -59,7 +59,7 @@ jobs:
           sudo apt install -y libgdal-dev
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements-dev.txt') }}
@@ -96,14 +96,14 @@ jobs:
           GEONATURE_CONFIG_FILE: config/test_config.toml
         # FRONTEND
       - name: Cache node modules
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Node ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - name: generate frontend config
@@ -127,7 +127,7 @@ jobs:
           TAXHUB_SETTINGS: test_config.py
           TAXHUB_SQLALCHEMY_DATABASE_URI: "postgresql://geonatadmin:geonatpasswd@127.0.0.1:5432/geonature2db"
       - name: Cypress run
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v5
         with:
           record: false
           working-directory: ./frontend

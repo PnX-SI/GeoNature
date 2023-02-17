@@ -19,17 +19,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        debian-version: [ '10', '11' ]
         include:
-          - name: "Debian 10"
-            python-version: "3.7"
-            postgres-version: 11
-            postgis-version: 2.5
-          - name: "Debian 11"
-            python-version: "3.9"
-            postgres-version: 13
-            postgis-version: 3.2
+          - debian-version: '10'
+            python-version: '3.7'
+            postgres-version: '11'
+            postgis-version: '2.5'
+          - debian-version: '11'
+            python-version: '3.9'
+            postgres-version: '13'
+            postgis-version: '3.2'
 
-    name: ${{ matrix.name }}
+    name: Debian ${{ matrix.debian-version }}
 
     services:
       postgres:
@@ -61,11 +62,11 @@ jobs:
           psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
         env:
           PGPASSWORD: geonatpasswd
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: true
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
@@ -129,7 +130,7 @@ jobs:
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Upload coverage to Codecov
-        if: ${{ matrix.name == 'Debian 11' }}
-        uses: codecov/codecov-action@v2
+        if: ${{ matrix.debian-version == '11' }}
+        uses: codecov/codecov-action@v3
         with:
           flags: pytest
