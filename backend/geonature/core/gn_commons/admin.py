@@ -102,3 +102,22 @@ class BibFieldAdmin(ModelView):
         "objects": "Objet(s) auquel le champs est rattaché. *Obligatoire",
         "datasets": "Jeu(x) de donnés auquel le champs est rattaché",
     }
+
+
+class TMobileAppsAdmin(ModelView):
+    column_list = (
+        "app_code",
+        "relative_path_apk",
+        "url_apk",
+        "package",
+        "version_code",
+    )
+    column_labels = {
+        "app_code": "Code application",
+        "relative_path_apk": "Chemin relatif de l'APK",
+        "url_apk": "URL externe de l'APK",
+        "package": "Nom du paquet",
+        "version_code": "Code de version",
+    }
+    form_columns = ("app_code", "relative_path_apk", "url_apk", "package", "version_code")
+    column_exclude_list = "id_mobile_app"
