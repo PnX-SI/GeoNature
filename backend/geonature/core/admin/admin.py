@@ -6,8 +6,8 @@ from flask_admin.contrib.sqla import ModelView
 
 from geonature.utils.env import db
 from geonature.utils.config import config
-from geonature.core.gn_commons.models import TAdditionalFields
-from geonature.core.gn_commons.admin import BibFieldAdmin
+from geonature.core.gn_commons.models import TAdditionalFields, TMobileApps
+from geonature.core.gn_commons.admin import BibFieldAdmin, TMobileAppsAdmin
 from geonature.core.notifications.admin import (
     NotificationTemplateAdmin,
     NotificationCategoryAdmin,
@@ -116,6 +116,14 @@ class ProtectedNotificationMethodAdmin(
     object_code = "NOTIFICATIONS"
 
 
+class ProtectedTMobileAppsAdmin(
+    CruvedProtectedMixin,
+    TMobileAppsAdmin,
+):
+    module_code = "ADMIN"
+    object_code = "ALL"
+
+
 ## déclaration de la page d'admin
 admin = Admin(
     template_mode="bootstrap4",
@@ -193,6 +201,15 @@ admin.add_view(
         db.session,
         name="Méthodes de notification",
         category="Notifications",
+    )
+)
+
+admin.add_view(
+    ProtectedTMobileAppsAdmin(
+        TMobileApps,
+        db.session,
+        name="Applications mobiles",
+        category="Applications mobiles",
     )
 )
 
