@@ -43,7 +43,9 @@ class CruvedProtectedMixin:
 
     def _can_action(self, action):
         scope = get_scopes_by_action(
-            g.current_user.id_role, module_code=self.module_code, object_code=self.object_code
+            g.current_user.id_role,
+            module_code=self.module_code,
+            object_code=getattr(self, "object_code", "ALL"),
         )[action]
         return scope == 3
 
