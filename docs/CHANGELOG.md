@@ -14,6 +14,7 @@ CHANGELOG
 - Champs additionnels: Les formulaires de type `radio`, `select`, `multiselect` et `checkbox`, attendent désormais une liste de dictionnaire `{value, label}` (voir doc des champs additionnels).
   La rétrocompatibilité avec des listes simples est maintenue, mais vous êtes invité à modifier ces champs dans le backoffice.
   Pour conserver le bon affichage lors de l'édition des données, renseignez l'ancienne valeur deux fois dans la clé `value` et la clé `label`.
+- Admin : Possibilité d'alimenter la table des applications mobiles t_mobile_apps à partir du backoffice de GeoNature, notamment pour faciliter la gestion des mises à jour de Occtax-mobile 
 
 **💻 Développement**
 
