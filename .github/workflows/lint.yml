@@ -14,8 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+          persist-credentials: false
       - name: Frontend code formatting check (Prettier)
-        uses: creyD/prettier_action@v4.2
+        uses: creyD/prettier_action@v4.3
         with:
           dry: True
           prettier_options: --config frontend/.prettierrc --ignore-path frontend/.prettierignore --check frontend/**/*.ts contrib/*/frontend/**/*.ts
