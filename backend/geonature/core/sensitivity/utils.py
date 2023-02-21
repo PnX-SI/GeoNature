@@ -50,14 +50,17 @@ def insert_sensitivity_referential(source, csvfile):
     rules = []
     criterias = set()
     reader = csv.DictReader(csvfile, delimiter=";")
+    dep_col = next(
+        fieldname for fieldname in reader.fieldnames if fieldname in ["CD_DEP", "CD_DEPT"]
+    )
     for row in reader:
         sensi_nomenclature = get_nomenclature("SENSIBILITE", code=row["CD_SENSIBILITE"])
-        if row["CD_DEP"] == "D3":
+        if row[dep_col] == "D3":
             cd_dep = "973"
-        elif row["CD_DEP"] == "D4":
+        elif row[dep_col] == "D4":
             cd_dep = "974"
         else:
-            cd_dep = row["CD_DEP"]
+            cd_dep = row[dep_col]
         if row["DUREE"]:
             duration = int(row["DUREE"])
         else:
