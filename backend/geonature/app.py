@@ -6,6 +6,7 @@ import logging, warnings, os, sys
 from itertools import chain
 from pkg_resources import iter_entry_points, load_entry_point
 from importlib import import_module
+from packaging import version
 
 from flask import Flask, g, request, current_app, send_from_directory
 from flask.json.provider import DefaultJSONProvider
@@ -15,9 +16,14 @@ from flask_sqlalchemy import before_models_committed
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 from psycopg2.errors import UndefinedTable
+import sqlalchemy as sa
 from sqlalchemy.exc import OperationalError, ProgrammingError
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.engine import RowProxy
+
+if version.parse(sa.__version__) >= version.parse("1.4"):
+    from sqlalchemy.engine import Row
+else:  # retro-compatibility SQLAlchemy 1.3
+    from sqlalchemy.engine import RowProxy as Row
 
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
@@ -69,7 +75,7 @@ if config.get("SENTRY_DSN"):
 class MyJSONProvider(DefaultJSONProvider):
     @staticmethod
     def default(o):
-        if isinstance(o, RowProxy):
+        if isinstance(o, Row):
             return dict(o)
         return DefaultJSONProvider.default(o)
 
