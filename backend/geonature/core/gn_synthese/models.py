@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from packaging import version
 
 import sqlalchemy as sa
 import datetime
@@ -18,7 +19,12 @@ from geoalchemy2.shape import to_shape
 
 from geojson import Feature
 from flask import g
-from flask_sqlalchemy import BaseQuery
+import flask_sqlalchemy
+
+if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
+    from flask_sqlalchemy.query import Query
+else:
+    from flask_sqlalchemy import BaseQuery as Query
 
 from werkzeug.exceptions import NotFound
 
@@ -94,7 +100,7 @@ corAreaSynthese = DB.Table(
 )
 
 
-class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
+class SyntheseQuery(GeoFeatureCollectionMixin, Query):
     def join_nomenclatures(self):
         return self.options(*[joinedload(n) for n in Synthese.nomenclature_fields])
 
