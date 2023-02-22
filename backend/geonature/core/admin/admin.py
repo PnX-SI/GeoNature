@@ -20,10 +20,12 @@ from geonature.core.notifications.models import (
 )
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 
+from pypnnomenclature.models import (
+    BibNomenclaturesTypes,
+    TNomenclatures,
+)
 from pypnnomenclature.admin import (
-    BibNomenclaturesTypesAdminConfig,
     BibNomenclaturesTypesAdmin,
-    TNomenclaturesAdminConfig,
     TNomenclaturesAdmin,
 )
 
@@ -66,17 +68,17 @@ class CruvedProtectedMixin:
         return self._can_action("E")
 
 
-class ProtectedBibNomenclaturesTypesAdminConfig(
+class ProtectedBibNomenclaturesTypesAdmin(
     CruvedProtectedMixin,
-    BibNomenclaturesTypesAdminConfig,
+    BibNomenclaturesTypesAdmin,
 ):
     module_code = "ADMIN"
     object_code = "NOMENCLATURES"
 
 
-class ProtectedTNomenclaturesAdminConfig(
+class ProtectedTNomenclaturesAdmin(
     CruvedProtectedMixin,
-    TNomenclaturesAdminConfig,
+    TNomenclaturesAdmin,
 ):
     module_code = "ADMIN"
     object_code = "NOMENCLATURES"
@@ -139,8 +141,8 @@ admin.add_link(
 ## ajout des elements
 
 admin.add_view(
-    ProtectedBibNomenclaturesTypesAdminConfig(
-        BibNomenclaturesTypesAdmin,
+    ProtectedBibNomenclaturesTypesAdmin(
+        BibNomenclaturesTypes,
         db.session,
         name="Type de nomenclatures",
         category="Nomenclatures",
@@ -148,8 +150,8 @@ admin.add_view(
 )
 
 admin.add_view(
-    ProtectedTNomenclaturesAdminConfig(
-        TNomenclaturesAdmin,
+    ProtectedTNomenclaturesAdmin(
+        TNomenclatures,
         db.session,
         name="Items de nomenclatures",
         category="Nomenclatures",
