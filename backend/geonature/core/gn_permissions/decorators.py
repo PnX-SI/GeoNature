@@ -28,8 +28,6 @@ def check_cruved_scope(
     get_role=False,
     module_code=None,
     object_code=None,
-    redirect_on_expiration=None,
-    redirect_on_invalid_token=None,
     *,
     get_scope=False,
 ):
@@ -50,9 +48,7 @@ def check_cruved_scope(
     def _check_cruved_scope(fn):
         @wraps(fn)
         def __check_cruved_scope(*args, **kwargs):
-            user = get_user_from_token_and_raise(
-                request, redirect_on_expiration, redirect_on_invalid_token
-            )
+            user = get_user_from_token_and_raise(request)
             user_with_highter_perm = None
 
             user_with_highter_perm = UserCruved(
