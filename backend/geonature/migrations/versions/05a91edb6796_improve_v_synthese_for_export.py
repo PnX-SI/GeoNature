@@ -19,10 +19,9 @@ def upgrade():
     """Improve the view gn_synthese.v_synthese_for_export :
     - Removing "WITHOUT time ZONE" occurences, so as to keep this useful information (time zone)
     - (Optimization) Use of "LEFT JOIN LATERAL ..." instead of "JOIN ...", so as to improve the execution time
-    - Addition of the output fields "id_nomenclature sensitivity" and "id_nomenclature_diffusion_level", useful information
     - Addition of "area_code" to the "area_name" in the outptut field "communes", because some municipalities may have the same name while differ by the code
 
-    N.B. : Use of "DROP VIEW ..." and "CREATE VIEW ..." rather than "CREATE OR REPLACE VIEW ...", so as to handle removal or swap of output fields when changing the view
+    N.B. : Use of "DROP VIEW ..." and "CREATE VIEW ..." rather than "CREATE OR REPLACE VIEW ...", so as to handle swap of output fields when changing the view
     """
 
     # First deleting the existing view
@@ -121,9 +120,7 @@ def upgrade():
             s.meta_create_date AS date_creation,
             s.meta_update_date AS date_modification,
             s.additional_data AS champs_additionnels,
-            COALESCE(s.meta_update_date, s.meta_create_date) AS derniere_action,
-            s.id_nomenclature_sensitivity AS id_nomenclature_sensitivity,
-            s.id_nomenclature_diffusion_level AS id_nomenclature_diffusion_level
+            COALESCE(s.meta_update_date, s.meta_create_date) AS derniere_action
         FROM
             gn_synthese.synthese s
         JOIN taxonomie.taxref t ON
