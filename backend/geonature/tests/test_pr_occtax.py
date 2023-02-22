@@ -9,7 +9,6 @@ from shapely.geometry import Point
 from geoalchemy2.shape import from_shape
 from sqlalchemy import func
 
-from geonature.core.gn_permissions.models import VUsersPermissions
 from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 from geonature.utils.config import config
@@ -158,11 +157,6 @@ def occurrence(app, occurrence_data):
 @pytest.fixture(scope="function")
 def unexisting_id_releve():
     return (db.session.query(func.max(TRelevesOccurrence.id_releve_occtax)).scalar() or 0) + 1
-
-
-@pytest.fixture(scope="function")
-def permission(users):
-    return db.session.query(VUsersPermissions).filter_by(id_role=users["user"].id_role).first()
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets")
