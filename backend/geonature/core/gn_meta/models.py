@@ -3,10 +3,7 @@ from uuid import UUID
 
 from flask import g
 from flask_sqlalchemy import BaseQuery
-from geonature.core.gn_permissions.tools import (
-    cruved_scope_for_user_in_module,
-    get_scopes_by_action,
-)
+from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.utils.errors import GeonatureApiError
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, or_
@@ -513,11 +510,11 @@ class TDatasets(FilterMixin, db.Model):
 
 
 class TAcquisitionFrameworkQuery(BaseQuery):
-    def _get_read_scope(self):
-        cruved, herited = cruved_scope_for_user_in_module(
-            id_role=g.current_user.id_role, module_code="GEONATURE"
-        )
-        return int(cruved["R"])
+    def _get_read_scope(self, user=None):
+        if user is None:
+            user = g.current_user
+        cruved = get_scopes_by_action(id_role=user.id_role, module_code="GEONATURE")
+        return cruved["R"]
 
     def filter_by_scope(self, scope, user=None):
         if user is None:
