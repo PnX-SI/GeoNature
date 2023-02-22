@@ -31,7 +31,6 @@ from geonature.core.gn_permissions.models import (
     TActions,
     CorRoleActionFilterModuleObject,
     TObjects,
-    VUsersPermissions,
 )
 from geonature.core.users.models import CorRole
 from pypnusershub.db.models import Organisme as BibOrganismes, Application
@@ -269,10 +268,15 @@ def user_other_permissions(id_role):
     user = DB.session.query(User).get(id_role).as_dict()
 
     permissions = (
-        DB.session.query(VUsersPermissions)
-        .filter(VUsersPermissions.code_filter_type != "SCOPE")
-        .filter(VUsersPermissions.id_role == id_role)
-        .order_by(VUsersPermissions.module_code, VUsersPermissions.code_filter_type)
+        DB.session.query(CorRoleActionFilterModuleObject)
+        .join(User)
+        .join(TModules)
+        .join(TActions)
+        .join(TFilters)
+        .join(BibFiltersType)
+        .filter(BibFiltersType.code_filter_type != "SCOPE")
+        .filter(User.id_role == id_role)
+        .order_by(TModules.module_code, BibFiltersType.code_filter_type)
         .all()
     )
 
