@@ -266,3 +266,42 @@ class TestPermissions:
         assert_cruved("r1", "110001", module_a, object_a)
         assert_cruved("r1", "001000", module_b, object_a)
         assert_cruved("r1", "100102", module_a, object_b)
+
+    def test_object_inheritance(
+        self,
+        permissions,
+        assert_cruved,
+        module_gn,
+        module_a,
+        module_b,
+        object_all,
+        object_a,
+        object_b,
+    ):
+        permissions("r1", "1-----", module=module_gn, object=object_all)
+        permissions("r1", "-1----", module=module_gn, object=object_a)
+        permissions("r1", "--1---", module=module_a, object=object_all)
+        permissions("r1", "---1--", module=module_a, object=object_a)
+
+        assert_cruved("r1", "111100", module_a, object_a)
+
+    def test_object_priority(
+        self,
+        permissions,
+        assert_cruved,
+        module_gn,
+        module_a,
+        module_b,
+        object_all,
+        object_a,
+        object_b,
+    ):
+        permissions("r1", "222---", module=module_gn, object=object_all)
+        permissions("r1", "1--22-", module=module_gn, object=object_a)
+        permissions("r1", "-1-1-2", module=module_a, object=object_all)
+        permissions("r1", "--1-11", module=module_a, object=object_a)
+
+        assert_cruved("r1", "222000", module_gn, object_all)
+        assert_cruved("r1", "122220", module_gn, object_a)
+        assert_cruved("r1", "212102", module_a, object_all)
+        assert_cruved("r1", "111111", module_a, object_a)
