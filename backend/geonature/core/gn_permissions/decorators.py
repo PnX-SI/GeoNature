@@ -25,7 +25,6 @@ def login_required(view_func):
 
 def check_cruved_scope(
     action,
-    get_role=False,
     module_code=None,
     object_code=None,
     *,
@@ -67,13 +66,6 @@ def check_cruved_scope(
                 else:
                     message = f"""User {user["id_role"]} cannot "{action}" in {module_code}"""
                 raise Forbidden(description=message)
-            # if get_role = True : set info_role as kwargs
-            if get_role:
-                warn(
-                    "'get_role' is deprecated, see https://github.com/PnX-SI/GeoNature/issues/2162",
-                    DeprecationWarning,
-                )
-                kwargs["info_role"] = user_with_highter_perm
             if get_scope:
                 kwargs["scope"] = int(user_with_highter_perm.value_filter)
             g.user = user_with_highter_perm
