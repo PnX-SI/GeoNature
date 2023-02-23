@@ -9,51 +9,10 @@ from authlib.jose.errors import ExpiredTokenError, JoseError
 import sqlalchemy as sa
 from sqlalchemy.sql.expression import func
 
-
-from pypnusershub.db.tools import (
-    AccessRightsExpiredError,
-    UnreadableAccessRightsError,
-    decode_token,
-)
-
 from geonature.core.gn_permissions.models import VUsersPermissions, TFilters
 from geonature.utils.env import DB
 
 log = logging.getLogger(__name__)
-
-
-def user_from_token(token, secret_key=None):
-    secret_key = secret_key or current_app.config["SECRET_KEY"]
-
-    try:
-        return decode_token(token)
-    except ExpiredTokenError:
-        raise AccessRightsExpiredError("Token expired")
-    except JoseError:
-        raise UnreadableAccessRightsError("Token BadSignature", 403)
-
-
-def get_user_from_token_and_raise(request):
-    """
-    Deserialize the token
-    catch excetpion and return appropriate Response(403, 302 ...)
-    """
-    try:
-        token = request.cookies["token"]
-        return user_from_token(token)
-
-    except KeyError:
-        raise Unauthorized(description="No token.")
-    except AccessRightsExpiredError:
-        raise Unauthorized(description="Token expired.")
-    except UnreadableAccessRightsError:
-        raise Unauthorized(description="Token corrupted.")
-    except Exception as e:
-        trap_all_exceptions = current_app.config.get("TRAP_ALL_EXCEPTIONS", True)
-        if not trap_all_exceptions:
-            raise
-        log.critical(e)
-        raise Unauthorized(description=repr(e))
 
 
 class UserCruved:
