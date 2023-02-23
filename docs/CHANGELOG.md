@@ -19,6 +19,10 @@ CHANGELOG
 
 - Suppression de l'utilisation de `get_role` dans les modules Synthese & Validation (#2162)
 
+**🐛 Corrections**
+
+  - modèle de la synthese : changement du type de `entity_source_pk_value` de `Integer` à `Unicode` pour coller à la base.
+
 **⚠️ Notes de version**
 
 - La configuration dynamique nécessite de renseigner l’URL de l’API dans un nouveau fichier.
