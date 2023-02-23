@@ -12,7 +12,6 @@ from authlib.jose.errors import ExpiredTokenError, JoseError
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.models import (
     CorRoleActionFilterModuleObject,
-    VUsersPermissions,
     TFilters,
     TActions,
     TObjects,
