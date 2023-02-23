@@ -261,13 +261,25 @@ def cruved_scope_for_user_in_module(
     - index 0: the cruved as a dict : {'C': 0, 'R': 2 ...}
     - index 1: a boolean which say if its an herited cruved
     """
-    herited_cruved, is_herited, herited_object = UserCruved(
-        id_role=id_role,
-        code_filter_type="SCOPE",
-        module_code=module_code,
-        object_code=object_code,
-    ).get_perm_for_all_actions(get_id)
-    return herited_cruved, is_herited, herited_object
+    cruved = {}
+    herited_object = None
+    for action_code in "CRUVED":
+        permissions, _module_code, _object_code = _get_permissions(
+            action_code, id_role, module_code, object_code
+        )
+        if (_module_code != module_code) or (_object_code != (object_code or "ALL")):
+            herited_object = [_module_code, _object_code]
+        max_scope = 0
+        max_permission = None
+        for permission in permissions:
+            if permission.filter.filter_type.code_filter_type != "SCOPE":
+                continue
+            scope = int(permission.filter.value_filter)
+            if scope >= max_scope:
+                max_scope = scope
+                max_permission = permission
+        cruved[action_code] = max_permission.filter.id_filter if get_id else str(max_scope)
+    return cruved, herited_object is not None, herited_object
 
 
 def _get_user_permissions(id_role):
@@ -334,7 +346,7 @@ def get_user_permissions_by_action(id_role=None):
     return g.permissions_by_action[id_role]
 
 
-def get_permissions(action_code, id_role, module_code, object_code):
+def _get_permissions(action_code, id_role, module_code, object_code):
     """
     This function ensure module and object inheritance.
     Permissions have been sorted (which is required for using groupby) by module_code and object_code,
@@ -353,8 +365,12 @@ def get_permissions(action_code, id_role, module_code, object_code):
         ):
             if _object_code not in [object_code, "ALL"]:
                 continue
-            return list(__permissions)
-    return []
+            return list(__permissions), _module_code, _object_code
+    return [], None, None
+
+
+def get_permissions(action_code, id_role=None, module_code=None, object_code=None):
+    return _get_permissions(action_code, id_role, module_code, object_code)[0]
 
 
 def get_scope(action_code, id_role=None, module_code=None, object_code=None):
