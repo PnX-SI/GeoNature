@@ -158,7 +158,8 @@ def create_app(with_external_mods=True):
 
         @app.before_request
         def set_sentry_context():
-            set_tag("request.id", request.environ["FLASK_REQUEST_ID"])
+            if "FLASK_REQUEST_ID" in request.environ:
+                set_tag("request.id", request.environ["FLASK_REQUEST_ID"])
             if g.current_user:
                 set_user(
                     {
