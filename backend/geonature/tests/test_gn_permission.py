@@ -67,13 +67,13 @@ class TestGnPermissionsTools:
     def test_cruved_scope_for_user_in_module(self, users):
         admin_user = users["admin_user"]
         # get cruved for geonature
-        cruved, herited = cruved_scope_for_user_in_module(
+        cruved, herited, _ = cruved_scope_for_user_in_module(
             id_role=admin_user.id_role, module_code="GEONATURE"
         )
         assert herited == False
         assert cruved == {"C": "3", "R": "3", "U": "3", "V": "3", "E": "3", "D": "3"}
 
-        cruved, herited = cruved_scope_for_user_in_module(
+        cruved, herited, _ = cruved_scope_for_user_in_module(
             id_role=admin_user.id_role, module_code="GEONATURE", get_id=True
         )
 

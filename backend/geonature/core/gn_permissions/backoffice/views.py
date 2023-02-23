@@ -65,12 +65,11 @@ def permission_form(id_module, id_role, id_object=None):
 
     user = DB.session.query(User).get(id_role)
     if request.method == "GET":
-        cruved, (herited, herited_obj) = cruved_scope_for_user_in_module(
+        cruved, herited, herited_obj = cruved_scope_for_user_in_module(
             id_role=id_role,
             module_code=module.module_code,
             object_code=object_instance.code_object,
             get_id=True,
-            get_herited_obj=True,
         )
         form = CruvedScopeForm(**cruved)
         # get the real cruved of user to set a warning
@@ -223,11 +222,10 @@ def user_cruved(id_role):
         # get cruved for all objects
         module_objects_as_dict = []
         for _object in module.get("objects", []):
-            object_cruved, (herited, herited_obj) = cruved_scope_for_user_in_module(
+            object_cruved, herited, herited_obj = cruved_scope_for_user_in_module(
                 id_role=id_role,
                 module_code=module["module_code"],
                 object_code=_object["code_object"],
-                get_herited_obj=True,
             )
             _object["cruved"] = (
                 beautifulize_cruved(actions_label, object_cruved),
@@ -240,8 +238,8 @@ def user_cruved(id_role):
 
         # do not display cruved for module which have objects
 
-        cruved, (herited, herited_obj) = cruved_scope_for_user_in_module(
-            id_role, module["module_code"], get_herited_obj=True
+        cruved, herited, herited_obj = cruved_scope_for_user_in_module(
+            id_role, module["module_code"]
         )
         cruved_beautiful = beautifulize_cruved(actions_label, cruved)
         module["module_cruved"] = (cruved_beautiful, herited, herited_obj)

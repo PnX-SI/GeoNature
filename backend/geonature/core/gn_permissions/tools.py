@@ -245,8 +245,6 @@ def cruved_scope_for_user_in_module(
     module_code=None,
     object_code=None,
     get_id=False,
-    get_herited_obj=False,
-    append_to_select=None,
 ):
     """
     get the user cruved for a module or object
@@ -268,11 +266,8 @@ def cruved_scope_for_user_in_module(
         code_filter_type="SCOPE",
         module_code=module_code,
         object_code=object_code,
-        append_to_select=append_to_select,
     ).get_perm_for_all_actions(get_id)
-    if get_herited_obj:
-        is_herited = (is_herited, herited_object)
-    return herited_cruved, is_herited
+    return herited_cruved, is_herited, herited_object
 
 
 def _get_user_permissions(id_role):
