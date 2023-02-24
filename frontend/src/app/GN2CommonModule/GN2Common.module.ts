@@ -53,6 +53,7 @@ import { GenericFormGeneratorComponent } from '@geonature_common/form/dynamic-fo
 import { GeojsonComponent } from './map/geojson/geojson.component';
 import { GeometryFormComponent } from '@geonature_common/form/geometry-form/geometry-form.component';
 import { GPSComponent } from './map/gps/gps.component';
+import { GeolocationComponent } from './map/geolocation/geolocation.component';
 import { LeafletDrawComponent } from './map/leaflet-draw/leaflet-draw.component';
 import { LeafletFileLayerComponent } from './map/filelayer/filelayer.component';
 import { MapComponent } from './map/map.component';
@@ -162,6 +163,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     GeojsonComponent,
     GeometryFormComponent,
     GPSComponent,
+    GeolocationComponent,
     LeafletDrawComponent,
     LeafletFileLayerComponent,
     MapComponent,
@@ -232,6 +234,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     GeojsonComponent,
     GeometryFormComponent,
     GPSComponent,
+    GeolocationComponent,
     LeafletDrawComponent,
     LeafletFileLayerComponent,
     MapComponent,
