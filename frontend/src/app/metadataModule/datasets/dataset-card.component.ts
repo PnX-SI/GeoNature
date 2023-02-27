@@ -4,6 +4,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import DatalabelsPlugin from 'chartjs-plugin-datalabels';
 
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
@@ -28,46 +29,24 @@ export class DatasetCardComponent implements OnInit {
 
   @ViewChild(BaseChartDirective, { static: false }) public chart: BaseChartDirective;
 
-  // Type de graphe
-  public pieChartType = 'doughnut';
+  public pieChartPlugins = [DatalabelsPlugin];
   // Tableau contenant les labels du graphe
   public pieChartLabels = [];
   // Tableau contenant les données du graphe
-  public pieChartData = [];
-  // Tableau contenant les couleurs et la taille de bordure du graphe
-  public pieChartColors = [];
-  // Dictionnaire contenant les options à implémenter sur le graphe (calcul des pourcentages notamment)
+  public pieChartData = [
+    {
+      data: [],
+    },
+  ];
   public pieChartOptions = {
-    cutoutPercentage: 80,
-    legend: {
-      display: 'true',
-      position: 'left',
-      labels: {
-        fontSize: 15,
-        filter: function (legendItem, chartData) {
-          return chartData.datasets[0].data[legendItem.index] != 0;
+    plugins: {
+      datalabels: {
+        formatter: (value, context) => {
+          const total = context.chart.data.datasets[0].data.reduce((acc, prev) => acc + prev);
+          const percentage = Math.round((value / total) * 100);
+          return percentage < 5 ? null : percentage + '%';
         },
       },
-    },
-    plugins: {
-      labels: [
-        {
-          render: 'label',
-          arc: true,
-          fontSize: 14,
-          position: 'outside',
-          overlap: false,
-        },
-        {
-          render: 'percentage',
-          fontColor: 'white',
-          fontSize: 14,
-          fontStyle: 'bold',
-          precision: 2,
-          textShadow: true,
-          overlap: false,
-        },
-      ],
     },
   };
 
@@ -114,10 +93,10 @@ export class DatasetCardComponent implements OnInit {
     this._dfs
       .getTaxaDistribution('group2_inpn', { id_dataset: this.id_dataset })
       .subscribe((data) => {
-        this.pieChartData = [];
+        this.pieChartData[0].data = [];
         this.pieChartLabels = [];
         for (let row of data) {
-          this.pieChartData.push(row['count']);
+          this.pieChartData[0].data.push(row['count']);
           this.pieChartLabels.push(row['group']);
         }
         // in order to have chart instance
