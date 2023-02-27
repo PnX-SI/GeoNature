@@ -406,13 +406,13 @@
         <div class="card-body">
           <div style="display: block">
             <canvas
-              *ngIf="pieChartData.length"
+              *ngIf="pieChartData[0].data.length"
               baseChart
-              [data]="pieChartData"
+              [datasets]="pieChartData"
               [labels]="pieChartLabels"
-              [chartType]="pieChartType"
-              [colors]="pieChartColors"
               [options]="pieChartOptions"
+              [plugins]="pieChartPlugins"
+              type="doughnut"
               padding="20px"
             >
             </canvas>

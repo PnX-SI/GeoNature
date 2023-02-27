@@ -31,7 +31,7 @@ import { IntroductionComponent } from './components/introduction/introduction.co
 // Service
 import { AuthService } from './components/auth/auth.service';
 import { CookieService } from 'ng2-cookies';
-import { ChartsModule } from 'ng2-charts';
+import { NgChartsModule } from 'ng2-charts';
 
 // PublicAccessGuard,
 
@@ -82,7 +82,7 @@ export function initApp(injector) {
     HttpClientModule,
     BrowserAnimationsModule,
     routing,
-    ChartsModule,
+    NgChartsModule,
     ToastrModule.forRoot({
       positionClass: 'toast-top-center',
       tapToDismiss: true,
