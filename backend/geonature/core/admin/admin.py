@@ -54,46 +54,6 @@ class ProtectedTNomenclaturesAdmin(
     object_code = "NOMENCLATURES"
 
 
-class ProtectedBibFieldAdmin(
-    CruvedProtectedMixin,
-    BibFieldAdmin,
-):
-    module_code = "ADMIN"
-    object_code = "ADDITIONAL_FIELDS"
-
-
-class ProtectedNotificationTemplateAdmin(
-    CruvedProtectedMixin,
-    NotificationTemplate,
-):
-    module_code = "ADMIN"
-    object_code = "NOTIFICATIONS"
-
-
-class ProtectedNotificationCategoryAdmin(
-    CruvedProtectedMixin,
-    NotificationCategory,
-):
-    module_code = "ADMIN"
-    object_code = "NOTIFICATIONS"
-
-
-class ProtectedNotificationMethodAdmin(
-    CruvedProtectedMixin,
-    NotificationMethod,
-):
-    module_code = "ADMIN"
-    object_code = "NOTIFICATIONS"
-
-
-class ProtectedTMobileAppsAdmin(
-    CruvedProtectedMixin,
-    TMobileAppsAdmin,
-):
-    module_code = "ADMIN"
-    object_code = "ALL"
-
-
 ## déclaration de la page d'admin
 admin = Admin(
     template_mode="bootstrap4",
@@ -137,7 +97,7 @@ admin.add_view(
 )
 
 admin.add_view(
-    ProtectedBibFieldAdmin(
+    BibFieldAdmin(
         TAdditionalFields,
         db.session,
         name="Bibliothèque de champs additionnels",
@@ -175,7 +135,7 @@ admin.add_view(
 )
 
 admin.add_view(
-    ProtectedTMobileAppsAdmin(
+    TMobileAppsAdmin(
         TMobileApps,
         db.session,
         name="Applications mobiles",

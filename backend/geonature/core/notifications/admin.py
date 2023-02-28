@@ -1,10 +1,14 @@
 from flask_admin.contrib.sqla import ModelView
 
 from geonature.utils.env import DB
+from geonature.core.admin.utils import CruvedProtectedMixin
 from geonature.core.notifications.models import NotificationCategory
 
 
-class NotificationTemplateAdmin(ModelView):
+class NotificationTemplateAdmin(CruvedProtectedMixin, ModelView):
+    module_code = "ADMIN"
+    object_code = "NOTIFICATIONS"
+
     column_list = ("code_category", "code_method", "content")
     column_labels = {
         "code_category": "Catégorie",
@@ -19,7 +23,10 @@ class NotificationTemplateAdmin(ModelView):
     }
 
 
-class NotificationCategoryAdmin(ModelView):
+class NotificationCategoryAdmin(CruvedProtectedMixin, ModelView):
+    module_code = "ADMIN"
+    object_code = "NOTIFICATIONS"
+
     column_list = ("code", "label", "description")
     form_columns = ("code", "label", "description")
     form_args = {
@@ -28,7 +35,10 @@ class NotificationCategoryAdmin(ModelView):
     }
 
 
-class NotificationMethodAdmin(ModelView):
+class NotificationMethodAdmin(CruvedProtectedMixin, ModelView):
+    module_code = "ADMIN"
+    object_code = "NOTIFICATIONS"
+
     column_list = ("code", "label", "description")
     form_columns = ("code", "label", "description")
     form_args = {

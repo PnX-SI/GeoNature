@@ -5,6 +5,7 @@ from wtforms import validators, Form
 
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import BaseForm
+from geonature.core.admin.utils import CruvedProtectedMixin
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.models import TObjects
 from geonature.core.gn_commons.schemas import TAdditionalFieldsSchema
@@ -30,7 +31,10 @@ class TAdditionalFieldsForm(BaseForm):
         return super().validate(extra_validators)
 
 
-class BibFieldAdmin(ModelView):
+class BibFieldAdmin(CruvedProtectedMixin, ModelView):
+    module_code = "ADMIN"
+    object_code = "ADDITIONAL_FIELDS"
+
     form_base_class = TAdditionalFieldsForm
     form_columns = (
         "field_name",
@@ -104,7 +108,10 @@ class BibFieldAdmin(ModelView):
     }
 
 
-class TMobileAppsAdmin(ModelView):
+class TMobileAppsAdmin(CruvedProtectedMixin, ModelView):
+    module_code = "ADMIN"
+    object_code = "ALL"
+
     column_list = (
         "app_code",
         "relative_path_apk",
