@@ -4,14 +4,12 @@ import subprocess
 import site
 import importlib
 from pathlib import Path
-import pkg_resources
-from pkg_resources import iter_entry_points
 
 import click
 from click import ClickException
 
 from geonature.utils.env import ROOT_DIR
-from geonature.utils.module import get_dist_from_code, module_db_upgrade
+from geonature.utils.module import iter_modules_dist, get_dist_from_code, module_db_upgrade
 
 from geonature.core.command.main import main
 from geonature.utils.config import config
@@ -36,8 +34,6 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
 
     # refresh list of entry points
     importlib.reload(site)
-    for entry in sys.path:
-        pkg_resources.working_set.add_entry(entry)
 
     # load python package
     module_dist = get_dist_from_code(module_code)
@@ -95,15 +91,14 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
 )
 @click.argument("module_codes", metavar="[MODULE_CODE]...", nargs=-1)
 def upgrade_modules_db(directory, sql, tag, x_arg, module_codes):
-    for module_code_entry in iter_entry_points("gn_module", "code"):
-        module_code = module_code_entry.resolve()
+    for module_dist in iter_modules_dist():
+        module_code = module_dist.entry_points["code"].load()
         if module_codes and module_code not in module_codes:
             continue
         if module_code in config["DISABLED_MODULES"]:
             click.echo(f"Omission du module {module_code} (déactivé)")
             continue
         click.echo(f"Mise-à-jour du module {module_code}…")
-        module_dist = module_code_entry.dist
         if not module_db_upgrade(module_dist, directory, sql, tag, x_arg):
             click.echo(
                 "Le module est déjà déclaré en base. "

@@ -1,5 +1,4 @@
 import json
-import pkg_resources
 import datetime
 import tempfile
 

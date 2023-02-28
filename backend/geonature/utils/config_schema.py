@@ -4,8 +4,6 @@
 
 import os
 
-from pkg_resources import iter_entry_points, load_entry_point
-
 from marshmallow import (
     Schema,
     fields,
@@ -21,7 +19,7 @@ from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_COLUMNS_API_SYNTHESE,
 )
 from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
-from geonature.utils.module import get_module_config
+from geonature.utils.module import iter_modules_dist, get_module_config
 from geonature.utils.utilsmails import clean_recipients
 from geonature.utils.utilstoml import load_and_validate_toml
 
@@ -580,9 +578,9 @@ class GnGeneralSchemaConf(Schema):
 
     @post_load
     def insert_module_config(self, data, **kwargs):
-        for module_code_entry in iter_entry_points("gn_module", "code"):
-            module_code = module_code_entry.resolve()
+        for dist in iter_modules_dist():
+            module_code = dist.entry_points["code"].load()
             if module_code in data["DISABLED_MODULES"]:
                 continue
-            data[module_code] = get_module_config(module_code_entry.dist)
+            data[module_code] = get_module_config(dist)
         return data

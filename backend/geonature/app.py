@@ -4,9 +4,13 @@ Démarrage de l'application
 
 import logging, warnings, os, sys
 from itertools import chain
-from pkg_resources import iter_entry_points, load_entry_point
 from importlib import import_module
 from packaging import version
+
+if sys.version_info < (3, 10):
+    from importlib_metadata import entry_points
+else:
+    from importlib.metadata import entry_points
 
 from flask import Flask, g, request, current_app, send_from_directory
 from flask.json.provider import DefaultJSONProvider
@@ -28,6 +32,7 @@ else:  # retro-compatibility SQLAlchemy 1.3
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
+from geonature.utils.module import iter_modules_dist
 from geonature.core.admin.admin import admin
 from geonature.middlewares import SchemeFix, RequestID
 
@@ -50,11 +55,10 @@ def configure_alembic(alembic_config):
     if "VERSION_LOCATIONS" in config["ALEMBIC"]:
         version_locations.extend(config["ALEMBIC"]["VERSION_LOCATIONS"].split())
     for entry_point in chain(
-        iter_entry_points("alembic", "migrations"), iter_entry_points("gn_module", "migrations")
+        entry_points(group="alembic", name="migrations"),
+        entry_points(group="gn_module", name="migrations"),
     ):
-        # TODO: define enabled module in configuration (skip disabled module, raise error on missing module)
-        _, migrations = str(entry_point).split("=", 1)
-        version_locations += [migrations.strip()]
+        version_locations += [entry_point.value]
     alembic_config.set_main_option("version_locations", " ".join(version_locations))
     return alembic_config
 
@@ -206,14 +210,12 @@ def create_app(with_external_mods=True):
 
         # Loading third-party modules
         if with_external_mods:
-            for module_code_entry in iter_entry_points("gn_module", "code"):
-                module_code = module_code_entry.resolve()
+            for module_dist in iter_modules_dist():
+                module_code = module_dist.entry_points["code"].load()
                 if module_code in config["DISABLED_MODULES"]:
                     continue
                 try:
-                    module_blueprint = load_entry_point(
-                        module_code_entry.dist, "gn_module", "blueprint"
-                    )
+                    module_blueprint = module_dist.entry_points["blueprint"].load()
                 except Exception as e:
                     logging.exception(e)
                     logging.warning(f"Unable to load module {module_code}, skipping…")
