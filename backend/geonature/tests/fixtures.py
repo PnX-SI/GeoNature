@@ -26,7 +26,7 @@ from geonature.core.gn_meta.models import (
     CorDatasetActor,
     CorAcquisitionFrameworkActor,
 )
-from geonature.core.gn_synthese.models import TSources, Synthese, TReport, BibReportsTypes
+from geonature.core.gn_synthese.models import TSources, Synthese, TReport, BibReportsTypes, SyntheseLogEntry
 
 from pypnusershub.db.models import (
     User,
@@ -44,6 +44,7 @@ __all__ = [
     "datasets",
     "acquisition_frameworks",
     "synthese_data",
+    "synthese_log_data",
     "source",
     "reports_data",
     "filters",
@@ -406,3 +407,50 @@ def reports_data(users, synthese_data):
             data.append(create_report(id_synthese, *args))
 
     return data
+
+
+
+@pytest.fixture()
+def synthese_log_data(app,synthese_data):
+    
+    id_obj_synthese_to_delete = [synthese_data[obs].id_synthese for obs in ['obs1','obs2']] 
+    id_obj_synthese_to_update = [synthese_data[obs].id_synthese for obs in ['p1_af1','p1_af1_2','p1_af2']] 
+    id_obj_synthese_added = [synthese_data[obs].id_synthese for obs in ['obs3','p1_af2']]
+    id_updated_and_deleted_and_added = id_obj_synthese_to_delete + id_obj_synthese_to_update +id_obj_synthese_added
+ 
+    date_updated = ["2022-01-01","2023-01-02","2023-01-02"]
+    date_created = ["2022-01-02","2023-01-03","2023-04-01"]
+    with db.session.begin_nested():
+        obj_added = db.session.query(Synthese).filter(Synthese.id_synthese.in_(id_obj_synthese_added)).all()
+        obj_to_delete = db.session.query(Synthese).filter(Synthese.id_synthese.in_(id_obj_synthese_to_delete)).all()
+        obj_to_update = db.session.query(Synthese).filter(Synthese.id_synthese.in_(id_obj_synthese_to_update)).all()
+        for obj in obj_to_delete:
+            db.session.delete(obj)
+        for obj,date in zip(obj_to_update,date_updated):
+            obj.comment_description = "add description"
+            obj.last_action = "U"
+            obj.meta_create_date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+            obj.meta_update_date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+        for obj,date in zip(obj_added,date_created):
+            obj.last_action = "I"
+            obj.meta_create_date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+            obj.meta_update_date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+
+        q1 = SyntheseLogEntry.query.with_entities(
+        SyntheseLogEntry.id_synthese,
+        SyntheseLogEntry.last_action,
+        SyntheseLogEntry.meta_last_action_date,
+        ).filter(SyntheseLogEntry.id_synthese.in_(id_updated_and_deleted_and_added))
+
+        q2 = Synthese.query.with_entities(
+            Synthese.id_synthese,
+            Synthese.last_action,
+            func.coalesce(Synthese.meta_update_date, Synthese.meta_create_date).label(
+                "meta_last_action_date"
+            ),
+        ).filter(Synthese.id_synthese.in_(id_updated_and_deleted_and_added))
+
+        q3 = q1.union(q2)
+        data_union = q3.all()
+
+    return data_union
