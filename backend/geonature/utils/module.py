@@ -26,13 +26,13 @@ def get_module_config_path(module_code):
     config_path = os.environ.get(f"GEONATURE_{module_code}_CONFIG_FILE")
     if config_path:
         return Path(config_path)
+    config_path = Path(CONFIG_FILE).parent / f"{module_code.lower()}_config.toml"
+    if config_path.exists():
+        return config_path
     dist = get_dist_from_code(module_code)
     module_path = Path(sys.modules[dist.entry_points["code"].module].__file__).parent
     # module_path is commonly backend/gn_module_XXX/ but config dir is at package root
     config_path = module_path.parent.parent / "config" / "conf_gn_module.toml"
-    if config_path.exists():
-        return config_path
-    config_path = Path(CONFIG_FILE).parent / f"{module_code.lower()}_config.toml"
     if config_path.exists():
         return config_path
     return None
