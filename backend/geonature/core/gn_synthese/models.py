@@ -148,7 +148,7 @@ class SyntheseLogEntryQuery(BaseQuery):
                         sort_item
                     )
                 )
-            return sort_list_query
+        return sort_list_query
 
     def get_filters_with_operator(self, params: MultiDict = None):
         """Separate filters with and without operator separate by ':'

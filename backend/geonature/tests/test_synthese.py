@@ -1,10 +1,13 @@
 import pytest
+import  datetime
 import json
 import itertools
 from collections import Counter
+from sqlalchemy.dialects import postgresql
 
 from flask import url_for, current_app
-from sqlalchemy import func
+from sqlalchemy import func,and_
+from werkzeug.datastructures import MultiDict
 from werkzeug.exceptions import Forbidden, BadRequest, Unauthorized
 from jsonschema import validate as validate_json
 from geoalchemy2.shape import to_shape
@@ -12,7 +15,8 @@ from geojson import Point
 
 from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_synthese.models import Synthese, TSources
+from geonature.core.gn_synthese.models import Synthese, TSources, SyntheseLogEntry
+
 
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user_cookie
 from ref_geo.models import BibAreasTypes, LAreas
@@ -21,6 +25,10 @@ from apptax.tests.fixtures import noms_example, attribut_example
 from .fixtures import *
 from .utils import jsonschema_definitions
 
+def date_convert(gmt_date):
+    print("Date in GMT: {0}".format(gmt_date))
+    gmt = datetime.datetime.strptime(gmt_date, '%a, %d %b %Y %H:%M:%S GMT')
+    return gmt
 
 @pytest.fixture()
 def unexisted_id():
@@ -33,7 +41,6 @@ def source():
     with db.session.begin_nested():
         db.session.add(source)
     return source
-
 
 @pytest.fixture()
 def unexisted_id_source():
@@ -54,6 +61,12 @@ def taxon_attribut(noms_example, attribut_example, synthese_data):
         db.session.add(c)
     return c
 
+@pytest.fixture()
+def delete_synthese():
+    synthese = Synthese.query.first()
+    with db.session.begin_nested():
+        db.session.delete(synthese)
+    return synthese
 
 synthese_properties = {
     "type": "object",
@@ -597,3 +610,95 @@ class TestSynthese:
 
         assert response.status_code == 200
         assert response.json[0]["cd_nom"] == synthese_data["obs1"].cd_nom
+
+    def test_synthese_log(self,delete_synthese):
+        """
+        Test delete synthese trigger insert into t_log_synthese
+        """
+
+        assert Synthese.query.filter_by(id_synthese = delete_synthese.id_synthese).first() == None
+        t_log_synthese = SyntheseLogEntry.query.filter_by(id_synthese = delete_synthese.id_synthese ).first()
+        assert t_log_synthese != None
+
+    def test_list_synthese_log_entries(self, users):
+        url = "gn_synthese.list_synthese_log_entries"
+        set_logged_user_cookie(self.client, users["self_user"])
+        response = self.client.get(url_for(url)) #, query_string={"id_source": id_source})
+
+        assert response.status_code == 200
+    
+    def test_log_synthese_union_query(self, users,synthese_data,synthese_log_data):
+        url = "gn_synthese.list_synthese_log_entries"
+
+
+        set_logged_user_cookie(self.client, users["self_user"])
+        response = self.client.get(url_for(url)) #, query_string={"id_source": id_source})
+
+        assert response.status_code == 200
+
+    def test_sort_list_query(self):
+        asc_or_desc_one="asc"
+        asc_or_desc_two="desc"
+        columnane_sorted_one="last_action"
+        columnane_sorted_two="id_synthese"
+        query_string=MultiDict(
+                [
+                    (
+                        "sort",
+                        f"{columnane_sorted_one}:{asc_or_desc_one}",
+                    ),
+                    (
+                        "sort",
+                        f"{columnane_sorted_two}:{asc_or_desc_two}",
+                    ),
+                ]
+            )
+        sort_list = query_string.poplist("sort")
+        query = SyntheseLogEntry.query.sort_list_query(sort_list)
+        query_sort = and_(*query)
+        assert str(query_sort.compile(dialect=postgresql.dialect())) == f'gn_synthese.t_log_synthese.{columnane_sorted_one} {asc_or_desc_one.upper()} AND gn_synthese.t_log_synthese.{columnane_sorted_two} {asc_or_desc_two.upper()}'
+
+
+    def test_log_synthese_sort_params(self, users):
+        """Test sort params (last_action:asc and meta_last_action_date:desc)
+        
+        """
+        query_string=MultiDict(
+                [
+                    (
+                        "sort",
+                        "last_action:asc",
+                    ),
+                    (
+                        "sort",
+                        "meta_last_action_date:desc",
+                    ),
+                    (
+                        "limit",
+                        "150"
+                    )
+                ]
+            )
+       
+        url = "gn_synthese.list_synthese_log_entries"
+        set_logged_user_cookie(self.client, users["self_user"])
+        response = self.client.get(url_for(url), query_string =query_string)
+
+        total = response.json["total"]
+        limit = response.json["limit"]
+
+        # First result is order by last_action ( "D","I","U")
+        first_last_action = response.json["items"][0][1]
+        last_last_action = response.json["items"][-1][1]
+        assert first_last_action < last_last_action
+        
+        # Thens result is order by meta_last_action_date . So we extract only "D", and only "U" and we compare date
+        only_items_first_last_action = [list_first_last_action for list_first_last_action in response.json["items"] if list_first_last_action[1] == first_last_action ]
+        first_date_items_first_lact_action = date_convert(only_items_first_last_action[0][2])
+        last_date_items_first_lact_action = date_convert(only_items_first_last_action[-1][2])
+        assert first_date_items_first_lact_action > last_date_items_first_lact_action
+
+        only_items_last_last_action = [list_last_last_action for list_last_last_action in response.json["items"] if list_last_last_action[1] == last_last_action ]
+        first_date_items_last_lact_action = date_convert(only_items_last_last_action[0][2])
+        last_date_items_last_lact_action = date_convert(only_items_last_last_action[-1][2])
+        assert first_date_items_last_lact_action > last_date_items_last_lact_action
