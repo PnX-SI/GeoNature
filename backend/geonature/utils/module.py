@@ -12,10 +12,6 @@ from geonature.utils.env import db, CONFIG_FILE
 from geonature.core.gn_commons.models import TModules
 
 
-class NoManifestFound(Exception):
-    pass
-
-
 def get_module_config_path(module_code):
     config_path = os.environ.get(f"GEONATURE_{module_code}_CONFIG_FILE")
     if config_path:
