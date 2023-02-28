@@ -46,10 +46,7 @@ from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import (
-    cruved_scope_for_user_in_module,
-    get_scopes_by_action,
-)
+from geonature.core.gn_permissions.tools import get_scopes_by_action
 
 from ref_geo.models import LAreas, BibAreasTypes
 
@@ -383,7 +380,7 @@ def export_taxon_web(scope):
     id_list = request.get_json()
 
     # check R and E CRUVED to know if we filter with cruved
-    cruved = cruved_scope_for_user_in_module(g.current_user.id_role, module_code="SYNTHESE")[0]
+    cruved = get_scopes_by_action(module_code="SYNTHESE")
     sub_query = (
         select(
             [
@@ -478,7 +475,7 @@ def export_observations_web(scope):
         with_generic_table=True,
     )
     # check R and E CRUVED to know if we filter with cruved
-    cruved = cruved_scope_for_user_in_module(g.current_user.id_role, module_code="SYNTHESE")[0]
+    cruved = get_scopes_by_action(module_code="SYNTHESE")
     if cruved["R"] > cruved["E"]:
         synthese_query_class.filter_query_with_cruved(g.current_user, scope)
 

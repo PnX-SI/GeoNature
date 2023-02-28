@@ -12,40 +12,6 @@ from geonature.utils.env import DB
 
 
 @serializable
-class VUsersPermissions(DB.Model):
-    __tablename__ = "v_roles_permissions"
-    __table_args__ = {"schema": "gn_permissions"}
-    id_role = DB.Column(DB.Integer, primary_key=True)
-    nom_role = DB.Column(DB.Unicode)
-    prenom_role = DB.Column(DB.Unicode)
-    id_organisme = DB.Column(DB.Integer)
-    id_module = DB.Column(DB.Integer, primary_key=True)
-    module_code = DB.Column(DB.Unicode)
-    code_object = DB.Column(DB.Unicode)
-    id_action = DB.Column(DB.Integer, primary_key=True)
-    description_action = DB.Column(DB.Unicode)
-    id_filter = DB.Column(DB.Integer, primary_key=True)
-    label_filter = DB.Column(DB.Integer, primary_key=True)
-    code_action = DB.Column(DB.Unicode)
-    description_action = DB.Column(DB.Unicode)
-    value_filter = DB.Column(DB.Unicode)
-    code_filter_type = DB.Column(DB.Unicode)
-    id_filter_type = DB.Column(DB.Integer)
-    id_permission = DB.Column(DB.Integer)
-
-    def __str__(self):
-        return """VUsersPermissions
-            role='{}' action='{}' filter='{}' module='{}' filter_type='{}' object='{} >""".format(
-            self.id_role,
-            self.code_action,
-            self.value_filter,
-            self.module_code,
-            self.code_filter_type,
-            self.code_object,
-        )
-
-
-@serializable
 class BibFiltersType(DB.Model):
     __tablename__ = "bib_filters_type"
     __table_args__ = {"schema": "gn_permissions"}

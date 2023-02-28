@@ -13,7 +13,6 @@ from geonature.core.gn_permissions.models import (
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.tools import (
     cruved_scope_for_user_in_module,
-    get_user_from_token_and_raise,
 )
 from geonature.utils.env import DB
 
@@ -65,40 +64,16 @@ class TestGnPermissionsRoutes:
 class TestGnPermissionsTools:
     """Test of gn_permissions tools functions"""
 
-    def test_user_from_token_and_raise_fail(self):
-        # no cookie
-        with pytest.raises(Unauthorized, match="No token"):
-            resp = get_user_from_token_and_raise(request)
-        # set a fake cookie
-        self.client.set_cookie("/", "token", "fake token")
-        # fake request to set cookie
-        response = self.client.get(
-            url_for("gn_permissions_backoffice.filter_list", id_filter_type=4)
-        )
-        with pytest.raises(Unauthorized, match="Token corrupted") as exc_info:
-            resp = get_user_from_token_and_raise(request)
-
-    def test_get_user_from_token_and_raise(self, app, users):
-        user = users["user"]
-
-        with app.test_request_context(headers=logged_user_headers(user)):
-            app.preprocess_request()
-            resp = get_user_from_token_and_raise(request)
-            assert isinstance(resp, dict)
-            assert resp["id_role"] == user.id_role
-            assert resp["id_organisme"] == user.id_organisme
-            assert resp["identifiant"] == user.identifiant
-
     def test_cruved_scope_for_user_in_module(self, users):
         admin_user = users["admin_user"]
         # get cruved for geonature
-        cruved, herited = cruved_scope_for_user_in_module(
+        cruved, herited, _ = cruved_scope_for_user_in_module(
             id_role=admin_user.id_role, module_code="GEONATURE"
         )
         assert herited == False
         assert cruved == {"C": "3", "R": "3", "U": "3", "V": "3", "E": "3", "D": "3"}
 
-        cruved, herited = cruved_scope_for_user_in_module(
+        cruved, herited, _ = cruved_scope_for_user_in_module(
             id_role=admin_user.id_role, module_code="GEONATURE", get_id=True
         )
 

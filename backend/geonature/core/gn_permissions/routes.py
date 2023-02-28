@@ -12,7 +12,6 @@ from sqlalchemy.orm import joinedload
 from utils_flask_sqla.response import json_resp
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 
 
 routes = Blueprint("gn_permissions", __name__)

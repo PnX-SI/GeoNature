@@ -11,7 +11,7 @@ from geonature.core.gn_permissions.models import (
     BibFiltersType,
     CorRoleActionFilterModuleObject as Permission,
 )
-from geonature.core.gn_permissions.tools import _get_scopes_by_action
+from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.utils.env import db
 
 from pypnusershub.db.models import User
@@ -141,7 +141,7 @@ def assert_cruved(roles):
         role = roles[role]
         module_code = module.module_code if module else None
         object_code = object.code_object if object else None
-        assert _get_scopes_by_action(
+        assert get_scopes_by_action(
             id_role=role.id_role, module_code=module_code, object_code=object_code
         ) == cruved_dict(cruved)
 
