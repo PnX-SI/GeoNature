@@ -516,7 +516,6 @@ class TaxHub(Schema):
 # class a utiliser pour les paramètres que l'on veut passer au frontend
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(load_default="GeoNature2")
-    LOGO_STRUCTURE_FILE = fields.String(load_default="logo_structure.png")
     GEONATURE_VERSION = fields.String(load_default=GEONATURE_VERSION.strip())
     DEFAULT_LANGUAGE = fields.String(load_default="fr")
     PASS_METHOD = fields.String(load_default="hash", validate=OneOf(["hash", "md5"]))

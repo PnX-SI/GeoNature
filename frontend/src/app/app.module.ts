@@ -61,6 +61,18 @@ export function loadConfig(injector) {
 export function initApp(injector) {
   return async () => {
     await loadConfig(injector);
+
+    const configService = injector.get(ConfigService);
+
+    let favicon = document.getElementById('favicon') as HTMLLinkElement;
+    favicon.type = 'image/x-icon';
+    favicon.href = `${configService.API_ENDPOINT}${configService.STATIC_URL}/images/favicon.ico`;
+
+    let style = document.createElement('link');
+    style.type = 'text/css';
+    style.rel = 'stylesheet';
+    style.href = `${configService.API_ENDPOINT}${configService.STATIC_URL}/css/frontend.css`;
+    document.getElementsByTagName('head')[0].append(style);
   };
 }
 

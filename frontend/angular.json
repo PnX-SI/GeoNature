@@ -31,8 +31,6 @@
             "polyfills": "src/polyfills.ts",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.ico",
-              "src/custom",
               "src/assets",
               {
                 "glob": "**/*",

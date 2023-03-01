@@ -1,6 +1,6 @@
 <mat-card class="logo" data-qa="gn-sidenav-mat-card">
   <a routerLink="/" routerLinkActive="active">
-    <img mat-card-image src="custom/images/logo_sidebar.jpg" />
+    <img mat-card-image src="{{ this.config.API_ENDPOINT }}{{ this.config.STATIC_URL }}/images/logo_sidebar.jpg" />
   </a>
 </mat-card>
 <mat-nav-list class="appnav">
