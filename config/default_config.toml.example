@@ -204,6 +204,9 @@ NOTIFICATIONS_ENABLED = true
     # Zoom appliqué sur la carte lors du clic sur une liste
     ZOOM_ON_CLICK = 16
 
+    # activation d'un boutton de géolocalisation sur la carte
+    GEOLOCATION = true
+
     # Restreindre la recherche OpenStreetMap (sur la carte dans l'encart "Rechercher un lieu")
     # à certains pays. Les pays doivent être au format ISO_3166-1 :
     # https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 et séparés par une virgule.
