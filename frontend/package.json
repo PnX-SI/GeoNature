@@ -41,6 +41,7 @@
     "font-awesome": "^4.7.0",
     "leaflet": "~1.7.1",
     "leaflet-draw": "^1.0.4",
+    "leaflet.locatecontrol": "^0.79.0",
     "leaflet.markercluster": "^1.5.3",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
