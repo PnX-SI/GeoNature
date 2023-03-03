@@ -85,15 +85,6 @@ jobs:
 
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
-      - name: Install core modules
-        run: |
-          geonature install-gn-module contrib/occtax OCCTAX --build=false
-          geonature db upgrade occtax-samples-test@head
-          geonature install-gn-module contrib/gn_module_occhab OCCHAB --build=false
-          geonature db upgrade occhab-samples@head
-          geonature install-gn-module contrib/gn_module_validation VALIDATION --build=false
-        env:
-          GEONATURE_CONFIG_FILE: config/test_config.toml
         # FRONTEND
       - name: Cache node modules
         uses: actions/cache@v3
@@ -116,6 +107,15 @@ jobs:
       - name: Show generated frontend config
         run: |
           cat ./frontend/src/conf/app.config.ts
+      - name: Install core modules
+        run: |
+          geonature install-gn-module contrib/occtax OCCTAX --build=false
+          geonature db upgrade occtax-samples-test@head
+          geonature install-gn-module contrib/gn_module_occhab OCCHAB --build=false
+          geonature db upgrade occhab-samples@head
+          geonature install-gn-module contrib/gn_module_validation VALIDATION --build=false
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Run GeoNature backend
         run: geonature dev_back &
         env:
