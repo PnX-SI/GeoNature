@@ -8,8 +8,6 @@ config/*_config.toml
 log/*
 .vscode/
 geonature_config.toml
-external_assets/
-frontend/external_modules/*
 tmp/
 var/
 data/migrations/v1tov2/old/v1_compat.ini
@@ -98,13 +96,6 @@ instance/
 
 # Sphinx documentation
 docs/_build/
-#frontend doc
-
-#frontend test
-frontend/cypress/videos
-frontend/cypress/screenshots
-frontend/coverage
-frontend/.nyc_output/out.json
 
 # PyBuilder
 target/
@@ -155,5 +146,5 @@ install_all/install_all.log
 *.swo
 
 /docs/CHANGELOG.html
-frontend/coverage/clover.xml
-frontend/.nyc_output/out.json
+
+/contrib/*/frontend/node_modules
