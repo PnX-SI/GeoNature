@@ -6,8 +6,9 @@
     fichiers de routing du frontend etc...). Ces dernières doivent pouvoir fonctionner même si
     un paquet PIP du requirement GeoNature n'a pas été bien installé
 """
+import os
 import json
-import subprocess
+from subprocess import run, DEVNULL
 from contextlib import nullcontext
 
 from jinja2 import Template
@@ -54,19 +55,21 @@ def create_frontend_module_config(module_code, output_file=None):
         json.dump(module_config, f, indent=True, sort_keys=True)
 
 
+def nvm_available():
+    return run(["/bin/bash", "-i", "-c", "type -t nvm"], stdout=DEVNULL).returncode == 0
+
+
 def install_frontend_dependencies(module_frontend_path):
-    with (FRONTEND_DIR / ".nvmrc").open("r") as f:
-        node_version = f.read().strip()
-    subprocess.run(
-        ["/bin/bash", "-i", "-c", f"nvm exec {node_version} npm ci --omit=dev --omit=peer"],
-        check=True,
-        cwd=module_frontend_path,
-    )
+    cmd = ["npm", "ci", "--omit=dev", "--omit=peer"]
+    if nvm_available():
+        with (FRONTEND_DIR / ".nvmrc").open("r") as f:
+            node_version = f.read().strip()
+        cmd = ["/bin/bash", "-i", "-c", f"nvm exec {node_version} {' '.join(cmd)}"]
+    run(cmd, check=True, cwd=module_frontend_path)
 
 
 def build_frontend():
-    subprocess.run(
-        ["/bin/bash", "-i", "-c", "nvm exec npm run build"],
-        check=True,
-        cwd=str(FRONTEND_DIR),
-    )
+    cmd = ["npm", "run", "build"]
+    if nvm_available():
+        cmd = ["/bin/bash", "-i", "-c", f"nvm exec {' '.join(cmd)}"]
+    run(cmd, check=True, cwd=str(FRONTEND_DIR))
