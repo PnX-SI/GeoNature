@@ -43,6 +43,7 @@
     "leaflet-draw": "^1.0.4",
     "leaflet.markercluster": "^1.5.3",
     "lodash": "^4.17.21",
+    "moment": "^2.29.4",
     "ng2-charts": "^2.4.3",
     "ng2-cookies": "^1.0.12",
     "ngx-mat-select-search": "^7.0.0",
