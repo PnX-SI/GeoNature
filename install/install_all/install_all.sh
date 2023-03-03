@@ -15,7 +15,7 @@ export USERSHUB_DIR="${HOME}/usershub"
 
 # Test the server architecture
 if [ !"$OS_BITS" == "64" ]; then
-   echo "GeoNature must be installed on a 64-bits operating system ; your is $OS_BITS-bits" 1>&2
+   echo "GeoNature must be installed on a 64-bits operating system; yours is $OS_BITS-bits" 1>&2
    exit 1
 fi
 
@@ -57,7 +57,7 @@ echo "############### Installation des paquets systèmes ###############"
 
 # Installing required environment for GeoNature and TaxHub
 echo "Installation de l'environnement logiciel..."
-sudo apt-get install -y unzip git postgresql postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis || exit 1
+sudo apt-get install -y unzip git postgresql-postgis postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis || exit 1
 
 if [ "${mode}" = "dev" ]; then
     sudo apt-get install -y xvfb || exit 1

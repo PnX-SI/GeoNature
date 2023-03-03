@@ -11,7 +11,7 @@ Installer les paquets suivants :
 
 ::  
     
-  $ sudo apt install unzip git postgresql postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis
+  $ sudo apt install unzip git postgresql-postgis postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis
 
 
 Installation de l'application
