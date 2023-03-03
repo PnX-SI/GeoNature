@@ -34,7 +34,7 @@
     "@popperjs/core": "^2.11.6",
     "@swimlane/ngx-datatable": "^20.0.0",
     "@tmcw/togeojson": "^5.6.0",
-    "bootstrap": "4.3.1",
+    "bootstrap": "5.2.3",
     "chart.js": "^2.9.4",
     "core-js": "^3.19.1",
     "fast-deep-equal": "^3.1.3",
