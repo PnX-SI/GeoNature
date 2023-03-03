@@ -157,6 +157,9 @@ def _get_permissions(action_code, id_role, module_code, object_code):
     if module_code is None and hasattr(g, "current_module"):
         module_code = g.current_module.module_code
 
+    if object_code is None and hasattr(g, "current_object"):
+        object_code = g.current_object.code_object
+
     permissions = get_user_permissions_by_action(id_role)[action_code]
     for _module_code, _permissions in groupby(permissions, key=lambda p: p.module.module_code):
         if _module_code not in [module_code, "GEONATURE"]:
