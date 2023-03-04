@@ -106,12 +106,16 @@ def _get_user_permissions(id_role):
             CorRoleActionFilterModuleObject.id_action,
             # ensure GEONATURE module is the last
             db.case(
-                ((CorRoleActionFilterModuleObject.id_module == default_module.id_module, -1),),
+                [
+                    (CorRoleActionFilterModuleObject.id_module == default_module.id_module, -1),
+                ],
                 else_=CorRoleActionFilterModuleObject.id_module,
             ).desc(),
             # ensure ALL object is the last
             db.case(
-                ((CorRoleActionFilterModuleObject.id_object == default_object.id_object, -1),),
+                [
+                    (CorRoleActionFilterModuleObject.id_object == default_object.id_object, -1),
+                ],
                 else_=CorRoleActionFilterModuleObject.id_object,
             ).desc(),
         )
