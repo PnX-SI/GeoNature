@@ -103,85 +103,24 @@ corAreaSynthese = DB.Table(
 
 
 class SyntheseLogEntryQuery(Query):
+    sortable_columns = ["meta_last_action_date"]
+    filterable_columns = ["id_synthese", "last_action", "meta_last_action_date"]
 
-    operators = ["gt", "lt", "gte", "lte"]
-    sort_values = ["asc", "desc"]
-
-    def filter_by_params(self, params: MultiDict = None):
-        model = SyntheseLogEntry
-        and_list = []
-        for key, value in params.items():
-            column = getattr(model, key)
-            if isinstance(column.type, Unicode):
-                and_list.append(column.ilike(f"%{value}%"))
-            else:
-                and_list.append(column == value)
-        and_query = and_(*and_list)
-        return self.filter(and_query)
-
-    def sort(self, label: str = "meta_last_action_date", direction: str = "desc"):
-        model = SyntheseLogEntry
-        order_by = getattr(model, label)
-        if direction == "desc":
-            order_by = order_by.desc()
-
-        return self.order_by(order_by)
-
-    def sort_list_query(self, sort_list: List[str]) -> List["SyntheseLogEntryQuery"]:
-        model = SyntheseLogEntry
-        sort_list_query = []
-        for sort_item in sort_list:
-            if len(sort_item.split(":")) > 2:
-                raise ValueError(
-                    "{} is not valid format for sort column . Expected exemple: columnname:asc".format(
-                        sort_item
-                    )
-                )
-            if len(sort_item.split(":")) == 1:
-                column = getattr(model, sort_item)
-                sort_list_query.append(column.desc())
+    def filter_by_params(self, params):
+        for col in self.filterable_columns:
+            if col not in params:
                 continue
-            if len(sort_item.split(":")) == 2:
-                column = getattr(model, sort_item.split(":")[0])
-            if sort_item.split(":")[1] in self.sort_values:
-                if sort_item.split(":")[1] == "asc":
-                    sort_list_query.append(column.asc())
+            column = getattr(SyntheseLogEntry, col)
+            for value in params.getlist(col):
+                if isinstance(column.type, DateTime):
+                    self = self.filter_by_datetime(column, value)
+                elif isinstance(column.type, Unicode):
+                    self = self.filter(column.ilike(f"%{value}%"))
                 else:
-                    sort_list_query.append(column.desc())
-            else:
-                raise ValueError(
-                    "{} is not valid format for sort column . Expected exemple: columnname:asc".format(
-                        sort_item
-                    )
-                )
-        return sort_list_query
+                    self = self.filter(column == value)
+        return self
 
-    def get_filters_with_operator(self, params: MultiDict = None):
-        """Separate filters with and without operator separate by ':'
-
-        Parameters
-        ----------
-        params : params from url
-
-        Returns
-        -------
-        MultiDict,dict
-            params and params_with_operator
-
-        """
-
-        filters_with_operator = dict()
-        filters_with_operator = {
-            key: value for key, value in params.items() if len(key.split(":")) == 2
-        }
-        for key in filters_with_operator.keys():
-            params.poplist(key)
-
-        return params, filters_with_operator
-
-    def filter_list_date(
-        self, filters_with_operator: dict = None
-    ) -> List["SyntheseLogEntryQuery"]:
+    def filter_by_datetime(self, col, dt: str = None):
         """Filter on date only with operator among "<,>,=<,>="
 
         Parameters
@@ -191,94 +130,48 @@ class SyntheseLogEntryQuery(Query):
 
         Returns
         -------
-        List[Query]
-            _and(list(query_filter_operator))
-
-        """
-
-        model = SyntheseLogEntry
-        filter_date_query = []
-        # check if is  exist filter operator and check if operator is valid
-        if filters_with_operator == []:
-            return []
-        operator_query = [
-            item.split(":")[1]
-            for item in filters_with_operator
-            if item.split(":")[1] in self.operators
-        ]
-        if operator_query == []:
-            raise ValueError("Problem with params in url .")
-
-        # Check if valid column name in model
-        if not all(hasattr(model, key.split(":")[0]) for key in filters_with_operator.keys()):
-            raise ValueError("No valid column model .")
-
-        # Check if column is date type
-        if not all(
-            isinstance(getattr(model, key.split(":")[0]).type, DateTime)
-            for key in filters_with_operator.keys()
-        ):
-            raise ValueError('No valid column date type "DateTime" .')
-
-        # Get query WHERE Column '<><=>=' date_value
-        for key, value in filters_with_operator.items():
-            column = getattr(model, key.split(":")[0])
-            operator = key.split(":")[1]
-            date_to_compare = self.to_date(value)
-            query_comparator = self.query_operator_column(column, operator, date_to_compare)
-            filter_date_query.append(query_comparator)
-
-        and_query_filter_operator = and_(*filter_date_query)
-        return and_query_filter_operator
-
-    def query_operator_column(self, column, operator: str, value_to_compare):
-        """Build query comparator "<,>,=<,>="
-        Ex: "WHERE COLUMN > VALUE"
-
-        Parameters
-        ----------
-        column : sqlalchemy.orm.attributes
-            column of model sqlalchemy
-        operator : str
-        value_to_compare: any type of column model
-
-        Returns
-        -------
         Query
-            query of sqlalchemy compare according to operator
 
         """
-        if operator == "gt":
-            return column > value_to_compare
-        elif operator == "lt":
-            return column < value_to_compare
-        elif operator == "gte":
-            return column >= value_to_compare
-        elif operator == "lte":
-            return column <= value_to_compare
+
+        if ":" in dt:
+            operator, dt = dt.split(":", 1)
         else:
-            return
+            operator = "eq"
+        dt = datetime.datetime.fromisoformat(dt)
+        if operator == "gt":
+            f = col > dt
+        elif operator == "gte":
+            f = col >= dt
+        elif operator == "lt":
+            f = col < dt
+        elif operator == "lte":
+            f = col <= dt
+        elif operator == "eq":
+            # FIXME: if datetime is at midnight (looks like date), allows all the day?
+            f = col == dt
+        else:
+            raise ValueError(f"Invalid comparison operator: {operator}")
+        return self.filter(f)
 
-    def to_date(self, date_string: str):
-        """Transform Date from url to ISO Date format
-        Ex: transform 2023-01-01 to datetime.date(2023, 1, 1)
-
-        Parameters
-        ----------
-        date_string: str
-            Need to be without '' or "" in url params \n
-            and with this format %Y-%m-%d
-
-        Return
-        ----------
-        Date
-            datetime.date(yyyy,mm,dd)
-
-        """
-        try:
-            return datetime.datetime.strptime(date_string, "%Y-%m-%d").date()
-        except ValueError:
-            raise ValueError("{} is not valid date in the format YYYY-MM-DD".format(date_string))
+    def sort(self, columns: List[str]):
+        if not columns:
+            columns = ["meta_last_action_date"]
+        for col in columns:
+            if ":" in col:
+                col, direction = col.rsplit(":")
+                if direction == "asc":
+                    direction = sa.asc
+                elif direction == "desc":
+                    direction = sa.desc
+                else:
+                    raise ValueError(f"Invalid sort direction: {direction}")
+            else:
+                direction = sa.asc
+            if col not in self.sortable_columns:
+                raise ValueError(f"Invalid sort column: {col}")
+            self = self.order_by(direction(getattr(SyntheseLogEntry, col)))
+        return self
 
 
 class SyntheseQuery(GeoFeatureCollectionMixin, Query):
@@ -738,8 +631,9 @@ class SyntheseLogEntry(DB.Model):
     __tablename__ = "t_log_synthese"
     __table_args__ = {"schema": "gn_synthese"}
     query_class = SyntheseLogEntryQuery
+
     id_synthese = DB.Column(DB.Integer(), primary_key=True)
-    last_action = DB.Column(DB.Unicode)
+    last_action = DB.Column(DB.String(length=1))
     meta_last_action_date = DB.Column(DB.DateTime)
 
 

@@ -20,13 +20,14 @@ from sqlalchemy import distinct, func, desc, asc, select, case
 from sqlalchemy.orm import joinedload, lazyload, selectinload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
+from sqlalchemy.orm import load_only
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo
 
 from geonature.utils import filemanager
-from geonature.utils.env import DB
+from geonature.utils.env import db, DB
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
@@ -1183,114 +1184,63 @@ def delete_report(id_report):
 
 
 @routes.route("/log", methods=["get"])
-@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
-def list_synthese_log_entries(info_role) -> dict:
+@permissions.check_cruved_scope("R", module_code="SYNTHESE")
+def list_synthese_log_entries() -> dict:
     """Get log history from synthese
 
     Parameters
     ----------
-    info_role : VUsersPermissions
-        User permissions
+    scope
+
     Returns
     -------
     dict
         log action list
     """
 
-    is_params_in_url = False
-    is_params_with_filter_operator = False
-    is_params_other_filters = False
-    params = MultiDict(request.args)
-
-    # Clean params of LIMIT, OFFSET(page) and SORT
-    limit, page = int(params.pop("limit", 50)), int(params.pop("page", 1))
-    sort_list = params.poplist("sort")
-
-    # Check if params in url
-    if len(params) != 0:
-        is_params_in_url = True
-
-    # Transform params tuple ('sort','column:asc') equivalent to query 'ORDER BY COLUMN ASC'
-    if sort_list != []:
-        try:
-            sort_list_query = SyntheseLogEntry.query.sort_list_query(sort_list)
-
-        except ValueError as err:
-            return (
-                jsonify(
-                    {
-                        "error": "Bad Request. " + str(err),
-                        "params_exemple": "?sort=column:asc' or'?column:gt=dd-mm-YYYY' ",
-                    }
-                ),
-                400,
-            )
-
-    # Transform params tuple ('column:gt','date_string') or ('column:gt','date_string') equivalent to query 'WHERE COLUMN < date-iso' or 'WHERE COLUMN > date-iso'
-    #  And extract only filter with operator
-    if is_params_in_url:
-        params, filters_with_operators = SyntheseLogEntry.query.get_filters_with_operator(params)
-
-        # Check if params with filters operator
-        if len(params) != 0:
-            is_params_other_filters = True
-
-        # Check if params with filters operator
-        if len(filters_with_operators) != 0:
-            is_params_with_filter_operator = True
-
-        try:
-            filter_date_list_query = SyntheseLogEntry.query.filter_list_date(
-                filters_with_operators
-            )
-        except ValueError as err:
-            return (
-                jsonify(
-                    {
-                        "error": "Bad Request. " + str(err),
-                        "params_exemple": "?sort=column:asc' or'?column:gt=dd-mm-YYYY' ",
-                    }
-                ),
-                400,
-            )
-
-    q1 = SyntheseLogEntry.query.with_entities(
-        SyntheseLogEntry.id_synthese,
-        SyntheseLogEntry.last_action,
-        SyntheseLogEntry.meta_last_action_date,
+    deletion_entries = SyntheseLogEntry.query.options(
+        load_only(
+            SyntheseLogEntry.id_synthese,
+            SyntheseLogEntry.last_action,
+            SyntheseLogEntry.meta_last_action_date,
+        )
     )
-
-    q2 = Synthese.query.with_entities(
+    create_update_entries = Synthese.query.with_entities(
         Synthese.id_synthese,
-        Synthese.last_action,
+        db.case(
+            [
+                (Synthese.meta_create_date < Synthese.meta_update_date, "U"),
+            ],
+            else_="I",
+        ).label("last_action"),
         func.coalesce(Synthese.meta_update_date, Synthese.meta_create_date).label(
             "meta_last_action_date"
         ),
     )
+    query = deletion_entries.union(create_update_entries)
 
-    q3 = q1.union(q2)
+    # Filter
+    try:
+        query = query.filter_by_params(request.args)
+    except ValueError as exc:
+        raise BadRequest(*exc.args) from exc
 
-    # WHERE PARAMS FILTER WITRH OPERATOR
-    if is_params_with_filter_operator:
-        query = q3.filter(filter_date_list_query)
-    else:
-        query = q3
+    # Sort
+    try:
+        query = query.sort(request.args.getlist("sort"))
+    except ValueError as exc:
+        raise BadRequest(*exc.args) from exc
 
-    # WHERE PARAMS OTHER FILTERS
-    if is_params_other_filters:
-        query = query.filter_by_params(params)
+    # Paginate
+    limit = request.args.get("limit", type=int, default=50)
+    page = request.args.get("page", type=int, default=1)
+    results = query.paginate(page=page, per_page=limit, error_out=False)
 
-    # SORT (ORDER BY)  -
-    # sort by sort_params if exist
-    # and if not default sort by 'meta_last_action_date', 'desc'
-    if len(sort_list) != 0:
-        for sort_item in sort_list_query:
-            query = query.order_by(sort_item)
-    else:
-        query = query.sort()
-
-    # LIMIT ET OFFSET (dans query)
-    results = query.paginate(page=page, error_out=False, per_page=limit)
-    data = dict(items=results.items, total=results.total, limit=limit, page=page)
-
-    return jsonify(data)
+    return jsonify(
+        {
+            "items": [item.as_dict() for item in results.items],
+            "total": results.total,
+            "limit": limit,
+            "page": page,
+        }
+    )
