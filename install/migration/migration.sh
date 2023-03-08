@@ -136,6 +136,15 @@ if [ -d "${olddir}/external_modules/" ]; then
         echo "Installation du module ${name} …"
         target=$(realpath "$(readlink "${module}")")
         moduledir="${target/#${olddir}/${newdir}}"
+        oldmoduledir="${target/#${newdir}/${olddir}}"
+        if [ ! -f "${newdir}/config/${name}_config.toml" ] && [ -f "${oldmoduledir}/config/conf_gn_module.toml" ]; then
+            echo "Récupération de l’ancien fichier de configuration…"
+            if [ "${oldmoduledir}" != "${moduledir}" ]; then
+                cp "${oldmoduledir}/config/conf_gn_module.toml" "${newdir}/config/${name}_config.toml"
+            else
+                mv "${moduledir}/config/conf_gn_module.toml" "${newdir}/config/${name}_config.toml"
+            fi
+        fi
         geonature install-gn-module "${moduledir}" "${name^^}" --build=false --upgrade-db=false
     done
 fi
@@ -155,6 +164,15 @@ if [ -d "${olddir}/frontend/external_modules/" ]; then
             exit 1
         fi
         moduledir=$(dirname "${target/#${olddir}/${newdir}}")
+        oldmoduledir=$(dirname "${target/#${newdir}/${olddir}}")
+        if [ ! -f "${newdir}/config/${name}_config.toml" ] && [ -f "${oldmoduledir}/config/conf_gn_module.toml" ]; then
+            echo "Récupération de l’ancien fichier de configuration…"
+            if [ "${oldmoduledir}" != "${moduledir}" ]; then
+                cp "${oldmoduledir}/config/conf_gn_module.toml" "${newdir}/config/${name}_config.toml"
+            else
+                mv "${moduledir}/config/conf_gn_module.toml" "${newdir}/config/${name}_config.toml"
+            fi
+        fi
         geonature install-gn-module "${moduledir}" "${name^^}" --build=false --upgrade-db=false
     done
 fi
