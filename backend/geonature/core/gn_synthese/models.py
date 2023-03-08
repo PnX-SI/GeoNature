@@ -14,6 +14,7 @@ from sqlalchemy.orm import (
     deferred,
 )
 from sqlalchemy.sql import select, func, exists
+from sqlalchemy.schema import FetchedValue
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
@@ -398,8 +399,8 @@ class Synthese(DB.Model):
     comment_description = DB.Column(DB.UnicodeText)
     additional_data = DB.Column(JSONB)
     meta_validation_date = DB.Column(DB.DateTime)
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
+    meta_create_date = DB.Column(DB.DateTime, server_default=FetchedValue())
+    meta_update_date = DB.Column(DB.DateTime, server_default=FetchedValue())
     last_action = DB.Column(DB.Unicode)
 
     areas = relationship(LAreas, secondary=corAreaSynthese, backref="synthese_obs")
