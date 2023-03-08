@@ -15,7 +15,7 @@ src/conf/app.config.ts
 .angular/cache
 
 # External modules
-./external_modules/
+/external_modules/
 
 # GeoNature files
 src/assets/config.json
