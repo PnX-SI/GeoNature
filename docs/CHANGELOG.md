@@ -6,7 +6,7 @@ CHANGELOG
 
 ## A expliquer
 
-- Config des modules centralisée
+- Config des modules centralisée (faite automatiquement par migration.sh ?)
 - Custom déplacés
 - Surcouche CSS déplacée
 - Médias déplacés (y compris exports et mobile)
@@ -17,6 +17,7 @@ CHANGELOG
 - Révision CRUVED à répercuter dans vos modules
 - Angular 15 à répercuter dans vos modules
 - Vue export Synthèse optimisée (attention si vous l'aviez modifiée)
+- Rapatriement des fichiers de configuration des modules de CONTRIB, oubliés dans le script de migration de la 2.11
 
 ## A VERIFIER
 
@@ -111,6 +112,12 @@ Si vous mettez à jour GeoNature :
 -   Si vous utilisez des modules spécifiques (hors Import, Export, Dashboard, Monitoring), vérifiez qu'ils disposent d'une version packagée compatible avec GeoNature 2.11 (#2058)
 -   Si vous aviez mis en place l'accès public à GeoNature, adaptez sa configuration avec le nouveau paramètre unique ``PUBLIC_ACCESS_USERNAME`` (#2202)
 -   Suivez la procédure de mise à jour classique de GeoNature (<https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application>)
+-   Attention, le script de migration de la version 2.11 a une régression et ne récupère plus automatiquement la configuration des modules fournis avec GeoNature (Occtax, Occhab, Validation). Rapatriez manuellement vos éventuelles fichiers de configuration de ces modules si vous en avez créé : 
+    ```bash
+    cp geonature_old/contrib/occtax/config/conf_gn_module.toml geonature/contrib/occtax/config/conf_gn_module.toml
+    cp geonature_old/contrib/gn_module_validation/config/conf_gn_module.toml geonature/contrib/gn_module_validation/config/conf_gn_module.toml
+    cp geonature_old/contrib/gn_module_occhab/config/conf_gn_module.toml geonature/contrib/gn_module_occhab/config/conf_gn_module.toml
+    ```
 -   Si vous les utilisez, mettre à jour les modules Dashboard en version 1.2.1 (ou plus) et Monitoring en version 0.4.0 (ou plus), **après** la mise à jour de GeoNature
 -   Vous pouvez désactiver les textes de la BDC statuts ne correspondant par à votre territoire.
     Voir rubrique "5. Configurer les filtres des statuts de protection et des listes rouges" de https://docs.geonature.fr/admin-manual.html#module-synthese
