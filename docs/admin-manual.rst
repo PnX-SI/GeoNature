@@ -914,7 +914,7 @@ Pour configurer GeoNature, actuellement il y a :
 
 - Une configuration pour l'installation : ``config/settings.ini``
 - Une configuration globale de l'application : ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` (générée lors de l'installation de GeoNature)
-- Une configuration par module : ``<GEONATURE_DIRECTORY>/external_modules/<nom_module>/config/conf_gn_module.toml`` (générée lors de l'installation d'un module)
+- Une configuration optionnelle par module : placée dans le dossier de configuration de GeoNature (recommandé) ou dans le dossier de configuration spécifique du module (``<GEONATURE_DIRECTORY>/external_modules/<nom_module>/config/conf_gn_module.toml``)
 - Une table ``gn_commons.t_parameters`` pour des paramètres gérés dans la BDD
 
 .. image :: http://geonature.fr/docs/img/admin-manual/administration-geonature.png
@@ -954,15 +954,7 @@ Vous pouvez également lancer la commande ``geonature update-configuration`` qui
 Configuration d'un gn_module
 """"""""""""""""""""""""""""
 
-Comme pour la configuration globale, ce fichier est minimaliste et peut être surcouché. Le fichier ``conf_gn_module.toml.example``, situé dans le répertoire ``config`` du module, décrit l'ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut.
-
-A chaque modification de ce fichier, lancer les commandes suivantes depuis le backend de GeoNature (``/home/monuser/GeoNature/backend``). Le fichier est copié à destination du frontend ``<nom_module>/frontend/app/module.config.ts``, qui est alors recompilé automatiquement.
-
-.. code-block:: console
-
-    source venv/bin/activate
-    geonature update-module-configuration <NOM_DE_MODULE>
-    deactivate
+Voir la :ref:`rubrique concernant la configuration des modules <module-config>`.
 
 Exploitation
 ------------
@@ -2176,34 +2168,33 @@ Pour chaque dictionnaire, voici le détail des champs (ils sont tous obligatoire
 * ``display_name`` : indique le texte de l'intitulé de la liste déroulante qui sera affiché sur l'interface.
 * ``status_type`` : pour les statuts de protection cela correspond à une liste des codes de types de statuts de protections à afficher dans la liste déroulante. Les codes existant sont consultables dans le champ ``cd_type_statut`` de la table ``taxonomie.bdc_statut_type``. Pour les listes rouges, il faut seulement indiquer le code de la liste.
 
-Au niveau de la base de données, il est possible de limiter les recherches uniquement aux textes correspondant à la zone géographique des observations de votre installation.
+Au niveau de la base de données, il est possible de limiter les recherches uniquement aux textes correspondant à la zone géographique des observations de votre installation.  
 Pour cela, il suffit de mettre une valeur ``false`` dans le champ ``enable`` de la table ``taxonomie.bdc_statut_texte`` pour tous les textes que vous ne souhaitez pas prendre en compte. Si vous avez une grande quantité d'observations, cette étape est fortement recommandée !
 
-Exemple de requête de mise à jour de la table ``taxonomie.bdc_statut_texte`` :
+Exemple de requête de mise à jour de la table ``taxonomie.bdc_statut_text`` pour désactiver les textes des DOM-TOM : :
 
 ::
 
-  UPDATE taxonomie.bdc_statut_text
-  SET enable = false
-  WHERE cd_doc NOT IN (
-    366749, 901, 738, 758, 763, 625, 633, 3561, 643, 713, 716, 730, 731,
-    703, 694, 694, 732, 733, 174768, 174769, 174770, 195368, 268129,
-    268409, 146732, 145082, 196448, 158248, 755, 756, 358269, 358270,
-    160321, 275396, 31345, 138062, 31343, 300831, 138065, 87486, 165208,
-    87625, 31341, 87619, 138063, 144173, 220350, 321049, 208629, 87484,
-    146311, 88261, 300212, 146310, 31346, 249369, 138064
-  ) ;
+  UPDATE taxonomie.bdc_statut_text SET enable = false 
+  WHERE cd_sig IN ('TER971', 'TER972', 'TER973', 'TER971', 'TER974' )
+  ;
 
-Il est aussi possible de désactiver les textes en fonction du territoire auquel elles s'appliquent (par exemple en utilisant le champs ``cd_sig`` de la table ``taxonomie.bdc_statut_text``.
+Une commande dans TaxHub permet de désactiver automatiquement les textes en dehors d'une liste de départements (en passant leur ``area_code``) : 
+
+::
+
+  cd ~/taxhub
+  source venv/bin/activate
+  flask taxref enable-bdc-statut-text -d <MON_DEP_1> -d <MON_DEP_2> --clean
 
 **6.** Définir des filtres par défaut
 
-Il s'agit du paramètre ``DEFAULT_FILTERS``.
-C'est un dictionnaire qui liste la valeur des champs par défaut.
-Il faut fournir le code des nomenclature par default (liste de chaîne de caractère)
+Il s'agit du paramètre ``DEFAULT_FILTERS``.  
+C'est un dictionnaire qui liste la valeur des champs par défaut.  
+Il faut fournir le code des nomenclature par default (liste de chaîne de caractère).  
 (On prend les champs en ``id_nomenclature_...`` et on remplace ``id_nomenclature_`` par ``cd_nomenclature_``)
 
-Exemple de filtres par défaut
+Exemple de filtres par défaut :
 
 ::
   [SYNTHESE]
@@ -2216,7 +2207,7 @@ Exemple de filtres par défaut
       cd_nomenclature_observation_status = ['Pr']
 
 
-D'autres élements sont paramètrables dans le module synthese. La liste complète est disponible dans le fichier ``config/geonature_config.toml`` rubrique ``SYNTHESE``.
+D'autres élements sont paramètrables dans le module Synthese. La liste complète est disponible dans le fichier ``config/geonature_config.toml`` rubrique ``SYNTHESE``.
 
 Module VALIDATION
 -----------------
