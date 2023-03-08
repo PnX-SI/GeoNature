@@ -7,7 +7,7 @@ GeoNature repose sur les composants suivants :
 - Python 3 et dépendances Python nécessaires à l'application
 - Flask (framework web Python)
 - Apache
-- Angular 7, Angular CLI, NodeJS
+- Angular 15, Angular CLI, NodeJS
 - Librairies javascript (Leaflet, ChartJS)
 - Librairies CSS (Bootstrap, Material Design)
 
@@ -245,7 +245,7 @@ Exemple pour le module Import :
 Configuration du module
 -----------------------
 
-De manière facultative, vous pouvez modifier la configuration du module. La plupart des modules fournissent un fichier d’exemple ``conf_gn_module.toml.example`` dans leur dossier ``config``.
+De manière facultative, vous pouvez modifier la configuration du module. La plupart des modules fournissent un fichier d’exemple ``conf_gn_module.toml.example`` dans leur dossier ``config``.  
 Afin de modifier les paramètres par défaut du module, vous pouvez le copier :
 
 * Dans le dossier ``config`` de GeoNature en le nommant ``<code du module en minuscule>_config.toml`` (recommandé). Exemple pour le module d’import :
@@ -269,12 +269,6 @@ Après chaque modification du module, vous devez :
 
     sudo systemctl reload geonature
 
-* Re-générer la configuration frontend du module et re-builder le frontend avec la sous-commande ``update-configuration`` :
-
-.. code-block:: bash
-
-    source <dossier GeoNature>/backend/venv/bin/activate
-    geonature update-configuration
 
 Mise à jour du module
 ---------------------
