@@ -1,4 +1,5 @@
 from datetime import datetime
+from packaging import version
 
 from flask import current_app, g
 from geoalchemy2 import Geometry
@@ -8,7 +9,12 @@ from sqlalchemy.orm import relationship, synonym
 from sqlalchemy.sql import select, func, and_
 from sqlalchemy.schema import UniqueConstraint, FetchedValue
 from sqlalchemy.dialects.postgresql import UUID
-from flask_sqlalchemy import BaseQuery
+import flask_sqlalchemy
+
+if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
+    from flask_sqlalchemy.query import Query
+else:
+    from flask_sqlalchemy import BaseQuery as Query
 
 from pypnusershub.db.models import User
 from pypnnomenclature.models import TNomenclatures as Nomenclature
@@ -32,7 +38,7 @@ cor_station_observer = db.Table(
 )
 
 
-class StationQuery(GeoFeatureCollectionMixin, BaseQuery):
+class StationQuery(GeoFeatureCollectionMixin, Query):
     def filter_by_params(self, params):
         qs = self
         id_dataset = params.get("id_dataset", type=int)

@@ -50,11 +50,6 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
     // Put the user name in navbar
     this.currentUser = this.authService.getCurrentUser();
-
-    if (this.config.NOTIFICATIONS_ENABLED == true) {
-      // Update notification count to display in badge
-      this.updateNotificationCount();
-    }
   }
 
   private extractLocaleFromUrl() {

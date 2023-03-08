@@ -152,7 +152,7 @@ export class MediaService {
     if (!(media instanceof Media)) {
       media = new Media(media);
     }
-    return media.href(thumbnail);
+    return media.href(this.config.API_ENDPOINT, this.config.MEDIA_URL, thumbnail);
   }
 
   embedHref(media) {

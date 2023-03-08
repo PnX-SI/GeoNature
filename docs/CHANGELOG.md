@@ -4,19 +4,61 @@ CHANGELOG
 2.12.0.dev0 (unreleased)
 ------------------------
 
+## A expliquer
+
+- Config des modules centralisée (faite automatiquement par migration.sh ?)
+- Custom déplacés
+- Surcouche CSS déplacée
+- Médias déplacés (y compris exports et mobile)
+- Modif conf Apache, avec config de base incluse
+- C'est géré par migrate.sh
+- Plus besoin de rebuild après modif config / Mais restart backend ???
+- Conf dynamique à répercuter dans vos modules
+- Révision CRUVED à répercuter dans vos modules
+- Angular 15 à répercuter dans vos modules
+- Vue export Synthèse optimisée (attention si vous l'aviez modifiée)
+- Rapatriement des fichiers de configuration des modules de CONTRIB, oubliés dans le script de migration de la 2.11
+
+## A VERIFIER
+
+- J'enchaine une saisie de relevés dans Occtax sans cocher le fait de garder la géométrie, il me garde le point sur la carte du relevé précédent
+- Scroll horizontal avec "20 results available" en bas de page
+
+## TODO
+
+- Migration SQL des médias
+- Migration Apache des exports
+- Migration URL API
+- Taxref v16 à installer par défaut
+- Référentiel sensibilité à mettre à jour en v16
+- Commande Ref sensibilité à indiquer pour ceux qui mettent à jour Taxref en v16
+- https://github.com/PnX-SI/GeoNature/pull/2339
+- Mettre un message d'intro par défaut sur la Home
+
+
 **🚀 Nouveautés**
 
 - Configuration dynamique du frontend : le frontend récupère dynamiquement sa configuration depuis le backend. Pour cela, il nécessite uniquement l’adresse de l’``API_ENDPOINT`` qui doit être renseigné dans le fichier ``frontend/src/assets/config.json``. En conséquence, il n’est plus nécessaire de rebuilder le frontend lors d’une modification de la configuration (#2205)
 - Personnalisation de la page d’accueil : ajout d’une section `[HOME]` contenant les paramètres `TITLE`, `INTRODUCTION` et `FOOTER`. Ceux-ci peuvent contenir du code HTML qui est chargé dynamiquement avec la configuration, évitant ainsi la nécessité d’un rebuild du frontend (#2300)
 - Synthèse : Agrégation des observations ayant la même géométrie (#1847)
 - Synthèse : Possibilité d'afficher les données agrégées par maille (#1878)
+- Synthèse : Possibilité de définir des filtres par défaut (#2261)
 - Champs additionnels: Les formulaires de type `radio`, `select`, `multiselect` et `checkbox`, attendent désormais une liste de dictionnaire `{value, label}` (voir doc des champs additionnels).
   La rétrocompatibilité avec des listes simples est maintenue, mais vous êtes invité à modifier ces champs dans le backoffice.
   Pour conserver le bon affichage lors de l'édition des données, renseignez l'ancienne valeur deux fois dans la clé `value` et la clé `label`.
+- Admin : Possibilité d'alimenter la table des applications mobiles t_mobile_apps à partir du backoffice de GeoNature, notamment pour faciliter la gestion des mises à jour de Occtax-mobile 
+- Ajout de la possibilité de fournir un bouton de geolocalisation via le composant `pnx-map` (Input : geolocation). Le bouton a été ajouté sur les cartes des formulaires Occtax et Occhab. Un paramètre de GeoNature permet de masquer ce bouton (par défaut à true) : 
 
+
+    [MAP]
+        GEOLOCATION = false
 **💻 Développement**
 
 - Suppression de l'utilisation de `get_role` dans les modules Synthese & Validation (#2162)
+
+**🐛 Corrections**
+
+  - modèle de la synthese : changement du type de `entity_source_pk_value` de `Integer` à `Unicode` pour coller à la base.
 
 **⚠️ Notes de version**
 
@@ -74,6 +116,12 @@ Si vous mettez à jour GeoNature :
 -   Si vous utilisez des modules spécifiques (hors Import, Export, Dashboard, Monitoring), vérifiez qu'ils disposent d'une version packagée compatible avec GeoNature 2.11 (#2058)
 -   Si vous aviez mis en place l'accès public à GeoNature, adaptez sa configuration avec le nouveau paramètre unique ``PUBLIC_ACCESS_USERNAME`` (#2202)
 -   Suivez la procédure de mise à jour classique de GeoNature (<https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application>)
+-   Attention, le script de migration de la version 2.11 a une régression et ne récupère plus automatiquement la configuration des modules fournis avec GeoNature (Occtax, Occhab, Validation). Rapatriez manuellement vos éventuelles fichiers de configuration de ces modules si vous en avez créé : 
+    ```bash
+    cp geonature_old/contrib/occtax/config/conf_gn_module.toml geonature/contrib/occtax/config/conf_gn_module.toml
+    cp geonature_old/contrib/gn_module_validation/config/conf_gn_module.toml geonature/contrib/gn_module_validation/config/conf_gn_module.toml
+    cp geonature_old/contrib/gn_module_occhab/config/conf_gn_module.toml geonature/contrib/gn_module_occhab/config/conf_gn_module.toml
+    ```
 -   Si vous les utilisez, mettre à jour les modules Dashboard en version 1.2.1 (ou plus) et Monitoring en version 0.4.0 (ou plus), **après** la mise à jour de GeoNature
 -   Vous pouvez désactiver les textes de la BDC statuts ne correspondant par à votre territoire.
     Voir rubrique "5. Configurer les filtres des statuts de protection et des listes rouges" de https://docs.geonature.fr/admin-manual.html#module-synthese

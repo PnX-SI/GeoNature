@@ -16,7 +16,6 @@ from utils_flask_sqla.generic import test_type_and_generate_query, testDataType
 
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_commons.models import cor_field_dataset, TAdditionalFields
 
 

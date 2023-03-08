@@ -13,6 +13,9 @@ from flask import (
     Response,
     g,
 )
+
+import click
+
 from flask.json import jsonify
 from sqlalchemy import inspect, and_, or_
 from sqlalchemy.sql import text, exists, select, update
@@ -23,6 +26,7 @@ from werkzeug.datastructures import Headers, MultiDict
 from werkzeug.utils import secure_filename
 from marshmallow import ValidationError, EXCLUDE
 
+
 from geonature.utils.config import config
 from geonature.utils.env import DB, db
 from geonature.core.gn_synthese.models import (
@@ -31,6 +35,8 @@ from geonature.core.gn_synthese.models import (
     CorAreaSynthese,
 )
 from geonature.core.gn_permissions.decorators import login_required
+
+from .mtd import sync_af_and_ds as mtd_sync_af_and_ds, sync_af_and_ds_by_user
 
 from ref_geo.models import LAreas
 from pypnnomenclature.models import TNomenclatures
@@ -79,7 +85,7 @@ if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
     def synchronize_mtd():
         if request.endpoint in ["gn_meta.get_datasets", "gn_meta.get_acquisition_frameworks_list"]:
             try:
-                mtd_utils.post_jdd_from_user(id_user=g.current_user.id_role)
+                sync_af_and_ds_by_user(id_role=g.current_user.id_role)
             except Exception as e:
                 log.exception("Error while get JDD via MTD")
 
@@ -1019,5 +1025,14 @@ def publish_acquisition_framework(af_id):
 
 
 @routes.cli.command()
-def mtd_sync():
-    mtd_sync_af_and_ds()
+@click.argument("id_role", nargs=1, required=False, default=None)
+def mtd_sync(id_role):
+    """
+    Trigger global sync or a sync for a given user only.
+
+    :param id_role: user id
+    """
+    if id_role:
+        return sync_af_and_ds_by_user(id_role)
+    else:
+        return mtd_sync_af_and_ds()

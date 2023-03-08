@@ -77,9 +77,10 @@ class TModules(DB.Model):
     __tablename__ = "t_modules"
     __table_args__ = {"schema": "gn_commons"}
 
-    type = DB.Column(DB.Unicode)
+    type = DB.Column(DB.Unicode, nullable=False, server_default="base")
     __mapper_args__ = {
         "polymorphic_on": "type",
+        "polymorphic_identity": "base",
     }
 
     id_module = DB.Column(DB.Integer, primary_key=True)

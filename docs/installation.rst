@@ -49,7 +49,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Mettre à jour de la liste des dépôts Linux :
 
-  ::
+  .. code:: console
 
     # apt update
     # apt upgrade
@@ -58,7 +58,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
   Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'installation de GeoNature, il est nécessaire de bien configurer la locale. Si la commande ``locale`` renvoie ceci :
 
-  ::
+  .. code:: console
 
     LANG=fr_FR.UTF-8
     LANGUAGE=fr_FR.UTF-8
@@ -83,19 +83,19 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Installer l’utilitaire ``sudo`` :
 
-  ::
+  .. code:: console
 
     # apt install sudo
 
 * Créer un utilisateur Linux dédié (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ``root`` :
 
-  ::
+  .. code:: console
 
     # adduser geonatureadmin
 
 * Lui donner ensuite les droits administrateur en l’ajoutant au groupe ``sudo`` :
 
-  ::
+  .. code:: console
 
     # adduser geonatureadmin sudo
 
@@ -105,7 +105,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
   
   Pour passer de l’utilisateur ``root`` à ``geonatureadmin``, vous pouvez aussi utiliser la commande :
 
-  ::
+  .. code:: console
 
     # su - geonatureadmin
 

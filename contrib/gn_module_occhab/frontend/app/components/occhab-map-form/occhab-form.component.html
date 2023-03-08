@@ -51,7 +51,7 @@
       </div>
     </div>
     <!--END  HABITAT ALREADY SAVED -->
-    <pnx-map [height]="mapHeight">
+    <pnx-map [height]="mapHeight" [geolocation]="true">
       <pnx-marker
         [coordinates]="markerCoordinates"
         zoomLevel="5"
@@ -127,6 +127,7 @@
                   label="{{ 'MetaData.Datasets' | translate }}"
                   [parentFormControl]="occHabForm.stationForm.get('id_dataset')"
                   moduleCode="OCCHAB"
+                  creatableInModule="OCCHAB"
                   data-qa="pnx-occhab-form-dataset"
                 >
                 </pnx-datasets>

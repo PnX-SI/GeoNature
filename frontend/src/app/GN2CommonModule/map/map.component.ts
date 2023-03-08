@@ -6,6 +6,7 @@ import * as L from 'leaflet';
 import { CommonService } from '../service/common.service';
 
 import 'leaflet-draw';
+import 'leaflet.locatecontrol';
 import { UntypedFormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import {
@@ -71,6 +72,9 @@ export class MapComponent implements OnInit {
 
   /** Activer la barre de recherche */
   @Input() searchBar: boolean = true;
+
+  /**Ajouter un bouton de géolocalisation */
+  @Input() geolocation: boolean = false;
 
   @ViewChild('mapDiv', { static: true }) mapContainer;
   searchLocation: string;
@@ -147,6 +151,11 @@ export class MapComponent implements OnInit {
 
     // SCALE
     L.control.scale().addTo(map);
+
+    // geoloc
+    if (this.geolocation && this.config.MAPCONFIG.GEOLOCATION) {
+      (L.control as any).locate().addTo(map);
+    }
 
     // LAYERS CONTROL
     // Baselayers

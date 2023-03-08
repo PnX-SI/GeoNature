@@ -1,7 +1,6 @@
 import datetime
 import json
 import geojson
-from jsonschema import validate as validate_json, ValidationError
 from marshmallow import EXCLUDE, INCLUDE
 
 from flask import (
@@ -52,7 +51,7 @@ blueprint = Blueprint("occhab", __name__)
 
 
 @blueprint.route("/stations/", methods=["GET"])
-@permissions.check_cruved_scope("R", get_scope=True, module_code="OCCHAB")
+@permissions.check_cruved_scope("R", module_code="OCCHAB", get_scope=True)
 def list_stations(scope):
     stations = (
         Station.query.filter_by_params(request.args)
@@ -94,7 +93,7 @@ def list_stations(scope):
 
 
 @blueprint.route("/stations/<int:id_station>/", methods=["GET"])
-@permissions.check_cruved_scope("R", get_scope=True, module_code="OCCHAB")
+@permissions.check_cruved_scope("R", module_code="OCCHAB", get_scope=True)
 def get_station(id_station, scope):
     """
     Return one station
@@ -179,7 +178,7 @@ def create_or_update_station(id_station=None):
 
 
 @blueprint.route("/stations/<int:id_station>/", methods=["DELETE"])
-@permissions.check_cruved_scope("D", get_scope=True, module_code="OCCHAB")
+@permissions.check_cruved_scope("D", module_code="OCCHAB", get_scope=True)
 def delete_station(id_station, scope):
     """
     Delete a station with its habitat and its observers
@@ -196,9 +195,8 @@ def delete_station(id_station, scope):
 
 
 @blueprint.route("/export_stations/<export_format>", methods=["POST"])
-@permissions.check_cruved_scope("E", True, module_code="OCCHAB")
+@permissions.check_cruved_scope("E", module_code="OCCHAB")
 def export_all_habitats(
-    info_role,
     export_format="csv",
 ):
     """

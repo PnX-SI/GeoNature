@@ -1,0 +1,9 @@
+{
+  "name": "gn_module_occhab",
+  "version": "1.0.0",
+  "licence": "GPL",
+  "private": true,
+  "dependencies": {
+    "moment": "^2.29.4"
+  }
+}

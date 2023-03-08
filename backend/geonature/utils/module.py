@@ -1,6 +1,11 @@
 import os
 from pathlib import Path
-from pkg_resources import load_entry_point, get_entry_info, iter_entry_points
+import sys
+
+if sys.version_info < (3, 10):
+    from importlib_metadata import entry_points
+else:
+    from importlib.metadata import entry_points
 
 from alembic.script import ScriptDirectory
 from alembic.migration import MigrationContext
@@ -12,36 +17,39 @@ from geonature.utils.env import db, CONFIG_FILE
 from geonature.core.gn_commons.models import TModules
 
 
-class NoManifestFound(Exception):
-    pass
+def iter_modules_dist():
+    for module_code_entry in entry_points(group="gn_module", name="code"):
+        yield module_code_entry.dist
 
 
 def get_module_config_path(module_code):
     config_path = os.environ.get(f"GEONATURE_{module_code}_CONFIG_FILE")
     if config_path:
         return Path(config_path)
-    dist = get_dist_from_code(module_code)
-    config_path = Path(dist.module_path).parent / "config" / "conf_gn_module.toml"
+    config_path = Path(CONFIG_FILE).parent / f"{module_code.lower()}_config.toml"
     if config_path.exists():
         return config_path
-    config_path = Path(CONFIG_FILE).parent / f"{module_code.lower()}_config.toml"
+    dist = get_dist_from_code(module_code)
+    module_path = Path(sys.modules[dist.entry_points["code"].module].__file__).parent
+    # module_path is commonly backend/gn_module_XXX/ but config dir is at package root
+    config_path = module_path.parent.parent / "config" / "conf_gn_module.toml"
     if config_path.exists():
         return config_path
     return None
 
 
 def get_module_config(module_dist):
-    module_code = load_entry_point(module_dist, "gn_module", "code")
-    config_schema = load_entry_point(module_dist, "gn_module", "config_schema")
+    module_code = module_dist.entry_points["code"].load()
+    config_schema = module_dist.entry_points["config_schema"].load()
     config = {"MODULE_CODE": module_code, "MODULE_URL": f"/{module_code.lower()}"}
     config.update(load_and_validate_toml(get_module_config_path(module_code), config_schema))
     return config
 
 
 def get_dist_from_code(module_code):
-    for entry_point in iter_entry_points("gn_module", "code"):
-        if module_code == entry_point.load():
-            return entry_point.dist
+    for dist in iter_modules_dist():
+        if module_code == dist.entry_points["code"].load():
+            return dist
     raise Exception(f"Module with code {module_code} not installed in venv")
 
 
@@ -78,11 +86,12 @@ def alembic_branch_in_use(branch_name, directory, x_arg):
 
 
 def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]):
-    module_code = module_dist.load_entry_point("gn_module", "code")
-    if "migrations" in module_dist.get_entry_map("gn_module"):
+    module_code = module_dist.entry_points["code"].load()
+    module_blueprint = module_dist.entry_points["blueprint"].load()  # force discovery of models
+    if module_dist.entry_points.select(name="migrations"):
         try:
-            alembic_branch = module_dist.load_entry_point("gn_module", "alembic_branch")
-        except ImportError:
+            alembic_branch = module_dist.entry_points["alembic_branch"].load()
+        except KeyError:
             alembic_branch = module_code.lower()
     else:
         alembic_branch = None
@@ -90,12 +99,12 @@ def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]
     if module is None:
         # add module to database
         try:
-            module_picto = module_dist.load_entry_point("gn_module", "picto")
-        except ImportError:
+            module_picto = module_dist.entry_points["picto"].load()
+        except KeyError:
             module_picto = "fa-puzzle-piece"
         try:
-            module_type = module_dist.load_entry_point("gn_module", "type")
-        except ImportError:
+            module_type = module_dist.entry_points["type"].load()
+        except KeyError:
             module_type = None
         module = TModules(
             type=module_type,

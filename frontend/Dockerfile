@@ -11,7 +11,6 @@ COPY ./frontend/angular.json .
 COPY ./frontend/tsconfig.json .
 COPY ./frontend/external_modules external_modules
 COPY ./frontend/src src
-RUN cp -n src/assets/custom.sample.css src/assets/custom.css
 
 
 FROM source-light AS source

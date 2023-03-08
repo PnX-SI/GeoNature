@@ -1,7 +1,6 @@
-from pkg_resources import iter_entry_points
-
 from .app import create_app
 from .utils.celery import celery_app as app
+from .utils.module import iter_modules_dist
 
 
 flask_app = create_app()
@@ -15,4 +14,6 @@ class ContextTask(app.Task):
 
 app.Task = ContextTask
 
-app.conf.imports += tuple(ep.module_name for ep in iter_entry_points("gn_module", "tasks"))
+app.conf.imports += tuple(
+    [ep.module for dist in iter_modules_dist() for ep in dist.entry_points.select(name="tasks")]
+)

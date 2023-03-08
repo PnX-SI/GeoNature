@@ -22,7 +22,7 @@ DEFAULT_LANGUAGE='fr'
 # Configuration liée à la page d’accueil
 [HOME]
 TITLE = "Bienvenue dans GeoNature"
-INTRODUCTION = ""
+INTRODUCTION = "Texte d'introduction, configurable pour le modifier régulièrement ou le masquer"
 FOOTER = ""
 
 # Configuration liée aux ID de BDD

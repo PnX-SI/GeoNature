@@ -84,22 +84,11 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     if (this.creatableInModule) {
       filter_param['create'] = this.creatableInModule;
     }
-    this._dfs.getDatasets((params = filter_param)).subscribe(
-      (res) => {
-        this.datasetStore.filteredDataSets = res;
-        this.datasetStore.datasets = res;
-        this.valueLoaded.emit({ value: this.datasetStore.datasets });
-      },
-      (error) => {
-        if (error.status === 404) {
-          if (this.config.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
-            this._commonService.translateToaster('warning', 'MetaData.NoJDDMTD');
-          } else {
-            this._commonService.translateToaster('warning', 'MetaData.NoJDD');
-          }
-        }
-      }
-    );
+    this._dfs.getDatasets((params = filter_param)).subscribe((res) => {
+      this.datasetStore.filteredDataSets = res;
+      this.datasetStore.datasets = res;
+      this.valueLoaded.emit({ value: this.datasetStore.datasets });
+    });
   }
 
   filterItems(event) {

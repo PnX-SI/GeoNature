@@ -294,42 +294,6 @@ class TestGNMeta:
         )
         assert response.status_code == 200
 
-    def test_get_post_acquisition_frameworks(self, users, commune_without_obs):
-        # SIMPLE TEST WITH POST REQUEST
-        response = self.client.post(
-            url_for("gn_meta.get_acquisition_frameworks"),
-            json={},
-        )
-        assert response.status_code == Unauthorized.code
-
-        set_logged_user_cookie(self.client, users["admin_user"])
-        # POST EMPTY REQUEST FAIL WITHOUT ANY PARAMS
-        response = self.client.post(url_for("gn_meta.get_acquisition_frameworks"))
-        assert response.status_code == BadRequest.code
-        # POST REQUEST WITHOUT JSON AND WITHOUT QUERY STRING
-        response = self.client.post(
-            url_for("gn_meta.get_acquisition_frameworks"),
-            json={},
-        )
-        assert response.status_code == 200
-        # POST REQUEST WITHOUT JSON
-        response = self.client.post(
-            url_for("gn_meta.get_acquisition_frameworks"),
-            query_string={
-                "datasets": "1",
-                "creator": "1",
-                "actors": "1",
-            },
-            json={},
-        )
-        assert response.status_code == 200
-        # TEST RESPONSE WITH ONE FILTER AREA
-        response = self.client.post(
-            url_for("gn_meta.get_acquisition_frameworks"),
-            json={"areas": [[commune_without_obs.id_type, commune_without_obs.id_area]]},
-        )
-        assert response.status_code == 200
-
     def test_get_acquisition_frameworks_list(self, users):
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"))
         assert response.status_code == Unauthorized.code

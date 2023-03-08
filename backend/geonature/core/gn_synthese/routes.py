@@ -15,17 +15,19 @@ from flask import (
     g,
 )
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
+from werkzeug.datastructures import MultiDict
 from sqlalchemy import distinct, func, desc, asc, select, case
 from sqlalchemy.orm import joinedload, lazyload, selectinload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
+from sqlalchemy.orm import load_only
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo
 
 from geonature.utils import filemanager
-from geonature.utils.env import DB
+from geonature.utils.env import db, DB
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
@@ -40,16 +42,14 @@ from geonature.core.gn_synthese.models import (
     VSyntheseForWebApp,
     VColorAreaTaxon,
     TReport,
+    SyntheseLogEntry,
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import (
-    cruved_scope_for_user_in_module,
-    get_scopes_by_action,
-)
+from geonature.core.gn_permissions.tools import get_scopes_by_action
 
 from ref_geo.models import LAreas, BibAreasTypes
 
@@ -383,7 +383,7 @@ def export_taxon_web(scope):
     id_list = request.get_json()
 
     # check R and E CRUVED to know if we filter with cruved
-    cruved = cruved_scope_for_user_in_module(g.current_user.id_role, module_code="SYNTHESE")[0]
+    cruved = get_scopes_by_action(module_code="SYNTHESE")
     sub_query = (
         select(
             [
@@ -478,7 +478,7 @@ def export_observations_web(scope):
         with_generic_table=True,
     )
     # check R and E CRUVED to know if we filter with cruved
-    cruved = cruved_scope_for_user_in_module(g.current_user.id_role, module_code="SYNTHESE")[0]
+    cruved = get_scopes_by_action(module_code="SYNTHESE")
     if cruved["R"] > cruved["E"]:
         synthese_query_class.filter_query_with_cruved(g.current_user, scope)
 
@@ -1181,3 +1181,66 @@ def delete_report(id_report):
     else:
         DB.session.delete(reportItem)
     DB.session.commit()
+
+
+@routes.route("/log", methods=["get"])
+@permissions.check_cruved_scope("R", module_code="SYNTHESE")
+def list_synthese_log_entries() -> dict:
+    """Get log history from synthese
+
+    Parameters
+    ----------
+    scope
+
+    Returns
+    -------
+    dict
+        log action list
+    """
+
+    deletion_entries = SyntheseLogEntry.query.options(
+        load_only(
+            SyntheseLogEntry.id_synthese,
+            SyntheseLogEntry.last_action,
+            SyntheseLogEntry.meta_last_action_date,
+        )
+    )
+    create_update_entries = Synthese.query.with_entities(
+        Synthese.id_synthese,
+        db.case(
+            [
+                (Synthese.meta_create_date < Synthese.meta_update_date, "U"),
+            ],
+            else_="I",
+        ).label("last_action"),
+        func.coalesce(Synthese.meta_update_date, Synthese.meta_create_date).label(
+            "meta_last_action_date"
+        ),
+    )
+    query = deletion_entries.union(create_update_entries)
+
+    # Filter
+    try:
+        query = query.filter_by_params(request.args)
+    except ValueError as exc:
+        raise BadRequest(*exc.args) from exc
+
+    # Sort
+    try:
+        query = query.sort(request.args.getlist("sort"))
+    except ValueError as exc:
+        raise BadRequest(*exc.args) from exc
+
+    # Paginate
+    limit = request.args.get("limit", type=int, default=50)
+    page = request.args.get("page", type=int, default=1)
+    results = query.paginate(page=page, per_page=limit, error_out=False)
+
+    return jsonify(
+        {
+            "items": [item.as_dict() for item in results.items],
+            "total": results.total,
+            "limit": limit,
+            "page": page,
+        }
+    )

@@ -143,7 +143,8 @@ NOTIFICATIONS_ENABLED = true
     # Modules auxquels les JDD sont automatiquement associés
     JDD_MODULE_CODE_ASSOCIATION = ["OCCTAX", "OCCHAB"]
     # Filter les JDD par id_instance
-    ID_INSTANCE_FILTER = "null"
+    # ID_INSTANCE_FILTER = "null"
+    SYNC_LOG_LEVEL = "INFO"
 
 [BDD]
     id_area_type_municipality = 25
@@ -203,6 +204,9 @@ NOTIFICATIONS_ENABLED = true
 
     # Zoom appliqué sur la carte lors du clic sur une liste
     ZOOM_ON_CLICK = 16
+
+    # activation d'un boutton de géolocalisation sur la carte
+    GEOLOCATION = true
 
     # Restreindre la recherche OpenStreetMap (sur la carte dans l'encart "Rechercher un lieu")
     # à certains pays. Les pays doivent être au format ISO_3166-1 :
@@ -454,6 +458,13 @@ NOTIFICATIONS_ENABLED = true
         { min = 1, color = "#FED976" },
         { min = 0, color = "#FFEDA0" }
     ]
+
+    [SYNTHESE.DEFAULT_FILTERS]
+        # Tous les statuts de validation sauf invalide '4'
+        # Il faut bien les renseigner en tant que chaîne de caractère (et non en tant que nombre)
+        cd_nomenclature_valid_status = ['0', '1', '2', '3', '5', '6']
+        # Seulement les données de présence
+        cd_nomenclature_observation_status = ['Pr']
 
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]

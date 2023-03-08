@@ -97,6 +97,7 @@ flask==2.2.2
     #   flask-weasyprint
     #   flask-wtf
     #   pypn-habref-api
+    #   pypn-ref-geo
     #   pypnnomenclature
     #   pypnusershub
     #   taxhub
@@ -187,9 +188,12 @@ marshmallow==3.17.1
     # via
     #   -r requirements-common.in
     #   flask-marshmallow
+    #   marshmallow-geojson
     #   marshmallow-sqlalchemy
     #   pypn-habref-api
     #   utils-flask-sqlalchemy
+marshmallow-geojson==0.3.0
+    # via utils-flask-sqlalchemy-geo
 marshmallow-sqlalchemy==0.28.1
     # via
     #   -r requirements-common.in
@@ -197,6 +201,7 @@ marshmallow-sqlalchemy==0.28.1
     #   pypnnomenclature
     #   pypnusershub
     #   taxhub
+    #   utils-flask-sqlalchemy-geo
 munch==2.5.0
     # via fiona
 packaging==21.3
@@ -218,6 +223,7 @@ psycopg2==2.9.3
     # via
     #   -r requirements-common.in
     #   pypn-habref-api
+    #   pypn-ref-geo
     #   pypnnomenclature
     #   pypnusershub
     #   taxhub
@@ -229,13 +235,13 @@ pyphen==0.13.0
     # via weasyprint
 pypn-habref-api==0.3.1
     # via -r requirements-dependencies.in
-pypn-ref-geo==1.2.1
+pypn-ref-geo==1.3.0
     # via
     #   -r requirements-dependencies.in
     #   taxhub
-pypnnomenclature==1.5.3
+pypnnomenclature==1.5.4
     # via -r requirements-dependencies.in
-pypnusershub==1.6.4
+pypnusershub==1.6.5
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
@@ -248,6 +254,7 @@ python-dateutil==2.8.2
 python-dotenv==0.20.0
     # via
     #   pypn-habref-api
+    #   pypn-ref-geo
     #   pypnnomenclature
     #   taxhub
 pytz==2022.2.1
@@ -263,6 +270,7 @@ s3transfer==0.6.0
 shapely==1.8.4
     # via
     #   -r requirements-common.in
+    #   pypnnomenclature
     #   utils-flask-sqlalchemy-geo
 six==1.16.0
     # via
@@ -281,11 +289,12 @@ sqlalchemy==1.3.24
     #   geoalchemy2
     #   marshmallow-sqlalchemy
     #   pypn-ref-geo
+    #   pypnnomenclature
     #   pypnusershub
     #   taxhub
     #   utils-flask-sqlalchemy-geo
     #   wtforms-sqlalchemy
-taxhub==1.10.7
+taxhub==1.11.1
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
@@ -306,7 +315,7 @@ urllib3==1.26.12
     #   botocore
     #   requests
     #   taxhub
-utils-flask-sqlalchemy==0.3.1
+utils-flask-sqlalchemy==0.3.2
     # via
     #   -r requirements-dependencies.in
     #   pypn-habref-api
@@ -315,7 +324,7 @@ utils-flask-sqlalchemy==0.3.1
     #   pypnusershub
     #   taxhub
     #   utils-flask-sqlalchemy-geo
-utils-flask-sqlalchemy-geo==0.2.6
+utils-flask-sqlalchemy-geo==0.2.7
     # via
     #   -r requirements-dependencies.in
     #   pypn-ref-geo
