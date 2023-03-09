@@ -409,6 +409,7 @@ class TestGNMeta:
         get_af_url = url_for("gn_meta.get_acquisition_frameworks")
 
         response = self.client.post(get_af_url, json={"search": ds.dataset_name})
+        assert response.status_code == 200
 
         af_list = [af["id_acquisition_framework"] for af in response.json]
         assert af1.id_acquisition_framework in af_list
@@ -435,11 +436,12 @@ class TestGNMeta:
 
         response = self.client.post(
             url_for("gn_meta.get_acquisition_frameworks"),
-            json={"search": str(af1.acquisition_framework_start_date)},
+            json={"search": af1.acquisition_framework_start_date.strftime("%d/%m/%Y")},
         )
 
         expected = {af1.id_acquisition_framework}
-        assert {af["id_acquisition_framework"] for af in response.json}.issubset(expected)
+        assert expected.issubset({af["id_acquisition_framework"] for af in response.json})
+        # TODO: check another AF with another start_date (and no DS at search date) is not returned
 
     def test_get_export_pdf_acquisition_frameworks(self, users, acquisition_frameworks):
         af_id = acquisition_frameworks["own_af"].id_acquisition_framework
@@ -661,7 +663,7 @@ class TestGNMeta:
 
         response = self.client.get(
             url_for("gn_meta.get_datasets"),
-            query_string=MultiDict([("active", True)]),
+            query_string=MultiDict([("active", "1")]),
         )
 
         expected_ds = {dataset.id_dataset for dataset in datasets.values() if dataset.active}
@@ -679,6 +681,7 @@ class TestGNMeta:
         expected_ds = {datasets["with_module_1"].id_dataset}
         filtered_ds = {ds["id_dataset"] for ds in response.json}
         assert expected_ds.issubset(filtered_ds)
+        assert datasets["own_dataset"].id_dataset not in filtered_ds
 
     def test_get_dataset_search(self, users, datasets, module):
         set_logged_user_cookie(self.client, users["admin_user"])
@@ -692,6 +695,7 @@ class TestGNMeta:
         expected_ds = {ds.id_dataset}
         filtered_ds = {ds["id_dataset"] for ds in response.json}
         assert expected_ds.issubset(filtered_ds)
+        assert datasets["own_dataset"].id_dataset not in filtered_ds
 
     def test_get_dataset_search_uuid(self, users, datasets):
         ds = datasets["own_dataset"]
@@ -706,18 +710,19 @@ class TestGNMeta:
         filtered_ds = {dataset["id_dataset"] for dataset in response.json}
         assert expected_ds == filtered_ds
 
-    # def test_get_dataset_search_date(self, users, datasets):
-    #     ds = datasets["own_dataset"]
-    #     set_logged_user_cookie(self.client, users["admin_user"])
+    def test_get_dataset_search_date(self, users, datasets):
+        ds = datasets["own_dataset"]
+        set_logged_user_cookie(self.client, users["admin_user"])
 
-    #     response = self.client.get(
-    #         url_for("gn_meta.get_datasets"),
-    #         query_string=MultiDict([("search", str(ds.meta_create_date))]),
-    #     )
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            query_string=MultiDict([("search", ds.meta_create_date.strftime("%d/%m/%Y"))]),
+        )
 
-    #     expected_ds = {ds.id_dataset}
-    #     filtered_ds = {dataset["id_dataset"] for dataset in response.json}
-    #     assert expected_ds.issubset(filtered_ds)
+        expected_ds = {ds.id_dataset}
+        filtered_ds = {dataset["id_dataset"] for dataset in response.json}
+        assert expected_ds.issubset(filtered_ds)
+        # FIXME: add a DS to fixture with an unmatching meta_create_date
 
     def test_get_dataset_search_af_matches(self, users, datasets, acquisition_frameworks):
         dataset = datasets["belong_af_1"]

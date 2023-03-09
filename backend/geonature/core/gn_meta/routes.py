@@ -501,7 +501,7 @@ def get_acquisition_frameworks(scope):
     only = ["+cruved"]
     # QUERY
     af_list = TAcquisitionFramework.query.filter_by_readable()
-    if request.method == "POST":
+    if request.is_json:
         af_list = af_list.filter_by_params(request.json)
 
     af_list = af_list.order_by(TAcquisitionFramework.acquisition_framework_name).options(

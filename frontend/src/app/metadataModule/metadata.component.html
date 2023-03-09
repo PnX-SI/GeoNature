@@ -73,7 +73,7 @@
           >
             <div class="col-md-1">ID</div>
             <div class="col-md-2">Nom</div>
-            <div class="col-md-2">Date de création</div>
+            <div class="col-md-2">Date de lancement</div>
             <div class="col-md-5">Acteurs</div>
             <div class="col-md-1">Actions</div>
           </div>
@@ -112,7 +112,7 @@
                       <small style="color: gray"> {{ af.unique_acquisition_framework_id }} </small>
                     </a>
                   </div>
-                  <div class="col-md-2">{{ af.meta_create_date | date: 'd/MM/yyyy' }}</div>
+                  <div class="col-md-2">{{ af.acquisition_framework_start_date | date: 'd/MM/yyyy' }}</div>
                   <section class="col-md-5">
                     <span *ngIf="af.creator">
                       <b> {{ af.creator?.nom_complet }} : </b> créateur

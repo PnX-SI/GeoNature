@@ -76,8 +76,6 @@ export class MetadataService {
   }
 
   search(term: string) {
-    //Add advanced search query strings here but omit the selector since
-    // quick search must return AF and DS
     const { selector, ...formValue } = this.formatFormValue({ ...this.form.value });
     const params = {
       ...(term !== '' ? { search: term } : {}),
