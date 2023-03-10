@@ -1,9 +1,10 @@
 from collections import OrderedDict
 from packaging import version
+from typing import List
 
 import sqlalchemy as sa
 import datetime
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, Unicode, and_, DateTime
 from sqlalchemy.orm import (
     relationship,
     column_property,
@@ -13,6 +14,7 @@ from sqlalchemy.orm import (
     deferred,
 )
 from sqlalchemy.sql import select, func, exists
+from sqlalchemy.schema import FetchedValue
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
@@ -27,6 +29,7 @@ else:
     from flask_sqlalchemy import BaseQuery as Query
 
 from werkzeug.exceptions import NotFound
+from werkzeug.datastructures import MultiDict
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
@@ -98,6 +101,78 @@ corAreaSynthese = DB.Table(
     DB.Column("id_area", DB.Integer, ForeignKey(LAreas.id_area), primary_key=True),
     schema="gn_synthese",
 )
+
+
+class SyntheseLogEntryQuery(Query):
+    sortable_columns = ["meta_last_action_date"]
+    filterable_columns = ["id_synthese", "last_action", "meta_last_action_date"]
+
+    def filter_by_params(self, params):
+        for col in self.filterable_columns:
+            if col not in params:
+                continue
+            column = getattr(SyntheseLogEntry, col)
+            for value in params.getlist(col):
+                if isinstance(column.type, DateTime):
+                    self = self.filter_by_datetime(column, value)
+                elif isinstance(column.type, Unicode):
+                    self = self.filter(column.ilike(f"%{value}%"))
+                else:
+                    self = self.filter(column == value)
+        return self
+
+    def filter_by_datetime(self, col, dt: str = None):
+        """Filter on date only with operator among "<,>,=<,>="
+
+        Parameters
+        ----------
+        filters_with_operator : dict
+            params filters from url only
+
+        Returns
+        -------
+        Query
+
+        """
+
+        if ":" in dt:
+            operator, dt = dt.split(":", 1)
+        else:
+            operator = "eq"
+        dt = datetime.datetime.fromisoformat(dt)
+        if operator == "gt":
+            f = col > dt
+        elif operator == "gte":
+            f = col >= dt
+        elif operator == "lt":
+            f = col < dt
+        elif operator == "lte":
+            f = col <= dt
+        elif operator == "eq":
+            # FIXME: if datetime is at midnight (looks like date), allows all the day?
+            f = col == dt
+        else:
+            raise ValueError(f"Invalid comparison operator: {operator}")
+        return self.filter(f)
+
+    def sort(self, columns: List[str]):
+        if not columns:
+            columns = ["meta_last_action_date"]
+        for col in columns:
+            if ":" in col:
+                col, direction = col.rsplit(":")
+                if direction == "asc":
+                    direction = sa.asc
+                elif direction == "desc":
+                    direction = sa.desc
+                else:
+                    raise ValueError(f"Invalid sort direction: {direction}")
+            else:
+                direction = sa.asc
+            if col not in self.sortable_columns:
+                raise ValueError(f"Invalid sort column: {col}")
+            self = self.order_by(direction(getattr(SyntheseLogEntry, col)))
+        return self
 
 
 class SyntheseQuery(GeoFeatureCollectionMixin, Query):
@@ -324,8 +399,8 @@ class Synthese(DB.Model):
     comment_description = DB.Column(DB.UnicodeText)
     additional_data = DB.Column(JSONB)
     meta_validation_date = DB.Column(DB.DateTime)
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
+    meta_create_date = DB.Column(DB.DateTime, server_default=FetchedValue())
+    meta_update_date = DB.Column(DB.DateTime, server_default=FetchedValue())
     last_action = DB.Column(DB.Unicode)
 
     areas = relationship(LAreas, secondary=corAreaSynthese, backref="synthese_obs")
@@ -543,6 +618,24 @@ class VColorAreaTaxon(DB.Model):
     nb_obs = DB.Column(DB.Integer())
     last_date = DB.Column(DB.DateTime())
     color = DB.Column(DB.Unicode())
+
+
+@serializable
+class SyntheseLogEntry(DB.Model):
+    """Log synthese table, populated with Delete Triggers on gn_synthes.synthese
+    Parameters
+    ----------
+    DB:
+        Flask SQLAlchemy controller
+    """
+
+    __tablename__ = "t_log_synthese"
+    __table_args__ = {"schema": "gn_synthese"}
+    query_class = SyntheseLogEntryQuery
+
+    id_synthese = DB.Column(DB.Integer(), primary_key=True)
+    last_action = DB.Column(DB.String(length=1))
+    meta_last_action_date = DB.Column(DB.DateTime)
 
 
 # defined here to avoid circular dependencies
