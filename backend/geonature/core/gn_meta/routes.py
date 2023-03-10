@@ -20,7 +20,7 @@ from flask.json import jsonify
 from sqlalchemy import inspect, and_, or_
 from sqlalchemy.sql import text, exists, select, update
 from sqlalchemy.sql.functions import func
-from sqlalchemy.orm import Load, joinedload, raiseload
+from sqlalchemy.orm import Load, joinedload, raiseload, undefer
 from werkzeug.exceptions import Conflict, BadRequest, Forbidden, NotFound
 from werkzeug.datastructures import Headers, MultiDict
 from werkzeug.utils import secure_filename
@@ -121,17 +121,19 @@ def get_datasets():
             joinedload("organism"),
         ),
     )
+    only = [
+        "+cruved",
+        "cor_dataset_actor",
+        "cor_dataset_actor.nomenclature_actor_role",
+        "cor_dataset_actor.organism",
+        "cor_dataset_actor.role",
+    ]
 
-    # TODO: Need to add cor_dataset_actor
-    dataset_schema = DatasetSchema(
-        only=[
-            "+cruved",
-            "cor_dataset_actor",
-            "cor_dataset_actor.nomenclature_actor_role",
-            "cor_dataset_actor.organism",
-            "cor_dataset_actor.role",
-        ]
-    )
+    if params.get("synthese_records_count", type=int, default=0):
+        query = query.options(undefer(TDatasets.synthese_records_count))
+        only.append("+synthese_records_count")
+
+    dataset_schema = DatasetSchema(only=only)
     data = dataset_schema.jsonify(query.all(), many=True)
 
     user_agent = request.headers.get("User-Agent")
