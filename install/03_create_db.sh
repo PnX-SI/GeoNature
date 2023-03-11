@@ -106,9 +106,9 @@ geonature db autoupgrade -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
 geonature db exec "DO 'BEGIN ASSERT EXISTS (SELECT 1 FROM taxonomie.taxref); END'" 2>/dev/null || if [ "$install_bdc_statuts" = true ];
 then
     geonature db upgrade ref_geo_fr_departments@head |& tee -a "${LOG_FILE}"
-    geonature taxref import-v15
+    geonature taxref import-v16
 else
-    geonature taxref import-v15 --skip-bdc-statuts
+    geonature taxref import-v16 --skip-bdc-statuts
 fi
 geonature db upgrade nomenclatures_taxonomie_data@head
 
@@ -137,10 +137,10 @@ if [ "$install_ref_sensitivity" = true ];
 then
     geonature db upgrade ref_geo_fr_departments@head |& tee -a "${LOG_FILE}"
     geonature sensitivity add-referential \
-            --source-name "Référentiel sensibilité TAXREF v15 20220331" \
-            --url https://inpn.mnhn.fr/docs-web/docs/download/401875 \
-            --zipfile RefSensibiliteV15_20220331.zip \
-            --csvfile RefSensibilite_V15_31032022/RefSensibilite_15.csv  \
+            --source-name "Référentiel sensibilité TAXREF v16 20230203" \
+            --url https://inpn.mnhn.fr/docs-web/docs/download/415971 \
+            --zipfile RefSensibiliteV16_20230203.zip \
+            --csvfile RefSensibiliteV16_20230203/RefSensibilite_16.csv  \
             --encoding=iso-8859-15 |& tee -a "${LOG_FILE}"
     geonature sensitivity refresh-rules-cache |& tee -a "${LOG_FILE}"
 fi
