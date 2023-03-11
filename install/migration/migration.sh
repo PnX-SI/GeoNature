@@ -182,6 +182,11 @@ cd ${newdir}/install
 ./02_configure_systemd.sh
 cd ${newdir}/
 
+echo "Mise à jour de la configuration Apache …"
+cd "${newdir}/install/"
+./06_configure_apache.sh
+sudo apachectl configtest && sudo systemctl reload apache2 || echo "Attention, configuration Apache incorrecte !"
+
 # before GeoNature 2.10
 if [ -f "/var/log/geonature.log" ]; then
     echo "Déplacement des fichiers de logs /var/log/geonature.log → /var/log/geonature/geonature.log …"
@@ -213,12 +218,7 @@ echo "Mise à jour de la base de données…"
 # Voir https://github.com/PnX-SI/GeoNature/issues/2186#issuecomment-1337684933
 geonature db heads | grep "(occtax)" > /dev/null && geonature db upgrade occtax@4c97453a2d1a
 geonature db autoupgrade || exit 1
-geonature upgrade-modules-db
-
-echo "Mise à jour de la configuration Apache …"
-cd "${newdir}/install/"
-./06_configure_apache.sh
-sudo apachectl configtest && sudo systemctl reload apache2 || echo "Attention, configuration Apache incorrecte !"
+geonature upgrade-modules-db || exit 1
 
 echo "Redémarrage des services…"
 for service in ${SERVICES[@]}; do
