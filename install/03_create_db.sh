@@ -138,7 +138,7 @@ then
     geonature db upgrade ref_geo_fr_departments@head |& tee -a "${LOG_FILE}"
     geonature sensitivity add-referential \
             --source-name "Référentiel sensibilité TAXREF v16 20230203" \
-            --url https://inpn.mnhn.fr/docs-web/docs/download/415971 \
+            --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip \
             --zipfile RefSensibiliteV16_20230203.zip \
             --csvfile RefSensibiliteV16_20230203/RefSensibilite_16.csv  \
             --encoding=iso-8859-15 |& tee -a "${LOG_FILE}"
