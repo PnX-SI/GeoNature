@@ -459,7 +459,7 @@ class MapConfig(Schema):
     CENTER = fields.List(fields.Float, load_default=[46.52863469527167, 2.43896484375])
     ZOOM_LEVEL = fields.Integer(load_default=6)
     ZOOM_LEVEL_RELEVE = fields.Integer(load_default=15)
-    GEOLOCATION = fields.Boolean(load_default=True)
+    GEOLOCATION = fields.Boolean(load_default=False)
     # zoom appliqué sur la carte lorsque l'on clique sur une liste
     # ne s'applique qu'aux points
     ZOOM_ON_CLICK = fields.Integer(load_default=18)
