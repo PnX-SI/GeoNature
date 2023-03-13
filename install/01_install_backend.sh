@@ -110,3 +110,11 @@ if [[ -f "\${VIRTUAL_ENV}/bin/${COMPLETION_FILE_NAME}" ]]; then
 fi
 EOF
 fi
+
+echo "Installation des paquets npm"
+cd "${BASE_DIR}/frontend"
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+nvm use || exit 1
+cd "${BASE_DIR}/backend/static"
+npm ci || exit 1

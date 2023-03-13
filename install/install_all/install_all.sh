@@ -123,6 +123,8 @@ sed -i "s/proxy_https=.*$/proxy_https=$proxy_https/g" config/settings.ini
 
 cd "${GEONATURE_DIR}/install"
 
+echo "Installation de nvm"
+./00_install_nvm.sh || exit 1
 echo "Installation du backend GeoNature"
 ./01_install_backend.sh || exit 1
 echo "Installation des scripts systemd"

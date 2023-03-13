@@ -104,10 +104,10 @@ if [ -d static/mobile ]; then mv static/mobile media/mobile; fi
 
 
 echo "Mise à jour de node si nécessaire …"
-cd "${newdir}"/frontend
+cd "${newdir}"/install
+./00_install_nvm.sh
 export NVM_DIR="$HOME/.nvm"
  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-nvm install
 nvm use
 
 echo "Installation des dépendances node du frontend …"
