@@ -41,26 +41,116 @@ CHANGELOG
 - Configuration dynamique du frontend : le frontend récupère dynamiquement sa configuration depuis le backend. Pour cela, il nécessite uniquement l’adresse de l’``API_ENDPOINT`` qui doit être renseigné dans le fichier ``frontend/src/assets/config.json``. En conséquence, il n’est plus nécessaire de rebuilder le frontend lors d’une modification de la configuration (#2205)
 - Personnalisation de la page d’accueil : ajout d’une section `[HOME]` contenant les paramètres `TITLE`, `INTRODUCTION` et `FOOTER`. Ceux-ci peuvent contenir du code HTML qui est chargé dynamiquement avec la configuration, évitant ainsi la nécessité d’un rebuild du frontend (#2300)
 - Synthèse : Agrégation des observations ayant la même géométrie (#1847)
-- Synthèse : Possibilité d'afficher les données agrégées par maille (#1878)
-- Synthèse : Possibilité de définir des filtres par défaut (#2261)
-- Champs additionnels: Les formulaires de type `radio`, `select`, `multiselect` et `checkbox`, attendent désormais une liste de dictionnaire `{value, label}` (voir doc des champs additionnels).
+- Synthèse : Possibilité d'afficher les données agrégées par maille (#1878). La fonctionnalité est configurable avec les paramètres suivant :
+
+    ```toml
+    [SYNTHESE]
+        AREA_AGGREGATION_ENABLED = true
+        AREA_AGGREGATION_TYPE = "M10"
+        AREA_AGGREGATION_BY_DEFAULT = false  # affichage groupé par défaut
+        AREA_AGGREGATION_LEGEND_CLASSES = …  # voir fichier de configuration d’exemple
+    ```
+
+- Synthèse : Possibilité de définir des filtres par défaut à travers le paramètre `SYNTHESE.DEFAULT_FILTERS` (#2261)
+- Champs additionnels : Les formulaires de type `radio`, `select`, `multiselect` et `checkbox`, attendent désormais une liste de dictionnaire `{value, label}` (voir doc des champs additionnels).
   La rétrocompatibilité avec des listes simples est maintenue, mais vous êtes invité à modifier ces champs dans le backoffice.
   Pour conserver le bon affichage lors de l'édition des données, renseignez l'ancienne valeur deux fois dans la clé `value` et la clé `label`.
-- Admin : Possibilité d'alimenter la table des applications mobiles t_mobile_apps à partir du backoffice de GeoNature, notamment pour faciliter la gestion des mises à jour de Occtax-mobile 
-- Ajout de la possibilité de fournir un bouton de geolocalisation via le composant `pnx-map` (Input : geolocation). Le bouton a été ajouté sur les cartes des formulaires Occtax et Occhab. Un paramètre de GeoNature permet de masquer ce bouton (par défaut à true) : 
+- Admin : Possibilité d'alimenter la table des applications mobiles `t_mobile_apps` à partir du backoffice de GeoNature, notamment pour faciliter la gestion des mises à jour de Occtax-mobile 
+- Possibilité d’afficher un bouton de géolocalisation sur les cartes des formulaires Occtax et Occhab, activable avec le paramètre suivant :
 
-
+    ```toml
     [MAP]
         GEOLOCATION = false
+    ```
+
+- Ajout de l’intégration Redis à Sentry pour améliorer la précisions des traces
+- Possibilité de définir des règles de notifications par défaut, s’appliquant aux utilisateurs n’ayant pas de règle spécifique. Pour cela, il suffit d’insérer une règle dans la table `gn_notifications.t_notifications_rules` avec `id_role=NULL`.
+- Publication automatique de deux images Docker `geonature-backend` et `geonature-frontend`. Leur utilisation n’a pas encore été éprouvé et leur utilisation en production n’est de ce fait pas recommandé.
+- Amélioration de la fiabilité du processus de migration. TODO upgrade-modules-db, old directiry
+- Ajout d’un index sur la colonne `gn_synthese.cor_area_synthese.id_area`. La colonne `id_synthese` est déjà couverte par l’index multiple `(id_synthese, id_area)`.
+- Import de TaxRef v16 et du référentiel de sensibilité associé pour les nouvelles installations de GeoNature
+- Évolution de la gestion des fichiers statiques et des médias :
+  - Séparation des fichiers statiques (applicatif, fournis par GeoNature) et des fichiers médias (générés par l’applications). Sont déplacés du dossier `backend/static` vers le dossier `backend/media` les sous-dossiers suivant : `media`, `exports`, `geopackages`, `mobile`, `pdf`, `shapefiles`. De plus, l’ancien dossier `medias` est renommé `attachments`.
+  - Ajout des paramètres de configuration suivant :
+
+    ```toml
+    STATIC_FOLDER = "static"    # dossier absolue ou relatif à ROOT_PATH (dossier "backend" par défaut)
+    STATIC_URL = "/static"      # URL d’accès aux fichiers statiques
+    MEDIA_FOLDER = "media"      # dossier absolue ou relatif à ROOT_PATH (dossier "backend" par défaut)
+    MEDIA_URL = "/media"        # URL d’accès aux médias
+    ```
+
+  - Ajout d’un dossier `custom` à la racine de GeoNature et du paramètre associé `CUSTOM_STATIC_FOLDER`. Les fichiers statiques réclamés sont cherché en priorité dans le dossier `custom`, puis, si non trouvé, dans le dossier `static`. Ainsi, si besoin de modifier un fichier statique, on placera un fichier du même nom dans le dossier `custom` plutôt que de modifier le fichier original (par exemple, `custom/images/logo_structure.png`). Il n’est donc plus
+
+  - Retrait du préfixe `static/media/` aux chemins d’accès des fichiers joints (colonne `gn_commons.t_medias.media_path`)
+  - Retrait du préfixe `static/mobile/` aux chemins d’accès des APK des applications mobiles (colonne `gn_commons.t_mobile_apps.relative_path_apk`)
+  - Certains fichiers statiques sont renommés :
+    - `static/css/custom.css` → `static/css/metadata_pdf_custom.css`
+  - Certains assets du frontend sont déplacés vers les fichiers statiques du backend pour profiter du mécanisme du customisation :
+    - `frontend/assets/custom.css` → `backend/static/css/frontend.css`
+    - `frontend/src/favicon.ico` → `backend/static/images/favicon.ico`
+    - `frontend/src/custom/images/login_background.jpg` → `backend/static/images/login_background.jpg`
+    - `frontend/src/custom/images/logo_sidebar.jpg` → `backend/static/images/logo_sidebar.jpg`
+    - `frontend/src/custom/images/logo_structure.png` → `backend/static/images/logo_structure.png`
+  - Le lien symbolique `static/images/logo_structure.jpg` est supprimé au profit de l’utilisation de `logo_sidebar.jpg`
+  - Les déplacements mentionnés ci-dessus sont normalement effectué par le script de migration
+- Mise à jour des dépendances :
+  - TaxHub 1.11.1
+  - UsersHub 2.3.3
+  - UsersHub-authentification-module 1.6.5
+  - Habref-api-module 0.3.1
+  - Nomenclature-api-module 1.5.4
+  - RefGeo 1.3.0
+  - Utils-Flask-SQLAlchemy 0.3.2
+  - Utils-Flask-SQLAlchemy-Geo 0.2.7
+- Refonte des permissions et suppression de la vue `v_roles_permissions` levant certains problèmes de scalabilité du nombre d’utilisateurs (#2196)
+- La recherche du fichier de configuration des modules sous le nom `{module_code}_config.toml` (code du module en minuscule) dans le répertoire de configuration de GeoNature devient prioritaire devant l’utilisation du fichier `conf_gn_module.toml` dans le répertoire de configuration du module.
+  Le script de mise à jour déplace les fichiers de configuration des modules vers le dossier de configuration de GeoNature.
+- Évolution de la configuration Apache `/etc/apache2/conf-available/geonature.conf` pour activer la compression gzip des réponses de l’API (#2266).
+  À reporter dans votre configuration Apache si celle-ci n’importe pas le fichier fourni.
+- Le script de migration `migration.sh` peut prendre en argument le chemin vers l’ancienne installation GeoNature.
+  Il peut s’agir du même dossier que la nouvelle installation GeoNature (cas d’une mise à jour d’un dossier GeoNature sous Git).
+- Ajout d’une historisation des suppressions de la synthèse à travers un trigger peuplant la nouvelle table `gn_synthese.t_log_synthese`.
+  Une API `/synthese/log` permet d’obtenir l’historique des insertions, mises à jour et suppressions dans la synthèse.
+
 **💻 Développement**
 
-- Suppression de l'utilisation de `get_role` dans les modules Synthese & Validation (#2162)
+- Suppression du support du paramètre `get_role` du décorateur `check_cruved_scope` (#2162)
+- Suppression des paramètres `redirect_on_expiration` et `redirect_on_invalid_token` du décorateur `check_cruved_scope`
+- Remplacement des usages du paramètre `get_role` du décorateur `check_cruved_scope` par `get_scope` dans le code de GeoNature et des modules *contrib* (#2164, #2199)
+- Suppression de multiples fonctions du paquage `geonature.core.gn_permissions.tools`, notamment la classe `UserCruved` ; se reporter à la documentation développeur afin de connaître les fonctions utilisable dans votre code (#2360)
+- Les erreurs de validation Marshmallow sont automatiquement converties en erreur 400 (BadRequest)
+- Les modules *contrib* doivent également être formaté avec `prettier`
+- Fiabilisation des exports PDF dans le module méta-données
+- Le composant de carte `pnx-map` a un nouvel input `geolocation` permettant d’activer le bouton de géolocalisation.
+- Ajout du mixin `geonature.utils.schema.CruvedSchemaMixin` permettant d’ajouter la propriété (exclue par défaut) `cruved` à un schéma Marshmallow
+- L’accès aux paramètre de configuration ne se fait plus à partir des fichiers générés ``AppConfig`` (GeoNature) ou ``ModuleConfig`` (modules) mais uniquement à partir du ``ConfigService`` en charge de la récupération dynamique de la configuration (#2205).
+- Passage à Angular 15 et mise à jour de nombreuses dépendances frontend (#2154)
+- Nettoyage des dépendances frontend de GeoNature. Si vous utilisiez certaines dépendances supprimées de GeoNature dans vos modules, vous devez les rajouter dans un fichier `package-lock.json` dans le dossier frontend de votre module.
+- Suppression de la route obsolète `/config`
+- Ajout du context manager `start_sentry_child` permettant de rapporter dans les traces Sentry le temps d’exécution de certaines tâches coûteuses (#2289)
+- Refactorisation du module Occhab (#2324) avec passage à Marshmallow.
+  Ajout à cette occasion de plusieurs fonctions et classes utilitaires au dépôt *Utils-Flask-SQLAlchemy-Geo*.
+  Suppression de la vue `v_releve_occtax`.
+- Déplacement des routes géographiques et des tests associés vers le dépôt *RefGeo*
+- Amélioration des tests des permissions
+- La fonction `get_scopes_by_module` cherche dans le contexte applicatif (variable `g`) la présence de `g.current_module` et `g.current_object` lorsqu’ils ne sont pas fournis en paramètre.
+- Travaux en cours : compatibilité SQLAlchemy 1.3 & 1.4 / Flask-SQLAlchemy 2 & 3
 
 **🐛 Corrections**
 
-  - modèle de la synthese : changement du type de `entity_source_pk_value` de `Integer` à `Unicode` pour coller à la base.
+- Synthèse : changement du type de `entity_source_pk_value` de `Integer` à `Unicode` dans le modèle pour correspondre à la base.
+- Correction de l’accès public automatique activable avec `?access=public` dans l’URL
+- Correction de la fonctionnalité de récupération du mot de passe
+- Correction de la commande d’import du référentiel sensibilité pour correctement gérer les critères comportementales
+- Occtax : correction du filtre sur les organismes
+- Synthèse : correction d’un problème de performance de l’export (vue `v_synthese_for_export`) (#2357)
+- Correction d’un problème de détection de l’emplacement des modules avec les versions récentes de `pip` (#2365, #2364)
+- Occhab : correction du CRUVED sur la liste des jeux de données ouvert à la saisie
 
 **⚠️ Notes de version**
+
+- Cette version de GeoNature intègre le passage à Angular 15, vérifier préalablement la compatibilité de vos modules !
 
 - La configuration dynamique nécessite de renseigner l’URL de l’API dans un nouveau fichier.
   Pour cela, désamplez le fichier `frontend/src/assets/config.sample.json` : `cp  frontend/src/assets/config.sample.json frontend/src/assets/config.json` et renseignez uniquement l'URL de l'API GeoNature (identique au paramètre `API_ENDPOINT` dans la configuration du backend).
