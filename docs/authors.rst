@@ -45,6 +45,7 @@ Contributeurs
 * Sébastien Grimault
 * Sébastien Pascal-Poher (Probesys)
 * Jean-Pascal Milcent (CBNA)
+* Cendrine Hoarau (CBNA)
 * Florent Vollmer (Ouidou)
 * Aboubakr Oudghiri (Ouidou)
 * Matthieu Etourneau (Geofit)
@@ -52,6 +53,7 @@ Contributeurs
 * Antoine Cecchi (UMS Patrinat)
 * Judith Panijel (UMS Patrinat)
 * Alain Laupin (UMS Patrinat)
+* Vincent Cauchois (UMS Patrinat)
 * Ludovic Le Pontois (Parc national des Pyrénées)
 * Vincent Prunet (Parc national du Mercantour)
 * David Michallet (CEN 38)
@@ -62,5 +64,9 @@ Contributeurs
 * Aurélie Jambon (Natural Solutuons)
 * Julien Graziani (Natural Solutions)
 * Ophélie Da Silva (Natural Solutions)
+* Andria Capai (Natural Solutions)
 * Gaëtan Bruel (JDev)
 * Pierre Jégo (JDev)
+* Pierre Le Dorze (Bretagne Vivante)
+* Bastien Alvez (Makina Corpus)
+* dece
