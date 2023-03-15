@@ -312,8 +312,9 @@ class TDatasetsQuery(Query):
             actors.append(TDatasets.cor_dataset_actor.any(CorDatasetActor.id_organism == organism))
         if actors:
             self = self.filter(sa.or_(*actors))
-        areas = params.getlist("areas")
-        if areas:
+        # Check that areas is not None before converting it to a list
+        if params.get("areas"):
+            areas = params.getlist("areas")
             self = self.filter_by_areas(areas)
         search = params.get("search")
         if search:
@@ -364,8 +365,8 @@ class TDatasetsQuery(Query):
         from geonature.core.gn_synthese.models import Synthese
 
         areaFilter = []
-        for type_area, id_area in areas:
-            areaFilter.append(sa.and_(LAreas.id_type == type_area, LAreas.id_area == id_area))
+        for id_area in areas:
+            areaFilter.append(LAreas.id_area == id_area)
         return self.filter(TDatasets.synthese_records.any(Synthese.areas.any(sa.or_(*areaFilter))))
 
 

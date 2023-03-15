@@ -115,7 +115,7 @@ export class MetadataComponent implements OnInit {
       if (!field || !field.startsWith('area_')) return false;
       // use only one areas ids list
       if (value) {
-        areas = [...areas, ...value.map((area) => [area.id_type, area.id_area])];
+        areas = [...areas, ...value.map((area) => area.id_area)];
       }
       return true;
     });
