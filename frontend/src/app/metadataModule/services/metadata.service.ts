@@ -76,7 +76,7 @@ export class MetadataService {
   }
 
   search(term: string) {
-    const { selector, ...formValue } = this.formatFormValue({ ...this.form.value });
+    const formValue = this.formatFormValue({ ...this.form.value });
     const params = {
       ...(term !== '' ? { search: term } : {}),
       // formValue will always has selector as a non null property: need to
