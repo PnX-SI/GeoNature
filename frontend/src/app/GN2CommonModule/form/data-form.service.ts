@@ -98,6 +98,9 @@ export class DataFormService {
           params[key].forEach((id_af) => {
             queryString = queryString.append('id_acquisition_framework', id_af);
           });
+          // XXX To remove when datasets will be retreived via a POST request
+        } else if (key == 'areas') {
+          params[key].forEach((area) => (queryString = queryString.append('areas', area)));
         } else {
           queryString = queryString.set(key, params[key].toString());
         }
