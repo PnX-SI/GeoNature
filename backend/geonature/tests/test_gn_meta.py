@@ -320,7 +320,7 @@ class TestGNMeta:
         # search metadata in first commune
         response = self.client.post(
             url_for("gn_meta.get_acquisition_frameworks"),
-            json={"areas": [[comm1.id_type, comm1.id_area]]},
+            json={"areas": [comm1.id_area]},
         )
         ids = [af["id_acquisition_framework"] for af in response.json]
         assert s1.dataset.id_acquisition_framework in ids
@@ -330,7 +330,7 @@ class TestGNMeta:
         # get commune for this id synthese
         response = self.client.post(
             url_for("gn_meta.get_acquisition_frameworks"),
-            json={"areas": [[comm2.id_type, comm2.id_area]]},
+            json={"areas": [comm2.id_area]},
         )
         ids = [af["id_acquisition_framework"] for af in response.json]
         assert s1.dataset.id_acquisition_framework not in ids
@@ -339,7 +339,7 @@ class TestGNMeta:
         # test no response if a commune have observations
         response = self.client.post(
             url_for("gn_meta.get_acquisition_frameworks"),
-            json={"areas": [[commune_without_obs.id_type, commune_without_obs.id_area]]},
+            json={"areas": [commune_without_obs.id_area]},
         )
         resp = response.json
         # will return empty response
