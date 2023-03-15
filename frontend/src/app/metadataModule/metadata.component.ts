@@ -87,19 +87,6 @@ export class MetadataComponent implements OnInit {
     return option?.area_name;
   }
 
-  setDsObservationCount(datasets, dsNbObs) {
-    datasets.forEach((ds) => {
-      let foundDS = dsNbObs.find((d) => {
-        return d.id_dataset == ds.id_dataset;
-      });
-      if (foundDS) {
-        ds.observation_count = foundDS.count;
-      } else {
-        ds.observation_count = 0;
-      }
-    });
-  }
-
   refreshFilters() {
     this.metadataService.resetForm();
     this.advancedSearch();

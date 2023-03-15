@@ -82,12 +82,6 @@ export class SyntheseDataService {
     });
   }
 
-  getObsCountByColumn(column) {
-    return this._api.get<any>(
-      `${this.config.API_ENDPOINT}/synthese/observation_count_per_column/${column}`
-    );
-  }
-
   getOneSyntheseObservation(id_synthese) {
     return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/vsynthese/${id_synthese}`);
   }

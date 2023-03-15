@@ -96,16 +96,9 @@ export class MetadataService {
     this.acquisitionFrameworks.next([]);
 
     //forkJoin pour lancer les 2 requetes simultanément
-    return forkJoin({
-      afs: this.dataFormService.getAcquisitionFrameworksList(selectors, params),
-      datasetNbObs: this._syntheseDataService.getObsCountByColumn('id_dataset'),
-    }).pipe(
-      tap(() => (this.isLoading = false)),
-      map((val) => {
-        this._datasetNbObs = val.datasetNbObs;
-        return val.afs;
-      })
-    );
+    return this.dataFormService
+      .getAcquisitionFrameworksList(selectors, params)
+      .pipe(tap(() => (this.isLoading = false)));
   }
 
   getMetadata(params = {}, selectors = SELECTORS) {
@@ -126,15 +119,7 @@ export class MetadataService {
       })
       .subscribe((datasets) => {
         af.t_datasets = datasets;
-        this.setDsObservationCount(datasets, this._datasetNbObs);
       });
-  }
-
-  private setDsObservationCount(datasets, dsNbObs) {
-    datasets.forEach((ds) => {
-      let idx = dsNbObs.findIndex((e) => e.id_dataset == ds.id_dataset);
-      ds.observation_count = idx > -1 ? dsNbObs[idx]['count'] : 0;
-    });
   }
 
   formatFormValue(formValue): any {

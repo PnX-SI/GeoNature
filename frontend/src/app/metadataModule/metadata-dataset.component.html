@@ -62,7 +62,7 @@
     </div>
   </ng-template>
 </td>
-<td [attr.data-qa]='"pnx-metadata-jdd-nb-obs-"+dataset.unique_dataset_id'> {{dataset?.observation_count}} </td>
+<td [attr.data-qa]='"pnx-metadata-jdd-nb-obs-"+dataset.unique_dataset_id'> {{dataset?.synthese_records_count}} </td>
 <td>
   <a
     mat-icon-button
@@ -74,13 +74,13 @@
 
   <a
     mat-icon-button
-    [disabled]="dataset?.observation_count == 0"
+    [disabled]="dataset?.synthese_records_count == 0"
     [routerLink]="['/synthese']" 
     [queryParams]="{id_dataset: dataset.id_dataset}"
     [attr.data-qa]='"pnx-metadata-jdd-display-data-"+dataset.unique_dataset_id'
   >
     <mat-icon
-      *ngIf="dataset?.observation_count == 0; else elseSynthese"
+      *ngIf="dataset?.synthese_records_count == 0; else elseSynthese"
       matTooltip="Ce jeu de données ne comporte aucune donnée"
     >
       room
@@ -108,7 +108,7 @@
     </button>
   </ng-template>
 
-  <ng-container *ngIf="!dataset.cruved.D || (dataset?.observation_count || 0) > 0; else elseblock">
+  <ng-container *ngIf="!dataset.cruved.D || (dataset?.synthese_records_count || 0) > 0; else elseblock">
     <button
       mat-icon-button
       [disabled]="true"
@@ -116,7 +116,7 @@
     >
       <mat-icon
         [matTooltip]="
-          (dataset?.observation_count || 0) > 0
+          (dataset?.synthese_records_count || 0) > 0
             ? 'Ce jeu de données contient des données et ne peut pas être supprimé'
             : 'Vous n\'avez pas les droits nécessaires pour supprimer ce jeu de données'
         "
