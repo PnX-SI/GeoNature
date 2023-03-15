@@ -1585,7 +1585,7 @@ Il s'agit maintenant de gérer ses permissions dans GeoNature même.
 Accès public automatique
 ````````````````````````
 
-Un lien GeoNature peut déclancher automatiquement une connexion avec l’utilisateur public en lui rajoutant les paramètres ``access=public``.
+Un lien GeoNature peut déclencher automatiquement une connexion avec l’utilisateur public en lui rajoutant les paramètres ``access=public``.
 
 Exemple : `<https://demo.geonature.fr/geonature/#/synthese?access=public>`_
 
