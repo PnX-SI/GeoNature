@@ -119,7 +119,11 @@ export class MetadataComponent implements OnInit {
       }
       return true;
     });
-    this.searchTerms = { ...omited, areas: areas.length ? areas : null };
+    this.searchTerms = {
+      ...omited,
+      areas: areas.length ? areas : null,
+      search: this.metadataService.rapidSearchControl.value,
+    };
     this.metadataService.formatFormValue(Object.assign({}, formValues));
     this.metadataService.getMetadata(this.searchTerms);
   }
