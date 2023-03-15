@@ -119,9 +119,9 @@ export class MetadataComponent implements OnInit {
       }
       return true;
     });
-    let finalFormValue = { ...omited, areas: areas.length ? areas : null };
+    this.searchTerms = { ...omited, areas: areas.length ? areas : null };
     this.metadataService.formatFormValue(Object.assign({}, formValues));
-    this.metadataService.getMetadata(finalFormValue);
+    this.metadataService.getMetadata(this.searchTerms);
   }
 
   openSearchModal(searchModal) {
@@ -136,10 +136,11 @@ export class MetadataComponent implements OnInit {
   onOpenExpansionPanel(af: any) {
     if (af.t_datasets === undefined) {
       let params = {};
+      if (this.searchTerms.selector === 'ds') {
+        params = Object.fromEntries(Object.entries(this.searchTerms).filter(([_, v]) => v != null));
+      }
       if (this.metadataService.rapidSearchControl.value) {
-        params = {
-          search: this.metadataService.rapidSearchControl.value,
-        };
+        params = { ...params, search: this.metadataService.rapidSearchControl.value };
       }
       this.metadataService.addDatasetToAcquisitionFramework(af, params);
     }
