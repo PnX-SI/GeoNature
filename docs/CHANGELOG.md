@@ -10,13 +10,13 @@ CHANGELOG
 - Filtres par défaut dans la Synthèse (#2261)
 - Angular 15
 - Taxref v16 + BDC statuts v16 + Ref sensibilité v16
-- Configuration dynamique
+- Configuration dynamique sans rebuild
 - Historisation des suppressions dans la Synthèse, nécessaire pour GN2PG notamment (#789)
 - Séparation Backend / frontend (#2088)
 - Réorganisation custom pour simplifier la customisation, la surcouche, l'accès aux fichiers
-- Docker
+- Images Docker
 - Refactorisation Occhab, module de référence et documentation développeurs associée
-- Refactorisation des permissions (simplification, optimisation, cntralisation, performances, tests)
+- Refactorisation des permissions (simplification, optimisation, centralisation, performances, tests)
 - Optimisation exports Synthèse (#1434)
 
 ## A expliquer
@@ -82,7 +82,7 @@ CHANGELOG
 - Ajout de l’intégration de Redis à l'outil de logs Sentry, pour améliorer la précisions des traces
 - Possibilité de définir des règles de notifications par défaut, s’appliquant aux utilisateurs n’ayant pas de règle spécifique. Pour cela, il suffit d’insérer une règle dans la table `gn_notifications.t_notifications_rules` avec `id_role=NULL` (#2267)
 - Publication automatique de deux images Docker `geonature-backend` et `geonature-frontend` (#2206). Leur utilisation n’a pas encore été éprouvée et leur utilisation en production n’est de ce fait pas recommandée.
-- Amélioration de la fiabilité du processus de migration. !!! TODO upgrade-modules-db, old directory
+- Amélioration de la fiabilité du processus de migration
 - Ajout d’un index sur la colonne `gn_synthese.cor_area_synthese.id_area`. La colonne `id_synthese` est déjà couverte par l’index multiple `(id_synthese, id_area)`.
 - Import de TaxRef v16 et du référentiel de sensibilité associé pour les nouvelles installations de GeoNature
 - Évolution de la gestion des fichiers statiques et des médias (#2306) :
@@ -96,7 +96,7 @@ CHANGELOG
     MEDIA_URL = "/media"        # URL d’accès aux médias
     ```
 
-  - Ajout d’un dossier `custom` à la racine de GeoNature et du paramètre associé `CUSTOM_STATIC_FOLDER`. Les fichiers statiques réclamés sont cherchés en priorité dans le dossier `custom`, puis, si non trouvé, dans le dossier `static`. Ainsi, si besoin de modifier un fichier statique, on placera un fichier du même nom dans le dossier `custom` plutôt que de modifier le fichier original (par exemple, `custom/images/logo_structure.png`). Il n’est donc plus XXXXXXXXXXXX
+  - Ajout d’un dossier `custom` à la racine de GeoNature et du paramètre associé `CUSTOM_STATIC_FOLDER`. Les fichiers statiques réclamés sont cherchés en priorité dans le dossier `custom`, puis, si non trouvé, dans le dossier `static`. Ainsi, si besoin de modifier un fichier statique, on placera un fichier du même nom dans le dossier `custom` plutôt que de modifier le fichier original (par exemple, `custom/images/logo_structure.png`).
 
   - Retrait du préfixe `static/media/` aux chemins d’accès des fichiers joints (colonne `gn_commons.t_medias.media_path`)
   - Retrait du préfixe `static/mobile/` aux chemins d’accès des APK des applications mobiles (colonne `gn_commons.t_mobile_apps.relative_path_apk`)
@@ -135,10 +135,10 @@ CHANGELOG
 - Suppression des paramètres `redirect_on_expiration` et `redirect_on_invalid_token` du décorateur `check_cruved_scope` (#2360)
 - Remplacement des usages du paramètre `get_role` du décorateur `check_cruved_scope` par `get_scope` dans le code de GeoNature et des modules *contrib* (#2164, #2199)
 - Suppression de multiples fonctions du package `geonature.core.gn_permissions.tools`, notamment la classe `UserCruved` ; se reporter à la documentation développeur afin de connaître les fonctions utilisables dans votre code (#2360)
-- Mettre à jour le venv plutôt que le supprimr (#2332)
+- Migration GeoNature : le venv est mis à jour plutôt que d’être supprimé et recréé (#2332)
 - Les erreurs de validation Marshmallow sont automatiquement converties en erreur 400 (BadRequest)
 - Les modules *contrib* doivent également être formatés avec `prettier`
-- Fiabilisation des exports PDF dans le module métadonnées
+- Fiabilisation des exports PDF dans le module métadonnées (#2232)
 - Le composant de carte `pnx-map` a un nouvel input `geolocation` permettant d’activer le bouton de géolocalisation
 - Ajout du mixin `geonature.utils.schema.CruvedSchemaMixin` permettant d’ajouter la propriété (exclue par défaut) `cruved` à un schéma Marshmallow
 - L’accès aux paramètre de configuration ne se fait plus à partir des fichiers générés ``AppConfig`` (GeoNature) ou ``ModuleConfig`` (modules), mais uniquement à partir du ``ConfigService`` en charge de la récupération dynamique de la configuration (#2205).
@@ -165,7 +165,7 @@ CHANGELOG
 - Synthèse : correction d’un problème de performance de l’export (vue `v_synthese_for_export`) (#1434)
 - Correction d’un problème de détection de l’emplacement des modules avec les versions récentes de `pip` (#2365, #2364)
 - Occhab : correction du CRUVED sur la liste des jeux de données ouvert à la saisie
-- fix: Date comparison problem on form OCCTAX Releve (#2318)
+- Occtax : correction du contrôle des dates du formulaire d’édition des relevés (#2318)
 - Correction des acteurs dans les exports PDF des métadonnées (#2034)
 - Correction des graphiques dans les exports PDF des cadres d'acquisition (#2231)
 
