@@ -13,7 +13,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
 from utils_flask_sqla.generic import testDataType
 from werkzeug.exceptions import BadRequest, NotFound
-from werkzeug.datastructures import MultiDict
+import marshmallow as ma
 
 if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
     from flask_sqlalchemy.query import Query
@@ -30,6 +30,37 @@ from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.core.gn_commons.models import cor_field_dataset, cor_module_dataset
 
 from ref_geo.models import LAreas
+
+
+class DateFilterSchema(ma.Schema):
+    date = ma.fields.Integer()
+    month = ma.fields.Integer()
+    day = ma.fields.Integer()
+
+
+class MetadataFilterSchema(ma.Schema):
+    class Meta:
+        unknown = ma.EXCLUDE
+
+    uuid = ma.fields.UUID(allow_none=True)
+    name = ma.fields.String()
+    date = ma.fields.Nested(DateFilterSchema)
+    person = ma.fields.Integer()
+    organism = ma.fields.Integer()
+    areas = ma.fields.List(ma.fields.Integer())
+    search = ma.fields.String()
+
+    @ma.post_load(pass_many=False)
+    def convert_date(self, data, **kwargs):
+        if "date" in data:
+            date = data["date"]
+            try:
+                data["date"] = datetime.date(
+                    year=date["year"], month=date["month"], day=date["day"]
+                )
+            except TypeError as exc:
+                raise ma.ValidationError(*exc.args, field_name="date") from exc
+        return data
 
 
 class CorAcquisitionFrameworkObjectif(DB.Model):
@@ -253,41 +284,37 @@ class TDatasetsQuery(Query):
             self = self.filter(or_(*ors))
         return self
 
-    def filter_by_params(self, params: MultiDict = MultiDict(), _af_search=True):
-        if "active" in params:
-            if params["active"] not in ["true", "1", "false", "0"]:
-                raise BadRequest("Bad value for 'active'")
-            self = self.filter(TDatasets.active == (params["active"] in ["true", "1"]))
-        table_columns = TDatasets.__table__.columns
-        if "orderby" in params:
-            try:
-                orderCol = getattr(table_columns, params.pop("orderby"))
-                self = self.order_by(orderCol)
-            except AttributeError as exc:
-                raise BadRequest("the attribute to order on does not exist") from exc
+    def filter_by_params(self, params={}, _af_search=True):
+        class DatasetFilterSchema(MetadataFilterSchema):
+            active = ma.fields.Boolean()
+            orderby = ma.fields.String()
+            module_code = ma.fields.String()
+            id_acquisition_frameworks = ma.fields.List(ma.fields.Integer(), allow_none=True)
+
+        params = DatasetFilterSchema().load(params)
+
+        active = params.get("active")
+        if active is not None:
+            self = self.filter(TDatasets.active == active)
+
         module_code = params.get("module_code")
         if module_code:
             self = self.filter(TDatasets.modules.any(module_code=module_code))
-        if "id_acquisition_framework" in params:
+
+        af_ids = params.get("id_acquisition_frameworks")
+        if af_ids:
             self = self.filter(
-                sa.or_(
-                    *[
-                        TDatasets.id_acquisition_framework == af_id
-                        for af_id in params.getlist("id_acquisition_framework", type=int)
-                    ]
-                )
+                sa.or_(*[TDatasets.id_acquisition_framework == af_id for af_id in af_ids])
             )
+
         uuid = params.get("uuid")
         if uuid:
-            try:
-                uuid = UUID(uuid)
-            except TypeError as exc:
-                raise BadRequest(*exc.args) from exc
-            else:
-                self = self.filter(TDatasets.unique_dataset_id == uuid)
+            self = self.filter(TDatasets.unique_dataset_id == uuid)
+
         name = params.get("name")
         if name:
             self = self.filter(TDatasets.dataset_name.ilike(f"%{name}%"))
+
         date = params.get("date")
         if date:
             try:
@@ -295,27 +322,21 @@ class TDatasetsQuery(Query):
             except (KeyError, TypeError) as exc:
                 raise BadRequest(*exc.args) from exc
             self = self.filter(sa.cast(TDatasets.meta_create_date, sa.DATE) == date)
+
         actors = []
         person = params.get("person")
         if person:
-            try:
-                person = int(person)
-            except ValueError as exc:
-                raise BadRequest(*exc.args) from exc
             actors.append(TDatasets.cor_dataset_actor.any(CorDatasetActor.id_role == person))
         organism = params.get("organism")
         if organism:
-            try:
-                organism = int(organism)
-            except ValueError as exc:
-                raise BadRequest(*exc.args) from exc
             actors.append(TDatasets.cor_dataset_actor.any(CorDatasetActor.id_organism == organism))
         if actors:
             self = self.filter(sa.or_(*actors))
-        # Check that areas is not None before converting it to a list
-        if params.get("areas"):
-            areas = params.getlist("areas")
+
+        areas = params.get("areas")
+        if areas:
             self = self.filter_by_areas(areas)
+
         search = params.get("search")
         if search:
             ors = [
@@ -590,40 +611,33 @@ class TAcquisitionFrameworkQuery(Query):
     def filter_by_params(self, params={}, _ds_search=True):
         # XXX frontend retro-compatibility
         if params.get("selector") == "ds":
-            params = {f"datasets.{key}": value for key, value in params.items()}
-        ds_params = MultiDict(
-            {
-                key[len("datasets.") :]: value  # TODO: use removeprefix (python >= 3.9)
-                for key, value in params.items()
-                if key.startswith("datasets.")
-            }
-        )
+            ds_params = params
+            params = {"datasets": ds_params}
+            if "search" in ds_params:
+                params["search"] = ds_params.pop("search")
+        ds_params = params.get("datasets")
         if ds_params:
             ds_filter = TDatasets.query.filter_by_params(ds_params).whereclause
-            if ds_filter is not None:
+            if ds_filter is not None:  # do not exclude AF without any DS
                 self = self.filter(TAcquisitionFramework.datasets.any(ds_filter))
+
+        params = MetadataFilterSchema().load(params)
+
         uuid = params.get("uuid")
         if uuid:
-            try:
-                uuid = UUID(uuid)
-            except TypeError as exc:
-                raise BadRequest(*exc.args) from exc
-            else:
-                self = self.filter(TAcquisitionFramework.unique_acquisition_framework_id == uuid)
+            self = self.filter(TAcquisitionFramework.unique_acquisition_framework_id == uuid)
+
         name = params.get("name")
         if name:
             self = self.filter(TAcquisitionFramework.acquisition_framework_name.ilike(f"%{name}%"))
+
         date = params.get("date")
         if date:
-            date = datetime.date(year=date["year"], month=date["month"], day=date["day"])
             self = self.filter(TAcquisitionFramework.acquisition_framework_start_date == date)
+
         actors = []
         person = params.get("person")
         if person:
-            try:
-                person = int(person)
-            except ValueError as exc:
-                raise BadRequest(*exc.args) from exc
             actors.append(
                 TAcquisitionFramework.cor_af_actor.any(
                     CorAcquisitionFrameworkActor.id_role == person
@@ -631,10 +645,6 @@ class TAcquisitionFrameworkQuery(Query):
             )
         organism = params.get("organism")
         if organism:
-            try:
-                organism = int(organism)
-            except ValueError as exc:
-                raise BadRequest(*exc.args) from exc
             actors.append(
                 TAcquisitionFramework.cor_af_actor.any(
                     CorAcquisitionFrameworkActor.id_organism == organism
@@ -642,9 +652,11 @@ class TAcquisitionFrameworkQuery(Query):
             )
         if actors:
             self = self.filter(sa.or_(*actors))
+
         areas = params.get("areas")
         if areas:
             self = self.filter_by_areas(areas)
+
         search = params.get("search")
         if search:
             ors = [
@@ -668,7 +680,7 @@ class TAcquisitionFrameworkQuery(Query):
                 ors.append(
                     TAcquisitionFramework.datasets.any(
                         TDatasets.query.filter_by_params(
-                            MultiDict({"search": search}), _af_search=False
+                            {"search": search}, _af_search=False
                         ).whereclause
                     ),
                 )

@@ -604,9 +604,9 @@ class TestGNMeta:
         afs = [acquisition_frameworks["af_1"], acquisition_frameworks["af_2"]]
         filtered_response = self.client.get(
             url_for("gn_meta.get_datasets"),
-            query_string=MultiDict(
-                [("id_acquisition_framework", af.id_acquisition_framework) for af in afs]
-            ),
+            json={
+                "id_acquisition_frameworks": [af.id_acquisition_framework for af in afs],
+            },
         )
         assert filtered_response.status_code == 200
         expected_ds = {
@@ -663,7 +663,7 @@ class TestGNMeta:
 
         response = self.client.get(
             url_for("gn_meta.get_datasets"),
-            query_string=MultiDict([("active", "1")]),
+            json={"active": True},
         )
 
         expected_ds = {dataset.id_dataset for dataset in datasets.values() if dataset.active}
@@ -675,7 +675,7 @@ class TestGNMeta:
 
         response = self.client.get(
             url_for("gn_meta.get_datasets"),
-            query_string=MultiDict([("module_code", module.module_code)]),
+            json={"module_code": module.module_code},
         )
 
         expected_ds = {datasets["with_module_1"].id_dataset}
@@ -689,7 +689,7 @@ class TestGNMeta:
 
         response = self.client.get(
             url_for("gn_meta.get_datasets"),
-            query_string=MultiDict([("search", ds.dataset_name)]),
+            json={"search": ds.dataset_name},
         )
 
         expected_ds = {ds.id_dataset}
@@ -703,7 +703,7 @@ class TestGNMeta:
 
         response = self.client.get(
             url_for("gn_meta.get_datasets"),
-            query_string=MultiDict([("search", str(ds.unique_dataset_id)[:5])]),
+            json={"search": str(ds.unique_dataset_id)[:5]},
         )
 
         expected_ds = {ds.id_dataset}
@@ -716,7 +716,7 @@ class TestGNMeta:
 
         response = self.client.get(
             url_for("gn_meta.get_datasets"),
-            query_string=MultiDict([("search", ds.meta_create_date.strftime("%d/%m/%Y"))]),
+            json={"search": ds.meta_create_date.strftime("%d/%m/%Y")},
         )
 
         expected_ds = {ds.id_dataset}
@@ -736,12 +736,10 @@ class TestGNMeta:
         # If Acquisition Framework matches, returns all datasets
         response = self.client.get(
             url_for("gn_meta.get_datasets"),
-            query_string=MultiDict(
-                [
-                    ("id_acquisition_framework", dataset.id_acquisition_framework),
-                    ("search", acquisition_framework.acquisition_framework_name),
-                ]
-            ),
+            json={
+                "id_acquisition_frameworks": [dataset.id_acquisition_framework],
+                "search": acquisition_framework.acquisition_framework_name,
+            },
         )
 
         assert {ds["id_acquisition_framework"] for ds in response.json} == {
@@ -755,12 +753,10 @@ class TestGNMeta:
         # If Acquisition Framework matches, returns all datasets
         response = self.client.get(
             url_for("gn_meta.get_datasets"),
-            query_string=MultiDict(
-                [
-                    ("id_acquisition_framework", dataset.id_acquisition_framework),
-                    ("search", dataset.dataset_name),
-                ]
-            ),
+            json={
+                "id_acquisition_frameworks": [dataset.id_acquisition_framework],
+                "search": dataset.dataset_name,
+            },
         )
 
         assert len(response.json) == 1
@@ -778,12 +774,10 @@ class TestGNMeta:
         # If Acquisition Framework matches, returns all datasets
         response = self.client.get(
             url_for("gn_meta.get_datasets"),
-            query_string=MultiDict(
-                [
-                    ("id_acquisition_framework", dataset.id_acquisition_framework),
-                    ("search", dataset.dataset_name[-4:]),
-                ]
-            ),
+            json={
+                "id_acquisition_frameworks": [dataset.id_acquisition_framework],
+                "search": dataset.dataset_name[-4:],
+            },
         )
 
         assert {ds["id_acquisition_framework"] for ds in response.json} == {

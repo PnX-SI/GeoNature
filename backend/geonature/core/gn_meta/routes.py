@@ -114,7 +114,18 @@ def get_datasets():
     else:
         query = TDatasets.query.filter_by_readable()
 
-    query = query.filter_by_params(params).options(
+    if request.is_json:
+        query = query.filter_by_params(request.json)
+
+    if "orderby" in params:
+        table_columns = TDatasets.__table__.columns
+        try:
+            orderCol = getattr(table_columns, params.pop("orderby"))
+            query = query.order_by(orderCol)
+        except AttributeError as exc:
+            raise BadRequest("the attribute to order on does not exist") from exc
+
+    query = query.options(
         Load(TDatasets).raiseload("*"),
         joinedload("cor_dataset_actor").options(
             joinedload("role"),
