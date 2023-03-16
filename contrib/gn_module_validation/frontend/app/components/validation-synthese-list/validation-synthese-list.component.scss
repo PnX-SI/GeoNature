@@ -75,21 +75,11 @@
   font-size: 30px;
 }
 
-// ngx-datatable {
-//   // position: absolute;
-//   // left:0;
-//   // bottom:0;
-//   // right:0;
-//   // top:0;
-//   // overflow:scroll;
-// }
-
 :host ::ng-deep .datatable-body {
   overflow-x: auto;
 }
 
 :host ::ng-deep .datatable-body-row {
-  height: 30px !important;
   &.active .datatable-row-group {
     background-color: #1976d2 !important;
     .datatable-body-cell {
@@ -181,26 +171,25 @@ button:active {
   }
 }
 
-/* @media screen and (min-width: 1340px) {
-  pnx-validation-popup{
-    bottom: -8px;
-  }
-} */
+.mat-mdc-standard-chip:not(.mdc-evolution-chip--disabled) .mdc-evolution-chip__text-label {
+  color: white;
+}
 
 .chip-alert {
-  background: red;
-  color: white !important;
+  background-color: red!important;
 }
 
 .chip-warning {
-  background: rgb(255, 123, 0);
-  color: white !important;
+  background-color: rgb(255, 123, 0)!important;
 }
 
+
+
 .chip-success {
-  background: green;
-  color: white !important;
+  background-color: green!important;
 }
+
+
 
 .mat-chip {
   width: 70%;

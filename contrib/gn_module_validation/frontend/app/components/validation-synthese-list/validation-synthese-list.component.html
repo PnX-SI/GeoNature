@@ -15,10 +15,12 @@
   [rowClass]="getRowClass"
   (select)="mapListService.onRowSelect($event)"
   (activate)="onActivate($event)"
+  rowHeight="40"
+
 >
 
-  <ngx-datatable-row-detail rowHeight="100">
-  </ngx-datatable-row-detail>
+  <!-- <ngx-datatable-row-detail rowHeight="100">
+  </ngx-datatable-row-detail> -->
 
 
   <ngx-datatable-column
@@ -200,6 +202,8 @@
           [popoverTitle]="popTitle"
           container="body"
           placement="left"
+          height="50px"
+          style="color:white"
         > {{row.profile.score}}/3
         </mat-chip>
         <mat-chip
@@ -210,6 +214,8 @@
           [popoverTitle]="popTitle"
           container="body"
           placement="left"
+          style="color:white!important"
+
         > {{row.profile.score}}/3
         </mat-chip>
         <mat-chip
