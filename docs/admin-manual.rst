@@ -2196,7 +2196,7 @@ Exemple de requête de mise à jour de la table ``taxonomie.bdc_statut_texte`` :
 
 Il est aussi possible de désactiver les textes en fonction du territoire auquel elles s'appliquent (par exemple en utilisant le champs ``cd_sig`` de la table ``taxonomie.bdc_statut_text``.
 
-D'autres élements sont paramètrables dans le module synthese. La liste complète est disponible dans le fichier ``config/geonature_config.toml`` rubrique ``SYNTHESE``.
+D'autres élements sont paramètrables dans le module synthese. La liste complète est disponible dans le fichier ``config/default_config.toml.example`` rubrique ``SYNTHESE``.
 
 Module VALIDATION
 -----------------
