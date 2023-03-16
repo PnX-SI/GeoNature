@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
+import { Injectable } from "@angular/core";
+import { UntypedFormGroup, UntypedFormBuilder } from "@angular/forms";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class OcctaxMapListService {
   public dynamicFormGroup: UntypedFormGroup;
   public rowPerPage: number;
@@ -17,5 +17,15 @@ export class OcctaxMapListService {
       date_low: null,
       municipality: null,
     });
+  }
+
+  nbOfFilter() {
+    let result = 0;
+    Object.keys(this.dynamicFormGroup.value).forEach((key) => {
+      if (this.dynamicFormGroup.value[key]) {
+        result = result + 1;
+      }
+    });
+    return result;
   }
 }
