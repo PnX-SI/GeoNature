@@ -33,7 +33,7 @@ from ref_geo.models import LAreas
 
 
 class DateFilterSchema(ma.Schema):
-    date = ma.fields.Integer()
+    year = ma.fields.Integer()
     month = ma.fields.Integer()
     day = ma.fields.Integer()
 
@@ -317,10 +317,6 @@ class TDatasetsQuery(Query):
 
         date = params.get("date")
         if date:
-            try:
-                date = datetime.date(year=date["year"], month=date["month"], day=date["day"])
-            except (KeyError, TypeError) as exc:
-                raise BadRequest(*exc.args) from exc
             self = self.filter(sa.cast(TDatasets.meta_create_date, sa.DATE) == date)
 
         actors = []
