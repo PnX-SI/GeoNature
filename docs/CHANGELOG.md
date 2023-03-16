@@ -28,7 +28,7 @@ CHANGELOG
 - Médias déplacés (y compris exports et mobile)
 - Modif conf Apache, avec config de base incluse
 - C'est géré par migration.sh
-- Plus besoin de rebuild après modif config / Mais restart backend ???
+- Plus besoin de rebuild après modif config / Mais reload backend
 - Conf dynamique à répercuter dans vos modules (#2205)
 - Révision CRUVED à répercuter dans vos modules
 - Angular 15 à répercuter dans vos modules
@@ -38,15 +38,10 @@ CHANGELOG
 ## A VERIFIER
 
 - J'enchaine une saisie de relevés dans Occtax sans cocher le fait de garder la géométrie, il me garde le point sur la carte du relevé précédent
-- Scroll horizontal avec "20 results available" en bas de page
 
 ## TODO
 
-- Migration SQL des médias
-- Migration Apache des exports
 - Migration URL API
-- Taxref v16 à installer par défaut
-- Référentiel sensibilité à mettre à jour en v16
 - Commande Ref sensibilité à indiquer pour ceux qui mettent à jour Taxref en v16
 - https://github.com/PnX-SI/GeoNature/pull/2339
 - Mettre un message d'intro par défaut sur la Home
@@ -185,7 +180,7 @@ CHANGELOG
 
 **📝 Merci aux contributeurs**
 
-@pierre56 / @cecchi-a / @ch-cbna / @jpm-cbna / @TheoLechemia / @bouttier / @Gaetanbrl / @VincentCauchois / @camillemonchicourt / @bastyen / @joelclems / @andriacap / @mvergez / @DonovanMaillard / @dece / @hypsug0
+@pierre56 / @cecchi-a / @ch-cbna / @jpm-cbna / @TheoLechemia / @bouttier / @Gaetanbrl / @VincentCauchois / @camillemonchicourt / @bastyen / @joelclems / @andriacap / @mvergez / @DonovanMaillard / @dece / @hypsug0 / MathRdt
 
 2.11.2 (2023-01-19)
 -------------------
