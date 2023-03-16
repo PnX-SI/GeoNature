@@ -24,8 +24,8 @@ from geonature.utils.command import (
 @click.option(
     "-x", "--x-arg", multiple=True, help="Additional arguments consumed by custom env.py scripts"
 )
-@click.argument("module_path")
-@click.argument("module_code")
+@click.argument("module_path", type=click.Path(exists=True, file_okay=False, path_type=Path))
+@click.argument("module_code", required=False)
 @click.option("--build", type=bool, required=False, default=True)
 @click.option("--upgrade-db", type=bool, required=False, default=True)
 def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
@@ -35,16 +35,27 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
     # refresh list of entry points
     importlib.reload(site)
 
-    # load python package
-    module_dist = get_dist_from_code(module_code)
-    if not module_dist:
-        raise ClickException(f"Aucun module ayant pour code {module_code} n’a été trouvé")
+    if module_code:
+        # load python package
+        module_dist = get_dist_from_code(module_code)
+        if not module_dist:
+            raise ClickException(f"Aucun module ayant pour code {module_code} n’a été trouvé")
+    else:
+        for module_dist in iter_modules_dist():
+            path = Path(sys.modules[module_dist.entry_points["code"].module].__file__)
+            if module_path.resolve() in path.parents:
+                module_code = module_dist.entry_points["code"].load()
+                break
+        else:
+            raise ClickException(
+                f"Impossible de détecter le code du module, essayez de le spécifier."
+            )
 
     # symlink module in exernal module directory
-    module_frontend_path = os.path.realpath(f"{module_path}/frontend")
+    module_frontend_path = (module_path / "frontend").resolve()
     module_symlink = ROOT_DIR / "frontend" / "external_modules" / module_code.lower()
     if os.path.exists(module_symlink):
-        if module_frontend_path != os.path.realpath(os.readlink(module_symlink)):
+        if module_frontend_path != module_symlink.readlink().resolve():
             click.echo(f"Correction du lien symbolique {module_symlink} → {module_frontend_path}")
             os.unlink(module_symlink)
             os.symlink(module_frontend_path, module_symlink)
