@@ -143,16 +143,14 @@ ENV GEONATURE_CONFIG_FILE ""
 
 EXPOSE 8000
 
-CMD [ \
-        "gunicorn", \
-        "geonature:create_app()", \
-        "--worker-tmp-dir=/dev/shm", \
-        "--name=geonature", \
-        "--workers=2", \
-        "--threads=2", \
-        "--access-logfile=-", \
-        "--error-logfile=-", \
-        "--bind=0.0.0.0:8000", \
+CMD [ "gunicorn", "geonature:create_app()", \
+    "--worker-tmp-dir=/dev/shm", \
+    "--name=geonature", \
+    "--workers=2", \
+    "--threads=2", \
+    "--access-logfile=-", \
+    "--error-logfile=-", \
+    "--bind=0.0.0.0:8000" \
 ]
 
 
