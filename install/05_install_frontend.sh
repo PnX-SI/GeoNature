@@ -68,12 +68,7 @@ echo "REMPLACE API ENDPOINT"
 echo $api_end_point
 sed -i 's|"API_ENDPOINT": .*$|"API_ENDPOINT" : "'${api_end_point}'"|' src/assets/config.json
 cat src/assets/config.json
-# Copy the custom components
-if [[ ! -f src/assets/custom.css ]]; then
-  write_log "Création des fichiers de customisation du frontend..."
-  cp -n src/assets/custom.sample.css src/assets/custom.css
 
-fi
 echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
 # Generate the app.config.ts
 geonature generate-frontend-config
