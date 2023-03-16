@@ -28,7 +28,8 @@
         </ng-template>
       </div>
 
-      <div class="tab-right">
+      <div class="tab-right mt-2">
+        <mat-icon class="vertical-align"> refresh</mat-icon>
         <mat-slide-toggle
           labelPosition="before"
           matTooltip="Enchainer les relevés sans retourner à la liste des relevés"
@@ -36,7 +37,6 @@
           (change)="occtaxFormService.chainRecording=!occtaxFormService.chainRecording"
           color="primary"
         >
-          <mat-icon class="mt-1"> refresh</mat-icon>
         </mat-slide-toggle>
 
         <button
