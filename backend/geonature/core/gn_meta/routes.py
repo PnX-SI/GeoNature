@@ -90,7 +90,7 @@ if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
                 log.exception("Error while get JDD via MTD")
 
 
-@routes.route("/datasets", methods=["GET"])
+@routes.route("/datasets", methods=["GET", "POST"])
 @login_required
 def get_datasets():
     """
