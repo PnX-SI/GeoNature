@@ -13,6 +13,8 @@ import { UserDataService } from './services/user-data.service';
 })
 export class UserComponent implements OnInit {
   form: FormGroup;
+  // dynamicFormGroup: FormGroup;
+  // public FORM_CONFIG = AppConfig.ACCOUNT_MANAGEMENT.ACCOUNT_FORM;
 
   constructor(
     private authService: AuthService,
@@ -26,6 +28,7 @@ export class UserComponent implements OnInit {
 
   initForm() {
     this.form = this.getForm(this.authService.getCurrentUser().id_role);
+    // this.dynamicFormGroup = this.fb.group({});
   }
 
   getForm(role: number): FormGroup {
@@ -34,6 +37,11 @@ export class UserComponent implements OnInit {
 
   save() {
     if (this.form.valid) {
+      // const finalForm = Object.assign({}, this.form.value);
+      // // concatenate two forms
+      // if (AppConfig.ACCOUNT_MANAGEMENT.ACCOUNT_FORM.length > 0) {
+      //   finalForm['champs_addi'] = this.dynamicFormGroup.value;
+      // }
       this.userService.putRole(this.form.value).subscribe((res) => this.form.disable());
     }
   }
