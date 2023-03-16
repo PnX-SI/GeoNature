@@ -2211,7 +2211,7 @@ La vue ``gn_commons.v_latest_validation`` permet de récupérer le dernier statu
 
 NB : une donnée non présente dans la SYNTHESE, ne remontera pas dans l'interface du module VALIDATION. Cependant rien n'empêche un administrateur avancé d'utiliser la table de validation et son mécanisme pour des données qui ne seraient pas en SYNTHESE (du moment que les données disposent d'un UUID).
 
-Au niveau de l'interface, le formulaire de recherche est commun avec le module SYNTHESE. Les paramètres de configuration du formulaire sont donc également partagés et administrables depuis le fichier ``geonature_config.toml``, rubrique SYNTHESE.
+Au niveau de l'interface, le formulaire de recherche est commun avec le module SYNTHESE. Les paramètres de configuration du formulaire sont donc également partagés et administrables depuis le fichier ``default_config.toml.example``, rubrique SYNTHESE.
 
 
 Configuration
