@@ -88,25 +88,7 @@ export class DataFormService {
     fields.forEach((f) => {
       queryString = queryString.append('fields', f);
     });
-
-    if (params) {
-      for (const key in params) {
-        if (key === 'idOrganism') {
-          queryString = queryString.set('organisme', params[key]);
-          // is its an array of id_af
-        } else if (key === 'id_acquisition_frameworks') {
-          params[key].forEach((id_af) => {
-            queryString = queryString.append('id_acquisition_framework', id_af);
-          });
-          // XXX To remove when datasets will be retreived via a POST request
-        } else if (key == 'areas') {
-          params[key].forEach((area) => (queryString = queryString.append('areas', area)));
-        } else {
-          queryString = queryString.set(key, params[key].toString());
-        }
-      }
-    }
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/meta/datasets`, {
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/meta/datasets`, params, {
       params: queryString,
     });
   }

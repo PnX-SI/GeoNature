@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { forkJoin, BehaviorSubject } from 'rxjs';
-import { tap, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
@@ -18,7 +18,6 @@ const SELECTORS = { datasets: 0, creator: 1, actors: 1 };
 @Injectable()
 export class MetadataService {
   public form: UntypedFormGroup;
-  public rapidSearchControl: UntypedFormControl = new UntypedFormControl();
 
   /* données receptionnées par l'API */
   public acquisitionFrameworks: BehaviorSubject<any[]> = new BehaviorSubject([]);
@@ -56,16 +55,6 @@ export class MetadataService {
 
     this.getMetadata();
 
-    // rapid search event
-    //combinaison de la zone de recherche et du chargement des données
-    this.rapidSearchControl.valueChanges
-      .pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe((term) => {
-        if (term !== null) {
-          this.search(term);
-          this.pageIndex.next(0);
-        }
-      });
     this.config.METADATA.METADATA_AREA_FILTERS.forEach((area) => {
       const control_name = 'area_' + area['type_code'].toLowerCase();
       this.form.addControl(control_name, new UntypedFormControl(new Array()));
@@ -75,13 +64,13 @@ export class MetadataService {
     this.formBuilded = true;
   }
 
-  search(term: string) {
-    const formValue = this.formatFormValue({ ...this.form.value });
+  // FIXME: remove any!!!
+  search(term: string, formValue: any) {
     const params = {
+      ...formValue,
       ...(term !== '' ? { search: term } : {}),
       // formValue will always has selector as a non null property: need to
       // filter out when only selector is null
-      ...formValue,
     };
     return this.getMetadataObservable(params).subscribe(
       (afs) => {

@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, combineLatest } from 'rxjs';
-import { map, distinctUntilChanged } from 'rxjs/operators';
+import { map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { omitBy } from 'lodash';
 
 import { DataFormService } from '@geonature_common/form/data-form.service';
@@ -21,6 +22,7 @@ export class MetadataComponent implements OnInit {
 
   /* getter this.metadataService.filteredAcquisitionFrameworks */
   acquisitionFrameworks: Observable<any[]>;
+  public rapidSearchControl: UntypedFormControl = new UntypedFormControl();
 
   get expandAccordions(): boolean {
     return this.metadataService.expandAccordions;
@@ -72,6 +74,18 @@ export class MetadataComponent implements OnInit {
         afs.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)
       )
     );
+
+    // rapid search event
+    //combinaison de la zone de recherche et du chargement des données
+    this.rapidSearchControl.valueChanges
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe((term) => {
+        if (term !== null) {
+          this.metadataService.search(term, this.searchTerms);
+          this.metadataService.pageIndex.next(0);
+        }
+      });
+
     // format areas filter
     this.areaFilters = this.config.METADATA.METADATA_AREA_FILTERS.map((area) => {
       if (typeof area['type_code'] === 'string') {
@@ -94,7 +108,9 @@ export class MetadataComponent implements OnInit {
   }
 
   private advancedSearch() {
-    let formValues = this.metadataService.form.value;
+    let formValues = Object.fromEntries(
+      Object.entries(this.metadataService.form.value).filter(([_, v]) => v != null)
+    );
     // reformat areas value
     let areas = [];
     let omited = omitBy(formValues, (value = [], field) => {
@@ -108,9 +124,12 @@ export class MetadataComponent implements OnInit {
     });
     this.searchTerms = {
       ...omited,
-      areas: areas.length ? areas : null,
-      search: this.metadataService.rapidSearchControl.value,
+      ...(areas.length && { areas: areas }),
+      ...(this.rapidSearchControl.value !== null && {
+        search: this.rapidSearchControl.value,
+      }),
     };
+    this.metadataService.form.patchValue(this.searchTerms);
     this.metadataService.formatFormValue(Object.assign({}, formValues));
     this.metadataService.getMetadata(this.searchTerms);
   }
@@ -128,10 +147,10 @@ export class MetadataComponent implements OnInit {
     if (af.t_datasets === undefined) {
       let params = {};
       if (this.searchTerms.selector === 'ds') {
-        params = Object.fromEntries(Object.entries(this.searchTerms).filter(([_, v]) => v != null));
+        params = this.searchTerms;
       }
-      if (this.metadataService.rapidSearchControl.value) {
-        params = { ...params, search: this.metadataService.rapidSearchControl.value };
+      if (this.rapidSearchControl.value) {
+        params = { ...params, search: this.rapidSearchControl.value };
       }
       this.metadataService.addDatasetToAcquisitionFramework(af, params);
     }
