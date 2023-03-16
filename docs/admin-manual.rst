@@ -1213,7 +1213,7 @@ Par exemple, pour remplacer la couleur de fond du bandeau de navigation par une 
     html body pnx-root pnx-nav-home mat-sidenav-container.sidenav-container.mat-drawer-container.mat-sidenav-container mat-sidenav-content.mat-drawer-content.mat-sidenav-content mat-toolbar#app-toolbar.row.mat-toolbar
    {
       background :
-      url(api/static/images/bandeau_test.jpg)
+      url(../images/bandeau_test.jpg)
    }
 
 Dans ce cas, l’image ``bandeau_test.jpg`` doit se trouver dans le répertoire ``geonature/custom/images``.
