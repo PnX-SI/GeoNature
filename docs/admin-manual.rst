@@ -1115,7 +1115,7 @@ Opération à faire à chaque modification d'un paramètre de configuration.
 
   .. code-block:: console
 
-    cd /home/`whoami`/geonature/frontend/src/custom
+    cd /home/`whoami`/geonature/custom
     tar -zcvf /home/`whoami`/`date +%Y%m%d%H%M`-geonature_custom.tar.gz ./
 
 Opération à faire à chaque modification de la customisation de l'application.
@@ -1162,8 +1162,8 @@ Restauration
         cd <GEONATURE_DIRECTORY>/config
         sudo tar -zxvf <MY_BACKUP_DIRECTORY>/201803150953-geonature_config.tar.gz
 
-        cd /home/<MY_USER>/geonature/frontend/src/custom
-        rm -r <MY_USER>/geonature/frontend/src/custom/*
+        cd /home/<MY_USER>/geonature/custom
+        rm -r <MY_USER>/geonature/custom/*
         tar -zxvf <MY_BACKUP_DIRECTORY>/201803150953-geonature_custom.tar.gz
 
         rm /home/<MY_USER>/geonature/external_modules/*
@@ -1176,96 +1176,47 @@ Restauration
 Customisation
 -------------
 
-La customisation de l'application nécessite de relancer la compilation du frontend à chaque modification. Cette opération étant relativement longue, une solution alternative (mais avancée) consiste à passer le frontend de manière temporaire en mode 'developpement'.
-
-Pour cela exécuter la commande suivante depuis le répertoire ``frontend``
-
-.. code-block:: console
-
-    npm run start -- --host=0.0.0.0 --disable-host-check
-
-L'application est désormais disponible sur un serveur de développement à la même addresse que précédemment, mais sur le port 4200 : http://test.geonature.fr:4200
-
-Ouvrez un nouveau terminal (pour laisser tourner le serveur de développement), puis modifier la variable ``URL_APPLICATION`` dans le fichier ``geonature_config.toml`` en mettant l'adresse ci-dessus et relancer l'application (``sudo supervisorctl restart geonature2`` ou ``sudo systemctl restart geonature``)
-
-A chaque modification d'un fichier du frontend, une compilation rapide est relancée et votre navigateur se rafraichit automatiquement en intégrant les dernières modifications.
-
-Une fois les modifications terminées, remodifier le fichier ``geonature_config.toml`` pour remettre l'URL initiale, relancez l'application (``sudo supervisorctl restart geonature2`` ou ``sudo systemctl restart geonature``), puis relancez la compilation du frontend (``npm run build``). Faites enfin un ``ctrl+c`` dans le terminal ou le frontend a été lancé pour stopper le serveur de développement.
-
-Si la manipulation vous parait compliquée, vous pouvez suivre la documentation qui suit, qui fait relancer la compilation du frontend à chaque modification.
+Tous les fichiers par défaut présents dans le dossier ``geonature/backend/static/images/`` peuvent être surcouchés, en placant un fichier du même nom dans ``geonature/custom/``.
 
 Intégrer son logo
 """""""""""""""""
 
-Le logo affiché dans la barre de navigation de GeoNature peut être modifié dans le répertoire ``geonature/frontend/src/custom/images``. Remplacez alors le fichier ``logo_structure.png`` par votre propre logo, en conservant ce nom pour le nouveau fichier. Le bandeau fait 50px de hauteur, vous pouvez donc mettre une image faisant cette hauteur. Il est également possible de modifier la taille de l'image en CSS dans le fichier ``frontend/src/assets/custom.css`` de la manière suivante:
-
-.. code:: css
-
-  /* la balise img affichant l'image a l'id 'logo-structure */
-  #logo-structure {
-      height: 50px;
-      width: 80px;
-  }
-
-Relancez la construction de l’interface :
-
-.. code-block:: console
-
-    cd /home/`whoami`/geonature/frontend
-    npm run build
-
+Le logo affiché dans la barre de navigation de GeoNature (``geonature/backend/static/images/logo_structure.png``) peut être surcouché dans le répertoire en placant le votre dans ``geonature/custom/images/logo_structure.png``. Idem pour toutes les images présentes dans le dossier ``geonature/backend/static/images/``.
 
 Customiser le contenu
 """""""""""""""""""""
 
 * Customiser le contenu de la page d’introduction :
 
-Le texte d'introduction et le titre de la page d'Accueil de GeoNature peuvent être modifiés à tout moment, sans réinstallation de l'application. Il en est de même pour le bouton d’accès à la synthèse.
+Le texte d'introduction, le titre et le pied de page de la page d'Accueil de GeoNature peuvent être modifiés à tout moment, sans réinstallation de l'application.
 
-Il suffit pour cela de mettre à jour le fichier ``introduction.component.html``, situé dans le répertoire ``geonature/frontend/src/custom/components/introduction``.
+Pour cela, renseignez les paramètres dans le fichier de configuration de GeoNature (``geonature/config/geonature_config.toml``) : 
 
-Afin que ces modifications soient prises en compte dans l'interface, il est nécessaire de relancer les commandes suivantes :
+.. code-block:: toml
 
-.. code-block:: console
+    [HOME]
+        TITLE = "Bienvenue dans GeoNature"
+        INTRODUCTION = ""
+        FOOTER = ""
 
-    cd /home/`whoami`/geonature/frontend
-    npm run build
-
-
-* Customiser le contenu du pied de page :
-
-Le pied de page peut être customisé de la même manière, en renseignant le fichier ``footer.component.html``, situé dans le répertoire ``geonature/frontend/src/custom/components/footer``
-
-De la même manière, il est nécessaire de relancer les commandes suivantes pour que les modifications soient prises en compte :
-
-.. code-block:: console
-
-    cd /home/`whoami`/geonature/frontend
-    npm run build
+Vous pouvez renseigner du code HTML sur plusieurs lignes dans ces paramètres, en le plaçant entre triple quote ("""<b>Hello</b>""").
 
 Customiser l'aspect esthétique
 """"""""""""""""""""""""""""""
 
-Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant le fichier ``custom.css``, situé dans le répertoire ``geonature/frontend/src/assets``.
+Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant un fichier ``geonature/custom/css/frontend.css`` contenant votre surcouche des classes CSS de l'application.
 
-Pour remplacer la couleur de fond du bandeau de navigation par une image, on peut par exemple apporter la modification suivante :
+Par exemple, pour remplacer la couleur de fond du bandeau de navigation par une image, on peut apporter la modification suivante :
 
 .. code-block:: css
 
     html body pnx-root pnx-nav-home mat-sidenav-container.sidenav-container.mat-drawer-container.mat-sidenav-container mat-sidenav-content.mat-drawer-content.mat-sidenav-content mat-toolbar#app-toolbar.row.mat-toolbar
    {
       background :
-      url(bandeau_test.jpg)
+      url(api/static/images/bandeau_test.jpg)
    }
 
-Dans ce cas, l’image ``bandeau_test.jpg`` doit se trouver dans le répertoire ``geonature/frontend/src``.
-
-Comme pour la modification des contenus, il est nécessaire de relancer la commande suivante pour que les modifications soient prises en compte :
-
-.. code-block:: console
-
-    cd /home/`whoami`/geonature/frontend
-    npm run build
+Dans ce cas, l’image ``bandeau_test.jpg`` doit se trouver dans le répertoire ``geonature/custom/images``.
 
 Customiser les noms et pictos des modules
 """""""""""""""""""""""""""""""""""""""""
@@ -1303,8 +1254,9 @@ Depuis la version 2.5.0, il est aussi possible de customiser l'ordre des modules
 Customiser les exports PDF
 """"""""""""""""""""""""""
 
-Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en modifiant les images ``Bandeau_pdf.png`` et ``Logo_pdf.png`` dans ``backend/static/images``.
-Le style des fichiers est également customisable grâce au fichier "backend/geonature/static/css/custom.css". La classe ``main-color`` permet notamment de changer la couleur des séparateurs (orange par défaut).
+Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en surcouchant les images ``Bandeau_pdf.png`` et ``Logo_pdf.png`` présentes dans le dossier ``backend/static/images``, en placant les votres du même nom dans ``custom/images``.
+
+Le style des fichiers PDF est également customisable grâce au fichier "custom/css/metadata_pdf_custom.css", permettant de surcoucher les classes CSS du fichier ``backend/static/css/metadata_pdf.css``. Par exemple, la classe ``main-color`` permet de changer la couleur des séparateurs (orange par défaut).
 
 Intégrer des données
 --------------------
