@@ -1,5 +1,5 @@
 ###############################################################################
-# Liste complète des paramètres et de leurs valeurs par défaut
+# Liste (presque) complète des paramètres et de leurs valeurs par défaut
 #
 # UTILISATION : piochez les paramètres que vous souhaitez surcoucher dans ce
 #     fichier et intégrez les au fichier 'config/geonature_config.toml'.
@@ -8,9 +8,6 @@
 #     doivent être au début du fichier !
 #     Les paramètres dans une section doivent être maintenus dans leur section.
 #
-# NOTES : après toute modification dans ce fichier, il est nécessaire de
-#     mettre à jour GeoNature à l'aide de la commande :
-#     `geonature update_configuration`
 ###############################################################################
 
 # Base de données
@@ -26,10 +23,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = true
 # Application
 
 # Nom de l'application dans la page d'accueil.
-appName = "GeoNature 2"
-
-# Nom du fichier du logo present dans le dossier custom/images
-LOGO_STRUCTURE_FILE = 'logo_structure.png'
+appName = "GeoNature"
 
 # Langue par défaut utilisée par l'application.
 # Utilisée pour l'instant seulement avec les nomenclatures.
@@ -50,9 +44,6 @@ API_ENDPOINT = "http://url.com/geonature/api"
 # URL de l'API de Taxhub
 API_TAXHUB = "http://127.0.0.1:5000/api/"
 
-# Identifiant de l'appplication GeoNature (id_application) dans UsersHub
-ID_APPLICATION_GEONATURE = 3
-
 # Type de session
 SESSION_TYPE = "filesystem"
 
@@ -68,18 +59,9 @@ COOKIE_AUTORENEW = true
 # Capturer toutes les exceptions (=true) ou pas (=false)
 TRAP_ALL_EXCEPTIONS = false
 
-# Niveau de Log pour l'API. Par défaut ERROR (=40)
-# Cf. https://docs.python.org/3/library/logging.html#logging-levels
-API_LOG_LEVEL = 40
-
 # MTD (pour la connexion au webservice de métadonnées de l'INPN)
 XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
 MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
-
-# Fichiers
-# BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-# Chemin du dossier où stocker les fichiers depuis la racine du dossier 'backend'
-UPLOAD_FOLDER = "static/medias"
 
 # Configuration de l'accès sans authentication. Renseigner l’identifiant de l’utilisateur public.
 PUBLIC_ACCESS_USERNAME = ""
@@ -252,7 +234,7 @@ NOTIFICATIONS_ENABLED = true
     url = "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
     subdomains = ["mt0", "mt1", "mt2", "mt3"]
 
-# There are no defaut layers, but this document how to add one:
+# Add base layers on maps (from ref_geo, WMS, WFS, GeoJSON...)
 #[[MAPCONFIG.REF_LAYERS]]
 #    code = "COM",
 #    label = "Communes"
@@ -493,7 +475,7 @@ NOTIFICATIONS_ENABLED = true
     # Les espaces présents en début et fin de chaine ainsi qu'avant et
     # après les virgules sont ignorés.
     VALIDATOR_EMAIL = """
-        Théo LECHEMIA <theo.lechemia@ecrins-parcnational.fr>,
+        Théo LECHEMIA <theo.lechemia@ecrins.fr>,
         Carl von LINNÉ <c.linnaeus@linnaeus.se>
         """
 
@@ -511,7 +493,7 @@ NOTIFICATIONS_ENABLED = true
     [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
         type_widget = "checkbox"
         attribut_label = """
-            <a target="_blank" href="http://docs.geonature.fr">
+            <a target="_blank" href="https://docs.geonature.fr">
                 J'ai lu et j'accepte la charte
             </a>"""
         attribut_name = "validate_charte"
@@ -600,5 +582,5 @@ NOTIFICATIONS_ENABLED = true
 # Page d’accueil
 [HOME]
     TITLE = "Bienvenue dans GeoNature"
-    INTRODUCTION = ""
+    INTRODUCTION = "Texte d'introduction, configurable pour le modifier régulièrement ou le masquer"
     FOOTER = ""
