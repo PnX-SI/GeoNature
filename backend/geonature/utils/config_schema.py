@@ -143,7 +143,9 @@ class AdditionalFields(Schema):
 
 class HomeConfig(Schema):
     TITLE = fields.String(load_default="Bienvenue dans GeoNature")
-    INTRODUCTION = fields.String(load_default="")
+    INTRODUCTION = fields.String(
+        load_default="Texte d'introduction, configurable pour le modifier régulièrement ou le masquer"
+    )
     FOOTER = fields.String(load_default="")
 
 
