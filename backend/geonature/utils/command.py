@@ -42,7 +42,11 @@ def create_frontend_module_config(module_code, output_file=None):
     """
     Create the frontend config
     """
-    module_code = module_code.upper()
+
+    # for modules without frontend
+    if not (FRONTEND_DIR / "external_modules" / module_code.lower()).exists():
+        return
+
     module_config = get_module_config(get_dist_from_code(module_code))
     if output_file is None:
         output_file = (
