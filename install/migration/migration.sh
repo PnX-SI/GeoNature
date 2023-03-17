@@ -108,13 +108,16 @@ cd "${newdir}"/install
 ./00_install_nvm.sh
 export NVM_DIR="$HOME/.nvm"
  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+cd "${newdir}/frontend"
 nvm use
 
 echo "Installation des dépendances node du frontend …"
+cd "${newdir}/frontend"
 npm ci --only=prod
 
 echo "Installation des dépendances node du backend …"
-cd ${newdir}/backend/static
+cd "${newdir}/backend/static"
 npm ci --only=prod
 
 
