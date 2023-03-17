@@ -180,7 +180,7 @@ CHANGELOG
 
 **📝 Merci aux contributeurs**
 
-@pierre56 / @cecchi-a / @ch-cbna / @jpm-cbna / @TheoLechemia / @bouttier / @Gaetanbrl / @VincentCauchois / @camillemonchicourt / @bastyen / @joelclems / @andriacap / @mvergez / @DonovanMaillard / @dece / @hypsug0 / MathRdt
+@pierre56 / @cecchi-a / @ch-cbna / @jpm-cbna / @TheoLechemia / @bouttier / @Gaetanbrl / @VincentCauchois / @camillemonchicourt / @bastyen / @joelclems / @andriacap / @mvergez / @DonovanMaillard / @dece / @hypsug0 / @MathRdt / @gildeluermoz
 
 2.11.2 (2023-01-19)
 -------------------
