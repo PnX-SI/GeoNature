@@ -254,7 +254,7 @@ NOTIFICATIONS_ENABLED = true
 
 # There are no defaut layers, but this document how to add one:
 #[[MAPCONFIG.REF_LAYERS]]
-#    code = "COM",
+#    code = "COM"
 #    label = "Communes"
 #    type = "area"
 #    activate = false
