@@ -140,7 +140,6 @@ export class MetadataComponent implements OnInit {
   }
 
   openSearchModal(searchModal) {
-    this.metadataService.resetForm();
     this.modal.open(searchModal);
   }
 
