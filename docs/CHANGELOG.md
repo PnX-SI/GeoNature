@@ -122,7 +122,8 @@ CHANGELOG
 - Le script de mise à jour (`migration.sh`) peut prendre en argument le chemin vers l’ancienne installation GeoNature.
   Il peut s’agir du même dossier que la nouvelle installation GeoNature (cas d’une mise à jour d’un dossier GeoNature avec Git).
 - Ajout d’une historisation des suppressions de la synthèse à travers un trigger peuplant la nouvelle table `gn_synthese.t_log_synthese` (#789)
-  Une API `/synthese/log` permet d’obtenir l’historique des insertions, mises à jour et suppressions dans la synthèse.
+  Une API `/synthese/log` permet d’obtenir l’historique des insertions, mises à jour et suppressions dans la synthèse (notamment utile pour GN2PG).
+- Amélioration de la commande `install-gn-module` qui détecte désormais automatiquement le code du module (#2396)
 
 **💻 Développement**
 
@@ -163,6 +164,7 @@ CHANGELOG
 - Occtax : correction du contrôle des dates du formulaire d’édition des relevés (#2318)
 - Correction des acteurs dans les exports PDF des métadonnées (#2034)
 - Correction des graphiques dans les exports PDF des cadres d'acquisition (#2231)
+- Correction du script de synchronisation des métadonnées depuis MTD INPN (#2314)
 
 **⚠️ Notes de version**
 
@@ -180,7 +182,7 @@ CHANGELOG
 
 **📝 Merci aux contributeurs**
 
-@pierre56 / @cecchi-a / @ch-cbna / @jpm-cbna / @TheoLechemia / @bouttier / @Gaetanbrl / @VincentCauchois / @camillemonchicourt / @bastyen / @joelclems / @andriacap / @mvergez / @DonovanMaillard / @dece / @hypsug0 / @MathRdt / @gildeluermoz
+@ch-cbna / @bouttier / @TheoLechemia / @jpm-cbna / @bastyen / @Gaetanbrl / @VincentCauchois / @joelclems / @andriacap / @mvergez / @DonovanMaillard / @dece / @lpofredc / @MathRdt / @gildeluermoz / @maximetoma/ @pierre56 / @cecchi-a / @camillemonchicourt
 
 2.11.2 (2023-01-19)
 -------------------
