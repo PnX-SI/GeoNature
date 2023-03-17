@@ -81,7 +81,12 @@ export class MetadataComponent implements OnInit {
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((term) => {
         if (term !== null) {
-          this.metadataService.search(term, this.searchTerms);
+          if (term === '') {
+            delete this.searchTerms.search;
+          } else {
+            this.searchTerms = { ...this.searchTerms, search: this.rapidSearchControl.value };
+          }
+          this.metadataService.search(this.searchTerms);
           this.metadataService.pageIndex.next(0);
         }
       });

@@ -65,14 +65,8 @@ export class MetadataService {
   }
 
   // FIXME: remove any!!!
-  search(term: string, formValue: any) {
-    const params = {
-      ...formValue,
-      ...(term !== '' ? { search: term } : {}),
-      // formValue will always has selector as a non null property: need to
-      // filter out when only selector is null
-    };
-    return this.getMetadataObservable(params).subscribe(
+  search(formValue: any) {
+    return this.getMetadataObservable(formValue).subscribe(
       (afs) => {
         this.acquisitionFrameworks.next(afs);
       },
