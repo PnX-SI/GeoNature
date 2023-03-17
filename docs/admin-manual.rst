@@ -568,7 +568,7 @@ Pour chaque cd_nom, il est ainsi possible de définir les paramètres suivants :
 - ``temporal_precision_days`` : La précision temporelle en jours utilisée pour calculer les profils. Elle définit à la fois le pas de temps avec lequel la phénologie est calculée, ainsi que la précision temporelle minimale requise (différence entre date début et date fin de l'observation) pour qu'une donnée soit prise en compte dans le calcul des profils. Une précision de 365 jours ou plus permettra de ne pas tenir compte de la période (toutes les données seront dans une unique période de l'année).
 - ``active_life_stage`` : Définit si le stade de vie doit être pris en compte ou non lors du calcul des profils.
 
-Par défaut, une précision spatiale de 2000m et une précision spatiale de 10j (décade) sont paramétrés pour tous les phylums, sans tenir compte des stades de vie.
+Par défaut, une précision spatiale de 2000m et une précision temporelle de 10j (décade) sont paramétrés pour tous les phylums, sans tenir compte des stades de vie.
 
 A terme, d'autres variables pourront compléter ces profils : habitats (habref) ou comportement (nidification, reproduction, migration...) notamment.
 
@@ -2159,7 +2159,7 @@ Exemple de filtres par défaut :
       cd_nomenclature_observation_status = ['Pr']
 
 
-D'autres élements sont paramètrables dans le module Synthese. La liste complète est disponible dans le fichier ``config/geonature_config.toml`` rubrique ``SYNTHESE``.
+D'autres élements sont paramètrables dans le module Synthese. La liste complète est disponible dans le fichier ``config/default_config.toml.example`` rubrique ``SYNTHESE``.
 
 Module VALIDATION
 -----------------
