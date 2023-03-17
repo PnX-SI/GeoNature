@@ -236,7 +236,7 @@ NOTIFICATIONS_ENABLED = true
 
 # Add base layers on maps (from ref_geo, WMS, WFS, GeoJSON...)
 #[[MAPCONFIG.REF_LAYERS]]
-#    code = "COM",
+#    code = "COM"
 #    label = "Communes"
 #    type = "area"
 #    activate = false
