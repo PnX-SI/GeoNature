@@ -8,11 +8,6 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ConfigService } from '@geonature/services/config.service';
 
-type DataSetObsCount = {
-  count: number;
-  id_dataset: number;
-};
-
 const SELECTORS = { datasets: 0, creator: 1, actors: 1 };
 
 @Injectable()
@@ -27,8 +22,6 @@ export class MetadataService {
   public expandAccordions: boolean = false;
 
   public formBuilded = false;
-
-  private _datasetNbObs: DataSetObsCount[] = [];
 
   pageSizeOptions: number[] = [10, 25, 50, 100];
   pageSize: BehaviorSubject<number> = null;
