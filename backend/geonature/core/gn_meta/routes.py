@@ -103,12 +103,9 @@ def get_datasets():
     :returns:  `list<TDatasets>`
     """
     params = MultiDict(request.args)
-    allowed_fields = {"modules"}
-    fields = params.pop("fields", None)
+    fields = params.get("fields", type=str, default=[])
     if fields:
         fields = fields.split(",")
-        if set(fields) - allowed_fields:
-            raise BadRequest(f"Allowed fields: {','.join(allowed_fields)}")
     if "create" in params:
         query = TDatasets.query.filter_by_creatable(params.pop("create"))
     else:
@@ -143,6 +140,10 @@ def get_datasets():
     if params.get("synthese_records_count", type=int, default=0):
         query = query.options(undefer(TDatasets.synthese_records_count))
         only.append("+synthese_records_count")
+
+    if "modules" in fields:
+        query = query.options(joinedload("modules"), joinedload("digitizer"))
+        only.append("modules")
 
     dataset_schema = DatasetSchema(only=only)
     data = dataset_schema.jsonify(query.all(), many=True)
