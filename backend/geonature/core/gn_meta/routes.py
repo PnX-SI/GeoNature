@@ -146,14 +146,13 @@ def get_datasets():
         only.append("modules")
 
     dataset_schema = DatasetSchema(only=only)
-    data = dataset_schema.jsonify(query.all(), many=True)
 
+    # detect mobile app to enable retro-compatibility hacks
     user_agent = request.headers.get("User-Agent")
-    if (
-        user_agent and user_agent.split("/")[0].lower() == "okhttp"
-    ):  # retro-compatibility for mobile app
-        return jsonify({"data": data.json})
-    return data
+    mobile_app = user_agent and user_agent.split("/")[0].lower() == "okhttp"
+    dataset_schema.context["mobile_app"] = mobile_app
+
+    return dataset_schema.jsonify(query.all(), many=True)
 
 
 def get_af_from_id(id_af, af_list):
