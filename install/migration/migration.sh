@@ -102,6 +102,19 @@ if [ -d static/geopackages ]; then mv static/geopackages media/geopackages; fi
 if [ -d static/shapefiles ]; then mv static/shapefiles media/shapefiles; fi
 if [ -d static/mobile ]; then mv static/mobile media/mobile; fi
 
+echo "Déplacement des médias …"
+shopt -s nullglob
+for dir in "${olddir}"/backend/media/*; do
+    if [ -d "${newdir}"/backend/media/$(basename "${dir}") ]; then
+        for subdir in "${dir}"/*; do
+            mv -i "${subdir}" "${newdir}"/backend/media/$(basename "${dir}")/
+        done
+    else
+        mv -i "${dir}" "${newdir}"/backend/media/
+    fi
+done
+shopt -u nullglob
+
 
 echo "Mise à jour de node si nécessaire …"
 cd "${newdir}"/install
