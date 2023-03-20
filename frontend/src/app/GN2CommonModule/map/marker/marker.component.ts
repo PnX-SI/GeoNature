@@ -7,9 +7,9 @@ import * as L from 'leaflet';
 import { CommonService } from '../../service/common.service';
 import { ConfigService } from '@geonature/services/config.service';
 
-const iconRetinaUrl = 'assets/marker-icon-2x.png';
-const iconUrl = 'assets/marker-icon.png';
-const shadowUrl = 'assets/marker-shadow.png';
+const iconRetinaUrl = './marker-icon-2x.png';
+const iconUrl = './marker-icon.png';
+const shadowUrl = './marker-shadow.png';
 
 export const CustomMarkerIcon = Icon.extend({
   options: {
