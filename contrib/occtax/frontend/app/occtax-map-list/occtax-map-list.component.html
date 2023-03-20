@@ -20,6 +20,7 @@
         (click)="isCollapseAvance = !isCollapseAvance"
         [attr.aria-expanded]="!isCollapseAvance"
         mat-raised-button
+        [matBadgeHidden]="occtaxMapListS.nbOfFilter() == 0"
         [matBadge]="occtaxMapListS.nbOfFilter()"
         matBadgeColor="warn"
         color="primary"
