@@ -1,23 +1,23 @@
-import { Component, OnInit, ViewChild, HostListener } from "@angular/core";
-import { OcchabStoreService } from "../../services/store.service";
-import { MapListService } from "@geonature_common/map-list/map-list.service";
-import { OccHabDataService } from "../../services/data.service";
-import { DatatableComponent } from "@swimlane/ngx-datatable";
-import { OccHabModalDownloadComponent } from "./modal-download.component";
-import { NgbModal, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { CommonService } from "@geonature_common/service/common.service";
-import * as moment from "moment";
-import { ConfigService } from "@geonature/services/config.service";
-import { OccHabMapListService } from "../../services/occhab-map-list.service";
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
+import { OcchabStoreService } from '../../services/store.service';
+import { MapListService } from '@geonature_common/map-list/map-list.service';
+import { OccHabDataService } from '../../services/data.service';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { OccHabModalDownloadComponent } from './modal-download.component';
+import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { CommonService } from '@geonature_common/service/common.service';
+import * as moment from 'moment';
+import { ConfigService } from '@geonature/services/config.service';
+import { OccHabMapListService } from '../../services/occhab-map-list.service';
 
 @Component({
-  selector: "pnx-occhab-map-list",
-  templateUrl: "occhab-map-list.component.html",
-  styleUrls: ["./occhab-map-list.component.scss", "../responsive-map.scss"],
+  selector: 'pnx-occhab-map-list',
+  templateUrl: 'occhab-map-list.component.html',
+  styleUrls: ['./occhab-map-list.component.scss', '../responsive-map.scss'],
   providers: [NgbActiveModal],
 })
 export class OccHabMapListComponent implements OnInit {
-  @ViewChild("dataTable") dataTable: DatatableComponent;
+  @ViewChild('dataTable') dataTable: DatatableComponent;
   public rowNumber: number;
   public dataLoading = true;
   public deleteOne: any;
@@ -36,10 +36,7 @@ export class OccHabMapListComponent implements OnInit {
 
   ngOnInit() {
     if (this.storeService.firstMessageMapList) {
-      this._commonService.regularToaster(
-        "info",
-        "Les 50 dernières stations saisies"
-      );
+      this._commonService.regularToaster('info', 'Les 50 dernières stations saisies');
       this.storeService.firstMessageMapList = false;
     }
 
@@ -68,26 +65,21 @@ export class OccHabMapListComponent implements OnInit {
   }
 
   // update the number of row per page when resize the window
-  @HostListener("window:resize", ["$event"])
+  @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.rowNumber = this.calculeteRowNumber(event.target.innerHeight);
   }
 
   getStations(params?) {
-    params["habitats"] = 1;
+    params['habitats'] = 1;
     this.dataLoading = true;
     this._occHabDataService.listStations(params).subscribe(
       (featuresCollection) => {
         // store the idsStation in the store service
-        if (
-          featuresCollection.features.length ===
-          this.config.OCCHAB.NB_MAX_MAP_LIST
-        ) {
+        if (featuresCollection.features.length === this.config.OCCHAB.NB_MAX_MAP_LIST) {
           this.openModal(true);
         }
-        this.storeService.idsStation = featuresCollection.features.map(
-          (feature) => feature.id
-        );
+        this.storeService.idsStation = featuresCollection.features.map((feature) => feature.id);
         // this.stations = data;
         this.mapListService.tableData = [];
         featuresCollection.features.forEach((feature) => {
@@ -102,7 +94,7 @@ export class OccHabMapListComponent implements OnInit {
       // error callback
       (e) => {
         if (e.status == 500) {
-          this._commonService.translateToaster("error", "ErrorMessage");
+          this._commonService.translateToaster('error', 'ErrorMessage');
         }
         this.dataLoading = false;
       }
@@ -115,7 +107,7 @@ export class OccHabMapListComponent implements OnInit {
 
   openModal(tooManyObs = false) {
     const ref = this._ngbModal.open(OccHabModalDownloadComponent, {
-      size: "lg",
+      size: 'lg',
     });
     ref.componentInstance.tooManyObs = tooManyObs;
   }
@@ -127,7 +119,7 @@ export class OccHabMapListComponent implements OnInit {
   displayHabTooltip(row): string[] {
     let tooltip = [];
     if (row.habitats === undefined) {
-      tooltip.push("Aucun habitat");
+      tooltip.push('Aucun habitat');
     } else {
       for (let i = 0; i < row.habitats.length; i++) {
         let occ = row.habitats[i];
@@ -140,15 +132,15 @@ export class OccHabMapListComponent implements OnInit {
   displayObservateursTooltip(row): string[] {
     let tooltip = [];
     if (row.observers === undefined) {
-      if (row.observers_txt !== null && row.observers_txt.trim() !== "") {
+      if (row.observers_txt !== null && row.observers_txt.trim() !== '') {
         tooltip.push(row.observers_txt.trim());
       } else {
-        tooltip.push("Aucun observateurs");
+        tooltip.push('Aucun observateurs');
       }
     } else {
       for (let i = 0; i < row.observers.length; i++) {
         let obs = row.observers[i];
-        tooltip.push([obs.prenom_role, obs.nom_role].join(" "));
+        tooltip.push([obs.prenom_role, obs.nom_role].join(' '));
       }
     }
     return tooltip.sort();
@@ -156,40 +148,38 @@ export class OccHabMapListComponent implements OnInit {
 
   displayDateTooltip(element): string {
     return element.date_min == element.date_max
-      ? moment(element.date_min).format("DD-MM-YYYY")
-      : `Du ${moment(element.date_min).format("DD-MM-YYYY")} au ${moment(
-          element.date_max
-        ).format("DD-MM-YYYY")}`;
+      ? moment(element.date_min).format('DD-MM-YYYY')
+      : `Du ${moment(element.date_min).format('DD-MM-YYYY')} au ${moment(element.date_max).format(
+          'DD-MM-YYYY'
+        )}`;
   }
 
   displayLeafletPopupCallback(feature): any {
-    const leafletPopup: HTMLElement = document.createElement("div");
-    leafletPopup.style.maxHeight = "80vh";
-    leafletPopup.style.overflowY = "auto";
+    const leafletPopup: HTMLElement = document.createElement('div');
+    leafletPopup.style.maxHeight = '80vh';
+    leafletPopup.style.overflowY = 'auto';
 
-    const divObservateurs = document.createElement("div");
-    divObservateurs.innerHTML = "<b> Observateurs : </b> <br>";
+    const divObservateurs = document.createElement('div');
+    divObservateurs.innerHTML = '<b> Observateurs : </b> <br>';
     divObservateurs.innerHTML =
-      divObservateurs.innerHTML +
-      this.displayObservateursTooltip(feature.properties).join(", ");
+      divObservateurs.innerHTML + this.displayObservateursTooltip(feature.properties).join(', ');
 
-    const divDate = document.createElement("div");
-    divDate.innerHTML = "<b> Date : </b> <br>";
-    divDate.innerHTML =
-      divDate.innerHTML + this.displayDateTooltip(feature.properties);
+    const divDate = document.createElement('div');
+    divDate.innerHTML = '<b> Date : </b> <br>';
+    divDate.innerHTML = divDate.innerHTML + this.displayDateTooltip(feature.properties);
 
-    const divHab = document.createElement("div");
-    divHab.innerHTML = "<b> Habitats : </b> <br>";
+    const divHab = document.createElement('div');
+    divHab.innerHTML = '<b> Habitats : </b> <br>';
 
-    divHab.style.marginTop = "5px";
-    let taxons = this.displayHabTooltip(feature.properties).join("<br>");
+    divHab.style.marginTop = '5px';
+    let taxons = this.displayHabTooltip(feature.properties).join('<br>');
     divHab.innerHTML = divHab.innerHTML + taxons;
 
     leafletPopup.appendChild(divObservateurs);
     leafletPopup.appendChild(divDate);
     leafletPopup.appendChild(divHab);
 
-    feature.properties["leaflet_popup"] = leafletPopup;
+    feature.properties['leaflet_popup'] = leafletPopup;
     return feature;
   }
 

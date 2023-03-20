@@ -1,5 +1,5 @@
-import { MapListService } from "@geonature_common/map-list/map-list.service";
-import { TranslateService } from "@ngx-translate/core";
+import { MapListService } from '@geonature_common/map-list/map-list.service';
+import { TranslateService } from '@ngx-translate/core';
 import {
   Component,
   OnInit,
@@ -11,25 +11,23 @@ import {
   OnChanges,
   ChangeDetectorRef,
   EventEmitter,
-} from "@angular/core";
-import { MapService } from "@geonature_common/map/map.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { DomSanitizer } from "@angular/platform-browser";
-import { DatatableComponent } from "@swimlane/ngx-datatable";
-import { ValidationModalInfoObsComponent } from "../validation-modal-info-obs/validation-modal-info-obs.component";
-import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
-import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
-import { find, isEmpty, get, findIndex } from "lodash";
-import { ConfigService } from "@geonature/services/config.service";
+} from '@angular/core';
+import { MapService } from '@geonature_common/map/map.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DomSanitizer } from '@angular/platform-browser';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { ValidationModalInfoObsComponent } from '../validation-modal-info-obs/validation-modal-info-obs.component';
+import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { find, isEmpty, get, findIndex } from 'lodash';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
-  selector: "pnx-validation-synthese-list",
-  templateUrl: "validation-synthese-list.component.html",
-  styleUrls: ["validation-synthese-list.component.scss"],
+  selector: 'pnx-validation-synthese-list',
+  templateUrl: 'validation-synthese-list.component.html',
+  styleUrls: ['validation-synthese-list.component.scss'],
 })
-export class ValidationSyntheseListComponent
-  implements OnInit, OnChanges, AfterContentChecked
-{
+export class ValidationSyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
   public oneSyntheseObs: any;
   selectedObs: Array<number> = []; // list of id_synthese values for selected rows
   selectedIndex: Array<number> = [];
@@ -39,13 +37,12 @@ export class ValidationSyntheseListComponent
   public rowNumber: number;
   private _latestWidth: number;
   public id_same_coordinates = []; // list of observation ids having same geographic coordinates
-  public modif_text =
-    "Attention données modifiées depuis la dernière validation";
+  public modif_text = 'Attention données modifiées depuis la dernière validation';
   public npage;
 
   @Input() inputSyntheseData: Array<any>;
   @Input() validationStatus: Array<any>;
-  @ViewChild("table") table: DatatableComponent;
+  @ViewChild('table') table: DatatableComponent;
   @Output() pageChange: EventEmitter<number>;
   @Output() displayAll = new EventEmitter<any>();
   @Input() idSynthese: any;
@@ -70,10 +67,9 @@ export class ValidationSyntheseListComponent
   ngOnInit() {
     this.alertActivate =
       this.config.SYNTHESE.ALERT_MODULES &&
-      this.config.SYNTHESE.ALERT_MODULES.includes("VALIDATION");
+      this.config.SYNTHESE.ALERT_MODULES.includes('VALIDATION');
     this.pinActivate =
-      this.config.SYNTHESE.PIN_MODULES &&
-      this.config.SYNTHESE.PIN_MODULES.includes("VALIDATION");
+      this.config.SYNTHESE.PIN_MODULES && this.config.SYNTHESE.PIN_MODULES.includes('VALIDATION');
 
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
@@ -85,8 +81,8 @@ export class ValidationSyntheseListComponent
     this.npage = 1;
     this.messages = {
       emptyMessage: this.idSynthese
-        ? this.translate.instant("Validation.noIdFound")
-        : this.translate.instant("Validation.noData"),
+        ? this.translate.instant('Validation.noIdFound')
+        : this.translate.instant('Validation.noData'),
     };
   }
 
@@ -96,10 +92,8 @@ export class ValidationSyntheseListComponent
       const integerId = parseInt(id);
       let i;
       for (i = 0; i < this.mapListService.tableData.length; i++) {
-        if (this.mapListService.tableData[i]["id_synthese"] === integerId) {
-          this.mapListService.selectedRow.push(
-            this.mapListService.tableData[i]
-          );
+        if (this.mapListService.tableData[i]['id_synthese'] === integerId) {
+          this.mapListService.selectedRow.push(this.mapListService.tableData[i]);
           break;
         }
       }
@@ -111,7 +105,7 @@ export class ValidationSyntheseListComponent
   onTableClick() {
     this.setSelectedObs();
     this.mapListService.onTableClick$.subscribe((id) => {
-      if (typeof id == "number") {
+      if (typeof id == 'number') {
         const selectedLayer = this.mapListService.layerDict[id];
         selectedLayer.bringToFront();
       }
@@ -170,7 +164,7 @@ export class ValidationSyntheseListComponent
     }
   }
   onActivate(event) {
-    if (event.type == "checkbox" || event.type == "click") {
+    if (event.type == 'checkbox' || event.type == 'click') {
       this.setSelectedObs();
       this.viewFitList(this.selectedObs);
       if (this.mapListService.selectedRow.length === 0) {
@@ -181,10 +175,7 @@ export class ValidationSyntheseListComponent
 
   viewFitList(id_observations) {
     if (id_observations.length) {
-      this.mapListService.zoomOnSeveralSelectedLayers(
-        this._ms.map,
-        id_observations
-      );
+      this.mapListService.zoomOnSeveralSelectedLayers(this._ms.map, id_observations);
     }
   }
 
@@ -197,9 +188,7 @@ export class ValidationSyntheseListComponent
       this.selectedObs = [];
     } else {
       for (let obs in this.mapListService.selectedRow) {
-        this.selectedObs.push(
-          this.mapListService.selectedRow[obs]["id_synthese"]
-        );
+        this.selectedObs.push(this.mapListService.selectedRow[obs]['id_synthese']);
       }
     }
 
@@ -218,23 +207,23 @@ export class ValidationSyntheseListComponent
   }
 
   // update the number of row per page when resize the window
-  @HostListener("window:resize", ["$event"])
+  @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.rowNumber = Math.trunc(event.target.innerHeight / 37);
   }
 
   backToModule(url_source, id_pk_source) {
-    const link = document.createElement("a");
-    link.target = "_blank";
-    link.href = url_source + "/" + id_pk_source;
-    link.setAttribute("visibility", "hidden");
+    const link = document.createElement('a');
+    link.target = '_blank';
+    link.href = url_source + '/' + id_pk_source;
+    link.setAttribute('visibility', 'hidden');
     document.body.appendChild(link);
     link.click();
     link.remove();
   }
 
   getRowClass() {
-    return "row-sm clickable";
+    return 'row-sm clickable';
   }
 
   ngOnChanges(changes) {
@@ -244,9 +233,7 @@ export class ValidationSyntheseListComponent
         this.table.offset = 0;
       }
       this.openInfoModal(
-        this.inputSyntheseData.filter(
-          (i) => i.id_synthese == this?.idSynthese
-        )[0]
+        this.inputSyntheseData.filter((i) => i.id_synthese == this?.idSynthese)[0]
       );
     }
     this.deselectAll();
@@ -256,25 +243,21 @@ export class ValidationSyntheseListComponent
     if (!row) return;
     this.oneSyntheseObs = row;
     const modalRef = this.ngbModal.open(ValidationModalInfoObsComponent, {
-      size: "lg",
-      windowClass: "large-modal",
+      size: 'lg',
+      windowClass: 'large-modal',
     });
 
     modalRef.componentInstance.id_synthese = row.id_synthese;
     modalRef.componentInstance.uuidSynthese = row.unique_id_sinp;
     modalRef.componentInstance.validationStatus = this.validationStatus;
-    modalRef.componentInstance.currentValidationStatus =
-      row.nomenclature_valid_status;
+    modalRef.componentInstance.currentValidationStatus = row.nomenclature_valid_status;
     modalRef.componentInstance.mapListService = this.mapListService;
     modalRef.componentInstance.modifiedStatus.subscribe((modifiedStatus) => {
       for (let obs in this.mapListService.tableData) {
-        if (
-          this.mapListService.tableData[obs].id_synthese ==
-          modifiedStatus.id_synthese
-        ) {
+        if (this.mapListService.tableData[obs].id_synthese == modifiedStatus.id_synthese) {
           this.mapListService.tableData[obs].cd_nomenclature_validation_status =
             modifiedStatus.new_status;
-          this.mapListService.tableData[obs].validation_auto = "";
+          this.mapListService.tableData[obs].validation_auto = '';
         }
       }
     });
@@ -284,7 +267,7 @@ export class ValidationSyntheseListComponent
     });
     modalRef.componentInstance.valDate.subscribe((data) => {
       for (let obs in this.mapListService.selectedRow) {
-        this.mapListService.selectedRow[obs]["validation_date"] = data;
+        this.mapListService.selectedRow[obs]['validation_date'] = data;
       }
       this.mapListService.selectedRow = [...this.mapListService.selectedRow];
     });
@@ -297,7 +280,7 @@ export class ValidationSyntheseListComponent
   updateReports() {
     if (this.oneSyntheseObs) {
       const rowIndex = findIndex(this.mapListService.tableData, [
-        "id_synthese",
+        'id_synthese',
         this.oneSyntheseObs.id_synthese,
       ]);
       // get all reports
@@ -317,7 +300,7 @@ export class ValidationSyntheseListComponent
    * @returns object from TReport model
    */
   findReportInfo(row, type, attribute) {
-    const reportItem = find(row.reports, ["report_type.type", type]);
+    const reportItem = find(row.reports, ['report_type.type', type]);
     if (attribute && !isEmpty(reportItem)) {
       // search a value if we search a value and not complet report
       return get(reportItem, `${attribute}`);

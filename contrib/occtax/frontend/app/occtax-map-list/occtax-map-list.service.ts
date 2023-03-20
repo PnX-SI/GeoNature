@@ -1,7 +1,7 @@
-import { Injectable } from "@angular/core";
-import { UntypedFormGroup, UntypedFormBuilder } from "@angular/forms";
+import { Injectable } from '@angular/core';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class OcctaxMapListService {
   public dynamicFormGroup: UntypedFormGroup;
   public rowPerPage: number;
