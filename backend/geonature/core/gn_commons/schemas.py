@@ -20,7 +20,6 @@ class ModuleSchema(MA.SQLAlchemyAutoSchema):
             "module_picto",
             "module_desc",
             "module_group",
-            "module_path",
             "module_external_url",
             "module_target",
             "module_comment",
