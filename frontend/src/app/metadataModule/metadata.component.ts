@@ -44,8 +44,7 @@ export class MetadataComponent implements OnInit {
   afPublishModalLabel: string;
   afPublishModalContent: string;
 
-  pageSize: number;
-  pageIndex: number;
+  acquisitionFrameworksLength: number = 0;
 
   constructor(
     public _cruvedStore: CruvedStoreService,
@@ -70,9 +69,10 @@ export class MetadataComponent implements OnInit {
       this.metadataService.pageIndex.asObservable().pipe(distinctUntilChanged()),
       this.metadataService.pageSize.asObservable().pipe(distinctUntilChanged())
     ).pipe(
-      map(([afs, pageIndex, pageSize]) =>
-        afs.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)
-      )
+      map(([afs, pageIndex, pageSize]) => {
+        this.acquisitionFrameworksLength = afs.length;
+        return afs.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+      })
     );
 
     // rapid search event

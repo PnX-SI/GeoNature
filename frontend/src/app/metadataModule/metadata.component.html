@@ -210,7 +210,7 @@
         </mat-accordion>
         <mat-paginator
           #paginator
-          [length]="(metadataService.filteredAcquisitionFrameworks | async)?.length || 0"
+          [length]="acquisitionFrameworksLength"
           [pageSize]="metadataService.pageSize | async"
           [pageSizeOptions]="metadataService.pageSizeOptions"
           [pageIndex]="metadataService.pageIndex | async"
