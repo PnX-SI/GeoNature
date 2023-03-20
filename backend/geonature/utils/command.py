@@ -42,16 +42,13 @@ def create_frontend_module_config(module_code, output_file=None):
     """
     Create the frontend config
     """
-
-    # for modules without frontend
-    if not (FRONTEND_DIR / "external_modules" / module_code.lower()).exists():
+    module_frontend_dir = FRONTEND_DIR / "external_modules" / module_code.lower()
+    # for modules without frontend or with disabled frontend
+    if not module_frontend_dir.exists():
         return
-
-    module_config = get_module_config(get_dist_from_code(module_code))
+    module_config = get_module_config(get_dist_from_code(module_code.upper()))
     if output_file is None:
-        output_file = (
-            FRONTEND_DIR / "external_modules" / module_code.lower() / "app/module.config.ts"
-        ).open("w")
+        output_file = (module_frontend_dir / "app/module.config.ts").open("w")
     else:
         output_file = nullcontext(output_file)
     with output_file as f:
