@@ -554,6 +554,7 @@ class GnGeneralSchemaConf(Schema):
     TAXHUB = fields.Nested(TaxHub, load_default=TaxHub().load({}))
     HOME = fields.Nested(HomeConfig, load_default=HomeConfig().load({}))
     NOTIFICATIONS_ENABLED = fields.Boolean(load_default=True)
+    PROFILES_REFRESH_CRONTAB = fields.String(load_default="0 3 * * *")
 
     @validates_schema
     def validate_enable_sign_up(self, data, **kwargs):
