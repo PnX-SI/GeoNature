@@ -18,7 +18,10 @@
     class="hard-shadow btn-action uppercase"
     mat-raised-button
     color="primary"
-    matTooltip="Rechercher des habitats "
+    matTooltip="Rechercher des habitats"
+    [matBadgeHidden]="mapListFormService.nbOfFilter() == 0"
+    [matBadge]="mapListFormService.nbOfFilter()"
+    matBadgeColor="warn"
   >
     Filter
     <i class="fa fa-sliders" aria-hidden="true"></i>

@@ -26,11 +26,6 @@ export class SideNavService {
     sidenav.open();
   }
 
-  setCurrentApp(app): any {
-    this.currentModule = app;
-    this._module.next(app);
-  }
-
   getCurrentApp() {
     return this.currentModule;
   }

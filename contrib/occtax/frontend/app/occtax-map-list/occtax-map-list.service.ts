@@ -18,4 +18,14 @@ export class OcctaxMapListService {
       municipality: null,
     });
   }
+
+  nbOfFilter() {
+    let result = 0;
+    Object.keys(this.dynamicFormGroup.value).forEach((key) => {
+      if (this.dynamicFormGroup.value[key]) {
+        result = result + 1;
+      }
+    });
+    return result;
+  }
 }

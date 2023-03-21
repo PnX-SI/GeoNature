@@ -81,6 +81,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     this._moduleService.currentModule$.subscribe((module) => {
       if (!module) {
         module = this.sideNavService.getHomeItem();
+        module.module_doc_url = this._moduleService.geoNatureModule.module_doc_url;
       }
       this.moduleName = module.module_label;
       this.moduleUrl = module.module_url;

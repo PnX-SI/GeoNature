@@ -20,6 +20,9 @@
         (click)="isCollapseAvance = !isCollapseAvance"
         [attr.aria-expanded]="!isCollapseAvance"
         mat-raised-button
+        [matBadgeHidden]="occtaxMapListS.nbOfFilter() == 0"
+        [matBadge]="occtaxMapListS.nbOfFilter()"
+        matBadgeColor="warn"
         color="primary"
         class="btn-action hard-shadow uppercase ml-3"
         data-qa="pnx-occtax-filter"
@@ -352,7 +355,7 @@
                 [disabled]="mapListService.page.totalElements > config.OCCTAX.MAX_EXPORT_NUMBER"
                 type="button"
                 mat-raised-button
-                class="button-success mr-1"
+                class="button-success mr-1 mb-2"
               >
                 Format {{ format }}
               </button>

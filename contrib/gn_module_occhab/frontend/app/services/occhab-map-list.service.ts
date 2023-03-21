@@ -16,4 +16,13 @@ export class OccHabMapListService {
       habitat: null,
     });
   }
+  nbOfFilter() {
+    let result = 0;
+    Object.keys(this.searchForm.value).forEach((key) => {
+      if (this.searchForm.value[key]) {
+        result = result + 1;
+      }
+    });
+    return result;
+  }
 }

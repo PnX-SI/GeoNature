@@ -73,7 +73,7 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
 
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
-    this.rowNumber = Math.trunc(h / 37);
+    this.rowNumber = Math.trunc(h / 50);
 
     // this.group = new FeatureGroup();
     this.onMapClick();
