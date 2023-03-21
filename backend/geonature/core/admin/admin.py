@@ -6,8 +6,8 @@ from flask_admin.contrib.sqla import ModelView
 
 from geonature.utils.env import db
 from geonature.utils.config import config
-from geonature.core.gn_commons.models import TAdditionalFields, TMobileApps
-from geonature.core.gn_commons.admin import BibFieldAdmin, TMobileAppsAdmin
+from geonature.core.gn_commons.models import TAdditionalFields, TMobileApps, TModules
+from geonature.core.gn_commons.admin import BibFieldAdmin, TMobileAppsAdmin, TModulesAdmin
 from geonature.core.notifications.admin import (
     NotificationTemplateAdmin,
     NotificationCategoryAdmin,
@@ -96,15 +96,6 @@ admin.add_view(
     )
 )
 
-admin.add_view(
-    BibFieldAdmin(
-        TAdditionalFields,
-        db.session,
-        name="Bibliothèque de champs additionnels",
-        category="Champs additionnels",
-    )
-)
-
 # Ajout de la vue pour la gestion des templates de notifications
 # accès protegé par CruvedProtectedMixin
 admin.add_view(
@@ -135,11 +126,29 @@ admin.add_view(
 )
 
 admin.add_view(
+    BibFieldAdmin(
+        TAdditionalFields,
+        db.session,
+        name="Champs additionnels",
+        category="Autres",
+    )
+)
+
+admin.add_view(
     TMobileAppsAdmin(
         TMobileApps,
         db.session,
         name="Applications mobiles",
-        category="Applications mobiles",
+        category="Autres",
+    )
+)
+
+admin.add_view(
+    TModulesAdmin(
+        TModules,
+        db.session,
+        name="Modules",
+        category="Autres",
     )
 )
 

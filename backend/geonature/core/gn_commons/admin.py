@@ -1,10 +1,10 @@
 import logging
 
 from flask import current_app, flash
-from wtforms import validators, Form
-
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import BaseForm
+from wtforms import validators, Form
+
 from geonature.core.admin.utils import CruvedProtectedMixin
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.models import TObjects
@@ -128,3 +128,60 @@ class TMobileAppsAdmin(CruvedProtectedMixin, ModelView):
     }
     form_columns = ("app_code", "relative_path_apk", "url_apk", "package", "version_code")
     column_exclude_list = "id_mobile_app"
+
+
+class TModulesAdmin(CruvedProtectedMixin, ModelView):
+    module_code = "ADMIN"
+    object_code = "ALL"
+
+    can_view_details = True
+    action_disallowed_list = ["delete"]
+    can_create = False
+    can_delete = False
+
+    column_searchable_list = (
+        "module_code",
+        "module_label",
+    )
+    column_default_sort = [
+        ("module_order", False),
+        ("id_module", False),
+    ]
+    column_sortable_list = (
+        "module_order",
+        "module_code",
+        "module_label",
+    )
+
+    column_list = (
+        "module_code",
+        "module_label",
+        "module_picto",
+        "module_order",
+    )
+    column_details_list = (
+        "module_code",
+        "module_label",
+        "module_desc",
+        "module_comment",
+        "module_picto",
+        "module_doc_url",
+        "module_order",
+    )
+    form_columns = (
+        "module_label",
+        "module_desc",
+        "module_comment",
+        "module_picto",
+        "module_doc_url",
+        "module_order",
+    )
+    column_labels = {
+        "module_code": "Code",
+        "module_label": "Label",
+        "module_desc": "Description",
+        "module_comment": "Commentaire",
+        "module_picto": "Pictogramme",
+        "module_doc_url": "URL documentation",
+        "module_order": "Ordre",
+    }
