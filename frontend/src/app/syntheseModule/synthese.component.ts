@@ -137,6 +137,10 @@ export class SyntheseComponent implements OnInit {
         }
       });
     });
+    // order by date
+    this._mapListService.tableData = this._mapListService.tableData.sort((a, b) => {
+      return (new Date(b.date_min).valueOf() as any) - new Date(a.date_min).valueOf();
+    });
   }
 
   fetchOrRenderData(event: EventToggle) {
