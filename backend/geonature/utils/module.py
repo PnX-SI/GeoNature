@@ -106,6 +106,10 @@ def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]
             module_type = module_dist.entry_points["type"].load()
         except KeyError:
             module_type = None
+        try:
+            module_doc_url = module_dist.entry_points["doc_url"].load()
+        except KeyError:
+            module_doc_url = None
         module = TModules(
             type=module_type,
             module_code=module_code,
@@ -113,6 +117,7 @@ def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]
             module_path=module_code.lower(),
             module_target="_self",
             module_picto=module_picto,
+            module_doc_url=module_doc_url,
             active_frontend=True,
             active_backend=True,
             ng_module=module_code.lower(),
