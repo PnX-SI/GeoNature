@@ -118,6 +118,8 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 .. include:: installation-standalone.rst
 
+.. include:: installation-docker.rst
+
 .. include:: https.rst
 
 .. _cron:
