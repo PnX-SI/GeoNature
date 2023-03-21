@@ -28,6 +28,7 @@ setuptools.setup(
         "gn_module": [
             "code = occtax:MODULE_CODE",
             "picto = occtax:MODULE_PICTO",
+            "doc_url = occtax:MODULE_DOC_URL",
             "blueprint = occtax.blueprint:blueprint",
             "config_schema = occtax.conf_schema_toml:GnModuleSchemaConf",
             "migrations = occtax:migrations",
