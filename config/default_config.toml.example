@@ -442,7 +442,7 @@ NOTIFICATIONS_ENABLED = true
     ]
 
     # Enable areas vizualisation with toggle slide
-    ENABLE_AREA_AGGREGATION = true
+    AREA_AGGREGATION_ENABLED = true
     # Choose size of areas
     AREA_AGGREGATION_TYPE = "M10"
     # Activate areas mode by default
