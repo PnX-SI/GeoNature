@@ -65,8 +65,6 @@ export class OcchabFormService {
       ),
     ]);
 
-    this._formService.autoCompleteDate(stationForm);
-
     return stationForm;
   }
 
