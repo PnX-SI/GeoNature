@@ -58,8 +58,8 @@ CHANGELOG
     [SYNTHESE]
         AREA_AGGREGATION_ENABLED = true
         AREA_AGGREGATION_TYPE = "M10"
-        AREA_AGGREGATION_BY_DEFAULT = false  # affichage groupé par défaut
-        AREA_AGGREGATION_LEGEND_CLASSES = …  # voir fichier de configuration d’exemple
+        AREA_AGGREGATION_BY_DEFAULT = false    # affichage groupé par défaut
+        AREA_AGGREGATION_LEGEND_CLASSES = ...  # voir fichier de configuration d’exemple
     ```
 
 - Synthèse : Possibilité de définir des filtres par défaut à travers le paramètre `SYNTHESE.DEFAULT_FILTERS` (#2261)
@@ -1542,8 +1542,8 @@ Si vous mettez à jour GeoNature :
 -   Suivez la procédure classique de mise à jour de GeoNature
     (<http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application>)
 
-2.6.0 - Saxifraga (2021-02-04)
-------------------------------
+2.6.0 - Saxifraga (2021-02-04) 🌸 
+--------------------------------
 
 Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10
 minimum (qui n’est pas fourni par défaut avec Debian 9) pour les

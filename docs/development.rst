@@ -1383,6 +1383,17 @@ Exemple d'utilisation avec une liste simple :
     </table>
 
 
+Gestion des erreurs
+*******************
+
+GeoNature utilise un intercepteur générique afin d’afficher un toaster en cas d’erreur lors d’une requête HTTP.
+Si vous souhaitez traiter l’erreur vous-même, et empêcher le toaster par défaut de s’afficher, vous pouvez définir un header ``not-to-handle`` à votre requête :
+
+.. code-block:: typescript
+
+    this._http.get('/url', { headers: { "not-to-handle": 'true' } })
+
+
 Tests
 *****
 

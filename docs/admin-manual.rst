@@ -1176,7 +1176,7 @@ Restauration
 Customisation
 -------------
 
-Tous les fichiers par défaut présents dans le dossier ``geonature/backend/static/images/`` peuvent être surcouchés, en placant un fichier du même nom dans ``geonature/custom/``.
+Tous les fichiers par défaut présents dans le dossier ``geonature/backend/static/`` peuvent être surcouchés, en placant un fichier du même nom dans ``geonature/custom/``.
 
 Intégrer son logo
 """""""""""""""""
@@ -1199,7 +1199,7 @@ Pour cela, renseignez les paramètres dans le fichier de configuration de GeoNat
         INTRODUCTION = ""
         FOOTER = ""
 
-Vous pouvez renseigner du code HTML sur plusieurs lignes dans ces paramètres, en le plaçant entre triple quote ("""<b>Hello</b>""").
+Vous pouvez renseigner du code HTML sur plusieurs lignes dans ces paramètres, en le plaçant entre triple quote (`"""<b>Hello</b>"""`).
 
 Customiser l'aspect esthétique
 """"""""""""""""""""""""""""""
@@ -2156,8 +2156,10 @@ Il faut fournir le code des nomenclature par default (liste de chaîne de caract
 Exemple de filtres par défaut :
 
 ::
+
   [SYNTHESE]
   ...
+
   [SYNTHESE.DEFAULT_FILTERS]
       # Tous les statuts de validation sauf invalide '4'
       # Il faut bien les renseigner en tant que chaîne de caractère (et non en tant que nombre)
