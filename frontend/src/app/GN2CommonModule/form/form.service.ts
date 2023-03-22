@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, ValidatorFn, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
-// import { FormGroup, FormControl } from "@angular/forms/src/model";
-import { Subscription } from 'rxjs';
+import { Subscription, Observable, forkJoin } from 'rxjs';
+import { distinctUntilChanged, map, filter, pairwise, tap } from 'rxjs/operators';
 
 @Injectable()
 export class FormService {
@@ -126,35 +126,77 @@ export class FormService {
     return filteredData;
   }
 
+  // autoCompleteDate(
+  //   formControl,
+  //   dateMinControlName = 'date_min',
+  //   dateMaxControlName = 'date_max'
+  // ): Subscription {
+  //   // date max autocomplete
+  //   const dateMinControl: UntypedFormControl = formControl.get(dateMinControlName);
+  //   const subscription = dateMinControl.valueChanges.subscribe((newvalue) => {
+  //     // Get mindate and maxdate value before mindate change
+  //     let oldmindate = formControl.value['date_min'];
+  //     let oldmaxdate = formControl.value['date_max'];
+
+  //     // Compare the dates before the change of the datemin.
+  //     // If datemin and datemax were equal, maintain this equality
+  //     // If they don't, do nothing
+  //     // d oldmindate are objects. Strigify it for a right comparison
+  //     if (oldmindate) {
+  //       if (JSON.stringify(oldmaxdate) === JSON.stringify(oldmindate) || oldmaxdate == null) {
+  //         formControl.patchValue({
+  //           date_max: newvalue,
+  //         });
+  //       }
+  //       // if olddatminDate is null => fill dateMax
+  //     } else {
+  //       formControl.patchValue({
+  //         date_max: newvalue,
+  //       });
+  //     }
+  //   });
+  //   return subscription;
+  // }
+
   autoCompleteDate(
     formControl,
     dateMinControlName = 'date_min',
     dateMaxControlName = 'date_max'
-  ): Subscription {
-    // date max autocomplete
-    const dateMinControl: UntypedFormControl = formControl.get(dateMinControlName);
-    const subscription = dateMinControl.valueChanges.subscribe((newvalue) => {
-      // Get mindate and maxdate value before mindate change
-      let oldmindate = formControl.value['date_min'];
-      let oldmaxdate = formControl.value['date_max'];
+  ): Array<Subscription> {
+    const subs = [];
+    //date_min part : if date_max is empty or date_min == date_max
+    const dateMinControl = formControl.get(dateMinControlName);
+    const dateMaxControl = formControl.get(dateMaxControlName);
+    // Compare the dates before the change of the datemin.
+    // If datemin and datemax were equal, maintain this equality
+    // If thetapy don't, do nothing
+    // if date max is null -> set date min
+    // dates are objects. Strigify it for a right comparison
+    const sub1 = dateMinControl.valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        pairwise(),
+        filter(
+          ([date_min_prev, date_min_new]) =>
+            dateMaxControl.value === null ||
+            JSON.stringify(date_min_prev) === JSON.stringify(dateMaxControl.value)
+        ),
+        map(([date_min_prev, date_min_new]) => date_min_new)
+      )
+      .subscribe((date_min) => dateMaxControl.setValue(date_min, { emitEvent: false }));
 
-      // Compare the dates before the change of the datemin.
-      // If datemin and datemax were equal, maintain this equality
-      // If they don't, do nothing
-      // oldmaxdate and oldmindate are objects. Strigify it for a right comparison
-      if (oldmindate) {
-        if (JSON.stringify(oldmaxdate) === JSON.stringify(oldmindate) || oldmaxdate == null) {
-          formControl.patchValue({
-            date_max: newvalue,
-          });
-        }
-        // if olddatminDate is null => fill dateMax
-      } else {
-        formControl.patchValue({
-          date_max: newvalue,
-        });
-      }
-    });
-    return subscription;
+    subs.push(sub1);
+    //date_max part : only if date_min is empty
+    const sub2 = dateMaxControl.valueChanges
+      .pipe(
+        tap((el) => {
+          console.log(el);
+        }),
+        distinctUntilChanged(),
+        filter(() => dateMinControl.value === null)
+      )
+      .subscribe((date_max) => dateMinControl.setValue(date_max, { emitEvent: false }));
+    subs.push(sub2);
+    return subs;
   }
 }

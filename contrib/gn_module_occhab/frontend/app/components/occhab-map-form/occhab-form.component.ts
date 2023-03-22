@@ -86,7 +86,7 @@ export class OccHabFormComponent implements OnInit, OnDestroy {
             this.occHabForm.patchStationForm(station);
           });
         } else {
-          this._sub.push(this._formService.autoCompleteDate(this.occHabForm.stationForm));
+          this._sub.push(...this._formService.autoCompleteDate(this.occHabForm.stationForm));
         }
       })
     );
