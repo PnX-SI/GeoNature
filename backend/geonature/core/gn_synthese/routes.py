@@ -20,7 +20,7 @@ from sqlalchemy import distinct, func, desc, asc, select, case
 from sqlalchemy.orm import joinedload, lazyload, selectinload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
-from sqlalchemy.orm import load_only
+from sqlalchemy.orm import load_only, aliased
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
@@ -173,14 +173,9 @@ def get_observations_for_web(scope):
     ]
     observations = func.json_build_object(*columns).label("obs_as_json")
 
-    geojson = (
-        LAreas.geojson_4326.label("geojson")
-        if output_format == "grouped_geom_by_areas"
-        else VSyntheseForWebApp.st_asgeojson.label("geojson")
-    )
-
     obs_query = (
-        select([geojson, observations])
+        # select([VSyntheseForWebApp.id_synthese, observations])
+        select([observations])
         .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
         .order_by(VSyntheseForWebApp.date_min.desc())
         .limit(result_limit)
@@ -191,24 +186,40 @@ def get_observations_for_web(scope):
         VSyntheseForWebApp,
         obs_query,
         filters,
-        areas_type=current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"]
-        if output_format == "grouped_geom_by_areas"
-        else None,
     )
     synthese_query_class.filter_query_all_filters(g.current_user, scope)
     obs_query = synthese_query_class.query
-    obs_query = obs_query.cte("OBSERVATIONS")
 
-    grouped_properties = func.json_build_object(
-        "observations", func.json_agg(obs_query.c.obs_as_json).label("observations")
-    )
+    if output_format == "grouped_geom_by_areas":
+        cas = aliased(CorAreaSynthese)
+        # SQLAlchemy 1.4: replace column by add_columns
+        obs_query = obs_query.column(VSyntheseForWebApp.id_synthese).cte("OBS")
+        obs_query = (
+            select([LAreas.geojson_4326.label("geojson"), obs_query.c.obs_as_json])
+            .select_from(
+                obs_query.join(cas, cas.id_synthese == obs_query.c.id_synthese)
+                .join(LAreas, LAreas.id_area == cas.id_area)
+                .join(BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type)
+            )
+            .where(
+                BibAreasTypes.type_code == current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"]
+            )
+            .cte("OBSERVATIONS")
+        )
+    else:
+        # SQLAlchemy 1.4: replace column by add_columns
+        obs_query = obs_query.column(VSyntheseForWebApp.st_asgeojson.label("geojson")).cte(
+            "OBSERVATIONS"
+        )
 
-    # Group geometries with main query
-    query = (
-        select([obs_query.c.geojson, obs_query.c.obs_as_json])
-        if output_format == "ungrouped_geom"
-        else select([obs_query.c.geojson, grouped_properties]).group_by(obs_query.c.geojson)
-    )
+    if output_format == "ungrouped_geom":
+        query = select([obs_query.c.geojson, obs_query.c.obs_as_json])
+    else:
+        # Group geometries with main query
+        grouped_properties = func.json_build_object(
+            "observations", func.json_agg(obs_query.c.obs_as_json).label("observations")
+        )
+        query = select([obs_query.c.geojson, grouped_properties]).group_by(obs_query.c.geojson)
 
     results = DB.session.execute(query)
 
