@@ -137,6 +137,7 @@ export class SyntheseComponent implements OnInit {
         }
       });
     });
+
     // order by date
     this._mapListService.tableData = this._mapListService.tableData.sort((a, b) => {
       return (new Date(b.date_min).valueOf() as any) - new Date(a.date_min).valueOf();
@@ -154,6 +155,7 @@ export class SyntheseComponent implements OnInit {
           this._mapListService.geojsonData = this.simplifyGeoJson(
             cloneDeep(this._syntheseStore.pointData)
           );
+          this.formatDataForTable(this._syntheseStore.pointData);
         } else {
           this.loadAndStoreData(this._fs.formatParams());
         }
@@ -162,6 +164,7 @@ export class SyntheseComponent implements OnInit {
           this._mapListService.geojsonData = this.simplifyGeoJson(
             cloneDeep(this._syntheseStore.gridData)
           );
+          this.formatDataForTable(this._syntheseStore.gridData);
         } else {
           this.loadAndStoreData(this._fs.formatParams());
         }
