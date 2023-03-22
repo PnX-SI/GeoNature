@@ -136,6 +136,8 @@ def get_role(id_role):
     :type id_role: int
     """
     user = User.query.get_or_404(id_role)
+    user_fields.add('email')
+    user_fields.add('champs_addi')
     return user.as_dict(fields=user_fields)
 
 
