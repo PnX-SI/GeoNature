@@ -268,7 +268,7 @@ export class OcctaxFormReleveService {
         ),
         map(([date_min_prev, date_min_new]) => date_min_new)
       )
-      .subscribe((date_min) => this.propertiesForm.get('date_max').setValue(date_min));
+      .subscribe((date_min) => this.propertiesForm.get('date_max').setValue(date_min, {emitEvent: false}));
 
     //date_max part : only if date_min is empty
     this.propertiesForm
@@ -277,7 +277,7 @@ export class OcctaxFormReleveService {
         distinctUntilChanged(),
         filter(() => this.propertiesForm.get('date_min').value === null)
       )
-      .subscribe((date_max) => this.propertiesForm.get('date_min').setValue(date_max));
+      .subscribe((date_max) => this.propertiesForm.get('date_min').setValue(date_max, {emitEvent: false}));
 
     // AUTOCORRECTION de hour
     // si le champ est une chaine vide ('') on reset la valeur null
