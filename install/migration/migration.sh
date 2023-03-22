@@ -195,6 +195,11 @@ fi
 
 echo "Mise à jour des scripts systemd…"
 cd ${newdir}/install
+if [ -f /etc/system/system/geonature-reload.path ]; then  # before GN 2.12
+    sudo systemctl stop geonature-reload.path
+    sudo systemctl disable geonature-reload.path
+    sudo rm /etc/system/system/geonature-reload.path
+fi
 ./02_configure_systemd.sh
 cd ${newdir}/
 
