@@ -33,6 +33,7 @@ export class SyntheseFormService {
   public redListsFilters;
   public selectedRedLists = [];
   public selectedTaxRefAttributs = [];
+  public processedDefaultFilters: any;
 
   public _nomenclatures: Array<any> = [];
 
