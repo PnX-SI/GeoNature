@@ -18,6 +18,8 @@ CHANGELOG
 - Refactorisation Occhab, module de référence et documentation développeurs associée
 - Refactorisation des permissions (simplification, optimisation, centralisation, performances, tests)
 - Optimisation exports Synthèse (#1434)
+- Centralisation de la configuration des modules
+- Optimisation du chargement des jeux de données dans le module Métadonnées pour en améliorer les performances (#2004)
 
 ## A expliquer
 
@@ -49,7 +51,7 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
-- Configuration dynamique du frontend : le frontend récupère dynamiquement sa configuration depuis le backend. Pour cela, il nécessite uniquement l’adresse de l’``API_ENDPOINT`` qui doit être renseignée dans le fichier ``frontend/src/assets/config.json``. En conséquence, il n’est plus nécessaire de rebuilder le frontend lors d’une modification de la configuration de GeoNature ou de ses modules (#2205)
+- Configuration dynamique du frontend : le frontend récupère dynamiquement sa configuration depuis le backend. Pour cela, il nécessite uniquement l’adresse de l’`API_ENDPOINT` qui doit être renseignée dans le fichier `frontend/src/assets/config.json`. En conséquence, il n’est plus nécessaire de rebuilder le frontend lors d’une modification de la configuration de GeoNature ou de ses modules (#2205)
 - Personnalisation de la page d’accueil : ajout d’une section `[HOME]` contenant les paramètres `TITLE`, `INTRODUCTION` et `FOOTER`. Ceux-ci peuvent contenir du code HTML qui est chargé dynamiquement avec la configuration, évitant ainsi la nécessité d’un rebuild du frontend (#2300)
 - Synthèse : Agrégation des observations ayant la même géométrie pour ne les charger qu'une seule fois, et ainsi améliorer les performances et la lisibilité (#1847)
 - Synthèse : Possibilité d'afficher les données agrégées par maille (#1878). La fonctionnalité est configurable avec les paramètres suivant :
@@ -63,10 +65,12 @@ CHANGELOG
     ```
 
 - Synthèse : Possibilité de définir des filtres par défaut à travers le paramètre `SYNTHESE.DEFAULT_FILTERS` (#2261)
+- Métadonnées : Chargement des jeux de données seulement quand on clique sur un cadre d'acquisition dans la liste des métadonnées, pour améliorer les performances du module, en ne chargeant pas tous les jeux de données par défaut (#2004)
 - Champs additionnels : Les champs de formulaire de type `radio`, `select`, `multiselect` et `checkbox`, attendent désormais une liste de dictionnaire `{value, label}` (voir doc des champs additionnels) (#2214)
   La rétrocompatibilité avec des listes simples est maintenue, mais vous êtes invités à modifier ces champs dans le backoffice.
   Pour conserver le bon affichage lors de l'édition des données, renseignez l'ancienne valeur deux fois dans la clé `value` et la clé `label`.
-- Admin : Possibilité de gérer la table des applications mobiles (`t_mobile_apps`) dans le module "Admin" de GeoNature, notamment pour faciliter la gestion des mises à jour de Occtax-mobile 
+- Admin : Possibilité de gérer la table des applications mobiles (`t_mobile_apps`) dans le module "Admin" de GeoNature, notamment pour faciliter la gestion des mises à jour de Occtax-mobile
+- Possibilité de configurer les modules (picto, doc, label) directement depuis le module Admin (#2409)
 - Possibilité d’afficher un bouton de géolocalisation sur les cartes des formulaires Occtax et Occhab (#2338), activable avec le paramètre suivant :
 
     ```toml
@@ -74,12 +78,13 @@ CHANGELOG
         GEOLOCATION = true
     ```
 
+- Profils mis à jour automatiquement par Celery Beat, toutes les nuits par défaut (#2412)
 - Ajout de l’intégration de Redis à l'outil de logs Sentry, pour améliorer la précisions des traces
 - Possibilité de définir des règles de notifications par défaut, s’appliquant aux utilisateurs n’ayant pas de règle spécifique. Pour cela, il suffit d’insérer une règle dans la table `gn_notifications.t_notifications_rules` avec `id_role=NULL` (#2267)
 - Publication automatique de deux images Docker `geonature-backend` et `geonature-frontend` (#2206). Leur utilisation n’a pas encore été éprouvée et leur utilisation en production n’est de ce fait pas recommandée.
 - Amélioration de la fiabilité du processus de migration
 - Ajout d’un index sur la colonne `gn_synthese.cor_area_synthese.id_area`. La colonne `id_synthese` est déjà couverte par l’index multiple `(id_synthese, id_area)`.
-- Import de TaxRef v16 et du référentiel de sensibilité associé pour les nouvelles installations de GeoNature
+- Intégration de TaxRef v16 et du référentiel de sensibilité associé pour les nouvelles installations de GeoNature
 - Évolution de la gestion des fichiers statiques et des médias (#2306) :
   - Séparation des fichiers statiques (applicatif, fournis par GeoNature) et des fichiers médias (générés par l’applications). Sont déplacés du dossier `backend/static` vers le dossier `backend/media` les sous-dossiers suivants : `medias`, `exports`, `geopackages`, `mobile`, `pdf`, `shapefiles`. De plus, l’ancien dossier `medias` est renommé `attachments`.
   - Ajout des paramètres de configuration suivants :
@@ -124,6 +129,9 @@ CHANGELOG
 - Ajout d’une historisation des suppressions de la synthèse à travers un trigger peuplant la nouvelle table `gn_synthese.t_log_synthese` (#789)
   Une API `/synthese/log` permet d’obtenir l’historique des insertions, mises à jour et suppressions dans la synthèse (notamment utile pour GN2PG).
 - Amélioration de la commande `install-gn-module` qui détecte désormais automatiquement le code du module (#2396)
+- Synthèse : Optimisation de la requête par statuts de protection (#2329)
+- Occtax : Optimisation des triggers de calcul automatique des altitudes pour ne les lancer que quand la géométrie du relevé est modifiée (#2137)
+- Occtax et OCchab : Affichage du nombre de filtres activés
 
 **💻 Développement**
 
@@ -150,6 +158,8 @@ CHANGELOG
 - Amélioration des tests des permissions
 - La fonction `get_scopes_by_module` cherche dans le contexte applicatif (variable `g`) la présence de `g.current_module` et `g.current_object` lorsqu’ils ne sont pas fournis en paramètre.
 - Travaux en cours : compatibilité SQLAlchemy 1.3 & 1.4 / Flask-SQLAlchemy 2 & 3 (#1812)
+- Mise à jour de Chart.js de la version 2 à 4
+- Possibilité de définir l'URL par défaut de la documentation d'un module par un entrypoint nommé `doc_url`
 
 **🐛 Corrections**
 
@@ -165,6 +175,8 @@ CHANGELOG
 - Correction des acteurs dans les exports PDF des métadonnées (#2034)
 - Correction des graphiques dans les exports PDF des cadres d'acquisition (#2231)
 - Correction du script de synchronisation des métadonnées depuis MTD INPN (#2314)
+- Correction de l'appel en double de la route des notifications (#2356)
+- Correction de l'URL vers la documntation depuis la page d'accueil
 
 **⚠️ Notes de version**
 
@@ -179,6 +191,8 @@ CHANGELOG
 - Les champs additionnels de type `bool_radio` ne sont plus supportés.
   Si vous utilisiez ce type de widget dans vos champs additionnels d'Occtax, ils seront automatiquement remplacés par un widget de type `radio`.
   Vous devez changer le champs `field_values` sur le modèle suivant : `[{"label": "Mon label vrai", "value": true }, {"label": "Mon label faux", "value": false }]`.
+  
+- Profils mis à jour par Celery Beat, supprimez votre cron
 
 **📝 Merci aux contributeurs**
 
