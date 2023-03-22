@@ -70,7 +70,19 @@ export class SyntheseComponent implements OnInit {
       this._fs.selectedRedLists = [];
       this._fs.selectedStatus = [];
       this._fs.selectedTaxRefAttributs = [];
-      this.loadAndStoreData(this._fs.formatParams());
+
+      // application des valeurs par defaut (input this.defaults)
+
+      // application des valeurs par defaut (input this.defaults)
+      this._fs
+        .processDefaultFilters(this.config.SYNTHESE.DEFAULT_FILTERS)
+        .subscribe((processedDefaultFilters) => {
+          this._fs.processedDefaultFilters = processedDefaultFilters;
+          this._fs.searchForm.patchValue(this._fs.processedDefaultFilters);
+
+          this.loadAndStoreData(this._fs.formatParams());
+        });
+
       // remove initial parameter passed by url
       this._fs.searchForm.patchValue({
         id_dataset: null,
