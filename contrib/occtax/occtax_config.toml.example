@@ -1,5 +1,5 @@
 # ----------- OCCTAX AVAILABLE AND DEFAULT PARAMETER ------------
-# You can override parameters defautl values in conf_gn_module.toml file
+# You can override parameters defautl values in occtax_config.toml file
 # /!\ All parameters which are not in a section (between []) must be AT THE TOP OF THE FILE
 
 # Switch the form input in free text input (true) or in select input (false)
