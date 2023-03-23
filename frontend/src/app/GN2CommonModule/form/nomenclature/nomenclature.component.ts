@@ -13,6 +13,7 @@ import { DataFormService } from '../data-form.service';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
+import { customSearchFn } from '@geonature/utils/ng-select-searchFn';
 
 /**
  * Ce composant permet de créer un "input" de type "select" ou "multiselect" à partir d'une liste d'items définie dans le référentiel de nomenclatures
@@ -144,6 +145,11 @@ export class NomenclatureComponent
         this.labelsLoaded.emit(this.labels);
       });
   }
+
+  //upgrade la fonction de recherche de ng-select
+  searchFn(term, item) {
+    return customSearchFn(term, item, this.labelLang);
+  };
 
   ngOnDestroy() {
     this.subscription.unsubscribe();

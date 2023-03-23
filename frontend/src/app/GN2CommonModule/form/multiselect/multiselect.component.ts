@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
+import { customSearchFn } from '@geonature/utils/ng-select-searchFn';
 
 /**
  * Ce composant permet d'afficher un input de type multiselect à partir
@@ -85,4 +86,9 @@ export class MultiSelectComponent implements OnInit {
     this.disabled = this.disabled || false;
     this.displayAll = this.displayAll || false;
   }
+
+  //upgrade la fonction de recherche de ng-select
+  searchFn(term, item) {
+    return customSearchFn(term, item, this.keyLabel);
+  };
 }

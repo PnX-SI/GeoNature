@@ -12,6 +12,7 @@ import {
 
 import { DataFormService } from '../data-form.service';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
+import { customSearchFn } from '@geonature/utils/ng-select-searchFn';
 
 /**
  * Ce composant permet de sélectionner une ou plusieurs zones géographiques.

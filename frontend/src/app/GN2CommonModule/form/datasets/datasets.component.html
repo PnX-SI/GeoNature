@@ -7,11 +7,17 @@
   placeholder="Jeux de données"
   [multiple]="multiSelect"
   [clearable]="clearable"
-  [virtualScroll]="true"
+  [virtualScroll]="false"
   [formControl]="parentFormControl"
+  [searchFn]="searchFn"
 >
-  <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-    <div matTooltip="{{ item.dataset_name }}" [attr.data-qa]="item.dataset_name">
+  <ng-template 
+    ng-option-tmp 
+    let-item="item" 
+    let-index="index" 
+    let-search="searchTerm"
+  >
+    <div [attr.data-qa]="item.dataset_name">
       <span class="pre-wrap">{{ item.dataset_name }}</span>
     </div>
   </ng-template>
