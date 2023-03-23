@@ -127,27 +127,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 Taches planifiées
 *****************
 
-Depuis sa version 2.9.0, GeoNature permet de générer des profils pour chaque taxon à partir des observations existantes et validées. 
-
-Pour automatiser la mise à jour des profils en fonction des nouvelles observations, il est nécessaire de relancer automatiquement la fonction de calcul des profils de taxon en créant une taches planifiée (cron) 
-
-Créer une tache planifiée, exécutée tous les jours à minuit dans cet exemple :
-
-::
-
-  sudo nano /etc/cron.d/geonature
-
-Ajouter la ligne suivante en remplaçant "<CHEMIN_ABSOLU_VERS_VENV>" par le chemin absolu vers le virtualenv de GeoNature et "<GEONATURE_USER>" par l'utilisateur Linux de GeoNature :
-
-::
-
-  0 * * * * <GEONATURE_USER> <CHEMIN_ABSOLU_VERS_VENV>/bin/geonature profiles update
-  
-Exemple :
-
-::
-
-  0 * * * * geonatadmin /home/user/geonature/backend/venv/bin/geonature profiles update
+Depuis sa version 2.12.0, les taches planifiées gérées par des crons ont été remplacées par des taches lancées automatiquement par Celery Beat, pour être mis en place automatiquement lors de l'installation de GeoNature et être plus facilement administrables.
 
 
 .. _install-gn-module:
@@ -197,7 +177,7 @@ Installer le module avec ``pip`` en mode éditable après avoir activé le venv 
 
 .. code-block:: bash
 
-    source <dossier GeoNature>/backend/venv/bin/activate
+    source ~/geonature/backend/venv/bin/activate
     pip install --editable <dossier du module>
     sudo systemctl restart geonature
 
@@ -210,28 +190,28 @@ Installer le module avec ``pip`` en mode éditable après avoir activé le venv 
 
 .. code-block:: bash
 
-    cd <dossier GeoNature>/frontend/external_modules/
+    cd ~/geonature/frontend/external_modules/
     ln -s <dossier du module>/frontend <code du module en minuscule>
 
 Exemple pour le module Import :
 
 .. code-block:: bash
 
-    cd ~/GeoNature/frontend/external_modules/
+    cd ~/geonature/frontend/external_modules/
     ln -s ~/gn_module_import/frontend import
 
 * Générer la configuration frontend du module :
 
 .. code-block:: bash
 
-    source <dossier GeoNature>/backend/venv/bin/activate
+    source ~/geonature/backend/venv/bin/activate
     geonature update-module-configuration <CODE DU MODULE>
 
 * Re-builder le frontend :
 
 .. code-block:: bash
 
-    cd <dossier GeoNature>/frontend/
+    cd ~/geonature/frontend/
     nvm use
     npm run build
 
@@ -239,7 +219,7 @@ Exemple pour le module Import :
 
 .. code-block:: bash
 
-    source <dossier GeoNature>/backend/venv/bin/activate
+    source ~/geonature/backend/venv/bin/activate
     geonature upgrade-modules-db <code du module>
 
 .. _module-config:
@@ -247,23 +227,17 @@ Exemple pour le module Import :
 Configuration du module
 -----------------------
 
-De manière facultative, vous pouvez modifier la configuration du module. La plupart des modules fournissent un fichier d’exemple ``conf_gn_module.toml.example`` dans leur dossier ``config``.  
+De manière facultative, vous pouvez modifier la configuration du module. La plupart des modules fournissent un fichier d’exemple ``<module-code>_config.toml.example`` dans leur dossier racine. 
+
 Afin de modifier les paramètres par défaut du module, vous pouvez le copier :
 
-* Dans le dossier ``config`` de GeoNature en le nommant ``<code du module en minuscule>_config.toml`` (recommandé). Exemple pour le module d’import :
+* Dans le dossier ``config`` de GeoNature en le nommant ``<code du module en minuscule>_config.toml``. Exemple pour le module Import :
 
 .. code-block:: bash
 
-    cp ~/gn_module_import/config/conf_gn_module.toml.example ~/GeoNature/config/import_config.toml
+    cp ~/gn_module_import/import_config.toml.example ~/geonatur/config/import_config.toml
 
-* Dans le dossier ``config`` du module en le nommant ``conf_gn_module.toml``. Exemple pour le module Import :
-
-.. code-block:: bash
-
-    cp ~/gn_module_import/config/conf_gn_module.toml.example ~/gn_module_import/config/conf_gn_module.toml
-
-
-Après chaque modification du module, vous devez :
+Avant la version 2.12.0 de GeoNature, après chaque modification de la configuration du module, vous devez :
 
 * Recharger GeoNature :
 
@@ -277,7 +251,7 @@ Mise à jour du module
 
 * Déplacer le code de l’ancienne version du module : ``mv gn_module_xxx gn_module_xxx_old``
 * Télécharger et désarchiver la nouvelle version du module, et renommer son dossier afin qu’il porte le même nom qu’avant (*e.g.* ``gn_module_xxx``)
-* (Optionnel) Si le fichier de configuration du module est placé avec celui-ci, le récupérer : ``cp gn_module_xxx_old/config/conf_gn_module.toml gn_module_xxx/config/``
+* (Optionnel) Si le fichier de configuration du module est encore placé avec celui-ci, le déplacer dans la dossier de configuration centralisée de GeoNature : ``cp gn_module_xxx_old/config/conf_gn_module.toml geonature/config/<mode-code>_config.toml``
 * Relancer l’:ref:`installation du module<install-gn-module-auto>` : ``geonature install-gn-module gn_module_xxx XXX && sudo systemctl reload geonature``
 
 
@@ -293,7 +267,7 @@ Mise à jour de l'application
     (et la récupération éventuelle de la configuration) ; le script de migration de GeoNature s’occupera automatiquement
     d’installer la nouvelle version du module.
 
-La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans un nouveau répertoire, récupérer les fichiers de configuration et de surcouche depuis la version actuelle et de relancer l'installation dans le répertoire de la nouvelle version.
+La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans un nouveau répertoire, récupérer les fichiers de configuration et de surcouche, ainsi que les médias depuis la version actuelle et de relancer l'installation dans le répertoire de la nouvelle version.
 
 La mise à jour doit être réalisée avec votre utilisateur linux courant (``geonatureadmin`` par exemple) et non pas le super-utilisateur ``root``.
 
