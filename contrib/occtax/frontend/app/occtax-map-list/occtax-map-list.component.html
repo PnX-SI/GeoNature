@@ -90,9 +90,9 @@
                     : row.altitude_min + ' - ' + row.altitude_max
                 }}
               </div>
-              <ng-container *ngIf="row.digitiser !== undefined">
-                <div><strong>Saisi par : </strong>{{ row.digitiser.nom_complet }}</div>
-              </ng-container>
+              <div>
+                <strong>Saisi par : </strong> {{ row?.digitiser?.nom_complet || '-'}} 
+              </div>
               <div><strong>Observé par: </strong></div>
               <div style="margin-left: 20px">
                 <div *ngFor="let obs of displayObservateursTooltip(row)">
