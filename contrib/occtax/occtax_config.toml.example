@@ -10,7 +10,8 @@ id_observers_list = 1
 
 # id of the taxon list -- taxonomie.bib_listes. Use for the taxonomy search in the occtax forml
 # default = None: search on full taxref
-# id_taxon_list = <un entier>
+# id_taxon_list = <an integer>
+
 # number of results in the autocomplete taxon search
 taxon_result_number = 20
 
@@ -131,23 +132,26 @@ export_columns =  [
   "nomLieu"
  ]
 
-# afficher l'outil pour pointer un marker à partir des coordonnées X/Y
+# Afficher l'outil pour pointer un marker à partir des coordonnées X/Y
 ENABLE_GPS_TOOL = true
 # Activer l'outil leaflet filelayer qui permet de charger des fichier GPS, GeoJSON, et KML
 ENABLE_UPLOAD_TOOL = true
 # Activer l'outil "Mes lieux" permettant d'enregistrer et de charger les lieux des utilisateurs
 ENABLE_MY_PLACES = true
 
-# Reglage des liste d'habitat sur le formulaire
+# Reglage des listes d'habitat sur le formulaire
 # id list d'habitat (ref_habitats.bib_list_habitat)
 # ID_LIST_HABITAT = <integer> (defaut = null)
-# code de type de typologie (ref_habitats.typoref)
+
+# Code de type de typologie (ref_habitats.typoref)
 # CD_TYPO_HABITAT = <integer (defaut = null)
 
 # ------------- MEDIAS PARAMETER ---------------
 
+# Activer l'ajout de médias sur les dénombrements
 ENABLE_MEDIAS = true
 
+# Champs affichés au niveau des médias
 MEDIA_FIELDS_DETAILS = ['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author', 'bFile']
 
 # ------------- FORM PARAMETER ---------------
