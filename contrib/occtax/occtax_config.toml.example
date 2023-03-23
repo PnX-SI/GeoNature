@@ -10,7 +10,7 @@ id_observers_list = 1
 
 # id of the taxon list -- taxonomie.bib_listes. Use for the taxonomy search in the occtax forml
 # default = None: search on full taxref
-id_taxon_list = <un entier>
+# id_taxon_list = <un entier>
 # number of results in the autocomplete taxon search
 taxon_result_number = 20
 
@@ -140,9 +140,15 @@ ENABLE_MY_PLACES = true
 
 # Reglage des liste d'habitat sur le formulaire
 # id list d'habitat (ref_habitats.bib_list_habitat)
-ID_LIST_HABITAT = <integer> (defaut = null)
+# ID_LIST_HABITAT = <integer> (defaut = null)
 # code de type de typologie (ref_habitats.typoref)
-CD_TYPO_HABITAT = <integer (defaut = null)
+# CD_TYPO_HABITAT = <integer (defaut = null)
+
+# ------------- MEDIAS PARAMETER ---------------
+
+ENABLE_MEDIAS = true
+
+MEDIA_FIELDS_DETAILS = ['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author', 'bFile']
 
 # ------------- FORM PARAMETER ---------------
 
@@ -168,7 +174,6 @@ CD_TYPO_HABITAT = <integer (defaut = null)
     blurring = false
     determiner = true
     determination_method = true
-    sample_number_proof = true
     digital_proof = true
     non_digital_proof = true
     source_status = false
@@ -180,16 +185,9 @@ CD_TYPO_HABITAT = <integer (defaut = null)
     count_min = true
     count_max = true
     display_nom_valide = true
-
     habitat = true
     grp_method = false
     behaviour = true
     geo_object_nature = false
     place_name = false
     precision = false
-
-# ------------- MEDIAS PARAMETER ---------------
-
-ENABLE_MEDIAS = true
-
-MEDIA_FIELDS_DETAILS = ['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author', 'bFile']
