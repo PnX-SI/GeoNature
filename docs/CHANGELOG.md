@@ -1,53 +1,46 @@
 CHANGELOG
 =========
 
-2.12.0.dev0 (unreleased)
+2.12.0.dev0 - XXXXX 🌴 (unreleased)
 ------------------------
 
 **⏩ En bref**
 
-- Affichage agrégé des observations dans Synthèse (performances et lisibilité)
+- Affichage agrégé des observations dans Synthèse (performances et lisibilité) (#1847 et #1878)
 - Filtres par défaut dans la Synthèse (#2261)
-- Angular 15
-- Taxref v16 + BDC statuts v16 + Ref sensibilité v16
-- Configuration dynamique sans rebuild
-- Historisation des suppressions dans la Synthèse, nécessaire pour GN2PG notamment (#789)
-- Séparation Backend / frontend (#2088)
-- Réorganisation custom pour simplifier la customisation, la surcouche, l'accès aux fichiers
-- Images Docker
-- Refactorisation Occhab, module de référence et documentation développeurs associée
-- Refactorisation des permissions (simplification, optimisation, centralisation, performances, tests)
-- Optimisation exports Synthèse (#1434)
-- Centralisation de la configuration des modules
+- Optimisation des performances des exports de la Synthèse (#1434)
 - Optimisation du chargement des jeux de données dans le module Métadonnées pour en améliorer les performances (#2004)
+- Intégration par défaut de Taxref v16, BDC statuts v16 et référentiel de sensibilité v16
+- Configuration dynamique sans rebuild (#2205)
+- Centralisation de la configuration des modules dans GeoNature (#2423)
+- Historisation des suppressions dans la Synthèse, nécessaire pour GN2PG notamment (#789)
+- Réorganisation des dossiers pour simplifier la customisation et les mises à jour (#2306)
+- Stabilisation de la dockerisation (#2206)
+- Refactorisation d'Occhab, module de référence et documentation développeurs associée
+- Refactorisation des permissions (simplification, optimisation, centralisation, performances, tests)
+- Mise à jour d'Angular en version 15 (#2154)
 
-## A expliquer
+**⚠️ Notes de version**
 
-- Config des modules centralisée (faite automatiquement par migration.sh ?)
-- Custom déplacés
-- Surcouche CSS déplacée
-- Surcouche PDF ?
-- Médias déplacés (y compris exports et mobile)
-- Modif conf Apache, avec config de base incluse
-- C'est géré par migration.sh
-- Plus besoin de rebuild après modif config / Mais reload backend
-- Conf dynamique à répercuter dans vos modules (#2205)
-- Révision CRUVED à répercuter dans vos modules
-- Angular 15 à répercuter dans vos modules
-- Vue export Synthèse optimisée (attention si vous l'aviez modifiée)
-- Rapatriement des fichiers de configuration des modules de CONTRIB, oubliés dans le script de migration de la 2.11 (#2381)
+Si vous mettez à jour GeoNature :
 
-## A VERIFIER
-
-- J'enchaine une saisie de relevés dans Occtax sans cocher le fait de garder la géométrie, il me garde le point sur la carte du relevé précédent
-
-## TODO
-
-- Migration URL API
-- Commande Ref sensibilité à indiquer pour ceux qui mettent à jour Taxref en v16
-- https://github.com/PnX-SI/GeoNature/pull/2339
-- Mettre un message d'intro par défaut sur la Home
-
+- Si vous utilisez des modules spécifiques (hors Import, Export, Dashboard, Monitoring), vérifiez qu'ils disposent d'une version compatible avec GeoNature 2.12 (compatibilité Angular 15, révision des permissions, configuration dynamique)
+- Si vous les utilisez, mettre à jour les modules Import en version 2.1.0 (ou plus), Export en version 1.4.0, Dashboard en version 1.3.0 (ou plus) et Monitoring en version 0.5.0 (ou plus) avec la nouvelle procédure consistant uniquement à télécharger, dézipper et renommer les dossiers des modules et de leur configuration
+- Mettez à jour TaxHub en version 1.11 (ou plus)
+- La vue `gn_synthese.v_synthese_for_export` définissant la structure et le contenu des exports de la Synthèse a été modifiée pour être optimisée. Si vous l'aviez customisée, reportée vos modifications manuellement après la mise à jour de GeoNature
+- Suivez la procédure de mise à jour classique de GeoNature (<https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application>)
+- Le script `migration.sh` se charge de déplacer automatiquement les différents fichiers suite à la réorganisation des dossiers (customisation, médias, mobile, configuration centralisée des modules)
+- Il n'est plus nécessaire de rebuilder le frontend ni de recharger GeoNature manuellement à chaque modification de la configuration de GeoNature ou de ses modules
+- Les taches automatisées sont désormais gérées par Celery Beat et installées avec GeoNature. Si vous aviez mis en place des crons pour mettre à jour les profils de taxons (ou les données du module Dashboard, ou les exports planifiés du module Export), supprimez les (dans `/etc/cron/geonature` ou `crontab -e`) car ils ne sont plus utiles
+- Si vous aviez customisé la page d’accueil de GeoNature en modifiant les composants `frontend/src/custom/introduction.component.html` et `frontend/src/custom/footer.component.html` ceux-ci ont été supprimés au profit de paramètres de configuration. Il vous faut donc déplacer votre customisation dans les paramètres `TITLE`, `INTRODUCTION` et `FOOTER` de la nouvelle section `[HOME]` de la configuration de GeoNature.
+  Vous pouvez renseigner du code HTML sur plusieurs lignes en le plaçant entre triple quote (`"""<b>Hello</b>"""`).
+- Occtax et champs additionnels : 
+  - Les champs additionnels de type `bool_radio` ne sont plus supportés.
+    Si vous utilisiez ce type de widget dans vos champs additionnels d'Occtax, ils seront automatiquement remplacés par un widget de type `radio`.
+    Vous devez changer le champs `field_values` sur le modèle suivant : `[{"label": "Mon label vrai", "value": true }, {"label": "Mon label faux", "value": false }]`.
+  - Les champs de formulaire de type `radio`, `select`, `multiselect` et `checkbox`, attendent désormais une liste de dictionnaire `{value, label}` (voir doc des champs additionnels) (#2214)  
+    La rétrocompatibilité avec des listes simples est maintenue, mais vous êtes invités à modifier ces champs dans le backoffice.  
+    Pour conserver le bon affichage lors de l'édition des données, renseignez l'ancienne valeur deux fois dans la clé `value` et la clé `label`.
 
 **🚀 Nouveautés**
 
@@ -56,27 +49,25 @@ CHANGELOG
 - Synthèse : Agrégation des observations ayant la même géométrie pour ne les charger qu'une seule fois, et ainsi améliorer les performances et la lisibilité (#1847)
 - Synthèse : Possibilité d'afficher les données agrégées par maille (#1878). La fonctionnalité est configurable avec les paramètres suivant :
 
-    ```toml
-    [SYNTHESE]
-        AREA_AGGREGATION_ENABLED = true
-        AREA_AGGREGATION_TYPE = "M10"
-        AREA_AGGREGATION_BY_DEFAULT = false    # affichage groupé par défaut
-        AREA_AGGREGATION_LEGEND_CLASSES = ...  # voir fichier de configuration d’exemple
-    ```
+  ```toml
+  [SYNTHESE]
+      AREA_AGGREGATION_ENABLED = true
+      AREA_AGGREGATION_TYPE = "M10"
+      AREA_AGGREGATION_BY_DEFAULT = false    # affichage groupé par défaut
+      AREA_AGGREGATION_LEGEND_CLASSES = .   # voir fichier de configuration d’exemple
+  ```
 
 - Synthèse : Possibilité de définir des filtres par défaut à travers le paramètre `SYNTHESE.DEFAULT_FILTERS` (#2261)
 - Métadonnées : Chargement des jeux de données seulement quand on clique sur un cadre d'acquisition dans la liste des métadonnées, pour améliorer les performances du module, en ne chargeant pas tous les jeux de données par défaut (#2004)
 - Champs additionnels : Les champs de formulaire de type `radio`, `select`, `multiselect` et `checkbox`, attendent désormais une liste de dictionnaire `{value, label}` (voir doc des champs additionnels) (#2214)
-  La rétrocompatibilité avec des listes simples est maintenue, mais vous êtes invités à modifier ces champs dans le backoffice.
-  Pour conserver le bon affichage lors de l'édition des données, renseignez l'ancienne valeur deux fois dans la clé `value` et la clé `label`.
-- Admin : Possibilité de gérer la table des applications mobiles (`t_mobile_apps`) dans le module "Admin" de GeoNature, notamment pour faciliter la gestion des mises à jour de Occtax-mobile
+- Admin : Possibilité de gérer la table des applications mobiles (`t_mobile_apps`) dans le module "Admin" de GeoNature, notamment pour faciliter la gestion des mises à jour de Occtax-mobile (#2352)
 - Possibilité de configurer les modules (picto, doc, label) directement depuis le module Admin (#2409)
 - Possibilité d’afficher un bouton de géolocalisation sur les cartes des formulaires Occtax et Occhab (#2338), activable avec le paramètre suivant :
 
-    ```toml
-    [MAP]
-        GEOLOCATION = true
-    ```
+  ```toml
+  [MAP]
+      GEOLOCATION = true
+  ```
 
 - Profils mis à jour automatiquement par Celery Beat, toutes les nuits par défaut (#2412)
 - Ajout de l’intégration de Redis à l'outil de logs Sentry, pour améliorer la précisions des traces
@@ -96,7 +87,7 @@ CHANGELOG
     MEDIA_URL = "/media"        # URL d’accès aux médias
     ```
 
-  - Ajout d’un dossier `custom` à la racine de GeoNature et du paramètre associé `CUSTOM_STATIC_FOLDER`. Les fichiers statiques réclamés sont cherchés en priorité dans le dossier `custom`, puis, si non trouvé, dans le dossier `static`. Ainsi, si besoin de modifier un fichier statique, on placera un fichier du même nom dans le dossier `custom` plutôt que de modifier le fichier original (par exemple, `custom/images/logo_structure.png`).
+  - Ajout d’un dossier `custom` à la racine de GeoNature et du paramètre associé `CUSTOM_STATIC_FOLDER`. Les fichiers statiques réclamés sont cherchés en priorité dans le dossier `custom`, puis, si non trouvés, dans le dossier `backend/static`. Ainsi, si besoin de modifier un fichier statique, on placera un fichier du même nom dans le dossier `custom` plutôt que de modifier le fichier original (par exemple, `custom/images/logo_structure.png`).
 
   - Retrait du préfixe `static/media/` aux chemins d’accès des fichiers joints (colonne `gn_commons.t_medias.media_path`)
   - Retrait du préfixe `static/mobile/` aux chemins d’accès des APK des applications mobiles (colonne `gn_commons.t_mobile_apps.relative_path_apk`)
@@ -109,21 +100,22 @@ CHANGELOG
     - `frontend/src/custom/images/logo_sidebar.jpg` → `backend/static/images/logo_sidebar.jpg`
     - `frontend/src/custom/images/logo_structure.png` → `backend/static/images/logo_structure.png`
   - Le lien symbolique `static/images/logo_structure.jpg` est supprimé au profit de l’utilisation de `logo_sidebar.jpg`
-  - Les déplacements mentionnés ci-dessus sont normalement effectués par le script de migration
+  - Les déplacements mentionnés ci-dessus sont effectués par le script `migration.sh`
 - Mise à jour des dépendances :
   - TaxHub 1.11.1
   - UsersHub 2.3.3
   - UsersHub-authentification-module 1.6.5
-  - Habref-api-module 0.3.1
+  - Habref-api-module 0.3.2
   - Nomenclature-api-module 1.5.4
   - RefGeo 1.3.0
   - Utils-Flask-SQLAlchemy 0.3.2
   - Utils-Flask-SQLAlchemy-Geo 0.2.7
-- Refonte des permissions et suppression de la vue `v_roles_permissions` levant certains problèmes de scalabilité du nombre d’utilisateurs (#2196)
+- Refonte des permissions et suppression de la vue `v_roles_permissions` qui posait des problèmes de performances du nombre d’utilisateurs (#2196 et #2360)
 - La recherche du fichier de configuration des modules sous le nom `{module_code}_config.toml` (code du module en minuscule) dans le répertoire de configuration de GeoNature devient prioritaire devant l’utilisation du fichier `conf_gn_module.toml` dans le répertoire de configuration du module.
-  Le script de mise à jour déplace les fichiers de configuration des modules vers le dossier de configuration de GeoNature.
+  Le script de mise à jour déplace les fichiers de configuration des modules vers le dossier centralisé de configuration de GeoNature (#2423)
+- Rechargement automatique de GeoNature quand on modifie un fichier de configuration d'un module dans l" dossier centralisé (#2418)
 - Évolution de la configuration Apache `/etc/apache2/conf-available/geonature.conf` pour activer la compression gzip des réponses de l’API (#2266).
-  À reporter dans votre configuration Apache si celle-ci n’importe pas le fichier fourni.
+  À reporter dans votre configuration Apache si celle-ci n’importe pas cette configuration fournie par défaut.
 - Le script de mise à jour (`migration.sh`) peut prendre en argument le chemin vers l’ancienne installation GeoNature.
   Il peut s’agir du même dossier que la nouvelle installation GeoNature (cas d’une mise à jour d’un dossier GeoNature avec Git).
 - Ajout d’une historisation des suppressions de la synthèse à travers un trigger peuplant la nouvelle table `gn_synthese.t_log_synthese` (#789)
@@ -131,7 +123,30 @@ CHANGELOG
 - Amélioration de la commande `install-gn-module` qui détecte désormais automatiquement le code du module (#2396)
 - Synthèse : Optimisation de la requête par statuts de protection (#2329)
 - Occtax : Optimisation des triggers de calcul automatique des altitudes pour ne les lancer que quand la géométrie du relevé est modifiée (#2137)
-- Occtax et OCchab : Affichage du nombre de filtres activés
+- Occtax et Occhab : Ajout d'une pastille indiquant le nombre de filtres activés
+- Amélioration du message renvoyé à l'utilisateur en cas de Timout (#2417)
+- Amélioration du composant générique de selection d'un jeu de données, en selectionnant automatiquement le JDD si la liste n'en contient qu'un et que le champs est obligatoire (#1049)
+
+**🐛 Corrections**
+
+- Synthèse : changement du type de `entity_source_pk_value` de `Integer` à `Unicode` dans le modèle pour correspondre à la base de données
+- Correction de l’accès public automatique activable avec `?access=public` dans l’URL (#1650)
+- Correction de la fonctionnalité de récupération du mot de passe
+- Correction de la commande d’import du référentiel sensibilité pour correctement gérer les critères comportementales
+- Occtax : correction du filtre sur les organismes
+- Synthèse : correction d’un problème de performance de l’export (vue `v_synthese_for_export`) (#1434)
+- Correction d’un problème de détection de l’emplacement des modules avec les versions récentes de `pip` (#2365, #2364)
+- Occhab : correction du CRUVED sur la liste des jeux de données ouvert à la saisie
+- Occtax : correction du contrôle des dates du formulaire d’édition des relevés (#2318)
+- Correction des acteurs dans les exports PDF des métadonnées (#2034)
+- Correction des graphiques dans les exports PDF des cadres d'acquisition (#2231)
+- Correction du script de synchronisation des métadonnées depuis MTD INPN (#2314)
+- Correction de l'appel en double de la route des notifications (#2356)
+- Correction de l'URL vers la documentation depuis la page d'accueil
+- Correction du formulaire Occtax quand un relevé n'a pas d'`id_digitiser` (#2421)
+- Correction de l'affichage des tooltips sur la liste des obsrvations de la Synthèse (#2348)
+- Correction du chargement des dates début et date fin quand on modifie un relevé dans Occtax ou une station dans OCchab (#2071)
+- Correction de la récupération des emails dans l'interface "Mon compte" (#2346)
 
 **💻 Développement**
 
@@ -161,42 +176,10 @@ CHANGELOG
 - Mise à jour de Chart.js de la version 2 à 4
 - Possibilité de définir l'URL par défaut de la documentation d'un module par un entrypoint nommé `doc_url`
 
-**🐛 Corrections**
-
-- Synthèse : changement du type de `entity_source_pk_value` de `Integer` à `Unicode` dans le modèle pour correspondre à la base de données
-- Correction de l’accès public automatique activable avec `?access=public` dans l’URL (#1650)
-- Correction de la fonctionnalité de récupération du mot de passe
-- Correction de la commande d’import du référentiel sensibilité pour correctement gérer les critères comportementales
-- Occtax : correction du filtre sur les organismes
-- Synthèse : correction d’un problème de performance de l’export (vue `v_synthese_for_export`) (#1434)
-- Correction d’un problème de détection de l’emplacement des modules avec les versions récentes de `pip` (#2365, #2364)
-- Occhab : correction du CRUVED sur la liste des jeux de données ouvert à la saisie
-- Occtax : correction du contrôle des dates du formulaire d’édition des relevés (#2318)
-- Correction des acteurs dans les exports PDF des métadonnées (#2034)
-- Correction des graphiques dans les exports PDF des cadres d'acquisition (#2231)
-- Correction du script de synchronisation des métadonnées depuis MTD INPN (#2314)
-- Correction de l'appel en double de la route des notifications (#2356)
-- Correction de l'URL vers la documntation depuis la page d'accueil
-
-**⚠️ Notes de version**
-
-- Cette version de GeoNature intègre le passage à Angular 15, vérifier préalablement la compatibilité de vos modules !
-
-- La configuration dynamique nécessite de renseigner l’URL de l’API dans un nouveau fichier.
-  Pour cela, désamplez le fichier `frontend/src/assets/config.sample.json` : `cp  frontend/src/assets/config.sample.json frontend/src/assets/config.json` et renseignez uniquement l'URL de l'API GeoNature (identique au paramètre `API_ENDPOINT` dans la configuration du backend).
-
-- Si vous aviez surcouché la page d’accueil de GeoNature en modifiant les composants `frontend/src/custom/introduction.component.html` et `frontend/src/custom/footer.component.html`, il vous faut déplacer votre code dans les paramètres `TITLE`, `INTRODUCTION` et `FOOTER` de la nouvelle section `[HOME]` de la configuration de GeoNature.
-  Vous pouvez renseigner du code HTML sur plusieurs lignes en le plaçant entre triple quote (`"""<b>Hello</b>"""`).
-
-- Les champs additionnels de type `bool_radio` ne sont plus supportés.
-  Si vous utilisiez ce type de widget dans vos champs additionnels d'Occtax, ils seront automatiquement remplacés par un widget de type `radio`.
-  Vous devez changer le champs `field_values` sur le modèle suivant : `[{"label": "Mon label vrai", "value": true }, {"label": "Mon label faux", "value": false }]`.
-  
-- Profils mis à jour par Celery Beat, supprimez votre cron
-
 **📝 Merci aux contributeurs**
 
-@ch-cbna / @bouttier / @TheoLechemia / @jpm-cbna / @bastyen / @Gaetanbrl / @VincentCauchois / @joelclems / @andriacap / @mvergez / @DonovanMaillard / @dece / @lpofredc / @MathRdt / @gildeluermoz / @maximetoma/ @pierre56 / @cecchi-a / @camillemonchicourt
+@ch-cbna / @bouttier / @TheoLechemia / @jpm-cbna / @bastyen / @Gaetanbrl / @VincentCauchois / @joelclems / @andriacap / @mvergez / @DonovanMaillard / @dece / @lpofredc / @MathRdt / @gildeluermoz / @maximetoma/ @pierre56 / @cecchi-a / @jbrieuclp / @camillemonchicourt
+
 
 2.11.2 (2023-01-19)
 -------------------
@@ -241,7 +224,7 @@ Si vous mettez à jour GeoNature :
 -   Si vous utilisez des modules spécifiques (hors Import, Export, Dashboard, Monitoring), vérifiez qu'ils disposent d'une version packagée compatible avec GeoNature 2.11 (#2058)
 -   Si vous aviez mis en place l'accès public à GeoNature, adaptez sa configuration avec le nouveau paramètre unique ``PUBLIC_ACCESS_USERNAME`` (#2202)
 -   Suivez la procédure de mise à jour classique de GeoNature (<https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application>)
--   Attention, le script de migration de la version 2.11 a une régression et ne récupère plus automatiquement la configuration des modules fournis avec GeoNature (Occtax, Occhab, Validation). Rapatriez manuellement vos éventuelles fichiers de configuration de ces modules si vous en avez créé : 
+-   Attention, le script de migration de la version 2.11 a une régression et ne récupère plus automatiquement la configuration des modules fournis avec GeoNature (Occtax, Occhab, Validation). Rapatriez manuellement vos éventuels fichiers de configuration de ces modules si vous en avez créé : 
     ```bash
     cp geonature_old/contrib/occtax/config/conf_gn_module.toml geonature/contrib/occtax/config/conf_gn_module.toml
     cp geonature_old/contrib/gn_module_validation/config/conf_gn_module.toml geonature/contrib/gn_module_validation/config/conf_gn_module.toml
