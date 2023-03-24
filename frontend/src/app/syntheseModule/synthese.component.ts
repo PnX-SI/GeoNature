@@ -81,15 +81,14 @@ export class SyntheseComponent implements OnInit {
           this._fs.searchForm.patchValue(this._fs.processedDefaultFilters);
 
           this.loadAndStoreData(this._fs.formatParams());
+          // remove limit
+          this._fs.selectors = this._fs.selectors.delete('limit');
+          // remove initial parameter passed by url
+          this._fs.searchForm.patchValue({
+            id_dataset: null,
+            id_acquisition_framework: null,
+          });
         });
-
-      // remove initial parameter passed by url
-      this._fs.searchForm.patchValue({
-        id_dataset: null,
-        id_acquisition_framework: null,
-      });
-      // remove limit
-      this._fs.selectors = this._fs.selectors.delete('limit');
     });
   }
 
