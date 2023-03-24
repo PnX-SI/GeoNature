@@ -88,6 +88,8 @@ export class SyntheseComponent implements OnInit {
         id_dataset: null,
         id_acquisition_framework: null,
       });
+      // remove limit
+      this._fs.selectors = this._fs.selectors.delete('limit');
     });
   }
 
