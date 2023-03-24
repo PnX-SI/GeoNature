@@ -151,21 +151,16 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
 
   getData() {
     if (!this.values && this.api) {
-      this._dfs.getDataList(this.api, this.application, this.params).subscribe(
-        (data) => {
-          let values = data;
-          if (this.dataPath) {
-            const paths = this.dataPath.split('/');
-            for (const path of paths) {
-              values = values[path];
-            }
+      this._dfs.getDataList(this.api, this.application, this.params).subscribe((data) => {
+        let values = data;
+        if (this.dataPath) {
+          const paths = this.dataPath.split('/');
+          for (const path of paths) {
+            values = values[path];
           }
-          this.initValues(values);
-        },
-        (error) => {
-          this._commonService.regularToaster('error', error.message);
         }
-      );
+        this.initValues(values);
+      });
     } else if (this.values) {
       this.initValues(this.values);
     }
