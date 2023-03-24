@@ -145,6 +145,7 @@
                   [defaultToday]="true"
                   label="{{ 'Releve.MinDate' | translate }}"
                   [parentFormControl]="occHabForm.stationForm.get('date_min')"
+                  (onSelectOrKeyIn)="globalFormService.synchronizeMax(occHabForm.stationForm, 'date_min', 'date_max')"
                 >
                 </pnx-date>
               </div>
@@ -156,6 +157,7 @@
                   [defaultToday]="true"
                   label="{{ 'Releve.MaxDate' | translate }}"
                   [parentFormControl]="occHabForm.stationForm.get('date_max')"
+                  (onSelectOrKeyIn)="globalFormService.synchronizeMin(occHabForm.stationForm, 'date_min', 'date_max')"
                 >
                 </pnx-date>
               </div>

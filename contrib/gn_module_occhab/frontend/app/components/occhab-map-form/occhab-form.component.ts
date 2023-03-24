@@ -47,7 +47,7 @@ export class OccHabFormComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _commonService: CommonService,
     public config: ConfigService,
-    private _formService: FormService
+    public globalFormService: FormService
   ) {}
 
   ngOnInit() {
@@ -57,6 +57,7 @@ export class OccHabFormComponent implements OnInit, OnDestroy {
     leafletDrawOption.draw.rectangle = false;
 
     this.occHabForm.stationForm = this.occHabForm.initStationForm();
+
     this.occHabForm.stationForm.controls.geom_4326.valueChanges.subscribe((d) => {
       this.disabledForm = false;
     });
@@ -74,7 +75,7 @@ export class OccHabFormComponent implements OnInit, OnDestroy {
           this.atLeastOneHab = true;
           this.showHabForm = false;
           this.showTabHab = true;
-          this._occHabDataService.getStation(params['id_station']).subscribe((station) => {
+          this._occHabDataService.getStation(params['id_station']).subscribe((station: any) => {
             this.currentEditingStation = station;
             if (station.geometry.type == 'Point') {
               // set the input for the marker component
@@ -84,9 +85,11 @@ export class OccHabFormComponent implements OnInit, OnDestroy {
               this.currentGeoJsonFileLayer = station.geometry;
             }
             this.occHabForm.patchStationForm(station);
+            if (station.properties.date_min != station.properties.date_max) {
+              this.occHabForm.stationForm.get('date_min').markAsDirty();
+              this.occHabForm.stationForm.get('date_max').markAsDirty();
+            }
           });
-        } else {
-          this._sub.push(...this._formService.autoCompleteDate(this.occHabForm.stationForm));
         }
       })
     );

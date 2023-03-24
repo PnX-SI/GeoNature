@@ -94,9 +94,9 @@
       [isInvalid]="propertiesForm.hasError('invalidDate') || propertiesForm.get('date_min').invalid"
       data-qa="pnx-occtax-releve-form-datemin"
       label="{{ 'Releve.MinDate' | translate }}"
-      [defaultToday]="config.OCCTAX.DATE_FORM_WITH_TODAY"
       [parentFormControl]="propertiesForm.get('date_min')"
-    >
+      (onSelectOrKeyIn)="globalFormService.synchronizeMax(propertiesForm, 'date_min', 'date_max')"
+      >
     </pnx-date>
   </div>
 
@@ -111,7 +111,8 @@
       [isInvalid]="propertiesForm.hasError('invalidDate') || propertiesForm.get('date_max').invalid"
       label="{{ 'Releve.MaxDate' | translate }} "
       [parentFormControl]="propertiesForm.get('date_max')"
-    >
+      (onSelectOrKeyIn)="globalFormService.synchronizeMin(propertiesForm, 'date_min', 'date_max')"
+      >
     </pnx-date>
   </div>
   <div class="d-flex align-content-end flex-wrap">
@@ -154,6 +155,7 @@
         class="form-control form-control-sm"
         type="text"
         placeholder="{{'Releve.HourFormat' | translate }}"
+        (keyup)="globalFormService.synchronizeMax(propertiesForm, 'hour_min', 'hour_max')"
       >
     </div>
   </div>
@@ -174,6 +176,7 @@
         class="form-control form-control-sm"
         type="text"
         placeholder="{{'Releve.HourFormat' | translate }}"
+        (keyup)="globalFormService.synchronizeMin(propertiesForm, 'hour_min', 'hour_max')"
       >
     </div>
   </div>

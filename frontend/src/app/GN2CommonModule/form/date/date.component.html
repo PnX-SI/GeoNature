@@ -10,6 +10,8 @@
     [maxDate]="maxDate"
     [minDate]="minDate"
     (click)="d1.toggle(); openDatepicker(d1)"
+    (dateSelect)="onSelectOrKeyIn.emit($event)"
+    (keyup)="onSelectOrKeyIn.emit(parentFormControl.value)"
   />
   <div class="input-group-append">
     <button
