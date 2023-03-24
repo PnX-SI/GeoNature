@@ -81,8 +81,7 @@ export class SyntheseComponent implements OnInit {
           this._fs.searchForm.patchValue(this._fs.processedDefaultFilters);
 
           this.loadAndStoreData(this._fs.formatParams());
-          // remove limit
-          this._fs.selectors = this._fs.selectors.delete('limit');
+
           // remove initial parameter passed by url
           this._fs.searchForm.patchValue({
             id_dataset: null,
@@ -185,6 +184,8 @@ export class SyntheseComponent implements OnInit {
     }
   }
   onSearchEvent() {
+    // remove limit
+    this._fs.selectors = this._fs.selectors.delete('limit');
     // on search button click, clean cache and call loadAndStoreData
     this._syntheseStore.gridData = null;
     this._syntheseStore.pointData = null;
