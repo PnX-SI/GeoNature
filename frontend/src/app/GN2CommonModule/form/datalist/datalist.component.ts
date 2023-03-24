@@ -27,7 +27,8 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
 
   @Input() api: string; // api from 'GeoNature', 'TaxHub' or url to foreign app
   @Input() application: string; // 'GeoNature', 'TaxHub' for api's; null for raw url
-  @Input() params: boolean; // parametres get pour la requete { orderby: truc } => api?orderby=truc
+  @Input() params: any = {}; // parametres get pour la requete { orderby: truc } => api?orderby=truc
+  @Input() data: any = undefined;
 
   @Input() multiple: boolean;
   @Input() required: boolean;
@@ -151,16 +152,18 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
 
   getData() {
     if (!this.values && this.api) {
-      this._dfs.getDataList(this.api, this.application, this.params).subscribe((data) => {
-        let values = data;
-        if (this.dataPath) {
-          const paths = this.dataPath.split('/');
-          for (const path of paths) {
-            values = values[path];
+      this._dfs
+        .getDataList(this.api, this.application, this.params, this.data)
+        .subscribe((data) => {
+          let values = data;
+          if (this.dataPath) {
+            const paths = this.dataPath.split('/');
+            for (const path of paths) {
+              values = values[path];
+            }
           }
-        }
-        this.initValues(values);
-      });
+          this.initValues(values);
+        });
     } else if (this.values) {
       this.initValues(this.values);
     }

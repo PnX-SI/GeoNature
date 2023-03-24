@@ -517,7 +517,7 @@ export class DataFormService {
     return httpParam.append('orderby', order_column);
   }
 
-  getDataList(api: string, application: string, params = {}) {
+  getDataList(api: string, application: string, params = {}, data = undefined) {
     let queryString: HttpParams = new HttpParams();
     for (const key of Object.keys(params)) {
       const param = params[key];
@@ -537,7 +537,11 @@ export class DataFormService {
           ? `${this.config.API_TAXHUB}/${api}`
           : api;
 
-    return this._http.get<any>(url, { params: queryString });
+    if (data !== undefined) {
+      return this._http.post<any>(url, data, { params: queryString });
+    } else {
+      return this._http.get<any>(url, { params: queryString });
+    }
   }
 
   subscribeAndDownload(
