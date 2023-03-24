@@ -101,6 +101,9 @@
               </div>
               <div><strong>Taxon(s): </strong></div>
               <div style="margin-left: 20px">
+                <div *ngIf="row.t_occurrences_occtax && row.t_occurrences_occtax.length == 0">
+                  Aucun taxon
+                </div>
                 <div *ngFor="let taxon of displayTaxonsTooltip(row)">
                   {{ taxon.taxName }} <br />
                   <span [innerHTML]="taxon.icons | safeHTML"></span>
@@ -238,21 +241,23 @@
                   </span>
                   <span
                     *ngSwitchCase="'nb_taxons'"
-                    [matTooltip]="displayTaxons(row).join('\n')"
+                    [matTooltip]="displayTaxons(row).join('\n') || 'Aucun taxon'"
                     matTooltipPosition="left"
+                    matTooltipClass="mat-tooltip"
                   >
                     {{ displayTaxons(row).length }}
                   </span>
                   <span
                     *ngSwitchCase="'taxons'"
-                    [matTooltip]="displayTaxons(row).join('\n')"
+                    [matTooltip]="displayTaxons(row).join('\n') || 'Aucun taxon'"
                     matTooltipPosition="left"
+                    matTooltipClass="mat-tooltip"
                   >
                     <span>
                       <span class="badge badge-dark">
                         {{ row.t_occurrences_occtax?.length || '0' }}
                       </span>
-                      {{ displayTaxons(row) }}
+                      {{ displayTaxons(row).join(', ') || 'Aucun taxon' }}
                     </span>
                   </span>
                   <span
