@@ -12,6 +12,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
 import { CommonService } from '../../service/common.service';
 import { DatasetStoreService } from './dataset.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { AbstractControl, Validators } from '@angular/forms';
 
 /**
  *  Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
@@ -88,6 +89,11 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
       this.datasetStore.filteredDataSets = res;
       this.datasetStore.datasets = res;
       this.valueLoaded.emit({ value: this.datasetStore.datasets });
+      if (res.length == 1) {
+        if (this.parentFormControl.hasValidator(Validators.required)) {
+          this.parentFormControl.patchValue(res[0].id_dataset);
+        }
+      }
     });
   }
 
