@@ -247,9 +247,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
    */
   displayTaxonsTooltip(row): any[] {
     let tooltip = [];
-    if (row.t_occurrences_occtax && row.t_occurrences_occtax.length == 0) {
-      tooltip.push({ taxName: 'Aucun taxon' });
-    } else {
+    if (row.t_occurrences_occtax) {
       for (let i = 0; i < row.t_occurrences_occtax.length; i++) {
         let occ = row.t_occurrences_occtax[i];
         const taxKey = this.config.OCCTAX.DISPLAY_VERNACULAR_NAME ? 'nom_vern' : 'nom_complet';
@@ -317,7 +315,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     divTaxons.style.marginTop = '5px';
     let taxons = this.displayTaxonsTooltip(feature.properties)
       .map((taxon) => `${taxon['taxName']}<br>${taxon['icons']}`)
-      .join('<br>');
+      .join('<br>') || "Aucun taxon";
     divTaxons.innerHTML = taxons;
 
     this.renderer.appendChild(leafletPopup, divObservateurs);
