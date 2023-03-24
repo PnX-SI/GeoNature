@@ -1559,13 +1559,8 @@ Si vous l'avez supprimé, lancez les commandes suivantes depuis le repertoire ``
 Configuration du module
 """""""""""""""""""""""
 
-Le fichier de configuration du module se trouve ici : ``config/occtax_config.toml``.
-
-Pour voir l'ensemble des variables de configuration disponibles du module ainsi que leurs valeurs par défaut, ouvrir le fichier ``contrib/occtax/occtax_config.toml.example``.
-
-Les surcouches de configuration doivent être faites dans un fichier ``config/occtax_config.toml``, créé à partir du fichier d'exemple ``contrib/occtax/occtax_config.toml.example``.
-
-Avant la version 2.12.0 de GeoNature, après toute modification de la configuration d'un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : `Configuration d'un gn_module`_
+Le paramétrage du module OCCTAX se fait en créant le fichier ``config/occtax_config.toml``, en s’inspirant du fichier d'exemple ``contrib/occtax/occtax_config.toml.example``.
+Reportez vous à la section `Configuration d'un gn_module`_ pour effectuer les opérations supplémentaires nécessaires pour la prise en compte des modifications.
 
 Afficher/masquer des champs du formulaire
 `````````````````````````````````````````
@@ -1868,11 +1863,10 @@ Le module s'appuie sur deux schémas.:
 ``pr_occhab``: le schéma qui contient les données d'occurrence d'habitat, basé sur standard du MNHN
 
 Configuration
-""""""""""""""
+"""""""""""""
 
-Le paramétrage du module OCCHAB se fait depuis le fichier ``config/occhab_config.toml``, à créer à partir du fichier d'exemple ``contrib/gn_module_occhab/occhab_config.toml.example``
-
-Avant la version 2.12.0 de GeoNature, après toute modification de la configuration d'un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : `Configuration d'un gn_module`_
+Le paramétrage du module OCCHAB se fait en créant le fichier ``config/occhab_config.toml``, en s’inspirant du fichier d'exemple ``contrib/gn_module_occhab/occhab_config.toml.example``
+Reportez vous à la section `Configuration d'un gn_module`_ pour effectuer les opérations supplémentaires nécessaires pour la prise en compte des modifications.
 
 
 Formulaire
@@ -2193,11 +2187,10 @@ Au niveau de l'interface, le formulaire de recherche est commun avec le module S
 
 
 Configuration
-""""""""""""""
+"""""""""""""
 
-Le parametrage du module VALIDATION se fait depuis le fichier ``config/validation_config.toml``, à créer à partir du fichier d'exemple ``contrib/gn_module_validation/validation_config.toml.example``.
-
-Avant la version 2.12.0 de GeoNature, après toute modification de la configuration d'un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : `Configuration d'un gn_module`_
+Le paramétrage du module VALIDATION se fait en créant le fichier ``config/validation_config.toml``, en s’inspirant du fichier d'exemple ``contrib/gn_module_validation/validation_config.toml.example``
+Reportez vous à la section `Configuration d'un gn_module`_ pour effectuer les opérations supplémentaires nécessaires pour la prise en compte des modifications.
 
 Liste des champs visibles
 `````````````````````````

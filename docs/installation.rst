@@ -200,13 +200,6 @@ Exemple pour le module Import :
     cd ~/geonature/frontend/external_modules/
     ln -s ~/gn_module_import/frontend import
 
-* Générer la configuration frontend du module :
-
-.. code-block:: bash
-
-    source ~/geonature/backend/venv/bin/activate
-    geonature update-module-configuration <CODE DU MODULE>
-
 * Re-builder le frontend :
 
 .. code-block:: bash
@@ -227,19 +220,18 @@ Exemple pour le module Import :
 Configuration du module
 -----------------------
 
-De manière facultative, vous pouvez modifier la configuration du module. La plupart des modules fournissent un fichier d’exemple ``<module-code>_config.toml.example`` dans leur dossier racine. 
+De manière facultative, vous pouvez modifier la configuration du module.
+Pour cela, vous pouvez créer un fichier de configuration dans le dossier ``config`` de GeoNature en le nommant ``<code du module en minuscule>_config.toml``.
+La plupart des modules fournissent un fichier d’exemple ``<module-code>_config.toml.example`` dans leur dossier racine dont vous pouvez vous inspirer.
 
-Afin de modifier les paramètres par défaut du module, vous pouvez le copier :
-
-* Dans le dossier ``config`` de GeoNature en le nommant ``<code du module en minuscule>_config.toml``. Exemple pour le module Import :
+Après création de ce fichier, activez le rechargement automatique de GeoNature lors des modifications du fichier en lançant les commandes suivantes :
 
 .. code-block:: bash
 
-    cp ~/gn_module_import/import_config.toml.example ~/geonatur/config/import_config.toml
+    sudo systemctl daemon-reload
+    sudo systemctl restart geonature
 
-Avant la version 2.12.0 de GeoNature, après chaque modification de la configuration du module, vous devez :
-
-* Recharger GeoNature :
+Avant la version 2.12.0 de GeoNature, après chaque modification de la configuration du module, vous devez recharger GeoNature manuellement :
 
 .. code-block:: bash
 
