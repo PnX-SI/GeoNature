@@ -89,14 +89,12 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
       this.datasetStore.filteredDataSets = res;
       this.datasetStore.datasets = res;
       this.valueLoaded.emit({ value: this.datasetStore.datasets });
-      if (res.length == 1) {
-        if (this.parentFormControl.hasValidator(Validators.required)) {
-          let value: number[] | number = res[0].id_dataset;
-          if (this.multiSelect) {
-            value = [res[0].id_dataset];
-          }
-          this.parentFormControl.patchValue(value);
+      if (res.length == 1 && this.parentFormControl.hasValidator(Validators.required)) {
+        let value: number[] | number = res[0].id_dataset;
+        if (this.multiSelect) {
+          value = [res[0].id_dataset];
         }
+        this.parentFormControl.patchValue(value);
       }
     });
   }
