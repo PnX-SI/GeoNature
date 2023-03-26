@@ -51,7 +51,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "GeoNature"
-copyright = "2018-2019, PnE, PnC"
+copyright = "2018-2023, PnE, PnC"
 author = "PnE, PnC"
 
 # The version info for the project you're documenting, acts as replacement for
