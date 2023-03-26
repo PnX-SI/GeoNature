@@ -151,8 +151,9 @@ html5lib==1.1
     # via weasyprint
 idna==3.3
     # via requests
-importlib-metadata==4.12.0
+importlib-metadata==4.12.0 ; python_version < "3.10"
     # via
+    #   -r requirements-common.in
     #   alembic
     #   celery
     #   click
@@ -233,7 +234,7 @@ pyparsing==3.0.9
     # via packaging
 pyphen==0.13.0
     # via weasyprint
-pypn-habref-api==0.3.1
+pypn-habref-api==0.3.2
     # via -r requirements-dependencies.in
 pypn-ref-geo==1.3.0
     # via
@@ -288,6 +289,7 @@ sqlalchemy==1.3.24
     #   flask-sqlalchemy
     #   geoalchemy2
     #   marshmallow-sqlalchemy
+    #   pypn-habref-api
     #   pypn-ref-geo
     #   pypnnomenclature
     #   pypnusershub
