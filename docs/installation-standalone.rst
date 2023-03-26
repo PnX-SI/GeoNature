@@ -50,54 +50,65 @@ Installation de l'application
 Installation de l'application
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Rendez vous dans le dossier ``install`` et lancez successivement dans l’ordre les scripts suivant :
+Rendez vous dans le dossier ``install`` et lancez successivement dans l’ordre les scripts suivants :
 
-* ``01_install_backend.sh`` : Création du virtualenv python, installation des dépendances et du backend GeoNature dans celui-ci.
+* ``01_install_backend.sh`` : Création du virtualenv python, installation des dépendances et du backend de GeoNature dans celui-ci.
 * ``02_configure_systemd.sh`` : Création des services systemd ``geonature`` et ``geonature-worker``, configuration de ``logrotate``, création des dossiers ``/run/geonature`` et ``/var/log/geonature``.
-* ``03_create_db.sh`` : Création du role postgresql, de la base de données, ajout des extensions nécessaires (postgis, …), création des schémas nécessaires à GeoNature et ajout des données métiers.
-* ``04_install_gn_modules.sh`` : Installation des modules OccTax, OccHab et validation (si activé dans le fichier `settings.ini`).
-* ``05_install_frontend.sh`` : Création des dossiers et liens symboliques nécessaires, création des fichier custom à partir des fichiers d’exemple, génération des fichiers de configuration grâce à la commande `geonature`, installation de nvm, npm et node ainsi que toutes les dépendances javascript nécessaires puis build du front.
+* ``03_create_db.sh`` : Création du role PostgreSQL, de la base de données, ajout des extensions nécessaires (PostGIS, …), création des schémas nécessaires à GeoNature et ajout des données métiers.
+* ``04_install_gn_modules.sh`` : Installation des modules Occtax, Occhab et Validation (si activé dans le fichier `settings.ini`).
+* ``05_install_frontend.sh`` : Création des dossiers et liens symboliques nécessaires, création des fichiers custom à partir des fichiers d’exemple, génération des fichiers de configuration grâce à la commande ``geonature``, installation de nvm, npm et node ainsi que toutes les dépendances javascript nécessaires puis build du frontend.
 * ``06_configure_apache.sh`` : Installation du fichier de configuration Apache ``/etc/apache2/conf-available/geonature.conf`` et activation des modules Apache nécessaires.
 
-Vous pouvez alors démarrer le backend GeoNature : ``sudo systemctl start geonature2``
+Vous pouvez alors démarrer le backend de GeoNature : ``sudo systemctl start geonature``
 
 Configuration Apache
 ^^^^^^^^^^^^^^^^^^^^
 
-* Copiez et adaptez le fichier de configuration d’exemple d’Apache de GeoNature :
+Le script ``06_configure_apache.sh`` copie le fichier de configuration de référence ``install/assets/geonature_apache.conf``, le place dans ``/etc/apache2/conf-available/geonature.conf`` et remplace la variable ``${GEONATURE_DIR}`` par le chemin absolu de votre dossier contenant GeoNature.
+
+Vous pouvez aussi le faire manuellement :
 
   .. code:: console
 
-    $ sudo cp install/assets/geonature_apache.conf /etc/apache2/sites-available/geonature.conf
-    $ sudo nano /etc/apache2/sites-available/geonature.conf
+    $ sudo cp install/assets/geonature_apache.conf /etc/apache2/conf-available/geonature.conf # Copier la configuration
+    $ sudo nano /etc/apache2/conf-available/geonature.conf # Modifier la configuration pour remplacer ``${GEONATURE_DIR}``
+    $ sudo a2enconf geonature # Activer cette configuration
 
-* Activez les modules suivants :
+Créez ensuite la configuration du vhost, incluant la configuration créée précédemment :
+
+  .. code:: console
+
+    $ sudo cp install/assets/vhost_apache.conf /etc/apache2/sites-available/geonature.conf # Copier le vhost
+    $ sudo nano /etc/apache2/sites-available/geonature.conf # Modifier la variable ``${DOMAIN_NAME}``
+
+* Activez les modules Apache suivants :
 
   .. code:: console
 
     $ sudo a2enmod rewrite
     $ sudo a2enmod proxy
     $ sudo a2enmod proxy_http
+    $ sudo a2enmod deflate
 
-* Activez la nouvelle configuration:
+* Activez la nouvelle configuration :
 
   .. code:: console
 
     $ sudo a2ensite geonature.conf
 
-* et redémarrez Apache:
+* et redémarrez Apache :
 
   .. code:: console
 
-    $ sudo systemctl restart apache2
+    $ sudo systemctl reload apache2
 
-* L'application est disponible à l'adresse suivante : http://monip.com/geonature
+* L'application est disponible à l'adresse suivante : http://monurl.fr/geonature
 
 
 Dépendances
 -----------
 
-Lors de l'installation de la BDD (``02_create_db.sh``) le schéma ``utilisateurs`` de UsersHub et le schéma ``taxonomie`` de TaxHub sont intégrés automatiquement dans la BDD de GeoNature. 
+Lors de l'installation de la BDD (``02_create_db.sh``), le schéma ``utilisateurs`` de UsersHub et le schéma ``taxonomie`` de TaxHub sont intégrés automatiquement dans la BDD de GeoNature. 
 
 UsersHub n'est pas nécessaire au fonctionnement de GeoNature mais il sera utile pour avoir une interface de gestion des utilisateurs, des groupes et de leurs droits. 
 
@@ -129,11 +140,11 @@ Lancer le script d'installation de l'application :
 
     ./install_app.sh 2>&1 | tee install_app.log
 
-Suite à l'execution de ce script, l'application Taxhub a été lancé automatiquement par le superviseur et est disponible à l'adresse ``http://127.0.0.1:5000`` (et l'API, à ``http://127.0.0.1:5000/api``)
+Suite à l'execution de ce script, l'application Taxhub a été lancée automatiquement par le superviseur et est disponible à l'adresse ``http://127.0.0.1:5000`` (et l'API, à ``http://127.0.0.1:5000/api``)
 
-Voir la doc d'installation de TaxHub : http://taxhub.readthedocs.io/
+Voir la doc d'installation de TaxHub : https://taxhub.readthedocs.io/
 
-Voir la doc d'installation de UsersHub : http://usershub.readthedocs.io/
+Voir la doc d'installation de UsersHub : https://usershub.readthedocs.io/
 
 
 Passer en mode développement
