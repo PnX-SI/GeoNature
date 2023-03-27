@@ -47,9 +47,9 @@ if [ -f "${olddir}/environ" ]; then
   cp -n "${olddir}/environ" "${newdir}/environ"
 fi
 
-if [ -d "${olddir}/custm" ]; then
+if [ -d "${olddir}/custom" ]; then
     echo "Copie de la customisation…"
-    cp -n ${olddir}/custom/* custom/
+    cp -n -r ${olddir}/custom/* custom/
 fi
 
 echo "Vérification de la robustesse de la SECRET_KEY…"
@@ -234,10 +234,10 @@ shopt -s nullglob
 for dir in "${olddir}"/backend/media/*; do
     if [ -d "${newdir}"/backend/media/$(basename "${dir}") ]; then
         for subdir in "${dir}"/*; do
-            mv -i "${subdir}" "${newdir}"/backend/media/$(basename "${dir}")/
+            mv -n "${subdir}" "${newdir}"/backend/media/$(basename "${dir}")/
         done
     else
-        mv -i "${dir}" "${newdir}"/backend/media/
+        mv -n "${dir}" "${newdir}"/backend/media/
     fi
 done
 shopt -u nullglob
