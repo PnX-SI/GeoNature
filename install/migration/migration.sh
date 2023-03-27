@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 SERVICES=("geonature" "geonature-worker" "taxhub" "usershub")
 

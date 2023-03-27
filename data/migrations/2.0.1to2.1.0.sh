@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # faux sudo car sinon la commande "sudo -n -u" ne le demande pas
 sudo ls

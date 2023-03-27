@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Scripts qui restaure une BDD GINCO à parit d'un DUMP SQL
 # Puis crée un Foreign Data Wrapper entre la base restaurée et la base GeoNature cible 

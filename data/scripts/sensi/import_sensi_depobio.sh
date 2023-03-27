@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Script remplaçant les règles de sensibilité nationales et régionales intégrées dans GeoNature, par les règles départementales.
 # Utilisé pour DEPOBIO pour disposer des règles de sensibilité à jour, au niveau départemantal.
