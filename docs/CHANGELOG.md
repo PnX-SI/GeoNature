@@ -1,16 +1,17 @@
 CHANGELOG
 =========
 
-2.12.0.dev0 - XXXXX 🌴 (unreleased)
-------------------------
+2.12.0 - Cyathea borbonica 🌴 (2023-03-27)
+------------------------------------------
 
 **⏩ En bref**
 
-- Affichage agrégé des observations dans Synthèse (performances et lisibilité) (#1847 et #1878)
+- Affichage agrégé des observations dans la Synthèse (performances et lisibilité) (#1847 et #1878)
 - Filtres par défaut dans la Synthèse (#2261)
 - Optimisation des performances des exports de la Synthèse (#1434)
 - Optimisation du chargement des jeux de données dans le module Métadonnées pour en améliorer les performances (#2004)
 - Intégration par défaut de Taxref v16, BDC statuts v16 et référentiel de sensibilité v16
+- Possibilité de gérer les tables des applications mobiles et des modules depuis le module "Admin"
 - Configuration dynamique sans rebuild (#2205)
 - Centralisation de la configuration des modules dans GeoNature (#2423)
 - Historisation des suppressions dans la Synthèse, nécessaire pour GN2PG notamment (#789)
@@ -32,11 +33,12 @@ Si vous mettez à jour GeoNature :
 - Le script `migration.sh` se charge de déplacer automatiquement les différents fichiers suite à la réorganisation des dossiers (customisation, médias, mobile, configuration centralisée des modules)
 - Il n'est plus nécessaire de rebuilder le frontend ni de recharger GeoNature manuellement à chaque modification de la configuration de GeoNature ou de ses modules
 - Les taches automatisées sont désormais gérées par Celery Beat et installées avec GeoNature. Si vous aviez mis en place des crons pour mettre à jour les profils de taxons (ou les données du module Dashboard, ou les exports planifiés du module Export), supprimez les (dans `/etc/cron/geonature` ou `crontab -e`) car ils ne sont plus utiles
+- Il est fortement conseillé d'utiliser la configuration Apache générée par défaut dans `/etc/apache2/conf-available/geonature.conf` et de l'inclure dans votre vhost (`/etc/apache2/sites-available/geonature.conf` et/ou `/etc/apache2/sites-available/geonature-le-ssl.conf`), en suivant la documentation dédiée (https://docs.geonature.fr/installation.html#configuration-apache)
 - Si vous aviez customisé la page d’accueil de GeoNature en modifiant les composants `frontend/src/custom/introduction.component.html` et `frontend/src/custom/footer.component.html` ceux-ci ont été supprimés au profit de paramètres de configuration. Il vous faut donc déplacer votre customisation dans les paramètres `TITLE`, `INTRODUCTION` et `FOOTER` de la nouvelle section `[HOME]` de la configuration de GeoNature.
   Vous pouvez renseigner du code HTML sur plusieurs lignes en le plaçant entre triple quote (`"""<b>Hello</b>"""`).
-- Les paramètres de configuration suivant ont été supprimés et doivent être retirés de votre fichier de configuration s’ils sont présents :
-  - `LOGO_STRUCTURE_FILE` : si vous aviez surcouché votre logo, déplacez le dans `geonature/custom/images/logo_structure.png`
-  - `UPLOAD_FOLDER` : si vous l’aviez déplacé, renommez votre dossier d’upload en `attachments` et placez-le dans le dossier des médias (`geonature/backend/media/` par défaut, paramétrable via `MEDIA_FOLDER`)
+- Les paramètres de configuration suivants ont été supprimés et doivent être retirés de votre fichier de configuration (`config/geonature_config.toml`) s’ils sont présents :
+  - `LOGO_STRUCTURE_FILE` (si vous aviez renommé votre logo, déplacez le dans `geonature/custom/images/logo_structure.png`)
+  - `UPLOAD_FOLDER` (si vous l’aviez déplacé, renommez votre dossier d’upload en `attachments` et placez-le dans le dossier des médias (`geonature/backend/media/` par défaut, paramétrable via `MEDIA_FOLDER`))
   - `BASE_DIR`
 - Occtax et champs additionnels : 
   - Les champs additionnels de type `bool_radio` ne sont plus supportés.
@@ -52,7 +54,6 @@ Si vous mettez à jour GeoNature :
 - Personnalisation de la page d’accueil : ajout d’une section `[HOME]` contenant les paramètres `TITLE`, `INTRODUCTION` et `FOOTER`. Ceux-ci peuvent contenir du code HTML qui est chargé dynamiquement avec la configuration, évitant ainsi la nécessité d’un rebuild du frontend (#2300)
 - Synthèse : Agrégation des observations ayant la même géométrie pour ne les charger qu'une seule fois, et ainsi améliorer les performances et la lisibilité (#1847)
 - Synthèse : Possibilité d'afficher les données agrégées par maille (#1878). La fonctionnalité est configurable avec les paramètres suivant :
-
   ```toml
   [SYNTHESE]
       AREA_AGGREGATION_ENABLED = true
@@ -60,19 +61,16 @@ Si vous mettez à jour GeoNature :
       AREA_AGGREGATION_BY_DEFAULT = false    # affichage groupé par défaut
       AREA_AGGREGATION_LEGEND_CLASSES = .   # voir fichier de configuration d’exemple
   ```
-
 - Synthèse : Possibilité de définir des filtres par défaut à travers le paramètre `SYNTHESE.DEFAULT_FILTERS` (#2261)
 - Métadonnées : Chargement des jeux de données seulement quand on clique sur un cadre d'acquisition dans la liste des métadonnées, pour améliorer les performances du module, en ne chargeant pas tous les jeux de données par défaut (#2004)
 - Champs additionnels : Les champs de formulaire de type `radio`, `select`, `multiselect` et `checkbox`, attendent désormais une liste de dictionnaire `{value, label}` (voir doc des champs additionnels) (#2214)
 - Admin : Possibilité de gérer la table des applications mobiles (`t_mobile_apps`) dans le module "Admin" de GeoNature, notamment pour faciliter la gestion des mises à jour de Occtax-mobile (#2352)
 - Possibilité de configurer les modules (picto, doc, label) directement depuis le module Admin (#2409)
 - Possibilité d’afficher un bouton de géolocalisation sur les cartes des formulaires Occtax et Occhab (#2338), activable avec le paramètre suivant :
-
   ```toml
   [MAP]
       GEOLOCATION = true
   ```
-
 - Profils mis à jour automatiquement par Celery Beat, toutes les nuits par défaut (#2412)
 - Ajout de l’intégration de Redis à l'outil de logs Sentry, pour améliorer la précisions des traces
 - Possibilité de définir des règles de notifications par défaut, s’appliquant aux utilisateurs n’ayant pas de règle spécifique. Pour cela, il suffit d’insérer une règle dans la table `gn_notifications.t_notifications_rules` avec `id_role=NULL` (#2267)
@@ -83,17 +81,14 @@ Si vous mettez à jour GeoNature :
 - Évolution de la gestion des fichiers statiques et des médias (#2306) :
   - Séparation des fichiers statiques (applicatif, fournis par GeoNature) et des fichiers médias (générés par l’applications). Sont déplacés du dossier `backend/static` vers le dossier `backend/media` les sous-dossiers suivants : `medias`, `exports`, `geopackages`, `mobile`, `pdf`, `shapefiles`. De plus, l’ancien dossier `medias` est renommé `attachments`.
   - Ajout des paramètres de configuration suivants :
-
     ```toml
-    ROOT_PATH = <dossier backend>
+    ROOT_PATH = "dossier absolu du backend"
     STATIC_FOLDER = "static"    # dossier absolu ou relatif à ROOT_PATH
     STATIC_URL = "/static"      # URL d’accès aux fichiers statiques
     MEDIA_FOLDER = "media"      # dossier absolu ou relatif à ROOT_PATH
     MEDIA_URL = "/media"        # URL d’accès aux médias
     ```
-
   - Ajout d’un dossier `custom` à la racine de GeoNature et du paramètre associé `CUSTOM_STATIC_FOLDER`. Les fichiers statiques réclamés sont cherchés en priorité dans le dossier `custom`, puis, si non trouvés, dans le dossier `backend/static`. Ainsi, si besoin de modifier un fichier statique, on placera un fichier du même nom dans le dossier `custom` plutôt que de modifier le fichier original (par exemple, `custom/images/logo_structure.png`).
-
   - Retrait du préfixe `static/media/` aux chemins d’accès des fichiers joints (colonne `gn_commons.t_medias.media_path`)
   - Retrait du préfixe `static/mobile/` aux chemins d’accès des APK des applications mobiles (colonne `gn_commons.t_mobile_apps.relative_path_apk`)
   - Certains fichiers statiques sont renommés :
@@ -119,7 +114,7 @@ Si vous mettez à jour GeoNature :
 - La recherche du fichier de configuration des modules sous le nom `{module_code}_config.toml` (code du module en minuscule) dans le répertoire de configuration de GeoNature devient prioritaire devant l’utilisation du fichier `conf_gn_module.toml` dans le répertoire de configuration du module.
   Le script de mise à jour déplace les fichiers de configuration des modules vers le dossier centralisé de configuration de GeoNature (#2423)
 - Rechargement automatique de GeoNature quand on modifie un fichier de configuration d'un module dans l" dossier centralisé (#2418)
-- Évolution de la configuration Apache `/etc/apache2/conf-available/geonature.conf` pour activer la compression gzip des réponses de l’API (#2266).
+- Évolution de la configuration Apache `/etc/apache2/conf-available/geonature.conf` pour activer la compression gzip des réponses de l’API (#2266) et pour servir les médias et les fichiers statiques par Apache (#2430).
   À reporter dans votre configuration Apache si celle-ci n’importe pas cette configuration fournie par défaut.
 - Le script de mise à jour (`migration.sh`) peut prendre en argument le chemin vers l’ancienne installation GeoNature.
   Il peut s’agir du même dossier que la nouvelle installation GeoNature (cas d’une mise à jour d’un dossier GeoNature avec Git).
@@ -162,7 +157,7 @@ Si vous mettez à jour GeoNature :
 - Migration GeoNature : le venv est mis à jour plutôt que d’être supprimé et recréé (#2332)
 - Les erreurs de validation Marshmallow sont automatiquement converties en erreur 400 (BadRequest)
 - Les modules *contrib* doivent également être formatés avec `prettier`
-- Fiabilisation des exports PDF dans le module métadonnées (#2232)
+- Fiabilisation des exports PDF (#2232)
 - Le composant de carte `pnx-map` a un nouvel input `geolocation` permettant d’activer le bouton de géolocalisation
 - Ajout du mixin `geonature.utils.schema.CruvedSchemaMixin` permettant d’ajouter la propriété (exclue par défaut) `cruved` à un schéma Marshmallow
 - L’accès aux paramètre de configuration ne se fait plus à partir des fichiers générés ``AppConfig`` (GeoNature) ou ``ModuleConfig`` (modules), mais uniquement à partir du ``ConfigService`` en charge de la récupération dynamique de la configuration (#2205).
