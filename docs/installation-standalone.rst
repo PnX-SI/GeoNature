@@ -14,7 +14,7 @@ Installer les paquets suivants :
   $ sudo apt install unzip git postgresql-postgis postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis
 
 
-Installation de l'application
+Récupération de l'application
 -----------------------------
 
 * Se placer dans le répertoire de l'utilisateur (``/home/geonatureadmin/`` dans notre cas) 
@@ -48,7 +48,7 @@ Installation de l'application
 
 
 Installation de l'application
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------
 
 Rendez vous dans le dossier ``install`` et lancez successivement dans l’ordre les scripts suivants :
 
@@ -62,27 +62,18 @@ Rendez vous dans le dossier ``install`` et lancez successivement dans l’ordre 
 Vous pouvez alors démarrer le backend de GeoNature : ``sudo systemctl start geonature``
 
 Configuration Apache
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 
-Le script ``install/06_configure_apache.sh`` copie le fichier de configuration de référence ``install/assets/geonature_apache.conf``, le place dans ``/etc/apache2/conf-available/geonature.conf`` et remplace ses variables à partir de votre configuration de GeoNature.
+* Le script ``install/06_configure_apache.sh`` copie le fichier de configuration de référence ``install/assets/geonature_apache.conf``, le place dans ``/etc/apache2/conf-available/geonature.conf`` et remplace ses variables à partir de votre configuration de GeoNature.
 
-Relancez ce script si vous changer l'URL de votre GeoNature ou les paramètres liés aux chemins et URL des fichiers statiques et des médias.
+  Relancez ce script si vous changer l'URL de votre GeoNature ou les paramètres liés aux chemins et URL des fichiers statiques et des médias.
 
-Une fois la commande lancée, créez la configuration du vhost, incluant la configuration par défaut créée précédemment :
+* Créez la configuration du vhost, incluant la configuration par défaut créée précédemment :
 
   .. code:: console
 
     $ sudo cp install/assets/vhost_apache.conf /etc/apache2/sites-available/geonature.conf # Copier le vhost
     $ sudo nano /etc/apache2/sites-available/geonature.conf # Modifier la variable ``${DOMAIN_NAME}``
-
-* Activez les modules Apache suivants :
-
-  .. code:: console
-
-    $ sudo a2enmod rewrite
-    $ sudo a2enmod proxy
-    $ sudo a2enmod proxy_http
-    $ sudo a2enmod deflate
 
 * Activez la nouvelle configuration :
 
