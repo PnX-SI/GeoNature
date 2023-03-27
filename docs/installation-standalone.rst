@@ -64,17 +64,11 @@ Vous pouvez alors démarrer le backend de GeoNature : ``sudo systemctl start geo
 Configuration Apache
 ^^^^^^^^^^^^^^^^^^^^
 
-Le script ``06_configure_apache.sh`` copie le fichier de configuration de référence ``install/assets/geonature_apache.conf``, le place dans ``/etc/apache2/conf-available/geonature.conf`` et remplace la variable ``${GEONATURE_DIR}`` par le chemin absolu de votre dossier contenant GeoNature.
+Le script ``install/06_configure_apache.sh`` copie le fichier de configuration de référence ``install/assets/geonature_apache.conf``, le place dans ``/etc/apache2/conf-available/geonature.conf`` et remplace ses variables à partir de votre configuration de GeoNature.
 
-Vous pouvez aussi le faire manuellement :
+Relancez ce script si vous changer l'URL de votre GeoNature ou les paramètres liés aux chemins et URL des fichiers statiques et des médias.
 
-  .. code:: console
-
-    $ sudo cp install/assets/geonature_apache.conf /etc/apache2/conf-available/geonature.conf # Copier la configuration
-    $ sudo nano /etc/apache2/conf-available/geonature.conf # Modifier la configuration pour remplacer ``${GEONATURE_DIR}``
-    $ sudo a2enconf geonature # Activer cette configuration
-
-Créez ensuite la configuration du vhost, incluant la configuration créée précédemment :
+Une fois la commande lancée, créez la configuration du vhost, incluant la configuration par défaut créée précédemment :
 
   .. code:: console
 
