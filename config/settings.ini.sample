@@ -22,9 +22,6 @@ my_url=http://url.com/
 drop_apps_db=false
 
 # DB host
-# Attention les scripts d'installation automatique (install_db.sh et install_all.sh) ne fonctionneront
-# que si votre BDD est installée en local (localhost). Si vous souhaitez installer votre BDD sur un autre serveur,
-# les scripts n'auront pas les droits suffisants pour créer la BDD sur un autre serveur et cela devra être fait manuellement.
 db_host=localhost
 
 # PostgreSQL port
@@ -33,11 +30,18 @@ db_port=5432
 # GeoNature database name
 db_name=geonature2db
 
+
 # GeoNature database owner username
 user_pg=geonatadmin
 
 # GeoNature database owner password
 user_pg_pass=monpassachanger
+
+# Postgres SuperUser that can create Geonature DB and grant permissions to Geonature database owner
+# Only needed if DB is not on the same machine as the app (i.e db_host != localhost)
+remote_super_user_database_name=postgres
+remote_super_user_name=postgres
+remote_super_user_pass=monpassachanger
 
 # Local projection SRID
 srid_local=2154
