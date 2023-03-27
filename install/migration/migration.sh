@@ -49,7 +49,8 @@ fi
 
 if [ -d "${olddir}/custom" ]; then
     echo "Copie de la customisation…"
-    cp -n -r ${olddir}/custom/* custom/
+    mkdir -p "${newdir}"/custom/
+    cp -n -r "${olddir}"/custom/* "${newdir}"/custom/
 fi
 
 echo "Vérification de la robustesse de la SECRET_KEY…"
@@ -222,13 +223,12 @@ geonature upgrade-modules-db || exit 1
 # GeoNature cassé mais les médias déjà déplacé de l’ancien GN au nouveau GN non fonctionnel.
 echo "Déplacement des anciens fichiers static vers les médias …"  # before GN 2.12
 cd "${olddir}/backend"
-mkdir -p media
-if [ -d static/medias ]; then mv static/medias media/attachments; fi  # medias becomes attachments
-if [ -d static/pdf ]; then mv static/pdf media/pdf; fi
-if [ -d static/exports ]; then mv static/exports media/exports; fi
-if [ -d static/geopackages ]; then mv static/geopackages media/geopackages; fi
-if [ -d static/shapefiles ]; then mv static/shapefiles media/shapefiles; fi
-if [ -d static/mobile ]; then mv static/mobile media/mobile; fi
+if [ -d static/medias ]; then mkdir -p media; mv static/medias media/attachments; fi  # medias becomes attachments
+if [ -d static/pdf ]; then mkdir -p media; mv static/pdf media/pdf; fi
+if [ -d static/exports ]; then mkdir -p media; mv static/exports media/exports; fi
+if [ -d static/geopackages ]; then mkdir -p media; mv static/geopackages media/geopackages; fi
+if [ -d static/shapefiles ]; then mkdir -p media; mv static/shapefiles media/shapefiles; fi
+if [ -d static/mobile ]; then mkdir -p media; mv static/mobile media/mobile; fi
 echo "Déplacement des médias …"
 shopt -s nullglob
 for dir in "${olddir}"/backend/media/*; do
