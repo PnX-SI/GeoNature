@@ -92,29 +92,6 @@ if [ ! -f "${newdir}/custom/css/metadata_pdf_custom.css" ] && [ -f "${olddir}/ba
   cp "${olddir}/backend/static/css/custom.css" "${newdir}/custom/css/metadata_pdf_custom.css"
 fi
 
-echo "Déplacement des anciens fichiers static vers les médias …"
-cd "${olddir}/backend"
-mkdir -p media
-if [ -d static/medias ]; then mv static/medias media/attachments; fi  # medias becomes attachments
-if [ -d static/pdf ]; then mv static/pdf media/pdf; fi
-if [ -d static/exports ]; then mv static/exports media/exports; fi
-if [ -d static/geopackages ]; then mv static/geopackages media/geopackages; fi
-if [ -d static/shapefiles ]; then mv static/shapefiles media/shapefiles; fi
-if [ -d static/mobile ]; then mv static/mobile media/mobile; fi
-
-echo "Déplacement des médias …"
-shopt -s nullglob
-for dir in "${olddir}"/backend/media/*; do
-    if [ -d "${newdir}"/backend/media/$(basename "${dir}") ]; then
-        for subdir in "${dir}"/*; do
-            mv -i "${subdir}" "${newdir}"/backend/media/$(basename "${dir}")/
-        done
-    else
-        mv -i "${dir}" "${newdir}"/backend/media/
-    fi
-done
-shopt -u nullglob
-
 
 echo "Mise à jour de node si nécessaire …"
 cd "${newdir}"/install
@@ -240,6 +217,30 @@ echo "Mise à jour de la base de données…"
 geonature db heads | grep "(occtax)" > /dev/null && geonature db upgrade occtax@4c97453a2d1a
 geonature db autoupgrade || exit 1
 geonature upgrade-modules-db || exit 1
+
+# On déplace les médias à la fin de la migration, pour ne pas se retrouver avec une nouvelle installation
+# GeoNature cassé mais les médias déjà déplacé de l’ancien GN au nouveau GN non fonctionnel.
+echo "Déplacement des anciens fichiers static vers les médias …"  # before GN 2.12
+cd "${olddir}/backend"
+mkdir -p media
+if [ -d static/medias ]; then mv static/medias media/attachments; fi  # medias becomes attachments
+if [ -d static/pdf ]; then mv static/pdf media/pdf; fi
+if [ -d static/exports ]; then mv static/exports media/exports; fi
+if [ -d static/geopackages ]; then mv static/geopackages media/geopackages; fi
+if [ -d static/shapefiles ]; then mv static/shapefiles media/shapefiles; fi
+if [ -d static/mobile ]; then mv static/mobile media/mobile; fi
+echo "Déplacement des médias …"
+shopt -s nullglob
+for dir in "${olddir}"/backend/media/*; do
+    if [ -d "${newdir}"/backend/media/$(basename "${dir}") ]; then
+        for subdir in "${dir}"/*; do
+            mv -i "${subdir}" "${newdir}"/backend/media/$(basename "${dir}")/
+        done
+    else
+        mv -i "${dir}" "${newdir}"/backend/media/
+    fi
+done
+shopt -u nullglob
 
 echo "Redémarrage des services…"
 for service in ${SERVICES[@]}; do
