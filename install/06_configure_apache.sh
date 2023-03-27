@@ -20,6 +20,7 @@ deactivate
 
 echo "Configuration Apache"
 envsubst '${BACKEND_PREFIX} ${MEDIA_FOLDER} ${MEDIA_URL} ${STATIC_FOLDER} ${CUSTOM_STATIC_FOLDER} ${STATIC_URL} ${FRONTEND_FOLDER} ${FRONTEND_PREFIX} ${GUNICORN_URL}' < "${BASE_DIR}/install/assets/geonature_apache.conf" | sudo tee /etc/apache2/conf-available/geonature.conf || exit 1
+sudo a2enmod rewrite || exit 1
 sudo a2enmod proxy || exit 1
 sudo a2enmod proxy_http || exit 1
 sudo a2enmod deflate || exit 1
