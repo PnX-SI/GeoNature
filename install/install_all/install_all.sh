@@ -138,8 +138,6 @@ echo "Installation du frontend GeoNature"
 echo "Installation de la config apache pour GeoNature"
 ./06_configure_apache.sh || exit 1
 
-sudo a2enconf geonature || exit 1
-
 if [ "${mode}" != dev ]; then
     sudo systemctl start geonature || exit 1
     sudo systemctl start geonature-worker || exit 1
@@ -196,8 +194,6 @@ source "${GEONATURE_DIR}/backend/venv/bin/activate"
 geonature db upgrade taxhub-admin@head
 deactivate
 
-sudo a2enconf taxhub || exit 1
-
 sudo systemctl start taxhub || exit 1
 if [ "${mode}" != "dev" ]; then
     sudo systemctl enable taxhub || exit 1
@@ -242,8 +238,6 @@ if [ "$install_usershub_app" = true ]; then
     source "${GEONATURE_DIR}/backend/venv/bin/activate"
     geonature db upgrade usershub-samples@head
     deactivate
-
-    sudo a2enconf usershub || exit 1
 
     sudo systemctl start usershub || exit 1
     if [ "${mode}" != "dev" ]; then
