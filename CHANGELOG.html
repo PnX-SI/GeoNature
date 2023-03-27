@@ -50,6 +50,7 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">CHANGELOG</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cyathea-borbonica-2023-03-27">2.12.0 - Cyathea borbonica 🌴 (2023-03-27)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">2.11.2 (2023-01-19)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id2">2.11.1 (2023-01-18)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ilex-aquifolium-2022-12-21">2.11.0 - Ilex aquifolium 🎄 (2022-12-21)</a></li>
@@ -71,7 +72,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#androsace-delphinensis-2021-06-30">2.7.0 - Androsace delphinensis 🌼 (2021-06-30)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id15">2.6.2 (2021-02-15)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id16">2.6.1 (2021-02-11)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#saxifraga-2021-02-04">2.6.0 - Saxifraga (2021-02-04)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#saxifraga-2021-02-04">2.6.0 - Saxifraga (2021-02-04) 🌸</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id17">2.5.5 (2020-11-19)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id18">2.5.4 (2020-11-17)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id19">2.5.3 (2020-11-04)</a></li>
@@ -133,12 +134,209 @@
              
   <section id="changelog">
 <h1>CHANGELOG<a class="headerlink" href="#changelog" title="Lien permanent vers cette rubrique"></a></h1>
+<section id="cyathea-borbonica-2023-03-27">
+<h2>2.12.0 - Cyathea borbonica 🌴 (2023-03-27)<a class="headerlink" href="#cyathea-borbonica-2023-03-27" title="Lien permanent vers cette rubrique"></a></h2>
+<p><strong>⏩ En bref</strong></p>
+<ul class="simple">
+<li><p>Affichage agrégé des observations dans la Synthèse (performances et lisibilité) (#1847 et #1878)</p></li>
+<li><p>Filtres par défaut dans la Synthèse (#2261)</p></li>
+<li><p>Optimisation des performances des exports de la Synthèse (#1434)</p></li>
+<li><p>Optimisation du chargement des jeux de données dans le module Métadonnées pour en améliorer les performances (#2004)</p></li>
+<li><p>Intégration par défaut de Taxref v16, BDC statuts v16 et référentiel de sensibilité v16</p></li>
+<li><p>Possibilité de gérer les tables des applications mobiles et des modules depuis le module « Admin »</p></li>
+<li><p>Configuration dynamique sans rebuild (#2205)</p></li>
+<li><p>Centralisation de la configuration des modules dans GeoNature (#2423)</p></li>
+<li><p>Historisation des suppressions dans la Synthèse, nécessaire pour GN2PG notamment (#789)</p></li>
+<li><p>Réorganisation des dossiers pour simplifier la customisation et les mises à jour (#2306)</p></li>
+<li><p>Stabilisation de la dockerisation (#2206)</p></li>
+<li><p>Refactorisation d’Occhab, module de référence et documentation développeurs associée</p></li>
+<li><p>Refactorisation des permissions (simplification, optimisation, centralisation, performances, tests)</p></li>
+<li><p>Mise à jour d’Angular en version 15 (#2154)</p></li>
+</ul>
+<p><strong>⚠️ Notes de version</strong></p>
+<p>Si vous mettez à jour GeoNature :</p>
+<ul class="simple">
+<li><p>Si vous utilisez des modules spécifiques (hors Import, Export, Dashboard, Monitoring), vérifiez qu’ils disposent d’une version compatible avec GeoNature 2.12 (compatibilité Angular 15, révision des permissions, configuration dynamique)</p></li>
+<li><p>Si vous les utilisez, mettre à jour les modules Import en version 2.1.0 (ou plus), Export en version 1.4.0, Dashboard en version 1.3.0 (ou plus) et Monitoring en version 0.5.0 (ou plus) avec la nouvelle procédure consistant uniquement à télécharger, dézipper et renommer les dossiers des modules et de leur configuration</p></li>
+<li><p>Mettez à jour TaxHub en version 1.11 (ou plus)</p></li>
+<li><p>La vue <code class="docutils literal notranslate"><span class="pre">gn_synthese.v_synthese_for_export</span></code> définissant la structure et le contenu des exports de la Synthèse a été modifiée pour être optimisée. Si vous l’aviez customisée, reportée vos modifications manuellement après la mise à jour de GeoNature</p></li>
+<li><p>Suivez la procédure de mise à jour classique de GeoNature (<a class="reference external" href="https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application">https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application</a>)</p></li>
+<li><p>Le script <code class="docutils literal notranslate"><span class="pre">migration.sh</span></code> se charge de déplacer automatiquement les différents fichiers suite à la réorganisation des dossiers (customisation, médias, mobile, configuration centralisée des modules)</p></li>
+<li><p>Il n’est plus nécessaire de rebuilder le frontend ni de recharger GeoNature manuellement à chaque modification de la configuration de GeoNature ou de ses modules</p></li>
+<li><p>Les taches automatisées sont désormais gérées par Celery Beat et installées avec GeoNature. Si vous aviez mis en place des crons pour mettre à jour les profils de taxons (ou les données du module Dashboard, ou les exports planifiés du module Export), supprimez les (dans <code class="docutils literal notranslate"><span class="pre">/etc/cron/geonature</span></code> ou <code class="docutils literal notranslate"><span class="pre">crontab</span> <span class="pre">-e</span></code>) car ils ne sont plus utiles</p></li>
+<li><p>Il est fortement conseillé d’utiliser la configuration Apache générée par défaut dans <code class="docutils literal notranslate"><span class="pre">/etc/apache2/conf-available/geonature.conf</span></code> et de l’inclure dans votre vhost (<code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/geonature.conf</span></code> et/ou <code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/geonature-le-ssl.conf</span></code>), en suivant la documentation dédiée (https://docs.geonature.fr/installation.html#configuration-apache)</p></li>
+<li><p>Si vous aviez customisé la page d’accueil de GeoNature en modifiant les composants <code class="docutils literal notranslate"><span class="pre">frontend/src/custom/introduction.component.html</span></code> et <code class="docutils literal notranslate"><span class="pre">frontend/src/custom/footer.component.html</span></code> ceux-ci ont été supprimés au profit de paramètres de configuration. Il vous faut donc déplacer votre customisation dans les paramètres <code class="docutils literal notranslate"><span class="pre">TITLE</span></code>, <code class="docutils literal notranslate"><span class="pre">INTRODUCTION</span></code> et <code class="docutils literal notranslate"><span class="pre">FOOTER</span></code> de la nouvelle section <code class="docutils literal notranslate"><span class="pre">[HOME]</span></code> de la configuration de GeoNature.
+Vous pouvez renseigner du code HTML sur plusieurs lignes en le plaçant entre triple quote (<code class="docutils literal notranslate"><span class="pre">&quot;&quot;&quot;&lt;b&gt;Hello&lt;/b&gt;&quot;&quot;&quot;</span></code>).</p></li>
+<li><p>Les paramètres de configuration suivants ont été supprimés et doivent être retirés de votre fichier de configuration (<code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code>) s’ils sont présents :</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">LOGO_STRUCTURE_FILE</span></code> (si vous aviez renommé votre logo, déplacez le dans <code class="docutils literal notranslate"><span class="pre">geonature/custom/images/logo_structure.png</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">UPLOAD_FOLDER</span></code> (si vous l’aviez déplacé, renommez votre dossier d’upload en <code class="docutils literal notranslate"><span class="pre">attachments</span></code> et placez-le dans le dossier des médias (<code class="docutils literal notranslate"><span class="pre">geonature/backend/media/</span></code> par défaut, paramétrable via <code class="docutils literal notranslate"><span class="pre">MEDIA_FOLDER</span></code>))</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code></p></li>
+</ul>
+</li>
+<li><p>Occtax et champs additionnels :</p>
+<ul>
+<li><p>Les champs additionnels de type <code class="docutils literal notranslate"><span class="pre">bool_radio</span></code> ne sont plus supportés.
+Si vous utilisiez ce type de widget dans vos champs additionnels d’Occtax, ils seront automatiquement remplacés par un widget de type <code class="docutils literal notranslate"><span class="pre">radio</span></code>.
+Vous devez changer le champs <code class="docutils literal notranslate"><span class="pre">field_values</span></code> sur le modèle suivant : <code class="docutils literal notranslate"><span class="pre">[{&quot;label&quot;:</span> <span class="pre">&quot;Mon</span> <span class="pre">label</span> <span class="pre">vrai&quot;,</span> <span class="pre">&quot;value&quot;:</span> <span class="pre">true</span> <span class="pre">},</span> <span class="pre">{&quot;label&quot;:</span> <span class="pre">&quot;Mon</span> <span class="pre">label</span> <span class="pre">faux&quot;,</span> <span class="pre">&quot;value&quot;:</span> <span class="pre">false</span> <span class="pre">}]</span></code>.</p></li>
+<li><p>Les champs de formulaire de type <code class="docutils literal notranslate"><span class="pre">radio</span></code>, <code class="docutils literal notranslate"><span class="pre">select</span></code>, <code class="docutils literal notranslate"><span class="pre">multiselect</span></code> et <code class="docutils literal notranslate"><span class="pre">checkbox</span></code>, attendent désormais une liste de dictionnaire <code class="docutils literal notranslate"><span class="pre">{value,</span> <span class="pre">label}</span></code> (voir doc des champs additionnels) (#2214)<br />
+La rétrocompatibilité avec des listes simples est maintenue, mais vous êtes invités à modifier ces champs dans le backoffice.<br />
+Pour conserver le bon affichage lors de l’édition des données, renseignez l’ancienne valeur deux fois dans la clé <code class="docutils literal notranslate"><span class="pre">value</span></code> et la clé <code class="docutils literal notranslate"><span class="pre">label</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>🚀 Nouveautés</strong></p>
+<ul>
+<li><p>Configuration dynamique du frontend : le frontend récupère dynamiquement sa configuration depuis le backend. Pour cela, il nécessite uniquement l’adresse de l’<code class="docutils literal notranslate"><span class="pre">API_ENDPOINT</span></code> qui doit être renseignée dans le fichier <code class="docutils literal notranslate"><span class="pre">frontend/src/assets/config.json</span></code>. En conséquence, il n’est plus nécessaire de rebuilder le frontend lors d’une modification de la configuration de GeoNature ou de ses modules (#2205)</p></li>
+<li><p>Personnalisation de la page d’accueil : ajout d’une section <code class="docutils literal notranslate"><span class="pre">[HOME]</span></code> contenant les paramètres <code class="docutils literal notranslate"><span class="pre">TITLE</span></code>, <code class="docutils literal notranslate"><span class="pre">INTRODUCTION</span></code> et <code class="docutils literal notranslate"><span class="pre">FOOTER</span></code>. Ceux-ci peuvent contenir du code HTML qui est chargé dynamiquement avec la configuration, évitant ainsi la nécessité d’un rebuild du frontend (#2300)</p></li>
+<li><p>Synthèse : Agrégation des observations ayant la même géométrie pour ne les charger qu’une seule fois, et ainsi améliorer les performances et la lisibilité (#1847)</p></li>
+<li><p>Synthèse : Possibilité d’afficher les données agrégées par maille (#1878). La fonctionnalité est configurable avec les paramètres suivant :</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[SYNTHESE]</span><span class="w"></span>
+<span class="w">    </span><span class="n">AREA_AGGREGATION_ENABLED</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
+<span class="w">    </span><span class="n">AREA_AGGREGATION_TYPE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;M10&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">AREA_AGGREGATION_BY_DEFAULT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">false</span><span class="w">    </span><span class="c1"># affichage groupé par défaut</span><span class="w"></span>
+<span class="w">    </span><span class="n">AREA_AGGREGATION_LEGEND_CLASSES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="w">   </span><span class="c1"># voir fichier de configuration d’exemple</span><span class="w"></span>
+</pre></div>
+</div>
+</li>
+<li><p>Synthèse : Possibilité de définir des filtres par défaut à travers le paramètre <code class="docutils literal notranslate"><span class="pre">SYNTHESE.DEFAULT_FILTERS</span></code> (#2261)</p></li>
+<li><p>Métadonnées : Chargement des jeux de données seulement quand on clique sur un cadre d’acquisition dans la liste des métadonnées, pour améliorer les performances du module, en ne chargeant pas tous les jeux de données par défaut (#2004)</p></li>
+<li><p>Champs additionnels : Les champs de formulaire de type <code class="docutils literal notranslate"><span class="pre">radio</span></code>, <code class="docutils literal notranslate"><span class="pre">select</span></code>, <code class="docutils literal notranslate"><span class="pre">multiselect</span></code> et <code class="docutils literal notranslate"><span class="pre">checkbox</span></code>, attendent désormais une liste de dictionnaire <code class="docutils literal notranslate"><span class="pre">{value,</span> <span class="pre">label}</span></code> (voir doc des champs additionnels) (#2214)</p></li>
+<li><p>Admin : Possibilité de gérer la table des applications mobiles (<code class="docutils literal notranslate"><span class="pre">t_mobile_apps</span></code>) dans le module « Admin » de GeoNature, notamment pour faciliter la gestion des mises à jour de Occtax-mobile (#2352)</p></li>
+<li><p>Possibilité de configurer les modules (picto, doc, label) directement depuis le module Admin (#2409)</p></li>
+<li><p>Possibilité d’afficher un bouton de géolocalisation sur les cartes des formulaires Occtax et Occhab (#2338), activable avec le paramètre suivant :</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[MAP]</span><span class="w"></span>
+<span class="w">    </span><span class="n">GEOLOCATION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
+</pre></div>
+</div>
+</li>
+<li><p>Profils mis à jour automatiquement par Celery Beat, toutes les nuits par défaut (#2412)</p></li>
+<li><p>Ajout de l’intégration de Redis à l’outil de logs Sentry, pour améliorer la précisions des traces</p></li>
+<li><p>Possibilité de définir des règles de notifications par défaut, s’appliquant aux utilisateurs n’ayant pas de règle spécifique. Pour cela, il suffit d’insérer une règle dans la table <code class="docutils literal notranslate"><span class="pre">gn_notifications.t_notifications_rules</span></code> avec <code class="docutils literal notranslate"><span class="pre">id_role=NULL</span></code> (#2267)</p></li>
+<li><p>Publication automatique de deux images Docker <code class="docutils literal notranslate"><span class="pre">geonature-backend</span></code> et <code class="docutils literal notranslate"><span class="pre">geonature-frontend</span></code> (#2206). Leur utilisation n’a pas encore été éprouvée et leur utilisation en production n’est de ce fait pas recommandée.</p></li>
+<li><p>Amélioration de la fiabilité du processus de migration</p></li>
+<li><p>Ajout d’un index sur la colonne <code class="docutils literal notranslate"><span class="pre">gn_synthese.cor_area_synthese.id_area</span></code>. La colonne <code class="docutils literal notranslate"><span class="pre">id_synthese</span></code> est déjà couverte par l’index multiple <code class="docutils literal notranslate"><span class="pre">(id_synthese,</span> <span class="pre">id_area)</span></code>.</p></li>
+<li><p>Intégration de TaxRef v16 et du référentiel de sensibilité associé pour les nouvelles installations de GeoNature</p></li>
+<li><p>Évolution de la gestion des fichiers statiques et des médias (#2306) :</p>
+<ul>
+<li><p>Séparation des fichiers statiques (applicatif, fournis par GeoNature) et des fichiers médias (générés par l’applications). Sont déplacés du dossier <code class="docutils literal notranslate"><span class="pre">backend/static</span></code> vers le dossier <code class="docutils literal notranslate"><span class="pre">backend/media</span></code> les sous-dossiers suivants : <code class="docutils literal notranslate"><span class="pre">medias</span></code>, <code class="docutils literal notranslate"><span class="pre">exports</span></code>, <code class="docutils literal notranslate"><span class="pre">geopackages</span></code>, <code class="docutils literal notranslate"><span class="pre">mobile</span></code>, <code class="docutils literal notranslate"><span class="pre">pdf</span></code>, <code class="docutils literal notranslate"><span class="pre">shapefiles</span></code>. De plus, l’ancien dossier <code class="docutils literal notranslate"><span class="pre">medias</span></code> est renommé <code class="docutils literal notranslate"><span class="pre">attachments</span></code>.</p></li>
+<li><p>Ajout des paramètres de configuration suivants :</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="n">ROOT_PATH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dossier absolu du backend&quot;</span><span class="w"></span>
+<span class="n">STATIC_FOLDER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;static&quot;</span><span class="w">    </span><span class="c1"># dossier absolu ou relatif à ROOT_PATH</span><span class="w"></span>
+<span class="n">STATIC_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/static&quot;</span><span class="w">      </span><span class="c1"># URL d’accès aux fichiers statiques</span><span class="w"></span>
+<span class="n">MEDIA_FOLDER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;media&quot;</span><span class="w">      </span><span class="c1"># dossier absolu ou relatif à ROOT_PATH</span><span class="w"></span>
+<span class="n">MEDIA_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/media&quot;</span><span class="w">        </span><span class="c1"># URL d’accès aux médias</span><span class="w"></span>
+</pre></div>
+</div>
+</li>
+<li><p>Ajout d’un dossier <code class="docutils literal notranslate"><span class="pre">custom</span></code> à la racine de GeoNature et du paramètre associé <code class="docutils literal notranslate"><span class="pre">CUSTOM_STATIC_FOLDER</span></code>. Les fichiers statiques réclamés sont cherchés en priorité dans le dossier <code class="docutils literal notranslate"><span class="pre">custom</span></code>, puis, si non trouvés, dans le dossier <code class="docutils literal notranslate"><span class="pre">backend/static</span></code>. Ainsi, si besoin de modifier un fichier statique, on placera un fichier du même nom dans le dossier <code class="docutils literal notranslate"><span class="pre">custom</span></code> plutôt que de modifier le fichier original (par exemple, <code class="docutils literal notranslate"><span class="pre">custom/images/logo_structure.png</span></code>).</p></li>
+<li><p>Retrait du préfixe <code class="docutils literal notranslate"><span class="pre">static/media/</span></code> aux chemins d’accès des fichiers joints (colonne <code class="docutils literal notranslate"><span class="pre">gn_commons.t_medias.media_path</span></code>)</p></li>
+<li><p>Retrait du préfixe <code class="docutils literal notranslate"><span class="pre">static/mobile/</span></code> aux chemins d’accès des APK des applications mobiles (colonne <code class="docutils literal notranslate"><span class="pre">gn_commons.t_mobile_apps.relative_path_apk</span></code>)</p></li>
+<li><p>Certains fichiers statiques sont renommés :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">static/css/custom.css</span></code> → <code class="docutils literal notranslate"><span class="pre">static/css/metadata_pdf_custom.css</span></code></p></li>
+</ul>
+</li>
+<li><p>Certains assets du frontend sont déplacés vers les fichiers statiques du backend pour profiter du mécanisme du customisation :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">frontend/assets/custom.css</span></code> → <code class="docutils literal notranslate"><span class="pre">backend/static/css/frontend.css</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">frontend/src/favicon.ico</span></code> → <code class="docutils literal notranslate"><span class="pre">backend/static/images/favicon.ico</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">frontend/src/custom/images/login_background.jpg</span></code> → <code class="docutils literal notranslate"><span class="pre">backend/static/images/login_background.jpg</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">frontend/src/custom/images/logo_sidebar.jpg</span></code> → <code class="docutils literal notranslate"><span class="pre">backend/static/images/logo_sidebar.jpg</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">frontend/src/custom/images/logo_structure.png</span></code> → <code class="docutils literal notranslate"><span class="pre">backend/static/images/logo_structure.png</span></code></p></li>
+</ul>
+</li>
+<li><p>Le lien symbolique <code class="docutils literal notranslate"><span class="pre">static/images/logo_structure.jpg</span></code> est supprimé au profit de l’utilisation de <code class="docutils literal notranslate"><span class="pre">logo_sidebar.jpg</span></code></p></li>
+<li><p>Les déplacements mentionnés ci-dessus sont effectués par le script <code class="docutils literal notranslate"><span class="pre">migration.sh</span></code></p></li>
+</ul>
+</li>
+<li><p>Mise à jour des dépendances :</p>
+<ul class="simple">
+<li><p>TaxHub 1.11.1</p></li>
+<li><p>UsersHub 2.3.3</p></li>
+<li><p>UsersHub-authentification-module 1.6.5</p></li>
+<li><p>Habref-api-module 0.3.2</p></li>
+<li><p>Nomenclature-api-module 1.5.4</p></li>
+<li><p>RefGeo 1.3.0</p></li>
+<li><p>Utils-Flask-SQLAlchemy 0.3.2</p></li>
+<li><p>Utils-Flask-SQLAlchemy-Geo 0.2.7</p></li>
+</ul>
+</li>
+<li><p>Refonte des permissions et suppression de la vue <code class="docutils literal notranslate"><span class="pre">v_roles_permissions</span></code> qui posait des problèmes de performances du nombre d’utilisateurs (#2196 et #2360)</p></li>
+<li><p>La recherche du fichier de configuration des modules sous le nom <code class="docutils literal notranslate"><span class="pre">{module_code}_config.toml</span></code> (code du module en minuscule) dans le répertoire de configuration de GeoNature devient prioritaire devant l’utilisation du fichier <code class="docutils literal notranslate"><span class="pre">conf_gn_module.toml</span></code> dans le répertoire de configuration du module.
+Le script de mise à jour déplace les fichiers de configuration des modules vers le dossier centralisé de configuration de GeoNature (#2423)</p></li>
+<li><p>Rechargement automatique de GeoNature quand on modifie un fichier de configuration d’un module dans l » dossier centralisé (#2418)</p></li>
+<li><p>Évolution de la configuration Apache <code class="docutils literal notranslate"><span class="pre">/etc/apache2/conf-available/geonature.conf</span></code> pour activer la compression gzip des réponses de l’API (#2266) et pour servir les médias et les fichiers statiques par Apache (#2430).
+À reporter dans votre configuration Apache si celle-ci n’importe pas cette configuration fournie par défaut.</p></li>
+<li><p>Le script de mise à jour (<code class="docutils literal notranslate"><span class="pre">migration.sh</span></code>) peut prendre en argument le chemin vers l’ancienne installation GeoNature.
+Il peut s’agir du même dossier que la nouvelle installation GeoNature (cas d’une mise à jour d’un dossier GeoNature avec Git).</p></li>
+<li><p>Ajout d’une historisation des suppressions de la synthèse à travers un trigger peuplant la nouvelle table <code class="docutils literal notranslate"><span class="pre">gn_synthese.t_log_synthese</span></code> (#789)
+Une API <code class="docutils literal notranslate"><span class="pre">/synthese/log</span></code> permet d’obtenir l’historique des insertions, mises à jour et suppressions dans la synthèse (notamment utile pour GN2PG).</p></li>
+<li><p>Amélioration de la commande <code class="docutils literal notranslate"><span class="pre">install-gn-module</span></code> qui détecte désormais automatiquement le code du module (#2396)</p></li>
+<li><p>Synthèse : Optimisation de la requête par statuts de protection (#2329)</p></li>
+<li><p>Occtax : Optimisation des triggers de calcul automatique des altitudes pour ne les lancer que quand la géométrie du relevé est modifiée (#2137)</p></li>
+<li><p>Occtax et Occhab : Ajout d’une pastille indiquant le nombre de filtres activés</p></li>
+<li><p>Amélioration du message renvoyé à l’utilisateur en cas de Timout (#2417)</p></li>
+<li><p>Amélioration du composant générique de selection d’un jeu de données, en selectionnant automatiquement le JDD si la liste n’en contient qu’un et que le champs est obligatoire (#1049)</p></li>
+</ul>
+<p><strong>🐛 Corrections</strong></p>
+<ul class="simple">
+<li><p>Synthèse : changement du type de <code class="docutils literal notranslate"><span class="pre">entity_source_pk_value</span></code> de <code class="docutils literal notranslate"><span class="pre">Integer</span></code> à <code class="docutils literal notranslate"><span class="pre">Unicode</span></code> dans le modèle pour correspondre à la base de données</p></li>
+<li><p>Correction de l’accès public automatique activable avec <code class="docutils literal notranslate"><span class="pre">?access=public</span></code> dans l’URL (#1650)</p></li>
+<li><p>Correction de la fonctionnalité de récupération du mot de passe</p></li>
+<li><p>Correction de la commande d’import du référentiel sensibilité pour correctement gérer les critères comportementales</p></li>
+<li><p>Occtax : correction du filtre sur les organismes</p></li>
+<li><p>Synthèse : correction d’un problème de performance de l’export (vue <code class="docutils literal notranslate"><span class="pre">v_synthese_for_export</span></code>) (#1434)</p></li>
+<li><p>Correction d’un problème de détection de l’emplacement des modules avec les versions récentes de <code class="docutils literal notranslate"><span class="pre">pip</span></code> (#2365, #2364)</p></li>
+<li><p>Occhab : correction du CRUVED sur la liste des jeux de données ouvert à la saisie</p></li>
+<li><p>Occtax : correction du contrôle des dates du formulaire d’édition des relevés (#2318)</p></li>
+<li><p>Correction des acteurs dans les exports PDF des métadonnées (#2034)</p></li>
+<li><p>Correction des graphiques dans les exports PDF des cadres d’acquisition (#2231)</p></li>
+<li><p>Correction du script de synchronisation des métadonnées depuis MTD INPN (#2314)</p></li>
+<li><p>Correction de l’appel en double de la route des notifications (#2356)</p></li>
+<li><p>Correction de l’URL vers la documentation depuis la page d’accueil</p></li>
+<li><p>Correction du formulaire Occtax quand un relevé n’a pas d”<code class="docutils literal notranslate"><span class="pre">id_digitiser</span></code> (#2421)</p></li>
+<li><p>Correction de l’affichage des tooltips sur la liste des obsrvations de la Synthèse (#2348)</p></li>
+<li><p>Correction du chargement des dates début et date fin quand on modifie un relevé dans Occtax ou une station dans OCchab (#2071)</p></li>
+<li><p>Correction de la récupération des emails dans l’interface « Mon compte » (#2346)</p></li>
+</ul>
+<p><strong>💻 Développement</strong></p>
+<ul class="simple">
+<li><p>Suppression du support du paramètre <code class="docutils literal notranslate"><span class="pre">get_role</span></code> du décorateur <code class="docutils literal notranslate"><span class="pre">check_cruved_scope</span></code> (#2162)</p></li>
+<li><p>Suppression des paramètres <code class="docutils literal notranslate"><span class="pre">redirect_on_expiration</span></code> et <code class="docutils literal notranslate"><span class="pre">redirect_on_invalid_token</span></code> du décorateur <code class="docutils literal notranslate"><span class="pre">check_cruved_scope</span></code> (#2360)</p></li>
+<li><p>Remplacement des usages du paramètre <code class="docutils literal notranslate"><span class="pre">get_role</span></code> du décorateur <code class="docutils literal notranslate"><span class="pre">check_cruved_scope</span></code> par <code class="docutils literal notranslate"><span class="pre">get_scope</span></code> dans le code de GeoNature et des modules <em>contrib</em> (#2164, #2199)</p></li>
+<li><p>Suppression de multiples fonctions du package <code class="docutils literal notranslate"><span class="pre">geonature.core.gn_permissions.tools</span></code>, notamment la classe <code class="docutils literal notranslate"><span class="pre">UserCruved</span></code> ; se reporter à la documentation développeur afin de connaître les fonctions utilisables dans votre code (#2360)</p></li>
+<li><p>Migration GeoNature : le venv est mis à jour plutôt que d’être supprimé et recréé (#2332)</p></li>
+<li><p>Les erreurs de validation Marshmallow sont automatiquement converties en erreur 400 (BadRequest)</p></li>
+<li><p>Les modules <em>contrib</em> doivent également être formatés avec <code class="docutils literal notranslate"><span class="pre">prettier</span></code></p></li>
+<li><p>Fiabilisation des exports PDF (#2232)</p></li>
+<li><p>Le composant de carte <code class="docutils literal notranslate"><span class="pre">pnx-map</span></code> a un nouvel input <code class="docutils literal notranslate"><span class="pre">geolocation</span></code> permettant d’activer le bouton de géolocalisation</p></li>
+<li><p>Ajout du mixin <code class="docutils literal notranslate"><span class="pre">geonature.utils.schema.CruvedSchemaMixin</span></code> permettant d’ajouter la propriété (exclue par défaut) <code class="docutils literal notranslate"><span class="pre">cruved</span></code> à un schéma Marshmallow</p></li>
+<li><p>L’accès aux paramètre de configuration ne se fait plus à partir des fichiers générés <code class="docutils literal notranslate"><span class="pre">AppConfig</span></code> (GeoNature) ou <code class="docutils literal notranslate"><span class="pre">ModuleConfig</span></code> (modules), mais uniquement à partir du <code class="docutils literal notranslate"><span class="pre">ConfigService</span></code> en charge de la récupération dynamique de la configuration (#2205).</p></li>
+<li><p>Mise à jour d’Angular version 12 à 15 et mise à jour de nombreuses dépendances frontend (#2154)</p></li>
+<li><p>Nettoyage des dépendances frontend de GeoNature. Si vous utilisiez certaines dépendances supprimées de GeoNature dans vos modules, vous devez les rajouter dans un fichier <code class="docutils literal notranslate"><span class="pre">package-lock.json</span></code> dans le dossier frontend de votre module.</p></li>
+<li><p>Suppression de la route obsolète <code class="docutils literal notranslate"><span class="pre">/config</span></code></p></li>
+<li><p>Ajout du context manager <code class="docutils literal notranslate"><span class="pre">start_sentry_child</span></code> permettant de rapporter dans les traces Sentry le temps d’exécution de certaines tâches coûteuses (#2289)</p></li>
+<li><p>Refactorisation du module Occhab (#2324) avec passage à Marshmallow.
+Ajout à cette occasion de plusieurs fonctions et classes utilitaires au dépôt <em>Utils-Flask-SQLAlchemy-Geo</em>.
+Suppression de la vue <code class="docutils literal notranslate"><span class="pre">v_releve_occtax</span></code>.
+Module de référence pour les développements et documentation associée (#2331)</p></li>
+<li><p>Déplacement des routes géographiques et des tests associés vers le dépôt <em>RefGeo</em> (#2342)</p></li>
+<li><p>Amélioration des tests des permissions</p></li>
+<li><p>La fonction <code class="docutils literal notranslate"><span class="pre">get_scopes_by_module</span></code> cherche dans le contexte applicatif (variable <code class="docutils literal notranslate"><span class="pre">g</span></code>) la présence de <code class="docutils literal notranslate"><span class="pre">g.current_module</span></code> et <code class="docutils literal notranslate"><span class="pre">g.current_object</span></code> lorsqu’ils ne sont pas fournis en paramètre.</p></li>
+<li><p>Travaux en cours : compatibilité SQLAlchemy 1.3 &amp; 1.4 / Flask-SQLAlchemy 2 &amp; 3 (#1812)</p></li>
+<li><p>Mise à jour de Chart.js de la version 2 à 4</p></li>
+<li><p>Possibilité de définir l’URL par défaut de la documentation d’un module par un entrypoint nommé <code class="docutils literal notranslate"><span class="pre">doc_url</span></code></p></li>
+</ul>
+<p><strong>📝 Merci aux contributeurs</strong></p>
+<p>&#64;ch-cbna / &#64;bouttier / &#64;TheoLechemia / &#64;jpm-cbna / &#64;bastyen / &#64;Gaetanbrl / &#64;VincentCauchois / &#64;joelclems / &#64;andriacap / &#64;mvergez / &#64;DonovanMaillard / &#64;dece / &#64;lpofredc / &#64;MathRdt / &#64;gildeluermoz / &#64;maximetoma/ &#64;pierre56 / &#64;cecchi-a / &#64;jbrieuclp / &#64;camillemonchicourt</p>
+</section>
 <section id="id1">
 <h2>2.11.2 (2023-01-19)<a class="headerlink" href="#id1" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
-<li><p>Correction d’un import manquant dans un fichier de migration des données d’exemple d’Occtax</p></li>
-<li><p>Correction d’un problème d’installation en mode développement</p></li>
+<li><p>Correction d’un import manquant dans un fichier de migration des données d’exemple d’Occtax (#2285)</p></li>
+<li><p>Correction d’un problème de l’installation globale en mode développement</p></li>
 </ul>
 </section>
 <section id="id2">
@@ -172,6 +370,13 @@
 <li><p>Si vous utilisez des modules spécifiques (hors Import, Export, Dashboard, Monitoring), vérifiez qu’ils disposent d’une version packagée compatible avec GeoNature 2.11 (#2058)</p></li>
 <li><p>Si vous aviez mis en place l’accès public à GeoNature, adaptez sa configuration avec le nouveau paramètre unique <code class="docutils literal notranslate"><span class="pre">PUBLIC_ACCESS_USERNAME</span></code> (#2202)</p></li>
 <li><p>Suivez la procédure de mise à jour classique de GeoNature (<a class="reference external" href="https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application">https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application</a>)</p></li>
+<li><p>Attention, le script de migration de la version 2.11 a une régression et ne récupère plus automatiquement la configuration des modules fournis avec GeoNature (Occtax, Occhab, Validation). Rapatriez manuellement vos éventuels fichiers de configuration de ces modules si vous en avez créé :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp geonature_old/contrib/occtax/config/conf_gn_module.toml geonature/contrib/occtax/config/conf_gn_module.toml
+cp geonature_old/contrib/gn_module_validation/config/conf_gn_module.toml geonature/contrib/gn_module_validation/config/conf_gn_module.toml
+cp geonature_old/contrib/gn_module_occhab/config/conf_gn_module.toml geonature/contrib/gn_module_occhab/config/conf_gn_module.toml
+</pre></div>
+</div>
+</li>
 <li><p>Si vous les utilisez, mettre à jour les modules Dashboard en version 1.2.1 (ou plus) et Monitoring en version 0.4.0 (ou plus), <strong>après</strong> la mise à jour de GeoNature</p></li>
 <li><p>Vous pouvez désactiver les textes de la BDC statuts ne correspondant par à votre territoire.
 Voir rubrique « 5. Configurer les filtres des statuts de protection et des listes rouges » de https://docs.geonature.fr/admin-manual.html#module-synthese</p></li>
@@ -1496,7 +1701,7 @@ nomenclature :
 </ul>
 </section>
 <section id="saxifraga-2021-02-04">
-<h2>2.6.0 - Saxifraga (2021-02-04)<a class="headerlink" href="#saxifraga-2021-02-04" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.6.0 - Saxifraga (2021-02-04) 🌸<a class="headerlink" href="#saxifraga-2021-02-04" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10
 minimum (qui n’est pas fourni par défaut avec Debian 9) pour les
 triggers déclenchés « on each statement », plus performants.</p>
@@ -3993,7 +4198,7 @@ générique des sites et visites de suivi</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
+    <p>&#169; Copyright 2018-2023, PnE, PnC.</p>
   </div>
 
   Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un

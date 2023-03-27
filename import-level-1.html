@@ -122,7 +122,7 @@ voir la documentation <a class="reference external" href="https://github.com/PnE
 Par exemple ici <code class="docutils literal notranslate"><span class="pre">ref_nomenclatures.v_data_typ</span></code>.
 Ou bien l’Admin des nomenclatures disponible dans GeoNature.</p>
 <p>Il est aussi possible d’utiliser les codes des nomenclatures pour retrouver leurs id (ceci étant variables d’une instance à l’autre),
-en utilisant la fonction <code class="docutils literal notranslate"><span class="pre">ref_nomencltaure.get_id_nomenclature</span></code>.</p>
+en utilisant la fonction <code class="docutils literal notranslate"><span class="pre">ref_nomenclatures.get_id_nomenclature</span></code>.</p>
 </section>
 <section id="insertion-des-donnees-dans-la-synthese">
 <h2>Insertion des données dans la Synthèse<a class="headerlink" href="#insertion-des-donnees-dans-la-synthese" title="Lien permanent vers cette rubrique"></a></h2>
@@ -130,7 +130,7 @@ en utilisant la fonction <code class="docutils literal notranslate"><span class=
 <span class="n">unique_id_sinp</span><span class="p">,</span><span class="w"></span>
 <span class="n">id_source</span><span class="p">,</span><span class="w"></span>
 <span class="n">id_dataset</span><span class="p">,</span><span class="w"></span>
-<span class="n">id_nomenclature_obs_meth</span><span class="p">,</span><span class="w"></span>
+<span class="n">id_nomenclature_obs_technique</span><span class="p">,</span><span class="w"></span>
 <span class="n">count_min</span><span class="p">,</span><span class="w"></span>
 <span class="n">count_max</span><span class="p">,</span><span class="w"></span>
 <span class="n">cd_nom</span><span class="p">,</span><span class="w"></span>
@@ -151,8 +151,8 @@ en utilisant la fonction <code class="docutils literal notranslate"><span class=
 <span class="w">      </span><span class="mi">2</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">id_source</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="mi">3</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">id_dataset</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="k">CASE</span><span class="w"></span>
-<span class="w">        </span><span class="k">WHEN</span><span class="w"> </span><span class="n">critere</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Vu&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="p">(</span><span class="mi">41</span><span class="p">)</span><span class="w"> </span><span class="c1">-- Ou bien ref_nomencltaure.get_id_nomenclature</span>
-<span class="w">        </span><span class="k">WHEN</span><span class="w"> </span><span class="n">critere</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Entendu&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">WHEN</span><span class="w"> </span><span class="n">critere</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Vu&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="p">(</span><span class="k">select</span><span class="w"> </span><span class="n">ref_nomenclatures</span><span class="p">.</span><span class="n">get_id_nomenclature</span><span class="p">(</span><span class="s1">&#39;METH_OBS&#39;</span><span class="p">,</span><span class="s1">&#39;0&#39;</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="k">WHEN</span><span class="w"> </span><span class="n">critere</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Entendu&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="p">(</span><span class="k">select</span><span class="w"> </span><span class="n">ref_nomenclatures</span><span class="p">.</span><span class="n">get_id_nomenclature</span><span class="p">(</span><span class="s1">&#39;METH_OBS&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">))</span><span class="w"></span>
 <span class="w">        </span><span class="k">ELSE</span><span class="w"> </span><span class="p">(</span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">get_default_nomenclature_value</span><span class="p">(</span><span class="s1">&#39;METH_OBS&#39;</span><span class="p">))</span><span class="w"></span>
 <span class="w">      </span><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">id_nomenclature_obs_meth</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="n">effectif</span><span class="p">::</span><span class="nb">integer</span><span class="p">,</span><span class="w"></span>
@@ -237,7 +237,7 @@ en les faisant correspondre avec leurs <code class="docutils literal notranslate
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
+    <p>&#169; Copyright 2018-2023, PnE, PnC.</p>
   </div>
 
   Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un

@@ -86,37 +86,42 @@
 <li><p><a class="reference external" href="https://github.com/PnX-SI/UsersHub">UsersHub</a> qui pilote le schéma <code class="docutils literal notranslate"><span class="pre">utilisateurs</span></code> (le paramètre <code class="docutils literal notranslate"><span class="pre">install_usershub_app</span></code> du fichier de configuration <code class="docutils literal notranslate"><span class="pre">install_all.ini</span></code> permet de désactiver l’installation de l’application. Il est cependant recommandé d’installer l’application pour disposer d’une interface pour gérer les utilisateurs dans GeoNature)</p></li>
 </ul>
 <p>Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre la documentation <a class="reference internal" href="installation.html#installation-standalone"><span class="std std-ref">Installation de GeoNature uniquement</span></a>.</p>
-<section id="installation-de-l-application">
-<h2>Installation de l’application<a class="headerlink" href="#installation-de-l-application" title="Lien permanent vers cette rubrique"></a></h2>
+<section id="installation-des-applications">
+<h2>Installation des applications<a class="headerlink" href="#installation-des-applications" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Commencer la procédure en se connectant au serveur en SSH avec l’utilisateur dédié précédemment créé lors de l’étape de <a class="reference internal" href="installation.html#preparation-server"><span class="std std-ref">Préparation du serveur</span></a> (usuellement <code class="docutils literal notranslate"><span class="pre">geonatureadmin</span></code>).</p>
-<ul class="simple">
-<li><p>Se placer à la racine du <code class="docutils literal notranslate"><span class="pre">home</span></code> de l’utilisateur puis récupérer les scripts d’installation (X.Y.Z à remplacer par le numéro de la <a class="reference external" href="https://github.com/PnEcrins/GeoNature/releases">dernière version stable de GeoNature</a>). Ces scripts installent les applications GeoNature, TaxHub et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini
-$ wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh
+<ul>
+<li><p>Se placer à la racine du <code class="docutils literal notranslate"><span class="pre">home</span></code> de l’utilisateur puis récupérer les scripts d’installation (X.Y.Z à remplacer par le numéro de la <a class="reference external" href="https://github.com/PnEcrins/GeoNature/releases">dernière version stable de GeoNature</a>). Ces scripts installent les applications GeoNature, TaxHub et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini
+<span class="gp">$ </span>wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh
 </pre></div>
 </div>
+</li>
+</ul>
 <p><em>Attention</em> : l’installation globale fonctionne uniquement si les scripts sont placés à la racine du <code class="docutils literal notranslate"><span class="pre">home</span></code> de l’utilisateur courant.</p>
-<ul class="simple">
-<li><p>Configurez votre installation en adaptant le fichier <code class="docutils literal notranslate"><span class="pre">install_all.ini</span></code> :</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nano</span> <span class="n">install_all</span><span class="o">.</span><span class="n">ini</span>
+<ul>
+<li><p>Configurez votre installation en adaptant le fichier <code class="docutils literal notranslate"><span class="pre">install_all.ini</span></code> :</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>nano install_all.ini
 </pre></div>
 </div>
-<p>Renseignez à minima votre utilisateur linux, l’URL (ou IP) de votre serveur (avec un <code class="docutils literal notranslate"><span class="pre">/</span></code> à la fin) ainsi que l’utilisateur PostgreSQL que vous souhaitez et son mot de passe. Le script se chargera d’installer PostgreSQL et de créer l’utilisateur de base de données que vous avez renseigné.</p>
+</li>
+</ul>
+<p>Renseignez à minima votre utilisateur linux, l’URL (ou IP) de votre serveur (avec un <code class="docutils literal notranslate"><span class="pre">/</span></code> à la fin) ainsi que l’utilisateur PostgreSQL que vous souhaitez et son mot de passe. Le script se chargera d’installer PostgreSQL et de créer l’utilisateur de base de données que vous avez renseigné. Pour une installation de développement, pensez à renseigner <code class="docutils literal notranslate"><span class="pre">mode=dev</span></code>.</p>
 <p>Pour la définition des numéros de version des dépendances, voir le <a class="reference external" href="versions-compatibility.rst">tableau de compatibilité</a> des versions de GeoNature avec ses dépendances. Il est déconseillé de modifier ces versions, chaque nouvelle version de GeoNature étant fournie avec les versions adaptées de ses dépendances.</p>
-<ul class="simple">
-<li><p>Lancer l’installation :</p></li>
+<ul>
+<li><p>Lancer l’installation :</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>touch install_all.log
+<span class="gp">$ </span>chmod +x install_all.sh
+<span class="gp">$ </span>./install_all.sh <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">|</span> tee install_all.log
+</pre></div>
+</div>
+</li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">touch</span> <span class="n">install_all</span><span class="o">.</span><span class="n">log</span>
-<span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="n">install_all</span><span class="o">.</span><span class="n">sh</span>
-<span class="o">./</span><span class="n">install_all</span><span class="o">.</span><span class="n">sh</span> <span class="mi">2</span><span class="o">&gt;&amp;</span><span class="mi">1</span> <span class="o">|</span> <span class="n">tee</span> <span class="n">install_all</span><span class="o">.</span><span class="n">log</span>
-</pre></div>
-</div>
 <p>Une fois l’installation terminée, lancez la commande suivante:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">exec</span> <span class="n">bash</span>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">exec</span> bash
 </pre></div>
 </div>
+</div></blockquote>
 <p>Les applications sont disponibles aux adresses suivantes :</p>
 <ul class="simple">
 <li><p><a class="reference external" href="http://monip.com/geonature/">http://monip.com/geonature/</a></p></li>
@@ -135,22 +140,28 @@ $ wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_
 </ul>
 </dd>
 </dl>
-<p>Si vous rencontrez une erreur, se reporter aux fichiers de logs :</p>
-<ul class="simple">
-<li><p>Logs de l’installation de la base de données : <code class="docutils literal notranslate"><span class="pre">/home/`whoami`/geonature/var/log/install_db.log</span></code></p></li>
-<li><p>Log général de l’installation de l’application : <code class="docutils literal notranslate"><span class="pre">/home/`whoami`/install_all.log</span></code></p></li>
-</ul>
-<p>Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre adresse, editez le fichier de configuration Apache (<code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/geonature.conf</span></code>) en modifiant l’alias :</p>
+<p>Si vous rencontrez une erreur, se reporter aux fichiers de logs <code class="docutils literal notranslate"><span class="pre">/home/`whoami`/install_all.log</span></code>.</p>
+<dl class="field-list">
+<dt class="field-odd">Note</dt>
+<dd class="field-odd"><p>Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre adresse, editez le fichier de configuration Apache (<code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/geonature.conf</span></code>) en modifiant l’alias :</p>
 <ul class="simple">
 <li><p>Pour <code class="docutils literal notranslate"><span class="pre">/</span></code>: <code class="docutils literal notranslate"><span class="pre">Alias</span> <span class="pre">/</span> <span class="pre">/home/test/geonature/frontend/dist</span></code></p></li>
 <li><p>Pour <code class="docutils literal notranslate"><span class="pre">/saisie</span></code> : <code class="docutils literal notranslate"><span class="pre">Alias</span> <span class="pre">/saisie</span> <span class="pre">/home/test/geonature/frontend/dist</span></code></p></li>
 </ul>
-<dl class="field-list simple">
-<dt class="field-odd">Note</dt>
-<dd class="field-odd"><p>Par défaut et par mesure de sécurité, la base de données est accessible uniquement localement par la machine où elle est installée. Pour accéder à la BDD depuis une autre machine (pour s’y connecter avec QGIS, pgAdmin ou autre), vous pouvez consulter cette documentation <a class="reference external" href="https://github.com/PnX-SI/Ressources-techniques/blob/master/PostgreSQL/acces-bdd.rst">https://github.com/PnX-SI/Ressources-techniques/blob/master/PostgreSQL/acces-bdd.rst</a>. Attention si vous redémarrez PostgreSQL (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">service</span> <span class="pre">postgresql</span> <span class="pre">restart</span></code>), il faut ensuite redémarrer les API de GeoNature, UsersHub et TaxHub (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">geonature.service</span></code>, <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">usershub.service</span></code> et <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">taxhub.service</span></code>). Attention, exposer la base de données sur internet n’est pas recommandé. Il est préférable de se connecter via un tunnel SSH. QGIS et la plupart des outils d’administration de base de données permettent d’établir une connexion à la base de cette manière.</p>
 </dd>
 <dt class="field-even">Note</dt>
-<dd class="field-even"><p>Il est aussi important de configurer l’accès au serveur en HTTPS plutôt qu’en HTTP pour chiffrer le contenu des échanges entre le navigateur et le serveur (<a class="reference external" href="https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/">https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/</a>).</p>
+<dd class="field-even"><p>Par défaut et par mesure de sécurité, la base de données est accessible uniquement localement par la machine où elle est installée. Pour accéder à la BDD depuis une autre machine (pour s’y connecter avec QGIS, pgAdmin ou autre), vous pouvez consulter cette documentation <a class="reference external" href="https://github.com/PnX-SI/Ressources-techniques/blob/master/PostgreSQL/acces-bdd.rst">https://github.com/PnX-SI/Ressources-techniques/blob/master/PostgreSQL/acces-bdd.rst</a>.
+Attention, exposer la base de données sur internet n’est pas recommandé. Il est préférable de se connecter via un tunnel SSH. QGIS et la plupart des outils d’administration de base de données permettent d’établir une connexion à la base de cette manière.
+Attention si vous redémarrez PostgreSQL (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">service</span> <span class="pre">postgresql</span> <span class="pre">restart</span></code>), il faut ensuite redémarrer les API de GeoNature, UsersHub et TaxHub :</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo systemctl restart geonature
+<span class="gp">$ </span>sudo systemctl restart geonature-worker
+<span class="gp">$ </span>sudo systemctl restart usershub
+<span class="gp">$ </span>sudo systemctl restart taxhub
+</pre></div>
+</div>
+</dd>
+<dt class="field-odd">Note</dt>
+<dd class="field-odd"><p>Il est aussi important de configurer l’accès au serveur en HTTPS plutôt qu’en HTTP pour chiffrer le contenu des échanges entre le navigateur et le serveur (<a class="reference external" href="https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/">https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/</a>).</p>
 </dd>
 </dl>
 </section>
@@ -164,7 +175,7 @@ $ wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
+    <p>&#169; Copyright 2018-2023, PnE, PnC.</p>
   </div>
 
   Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un

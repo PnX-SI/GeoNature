@@ -172,26 +172,35 @@ de sensibilité :</p>
 <p>Le référentiel de sensibilité fourni par le SINP est normalement intégré
 à GeoNature lors de son installation. Sinon, il peut être manuellement
 intégré avec l’une ou l’autre des commandes suivantes :</p>
+<p>TaxRef v16 :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity add-referential <span class="se">\</span>
+        --source-name <span class="s2">&quot;Référentiel sensibilité TAXREF v16 20230203&quot;</span> <span class="se">\</span>
+        --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip <span class="se">\</span>
+        --zipfile RefSensibiliteV16_20230203.zip <span class="se">\</span>
+        --csvfile RefSensibiliteV16_20230203/RefSensibilite_16.csv  <span class="se">\</span>
+        --encoding<span class="o">=</span>iso-8859-15
+</pre></div>
+</div>
 <p>TaxRef v15 :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">geonature</span> <span class="n">sensitivity</span> <span class="n">add</span><span class="o">-</span><span class="n">referential</span> \
-        <span class="o">--</span><span class="n">source</span><span class="o">-</span><span class="n">name</span> <span class="s2">&quot;Référentiel sensibilité TAXREF v15 20220331&quot;</span> \
-        <span class="o">--</span><span class="n">url</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">inpn</span><span class="o">.</span><span class="n">mnhn</span><span class="o">.</span><span class="n">fr</span><span class="o">/</span><span class="n">docs</span><span class="o">-</span><span class="n">web</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">download</span><span class="o">/</span><span class="mi">401875</span> \
-        <span class="o">--</span><span class="n">zipfile</span> <span class="n">RefSensibiliteV15_20220331</span><span class="o">.</span><span class="n">zip</span> \
-        <span class="o">--</span><span class="n">csvfile</span> <span class="n">RefSensibilite_V15_31032022</span><span class="o">/</span><span class="n">RefSensibilite_15</span><span class="o">.</span><span class="n">csv</span>  \
-        <span class="o">--</span><span class="n">encoding</span><span class="o">=</span><span class="n">iso</span><span class="o">-</span><span class="mi">8859</span><span class="o">-</span><span class="mi">15</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity add-referential <span class="se">\</span>
+        --source-name <span class="s2">&quot;Référentiel sensibilité TAXREF v15 20220331&quot;</span> <span class="se">\</span>
+        --url https://inpn.mnhn.fr/docs-web/docs/download/401875 <span class="se">\</span>
+        --zipfile RefSensibiliteV15_20220331.zip <span class="se">\</span>
+        --csvfile RefSensibilite_V15_31032022/RefSensibilite_15.csv  <span class="se">\</span>
+        --encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
 <p>TaxRef v14 :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">geonature</span> <span class="n">sensitivity</span> <span class="n">add</span><span class="o">-</span><span class="n">referential</span> \
-        <span class="o">--</span><span class="n">source</span><span class="o">-</span><span class="n">name</span> <span class="s2">&quot;Référentiel sensibilité TAXREF v14 20220331&quot;</span> \
-        <span class="o">--</span><span class="n">url</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">inpn</span><span class="o">.</span><span class="n">mnhn</span><span class="o">.</span><span class="n">fr</span><span class="o">/</span><span class="n">docs</span><span class="o">-</span><span class="n">web</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">download</span><span class="o">/</span><span class="mi">401876</span> \
-        <span class="o">--</span><span class="n">zipfile</span> <span class="n">RefSensibiliteV14_20220331</span><span class="o">.</span><span class="n">zip</span> \
-        <span class="o">--</span><span class="n">csvfile</span> <span class="n">RefSensibilite_V14_31032022</span><span class="o">/</span><span class="n">RefSensibilite_14</span><span class="o">.</span><span class="n">csv</span>  \
-        <span class="o">--</span><span class="n">encoding</span><span class="o">=</span><span class="n">iso</span><span class="o">-</span><span class="mi">8859</span><span class="o">-</span><span class="mi">15</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity add-referential <span class="se">\</span>
+        --source-name <span class="s2">&quot;Référentiel sensibilité TAXREF v14 20220331&quot;</span> <span class="se">\</span>
+        --url https://inpn.mnhn.fr/docs-web/docs/download/401876 <span class="se">\</span>
+        --zipfile RefSensibiliteV14_20220331.zip <span class="se">\</span>
+        --csvfile RefSensibilite_V14_31032022/RefSensibilite_14.csv  <span class="se">\</span>
+        --encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
-<p>Le jeu de règles est fourni pour les versions 14 et 15 de TaxRef, certaines
-espèces sensibles pouvant voir leur cd_nom changé d’une version à l’autre.</p>
+<p>Le jeu de règles est fourni pour chaque version précise de TaxRef, certaines
+espèces sensibles pouvant voir leur <em>cd_nom</em> changé d’une version à l’autre.</p>
 </section>
 <section id="personnalisation">
 <h3>Personnalisation<a class="headerlink" href="#personnalisation" title="Lien permanent vers cette rubrique"></a></h3>
@@ -242,7 +251,7 @@ souhaitée mais pas encore présente dans GeoNature.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
+    <p>&#169; Copyright 2018-2023, PnE, PnC.</p>
   </div>
 
   Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un

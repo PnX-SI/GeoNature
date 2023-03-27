@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docker &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+            <a href="index.html" class="icon icon-home"> GeoNature
+            <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Docker</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/installation-docker.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="docker">
+<h1>Docker<a class="headerlink" href="#docker" title="Lien permanent vers cette rubrique"></a></h1>
+<p>Depuis GeoNature 2.12, GeoNature fourni des images Docker pour le backend et le frontend.</p>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Les images Docker sont encore récentes, non éprouvées et peu documentées.
+Leur utilisation en production n’est de ce fait pas encore recommandée.</p>
+</div>
+<section id="prerequis">
+<h2>Prérequis<a class="headerlink" href="#prerequis" title="Lien permanent vers cette rubrique"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.docker.com/engine/install/">Docker</a></p></li>
+</ul>
+</section>
+<section id="image-backend">
+<h2>Image backend<a class="headerlink" href="#image-backend" title="Lien permanent vers cette rubrique"></a></h2>
+<p>Des images pré-buildées sont présentes sur <a class="reference external" href="https://github.com/PnX-SI/GeoNature/pkgs/container/geonature-backend/versions?filters%5Bversion_type%5D=tagged">github</a>.</p>
+<p>Les images tagguées <cite>-wheels</cite> contiennent les wheels Python de GeoNature, de ses dépendances et modules contrib, de manière à pouvoir être enrichie avec vos wheels provenant de vos propres modules (images de type « builder »).</p>
+<p>Build manuel de l’image :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span> docker build . <span class="se">\</span>
+        -f backend/Dockerfile <span class="se">\</span>
+        --target<span class="o">=</span>prod <span class="se">\</span>
+        --tag<span class="o">=</span>ghcr.io/pnx-si/geonature-backend:develop
+</pre></div>
+</div>
+<p>Fonctionnement de l’image :</p>
+<ul class="simple">
+<li><p>GeoNature attend sa configuration dans le dossier <code class="docutils literal notranslate"><span class="pre">/dist/config</span></code> (à monter dans un volume afin de pouvoir la modifier).
+L’emplacement du fichier de configuration peut également être précisé via la variable d’environnement <code class="docutils literal notranslate"><span class="pre">GEONATURE_CONFIG_FILE</span></code>.</p></li>
+<li><p>Il est également possible de fournir une configuration Python via la variable d’environnement <code class="docutils literal notranslate"><span class="pre">GEONATURE_SETTINGS</span></code>.</p></li>
+<li><p>Les médias seront stocké dans le dossier <code class="docutils literal notranslate"><span class="pre">/dist/media</span></code> (à monter dans un volume afin de les sauvegarder).</p></li>
+<li><p>Toute variable d’environnement préfixée par <code class="docutils literal notranslate"><span class="pre">GEONATURE_</span></code> se verra traduit par un paramètre de configuration homonyme
+(<a class="reference external" href="https://flask.palletsprojects.com/en/2.2.x/api/#flask.Config.from_prefixed_env">documentation Flask</a>).
+Si vous souhaitez définir une variable de configuration se trouvant dans une section, utilisé deux <em>underscore</em>.
+Par exemple, pour définir le paramètre <code class="docutils literal notranslate"><span class="pre">NB_LAST_OBS</span></code> de la section <code class="docutils literal notranslate"><span class="pre">[SYNTHESE]</span></code>, on définira une variable d’environnement <code class="docutils literal notranslate"><span class="pre">GEONATURE_SYNTHESE__NB_LAST_OBS</span></code>.</p></li>
+<li><p>Pour peupler la base de données, référez vous au script <code class="docutils literal notranslate"><span class="pre">install/03_create_db.sh</span></code>.</p></li>
+</ul>
+</section>
+<section id="image-frontend">
+<h2>Image frontend<a class="headerlink" href="#image-frontend" title="Lien permanent vers cette rubrique"></a></h2>
+<p>Des images pré-buildées sont présentes sur <a class="reference external" href="https://github.com/PnX-SI/GeoNature/pkgs/container/geonature-frontend/versions?filters%5Bversion_type%5D=tagged">github</a>.</p>
+<p>Les images tagguées <cite>-source</cite> contiennent uniquement les sources de GeoNature et des modules contrib, et attendent d’être enrichie avec les sources de vos propres modules tandis que les images tagguées <cite>-nginx</cite> contiennent la configuration nginx prête à l’emploi pour GeoNature (images de type « builder »).</p>
+<p>Build manuel de l’image :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span> docker build . <span class="se">\</span>
+        -f frontend/Dockerfile <span class="se">\</span>
+        --target<span class="o">=</span>prod <span class="se">\</span>
+        --tag<span class="o">=</span>ghcr.io/pnx-si/geonature-frontend:develop
+</pre></div>
+</div>
+<p>Fonctionnement de l’image :</p>
+<ul class="simple">
+<li><p>La configuration nginx de l’image est généré dynamiquement à son démarrage à partir des variables d’environnement suivantes :</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">NGINX_PORT</span></code> (défaut : 80)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NGINX_HOST</span></code> (défaut : localhost)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NGINX_LOCATION</span></code> (défaut : /, à modifier pour servir GeoNature sur un préfixe)</p></li>
+</ul>
+</li>
+<li><p>La variable d’environnement <code class="docutils literal notranslate"><span class="pre">API_ENDPOINT</span></code> est lue au démarrage de l’image afin de mettre à jour le fichier de configuration du frontend <code class="docutils literal notranslate"><span class="pre">assets/config.json</span></code>.</p></li>
+</ul>
+</section>
+<section id="docker-compose">
+<h2>Docker Compose<a class="headerlink" href="#docker-compose" title="Lien permanent vers cette rubrique"></a></h2>
+<p>Une configuration Docker Compose est en cours de mise au point dans <a class="reference external" href="https://github.com/PnX-SI/Geonature-Docker-services/tree/docker-compose">la branche *docker-compose* du dépôt GeoNature-Docker-services</a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

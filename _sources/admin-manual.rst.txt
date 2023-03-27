@@ -568,7 +568,7 @@ Pour chaque cd_nom, il est ainsi possible de définir les paramètres suivants :
 - ``temporal_precision_days`` : La précision temporelle en jours utilisée pour calculer les profils. Elle définit à la fois le pas de temps avec lequel la phénologie est calculée, ainsi que la précision temporelle minimale requise (différence entre date début et date fin de l'observation) pour qu'une donnée soit prise en compte dans le calcul des profils. Une précision de 365 jours ou plus permettra de ne pas tenir compte de la période (toutes les données seront dans une unique période de l'année).
 - ``active_life_stage`` : Définit si le stade de vie doit être pris en compte ou non lors du calcul des profils.
 
-Par défaut, une précision spatiale de 2000m et une précision spatiale de 10j (décade) sont paramétrés pour tous les phylums, sans tenir compte des stades de vie.
+Par défaut, une précision spatiale de 2000m et une précision temporelle de 10j (décade) sont paramétrés pour tous les phylums, sans tenir compte des stades de vie.
 
 A terme, d'autres variables pourront compléter ces profils : habitats (habref) ou comportement (nidification, reproduction, migration...) notamment.
 
@@ -914,10 +914,10 @@ Pour configurer GeoNature, actuellement il y a :
 
 - Une configuration pour l'installation : ``config/settings.ini``
 - Une configuration globale de l'application : ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` (générée lors de l'installation de GeoNature)
-- Une configuration par module : ``<GEONATURE_DIRECTORY>/external_modules/<nom_module>/config/conf_gn_module.toml`` (générée lors de l'installation d'un module)
+- Une configuration optionnelle par module : placée dans le dossier de configuration de GeoNature (``<GEONATURE_DIRECTORY>/config/``)
 - Une table ``gn_commons.t_parameters`` pour des paramètres gérés dans la BDD
 
-.. image :: http://geonature.fr/docs/img/admin-manual/administration-geonature.png
+.. image :: https://geonature.fr/docs/img/admin-manual/administration-geonature.png
 
 Configuration générale de l'application
 """""""""""""""""""""""""""""""""""""""
@@ -930,7 +930,11 @@ Le frontend lit sa configuration depuis le fichier ``frontend/conf/app.config.ts
 
 .. _post_config_change:
 
-Ainsi, à chaque modification du fichier de configuration, vous devez :
+Depuis la version 2.12.0 de GeoNature, la configuration de GeoNature est envoyée dynamiquement du backend au frontend par l'API de GeoNature et ne nécessite donc plus de regénérer la configuration ni de rebuilder le frontend.
+
+De plus, à chaque modification du fichier de configuration de GeoNature, le backend est rechargé automatiquement.
+
+Pour les versions précédentes de GeoNature, à chaque modification du fichier de configuration, vous devez :
 
 - relancer le backend : ``sudo systemctl restart geonature``
 - regénérer le fichier de configuration du frontend :
@@ -954,15 +958,7 @@ Vous pouvez également lancer la commande ``geonature update-configuration`` qui
 Configuration d'un gn_module
 """"""""""""""""""""""""""""
 
-Comme pour la configuration globale, ce fichier est minimaliste et peut être surcouché. Le fichier ``conf_gn_module.toml.example``, situé dans le répertoire ``config`` du module, décrit l'ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut.
-
-A chaque modification de ce fichier, lancer les commandes suivantes depuis le backend de GeoNature (``/home/monuser/GeoNature/backend``). Le fichier est copié à destination du frontend ``<nom_module>/frontend/app/module.config.ts``, qui est alors recompilé automatiquement.
-
-.. code-block:: console
-
-    source venv/bin/activate
-    geonature update-module-configuration <NOM_DE_MODULE>
-    deactivate
+Voir la :ref:`rubrique concernant la configuration des modules <module-config>`.
 
 Exploitation
 ------------
@@ -984,20 +980,20 @@ Pour les exécuter, il est nécessaire d'être dans le virtualenv python de GeoN
 
 .. code-block:: console
 
-    cd <GEONATURE_DIRECTORY>/backend
-    source venv/bin/activate
+    cd <GEONATURE_DIRECTORY>
+    source backend/venv/bin/activate
 
 Le préfixe (venv) se met alors au début de votre invite de commande.
 
 Voici la liste des commandes disponibles (aussi disponibles en tapant la commande ``geonature --help``) :
 
-- ``activate_gn_module`` : Active un gn_module installé (Possibilité d'activer seulement le backend ou le frontend)
-- ``deactivate_gn_module`` : Désactive gn_un module activé (Possibilté de désactiver seulement le backend ou le frontend)
-- ``dev_back`` : Lance le backend en mode développement
-- ``generate_frontend_module_route`` : Génère ou regénère le fichier de routing du frontend en incluant les gn_module installés (Fait automatiquement lors de l'installation d'un module)
-- ``install_gn_module`` : Installe un gn_module
-- ``generate_frontend_config`` : Regénère le fichier de configuration du frontend. A exécuter suite à une modification du fichier ``geonature_config.toml``
-- ``update_module_configuration`` : Met à jour la configuration d'un module. A exécuter suite à une modification du fichier ``conf_gn_module.toml``.
+- ``activate-gn-module`` : Active un gn_module installé (Possibilité d'activer seulement le backend ou le frontend)
+- ``deactivate-gn-module`` : Désactive gn_un module activé (Possibilté de désactiver seulement le backend ou le frontend)
+- ``dev-back`` : Lance le backend en mode développement
+- ``generate-frontend-module-route`` : Génère ou regénère le fichier de routing du frontend en incluant les gn_module installés (Fait automatiquement lors de l'installation d'un module)
+- ``install-gn-module`` : Installe un gn_module
+- ``generate-frontend-config`` : Regénère le fichier de configuration du frontend. A exécuter suite à une modification du fichier ``geonature_config.toml`` (utile avant GeoNature 2.12.0)
+- ``update-module-configuration`` : Met à jour la configuration d'un module. A exécuter suite à une modification du fichier ``conf_gn_module.toml`` (utile avant GeoNature 2.12.0)
 
 Effectuez ``geonature <nom_commande> --help`` pour accéder à la documentation et à des exemples d'utilisation de chaque commande.
 
@@ -1006,6 +1002,7 @@ Démarrer / arrêter les API
 
 * Démarrer GeoNature : ``systemctl start geonature``
 * Arrêter GeoNature : ``systemctl stop geonature``
+* Recharger GeoNature : ``systemctl reload geonature``
 * Redémarrer GeoNature : ``systemctl restart geonature``
 * Vérifier l’état de GeoNature : ``systemctl status geonature``
 
@@ -1065,7 +1062,7 @@ Voici les paramètres de Gunicorn par défaut :
 
 Pour modifier une de ces variables, créer un fichier ``environ`` à la racine de votre dossier GeoNature, et indiquer la variable d’environnement avec sa valeur modifiée.
 
-Si vous souhaitez modifier de manière plus avancé la ligne de commande ``gunicorn``, surcouchez le service systemd :
+Si vous souhaitez modifier de manière plus avancée la ligne de commande ``gunicorn``, surcouchez le service systemd :
 
   * Lancez ``sudo systemctl edit geonature`` ce qui va créer le fichier ``/etc/systemd/system/geonature.service.d/override.conf`` et ouvrir un éditeur pour vous permettre de le modifier
   * Indiquez :
@@ -1123,7 +1120,7 @@ Opération à faire à chaque modification d'un paramètre de configuration.
 
   .. code-block:: console
 
-    cd /home/`whoami`/geonature/frontend/src/custom
+    cd /home/`whoami`/geonature/custom
     tar -zcvf /home/`whoami`/`date +%Y%m%d%H%M`-geonature_custom.tar.gz ./
 
 Opération à faire à chaque modification de la customisation de l'application.
@@ -1145,11 +1142,12 @@ Restauration
     .. code-block:: console
 
         sudo -n -u postgres -s createdb -O <MON_USER> geonature2db
-        sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS postgis;"
-        sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS hstore;"
+        sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "postgis";'
+        sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "postgis_raster";'  # postgis>=3.0 (Debian 11)
+        sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "hstore";'
         sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
-        sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
-        sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS postgis_raster;"  # postgis>=3.0 (Debian 11)
+        sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "pg_trgm";'
+        sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "unaccent";'
         
 
   - Restaurer la BDD à partir du backup
@@ -1169,8 +1167,8 @@ Restauration
         cd <GEONATURE_DIRECTORY>/config
         sudo tar -zxvf <MY_BACKUP_DIRECTORY>/201803150953-geonature_config.tar.gz
 
-        cd /home/<MY_USER>/geonature/frontend/src/custom
-        rm -r <MY_USER>/geonature/frontend/src/custom/*
+        cd /home/<MY_USER>/geonature/custom
+        rm -r <MY_USER>/geonature/custom/*
         tar -zxvf <MY_BACKUP_DIRECTORY>/201803150953-geonature_custom.tar.gz
 
         rm /home/<MY_USER>/geonature/external_modules/*
@@ -1183,101 +1181,52 @@ Restauration
 Customisation
 -------------
 
-La customisation de l'application nécessite de relancer la compilation du frontend à chaque modification. Cette opération étant relativement longue, une solution alternative (mais avancée) consiste à passer le frontend de manière temporaire en mode 'developpement'.
-
-Pour cela exécuter la commande suivante depuis le répertoire ``frontend``
-
-.. code-block:: console
-
-    npm run start -- --host=0.0.0.0 --disable-host-check
-
-L'application est désormais disponible sur un serveur de développement à la même addresse que précédemment, mais sur le port 4200 : http://test.geonature.fr:4200
-
-Ouvrez un nouveau terminal (pour laisser tourner le serveur de développement), puis modifier la variable ``URL_APPLICATION`` dans le fichier ``geonature_config.toml`` en mettant l'adresse ci-dessus et relancer l'application (``sudo supervisorctl restart geonature2`` ou ``sudo systemctl restart geonature``)
-
-A chaque modification d'un fichier du frontend, une compilation rapide est relancée et votre navigateur se rafraichit automatiquement en intégrant les dernières modifications.
-
-Une fois les modifications terminées, remodifier le fichier ``geonature_config.toml`` pour remettre l'URL initiale, relancez l'application (``sudo supervisorctl restart geonature2`` ou ``sudo systemctl restart geonature``), puis relancez la compilation du frontend (``npm run build``). Faites enfin un ``ctrl+c`` dans le terminal ou le frontend a été lancé pour stopper le serveur de développement.
-
-Si la manipulation vous parait compliquée, vous pouvez suivre la documentation qui suit, qui fait relancer la compilation du frontend à chaque modification.
+Tous les fichiers par défaut présents dans le dossier ``geonature/backend/static/`` peuvent être surcouchés, en placant un fichier du même nom dans ``geonature/custom/``.
 
 Intégrer son logo
 """""""""""""""""
 
-Le logo affiché dans la barre de navigation de GeoNature peut être modifié dans le répertoire ``geonature/frontend/src/custom/images``. Remplacez alors le fichier ``logo_structure.png`` par votre propre logo, en conservant ce nom pour le nouveau fichier. Le bandeau fait 50px de hauteur, vous pouvez donc mettre une image faisant cette hauteur. Il est également possible de modifier la taille de l'image en CSS dans le fichier ``frontend/src/assets/custom.css`` de la manière suivante:
-
-.. code:: css
-
-  /* la balise img affichant l'image a l'id 'logo-structure */
-  #logo-structure {
-      height: 50px;
-      width: 80px;
-  }
-
-Relancez la construction de l’interface :
-
-.. code-block:: console
-
-    cd /home/`whoami`/geonature/frontend
-    npm run build
-
+Le logo affiché dans la barre de navigation de GeoNature (``backend/static/images/logo_structure.png``) peut être surcouché dans le répertoire en placant le votre dans ``custom/images/logo_structure.png``. Idem pour toutes les images présentes dans le dossier ``backend/static/images/``.
 
 Customiser le contenu
 """""""""""""""""""""
 
 * Customiser le contenu de la page d’introduction :
 
-Le texte d'introduction et le titre de la page d'Accueil de GeoNature peuvent être modifiés à tout moment, sans réinstallation de l'application. Il en est de même pour le bouton d’accès à la synthèse.
+Le texte d'introduction, le titre et le pied de page de la page d'Accueil de GeoNature peuvent être modifiés à tout moment, sans réinstallation de l'application.
 
-Il suffit pour cela de mettre à jour le fichier ``introduction.component.html``, situé dans le répertoire ``geonature/frontend/src/custom/components/introduction``.
+Pour cela, renseignez les paramètres dans le fichier de configuration de GeoNature (``config/geonature_config.toml``) : 
 
-Afin que ces modifications soient prises en compte dans l'interface, il est nécessaire de relancer les commandes suivantes :
+.. code-block:: toml
 
-.. code-block:: console
+    [HOME]
+        TITLE = "Bienvenue dans GeoNature"
+        INTRODUCTION = ""
+        FOOTER = ""
 
-    cd /home/`whoami`/geonature/frontend
-    npm run build
-
-
-* Customiser le contenu du pied de page :
-
-Le pied de page peut être customisé de la même manière, en renseignant le fichier ``footer.component.html``, situé dans le répertoire ``geonature/frontend/src/custom/components/footer``
-
-De la même manière, il est nécessaire de relancer les commandes suivantes pour que les modifications soient prises en compte :
-
-.. code-block:: console
-
-    cd /home/`whoami`/geonature/frontend
-    npm run build
+Vous pouvez renseigner du code HTML sur plusieurs lignes dans ces paramètres, en le plaçant entre triple quote (`"""<b>Hello</b>"""`).
 
 Customiser l'aspect esthétique
 """"""""""""""""""""""""""""""
 
-Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant le fichier ``custom.css``, situé dans le répertoire ``geonature/frontend/src/assets``.
+Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant un fichier ``custom/css/frontend.css`` contenant votre surcouche des classes CSS de l'application.
 
-Pour remplacer la couleur de fond du bandeau de navigation par une image, on peut par exemple apporter la modification suivante :
+Par exemple, pour remplacer la couleur de fond du bandeau de navigation par une image, on peut apporter la modification suivante :
 
 .. code-block:: css
 
     html body pnx-root pnx-nav-home mat-sidenav-container.sidenav-container.mat-drawer-container.mat-sidenav-container mat-sidenav-content.mat-drawer-content.mat-sidenav-content mat-toolbar#app-toolbar.row.mat-toolbar
    {
       background :
-      url(bandeau_test.jpg)
+      url(../images/bandeau_test.jpg)
    }
 
-Dans ce cas, l’image ``bandeau_test.jpg`` doit se trouver dans le répertoire ``geonature/frontend/src``.
-
-Comme pour la modification des contenus, il est nécessaire de relancer la commande suivante pour que les modifications soient prises en compte :
-
-.. code-block:: console
-
-    cd /home/`whoami`/geonature/frontend
-    npm run build
+Dans ce cas, l’image ``bandeau_test.jpg`` doit se trouver dans le répertoire ``custom/images``.
 
 Customiser les noms et pictos des modules
 """""""""""""""""""""""""""""""""""""""""
 
-Vous pouvez modifier l'intitulé et le pictogramme des modules dans le menu des modules. Pour cela, adaptez le contenu des champs ``module_label`` et ``module_picto`` (avec des icones de la librairie Font Awesome - https://fontawesome.com) dans la table ``gn_commons.t_modules``.
+Vous pouvez modifier l'intitulé et le pictogramme des modules dans le menu des modules. Pour cela, adaptez le contenu des champs ``module_label`` et ``module_picto`` (avec des icones de la librairie Font Awesome - https://fontawesome.com) dans la table ``gn_commons.t_modules`` (aussi modifiable directement depuis le module "Admin").
 
 Exemple :
 
@@ -1310,8 +1259,9 @@ Depuis la version 2.5.0, il est aussi possible de customiser l'ordre des modules
 Customiser les exports PDF
 """"""""""""""""""""""""""
 
-Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en modifiant les images ``Bandeau_pdf.png`` et ``Logo_pdf.png`` dans ``backend/static/images``.
-Le style des fichiers est également customisable grâce au fichier "backend/geonature/static/css/custom.css". La classe ``main-color`` permet notamment de changer la couleur des séparateurs (orange par défaut).
+Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en surcouchant les images ``Bandeau_pdf.png`` et ``Logo_pdf.png`` présentes dans le dossier ``backend/static/images``, en placant les votres du même nom dans ``custom/images``.
+
+Le style des fichiers PDF est également customisable grâce au fichier "custom/css/metadata_pdf_custom.css", permettant de surcoucher les classes CSS du fichier ``backend/static/css/metadata_pdf.css``. Par exemple, la classe ``main-color`` permet de changer la couleur des séparateurs (orange par défaut).
 
 Intégrer des données
 --------------------
@@ -1579,6 +1529,13 @@ Il s'agit maintenant de gérer ses permissions dans GeoNature même.
    - Choisissez l'utilisateur sélectionné 
    - Editer le CRUVED pour chacun des modules de l'instance. Passer à 0 tous les droits et tous les modules devant être supprimés. Laisser '1' pour les modules d'intérêt.
 
+Accès public automatique
+````````````````````````
+
+Un lien GeoNature peut déclencher automatiquement une connexion avec l’utilisateur public en lui rajoutant les paramètres ``access=public``.
+
+Exemple : `<https://demo.geonature.fr/geonature/#/synthese?access=public>`_
+
 
 .. include:: sensitivity.rst
 
@@ -1602,13 +1559,8 @@ Si vous l'avez supprimé, lancez les commandes suivantes depuis le repertoire ``
 Configuration du module
 """""""""""""""""""""""
 
-Le fichier de configuration du module se trouve ici : ``<GEONATURE_DIRECTORY>/external_modules/occtax/config/conf_gn_module.toml``.
-
-Pour voir l'ensemble des variables de configuration disponibles du module ainsi que leurs valeurs par défaut, ouvrir le fichier ``/home/<mon_user>/geonature/external_modules/occtax/config/conf_gn_module.toml.example``.
-
-Les surcouches de configuration doivent être faites dans le fichier ``conf_gn_module.toml``, en ne modifiant jamais le fichier ``conf_gn_module.toml.example``.
-
-Après toute modification de la configuration d'un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : `Configuration d'un gn_module`_
+Le paramétrage du module OCCTAX se fait en créant le fichier ``config/occtax_config.toml``, en s’inspirant du fichier d'exemple ``contrib/occtax/occtax_config.toml.example``.
+Reportez vous à la section `Configuration d'un gn_module`_ pour effectuer les opérations supplémentaires nécessaires pour la prise en compte des modifications.
 
 Afficher/masquer des champs du formulaire
 `````````````````````````````````````````
@@ -1861,19 +1813,18 @@ Un champ additionnel est définit par:
 
 Exemples de configuration :
 
-- Un champs type "select" :
+Pour les champs de type "select", "multiselect", "checkbox" et "radio", le champs "valeur" doit être rempli par un JSON représentant une liste de dictionnaire "label" (représentant la valeur affiché), et "valeur" (représentant la valeur écrite en base de données).
+Exemple : `[{"label": "Trois", "value": 3}, {"label": "Quatre", "value": 4}]`
 
-.. image :: _static/select_exemple.png
+- Un champs type "multiselect": 
 
-- Un champs type "multiselect" (la clé "value" est obligatoire dans le dictionnaire de valeurs) : 
-
-.. image :: _static/multiselect3.png
+.. image :: _static/label_value_multiselect.png
 
 - Un champs type "html". C'est un champs de type "présentation", aucune valeur ne sera enregistré en base de données pour ce champs :
 
 .. image :: _static/html1.png
 
-- Un champs de type "datalist". Ce champs permet de générer une liste de valeurs à partir d'une API. Dans le champ "attributs additionnels", renseignez les éléments suivants : 
+- Un champs de type "datalist". Ce champs permet de générer une liste de valeurs à partir d'une API (non porté sur Occtax-mobile). Dans le champ "attributs additionnels", renseignez les éléments suivants : 
 
 ::
 
@@ -1912,24 +1863,24 @@ Le module s'appuie sur deux schémas.:
 ``pr_occhab``: le schéma qui contient les données d'occurrence d'habitat, basé sur standard du MNHN
 
 Configuration
-""""""""""""""
+"""""""""""""
 
-Le parametrage du module OCCHAB se fait depuis le fichier ``/home/`whoami`/geonature/contrib/config/conf_gn_module.toml``
-Après toute modification de la configuration d'un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : `Configuration d'un gn_module`_
+Le paramétrage du module OCCHAB se fait en créant le fichier ``config/occhab_config.toml``, en s’inspirant du fichier d'exemple ``contrib/gn_module_occhab/occhab_config.toml.example``
+Reportez vous à la section `Configuration d'un gn_module`_ pour effectuer les opérations supplémentaires nécessaires pour la prise en compte des modifications.
 
 
 Formulaire
 ``````````
 
-- La liste des habitats fournit pour la saisie est basé sur une liste définit en base de données (table ``ref_habitat.cor_list_habitat`` et ``ref_habitat.bib_list_habitat``). Il est possible d'éditer cette liste directement den base de données, d'en créer une autre et de changer la liste utiliser par le module. Editer alors ce paramètre:
+- La liste des habitats fournie pour la saisie est basée sur une liste définie dans la base de données (table ``ref_habitat.cor_list_habitat`` et ``ref_habitat.bib_list_habitat``). Il est possible de modifier cette liste directement dnns la base de données, d'en créer une autre et de changer la liste utiliser par le module. Modifier alors ce paramètre :
 
 ``ID_LIST_HABITAT = 1``
 
-- Le formulaire permet de saisir des observateur basés sur le referentiel utilisateurs ( ``false``) ou de les saisir en texte libre (``true``).
+- Le formulaire permet de saisir des observateurs basés sur le referentiel utilisateurs (``false``) ou de les saisir en texte libre (``true``).
 
 ``OBSERVER_AS_TXT = false``
 
-- L'ensemble des champs du formulaire son masquables. Pour en masquer certains, passer à ``false`` les variables suivantes:
+- L'ensemble des champs du formulaire son masquables. Pour en masquer certains, passer à ``false`` les variables suivantes :
 
 ::
 
@@ -1953,7 +1904,7 @@ Formulaire
       abundance = true
       community_interest = true
 
-Voir le fichier ``conf_gn_module.toml.example`` qui liste l'ensemble des paramètres de configuration du module.
+Voir le fichier ``occhab_config.example`` qui liste l'ensemble des paramètres de configuration du module.
 
 Module SYNTHESE
 ---------------
@@ -2176,27 +2127,48 @@ Pour chaque dictionnaire, voici le détail des champs (ils sont tous obligatoire
 * ``display_name`` : indique le texte de l'intitulé de la liste déroulante qui sera affiché sur l'interface.
 * ``status_type`` : pour les statuts de protection cela correspond à une liste des codes de types de statuts de protections à afficher dans la liste déroulante. Les codes existant sont consultables dans le champ ``cd_type_statut`` de la table ``taxonomie.bdc_statut_type``. Pour les listes rouges, il faut seulement indiquer le code de la liste.
 
-Au niveau de la base de données, il est possible de limiter les recherches uniquement aux textes correspondant à la zone géographique des observations de votre installation.
+Au niveau de la base de données, il est possible de limiter les recherches uniquement aux textes correspondant à la zone géographique des observations de votre installation.  
 Pour cela, il suffit de mettre une valeur ``false`` dans le champ ``enable`` de la table ``taxonomie.bdc_statut_texte`` pour tous les textes que vous ne souhaitez pas prendre en compte. Si vous avez une grande quantité d'observations, cette étape est fortement recommandée !
 
-Exemple de requête de mise à jour de la table ``taxonomie.bdc_statut_texte`` :
+Exemple de requête de mise à jour de la table ``taxonomie.bdc_statut_text`` pour désactiver les textes des DOM-TOM : :
 
 ::
 
-  UPDATE taxonomie.bdc_statut_text
-  SET enable = false
-  WHERE cd_doc NOT IN (
-    366749, 901, 738, 758, 763, 625, 633, 3561, 643, 713, 716, 730, 731,
-    703, 694, 694, 732, 733, 174768, 174769, 174770, 195368, 268129,
-    268409, 146732, 145082, 196448, 158248, 755, 756, 358269, 358270,
-    160321, 275396, 31345, 138062, 31343, 300831, 138065, 87486, 165208,
-    87625, 31341, 87619, 138063, 144173, 220350, 321049, 208629, 87484,
-    146311, 88261, 300212, 146310, 31346, 249369, 138064
-  ) ;
+  UPDATE taxonomie.bdc_statut_text SET enable = false 
+  WHERE cd_sig IN ('TER971', 'TER972', 'TER973', 'TER971', 'TER974' )
+  ;
 
-Il est aussi possible de désactiver les textes en fonction du territoire auquel elles s'appliquent (par exemple en utilisant le champs ``cd_sig`` de la table ``taxonomie.bdc_statut_text``.
+Une commande dans TaxHub permet de désactiver automatiquement les textes en dehors d'une liste de départements (en passant leur ``area_code``) : 
 
-D'autres élements sont paramètrables dans le module synthese. La liste complète est disponible dans le fichier ``config/geonature_config.toml`` rubrique ``SYNTHESE``.
+::
+
+  cd ~/taxhub
+  source venv/bin/activate
+  flask taxref enable-bdc-statut-text -d <MON_DEP_1> -d <MON_DEP_2> --clean
+
+**6.** Définir des filtres par défaut
+
+Il s'agit du paramètre ``DEFAULT_FILTERS``.  
+C'est un dictionnaire qui liste la valeur des champs par défaut.  
+Il faut fournir le code des nomenclature par default (liste de chaîne de caractère).  
+(On prend les champs en ``id_nomenclature_...`` et on remplace ``id_nomenclature_`` par ``cd_nomenclature_``)
+
+Exemple de filtres par défaut :
+
+::
+
+  [SYNTHESE]
+  ...
+
+  [SYNTHESE.DEFAULT_FILTERS]
+      # Tous les statuts de validation sauf invalide '4'
+      # Il faut bien les renseigner en tant que chaîne de caractère (et non en tant que nombre)
+      cd_nomenclature_valid_status = ['0', '1', '2', '3', '5', '6']
+      # Seulement les données de présence
+      cd_nomenclature_observation_status = ['Pr']
+
+
+D'autres élements sont paramètrables dans le module Synthese. La liste complète est disponible dans le fichier ``config/default_config.toml.example`` rubrique ``SYNTHESE``.
 
 Module VALIDATION
 -----------------
@@ -2215,10 +2187,10 @@ Au niveau de l'interface, le formulaire de recherche est commun avec le module S
 
 
 Configuration
-""""""""""""""
+"""""""""""""
 
-Le parametrage du module VALIDATION se fait depuis le fichier ``/home/`whoami`/geonature/contrib/gn_module_validation/config/conf_gn_module.toml``
-Après toute modification de la configuration d'un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : `Configuration d'un gn_module`_
+Le paramétrage du module VALIDATION se fait en créant le fichier ``config/validation_config.toml``, en s’inspirant du fichier d'exemple ``contrib/gn_module_validation/validation_config.toml.example``
+Reportez vous à la section `Configuration d'un gn_module`_ pour effectuer les opérations supplémentaires nécessaires pour la prise en compte des modifications.
 
 Liste des champs visibles
 `````````````````````````

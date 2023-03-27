@@ -101,40 +101,57 @@
 <ul class="simple">
 <li><p><strong>Probleme de mémoire</strong></p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">26098</span><span class="p">:</span><span class="mh">0x3d10640</span><span class="p">]</span>    <span class="mi">98298</span> <span class="n">ms</span><span class="p">:</span> <span class="n">Scavenge</span> <span class="mf">977.3</span> <span class="p">(</span><span class="mf">1059.9</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="mf">962.2</span> <span class="p">(</span><span class="mf">1059.9</span><span class="p">)</span> <span class="n">MB</span><span class="p">,</span> <span class="mf">18.5</span> <span class="o">/</span> <span class="mf">0.0</span> <span class="n">ms</span>  <span class="n">allocation</span> <span class="n">failure</span>
-<span class="o">&lt;---</span> <span class="n">JS</span> <span class="n">stacktrace</span> <span class="o">---&gt;</span>
-<span class="n">Cannot</span> <span class="n">get</span> <span class="n">stack</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">GC</span><span class="o">.</span>
-<span class="n">FATAL</span> <span class="n">ERROR</span><span class="p">:</span> <span class="n">MarkingDeque</span><span class="p">::</span><span class="n">EnsureCommitted</span> <span class="n">Allocation</span> <span class="n">failed</span> <span class="o">-</span> <span class="n">process</span> <span class="n">out</span> <span class="n">of</span> <span class="n">memory</span>
+<p>Si vous avez un message d’erreur durant le build du frontend ressemblant à l’un des messages ci-dessous :</p>
+<div class="highlight-dmesg notranslate"><div class="highlight"><pre><span></span><span class="gr">[26098:0x3d10640]    98298 ms: Scavenge 977.3 (1059.9) -&gt; 962.2 (1059.9) MB, 18.5 / 0.0 ms  allocation failure</span>
+&lt;--- JS stacktrace ---&gt;
+Cannot get stack trace in GC.
+<span class="gr">FATAL ERROR: MarkingDeque::EnsureCommitted Allocation failed - process out of memory</span>
 </pre></div>
 </div>
-<p>Cela vient d’un manque de mémoire vive lors de l’execution de la compilation frontend.</p>
-<p>Executer les commandes suivantes pour libérer de l’espace mémoire (<a class="reference external" href="https://stackoverflow.com/questions/26193654/node-js-catch-enomem-error-thrown-after-spawn">https://stackoverflow.com/questions/26193654/node-js-catch-enomem-error-thrown-after-spawn</a>):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">fallocate</span> <span class="o">-</span><span class="n">l</span> <span class="mi">4</span><span class="n">G</span> <span class="o">/</span><span class="n">swapfile</span> <span class="n">Create</span> <span class="n">a</span> <span class="mi">4</span> <span class="n">gigabyte</span> <span class="n">swapfile</span>
-<span class="n">sudo</span> <span class="n">chmod</span> <span class="mi">600</span> <span class="o">/</span><span class="n">swapfile</span> <span class="n">Secure</span> <span class="n">the</span> <span class="n">swapfile</span> <span class="n">by</span> <span class="n">restricting</span> <span class="n">access</span> <span class="n">to</span> <span class="n">root</span>
-<span class="n">sudo</span> <span class="n">mkswap</span> <span class="o">/</span><span class="n">swapfile</span> <span class="n">Mark</span> <span class="n">the</span> <span class="n">file</span> <span class="k">as</span> <span class="n">a</span> <span class="n">swap</span> <span class="n">space</span>
-<span class="n">sudo</span> <span class="n">swapon</span> <span class="o">/</span><span class="n">swapfile</span> <span class="n">Enable</span> <span class="n">the</span> <span class="n">swap</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>npm run build
+
+<span class="go">&gt; geonature@0.0.0 build</span>
+<span class="go">&gt; ng build --aot=false --build-optimizer=false --configuration production</span>
+
+<span class="go">Warning: Support was requested for IE 11 in the project&#39;s browserslist configuration. IE 11 support is deprecated since Angular v12.</span>
+<span class="go">For more information, see https://angular.io/guide/browser-support</span>
+<span class="go">✔ Browser application bundle generation complete.</span>
+<span class="go">Killed</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li><p><strong>Problème pour trouver le chemin de lancement du frontend</strong></p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Tried</span> <span class="n">to</span> <span class="n">find</span> <span class="n">bootstrap</span> <span class="n">code</span><span class="p">,</span> <span class="n">but</span> <span class="n">could</span> <span class="ow">not</span><span class="o">.</span> <span class="n">Specify</span> <span class="n">either</span> <span class="n">statically</span> <span class="n">analyzable</span> <span class="n">bootstrap</span> <span class="n">code</span> <span class="ow">or</span> <span class="k">pass</span> <span class="ow">in</span> <span class="n">an</span> <span class="n">entryModule</span> <span class="n">to</span> <span class="n">the</span> <span class="n">plugins</span> <span class="n">options</span><span class="o">.</span>
+<p>Cela vient d’un manque de mémoire vive lors du build du frontend.</p>
+<p>Vous pouvez essayer de stopper les backends durant le build du frontend :</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo systemctl stop geonature
+<span class="gp">$ </span>sudo systemctl stop geonature-worker
+<span class="gp">$ </span>sudo systemctl stop taxhub
+<span class="gp">$ </span>sudo systemctl stop usershub
+<span class="gp">$ </span><span class="nb">cd</span> frontend
+<span class="gp">$ </span>nvm use
+<span class="gp">$ </span>npm run build
+<span class="gp">$ </span>sudo systemctl start geonature
+<span class="gp">$ </span>sudo systemctl start geonature-worker
+<span class="gp">$ </span>sudo systemctl start taxhub
+<span class="gp">$ </span>sudo systemctl start usershub
 </pre></div>
 </div>
-<p>Editez le fichier <code class="docutils literal notranslate"><span class="pre">/home/&lt;my_user&gt;/geonature/frontend/tsconfig.json</span></code> et renseignez les bons chemins vers le frontend de GeoNature :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;@angular/*&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;/home/&lt;my_user&gt;/geonature/frontend/node_modules/@angular/*&quot;</span><span class="p">],</span>
-<span class="s2">&quot;@geonature_common/*&quot;</span> <span class="p">:</span> <span class="p">[</span><span class="s2">&quot;/home/&lt;my_user&gt;/geonature/frontend/src/app/GN2CommonModule/*&quot;</span><span class="p">],</span>
-<span class="s2">&quot;@geonature/*&quot;</span> <span class="p">:</span> <span class="p">[</span><span class="s2">&quot;/home/&lt;my_user&gt;/geonature/frontend/src/app/*&quot;</span><span class="p">],</span>
-<span class="s2">&quot;@geonature_config/*&quot;</span> <span class="p">:</span> <span class="p">[</span><span class="s2">&quot;/home/&lt;my_user&gt;/geonaturefrontend/src/conf/*&quot;</span><span class="p">],</span>
+<p>Si cela n’est pas suffisant, vous pouvez également essayer de rajouter du swap à votre machine.
+Les commandes ci-dessous permettent de créer un fichier de swap de 4G (<a class="reference external" href="https://stackoverflow.com/questions/26193654/node-js-catch-enomem-error-thrown-after-spawn">https://stackoverflow.com/questions/26193654/node-js-catch-enomem-error-thrown-after-spawn</a>):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo fallocate -l 4G /swapfile  <span class="c1"># Create a 4 gigabyte swapfile</span>
+<span class="gp">$ </span>sudo chmod <span class="m">600</span> /swapfile  <span class="c1"># Secure the swapfile by restricting access to root</span>
+<span class="gp">$ </span>sudo mkswap /swapfile  <span class="c1"># Mark the file as a swap space</span>
+<span class="gp">$ </span>sudo swapon /swapfile  <span class="c1"># Enable the swap</span>
 </pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Au redémarrage de la machine, il faudra réactiver le swap en exécutant à nouveau la dernière commande, à moins de rajouter une entrée dans votre fichier <code class="docutils literal notranslate"><span class="pre">/etc/fstab</span></code>.</p>
 </div>
 <ul class="simple">
 <li><p><strong>Problème d’affichage du Frontend</strong></p></li>
 </ul>
 <p>Si vous rencontrez des problèmes de librairies Frontend qui n’ont pas bien été installées ou non accessibles, vous pouvez les réinstaller</p>
 <ul class="simple">
-<li><p>Supprimer le répertoire <code class="docutils literal notranslate"><span class="pre">frontend/node_modules</span></code></p></li>
-<li><p>Réinstaller les dépendances du Frontend : Dans le répertoire frontend, lancez la commande <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">install</span></code></p></li>
+<li><p>Réinstaller les dépendances du Frontend : Dans le répertoire frontend, lancez la commande <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">ci</span></code></p></li>
 <li><p>Reconstruire le Frontend : Dans le répertoire frontend, lancez la commande <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">run</span> <span class="pre">build</span></code></p></li>
 </ul>
 </section>
@@ -159,7 +176,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
+    <p>&#169; Copyright 2018-2023, PnE, PnC.</p>
   </div>
 
   Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un

@@ -134,7 +134,10 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#espace-utilisateur">Espace utilisateur</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#acces-public">Accès public</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acces-public">Accès public</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acces-public-automatique">Accès public automatique</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#gestion-de-la-sensibilite">Gestion de la sensibilité</a><ul>
@@ -741,7 +744,7 @@ Dans la version 1 de GeoNature, il était possible d’attribuer des droits selo
 <li><p><code class="docutils literal notranslate"><span class="pre">temporal_precision_days</span></code> : La précision temporelle en jours utilisée pour calculer les profils. Elle définit à la fois le pas de temps avec lequel la phénologie est calculée, ainsi que la précision temporelle minimale requise (différence entre date début et date fin de l’observation) pour qu’une donnée soit prise en compte dans le calcul des profils. Une précision de 365 jours ou plus permettra de ne pas tenir compte de la période (toutes les données seront dans une unique période de l’année).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">active_life_stage</span></code> : Définit si le stade de vie doit être pris en compte ou non lors du calcul des profils.</p></li>
 </ul>
-<p>Par défaut, une précision spatiale de 2000m et une précision spatiale de 10j (décade) sont paramétrés pour tous les phylums, sans tenir compte des stades de vie.</p>
+<p>Par défaut, une précision spatiale de 2000m et une précision temporelle de 10j (décade) sont paramétrés pour tous les phylums, sans tenir compte des stades de vie.</p>
 <p>A terme, d’autres variables pourront compléter ces profils : habitats (habref) ou comportement (nidification, reproduction, migration…) notamment.</p>
 <p><em>Configuration - Activer/désactiver les profils</em> :</p>
 <p>Il est possible de désactiver l’ensemble des fonctionnalités liées aux profils dans l’interface, en utilisant le paramètre suivant dans le fichier <code class="docutils literal notranslate"><span class="pre">geonature/config/geonature_config.toml</span></code></p>
@@ -1076,17 +1079,19 @@ Respecte le standard Occurrence de taxon du SINP.</p>
 <ul class="simple">
 <li><p>Une configuration pour l’installation : <code class="docutils literal notranslate"><span class="pre">config/settings.ini</span></code></p></li>
 <li><p>Une configuration globale de l’application : <code class="docutils literal notranslate"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/config/geonature_config.toml</span></code> (générée lors de l’installation de GeoNature)</p></li>
-<li><p>Une configuration par module : <code class="docutils literal notranslate"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/external_modules/&lt;nom_module&gt;/config/conf_gn_module.toml</span></code> (générée lors de l’installation d’un module)</p></li>
+<li><p>Une configuration optionnelle par module : placée dans le dossier de configuration de GeoNature (<code class="docutils literal notranslate"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/config/</span></code>)</p></li>
 <li><p>Une table <code class="docutils literal notranslate"><span class="pre">gn_commons.t_parameters</span></code> pour des paramètres gérés dans la BDD</p></li>
 </ul>
-<img alt="http://geonature.fr/docs/img/admin-manual/administration-geonature.png" src="http://geonature.fr/docs/img/admin-manual/administration-geonature.png" />
+<img alt="https://geonature.fr/docs/img/admin-manual/administration-geonature.png" src="https://geonature.fr/docs/img/admin-manual/administration-geonature.png" />
 <section id="configuration-generale-de-l-application">
 <h3>Configuration générale de l’application<a class="headerlink" href="#configuration-generale-de-l-application" title="Lien permanent vers cette rubrique"></a></h3>
 <p>La configuration générale de GeoNature se fait dans le fichier <code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code>.
 Une version minimaliste est généré à l’installation à partir du fichier <code class="docutils literal notranslate"><span class="pre">config/settings.ini</span></code>.
 Vous pouvez compléter votre configuration en vous inspirant des paramètres par défaut présent dans le fichier <code class="docutils literal notranslate"><span class="pre">config/default_config.toml.example</span></code>.</p>
 <p>Le frontend lit sa configuration depuis le fichier <code class="docutils literal notranslate"><span class="pre">frontend/conf/app.config.ts</span></code> mais ce dernier n’est pas à modifier manuellement : il est généré à partir des paramètres présents dans le fichier <code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code>.</p>
-<p id="post-config-change">Ainsi, à chaque modification du fichier de configuration, vous devez :</p>
+<p id="post-config-change">Depuis la version 2.12.0 de GeoNature, la configuration de GeoNature est envoyée dynamiquement du backend au frontend par l’API de GeoNature et ne nécessite donc plus de regénérer la configuration ni de rebuilder le frontend.</p>
+<p>De plus, à chaque modification du fichier de configuration de GeoNature, le backend est rechargé automatiquement.</p>
+<p>Pour les versions précédentes de GeoNature, à chaque modification du fichier de configuration, vous devez :</p>
 <ul class="simple">
 <li><p>relancer le backend : <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">geonature</span></code></p></li>
 <li><p>regénérer le fichier de configuration du frontend :</p></li>
@@ -1107,13 +1112,7 @@ npm run build
 </section>
 <section id="configuration-d-un-gn-module">
 <h3>Configuration d’un gn_module<a class="headerlink" href="#configuration-d-un-gn-module" title="Lien permanent vers cette rubrique"></a></h3>
-<p>Comme pour la configuration globale, ce fichier est minimaliste et peut être surcouché. Le fichier <code class="docutils literal notranslate"><span class="pre">conf_gn_module.toml.example</span></code>, situé dans le répertoire <code class="docutils literal notranslate"><span class="pre">config</span></code> du module, décrit l’ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut.</p>
-<p>A chaque modification de ce fichier, lancer les commandes suivantes depuis le backend de GeoNature (<code class="docutils literal notranslate"><span class="pre">/home/monuser/GeoNature/backend</span></code>). Le fichier est copié à destination du frontend <code class="docutils literal notranslate"><span class="pre">&lt;nom_module&gt;/frontend/app/module.config.ts</span></code>, qui est alors recompilé automatiquement.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">source venv/bin/activate</span>
-<span class="go">geonature update-module-configuration &lt;NOM_DE_MODULE&gt;</span>
-<span class="go">deactivate</span>
-</pre></div>
-</div>
+<p>Voir la <a class="reference internal" href="installation.html#module-config"><span class="std std-ref">rubrique concernant la configuration des modules</span></a>.</p>
 </section>
 </section>
 <section id="exploitation">
@@ -1132,20 +1131,20 @@ npm run build
 <h3>Commandes GeoNature<a class="headerlink" href="#commandes-geonature" title="Lien permanent vers cette rubrique"></a></h3>
 <p>GeoNature est fourni avec une série de commandes pour administrer l’application.
 Pour les exécuter, il est nécessaire d’être dans le virtualenv python de GeoNature</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd &lt;GEONATURE_DIRECTORY&gt;/backend</span>
-<span class="go">source venv/bin/activate</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd &lt;GEONATURE_DIRECTORY&gt;</span>
+<span class="go">source backend/venv/bin/activate</span>
 </pre></div>
 </div>
 <p>Le préfixe (venv) se met alors au début de votre invite de commande.</p>
 <p>Voici la liste des commandes disponibles (aussi disponibles en tapant la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">--help</span></code>) :</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">activate_gn_module</span></code> : Active un gn_module installé (Possibilité d’activer seulement le backend ou le frontend)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">deactivate_gn_module</span></code> : Désactive gn_un module activé (Possibilté de désactiver seulement le backend ou le frontend)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dev_back</span></code> : Lance le backend en mode développement</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">generate_frontend_module_route</span></code> : Génère ou regénère le fichier de routing du frontend en incluant les gn_module installés (Fait automatiquement lors de l’installation d’un module)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">install_gn_module</span></code> : Installe un gn_module</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">generate_frontend_config</span></code> : Regénère le fichier de configuration du frontend. A exécuter suite à une modification du fichier <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">update_module_configuration</span></code> : Met à jour la configuration d’un module. A exécuter suite à une modification du fichier <code class="docutils literal notranslate"><span class="pre">conf_gn_module.toml</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">activate-gn-module</span></code> : Active un gn_module installé (Possibilité d’activer seulement le backend ou le frontend)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">deactivate-gn-module</span></code> : Désactive gn_un module activé (Possibilté de désactiver seulement le backend ou le frontend)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dev-back</span></code> : Lance le backend en mode développement</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generate-frontend-module-route</span></code> : Génère ou regénère le fichier de routing du frontend en incluant les gn_module installés (Fait automatiquement lors de l’installation d’un module)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">install-gn-module</span></code> : Installe un gn_module</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generate-frontend-config</span></code> : Regénère le fichier de configuration du frontend. A exécuter suite à une modification du fichier <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code> (utile avant GeoNature 2.12.0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">update-module-configuration</span></code> : Met à jour la configuration d’un module. A exécuter suite à une modification du fichier <code class="docutils literal notranslate"><span class="pre">conf_gn_module.toml</span></code> (utile avant GeoNature 2.12.0)</p></li>
 </ul>
 <p>Effectuez <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">&lt;nom_commande&gt;</span> <span class="pre">--help</span></code> pour accéder à la documentation et à des exemples d’utilisation de chaque commande.</p>
 </section>
@@ -1154,6 +1153,7 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 <ul class="simple">
 <li><p>Démarrer GeoNature : <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">start</span> <span class="pre">geonature</span></code></p></li>
 <li><p>Arrêter GeoNature : <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">stop</span> <span class="pre">geonature</span></code></p></li>
+<li><p>Recharger GeoNature : <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">reload</span> <span class="pre">geonature</span></code></p></li>
 <li><p>Redémarrer GeoNature : <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">geonature</span></code></p></li>
 <li><p>Vérifier l’état de GeoNature : <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">status</span> <span class="pre">geonature</span></code></p></li>
 </ul>
@@ -1209,7 +1209,7 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 </ul>
 </div></blockquote>
 <p>Pour modifier une de ces variables, créer un fichier <code class="docutils literal notranslate"><span class="pre">environ</span></code> à la racine de votre dossier GeoNature, et indiquer la variable d’environnement avec sa valeur modifiée.</p>
-<p>Si vous souhaitez modifier de manière plus avancé la ligne de commande <code class="docutils literal notranslate"><span class="pre">gunicorn</span></code>, surcouchez le service systemd :</p>
+<p>Si vous souhaitez modifier de manière plus avancée la ligne de commande <code class="docutils literal notranslate"><span class="pre">gunicorn</span></code>, surcouchez le service systemd :</p>
 <blockquote>
 <div><ul>
 <li><p>Lancez <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">edit</span> <span class="pre">geonature</span></code> ce qui va créer le fichier <code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/geonature.service.d/override.conf</span></code> et ouvrir un éditeur pour vous permettre de le modifier</p></li>
@@ -1260,7 +1260,7 @@ ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
 <p>Opération à faire à chaque modification d’un paramètre de configuration.</p>
 <ul>
 <li><p>Sauvegarde des fichiers de customisation :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd /home/`whoami`/geonature/frontend/src/custom</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd /home/`whoami`/geonature/custom</span>
 <span class="go">tar -zcvf /home/`whoami`/`date +%Y%m%d%H%M`-geonature_custom.tar.gz ./</span>
 </pre></div>
 </div>
@@ -1283,11 +1283,12 @@ ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
 <ul>
 <li><p>Créer une base de données vierge (on part du principe que la base de données <code class="docutils literal notranslate"><span class="pre">geonature2db</span></code> n’existe pas ou plus). Sinon adaptez le nom de la BDD et également la configuration de connexion de l’application à la BDD dans <code class="docutils literal notranslate"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/config/geonature_config.toml</span></code></p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo -n -u postgres -s createdb -O &lt;MON_USER&gt; geonature2db</span>
-<span class="go">sudo -n -u postgres -s psql -d geonature2db -c &quot;CREATE EXTENSION IF NOT EXISTS postgis;&quot;</span>
-<span class="go">sudo -n -u postgres -s psql -d geonature2db -c &quot;CREATE EXTENSION IF NOT EXISTS hstore;&quot;</span>
+<span class="go">sudo -n -u postgres -s psql -d geonature2db -c &#39;CREATE EXTENSION IF NOT EXISTS &quot;postgis&quot;;&#39;</span>
+<span class="go">sudo -n -u postgres -s psql -d geonature2db -c &#39;CREATE EXTENSION IF NOT EXISTS &quot;postgis_raster&quot;;&#39;  # postgis&gt;=3.0 (Debian 11)</span>
+<span class="go">sudo -n -u postgres -s psql -d geonature2db -c &#39;CREATE EXTENSION IF NOT EXISTS &quot;hstore&quot;;&#39;</span>
 <span class="go">sudo -n -u postgres -s psql -d geonature2db -c &#39;CREATE EXTENSION IF NOT EXISTS &quot;uuid-ossp&quot;;&#39;</span>
-<span class="go">sudo -n -u postgres -s psql -d geonature2db -c &quot;CREATE EXTENSION IF NOT EXISTS pg_trgm;&quot;</span>
-<span class="go">sudo -n -u postgres -s psql -d geonature2db -c &quot;CREATE EXTENSION IF NOT EXISTS postgis_raster;&quot;  # postgis&gt;=3.0 (Debian 11)</span>
+<span class="go">sudo -n -u postgres -s psql -d geonature2db -c &#39;CREATE EXTENSION IF NOT EXISTS &quot;pg_trgm&quot;;&#39;</span>
+<span class="go">sudo -n -u postgres -s psql -d geonature2db -c &#39;CREATE EXTENSION IF NOT EXISTS &quot;unaccent&quot;;&#39;</span>
 </pre></div>
 </div>
 </li>
@@ -1306,8 +1307,8 @@ ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
 <span class="go">cd &lt;GEONATURE_DIRECTORY&gt;/config</span>
 <span class="go">sudo tar -zxvf &lt;MY_BACKUP_DIRECTORY&gt;/201803150953-geonature_config.tar.gz</span>
 
-<span class="go">cd /home/&lt;MY_USER&gt;/geonature/frontend/src/custom</span>
-<span class="go">rm -r &lt;MY_USER&gt;/geonature/frontend/src/custom/*</span>
+<span class="go">cd /home/&lt;MY_USER&gt;/geonature/custom</span>
+<span class="go">rm -r &lt;MY_USER&gt;/geonature/custom/*</span>
 <span class="go">tar -zxvf &lt;MY_BACKUP_DIRECTORY&gt;/201803150953-geonature_custom.tar.gz</span>
 
 <span class="go">rm /home/&lt;MY_USER&gt;/geonature/external_modules/*</span>
@@ -1324,75 +1325,42 @@ ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
 </section>
 <section id="customisation">
 <h2>Customisation<a class="headerlink" href="#customisation" title="Lien permanent vers cette rubrique"></a></h2>
-<p>La customisation de l’application nécessite de relancer la compilation du frontend à chaque modification. Cette opération étant relativement longue, une solution alternative (mais avancée) consiste à passer le frontend de manière temporaire en mode “developpement”.</p>
-<p>Pour cela exécuter la commande suivante depuis le répertoire <code class="docutils literal notranslate"><span class="pre">frontend</span></code></p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">npm run start -- --host=0.0.0.0 --disable-host-check</span>
-</pre></div>
-</div>
-<p>L’application est désormais disponible sur un serveur de développement à la même addresse que précédemment, mais sur le port 4200 : <a class="reference external" href="http://test.geonature.fr:4200">http://test.geonature.fr:4200</a></p>
-<p>Ouvrez un nouveau terminal (pour laisser tourner le serveur de développement), puis modifier la variable <code class="docutils literal notranslate"><span class="pre">URL_APPLICATION</span></code> dans le fichier <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code> en mettant l’adresse ci-dessus et relancer l’application (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">supervisorctl</span> <span class="pre">restart</span> <span class="pre">geonature2</span></code> ou <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">geonature</span></code>)</p>
-<p>A chaque modification d’un fichier du frontend, une compilation rapide est relancée et votre navigateur se rafraichit automatiquement en intégrant les dernières modifications.</p>
-<p>Une fois les modifications terminées, remodifier le fichier <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code> pour remettre l’URL initiale, relancez l’application (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">supervisorctl</span> <span class="pre">restart</span> <span class="pre">geonature2</span></code> ou <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">geonature</span></code>), puis relancez la compilation du frontend (<code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">run</span> <span class="pre">build</span></code>). Faites enfin un <code class="docutils literal notranslate"><span class="pre">ctrl+c</span></code> dans le terminal ou le frontend a été lancé pour stopper le serveur de développement.</p>
-<p>Si la manipulation vous parait compliquée, vous pouvez suivre la documentation qui suit, qui fait relancer la compilation du frontend à chaque modification.</p>
+<p>Tous les fichiers par défaut présents dans le dossier <code class="docutils literal notranslate"><span class="pre">geonature/backend/static/</span></code> peuvent être surcouchés, en placant un fichier du même nom dans <code class="docutils literal notranslate"><span class="pre">geonature/custom/</span></code>.</p>
 <section id="integrer-son-logo">
 <h3>Intégrer son logo<a class="headerlink" href="#integrer-son-logo" title="Lien permanent vers cette rubrique"></a></h3>
-<p>Le logo affiché dans la barre de navigation de GeoNature peut être modifié dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/frontend/src/custom/images</span></code>. Remplacez alors le fichier <code class="docutils literal notranslate"><span class="pre">logo_structure.png</span></code> par votre propre logo, en conservant ce nom pour le nouveau fichier. Le bandeau fait 50px de hauteur, vous pouvez donc mettre une image faisant cette hauteur. Il est également possible de modifier la taille de l’image en CSS dans le fichier <code class="docutils literal notranslate"><span class="pre">frontend/src/assets/custom.css</span></code> de la manière suivante:</p>
-<div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="c">/* la balise img affichant l&#39;image a l&#39;id &#39;logo-structure */</span><span class="w"></span>
-<span class="p">#</span><span class="nn">logo-structure</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="k">height</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="kt">px</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="k">width</span><span class="p">:</span><span class="w"> </span><span class="mi">80</span><span class="kt">px</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</pre></div>
-</div>
-<p>Relancez la construction de l’interface :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd /home/`whoami`/geonature/frontend</span>
-<span class="go">npm run build</span>
-</pre></div>
-</div>
+<p>Le logo affiché dans la barre de navigation de GeoNature (<code class="docutils literal notranslate"><span class="pre">backend/static/images/logo_structure.png</span></code>) peut être surcouché dans le répertoire en placant le votre dans <code class="docutils literal notranslate"><span class="pre">custom/images/logo_structure.png</span></code>. Idem pour toutes les images présentes dans le dossier <code class="docutils literal notranslate"><span class="pre">backend/static/images/</span></code>.</p>
 </section>
 <section id="customiser-le-contenu">
 <h3>Customiser le contenu<a class="headerlink" href="#customiser-le-contenu" title="Lien permanent vers cette rubrique"></a></h3>
 <ul class="simple">
 <li><p>Customiser le contenu de la page d’introduction :</p></li>
 </ul>
-<p>Le texte d’introduction et le titre de la page d’Accueil de GeoNature peuvent être modifiés à tout moment, sans réinstallation de l’application. Il en est de même pour le bouton d’accès à la synthèse.</p>
-<p>Il suffit pour cela de mettre à jour le fichier <code class="docutils literal notranslate"><span class="pre">introduction.component.html</span></code>, situé dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/frontend/src/custom/components/introduction</span></code>.</p>
-<p>Afin que ces modifications soient prises en compte dans l’interface, il est nécessaire de relancer les commandes suivantes :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd /home/`whoami`/geonature/frontend</span>
-<span class="go">npm run build</span>
+<p>Le texte d’introduction, le titre et le pied de page de la page d’Accueil de GeoNature peuvent être modifiés à tout moment, sans réinstallation de l’application.</p>
+<p>Pour cela, renseignez les paramètres dans le fichier de configuration de GeoNature (<code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code>) :</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[HOME]</span><span class="w"></span>
+<span class="w">    </span><span class="n">TITLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Bienvenue dans GeoNature&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">INTRODUCTION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">FOOTER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"></span>
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>Customiser le contenu du pied de page :</p></li>
-</ul>
-<p>Le pied de page peut être customisé de la même manière, en renseignant le fichier <code class="docutils literal notranslate"><span class="pre">footer.component.html</span></code>, situé dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/frontend/src/custom/components/footer</span></code></p>
-<p>De la même manière, il est nécessaire de relancer les commandes suivantes pour que les modifications soient prises en compte :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd /home/`whoami`/geonature/frontend</span>
-<span class="go">npm run build</span>
-</pre></div>
-</div>
+<p>Vous pouvez renseigner du code HTML sur plusieurs lignes dans ces paramètres, en le plaçant entre triple quote (<cite>« «  »&lt;b&gt;Hello&lt;/b&gt; » » »</cite>).</p>
 </section>
 <section id="customiser-l-aspect-esthetique">
 <h3>Customiser l’aspect esthétique<a class="headerlink" href="#customiser-l-aspect-esthetique" title="Lien permanent vers cette rubrique"></a></h3>
-<p>Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant le fichier <code class="docutils literal notranslate"><span class="pre">custom.css</span></code>, situé dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/frontend/src/assets</span></code>.</p>
-<p>Pour remplacer la couleur de fond du bandeau de navigation par une image, on peut par exemple apporter la modification suivante :</p>
+<p>Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant un fichier <code class="docutils literal notranslate"><span class="pre">custom/css/frontend.css</span></code> contenant votre surcouche des classes CSS de l’application.</p>
+<p>Par exemple, pour remplacer la couleur de fond du bandeau de navigation par une image, on peut apporter la modification suivante :</p>
 <div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="nt">html</span><span class="w"> </span><span class="nt">body</span><span class="w"> </span><span class="nt">pnx-root</span><span class="w"> </span><span class="nt">pnx-nav-home</span><span class="w"> </span><span class="nt">mat-sidenav-container</span><span class="p">.</span><span class="nc">sidenav-container</span><span class="p">.</span><span class="nc">mat-drawer-container</span><span class="p">.</span><span class="nc">mat-sidenav-container</span><span class="w"> </span><span class="nt">mat-sidenav-content</span><span class="p">.</span><span class="nc">mat-drawer-content</span><span class="p">.</span><span class="nc">mat-sidenav-content</span><span class="w"> </span><span class="nt">mat-toolbar</span><span class="p">#</span><span class="nn">app-toolbar</span><span class="p">.</span><span class="nc">row</span><span class="p">.</span><span class="nc">mat-toolbar</span><span class="w"></span>
 <span class="p">{</span><span class="w"></span>
 <span class="w">   </span><span class="k">background</span><span class="w"> </span><span class="p">:</span><span class="w"></span>
-<span class="w">   </span><span class="nb">url</span><span class="p">(</span><span class="sx">bandeau_test.jpg</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="nb">url</span><span class="p">(</span><span class="sx">../images/bandeau_test.jpg</span><span class="p">)</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<p>Dans ce cas, l’image <code class="docutils literal notranslate"><span class="pre">bandeau_test.jpg</span></code> doit se trouver dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/frontend/src</span></code>.</p>
-<p>Comme pour la modification des contenus, il est nécessaire de relancer la commande suivante pour que les modifications soient prises en compte :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd /home/`whoami`/geonature/frontend</span>
-<span class="go">npm run build</span>
-</pre></div>
-</div>
+<p>Dans ce cas, l’image <code class="docutils literal notranslate"><span class="pre">bandeau_test.jpg</span></code> doit se trouver dans le répertoire <code class="docutils literal notranslate"><span class="pre">custom/images</span></code>.</p>
 </section>
 <section id="customiser-les-noms-et-pictos-des-modules">
 <h3>Customiser les noms et pictos des modules<a class="headerlink" href="#customiser-les-noms-et-pictos-des-modules" title="Lien permanent vers cette rubrique"></a></h3>
-<p>Vous pouvez modifier l’intitulé et le pictogramme des modules dans le menu des modules. Pour cela, adaptez le contenu des champs <code class="docutils literal notranslate"><span class="pre">module_label</span></code> et <code class="docutils literal notranslate"><span class="pre">module_picto</span></code> (avec des icones de la librairie Font Awesome - <a class="reference external" href="https://fontawesome.com">https://fontawesome.com</a>) dans la table <code class="docutils literal notranslate"><span class="pre">gn_commons.t_modules</span></code>.</p>
+<p>Vous pouvez modifier l’intitulé et le pictogramme des modules dans le menu des modules. Pour cela, adaptez le contenu des champs <code class="docutils literal notranslate"><span class="pre">module_label</span></code> et <code class="docutils literal notranslate"><span class="pre">module_picto</span></code> (avec des icones de la librairie Font Awesome - <a class="reference external" href="https://fontawesome.com">https://fontawesome.com</a>) dans la table <code class="docutils literal notranslate"><span class="pre">gn_commons.t_modules</span></code> (aussi modifiable directement depuis le module « Admin »).</p>
 <p>Exemple :</p>
 <div class="highlight-SQL notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Module Occtax</span>
 <span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">module_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Occtax&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">module_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;OCCTAX&#39;</span><span class="p">;</span><span class="w"></span>
@@ -1421,8 +1389,8 @@ ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
 </section>
 <section id="customiser-les-exports-pdf">
 <h3>Customiser les exports PDF<a class="headerlink" href="#customiser-les-exports-pdf" title="Lien permanent vers cette rubrique"></a></h3>
-<p>Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en modifiant les images <code class="docutils literal notranslate"><span class="pre">Bandeau_pdf.png</span></code> et <code class="docutils literal notranslate"><span class="pre">Logo_pdf.png</span></code> dans <code class="docutils literal notranslate"><span class="pre">backend/static/images</span></code>.
-Le style des fichiers est également customisable grâce au fichier « backend/geonature/static/css/custom.css ». La classe <code class="docutils literal notranslate"><span class="pre">main-color</span></code> permet notamment de changer la couleur des séparateurs (orange par défaut).</p>
+<p>Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en surcouchant les images <code class="docutils literal notranslate"><span class="pre">Bandeau_pdf.png</span></code> et <code class="docutils literal notranslate"><span class="pre">Logo_pdf.png</span></code> présentes dans le dossier <code class="docutils literal notranslate"><span class="pre">backend/static/images</span></code>, en placant les votres du même nom dans <code class="docutils literal notranslate"><span class="pre">custom/images</span></code>.</p>
+<p>Le style des fichiers PDF est également customisable grâce au fichier « custom/css/metadata_pdf_custom.css », permettant de surcoucher les classes CSS du fichier <code class="docutils literal notranslate"><span class="pre">backend/static/css/metadata_pdf.css</span></code>. Par exemple, la classe <code class="docutils literal notranslate"><span class="pre">main-color</span></code> permet de changer la couleur des séparateurs (orange par défaut).</p>
 </section>
 </section>
 <section id="integrer-des-donnees">
@@ -1548,7 +1516,7 @@ voir la documentation <a class="reference external" href="https://github.com/PnE
 Par exemple ici <code class="docutils literal notranslate"><span class="pre">ref_nomenclatures.v_data_typ</span></code>.
 Ou bien l’Admin des nomenclatures disponible dans GeoNature.</p>
 <p>Il est aussi possible d’utiliser les codes des nomenclatures pour retrouver leurs id (ceci étant variables d’une instance à l’autre),
-en utilisant la fonction <code class="docutils literal notranslate"><span class="pre">ref_nomencltaure.get_id_nomenclature</span></code>.</p>
+en utilisant la fonction <code class="docutils literal notranslate"><span class="pre">ref_nomenclatures.get_id_nomenclature</span></code>.</p>
 </section>
 <section id="insertion-des-donnees-dans-la-synthese">
 <h4>Insertion des données dans la Synthèse<a class="headerlink" href="#insertion-des-donnees-dans-la-synthese" title="Lien permanent vers cette rubrique"></a></h4>
@@ -1556,7 +1524,7 @@ en utilisant la fonction <code class="docutils literal notranslate"><span class=
 <span class="n">unique_id_sinp</span><span class="p">,</span><span class="w"></span>
 <span class="n">id_source</span><span class="p">,</span><span class="w"></span>
 <span class="n">id_dataset</span><span class="p">,</span><span class="w"></span>
-<span class="n">id_nomenclature_obs_meth</span><span class="p">,</span><span class="w"></span>
+<span class="n">id_nomenclature_obs_technique</span><span class="p">,</span><span class="w"></span>
 <span class="n">count_min</span><span class="p">,</span><span class="w"></span>
 <span class="n">count_max</span><span class="p">,</span><span class="w"></span>
 <span class="n">cd_nom</span><span class="p">,</span><span class="w"></span>
@@ -1577,8 +1545,8 @@ en utilisant la fonction <code class="docutils literal notranslate"><span class=
 <span class="w">      </span><span class="mi">2</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">id_source</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="mi">3</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">id_dataset</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="k">CASE</span><span class="w"></span>
-<span class="w">        </span><span class="k">WHEN</span><span class="w"> </span><span class="n">critere</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Vu&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="p">(</span><span class="mi">41</span><span class="p">)</span><span class="w"> </span><span class="c1">-- Ou bien ref_nomencltaure.get_id_nomenclature</span>
-<span class="w">        </span><span class="k">WHEN</span><span class="w"> </span><span class="n">critere</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Entendu&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">WHEN</span><span class="w"> </span><span class="n">critere</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Vu&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="p">(</span><span class="k">select</span><span class="w"> </span><span class="n">ref_nomenclatures</span><span class="p">.</span><span class="n">get_id_nomenclature</span><span class="p">(</span><span class="s1">&#39;METH_OBS&#39;</span><span class="p">,</span><span class="s1">&#39;0&#39;</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="k">WHEN</span><span class="w"> </span><span class="n">critere</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Entendu&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="p">(</span><span class="k">select</span><span class="w"> </span><span class="n">ref_nomenclatures</span><span class="p">.</span><span class="n">get_id_nomenclature</span><span class="p">(</span><span class="s1">&#39;METH_OBS&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">))</span><span class="w"></span>
 <span class="w">        </span><span class="k">ELSE</span><span class="w"> </span><span class="p">(</span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">get_default_nomenclature_value</span><span class="p">(</span><span class="s1">&#39;METH_OBS&#39;</span><span class="p">))</span><span class="w"></span>
 <span class="w">      </span><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">id_nomenclature_obs_meth</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="n">effectif</span><span class="p">::</span><span class="nb">integer</span><span class="p">,</span><span class="w"></span>
@@ -2188,6 +2156,11 @@ Il s’agit maintenant de gérer ses permissions dans GeoNature même.</p>
 <li><p>Editer le CRUVED pour chacun des modules de l’instance. Passer à 0 tous les droits et tous les modules devant être supprimés. Laisser “1” pour les modules d’intérêt.</p></li>
 </ul>
 </div></blockquote>
+<section id="acces-public-automatique">
+<h4>Accès public automatique<a class="headerlink" href="#acces-public-automatique" title="Lien permanent vers cette rubrique"></a></h4>
+<p>Un lien GeoNature peut déclencher automatiquement une connexion avec l’utilisateur public en lui rajoutant les paramètres <code class="docutils literal notranslate"><span class="pre">access=public</span></code>.</p>
+<p>Exemple : <a class="reference external" href="https://demo.geonature.fr/geonature/#/synthese?access=public">https://demo.geonature.fr/geonature/#/synthese?access=public</a></p>
+</section>
 </section>
 </section>
 <section id="gestion-de-la-sensibilite">
@@ -2287,26 +2260,35 @@ de sensibilité :</p>
 <p>Le référentiel de sensibilité fourni par le SINP est normalement intégré
 à GeoNature lors de son installation. Sinon, il peut être manuellement
 intégré avec l’une ou l’autre des commandes suivantes :</p>
+<p>TaxRef v16 :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity add-referential <span class="se">\</span>
+        --source-name <span class="s2">&quot;Référentiel sensibilité TAXREF v16 20230203&quot;</span> <span class="se">\</span>
+        --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip <span class="se">\</span>
+        --zipfile RefSensibiliteV16_20230203.zip <span class="se">\</span>
+        --csvfile RefSensibiliteV16_20230203/RefSensibilite_16.csv  <span class="se">\</span>
+        --encoding<span class="o">=</span>iso-8859-15
+</pre></div>
+</div>
 <p>TaxRef v15 :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">geonature</span> <span class="n">sensitivity</span> <span class="n">add</span><span class="o">-</span><span class="n">referential</span> \
-        <span class="o">--</span><span class="n">source</span><span class="o">-</span><span class="n">name</span> <span class="s2">&quot;Référentiel sensibilité TAXREF v15 20220331&quot;</span> \
-        <span class="o">--</span><span class="n">url</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">inpn</span><span class="o">.</span><span class="n">mnhn</span><span class="o">.</span><span class="n">fr</span><span class="o">/</span><span class="n">docs</span><span class="o">-</span><span class="n">web</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">download</span><span class="o">/</span><span class="mi">401875</span> \
-        <span class="o">--</span><span class="n">zipfile</span> <span class="n">RefSensibiliteV15_20220331</span><span class="o">.</span><span class="n">zip</span> \
-        <span class="o">--</span><span class="n">csvfile</span> <span class="n">RefSensibilite_V15_31032022</span><span class="o">/</span><span class="n">RefSensibilite_15</span><span class="o">.</span><span class="n">csv</span>  \
-        <span class="o">--</span><span class="n">encoding</span><span class="o">=</span><span class="n">iso</span><span class="o">-</span><span class="mi">8859</span><span class="o">-</span><span class="mi">15</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity add-referential <span class="se">\</span>
+        --source-name <span class="s2">&quot;Référentiel sensibilité TAXREF v15 20220331&quot;</span> <span class="se">\</span>
+        --url https://inpn.mnhn.fr/docs-web/docs/download/401875 <span class="se">\</span>
+        --zipfile RefSensibiliteV15_20220331.zip <span class="se">\</span>
+        --csvfile RefSensibilite_V15_31032022/RefSensibilite_15.csv  <span class="se">\</span>
+        --encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
 <p>TaxRef v14 :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">geonature</span> <span class="n">sensitivity</span> <span class="n">add</span><span class="o">-</span><span class="n">referential</span> \
-        <span class="o">--</span><span class="n">source</span><span class="o">-</span><span class="n">name</span> <span class="s2">&quot;Référentiel sensibilité TAXREF v14 20220331&quot;</span> \
-        <span class="o">--</span><span class="n">url</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">inpn</span><span class="o">.</span><span class="n">mnhn</span><span class="o">.</span><span class="n">fr</span><span class="o">/</span><span class="n">docs</span><span class="o">-</span><span class="n">web</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">download</span><span class="o">/</span><span class="mi">401876</span> \
-        <span class="o">--</span><span class="n">zipfile</span> <span class="n">RefSensibiliteV14_20220331</span><span class="o">.</span><span class="n">zip</span> \
-        <span class="o">--</span><span class="n">csvfile</span> <span class="n">RefSensibilite_V14_31032022</span><span class="o">/</span><span class="n">RefSensibilite_14</span><span class="o">.</span><span class="n">csv</span>  \
-        <span class="o">--</span><span class="n">encoding</span><span class="o">=</span><span class="n">iso</span><span class="o">-</span><span class="mi">8859</span><span class="o">-</span><span class="mi">15</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity add-referential <span class="se">\</span>
+        --source-name <span class="s2">&quot;Référentiel sensibilité TAXREF v14 20220331&quot;</span> <span class="se">\</span>
+        --url https://inpn.mnhn.fr/docs-web/docs/download/401876 <span class="se">\</span>
+        --zipfile RefSensibiliteV14_20220331.zip <span class="se">\</span>
+        --csvfile RefSensibilite_V14_31032022/RefSensibilite_14.csv  <span class="se">\</span>
+        --encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
-<p>Le jeu de règles est fourni pour les versions 14 et 15 de TaxRef, certaines
-espèces sensibles pouvant voir leur cd_nom changé d’une version à l’autre.</p>
+<p>Le jeu de règles est fourni pour chaque version précise de TaxRef, certaines
+espèces sensibles pouvant voir leur <em>cd_nom</em> changé d’une version à l’autre.</p>
 </section>
 <section id="personnalisation">
 <h4>Personnalisation<a class="headerlink" href="#personnalisation" title="Lien permanent vers cette rubrique"></a></h4>
@@ -2361,10 +2343,8 @@ souhaitée mais pas encore présente dans GeoNature.</p>
 </section>
 <section id="configuration-du-module">
 <h3>Configuration du module<a class="headerlink" href="#configuration-du-module" title="Lien permanent vers cette rubrique"></a></h3>
-<p>Le fichier de configuration du module se trouve ici : <code class="docutils literal notranslate"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/external_modules/occtax/config/conf_gn_module.toml</span></code>.</p>
-<p>Pour voir l’ensemble des variables de configuration disponibles du module ainsi que leurs valeurs par défaut, ouvrir le fichier <code class="docutils literal notranslate"><span class="pre">/home/&lt;mon_user&gt;/geonature/external_modules/occtax/config/conf_gn_module.toml.example</span></code>.</p>
-<p>Les surcouches de configuration doivent être faites dans le fichier <code class="docutils literal notranslate"><span class="pre">conf_gn_module.toml</span></code>, en ne modifiant jamais le fichier <code class="docutils literal notranslate"><span class="pre">conf_gn_module.toml.example</span></code>.</p>
-<p>Après toute modification de la configuration d’un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : <a class="reference internal" href="#configuration-d-un-gn-module">Configuration d’un gn_module</a></p>
+<p>Le paramétrage du module OCCTAX se fait en créant le fichier <code class="docutils literal notranslate"><span class="pre">config/occtax_config.toml</span></code>, en s’inspirant du fichier d’exemple <code class="docutils literal notranslate"><span class="pre">contrib/occtax/occtax_config.toml.example</span></code>.
+Reportez vous à la section <a class="reference internal" href="#configuration-d-un-gn-module">Configuration d’un gn_module</a> pour effectuer les opérations supplémentaires nécessaires pour la prise en compte des modifications.</p>
 <section id="afficher-masquer-des-champs-du-formulaire">
 <h4>Afficher/masquer des champs du formulaire<a class="headerlink" href="#afficher-masquer-des-champs-du-formulaire" title="Lien permanent vers cette rubrique"></a></h4>
 <p>La quasi-totalité des champs du standard Occurrences de taxons sont présents dans la base de données, et peuvent donc être saisis à partir du formulaire.</p>
@@ -2562,20 +2542,18 @@ Un champ additionnel est définit par:</p>
 <li><p>une série d’autres options pour paramétrer le comportement du champs (obligatoire, ordre, description, exportable etc…)</p></li>
 </ul>
 <p>Exemples de configuration :</p>
+<p>Pour les champs de type « select », « multiselect », « checkbox » et « radio », le champs « valeur » doit être rempli par un JSON représentant une liste de dictionnaire « label » (représentant la valeur affiché), et « valeur » (représentant la valeur écrite en base de données).
+Exemple : <cite>[{« label »: « Trois », « value »: 3}, {« label »: « Quatre », « value »: 4}]</cite></p>
 <ul class="simple">
-<li><p>Un champs type « select » :</p></li>
+<li><p>Un champs type « multiselect »:</p></li>
 </ul>
-<img alt="_images/select_exemple.png" src="_images/select_exemple.png" />
-<ul class="simple">
-<li><p>Un champs type « multiselect » (la clé « value » est obligatoire dans le dictionnaire de valeurs) :</p></li>
-</ul>
-<img alt="_images/multiselect3.png" src="_images/multiselect3.png" />
+<img alt="_images/label_value_multiselect.png" src="_images/label_value_multiselect.png" />
 <ul class="simple">
 <li><p>Un champs type « html ». C’est un champs de type « présentation », aucune valeur ne sera enregistré en base de données pour ce champs :</p></li>
 </ul>
 <img alt="_images/html1.png" src="_images/html1.png" />
 <ul class="simple">
-<li><p>Un champs de type « datalist ». Ce champs permet de générer une liste de valeurs à partir d’une API. Dans le champ « attributs additionnels », renseignez les éléments suivants :</p></li>
+<li><p>Un champs de type « datalist ». Ce champs permet de générer une liste de valeurs à partir d’une API (non porté sur Occtax-mobile). Dans le champ « attributs additionnels », renseignez les éléments suivants :</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>``{&quot;api&quot;: &quot;url_vers_la_ressource&quot;, &quot;keyValue&quot;: &quot;champ à stocker en base&quot;, &quot;keyLabel&quot;: &quot;champ à afficher en interface&quot;}
 </pre></div>
@@ -2609,20 +2587,20 @@ Un champ additionnel est définit par:</p>
 </section>
 <section id="id4">
 <h3>Configuration<a class="headerlink" href="#id4" title="Lien permanent vers cette rubrique"></a></h3>
-<p>Le parametrage du module OCCHAB se fait depuis le fichier <code class="docutils literal notranslate"><span class="pre">/home/`whoami`/geonature/contrib/config/conf_gn_module.toml</span></code>
-Après toute modification de la configuration d’un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : <a class="reference internal" href="#configuration-d-un-gn-module">Configuration d’un gn_module</a></p>
+<p>Le paramétrage du module OCCHAB se fait en créant le fichier <code class="docutils literal notranslate"><span class="pre">config/occhab_config.toml</span></code>, en s’inspirant du fichier d’exemple <code class="docutils literal notranslate"><span class="pre">contrib/gn_module_occhab/occhab_config.toml.example</span></code>
+Reportez vous à la section <a class="reference internal" href="#configuration-d-un-gn-module">Configuration d’un gn_module</a> pour effectuer les opérations supplémentaires nécessaires pour la prise en compte des modifications.</p>
 <section id="formulaire">
 <h4>Formulaire<a class="headerlink" href="#formulaire" title="Lien permanent vers cette rubrique"></a></h4>
 <ul class="simple">
-<li><p>La liste des habitats fournit pour la saisie est basé sur une liste définit en base de données (table <code class="docutils literal notranslate"><span class="pre">ref_habitat.cor_list_habitat</span></code> et <code class="docutils literal notranslate"><span class="pre">ref_habitat.bib_list_habitat</span></code>). Il est possible d’éditer cette liste directement den base de données, d’en créer une autre et de changer la liste utiliser par le module. Editer alors ce paramètre:</p></li>
+<li><p>La liste des habitats fournie pour la saisie est basée sur une liste définie dans la base de données (table <code class="docutils literal notranslate"><span class="pre">ref_habitat.cor_list_habitat</span></code> et <code class="docutils literal notranslate"><span class="pre">ref_habitat.bib_list_habitat</span></code>). Il est possible de modifier cette liste directement dnns la base de données, d’en créer une autre et de changer la liste utiliser par le module. Modifier alors ce paramètre :</p></li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">ID_LIST_HABITAT</span> <span class="pre">=</span> <span class="pre">1</span></code></p>
 <ul class="simple">
-<li><p>Le formulaire permet de saisir des observateur basés sur le referentiel utilisateurs ( <code class="docutils literal notranslate"><span class="pre">false</span></code>) ou de les saisir en texte libre (<code class="docutils literal notranslate"><span class="pre">true</span></code>).</p></li>
+<li><p>Le formulaire permet de saisir des observateurs basés sur le referentiel utilisateurs (<code class="docutils literal notranslate"><span class="pre">false</span></code>) ou de les saisir en texte libre (<code class="docutils literal notranslate"><span class="pre">true</span></code>).</p></li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">OBSERVER_AS_TXT</span> <span class="pre">=</span> <span class="pre">false</span></code></p>
 <ul class="simple">
-<li><p>L’ensemble des champs du formulaire son masquables. Pour en masquer certains, passer à <code class="docutils literal notranslate"><span class="pre">false</span></code> les variables suivantes:</p></li>
+<li><p>L’ensemble des champs du formulaire son masquables. Pour en masquer certains, passer à <code class="docutils literal notranslate"><span class="pre">false</span></code> les variables suivantes :</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">formConfig</span><span class="p">]</span>
   <span class="n">date_min</span> <span class="o">=</span> <span class="n">true</span>
@@ -2645,7 +2623,7 @@ Après toute modification de la configuration d’un module, il faut regénérer
   <span class="n">community_interest</span> <span class="o">=</span> <span class="n">true</span>
 </pre></div>
 </div>
-<p>Voir le fichier <code class="docutils literal notranslate"><span class="pre">conf_gn_module.toml.example</span></code> qui liste l’ensemble des paramètres de configuration du module.</p>
+<p>Voir le fichier <code class="docutils literal notranslate"><span class="pre">occhab_config.example</span></code> qui liste l’ensemble des paramètres de configuration du module.</p>
 </section>
 </section>
 </section>
@@ -2834,21 +2812,36 @@ Attention : Si des données sont déjà présentes dans la synthèse et que l’
 </ul>
 <p>Au niveau de la base de données, il est possible de limiter les recherches uniquement aux textes correspondant à la zone géographique des observations de votre installation.
 Pour cela, il suffit de mettre une valeur <code class="docutils literal notranslate"><span class="pre">false</span></code> dans le champ <code class="docutils literal notranslate"><span class="pre">enable</span></code> de la table <code class="docutils literal notranslate"><span class="pre">taxonomie.bdc_statut_texte</span></code> pour tous les textes que vous ne souhaitez pas prendre en compte. Si vous avez une grande quantité d’observations, cette étape est fortement recommandée !</p>
-<p>Exemple de requête de mise à jour de la table <code class="docutils literal notranslate"><span class="pre">taxonomie.bdc_statut_texte</span></code> :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">UPDATE</span> <span class="n">taxonomie</span><span class="o">.</span><span class="n">bdc_statut_text</span>
-<span class="n">SET</span> <span class="n">enable</span> <span class="o">=</span> <span class="n">false</span>
-<span class="n">WHERE</span> <span class="n">cd_doc</span> <span class="n">NOT</span> <span class="n">IN</span> <span class="p">(</span>
-  <span class="mi">366749</span><span class="p">,</span> <span class="mi">901</span><span class="p">,</span> <span class="mi">738</span><span class="p">,</span> <span class="mi">758</span><span class="p">,</span> <span class="mi">763</span><span class="p">,</span> <span class="mi">625</span><span class="p">,</span> <span class="mi">633</span><span class="p">,</span> <span class="mi">3561</span><span class="p">,</span> <span class="mi">643</span><span class="p">,</span> <span class="mi">713</span><span class="p">,</span> <span class="mi">716</span><span class="p">,</span> <span class="mi">730</span><span class="p">,</span> <span class="mi">731</span><span class="p">,</span>
-  <span class="mi">703</span><span class="p">,</span> <span class="mi">694</span><span class="p">,</span> <span class="mi">694</span><span class="p">,</span> <span class="mi">732</span><span class="p">,</span> <span class="mi">733</span><span class="p">,</span> <span class="mi">174768</span><span class="p">,</span> <span class="mi">174769</span><span class="p">,</span> <span class="mi">174770</span><span class="p">,</span> <span class="mi">195368</span><span class="p">,</span> <span class="mi">268129</span><span class="p">,</span>
-  <span class="mi">268409</span><span class="p">,</span> <span class="mi">146732</span><span class="p">,</span> <span class="mi">145082</span><span class="p">,</span> <span class="mi">196448</span><span class="p">,</span> <span class="mi">158248</span><span class="p">,</span> <span class="mi">755</span><span class="p">,</span> <span class="mi">756</span><span class="p">,</span> <span class="mi">358269</span><span class="p">,</span> <span class="mi">358270</span><span class="p">,</span>
-  <span class="mi">160321</span><span class="p">,</span> <span class="mi">275396</span><span class="p">,</span> <span class="mi">31345</span><span class="p">,</span> <span class="mi">138062</span><span class="p">,</span> <span class="mi">31343</span><span class="p">,</span> <span class="mi">300831</span><span class="p">,</span> <span class="mi">138065</span><span class="p">,</span> <span class="mi">87486</span><span class="p">,</span> <span class="mi">165208</span><span class="p">,</span>
-  <span class="mi">87625</span><span class="p">,</span> <span class="mi">31341</span><span class="p">,</span> <span class="mi">87619</span><span class="p">,</span> <span class="mi">138063</span><span class="p">,</span> <span class="mi">144173</span><span class="p">,</span> <span class="mi">220350</span><span class="p">,</span> <span class="mi">321049</span><span class="p">,</span> <span class="mi">208629</span><span class="p">,</span> <span class="mi">87484</span><span class="p">,</span>
-  <span class="mi">146311</span><span class="p">,</span> <span class="mi">88261</span><span class="p">,</span> <span class="mi">300212</span><span class="p">,</span> <span class="mi">146310</span><span class="p">,</span> <span class="mi">31346</span><span class="p">,</span> <span class="mi">249369</span><span class="p">,</span> <span class="mi">138064</span>
-<span class="p">)</span> <span class="p">;</span>
+<p>Exemple de requête de mise à jour de la table <code class="docutils literal notranslate"><span class="pre">taxonomie.bdc_statut_text</span></code> pour désactiver les textes des DOM-TOM : :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">UPDATE</span> <span class="n">taxonomie</span><span class="o">.</span><span class="n">bdc_statut_text</span> <span class="n">SET</span> <span class="n">enable</span> <span class="o">=</span> <span class="n">false</span>
+<span class="n">WHERE</span> <span class="n">cd_sig</span> <span class="n">IN</span> <span class="p">(</span><span class="s1">&#39;TER971&#39;</span><span class="p">,</span> <span class="s1">&#39;TER972&#39;</span><span class="p">,</span> <span class="s1">&#39;TER973&#39;</span><span class="p">,</span> <span class="s1">&#39;TER971&#39;</span><span class="p">,</span> <span class="s1">&#39;TER974&#39;</span> <span class="p">)</span>
+<span class="p">;</span>
 </pre></div>
 </div>
-<p>Il est aussi possible de désactiver les textes en fonction du territoire auquel elles s’appliquent (par exemple en utilisant le champs <code class="docutils literal notranslate"><span class="pre">cd_sig</span></code> de la table <code class="docutils literal notranslate"><span class="pre">taxonomie.bdc_statut_text</span></code>.</p>
-<p>D’autres élements sont paramètrables dans le module synthese. La liste complète est disponible dans le fichier <code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code> rubrique <code class="docutils literal notranslate"><span class="pre">SYNTHESE</span></code>.</p>
+<p>Une commande dans TaxHub permet de désactiver automatiquement les textes en dehors d’une liste de départements (en passant leur <code class="docutils literal notranslate"><span class="pre">area_code</span></code>) :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">taxhub</span>
+<span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="n">flask</span> <span class="n">taxref</span> <span class="n">enable</span><span class="o">-</span><span class="n">bdc</span><span class="o">-</span><span class="n">statut</span><span class="o">-</span><span class="n">text</span> <span class="o">-</span><span class="n">d</span> <span class="o">&lt;</span><span class="n">MON_DEP_1</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">d</span> <span class="o">&lt;</span><span class="n">MON_DEP_2</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">clean</span>
+</pre></div>
+</div>
+<p><strong>6.</strong> Définir des filtres par défaut</p>
+<p>Il s’agit du paramètre <code class="docutils literal notranslate"><span class="pre">DEFAULT_FILTERS</span></code>.
+C’est un dictionnaire qui liste la valeur des champs par défaut.
+Il faut fournir le code des nomenclature par default (liste de chaîne de caractère).
+(On prend les champs en <code class="docutils literal notranslate"><span class="pre">id_nomenclature_...</span></code> et on remplace <code class="docutils literal notranslate"><span class="pre">id_nomenclature_</span></code> par <code class="docutils literal notranslate"><span class="pre">cd_nomenclature_</span></code>)</p>
+<p>Exemple de filtres par défaut :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">SYNTHESE</span><span class="p">]</span>
+<span class="o">...</span>
+
+<span class="p">[</span><span class="n">SYNTHESE</span><span class="o">.</span><span class="n">DEFAULT_FILTERS</span><span class="p">]</span>
+    <span class="c1"># Tous les statuts de validation sauf invalide &#39;4&#39;</span>
+    <span class="c1"># Il faut bien les renseigner en tant que chaîne de caractère (et non en tant que nombre)</span>
+    <span class="n">cd_nomenclature_valid_status</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="s1">&#39;6&#39;</span><span class="p">]</span>
+    <span class="c1"># Seulement les données de présence</span>
+    <span class="n">cd_nomenclature_observation_status</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Pr&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>D’autres élements sont paramètrables dans le module Synthese. La liste complète est disponible dans le fichier <code class="docutils literal notranslate"><span class="pre">config/default_config.toml.example</span></code> rubrique <code class="docutils literal notranslate"><span class="pre">SYNTHESE</span></code>.</p>
 </section>
 </section>
 <section id="module-validation">
@@ -2861,8 +2854,8 @@ Pour cela, il suffit de mettre une valeur <code class="docutils literal notransl
 <p>Au niveau de l’interface, le formulaire de recherche est commun avec le module SYNTHESE. Les paramètres de configuration du formulaire sont donc également partagés et administrables depuis le fichier <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code>, rubrique SYNTHESE.</p>
 <section id="id6">
 <h3>Configuration<a class="headerlink" href="#id6" title="Lien permanent vers cette rubrique"></a></h3>
-<p>Le parametrage du module VALIDATION se fait depuis le fichier <code class="docutils literal notranslate"><span class="pre">/home/`whoami`/geonature/contrib/gn_module_validation/config/conf_gn_module.toml</span></code>
-Après toute modification de la configuration d’un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : <a class="reference internal" href="#configuration-d-un-gn-module">Configuration d’un gn_module</a></p>
+<p>Le paramétrage du module VALIDATION se fait en créant le fichier <code class="docutils literal notranslate"><span class="pre">config/validation_config.toml</span></code>, en s’inspirant du fichier d’exemple <code class="docutils literal notranslate"><span class="pre">contrib/gn_module_validation/validation_config.toml.example</span></code>
+Reportez vous à la section <a class="reference internal" href="#configuration-d-un-gn-module">Configuration d’un gn_module</a> pour effectuer les opérations supplémentaires nécessaires pour la prise en compte des modifications.</p>
 <section id="liste-des-champs-visibles">
 <h4>Liste des champs visibles<a class="headerlink" href="#liste-des-champs-visibles" title="Lien permanent vers cette rubrique"></a></h4>
 <p>Gestion de l’affichage des colonnes de la liste via le paramètre <code class="docutils literal notranslate"><span class="pre">COLUMN_LIST</span></code> :</p>
@@ -2904,7 +2897,7 @@ Pour ce faire il faut modifier les  paramètres <code class="docutils literal no
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
+    <p>&#169; Copyright 2018-2023, PnE, PnC.</p>
   </div>
 
   Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
