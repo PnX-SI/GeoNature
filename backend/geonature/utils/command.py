@@ -57,7 +57,7 @@ def create_frontend_module_config(module_code, output_file=None):
 
 
 def nvm_available():
-    return run(["/usr/bin/env bash", "-i", "-c", "type -t nvm"], stdout=DEVNULL).returncode == 0
+    return run(["/usr/bin/env", "bash", "-i", "-c", "type -t nvm"], stdout=DEVNULL).returncode == 0
 
 
 def install_frontend_dependencies(module_frontend_path):
@@ -65,12 +65,12 @@ def install_frontend_dependencies(module_frontend_path):
     if nvm_available():
         with (FRONTEND_DIR / ".nvmrc").open("r") as f:
             node_version = f.read().strip()
-        cmd = ["/usr/bin/env bash", "-i", "-c", f"nvm exec {node_version} {' '.join(cmd)}"]
+        cmd = ["/usr/bin/env", "bash", "-i", "-c", f"nvm exec {node_version} {' '.join(cmd)}"]
     run(cmd, check=True, cwd=module_frontend_path)
 
 
 def build_frontend():
     cmd = ["npm", "run", "build"]
     if nvm_available():
-        cmd = ["/usr/bin/env bash", "-i", "-c", f"nvm exec {' '.join(cmd)}"]
+        cmd = ["/usr/bin/env", "bash", "-i", "-c", f"nvm exec {' '.join(cmd)}"]
     run(cmd, check=True, cwd=str(FRONTEND_DIR))
