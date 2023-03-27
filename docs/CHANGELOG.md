@@ -34,6 +34,10 @@ Si vous mettez à jour GeoNature :
 - Les taches automatisées sont désormais gérées par Celery Beat et installées avec GeoNature. Si vous aviez mis en place des crons pour mettre à jour les profils de taxons (ou les données du module Dashboard, ou les exports planifiés du module Export), supprimez les (dans `/etc/cron/geonature` ou `crontab -e`) car ils ne sont plus utiles
 - Si vous aviez customisé la page d’accueil de GeoNature en modifiant les composants `frontend/src/custom/introduction.component.html` et `frontend/src/custom/footer.component.html` ceux-ci ont été supprimés au profit de paramètres de configuration. Il vous faut donc déplacer votre customisation dans les paramètres `TITLE`, `INTRODUCTION` et `FOOTER` de la nouvelle section `[HOME]` de la configuration de GeoNature.
   Vous pouvez renseigner du code HTML sur plusieurs lignes en le plaçant entre triple quote (`"""<b>Hello</b>"""`).
+- Les paramètres de configuration suivant ont été supprimés et doivent être retirés de votre fichier de configuration s’ils sont présents :
+  - `LOGO_STRUCTURE_FILE` : si vous aviez surcouché votre logo, déplacez le dans `geonature/custom/images/logo_structure.png`
+  - `UPLOAD_FOLDER` : si vous l’aviez déplacé, renommez votre dossier d’upload en `attachments` et placez-le dans le dossier des médias (`geonature/backend/media/` par défaut, paramétrable via `MEDIA_FOLDER`)
+  - `BASE_DIR`
 - Occtax et champs additionnels : 
   - Les champs additionnels de type `bool_radio` ne sont plus supportés.
     Si vous utilisiez ce type de widget dans vos champs additionnels d'Occtax, ils seront automatiquement remplacés par un widget de type `radio`.
@@ -81,9 +85,10 @@ Si vous mettez à jour GeoNature :
   - Ajout des paramètres de configuration suivants :
 
     ```toml
-    STATIC_FOLDER = "static"    # dossier absolu ou relatif à ROOT_PATH (dossier "backend" par défaut)
+    ROOT_PATH = <dossier backend>
+    STATIC_FOLDER = "static"    # dossier absolu ou relatif à ROOT_PATH
     STATIC_URL = "/static"      # URL d’accès aux fichiers statiques
-    MEDIA_FOLDER = "media"      # dossier absolu ou relatif à ROOT_PATH (dossier "backend" par défaut)
+    MEDIA_FOLDER = "media"      # dossier absolu ou relatif à ROOT_PATH
     MEDIA_URL = "/media"        # URL d’accès aux médias
     ```
 
