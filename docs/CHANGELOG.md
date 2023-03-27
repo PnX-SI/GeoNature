@@ -187,7 +187,7 @@ Si vous mettez à jour GeoNature :
 
 **📝 Merci aux contributeurs**
 
-@ch-cbna / @bouttier / @TheoLechemia / @jpm-cbna / @bastyen / @Gaetanbrl / @VincentCauchois / @joelclems / @andriacap / @mvergez / @DonovanMaillard / @dece / @lpofredc / @MathRdt / @gildeluermoz / @maximetoma/ @pierre56 / @cecchi-a / @jbrieuclp / @camillemonchicourt
+@ch-cbna / @bouttier / @TheoLechemia / @jpm-cbna / @bastyen / @Gaetanbrl / @VincentCauchois / @joelclems / @amandine-sahl / @andriacap / @mvergez / @DonovanMaillard / @dece / @lpofredc / @MathRdt / @gildeluermoz / @maximetoma / @pierre56 / @cecchi-a / @jbrieuclp / @camillemonchicourt
 
 
 2.11.2 (2023-01-19)
