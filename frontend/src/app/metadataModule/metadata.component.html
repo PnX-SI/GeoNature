@@ -159,28 +159,12 @@
                       *ngIf="config.METADATA?.ENABLE_CLOSE_AF"
                       type="button"
                       mat-icon-button
-                      [disabled]="!af.cruved.V || !af.opened || af['t_datasets'].length == 0"
+                      [disabled]="!af.opened"
                       (click)="
                         openPublishModalAf($event, af.id_acquisition_framework, publishModal)
                       "
                     >
-                      <mat-icon
-                        *ngIf="af.opened == false; else elifEmpty"
-                        matTooltip="Le cadre d'acquisition a déjà été déposé"
-                      >
-                        gavel
-                      </mat-icon>
-                      <ng-template #elifEmpty>
-                        <mat-icon
-                          *ngIf="af['t_datasets'].length == 0; else elsePublish"
-                          matTooltip="Le cadre d'acquisition est vide"
-                        >
-                          gavel
-                        </mat-icon>
-                      </ng-template>
-                      <ng-template #elsePublish>
                         <mat-icon matTooltip="Déposer le cadre d'acquisition"> gavel </mat-icon>
-                      </ng-template>
                     </button>
                   </div>
                 </mat-panel-title>

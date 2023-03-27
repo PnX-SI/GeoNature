@@ -183,11 +183,6 @@ export class MetadataComponent implements OnInit {
             'warning',
             "Erreur lors de l'envoi de l'email de confirmation. Le cadre d'acquisition a bien été fermé"
           );
-        } else {
-          this._commonService.regularToaster(
-            'error',
-            "Une erreur s'est produite lors de la fermeture du cadre d'acquisition. Contactez l'administrateur"
-          );
         }
       }
     );
