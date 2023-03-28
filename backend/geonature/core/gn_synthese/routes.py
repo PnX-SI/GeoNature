@@ -755,6 +755,7 @@ def general_stats(scope):
 
 
 @routes.route("/taxons_tree", methods=["GET"])
+@permissions.check_cruved_scope("R", get_scope=False, module_code="SYNTHESE")
 @json_resp
 def get_taxon_tree():
     """Get taxon tree.
@@ -769,6 +770,7 @@ def get_taxon_tree():
 
 
 @routes.route("/taxons_autocomplete", methods=["GET"])
+@permissions.check_cruved_scope("R", get_scope=False, module_code="SYNTHESE")
 @json_resp
 def get_autocomplete_taxons_synthese():
     """Autocomplete taxon for web search (based on all taxon in Synthese).
