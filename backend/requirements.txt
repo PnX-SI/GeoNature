@@ -161,7 +161,7 @@ importlib-metadata==4.12.0 ; python_version < "3.10"
     #   kombu
     #   mako
     #   redis
-importlib-resources==5.9.0
+importlib-resources==5.12.0
     # via alembic
 itsdangerous==2.1.2
     # via
@@ -220,7 +220,7 @@ pillow==9.2.0
     #   weasyprint
 prompt-toolkit==3.0.31
     # via click-repl
-psycopg2==2.9.3
+psycopg2==2.9.5
     # via
     #   -r requirements-common.in
     #   pypn-habref-api
@@ -307,7 +307,7 @@ tinycss2==1.1.1
     #   weasyprint
 toml==0.10.2
     # via -r requirements-common.in
-typing-extensions==4.3.0
+typing-extensions==4.5.0
     # via
     #   async-timeout
     #   importlib-metadata
