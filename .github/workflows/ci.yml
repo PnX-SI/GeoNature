@@ -1,0 +1,533 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+      - pytest-docker
+
+  release:
+    types: [published]
+
+env:
+  postgres-version: '13'
+  postgis-version: '3.2'
+
+jobs:
+  #build-backend:
+  #  name: Build backend images
+  #  runs-on: ubuntu-latest
+  #  outputs:
+  #    image_name: ${{ fromJSON(steps.build-prod.outputs.metadata)['image.name'] }}
+  #    image_digest: ${{ steps.build-prod.outputs.digest }}
+  #  steps:
+  #    -
+  #      name: Checkout
+  #      uses: actions/checkout@v3
+  #      with:
+  #        submodules: True
+  #    -
+  #      name: Set up Docker Buildx
+  #      uses: docker/setup-buildx-action@v2
+  #    -
+  #      name: Login to GHCR
+  #      uses: docker/login-action@v2
+  #      if: github.event_name != 'pull_request'
+  #      with:
+  #        registry: ghcr.io
+  #        username: ${{ github.actor }}
+  #        password: ${{ secrets.GITHUB_TOKEN }}
+  #    #-
+  #    #  name: Generate metadata for wheels image
+  #    #  id: meta-wheels
+  #    #  uses: docker/metadata-action@v4
+  #    #  with:
+  #    #    images: ghcr.io/${{ github.repository_owner }}/geonature-backend
+  #    #    flavor: |
+  #    #      suffix=-wheels
+  #    #    tags: |
+  #    #      type=ref,event=branch
+  #    #      type=ref,event=tag
+  #    #-
+  #    #  name: Build and export wheels image
+  #    #  id: build-wheels
+  #    #  uses: docker/build-push-action@v4
+  #    #  with:
+  #    #    context: .
+  #    #    file: ./backend/Dockerfile
+  #    #    target: wheels
+  #    #    push: ${{ github.event_name != 'pull_request' }}
+  #    #    tags: ${{ steps.meta-wheels.outputs.tags }}
+  #    #    labels: ${{ steps.meta-wheels.outputs.labels }}
+  #    -
+  #      name: Generate metadata for prod image
+  #      id: meta-prod
+  #      uses: docker/metadata-action@v4
+  #      with:
+  #        images: ghcr.io/${{ github.repository_owner }}/geonature-backend
+  #        tags: |
+  #          type=ref,event=branch
+  #          type=ref,event=pr
+  #          type=ref,event=tag
+  #    -
+  #      name: Build and export prod image
+  #      id: build-prod
+  #      uses: docker/build-push-action@v4
+  #      with:
+  #        context: .
+  #        file: ./backend/Dockerfile
+  #        target: prod
+  #        push: true # ${{ github.event_name != 'pull_request' }}
+  #        tags: ${{ steps.meta-prod.outputs.tags }}
+  #        labels: ${{ steps.meta-prod.outputs.labels }}
+
+
+  #build-frontend:
+  #  name: Build frontend images
+  #  runs-on: ubuntu-latest
+  #  outputs:
+  #    source_image_name: ${{ fromJSON(steps.build-source.outputs.metadata)['image.name'] }}
+  #    source_image_digest: ${{ steps.build-source.outputs.digest }}
+  #  steps:
+  #    -
+  #      name: Checkout
+  #      uses: actions/checkout@v3
+  #      with:
+  #        submodules: True
+  #    -
+  #      name: Set up Docker Buildx
+  #      uses: docker/setup-buildx-action@v2
+  #    -
+  #      name: Login to GHCR
+  #      uses: docker/login-action@v2
+  #      if: github.event_name != 'pull_request'
+  #      with:
+  #        registry: ghcr.io
+  #        username: ${{ github.actor }}
+  #        password: ${{ secrets.GITHUB_TOKEN }}
+  #    -
+  #      name: Generate metadata for source image
+  #      id: meta-source
+  #      uses: docker/metadata-action@v4
+  #      with:
+  #        images: ghcr.io/${{ github.repository_owner }}/geonature-frontend
+  #        flavor: |
+  #          suffix=-source
+  #        tags: |
+  #          type=ref,event=branch
+  #          type=ref,event=tag
+  #    -
+  #      name: Build and export source image
+  #      id: build-source
+  #      uses: docker/build-push-action@v4
+  #      with:
+  #        context: .
+  #        file: ./frontend/Dockerfile
+  #        target: source
+  #        push: true #${{ github.event_name != 'pull_request' }}
+  #        tags: ${{ steps.meta-source.outputs.tags }}
+  #        labels: ${{ steps.meta-source.outputs.labels }}
+  #    #-
+  #    #  name: Generate metadata for nginx image
+  #    #  id: meta-nginx
+  #    #  uses: docker/metadata-action@v4
+  #    #  with:
+  #    #    images: ghcr.io/${{ github.repository_owner }}/geonature-frontend
+  #    #    flavor: |
+  #    #      suffix=-nginx
+  #    #    tags: |
+  #    #      type=ref,event=branch
+  #    #      type=ref,event=tag
+  #    #-
+  #    #  name: Build and export nginx image
+  #    #  uses: docker/build-push-action@v4
+  #    #  with:
+  #    #    context: .
+  #    #    file: ./frontend/Dockerfile
+  #    #    target: prod-base
+  #    #    push: ${{ github.event_name != 'pull_request' }}
+  #    #    tags: ${{ steps.meta-nginx.outputs.tags }}
+  #    #    labels: ${{ steps.meta-nginx.outputs.labels }}
+  #    #-
+  #    #  name: Generate metadata for prod image
+  #    #  id: meta-prod
+  #    #  uses: docker/metadata-action@v4
+  #    #  with:
+  #    #    images: ghcr.io/${{ github.repository_owner }}/geonature-frontend
+  #    #    tags: |
+  #    #      type=ref,event=branch
+  #    #      type=ref,event=tag
+  #    #-
+  #    #  id: build-prod
+  #    #  name: Build and export prod image
+  #    #  uses: docker/build-push-action@v4
+  #    #  with:
+  #    #    context: .
+  #    #    file: ./frontend/Dockerfile
+  #    #    target: prod
+  #    #    push: true #${{ github.event_name != 'pull_request' }}
+  #    #    tags: ${{ steps.meta-prod.outputs.tags }}
+  #    #    labels: ${{ steps.meta-prod.outputs.labels }}
+
+  #install-database:
+  #  runs-on: ubuntu-latest
+
+  #  #needs: build-backend
+
+  #  name: Install database
+
+  #  outputs:
+  #    postgres-version: 13
+  #    postgis-version: 3.2
+
+  #  services:
+  #    postgres:
+  #      #image: postgis/postgis:${{ matrix.postgres-version }}-${{ matrix.postgis-version }}
+  #      image: postgis/postgis:13-3.2
+  #      env:
+  #        POSTGRES_DB: geonature2db
+  #        POSTGRES_PASSWORD: geonatpasswd
+  #        POSTGRES_USER: geonatadmin
+  #      ports:
+  #        - 5432:5432
+  #      options: >-
+  #        --health-cmd pg_isready
+  #        --health-interval 10s
+  #        --health-timeout 5s
+  #        --health-retries 5
+
+  #  container:
+  #    #image: ${{ needs.build-backend.outputs.image_name }}@${{ needs.build-backend.outputs.image_digest }}
+  #    image: ghcr.io/pnx-si/geonature-backend@sha256:9a4aa99e05d05602351f6b0a7e8ef6df0edf3441b0d7b234f1b2f576d42ae9df
+  #    volumes:
+  #      - postgres:/geonature-db
+
+  #  steps:
+  #    -
+  #      name: Install packages
+  #      run: |
+  #        apt update
+  #        apt install -y libgdal-dev postgresql-client
+  #    #-
+  #    #  name: Add postgis_raster database extension
+  #    #  if: ${{ matrix.postgis-version >= 3 }}
+  #    #  run: |
+  #    #    psql -h postgres -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "postgis_raster";'
+  #    #  env:
+  #    #    PGPASSWORD: geonatpasswd
+  #    - name: Add database extensions
+  #      run: |
+  #        psql -h postgres -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "hstore";'
+  #        psql -h postgres -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "uuid-ossp";'
+  #        psql -h postgres -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "pg_trgm";'
+  #        psql -h postgres -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
+  #        psql -h postgres -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "postgis_raster";'
+  #      env:
+  #        PGPASSWORD: geonatpasswd
+  #    - uses: actions/checkout@v3
+  #      with:
+  #        submodules: true
+  #    - name: Show database branches and dependencies
+  #      run: |
+  #        geonature db status --dependencies
+  #      env:
+  #        GEONATURE_CONFIG_FILE: config/test_config.toml
+  #    - name: Install database
+  #      run: |
+  #        geonature db upgrade geonature@head -x local-srid=2154
+  #        geonature db autoupgrade -x local-srid=2154
+  #        geonature db upgrade ref_geo_fr_departments@head
+  #        geonature taxref import-v16
+  #        geonature db upgrade geonature-samples@head
+  #        geonature db upgrade nomenclatures_taxonomie_data@head
+  #        geonature db upgrade ref_geo_fr_municipalities@head
+  #        geonature db upgrade ref_geo_inpn_grids_5@head
+  #        geonature sensitivity add-referential \
+  #          --source-name "Référentiel sensibilité TAXREF v16 20230203" \
+  #          --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip \
+  #          --zipfile RefSensibiliteV16_20230203.zip \
+  #          --csvfile RefSensibiliteV16_20230203/RefSensibilite_16.csv \
+  #          --encoding=iso-8859-15
+  #        geonature upgrade-modules-db
+  #      env:
+  #        GEONATURE_CONFIG_FILE: config/test_config.toml
+  #    - name: Show database status
+  #      run: |
+  #        geonature db status
+  #      env:
+  #        GEONATURE_CONFIG_FILE: config/test_config.toml
+  #    -
+  #      name: Dump database
+  #      run: |
+  #        pg_dump --format=custom --file=geonature-db.dump
+  #      env:
+  #        PGDATABASE: geonature2db
+  #        PGHOST: postgres
+  #        PGUSER: geonatadmin
+  #        PGPASSWORD: geonatpasswd
+  #    -
+  #      name: Upload database
+  #      uses: actions/upload-artifact@v3
+  #      with:
+  #        name: geonature-db-${{ github.sha }}
+  #        path: geonature-db.dump
+  #    #- name: Install core modules backend
+  #    #  run: |
+  #    #    pip install -e contrib/occtax
+  #    #    pip install -e contrib/gn_module_occhab
+  #    #    pip install -e contrib/gn_module_validation
+  #    #- name: Install core modules database
+  #    #  run: |
+  #    #    geonature upgrade-modules-db
+  #    #  env:
+  #    #    GEONATURE_CONFIG_FILE: config/test_config.toml
+  #    #- name: Show database status
+  #    #  run: |
+  #    #    geonature db status --dependencies
+  #    #  env:
+  #    #    GEONATURE_CONFIG_FILE: config/test_config.toml
+
+  pytest:
+    runs-on: ubuntu-latest
+
+    #needs: [install-database, build-backend]
+    #needs: install-database
+
+    #env:
+    #  postgres-version: '13'
+    #  postgis-version: '3.2'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ '3.7', '3.9' ]
+        #debian-version: [ '10', '11' ]
+        #include:
+        #  - debian-version: '10'
+        #    python-version: '3.7'
+        #    postgres-version: '11'
+        #    postgis-version: '2.5'
+        #  - debian-version: '11'
+        #    python-version: '3.9'
+        #    postgres-version: '13'
+        #    postgis-version: '3.2'
+
+    name: Run pytest with Python ${{ matrix.python-version }}
+
+    services:
+      postgres:
+        #image: postgis/postgis:${{ env.postgres-version }}-${{ env.postgis-version }}
+        #image: postgis/postgis:${{ needs.install-database.outputs.postgres-version }}-${{ needs.install-database.outputs.postgis-version }}
+        image: postgis/postgis:13-3.2
+        env:
+          POSTGRES_DB: geonature2db
+          POSTGRES_PASSWORD: geonatpasswd
+          POSTGRES_USER: geonatadmin
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    container:
+      #image: ${{ needs.build-backend.outputs.image_name }}@${{ needs.build-backend.outputs.image_digest }}
+      #image: ghcr.io/pnx-si/geonature-backend@sha256:9a4aa99e05d05602351f6b0a7e8ef6df0edf3441b0d7b234f1b2f576d42ae9df
+      image: ghcr.io/pnx-si/geonature-backend:pytest-docker@sha256:3b0eab8d13fac46803d1ffd464470a6fbe6e1be35d0570a186c479c0bec650f6
+
+    steps:
+      #-
+      #  name: Install packages
+      #  run: |
+      #    apt update
+      #    apt install -y postgresql-client
+      #-
+      #  name: Add database extensions
+      #  uses: addnab/docker-run-action@v3
+      #  with:
+      #    image: postgis/postgis:13-3.2
+      #    run: |
+      #      psql -tc 'CREATE EXTENSION "hstore";'
+      #      psql -tc 'CREATE EXTENSION "uuid-ossp";'
+      #      psql -tc 'CREATE EXTENSION "pg_trgm";'
+      #      psql -tc 'CREATE EXTENSION "unaccent";'
+      #      psql -tc 'CREATE EXTENSION "postgis_raster";'
+      #  env:
+      #    PGDATABASE: geonature2db
+      #    PGHOST: postgres
+      #    PGUSER: geonatadmin
+      #    PGPASSWORD: geonatpasswd
+      #-
+      #  name: Install database
+      #  run: |
+      #    geonature db upgrade geonature@head -x local-srid=2154
+      #    geonature db autoupgrade -x local-srid=2154
+      #    geonature db upgrade ref_geo_fr_departments@head
+      #    geonature taxref import-v16
+      #    geonature db upgrade geonature-samples@head
+      #    geonature db upgrade nomenclatures_taxonomie_data@head
+      #    geonature db upgrade ref_geo_fr_municipalities@head
+      #    geonature db upgrade ref_geo_inpn_grids_5@head
+      #    geonature sensitivity add-referential \
+      #      --source-name "Référentiel sensibilité TAXREF v16 20230203" \
+      #      --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip \
+      #      --zipfile RefSensibiliteV16_20230203.zip \
+      #      --csvfile RefSensibiliteV16_20230203/RefSensibilite_16.csv \
+      #      --encoding=iso-8859-15
+      #    geonature upgrade-modules-db
+      #-
+      #  name: Download database
+      #  uses: actions/download-artifact@v3
+      #  with:
+      #    name: geonature-db-${{ github.sha }}
+      #    #name: geonature-db-b12ba0c7e564694e6b036e939eb22efc543c0579
+      #-
+      #  name: List files
+      #  run: |
+      #    ls -la
+      #-
+      #  name: Load database
+      #  run: |
+      #    pg_restore --dbname=geonature2db geonature-db.dump
+      #  env:
+      #    PGHOST: postgres
+      #    PGUSER: geonatadmin
+      #    PGPASSWORD: geonatpasswd
+      -
+        name: Create extensions
+        run: |
+          geonature db exec --json 'CREATE EXTENSION IF NOT EXISTS "postgis_raster";'
+        env:
+          GEONATURE_SQLALCHEMY_DATABASE_URI: "postgresql://geonatadmin:geonatpasswd@postgres:5432/geonature2db"
+          GEONATURE_SECRET_KEY: "5fdc2c8fb46f44033144d07396ba082a95b8b3cc827b611a7aaaefbef414f13b"
+          GEONATURE_URL_APPLICATION: "http://127.0.0.1:4200"
+          GEONATURE_API_ENDPOINT: "http://127.0.0.1:8000"
+          GEONATURE_API_TAXHUB: "http://127.0.0.1:5000/api"
+      -
+        name: Populate database
+        run: |
+          /dist/populate-db.sh
+        env:
+          GEONATURE_SQLALCHEMY_DATABASE_URI: "postgresql://geonatadmin:geonatpasswd@postgres:5432/geonature2db"
+          GEONATURE_SECRET_KEY: "5fdc2c8fb46f44033144d07396ba082a95b8b3cc827b611a7aaaefbef414f13b"
+          GEONATURE_URL_APPLICATION: "http://127.0.0.1:4200"
+          GEONATURE_API_ENDPOINT: "http://127.0.0.1:8000"
+          GEONATURE_API_TAXHUB: "http://127.0.0.1:5000/api"
+          #GEONATURE_SYNTHESE__AREA_AGGREGATION_TYPE: "M5"
+          srid_local: 2154
+          install_bdc_statuts: true
+          #install_grid_layer: true
+          add_sample_data: true
+          install_ref_sensitivity: true
+      -
+        name: Install test dependencies
+        run: |
+          pip install pytest pytest-flask pytest-cov jsonschema
+      -
+        name: Test with pytest
+        run: |
+          pytest -v --cov --cov-report xml
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
+      -
+        name: Upload coverage to Codecov
+        #if: ${{ matrix.debian-version == '11' }}
+        uses: codecov/codecov-action@v3
+        with:
+          flags: pytest
+
+  #cypress:
+  #  runs-on: ubuntu-latest
+
+  #  #needs: [install-database, build-frontend]
+  #  needs: install-database
+
+  #  name: Run cypress
+
+  #  services:
+  #    postgres:
+  #      image: postgis/postgis:13-3.2
+  #      volumes:
+  #        - postgres:/var/lib/postgresql/data
+  #      env:
+  #        POSTGRES_DB: geonature2db
+  #        POSTGRES_PASSWORD: geonatpasswd
+  #        POSTGRES_USER: geonatadmin
+  #      ports:
+  #        - 5432:5432
+  #      options: >-
+  #        --health-cmd pg_isready
+  #        --health-interval 10s
+  #        --health-timeout 5s
+  #        --health-retries 5
+
+  #    taxhub-api:
+  #      image: ghcr.io/pnx-si/taxhub:develop
+  #      env:
+  #        TAXHUB_SQLALCHEMY_DATABASE_URI: postgresql://geonatadmin:geonatpasswd@postgres:5432/geonature2db
+
+  #    geonature-api:
+  #      image: ghcr.io/pnx-si/geonature-backend@sha256:9a4aa99e05d05602351f6b0a7e8ef6df0edf3441b0d7b234f1b2f576d42ae9df
+  #      env:
+  #        GEONATURE_SQLALCHEMY_DATABASE_URI: postgresql://geonatadmin:geonatpasswd@postgres:5432/geonature2db
+  #        GEONATURE_URL_APPLICATION: http://127.0.0.1:4200/
+  #        GEONATURE_API_ENDPOINT: http://geonature-api/api
+  #        GEONATURE_API_TAXHUB: http://taxhub-api/api
+
+  #  #container:
+  #  #  image: ${{ needs.build-frontend.outputs.source_image_name }}@${{ needs.build-frontend.outputs.source_image_digest }}
+  #  #  #image: ghcr.io/pnx-si/geonature-backend@sha256:9a4aa99e05d05602351f6b0a7e8ef6df0edf3441b0d7b234f1b2f576d42ae9df
+
+  #  #container:
+  #  #  image: ghcr.io/pnx-si/geonature-frontend:pytest-docker-source@sha256:3677b26ea39dbdb082548bb943693db61bdc04143738c5deafd4e3fd8c284e3b
+
+  #  steps:
+  #    -
+  #      name: Install packages
+  #      run: |
+  #        apt update
+  #        apt install -y postgresql-client
+  #    -
+  #      name: Download database
+  #      uses: actions/download-artifact@v3
+  #      with:
+  #        name: geonature-db-${{ github.sha }}
+  #        path: .
+  #    -
+  #      name: Load database
+  #      run: |
+  #        pg_restore --file=geonature-db.dump
+  #      env:
+  #        PGDATABASE: geonature2db
+  #        PGHOST: postgres
+  #        PGUSER: geonatadmin
+  #        PGPASSWORD: geonatpasswd
+  #    -
+  #      name: Clone source code
+  #      uses: actions/checkout@v3
+  #    -
+  #      name: Cache node modules
+  #      uses: actions/cache@v3
+  #      with:
+  #        path: ~/.npm
+  #        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+  #        restore-keys: |
+  #          ${{ runner.os }}-node-
+  #    -
+  #      name: Node ${{ matrix.node-version }}
+  #      uses: actions/setup-node@v3
+  #      with:
+  #        node-version: ${{ matrix.node-version }}
+  #    -
+  #      name: Install dev dependencies
+  #      run: |
+  #        npm ci
+  #      working-directory: ./frontend
+  #    -
+  #      name: Run cypress
+  #      uses: cypress-io/github-action@v5
+  #      with:
+  #        working-directory: ./frontend
+  #        start: npm run start
+  #        wait-on: http://127.0.0.1:4200

@@ -121,6 +121,7 @@ ENV GEONATURE_CUSTOM_STATIC_PATH=/dist/custom/
 RUN mkdir custom
 ENV GEONATURE_MEDIA_PATH=/dist/media/
 RUN mkdir -p media/attachments
+COPY /backend/populate-db.sh .
 
 WORKDIR /dist/geonature
 
@@ -143,7 +144,7 @@ ENV GEONATURE_CONFIG_FILE ""
 
 EXPOSE 8000
 
-CMD [ "gunicorn", "geonature:create_app()", \
+CMD [ "/dist/populate-db.sh", "gunicorn", "geonature:create_app()", \
     "--worker-tmp-dir=/dev/shm", \
     "--name=geonature", \
     "--workers=2", \
