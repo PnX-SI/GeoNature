@@ -106,6 +106,17 @@ def get_datasets():
     fields = params.get("fields", type=str, default=[])
     if fields:
         fields = fields.split(",")
+    only = params.get("only", type=str, default=[])
+    if only:
+        only = only.split(",")
+    else:
+        only = [
+            "+cruved",
+            "cor_dataset_actor",
+            "cor_dataset_actor.nomenclature_actor_role",
+            "cor_dataset_actor.organism",
+            "cor_dataset_actor.role",
+        ]
     if "create" in params:
         query = TDatasets.query.filter_by_creatable(params.pop("create"))
     else:
@@ -129,13 +140,6 @@ def get_datasets():
             joinedload("organism"),
         ),
     )
-    only = [
-        "+cruved",
-        "cor_dataset_actor",
-        "cor_dataset_actor.nomenclature_actor_role",
-        "cor_dataset_actor.organism",
-        "cor_dataset_actor.role",
-    ]
 
     if params.get("synthese_records_count", type=int, default=0):
         query = query.options(undefer(TDatasets.synthese_records_count))
