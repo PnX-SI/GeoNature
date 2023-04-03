@@ -46,7 +46,9 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
         .subscribe((val) => {
           // Cas ou la valeur n'est pas sélectionnée et que la valeur null n'est pas dans la liste
           if (val != null) {
-            this.isValInSelectList = this.formDefComp['values'].includes(val);
+            this.isValInSelectList = this.formDefComp['values']
+              .map((val) => val.value)
+              .includes(val);
           }
         });
     }

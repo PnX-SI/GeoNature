@@ -92,7 +92,7 @@
         [formControl]="form.get(formDefComp['attribut_name'])"
       >
         <option [ngValue]="null" *ngIf="!formDefComp['noNullOption']">-</option>
-        <option *ngFor="let item of formDefComp['values']" [value]="item.value">
+        <option *ngFor="let item of formDefComp['values']" [ngValue]="item.value">
           {{ item.label }}
         </option>
       </select>
