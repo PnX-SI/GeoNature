@@ -187,31 +187,23 @@ def get_observations_for_web(scope):
         obs_query,
         filters,
     )
-    synthese_query_class.filter_query_all_filters(g.current_user, scope)
-    obs_query = synthese_query_class.query
-
     if output_format == "grouped_geom_by_areas":
         cas = aliased(CorAreaSynthese)
-        # SQLAlchemy 1.4: replace column by add_columns
-        obs_query = obs_query.column(VSyntheseForWebApp.id_synthese).cte("OBS")
-        obs_query = (
-            select([LAreas.geojson_4326.label("geojson"), obs_query.c.obs_as_json])
-            .select_from(
-                obs_query.join(cas, cas.id_synthese == obs_query.c.id_synthese)
-                .join(LAreas, LAreas.id_area == cas.id_area)
-                .join(BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type)
-            )
-            .where(
-                BibAreasTypes.type_code == current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"]
-            )
-            .cte("OBSERVATIONS")
+        synthese_query_class.add_join(cas, cas.id_synthese, VSyntheseForWebApp.id_synthese, "left")
+        synthese_query_class.add_join(LAreas, LAreas.id_area, cas.id_area, "left")
+        synthese_query_class.add_join(BibAreasTypes, BibAreasTypes.id_type, LAreas.id_type, "left")
+        synthese_query_class.query = synthese_query_class.query.where(
+            BibAreasTypes.type_code == current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"]
         )
+    synthese_query_class.filter_query_all_filters(g.current_user, scope)
+    obs_query = synthese_query_class.query
+    if output_format == "grouped_geom_by_areas":
+        obs_query = obs_query.column(VSyntheseForWebApp.id_synthese)
+        obs_query = obs_query.column(LAreas.geojson_4326.label("geojson"))
+        obs_query = obs_query.cte("OBS")
     else:
         # SQLAlchemy 1.4: replace column by add_columns
-        obs_query = obs_query.column(VSyntheseForWebApp.st_asgeojson.label("geojson")).cte(
-            "OBSERVATIONS"
-        )
-
+        obs_query = obs_query.column(VSyntheseForWebApp.st_asgeojson.label("geojson")).cte("OBS")
     if output_format == "ungrouped_geom":
         query = select([obs_query.c.geojson, obs_query.c.obs_as_json])
     else:
