@@ -55,7 +55,7 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
     module_frontend_path = (module_path / "frontend").resolve()
     module_symlink = ROOT_DIR / "frontend" / "external_modules" / module_code.lower()
     if os.path.exists(module_symlink):
-        if module_frontend_path != module_symlink.readlink().resolve():
+        if module_frontend_path != os.readlink(module_symlink):
             click.echo(f"Correction du lien symbolique {module_symlink} → {module_frontend_path}")
             os.unlink(module_symlink)
             os.symlink(module_frontend_path, module_symlink)
