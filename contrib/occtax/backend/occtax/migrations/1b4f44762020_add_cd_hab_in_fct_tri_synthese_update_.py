@@ -65,6 +65,20 @@ def upgrade():
         ;
         """
     )
+    op.execute(
+        """
+        UPDATE gn_synthese.synthese s
+        SET cd_hab =
+            (
+                SELECT cd_hab
+                FROM pr_occtax.t_releves_occtax tro
+                WHERE tro.unique_id_sinp_grp = s.unique_id_sinp_grp
+            )
+        FROM pr_occtax.t_releves_occtax tro
+        WHERE tro.unique_id_sinp_grp = s.unique_id_sinp_grp
+        AND tro.cd_hab IS DISTINCT FROM s.cd_hab
+        """
+    )
 
 
 def downgrade():
