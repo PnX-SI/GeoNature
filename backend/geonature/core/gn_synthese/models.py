@@ -490,6 +490,7 @@ class VSyntheseForWebApp(DB.Model):
     nom_valide = DB.Column(DB.Unicode)
     nom_vern = DB.Column(DB.Unicode)
     lb_nom = DB.Column(DB.Unicode)
+    cd_hab = DB.Column(DB.Integer)
     meta_v_taxref = DB.Column(DB.Unicode)
     sample_number_proof = DB.Column(DB.Unicode)
     digital_proof = DB.Column(DB.Unicode)

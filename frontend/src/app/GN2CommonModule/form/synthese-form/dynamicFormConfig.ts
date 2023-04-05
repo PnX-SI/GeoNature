@@ -263,4 +263,10 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'unique_id_sinp',
     required: false,
   },
+  {
+    type_widget: 'text',
+    attribut_label: 'Habitat',
+    attribut_name: 'lib_hab',
+    required: false,
+  },
 ];

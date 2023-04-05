@@ -38,6 +38,7 @@ from apptax.taxonomie.models import (
     TaxrefBdcStatutText,
     TaxrefBdcStatutValues,
 )
+from pypn_habref_api.models import Habref
 from ref_geo.models import LAreas, BibAreasTypes
 
 
@@ -348,6 +349,13 @@ class SyntheseQuery:
                     ]
                 )
             )
+
+        if "lib_hab" in self.filters and self.filters["lib_hab"] != [""]:
+            cd_habs = DB.session.query(Habref.cd_hab).filter(
+                Habref.lb_hab_fr.ilike("%{}%".format(self.filters.pop("lib_hab")[0]))
+            )
+            formated_cd_habs = [cd[0] for cd in cd_habs]
+            self.query = self.query.where(self.model.cd_hab.in_(formated_cd_habs))
 
         if "id_organism" in self.filters:
             datasets = (
