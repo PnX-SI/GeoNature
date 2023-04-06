@@ -32,6 +32,7 @@ from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
 from geonature.core.gn_meta.models import TDatasets
+from geonature.core.notifications.utils import dispatch_notifications
 
 from geonature.core.gn_synthese.models import (
     BibReportsTypes,
@@ -1100,7 +1101,24 @@ def create_report(scope):
         id_type=type_exists.id_type,
     )
     session.add(new_entry)
+    notify_new_report_change(synthese=synthese, content=content)
     session.commit()
+
+
+def notify_new_report_change(synthese, content):
+    if not synthese.id_digitiser:
+        return
+    dispatch_notifications(
+        code_categories=["VALIDATION-NEW-COMMENT"],
+        id_roles=[synthese.id_digitiser],
+        title="Nouveau commentaire sur une observation",
+        url=(
+            current_app.config["URL_APPLICATION"]
+            + "/#/validation/occurrence/"
+            + str(synthese.id_synthese)
+        ),
+        context={"synthese": synthese, "content": content},
+    )
 
 
 @routes.route("/reports/<int:id_report>", methods=["PUT"])
