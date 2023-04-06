@@ -1,7 +1,7 @@
 """fix_update_cd_hab_in_synthese
 
 Revision ID: 8620acb59204
-Revises: e29af5549eac
+Revises: 1b4f44762020
 Create Date: 2023-04-05 15:31:49.623046
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "8620acb59204"
-down_revision = "e29af5549eac"
+down_revision = "1b4f44762020"
 branch_labels = None
 depends_on = None
 
