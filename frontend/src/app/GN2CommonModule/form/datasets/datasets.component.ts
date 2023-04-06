@@ -85,7 +85,8 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     if (this.creatableInModule) {
       filter_param['create'] = this.creatableInModule;
     }
-    this._dfs.getDatasets((params = filter_param)).subscribe((res) => {
+    const onlyFields: string[] = ['id_dataset', 'dataset_name'];
+    this._dfs.getDatasets((params = filter_param), true, [], onlyFields).subscribe((res) => {
       this.datasetStore.filteredDataSets = res;
       this.datasetStore.datasets = res;
       this.valueLoaded.emit({ value: this.datasetStore.datasets });
