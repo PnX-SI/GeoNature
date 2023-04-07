@@ -1114,7 +1114,7 @@ def notify_new_report_change(synthese, content):
         title="Nouveau commentaire sur une observation",
         url=(
             current_app.config["URL_APPLICATION"]
-            + "/#/validation/occurrence/"
+            + "/#/synthese/occurrence/"
             + str(synthese.id_synthese)
         ),
         context={"synthese": synthese, "content": content},
