@@ -222,6 +222,7 @@ def create_app(with_external_mods=True):
                     current_app.config["DISABLED_MODULES"].append(module_code)
                 else:
                     module_blueprint.config = config[module_code]
+                    print(module_code)
                     app.register_blueprint(module_blueprint, url_prefix=f"/{module_code.lower()}")
 
     return app
