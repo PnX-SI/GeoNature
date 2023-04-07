@@ -41,11 +41,11 @@ def upgrade():
 
     # Add template
     email_content = """ <p>Bonjour <i>{{ role.nom_complet }}</i> !</p> 
-    <p>Votre observation de l'espèce : {{ synthese.nom_cite }} du {{ synthese.meta_create_date.strftime('%d-%m-%Y') }} a reçu un commentaire</p>
+    <p>{{ user.nom_complet }} a commenté votre observation de {{ synthese.nom_cite }} du {{ synthese.meta_create_date.strftime('%d-%m-%Y') }}</p>
     <p>Vous pouvez y accéder directement <a href="{{ url }}">ici</a></p>
     <p><i>Vous recevez cet email automatiquement via le service de notification de GeoNature.</i></p>
     """
-    db_content = """ Vous avez reçu un nouveau commentaire sur votre observation 
+    db_content = """ {{ user.nom_complet }} a commenté votre observation 
     de {{ synthese.nom_cite }} du {{ synthese.meta_create_date.strftime('%d-%m-%Y') }}
     """
 
