@@ -20,7 +20,7 @@ down_revision = "9e9218653d6c"
 branch_labels = None
 depends_on = None
 
-CATEGORY_CODE = "VALIDATION-NEW-COMMENT"
+CATEGORY_CODE = "OBSERVATION-COMMENT"
 
 
 def upgrade():
@@ -30,10 +30,9 @@ def upgrade():
     # Add category
     category = NotificationCategory(
         code=CATEGORY_CODE,
-        label="Nouveau commentaire dans une discussion sur une observation",
+        label="Nouveau commentaire sur une observation",
         description=(
-            "Se déclenche lorsqu'un nouveau commentaire "
-            "est ajouté dans une discussion de validation"
+            "Se déclenche lorsqu'un nouveau commentaire " "est ajouté à une de vos observations"
         ),
     )
 
@@ -63,10 +62,10 @@ def downgrade():
     category = (
         session.query(NotificationCategory)
         .filter(NotificationCategory.code == CATEGORY_CODE)
-        .one()
+        .one_or_none()
     )
 
-    if category:
+    if category is not None:
         session.query(NotificationRule).filter(
             NotificationRule.code_category == category.code
         ).delete()
