@@ -128,6 +128,10 @@ def get_datasets():
             joinedload("role"),
             joinedload("organism"),
         ),
+        # next relationships are joined for permission checks purpose:
+        joinedload("acquisition_framework").options(
+            joinedload("cor_af_actor"),
+        ),
     )
     only = [
         "+cruved",
