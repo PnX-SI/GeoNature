@@ -32,7 +32,7 @@ def upgrade():
         code=CATEGORY_CODE,
         label="Nouveau commentaire sur une observation",
         description=(
-            "Se déclenche lorsqu'un nouveau commentaire " "est ajouté à une de vos observations"
+            "Se déclenche lorsqu'un nouveau commentaire est ajouté à une de vos observations"
         ),
     )
 
