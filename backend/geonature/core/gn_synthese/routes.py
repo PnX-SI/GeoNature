@@ -1083,12 +1083,14 @@ def create_report(scope):
         synthese = Synthese.query.get_or_404(id_synthese)
         if not synthese.has_instance_permission(scope):
             raise Forbidden
+
+        report_query = TReport.query.filter(
+            TReport.id_synthese == id_synthese,
+            TReport.report_type.has(BibReportsTypes.type == type_name),
+        )
         # only allow one alert by id_synthese
         if type_name in ["alert", "pin"]:
-            alert_exists = TReport.query.filter(
-                TReport.id_synthese == id_synthese,
-                TReport.report_type.has(BibReportsTypes.type == type_name),
-            ).one_or_none()
+            alert_exists = report_query.one_or_none()
             if alert_exists is not None:
                 raise Conflict("This type already exists for this id")
     except KeyError:
@@ -1101,16 +1103,26 @@ def create_report(scope):
         id_type=type_exists.id_type,
     )
     session.add(new_entry)
-    notify_new_report_change(synthese=synthese, user=g.current_user, content=content)
+
+    if type_name == "discussion" and g.current_user.id_role != synthese.id_digitiser:
+        commenters = [
+            report.id_role
+            for report in report_query.filter(TReport.id_role != synthese.id_digitiser).distinct(
+                TReport.id_role
+            )
+        ]
+        notify_new_report_change(
+            synthese=synthese, user=g.current_user, commenters=commenters, content=content
+        )
     session.commit()
 
 
-def notify_new_report_change(synthese, user, content):
+def notify_new_report_change(synthese, user, commenters, content):
     if not synthese.id_digitiser:
         return
     dispatch_notifications(
         code_categories=["OBSERVATION-COMMENT"],
-        id_roles=[synthese.id_digitiser],
+        id_roles=[synthese.id_digitiser] + commenters,
         title="Nouveau commentaire sur une observation",
         url=(
             current_app.config["URL_APPLICATION"]
