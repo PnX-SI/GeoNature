@@ -1109,7 +1109,7 @@ def notify_new_report_change(synthese, user, content):
     if not synthese.id_digitiser:
         return
     dispatch_notifications(
-        code_categories=["VALIDATION-NEW-COMMENT"],
+        code_categories=["OBSERVATION-COMMENT"],
         id_roles=[synthese.id_digitiser],
         title="Nouveau commentaire sur une observation",
         url=(
