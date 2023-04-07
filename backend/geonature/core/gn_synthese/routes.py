@@ -20,7 +20,7 @@ from sqlalchemy import distinct, func, desc, asc, select, case
 from sqlalchemy.orm import joinedload, lazyload, selectinload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
-from sqlalchemy.orm import load_only, aliased
+from sqlalchemy.orm import load_only, aliased, Load
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
@@ -1080,7 +1080,12 @@ def create_report(scope):
         type_exists = BibReportsTypes.query.filter_by(type=type_name).first()
         if not type_exists:
             raise BadRequest("This report type does not exist")
-        synthese = Synthese.query.get_or_404(id_synthese)
+        synthese = Synthese.query.options(
+            Load(Synthese).raiseload("*"),
+            joinedload("cor_observers"),
+            joinedload("digitiser"),
+            joinedload("dataset"),
+        ).get_or_404(id_synthese)
         if not synthese.has_instance_permission(scope):
             raise Forbidden
 
@@ -1104,25 +1109,32 @@ def create_report(scope):
     )
     session.add(new_entry)
 
-    if type_name == "discussion" and g.current_user.id_role != synthese.id_digitiser:
-        commenters = [
+    if type_name == "discussion":
+        # Get the observers of the observation
+        observers = {observer.id_role for observer in synthese.cor_observers}
+        # Get the users that commented the observation
+        commenters = {
             report.id_role
-            for report in report_query.filter(TReport.id_role != synthese.id_digitiser).distinct(
-                TReport.id_role
-            )
-        ]
+            for report in report_query.filter(
+                TReport.id_role not in {synthese.id_digitiser} | observers
+            ).distinct(TReport.id_role)
+        }
+        # The id_roles are the Union between observers and commenters
+        id_roles = observers | commenters
+        # Remove the user that just commented the obs not to notify him/her
+        id_roles.remove(g.current_user.id_role)
         notify_new_report_change(
-            synthese=synthese, user=g.current_user, commenters=commenters, content=content
+            synthese=synthese, user=g.current_user, id_roles=id_roles, content=content
         )
     session.commit()
 
 
-def notify_new_report_change(synthese, user, commenters, content):
+def notify_new_report_change(synthese, user, id_roles, content):
     if not synthese.id_digitiser:
         return
     dispatch_notifications(
         code_categories=["OBSERVATION-COMMENT"],
-        id_roles=[synthese.id_digitiser] + commenters,
+        id_roles=id_roles,
         title="Nouveau commentaire sur une observation",
         url=(
             current_app.config["URL_APPLICATION"]
