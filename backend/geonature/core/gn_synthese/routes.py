@@ -1101,11 +1101,11 @@ def create_report(scope):
         id_type=type_exists.id_type,
     )
     session.add(new_entry)
-    notify_new_report_change(synthese=synthese, content=content)
+    notify_new_report_change(synthese=synthese, user=g.current_user, content=content)
     session.commit()
 
 
-def notify_new_report_change(synthese, content):
+def notify_new_report_change(synthese, user, content):
     if not synthese.id_digitiser:
         return
     dispatch_notifications(
@@ -1117,7 +1117,7 @@ def notify_new_report_change(synthese, content):
             + "/#/synthese/occurrence/"
             + str(synthese.id_synthese)
         ),
-        context={"synthese": synthese, "content": content},
+        context={"synthese": synthese, "user": user, "content": content},
     )
 
 
