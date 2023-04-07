@@ -7,7 +7,7 @@ import { Observable, combineLatest } from 'rxjs';
 import { map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { omitBy } from 'lodash';
 
-import { DataFormService } from '@geonature_common/form/data-form.service';
+import { DataFormService, ParamsDict } from '@geonature_common/form/data-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { MetadataService } from './services/metadata.service';
 import { ConfigService } from '@geonature/services/config.service';
@@ -150,13 +150,14 @@ export class MetadataComponent implements OnInit {
   onOpenExpansionPanel(af: any) {
     if (af.t_datasets === undefined) {
       let params = {};
+      const queryStrings: ParamsDict = { synthese_records_count: 1 };
       if (this.searchTerms.selector === 'ds') {
         params = this.searchTerms;
       }
       if (this.rapidSearchControl.value) {
         params = { ...params, search: this.rapidSearchControl.value };
       }
-      this.metadataService.addDatasetToAcquisitionFramework(af, params);
+      this.metadataService.addDatasetToAcquisitionFramework(af, params, queryStrings);
     }
   }
 

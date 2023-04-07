@@ -13,7 +13,7 @@ import { map } from 'rxjs/operators';
 import { ConfigService } from '@geonature/services/config.service';
 
 /** Interface for queryString parameters*/
-interface ParamsDict {
+export interface ParamsDict {
   [key: string]: any;
 }
 
@@ -82,9 +82,12 @@ export class DataFormService {
     });
   }
 
-  getDatasets(params?: ParamsDict, orderByName = true, fields = []) {
+  getDatasets(params?: ParamsDict, queryStrings: ParamsDict = {}, fields = []) {
     let queryString: HttpParams = new HttpParams();
     queryString = this.addOrderBy(queryString, 'dataset_name');
+    Object.keys(queryStrings).forEach((key) => {
+      queryString = queryString.append(key, queryStrings[key]);
+    });
     fields.forEach((f) => {
       queryString = queryString.append('fields', f);
     });

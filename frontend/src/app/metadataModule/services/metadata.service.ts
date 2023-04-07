@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
-import { DataFormService } from '@geonature_common/form/data-form.service';
+import { DataFormService, ParamsDict } from '@geonature_common/form/data-form.service';
 import { ConfigService } from '@geonature/services/config.service';
 
 const SELECTORS = { datasets: 0, creator: 1, actors: 1 };
@@ -84,15 +84,18 @@ export class MetadataService {
     );
   }
 
-  addDatasetToAcquisitionFramework(af, params) {
+  addDatasetToAcquisitionFramework(af, params, queryString: ParamsDict = {}) {
     //TODO: keep in mind that acquisistionframeworks is
     // a behaviour subject and so filter it with rxjs and
     // pipe the getDatasets then subscribe at the end
     this.dataFormService
-      .getDatasets({
-        id_acquisition_frameworks: [af.id_acquisition_framework],
-        ...params,
-      })
+      .getDatasets(
+        {
+          id_acquisition_frameworks: [af.id_acquisition_framework],
+          ...params,
+        },
+        queryString
+      )
       .subscribe((datasets) => {
         af.t_datasets = datasets;
       });
