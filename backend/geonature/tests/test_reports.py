@@ -7,9 +7,24 @@ from werkzeug.exceptions import Forbidden, BadRequest, Unauthorized, NotFound
 
 from geonature.utils.env import db
 from geonature.core.gn_synthese.models import TReport, BibReportsTypes, Synthese
+from geonature.core.notifications.models import Notification, NotificationRule
+from geonature.utils.env import db
 
 from .fixtures import *
 from .utils import logged_user_headers, set_logged_user_cookie
+
+
+@pytest.fixture()
+def admin_notification_rule(users):
+    with db.session.begin_nested():
+        new_notification_rule = NotificationRule(
+            id_role=users["admin_user"].id_role,
+            code_method="DB",
+            code_category="OBSERVATION-COMMENT",
+            subscribed=True,
+        )
+        db.session.add(new_notification_rule)
+    return new_notification_rule
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -105,3 +120,48 @@ class TestReports:
             # NO TYPE - TYPE IS NOT REQUIRED
             response = self.client.get(url_for(url, idSynthese=ids[1]))
             assert response.status_code == 200
+
+
+@pytest.mark.usefixtures("client_class", "notifications_enabled", "temporary_transaction")
+class TestReportsNotifications:
+    def test_report_notification_on_own_obs(self, synthese_data, users, admin_notification_rule):
+        set_logged_user_cookie(self.client, users["user"])
+        url = "gn_synthese.create_report"
+        synthese = synthese_data["obs1"]
+        id_synthese = synthese.id_synthese
+        data = {"item": id_synthese, "content": "comment 4", "type": "discussion"}
+        response = self.client.post(url_for(url), data=data)
+
+        # Just test that the comment had been sent
+        assert response.status_code == 204
+
+        notifications = Notification.query.filter(
+            Notification.id_role == users["admin_user"].id_role
+        ).all()
+        assert len(notifications) > 0
+        assert all(synthese.nom_cite in notif.content for notif in notifications)
+        assert (
+            Notification.query.filter(Notification.id_role == users["user"].id_role).first()
+            is None
+        )
+
+    def test_report_notification_on_not_own_obs(self, synthese_data, users):
+        set_logged_user_cookie(self.client, users["self_user"])
+        url = "gn_synthese.create_report"
+        synthese = synthese_data["obs1"]
+        id_synthese = synthese.id_synthese
+        data = {"item": id_synthese, "content": "comment 4", "type": "discussion"}
+        response = self.client.post(url_for(url), data=data)
+
+        # Just test that the comment had been sent
+        assert response.status_code == 204
+
+        notifications = Notification.query.filter(
+            Notification.id_role in (user.id_role for user in (users["user"], users["admin_user"]))
+        ).all()
+
+        assert all(synthese.nom_cite in notif.content for notif in notifications)
+        assert (
+            Notification.query.filter(Notification.id_role == users["self_user"].id_role).first()
+            is None
+        )
