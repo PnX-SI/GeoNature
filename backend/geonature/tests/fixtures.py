@@ -4,7 +4,7 @@ import tempfile
 
 from PIL import Image
 import pytest
-from flask import testing, url_for
+from flask import testing, url_for, current_app
 from werkzeug.datastructures import Headers
 from sqlalchemy import func
 from shapely.geometry import Point
@@ -50,6 +50,7 @@ __all__ = [
     "medium",
     "module",
     "perm_object",
+    "notifications_enabled",
     "celery_eager",
 ]
 
@@ -275,7 +276,7 @@ def source():
     return source
 
 
-def create_synthese(geom, taxon, user, dataset, source, uuid):
+def create_synthese(geom, taxon, user, dataset, source, uuid, cor_observers):
     now = datetime.datetime.now()
     return Synthese(
         id_source=source.id_source,
@@ -290,6 +291,7 @@ def create_synthese(geom, taxon, user, dataset, source, uuid):
         the_geom_local=func.st_transform(geom, 2154),
         date_min=now,
         date_max=now,
+        cor_observers=cor_observers,
     )
 
 
@@ -316,7 +318,7 @@ def synthese_data(app, users, datasets, source):
             )
             geom = from_shape(point, srid=4326)
             taxon = Taxref.query.filter_by(cd_nom=cd_nom).one()
-            s = create_synthese(geom, taxon, users["self_user"], ds, source, unique_id_sinp)
+            s = create_synthese(geom, taxon, users["self_user"], ds, source, unique_id_sinp, [users["admin_user"], users["user"]])
             db.session.add(s)
             data[name] = s
     return data
@@ -415,3 +417,8 @@ def reports_data(users, synthese_data):
             data.append(create_report(id_synthese, *args))
 
     return data
+
+
+@pytest.fixture()
+def notifications_enabled(monkeypatch):
+    monkeypatch.setitem(current_app.config, "NOTIFICATIONS_ENABLED", True)
