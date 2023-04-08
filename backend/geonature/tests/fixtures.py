@@ -318,7 +318,15 @@ def synthese_data(app, users, datasets, source):
             )
             geom = from_shape(point, srid=4326)
             taxon = Taxref.query.filter_by(cd_nom=cd_nom).one()
-            s = create_synthese(geom, taxon, users["self_user"], ds, source, unique_id_sinp, [users["admin_user"], users["user"]])
+            s = create_synthese(
+                geom,
+                taxon,
+                users["self_user"],
+                ds,
+                source,
+                unique_id_sinp,
+                [users["admin_user"], users["user"]],
+            )
             db.session.add(s)
             data[name] = s
     return data
