@@ -27,6 +27,32 @@ def admin_notification_rule(users):
     return new_notification_rule
 
 
+@pytest.fixture()
+def self_user_notification_rule(users):
+    with db.session.begin_nested():
+        new_notification_rule = NotificationRule(
+            id_role=users["self_user"].id_role,
+            code_method="DB",
+            code_category="OBSERVATION-COMMENT",
+            subscribed=True,
+        )
+        db.session.add(new_notification_rule)
+    return new_notification_rule
+
+
+@pytest.fixture()
+def user_notification_rule(users):
+    with db.session.begin_nested():
+        new_notification_rule = NotificationRule(
+            id_role=users["user"].id_role,
+            code_method="DB",
+            code_category="OBSERVATION-COMMENT",
+            subscribed=True,
+        )
+        db.session.add(new_notification_rule)
+    return new_notification_rule
+
+
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestReports:
     def test_create_report(self, synthese_data, users):
@@ -145,7 +171,9 @@ class TestReportsNotifications:
             is None
         )
 
-    def test_report_notification_on_not_own_obs(self, synthese_data, users):
+    def test_report_notification_on_not_own_obs(
+        self, synthese_data, users, admin_notification_rule, user_notification_rule
+    ):
         set_logged_user_cookie(self.client, users["self_user"])
         url = "gn_synthese.create_report"
         synthese = synthese_data["obs1"]
@@ -157,11 +185,38 @@ class TestReportsNotifications:
         assert response.status_code == 204
 
         notifications = Notification.query.filter(
-            Notification.id_role in (user.id_role for user in (users["user"], users["admin_user"]))
+            Notification.id_role.in_(
+                (user.id_role for user in (users["user"], users["admin_user"]))
+            )
         ).all()
 
+        assert len(notifications) > 0
         assert all(synthese.nom_cite in notif.content for notif in notifications)
         assert (
             Notification.query.filter(Notification.id_role == users["self_user"].id_role).first()
             is None
         )
+
+    def test_report_notification_on_obs_commented(
+        self, synthese_data, users, self_user_notification_rule
+    ):
+        # TODO: refact this to make a function/fixture
+        set_logged_user_cookie(self.client, users["self_user"])
+        url = "gn_synthese.create_report"
+        synthese = synthese_data["obs1"]
+        id_synthese = synthese.id_synthese
+        data = {"item": id_synthese, "content": "comment 4", "type": "discussion"}
+        _ = self.client.post(url_for(url), data=data)
+        assert (
+            Notification.query.filter(Notification.id_role == users["self_user"].id_role).first()
+            is None
+        )
+        set_logged_user_cookie(self.client, users["user"])
+        data = {"item": id_synthese, "content": "comment 5", "type": "discussion"}
+        _ = self.client.post(url_for(url), data=data)
+
+        notifications = Notification.query.filter(
+            Notification.id_role == users["self_user"].id_role
+        ).all()
+
+        assert len(notifications) > 0
