@@ -1,6 +1,25 @@
 CHANGELOG
 =========
 
+2.12.1 (2023-04-11)
+-------------------
+
+**🚀 Nouveautés**
+
+- Mise à jour de quelques dépendances python (#2438, par @MathRdt)
+- Mise à jour de Utils-Flask-SQLAlchemy en version 0.3.3
+
+**🐛 Corrections**
+
+- Correction et améliorations des performances des recherches par statut de protection, notamment quand elles sont associées à une recherche géographique (#2450, par @amandine-sahl)
+- Correction d’une régression des performances lors de la récupération des JDD (#2462, par @mvergez)
+- Correction de jointures manquantes pour le calcule des permissions lors de la récupération des JDD (#2463, par @mvergez)
+- Correction des champs additionnels de type liste (#2447, par @TheoLechemia)
+- Correction d’une incompatibilité Python 3.7 (#2464, par @TheoLechemia)
+- Suppression en cascade des permissions et associations aux sites lors de la suppresion d’un module (#2466, par @jbrieuclp & @VincentCauchois)
+- Mise à jour des habitats dans la Synthèse quand ils sont modifiés dans un relevé Occtax (#2468, par @JulienCorny)
+
+
 2.12.0 - Cyathea borbonica 🌴 (2023-03-27)
 ------------------------------------------
 
@@ -31,10 +50,11 @@ Si vous mettez à jour GeoNature :
 - La vue `gn_synthese.v_synthese_for_export` définissant la structure et le contenu des exports de la Synthèse a été modifiée pour être optimisée. Si vous l'aviez customisée, reportée vos modifications manuellement après la mise à jour de GeoNature
 - Suivez la procédure de mise à jour classique de GeoNature (<https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application>)
 - Le script `migration.sh` se charge de déplacer automatiquement les différents fichiers suite à la réorganisation des dossiers (customisation, médias, mobile, configuration centralisée des modules)
+- Les médias (incluant les fichiers d'Occtax-mobile) sont déplacés dans le dossier `backend/media/`
 - Il n'est plus nécessaire de rebuilder le frontend ni de recharger GeoNature manuellement à chaque modification de la configuration de GeoNature ou de ses modules
-- Les taches automatisées sont désormais gérées par Celery Beat et installées avec GeoNature. Si vous aviez mis en place des crons pour mettre à jour les profils de taxons (ou les données du module Dashboard, ou les exports planifiés du module Export), supprimez les (dans `/etc/cron/geonature` ou `crontab -e`) car ils ne sont plus utiles
-- Il est fortement conseillé d'utiliser la configuration Apache générée par défaut dans `/etc/apache2/conf-available/geonature.conf` et de l'inclure dans votre vhost (`/etc/apache2/sites-available/geonature.conf` et/ou `/etc/apache2/sites-available/geonature-le-ssl.conf`), en suivant la documentation dédiée (https://docs.geonature.fr/installation.html#configuration-apache)
-- Si vous aviez customisé la page d’accueil de GeoNature en modifiant les composants `frontend/src/custom/introduction.component.html` et `frontend/src/custom/footer.component.html` ceux-ci ont été supprimés au profit de paramètres de configuration. Il vous faut donc déplacer votre customisation dans les paramètres `TITLE`, `INTRODUCTION` et `FOOTER` de la nouvelle section `[HOME]` de la configuration de GeoNature.
+- Les taches automatisées sont désormais gérées par Celery Beat et installées avec GeoNature. Si vous aviez mis en place des crons pour mettre à jour les profils de taxons (ou les données du module Dashboard, ou les exports planifiés du module Export), supprimez les (dans `/etc/cron.d/geonature` ou `crontab -e`) car ils ne sont plus utiles
+- Il est fortement conseillé d'utiliser la configuration Apache générée par défaut dans `/etc/apache2/conf-available/geonature.conf` et de l'inclure dans votre vhost (`/etc/apache2/sites-available/geonature.conf` et/ou `/etc/apache2/sites-available/geonature-le-ssl.conf`), en suivant la [documentation dédiée](https://docs.geonature.fr/installation.html#configuration-apache)
+- Si vous aviez customisé la page d’accueil de GeoNature en modifiant les composants `frontend/src/custom/components/introduction/introduction.component.html` et `frontend/src/custom/components/footer/footer.component.html` ceux-ci ont été supprimés au profit de paramètres de configuration. Il vous faut donc déplacer votre customisation dans les paramètres `TITLE`, `INTRODUCTION` et `FOOTER` de la nouvelle section `[HOME]` de la configuration de GeoNature.
   Vous pouvez renseigner du code HTML sur plusieurs lignes en le plaçant entre triple quote (`"""<b>Hello</b>"""`).
 - Les paramètres de configuration suivants ont été supprimés et doivent être retirés de votre fichier de configuration (`config/geonature_config.toml`) s’ils sont présents :
   - `LOGO_STRUCTURE_FILE` (si vous aviez renommé votre logo, déplacez le dans `geonature/custom/images/logo_structure.png`)
@@ -47,6 +67,8 @@ Si vous mettez à jour GeoNature :
   - Les champs de formulaire de type `radio`, `select`, `multiselect` et `checkbox`, attendent désormais une liste de dictionnaire `{value, label}` (voir doc des champs additionnels) (#2214)  
     La rétrocompatibilité avec des listes simples est maintenue, mais vous êtes invités à modifier ces champs dans le backoffice.  
     Pour conserver le bon affichage lors de l'édition des données, renseignez l'ancienne valeur deux fois dans la clé `value` et la clé `label`.
+
+✅ Exemple de procédure de mise à jour depuis une version 2.11 : https://geonature.fr/documents/procedures/2023-04-GN-211to212.txt
 
 **🚀 Nouveautés**
 
@@ -68,7 +90,7 @@ Si vous mettez à jour GeoNature :
 - Possibilité de configurer les modules (picto, doc, label) directement depuis le module Admin (#2409)
 - Possibilité d’afficher un bouton de géolocalisation sur les cartes des formulaires Occtax et Occhab (#2338), activable avec le paramètre suivant :
   ```toml
-  [MAP]
+  [MAPCONFIG]
       GEOLOCATION = true
   ```
 - Profils mis à jour automatiquement par Celery Beat, toutes les nuits par défaut (#2412)
@@ -88,13 +110,13 @@ Si vous mettez à jour GeoNature :
     MEDIA_FOLDER = "media"      # dossier absolu ou relatif à ROOT_PATH
     MEDIA_URL = "/media"        # URL d’accès aux médias
     ```
-  - Ajout d’un dossier `custom` à la racine de GeoNature et du paramètre associé `CUSTOM_STATIC_FOLDER`. Les fichiers statiques réclamés sont cherchés en priorité dans le dossier `custom`, puis, si non trouvés, dans le dossier `backend/static`. Ainsi, si besoin de modifier un fichier statique, on placera un fichier du même nom dans le dossier `custom` plutôt que de modifier le fichier original (par exemple, `custom/images/logo_structure.png`).
+  - Ajout d’un dossier `custom` à la racine de GeoNature et du paramètre associé `CUSTOM_STATIC_FOLDER`. Les fichiers statiques réclamés sont cherchés en priorité dans le dossier `custom`, puis, si non trouvés, dans le dossier `backend/static`. Ainsi, si besoin de modifier un fichier statique, on placera un fichier du même nom dans le dossier `custom` plutôt que de modifier le fichier original (par exemple, `custom/images/logo_structure.png`). Voir la [documentation sur la customisation](https://docs.geonature.fr/admin-manual.html#customisation).
   - Retrait du préfixe `static/media/` aux chemins d’accès des fichiers joints (colonne `gn_commons.t_medias.media_path`)
   - Retrait du préfixe `static/mobile/` aux chemins d’accès des APK des applications mobiles (colonne `gn_commons.t_mobile_apps.relative_path_apk`)
   - Certains fichiers statiques sont renommés :
     - `static/css/custom.css` → `static/css/metadata_pdf_custom.css`
-  - Certains assets du frontend sont déplacés vers les fichiers statiques du backend pour profiter du mécanisme du customisation :
-    - `frontend/assets/custom.css` → `backend/static/css/frontend.css`
+  - Certains assets du frontend sont déplacés vers les fichiers statiques du backend pour profiter du mécanisme de customisation :
+    - `frontend/src/assets/custom.css` → `backend/static/css/frontend.css`
     - `frontend/src/favicon.ico` → `backend/static/images/favicon.ico`
     - `frontend/src/custom/images/login_background.jpg` → `backend/static/images/login_background.jpg`
     - `frontend/src/custom/images/logo_sidebar.jpg` → `backend/static/images/logo_sidebar.jpg`
@@ -178,7 +200,7 @@ Si vous mettez à jour GeoNature :
 
 **📝 Merci aux contributeurs**
 
-@ch-cbna / @bouttier / @TheoLechemia / @jpm-cbna / @bastyen / @Gaetanbrl / @VincentCauchois / @joelclems / @andriacap / @mvergez / @DonovanMaillard / @dece / @lpofredc / @MathRdt / @gildeluermoz / @maximetoma/ @pierre56 / @cecchi-a / @jbrieuclp / @camillemonchicourt
+@ch-cbna / @bouttier / @TheoLechemia / @jpm-cbna / @bastyen / @Gaetanbrl / @VincentCauchois / @joelclems / @amandine-sahl / @andriacap / @mvergez / @DonovanMaillard / @dece / @lpofredc / @MathRdt / @gildeluermoz / @maximetoma / @pierre56 / @cecchi-a / @jbrieuclp / @camillemonchicourt
 
 
 2.11.2 (2023-01-19)
@@ -274,6 +296,8 @@ Si vous mettez à jour GeoNature :
         ```bash
         geonature sensitivity update-synthese
         ```
+
+✅ Exemple de procédure de mise à jour depuis une version 2.9 : https://geonature.fr/documents/procedures/2023-01-GN-29to211.txt
 
 **🚀 Nouveautés**
 
