@@ -51,12 +51,10 @@ def upgrade():
                     last_action = 'U',
                     comment_context = NEW.comment,
                     additional_data = COALESCE(NEW.additional_fields, '{}'::jsonb) || COALESCE(o.additional_fields, '{}'::jsonb) || COALESCE(c.additional_fields, '{}'::jsonb),
-                    cd_hab = r.cd_hab
+                    cd_hab = NEW.cd_hab
                     FROM pr_occtax.cor_counting_occtax c
                     INNER JOIN pr_occtax.t_occurrences_occtax o ON c.id_occurrence_occtax = o.id_occurrence_occtax
-                    INNER JOIN pr_occtax.t_releves_occtax r ON r.id_releve_occtax = o.id_releve_occtax
                     WHERE c.unique_id_sinp_occtax = s.unique_id_sinp
-                        AND o.id_releve_occtax = NEW.id_releve_occtax
                         AND s.unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
 
                 RETURN NULL;
@@ -67,16 +65,18 @@ def upgrade():
     )
     op.execute(
         """
-        UPDATE gn_synthese.synthese s
-        SET cd_hab =
-            (
-                SELECT cd_hab
-                FROM pr_occtax.t_releves_occtax tro
-                WHERE tro.unique_id_sinp_grp = s.unique_id_sinp_grp
-            )
-        FROM pr_occtax.t_releves_occtax tro
-        WHERE tro.unique_id_sinp_grp = s.unique_id_sinp_grp
-        AND tro.cd_hab IS DISTINCT FROM s.cd_hab
+        UPDATE
+            gn_synthese.synthese s
+        SET
+            cd_hab = releve.cd_hab
+        FROM (
+            SELECT s.id_synthese, r.cd_hab
+            FROM gn_synthese.synthese s
+            JOIN pr_occtax.t_releves_occtax r USING (unique_id_sinp_grp)
+            WHERE s.cd_hab IS DISTINCT FROM r.cd_hab
+        ) releve
+        WHERE
+            s.id_synthese = releve.id_synthese;
         """
     )
 
