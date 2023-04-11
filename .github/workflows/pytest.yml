@@ -10,7 +10,7 @@ on:
     branches:
       - master
       - hotfixes
-      - develop
+      #- develop
 
 jobs:
   build:
