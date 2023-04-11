@@ -146,7 +146,7 @@ def get_datasets():
         only.append("+synthese_records_count")
 
     if "modules" in fields:
-        query = query.options(joinedload("modules"), joinedload("digitizer"))
+        query = query.options(joinedload("modules"))
         only.append("modules")
 
     dataset_schema = DatasetSchema(only=only)

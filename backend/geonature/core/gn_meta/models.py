@@ -526,7 +526,7 @@ class TDatasets(db.Model):
         if scope == 0:
             return False
         elif scope in (1, 2):
-            if g.current_user == self.digitizer or g.current_user in self.user_actors:
+            if g.current_user.id_role == self.id_digitizer or g.current_user in self.user_actors:
                 return True
             if scope == 2 and g.current_user.organisme in self.organism_actors:
                 return True
@@ -831,7 +831,7 @@ class TAcquisitionFramework(db.Model):
         if scope == 0:
             return False
         elif scope in (1, 2):
-            if g.current_user == self.creator or g.current_user in self.user_actors:
+            if g.current_user.id_role == self.id_digitizer or g.current_user in self.user_actors:
                 return True
             if scope == 2 and g.current_user.organisme in self.organism_actors:
                 return True
