@@ -1120,7 +1120,7 @@ def create_report(scope):
             ).distinct(TReport.id_role)
         }
         # The id_roles are the Union between observers and commenters
-        id_roles = observers | commenters | { synthese.id_digitiser }
+        id_roles = observers | commenters | {synthese.id_digitiser}
         # Remove the user that just commented the obs not to notify him/her
         id_roles.discard(g.current_user.id_role)
         notify_new_report_change(
