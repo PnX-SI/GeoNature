@@ -23,9 +23,9 @@ depends_on = None
 CATEGORY_CODE = "OBSERVATION-COMMENT"
 EMAIL_CONTENT = (
     "<p>Bonjour <i>{{ role.nom_complet }}</i> !</p>"
-    "<p>{{ user.nom_complet }} a commenté l'observation de {{ synthese.nom_cite }} du {{ synthese.meta_create_date.strftime('%d-%m-%Y') }}" 
+    "<p>{{ user.nom_complet }} a commenté l'observation de {{ synthese.nom_cite }} du {{ synthese.meta_create_date.strftime('%d-%m-%Y') }}"
     "que vous avez créée ou commentée</p>"
-    "<p>Vous pouvez y accéder directement <a href=\"{{ url }}\">ici</a></p>"
+    '<p>Vous pouvez y accéder directement <a href="{{ url }}">ici</a></p>'
     "<p><i>Vous recevez cet email automatiquement via le service de notification de GeoNature.</i></p>"
 )
 DB_CONTENT = (
@@ -43,7 +43,7 @@ def upgrade():
         code=CATEGORY_CODE,
         label="Nouveau commentaire sur une observation",
         description=(
-            "Se déclenche lorsqu'un nouveau commentaire est ajouté à une de vos observations"
+            "Se déclenche lorsqu'un nouveau commentaire est ajouté à une de vos observations, ou une observation que vous avez commenté"
         ),
     )
 
