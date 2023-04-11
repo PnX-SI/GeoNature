@@ -1116,13 +1116,13 @@ def create_report(scope):
         commenters = {
             report.id_role
             for report in report_query.filter(
-                TReport.id_role not in {synthese.id_digitiser} | observers
+                TReport.id_role.notin_({synthese.id_digitiser} | observers)
             ).distinct(TReport.id_role)
         }
         # The id_roles are the Union between observers and commenters
-        id_roles = observers | commenters
+        id_roles = observers | commenters | { synthese.id_digitiser }
         # Remove the user that just commented the obs not to notify him/her
-        id_roles.remove(g.current_user.id_role)
+        id_roles.discard(g.current_user.id_role)
         notify_new_report_change(
             synthese=synthese, user=g.current_user, id_roles=id_roles, content=content
         )
