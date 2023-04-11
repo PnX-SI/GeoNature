@@ -262,7 +262,12 @@ class SyntheseQuery:
             self.query = self.query.where(
                 self.model.reports.any(TReport.report_type.has(BibReportsTypes.type == "pin"))
             )
-
+        if "has_comment" in self.filters:
+            self.query = self.query.where(
+                self.model.reports.any(
+                    TReport.report_type.has(BibReportsTypes.type == "discussion")
+                )
+            )
         if "id_dataset" in self.filters:
             self.query = self.query.where(
                 self.model.id_dataset.in_(self.filters.pop("id_dataset"))
