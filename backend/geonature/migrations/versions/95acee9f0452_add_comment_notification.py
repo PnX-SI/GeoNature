@@ -1,4 +1,4 @@
-"""add_validation_comment_notification
+"""add_comment_notification
 
 Revision ID: 95acee9f0452
 Revises: 9e9218653d6c
@@ -21,6 +21,17 @@ branch_labels = None
 depends_on = None
 
 CATEGORY_CODE = "OBSERVATION-COMMENT"
+EMAIL_CONTENT = (
+    "<p>Bonjour <i>{{ role.nom_complet }}</i> !</p>"
+    "<p>{{ user.nom_complet }} a commenté l'observation de {{ synthese.nom_cite }} du {{ synthese.meta_create_date.strftime('%d-%m-%Y') }}" 
+    "que vous avez créée ou commentée</p>"
+    "<p>Vous pouvez y accéder directement <a href=\"{{ url }}\">ici</a></p>"
+    "<p><i>Vous recevez cet email automatiquement via le service de notification de GeoNature.</i></p>"
+)
+DB_CONTENT = (
+    "{{ user.nom_complet }} a commenté l'observation de {{ synthese.nom_cite }} du "
+    "{{ synthese.meta_create_date.strftime('%d-%m-%Y') }} que vous avez créée ou commentée"
+)
 
 
 def upgrade():
@@ -38,17 +49,7 @@ def upgrade():
 
     session.add(category)
 
-    # Add template
-    email_content = """ <p>Bonjour <i>{{ role.nom_complet }}</i> !</p> 
-    <p>{{ user.nom_complet }} a commenté votre observation de {{ synthese.nom_cite }} du {{ synthese.meta_create_date.strftime('%d-%m-%Y') }}</p>
-    <p>Vous pouvez y accéder directement <a href="{{ url }}">ici</a></p>
-    <p><i>Vous recevez cet email automatiquement via le service de notification de GeoNature.</i></p>
-    """
-    db_content = """ {{ user.nom_complet }} a commenté votre observation 
-    de {{ synthese.nom_cite }} du {{ synthese.meta_create_date.strftime('%d-%m-%Y') }}
-    """
-
-    for method, content in (("EMAIL", email_content), ("DB", db_content)):
+    for method, content in (("EMAIL", EMAIL_CONTENT), ("DB", DB_CONTENT)):
         template = NotificationTemplate(category=category, code_method=method, content=content)
         session.add(template)
 
