@@ -176,6 +176,9 @@ sed -i "s/db_port=.*$/db_port=$pg_port/g" settings.ini
 sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" settings.ini
 sed -i "s/user_pg=.*$/user_pg=$user_pg/g" settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" settings.ini
+sed -i "s/remote_super_user_database_name=.*$/remote_super_user_database_name=$remote_super_user_database_name/g" settings.ini
+sed -i "s/remote_super_user_name=.*$/remote_super_user_name=$remote_super_user_name/g" settings.ini
+sed -i "s/remote_super_user_pass=.*$/remote_super_user_pass=$remote_super_user_pass/g" settings.ini
 sed -i "s/user_schema=.*$/user_schema=local/g" settings.ini
 sed -i "s/usershub_host=.*$/usershub_host=$pg_host/g" settings.ini
 sed -i "s/usershub_port=.*$/usershub_port=$pg_port/g" settings.ini

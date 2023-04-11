@@ -40,7 +40,7 @@ function database_exists () {
         return 0
     else
         # Grep DB name in the list of databases
-        sudo -u postgres -s -- psql -tAl | grep -q "^$1|"
+        sudo -E -u postgres -s -- psql -tAl | grep -q "^$1|"
         return $?
     fi
 }
