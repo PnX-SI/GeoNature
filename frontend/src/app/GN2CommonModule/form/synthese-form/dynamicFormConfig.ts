@@ -7,6 +7,13 @@ export const DYNAMIC_FORM_DEF = [
     value: true,
   },
   {
+    attribut_name: 'has_comment',
+    type_widget: 'bool_checkbox',
+    attribut_label: 'Est commenté',
+    required: false,
+    value: true,
+  },
+  {
     attribut_name: 'has_alert',
     type_widget: 'bool_checkbox',
     attribut_label: 'Est signalé',
