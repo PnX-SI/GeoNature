@@ -7,16 +7,18 @@ CHANGELOG
 **🚀 Nouveautés**
 
 - Mise à jour de quelques dépendances python (#2438, par @MathRdt)
+- Mise à jour de Utils-Flask-SQLAlchemy en version 0.3.3
 
 **🐛 Corrections**
 
-- Correction et améliorations des performances des requêtes par statut de protection, notamment quand elles associent un zonage de recherche (#2416, par @amandine-sahl)
-- (#2454, par @mvergez)
-- (#2444, par @mvergez)
-- Correction des champs additionels de type liste (#2447, par @TheoLechemia)
-- Correction lorsque le script de migration est relancé plusieurs fois (#2449, par @TheoLechemia)
-- Correction des permissions des modules supprimés (#2449, par @jbrieuclp)
-- Correction des habitats qui ne sont pas modifiés dans la Synthèse, quand ils sont modifiés dans un relevé Occtax (#2384, par @JulienCorny)
+- Correction et améliorations des performances des recherches par statut de protection, notamment quand elles sont associées à une recherche géographique (#2450, par @amandine-sahl)
+- Correction d’une régression des performances lors de la récupération des JDD (#2462, par @mvergez)
+- Correction de jointures manquantes pour le calcule des permissions lors de la récupération des JDD (#2463, par @mvergez)
+- Correction des champs additionnels de type liste (#2447, par @TheoLechemia)
+- Correction d’une incompatibilité Python 3.7 (#2464, par @TheoLechemia)
+- Suppression en cascade des permissions et associations aux sites lors de la suppresion d’un module (#2466, par @jbrieuclp & @VincentCauchois)
+- Mise à jour des habitats dans la Synthèse quand ils sont modifiés dans un relevé Occtax (#2468, par @JulienCorny)
+
 
 2.12.0 - Cyathea borbonica 🌴 (2023-03-27)
 ------------------------------------------
