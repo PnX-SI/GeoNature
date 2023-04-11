@@ -13,56 +13,36 @@ from .fixtures import *
 from .utils import logged_user_headers, set_logged_user_cookie
 
 
-@pytest.fixture()
-def admin_notification_rule(users):
+def add_notification_rule(user):
     with db.session.begin_nested():
         new_notification_rule = NotificationRule(
-            id_role=users["admin_user"].id_role,
+            id_role=user.id_role,
             code_method="DB",
             code_category="OBSERVATION-COMMENT",
             subscribed=True,
         )
         db.session.add(new_notification_rule)
     return new_notification_rule
+
+
+@pytest.fixture()
+def admin_notification_rule(users):
+    return add_notification_rule(users["admin_user"])
 
 
 @pytest.fixture()
 def associate_user_notification_rule(users):
-    with db.session.begin_nested():
-        new_notification_rule = NotificationRule(
-            id_role=users["associate_user"].id_role,
-            code_method="DB",
-            code_category="OBSERVATION-COMMENT",
-            subscribed=True,
-        )
-        db.session.add(new_notification_rule)
-    return new_notification_rule
+    return add_notification_rule(users["associate_user"])
 
 
 @pytest.fixture()
 def user_notification_rule(users):
-    with db.session.begin_nested():
-        new_notification_rule = NotificationRule(
-            id_role=users["user"].id_role,
-            code_method="DB",
-            code_category="OBSERVATION-COMMENT",
-            subscribed=True,
-        )
-        db.session.add(new_notification_rule)
-    return new_notification_rule
+    return add_notification_rule(users["user"])
 
 
 @pytest.fixture()
 def self_user_notification_rule(users):
-    with db.session.begin_nested():
-        new_notification_rule = NotificationRule(
-            id_role=users["self_user"].id_role,
-            code_method="DB",
-            code_category="OBSERVATION-COMMENT",
-            subscribed=True,
-        )
-        db.session.add(new_notification_rule)
-    return new_notification_rule
+    return add_notification_rule(users["self_user"])
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
