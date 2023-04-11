@@ -6,9 +6,17 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
+- Mise à jour de quelques dépendances python (#2438, par @MathRdt)
 
 **🐛 Corrections**
 
+- Correction et améliorations des performances des requêtes par statut de protection, notamment quand elles associent un zonage de recherche (#2416, par @amandine-sahl)
+- (#2454, par @mvergez)
+- (#2444, par @mvergez)
+- Correction des champs additionels de type liste (#2447, par @TheoLechemia)
+- Correction lorsque le script de migration est relancé plusieurs fois (#2449, par @TheoLechemia)
+- Correction des permissions des modules supprimés (#2449, par @jbrieuclp)
+- Correction des habitats qui ne sont pas modifiés dans la Synthèse, quand ils sont modifiés dans un relevé Occtax (#2384, par @JulienCorny)
 
 2.12.0 - Cyathea borbonica 🌴 (2023-03-27)
 ------------------------------------------
