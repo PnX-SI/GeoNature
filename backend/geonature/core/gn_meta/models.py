@@ -250,7 +250,7 @@ class TDatasetsQuery(Query):
     def _get_read_scope(self, user=None):
         if user is None:
             user = g.current_user
-        cruved = get_scopes_by_action(id_role=user.id_role, module_code="GEONATURE")
+        cruved = get_scopes_by_action(id_role=user.id_role, module_code="METADATA")
         return cruved["R"]
 
     def _get_create_scope(self, module_code, user=None):
@@ -560,7 +560,7 @@ class TAcquisitionFrameworkQuery(Query):
     def _get_read_scope(self, user=None):
         if user is None:
             user = g.current_user
-        cruved = get_scopes_by_action(id_role=user.id_role, module_code="GEONATURE")
+        cruved = get_scopes_by_action(id_role=user.id_role, module_code="METADATA")
         return cruved["R"]
 
     def filter_by_scope(self, scope, user=None):
