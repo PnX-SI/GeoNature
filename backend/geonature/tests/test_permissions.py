@@ -17,12 +17,12 @@ from geonature.utils.env import db
 from pypnusershub.db.models import User
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def actions():
     return {action.code_action: action for action in TActions.query.all()}
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def scopes():
     scope_type = BibFiltersType.query.filter_by(code_filter_type="SCOPE").one()
     return {f.value_filter: f for f in TFilters.query.filter_by(filter_type=scope_type).all()}
@@ -38,29 +38,29 @@ def create_module(label):
     )
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def module_gn():
     return TModules.query.filter_by(module_code="GEONATURE").one()
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def object_all():
     return TObjects.query.filter_by(code_object="ALL").one()
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def object_a():
     obj = TObjects(code_object="object_a")
     return obj
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def object_b():
     obj = TObjects(code_object="object_b")
     return obj
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def module_a():
     with db.session.begin_nested():
         module = create_module("module_a")
@@ -68,7 +68,7 @@ def module_a():
     return module
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def module_b():
     with db.session.begin_nested():
         module = create_module("module_b")
@@ -76,7 +76,7 @@ def module_b():
     return module
 
 
-@pytest.fixture
+@pytest.fixture()
 def groups():
     groups = {
         "g1": User(groupe=True),
@@ -88,7 +88,7 @@ def groups():
     return groups
 
 
-@pytest.fixture
+@pytest.fixture()
 def roles(groups):
     roles = {
         "r1": User(),
@@ -118,7 +118,7 @@ def cruved_dict(scopes):
     }
 
 
-@pytest.fixture
+@pytest.fixture()
 def permissions(roles, groups, actions, scopes):
     roles = ChainMap(roles, groups)
 
@@ -135,7 +135,7 @@ def permissions(roles, groups, actions, scopes):
     return _permissions
 
 
-@pytest.fixture
+@pytest.fixture()
 def assert_cruved(roles):
     def _assert_cruved(role, cruved, module=None, object=None):
         role = roles[role]
