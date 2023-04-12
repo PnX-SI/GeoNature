@@ -7,7 +7,7 @@ from wtforms import validators, Form
 
 from geonature.core.admin.utils import CruvedProtectedMixin
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_permissions.models import TObjects
+from geonature.core.gn_permissions.models import PermObject
 from geonature.core.gn_commons.schemas import TAdditionalFieldsSchema
 from geonature.utils.env import DB
 
@@ -86,8 +86,8 @@ class BibFieldAdmin(CruvedProtectedMixin, ModelView):
             )
         },
         "objects": {
-            "query_factory": lambda: DB.session.query(TObjects).filter(
-                TObjects.code_object.in_(
+            "query_factory": lambda: DB.session.query(PermObject).filter(
+                PermObject.code_object.in_(
                     current_app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_OBJECTS"]
                 )
             )

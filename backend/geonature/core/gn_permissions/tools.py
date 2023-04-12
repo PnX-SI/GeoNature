@@ -6,10 +6,10 @@ from flask import g
 
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.models import (
-    CorRoleActionFilterModuleObject,
-    TFilters,
-    TActions,
-    TObjects,
+    PermAction,
+    PermObject,
+    PermScope,
+    Permission,
 )
 from geonature.utils.env import db
 
@@ -18,22 +18,19 @@ from pypnusershub.db.models import User
 
 def _get_user_permissions(id_role):
     return (
-        CorRoleActionFilterModuleObject.query.options(
-            joinedload(CorRoleActionFilterModuleObject.action),
-            joinedload(CorRoleActionFilterModuleObject.filter).joinedload(TFilters.filter_type),
+        Permission.query.options(
+            joinedload(Permission.action),
         )
         .filter(
             sa.or_(
                 # direct permissions
-                CorRoleActionFilterModuleObject.id_role == id_role,
+                Permission.id_role == id_role,
                 # permissions through group
-                CorRoleActionFilterModuleObject.role.has(
-                    User.members.any(User.id_role == id_role)
-                ),
+                Permission.role.has(User.members.any(User.id_role == id_role)),
             ),
         )
         # These ordering ensure groupby is working properly
-        .order_by(CorRoleActionFilterModuleObject.id_action)
+        .order_by(Permission.id_action)
         .all()
     )
 
@@ -41,7 +38,7 @@ def _get_user_permissions(id_role):
 def _get_user_permissions_by_action(id_role):
     permissions = _get_user_permissions(id_role)
     # This ensures empty permissions list for action without permissions
-    permissions_by_action = {action.code_action: [] for action in TActions.query.all()}
+    permissions_by_action = {action.code_action: [] for action in PermAction.query.all()}
     # Note: groupby require sorted data, which is done at SQL level
     permissions_by_action.update(
         {
@@ -106,9 +103,12 @@ def get_scope(action_code, id_role=None, module_code=None, object_code=None):
     permissions = get_permissions(action_code, id_role, module_code, object_code)
     max_scope = 0
     for permission in permissions:
-        if permission.filter.filter_type.code_filter_type != "SCOPE":
+        if permission.has_other_filters_than("SCOPE"):
             continue
-        max_scope = max(max_scope, int(permission.filter.value_filter))
+        if permission.scope_value is None:
+            max_scope = 3
+        else:
+            max_scope = max(max_scope, permission.scope_value)
     return max_scope
 
 
