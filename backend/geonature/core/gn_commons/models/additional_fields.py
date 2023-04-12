@@ -10,7 +10,7 @@ from geonature.utils.env import DB
 
 from .base import cor_field_module, cor_field_object, cor_field_dataset
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_permissions.models import TObjects
+from geonature.core.gn_permissions.models import PermObject
 
 
 @serializable
@@ -49,8 +49,8 @@ class TAdditionalFields(DB.Model):
         "TModules",
         secondary=cor_field_module,
     )
-    objects = DB.relationship("TObjects", secondary=cor_field_object)
-    datasets = DB.relationship("TDatasets", secondary=cor_field_dataset)
+    objects = DB.relationship(PermObject, secondary=cor_field_object)
+    datasets = DB.relationship(TDatasets, secondary=cor_field_dataset)
 
     def __str__(self):
         return f"{self.field_label} ({self.description})"

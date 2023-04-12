@@ -15,7 +15,7 @@ from geonature.core.gn_commons.models import TAdditionalFields, TMedias, TPlaces
 from geonature.core.gn_commons.models.base import TModules, TParameters, BibWidgets
 from geonature.core.gn_commons.repositories import TMediaRepository
 
-from geonature.core.gn_permissions.models import TObjects
+from geonature.core.gn_permissions.models import PermObject
 from geonature.utils.env import db
 from geonature.utils.errors import GeoNatureError
 
@@ -34,7 +34,7 @@ def place(users):
 @pytest.fixture(scope="function")
 def additional_field(app, datasets):
     module = TModules.query.filter(TModules.module_code == "SYNTHESE").one()
-    obj = TObjects.query.filter(TObjects.code_object == "ALL").one()
+    obj = PermObject.query.filter(PermObject.code_object == "ALL").one()
     datasets = list(datasets.values())
     additional_field = TAdditionalFields(
         field_name="test",

@@ -21,11 +21,6 @@ from geonature.core.gn_meta.models import (
     TDatasets,
 )
 from geonature.core.gn_meta.routes import get_af_from_id
-from geonature.core.gn_permissions.models import (
-    CorRoleActionFilterModuleObject,
-    TActions,
-    TFilters,
-)
 from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 
