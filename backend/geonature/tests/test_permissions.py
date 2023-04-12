@@ -119,17 +119,19 @@ def cruved_dict(scopes):
 
 
 @pytest.fixture()
-def permissions(roles, groups, actions, scopes):
+def permissions(roles, groups, actions, scopes, module_gn):
     roles = ChainMap(roles, groups)
 
-    def _permissions(role, cruved, **kwargs):
+    def _permissions(role, cruved, *, module=module_gn, **kwargs):
         role = roles[role]
         with db.session.begin_nested():
             for a, s in zip("CRUVED", cruved):
                 if s == "-":
                     continue
                 db.session.add(
-                    Permission(role=role, action=actions[a], filter=scopes[s], **kwargs)
+                    Permission(
+                        role=role, action=actions[a], filter=scopes[s], module=module, **kwargs
+                    )
                 )
 
     return _permissions
@@ -156,12 +158,30 @@ class TestPermissions:
         assert_cruved("r1", "000000", module_gn, object_a)
         assert_cruved("r1", "000000", module_a, object_a)
 
-    def test_module_perm(self, permissions, assert_cruved, module_gn, module_a):
-        permissions("r1", "0123--", module=module_a)
+    def test_module_perm(self, permissions, assert_cruved, module_gn, module_a, module_b):
+        permissions("r1", "1----2", module=module_gn)
+        permissions("r1", "-1---1", module=module_a)
+        permissions("r1", "--1---", module=module_b)
 
-        assert_cruved("r1", "000000")
-        assert_cruved("r1", "012300", module_a)
+        assert_cruved("r1", "100002")
+        assert_cruved("r1", "010001", module_a)
+        assert_cruved("r1", "001000", module_b)
         assert_cruved("r2", "000000", module_a)
+
+    def test_no_module_no_object_specified(
+        self, permissions, assert_cruved, module_gn, object_all, module_a, object_a
+    ):
+        permissions("r1", "11----", module=module_gn, object=object_all)
+        permissions("r1", "--11--", module=module_gn, object=object_a)
+        permissions("r1", "----11", module=module_a, object=object_all)
+
+        assert_cruved("r1", "110000", module=module_gn)
+        assert_cruved("r1", "110000", object=object_all)
+        assert_cruved("r1", "110000")
+
+        assert_cruved("r1", "001100", object=object_a)
+
+        assert_cruved("r1", "000011", module=module_a)
 
     def test_group_inheritance(self, permissions, assert_cruved, module_gn, module_a):
         permissions("g1", "0123--", module=module_a)
@@ -179,17 +199,6 @@ class TestPermissions:
 
         assert_cruved("g1_r1", "112300", module=module_a)  # max of user and group permission
 
-    def test_module_inheritance(self, permissions, assert_cruved, module_gn, module_a, module_b):
-        permissions("r1", "121---", module=module_gn)
-        permissions("r1", "012123", module=module_b)
-
-        assert_cruved("r1", "121000")
-        assert_cruved("r1", "121000", module_a)  # A inherite GN permissions
-        assert_cruved("r1", "012123", module_b)  # perms on B have precedence
-        assert_cruved("r2", "000000")
-        assert_cruved("r2", "000000", module_a)
-        assert_cruved("r2", "000000", module_b)
-
     def test_multi_groups_one_perm(self, permissions, assert_cruved, module_a):
         permissions("g1", "0123--", module=module_a)
 
@@ -205,56 +214,6 @@ class TestPermissions:
         assert_cruved("g2_r1", "012103", module_a)
         assert_cruved("g12_r1", "122313", module_a)  # max of both groups permissions
 
-    def test_group_module_inheritance(
-        self, permissions, assert_cruved, module_gn, module_a, module_b
-    ):
-        permissions("g1", "121---", module=module_gn)
-        permissions("g1", "012123", module=module_b)
-
-        assert_cruved("g1_r1", "121000")
-        assert_cruved("g1_r1", "121000", module_a)  # A inherite GN permissions
-        assert_cruved("g1_r1", "012123", module_b)  # perms on B have precedence
-
-    def test_group_and_user_module_inheritance(
-        self, permissions, assert_cruved, module_gn, module_a
-    ):
-        permissions("g1", "1023--", module=module_gn)
-        permissions("g1_r1", "0123--", module=module_a)
-
-        assert_cruved("g1_r1", "102300")
-        assert_cruved("g1_r2", "102300")
-        assert_cruved("g1_r1", "012300", module_a)  # module A have precedence on GN
-        assert_cruved("g1_r2", "102300", module_a)  # module A inherite GN perms
-
-    def test_user_and_group_module_inheritance(
-        self, permissions, assert_cruved, module_gn, module_a
-    ):
-        permissions("g1_r1", "0123--", module=module_gn)
-        permissions("g1", "1023--", module=module_a)
-
-        assert_cruved("g1_r1", "012300")
-        assert_cruved("g1_r2", "000000")  # no perm on GN
-        assert_cruved("g1_r1", "102300", module_a)  # module A have precedence on GN
-        assert_cruved("g1_r2", "102300", module_a)  # module A perm through group
-
-    def test_multi_group_module_inheritance(
-        self, permissions, assert_cruved, module_gn, module_a, module_b
-    ):
-        permissions("g1", "121-1-", module=module_gn)
-        permissions("g2", "2101-3", module=module_gn)
-        permissions("g1", "0121-2", module=module_b)
-
-        assert_cruved("g12_r1", "221113")  # max of both permissions
-        assert_cruved("g12_r1", "221113", module_a)  # A inherite max of GN permissions
-        assert_cruved("g12_r1", "012112", module_b)  # perms on B have precedence
-
-        assert_cruved("g1_r1", "121010")
-        assert_cruved("g2_r1", "210103")
-        assert_cruved("g1_r1", "121010", module_a)  # A inherite GN permissions
-        assert_cruved("g1_r1", "012112", module_b)  # perms on B have precedence
-        assert_cruved("g2_r1", "210103", module_a)  # A inherite GN permissions
-        assert_cruved("g2_r1", "210103", module_b)  # B inherite GN permissions
-
     def test_object_perm(self, permissions, assert_cruved, module_a, module_b, object_a, object_b):
         permissions("r1", "1----2", module=module_a)
         permissions("r1", "-1---1", module=module_a, object=object_a)
@@ -263,45 +222,6 @@ class TestPermissions:
 
         assert_cruved("r1", "000000")
         assert_cruved("r1", "100002", module_a)
-        assert_cruved("r1", "110001", module_a, object_a)
+        assert_cruved("r1", "010001", module_a, object_a)
         assert_cruved("r1", "001000", module_b, object_a)
-        assert_cruved("r1", "100102", module_a, object_b)
-
-    def test_object_inheritance(
-        self,
-        permissions,
-        assert_cruved,
-        module_gn,
-        module_a,
-        module_b,
-        object_all,
-        object_a,
-        object_b,
-    ):
-        permissions("r1", "1-----", module=module_gn, object=object_all)
-        permissions("r1", "-1----", module=module_gn, object=object_a)
-        permissions("r1", "--1---", module=module_a, object=object_all)
-        permissions("r1", "---1--", module=module_a, object=object_a)
-
-        assert_cruved("r1", "111100", module_a, object_a)
-
-    def test_object_priority(
-        self,
-        permissions,
-        assert_cruved,
-        module_gn,
-        module_a,
-        module_b,
-        object_all,
-        object_a,
-        object_b,
-    ):
-        permissions("r1", "222---", module=module_gn, object=object_all)
-        permissions("r1", "1--22-", module=module_gn, object=object_a)
-        permissions("r1", "-1-1-2", module=module_a, object=object_all)
-        permissions("r1", "--1-11", module=module_a, object=object_a)
-
-        assert_cruved("r1", "222000", module_gn, object_all)
-        assert_cruved("r1", "122220", module_gn, object_a)
-        assert_cruved("r1", "212102", module_a, object_all)
-        assert_cruved("r1", "111111", module_a, object_a)
+        assert_cruved("r1", "000100", module_a, object_b)
