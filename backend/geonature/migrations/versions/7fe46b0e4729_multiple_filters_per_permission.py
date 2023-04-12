@@ -26,7 +26,7 @@ def upgrade():
         new_table_name="t_permissions",
     )
     op.execute("DROP TRIGGER tri_check_no_multiple_scope_perm ON gn_permissions.t_permissions")
-    # TODO: drop trigger function
+    op.execute("DROP FUNCTION gn_permissions.fct_tri_does_user_have_already_scope_filter()")
     op.rename_table(
         schema="gn_permissions", old_table_name="t_filters", new_table_name="bib_filters_values"
     )
@@ -249,7 +249,52 @@ def downgrade():
         old_table_name="t_permissions",
         new_table_name="cor_role_action_filter_module_object",
     )
-    # TODO: re-create trigger function
+    op.execute(
+        """
+        CREATE OR REPLACE FUNCTION gn_permissions.fct_tri_does_user_have_already_scope_filter()
+         RETURNS trigger
+         LANGUAGE plpgsql
+        AS $function$
+        -- Check if a role has already a SCOPE permission for an action/module/object
+        -- use in constraint to force not set multiple scope permission on the same action/module/object
+        DECLARE
+        the_code_filter_type character varying;
+        the_nb_permission integer;
+        BEGIN
+         SELECT INTO the_code_filter_type bib.code_filter_type
+         FROM gn_permissions.t_filters f
+         JOIN gn_permissions.bib_filters_type bib ON bib.id_filter_type = f.id_filter_type
+         WHERE f.id_filter = NEW.id_filter
+        ;
+        -- if the filter type is NOT SCOPE, its OK to set multiple permissions
+        IF the_code_filter_type != 'SCOPE' THEN
+        RETURN NEW;
+        -- if the new filter is 'SCOPE TYPE', check if there is not already a permission for this
+        -- action/module/object/role
+        ELSE
+            SELECT INTO the_nb_permission count(perm.id_permission)
+            FROM gn_permissions.cor_role_action_filter_module_object perm
+            JOIN gn_permissions.t_filters f ON f.id_filter = perm.id_filter
+            JOIN gn_permissions.bib_filters_type bib ON bib.id_filter_type = f.id_filter_type AND bib.code_filter_type = 'SCOPE'
+            WHERE id_role=NEW.id_role AND id_action=NEW.id_action AND id_module=NEW.id_module AND id_object=NEW.id_object;
+
+         -- if its an insert 0 row must be present, if its an update 1 row must be present
+          IF(TG_OP = 'INSERT' AND the_nb_permission = 0) OR (TG_OP = 'UPDATE' AND the_nb_permission = 1) THEN
+                RETURN NEW;
+            END IF;
+            BEGIN
+                RAISE EXCEPTION 'ATTENTION: il existe déjà un enregistrement de type SCOPE pour le role % l''action % sur le module % et l''objet % . Il est interdit de définir plusieurs portées à un role pour le même action sur un module et un objet', NEW.id_role, NEW.id_action, NEW.id_module, NEW.id_object ;
+            END;
+
+
+        END IF;
+
+        END;
+
+        $function$
+        ;
+        """
+    )
     op.execute(
         """
         CREATE TRIGGER tri_check_no_multiple_scope_perm
