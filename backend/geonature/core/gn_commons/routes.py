@@ -20,7 +20,6 @@ from geonature.core.gn_commons.models import (
 )
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.repositories import get_table_location_id
-from geonature.core.gn_permissions.models import TObjects
 from geonature.utils.env import DB, db, BACKEND_DIR
 from geonature.utils.config import config_frontend, config
 from geonature.core.gn_permissions import decorators as permissions
