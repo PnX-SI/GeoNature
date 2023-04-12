@@ -13,11 +13,10 @@ from geoalchemy2.shape import from_shape
 from geonature import create_app
 from geonature.utils.env import db
 from geonature.core.gn_permissions.models import (
-    TActions,
-    TFilters,
-    BibFiltersType,
-    CorRoleActionFilterModuleObject,
-    TObjects,
+    PermFilterType,
+    PermAction,
+    PermObject,
+    Permission,
 )
 from geonature.core.gn_commons.models import TModules, TMedias, BibTablesLocation
 from geonature.core.gn_meta.models import (
@@ -89,15 +88,13 @@ def module(users):
         db.session.add(new_module)
     # Copy perission from another module
     with db.session.begin_nested():
-        for perm in CorRoleActionFilterModuleObject.query.filter_by(
-            id_module=other_module.id_module
-        ):
-            new_perm = CorRoleActionFilterModuleObject(
+        for perm in Permission.query.filter_by(id_module=other_module.id_module):
+            new_perm = Permission(
                 id_role=perm.id_role,
                 id_action=perm.id_action,
-                id_filter=perm.id_filter,
                 id_module=new_module.id_module,
                 id_object=perm.id_object,
+                scope_value=perm.scope_value,
             )
             db.session.add(new_perm)
     return new_module
@@ -106,7 +103,7 @@ def module(users):
 @pytest.fixture(scope="function")
 def perm_object():
     with db.session.begin_nested():
-        new_object = TObjects(code_object="TEST_OBJECT")
+        new_object = PermObject(code_object="TEST_OBJECT")
         db.session.add(new_object)
     return new_object
 
@@ -118,13 +115,7 @@ def users(app):
 
     modules = TModules.query.all()
 
-    actions = {
-        code: TActions.query.filter(TActions.code_action == code).one() for code in "CRUVED"
-    }
-    scope_filters = {
-        scope: TFilters.query.filter(TFilters.value_filter == str(scope)).one()
-        for scope in [1, 2, 3]
-    }
+    actions = {code: PermAction.query.filter_by(code_action=code).one() for code in "CRUVED"}
 
     def create_user(username, organisme=None, scope=None):
         # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
@@ -144,17 +135,17 @@ def users(app):
                 id_role=user.id_role, id_application=app.id_application, id_profil=profil.id_profil
             )
             db.session.add(right)
-            object_all = TObjects.query.filter_by(code_object="ALL").one()
-            if scope:
+            if scope > 0:
+                object_all = PermObject.query.filter_by(code_object="ALL").one()
                 for action in actions.values():
                     for module in modules:
                         for obj in [object_all] + module.objects:
-                            permission = CorRoleActionFilterModuleObject(
+                            permission = Permission(
                                 role=user,
                                 action=action,
-                                filter=scope,
                                 module=module,
                                 object=obj,
+                                scope_value=scope if scope != 3 else None,
                             )
                             db.session.add(permission)
         return user
@@ -165,12 +156,12 @@ def users(app):
     db.session.add(organisme)
 
     users_to_create = [
-        ("noright_user", organisme, None),
-        ("stranger_user", None, scope_filters[2]),
-        ("associate_user", organisme, scope_filters[2]),
-        ("self_user", organisme, scope_filters[1]),
-        ("user", organisme, scope_filters[2]),
-        ("admin_user", organisme, scope_filters[3]),
+        ("noright_user", organisme, 0),
+        ("stranger_user", None, 2),
+        ("associate_user", organisme, 2),
+        ("self_user", organisme, 1),
+        ("user", organisme, 2),
+        ("admin_user", organisme, 3),
     ]
 
     for username, *args in users_to_create:

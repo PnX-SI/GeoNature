@@ -5,11 +5,10 @@ import pytest
 
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.models import (
-    TObjects,
-    TFilters,
-    TActions,
-    BibFiltersType,
-    CorRoleActionFilterModuleObject as Permission,
+    PermObject,
+    PermAction,
+    PermFilterType,
+    Permission,
 )
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.utils.env import db
@@ -19,13 +18,7 @@ from pypnusershub.db.models import User
 
 @pytest.fixture(scope="class")
 def actions():
-    return {action.code_action: action for action in TActions.query.all()}
-
-
-@pytest.fixture(scope="class")
-def scopes():
-    scope_type = BibFiltersType.query.filter_by(code_filter_type="SCOPE").one()
-    return {f.value_filter: f for f in TFilters.query.filter_by(filter_type=scope_type).all()}
+    return {action.code_action: action for action in PermAction.query.all()}
 
 
 def create_module(label):
@@ -45,18 +38,18 @@ def module_gn():
 
 @pytest.fixture(scope="class")
 def object_all():
-    return TObjects.query.filter_by(code_object="ALL").one()
+    return PermObject.query.filter_by(code_object="ALL").one()
 
 
 @pytest.fixture(scope="class")
 def object_a():
-    obj = TObjects(code_object="object_a")
+    obj = PermObject(code_object="object_a")
     return obj
 
 
 @pytest.fixture(scope="class")
 def object_b():
-    obj = TObjects(code_object="object_b")
+    obj = PermObject(code_object="object_b")
     return obj
 
 
@@ -119,18 +112,23 @@ def cruved_dict(scopes):
 
 
 @pytest.fixture()
-def permissions(roles, groups, actions, scopes, module_gn):
+def permissions(roles, groups, actions, module_gn):
     roles = ChainMap(roles, groups)
 
     def _permissions(role, cruved, *, module=module_gn, **kwargs):
         role = roles[role]
+        scope_type = PermFilterType.query.filter_by(code_filter_type="SCOPE").one()
         with db.session.begin_nested():
             for a, s in zip("CRUVED", cruved):
                 if s == "-":
                     continue
+                elif s == "3":
+                    s = None
+                else:
+                    s = int(s)
                 db.session.add(
                     Permission(
-                        role=role, action=actions[a], filter=scopes[s], module=module, **kwargs
+                        role=role, action=actions[a], module=module, scope_value=s, **kwargs
                     )
                 )
 
