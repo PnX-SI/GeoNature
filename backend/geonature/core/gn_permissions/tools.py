@@ -17,8 +17,6 @@ from pypnusershub.db.models import User
 
 
 def _get_user_permissions(id_role):
-    default_module = TModules.query.filter_by(module_code="GEONATURE").one()
-    default_object = TObjects.query.filter_by(code_object="ALL").one()
     return (
         CorRoleActionFilterModuleObject.query.options(
             joinedload(CorRoleActionFilterModuleObject.action),
@@ -34,31 +32,15 @@ def _get_user_permissions(id_role):
                 ),
             ),
         )
-        # These ordering ensure groupby is working properly, as well as allows module / object inheritance
-        .order_by(
-            CorRoleActionFilterModuleObject.id_action,
-            # ensure GEONATURE module is the last
-            db.case(
-                [
-                    (CorRoleActionFilterModuleObject.id_module == default_module.id_module, -1),
-                ],
-                else_=CorRoleActionFilterModuleObject.id_module,
-            ).desc(),
-            # ensure ALL object is the last
-            db.case(
-                [
-                    (CorRoleActionFilterModuleObject.id_object == default_object.id_object, -1),
-                ],
-                else_=CorRoleActionFilterModuleObject.id_object,
-            ).desc(),
-        )
+        # These ordering ensure groupby is working properly
+        .order_by(CorRoleActionFilterModuleObject.id_action)
         .all()
     )
 
 
 def _get_user_permissions_by_action(id_role):
     permissions = _get_user_permissions(id_role)
-    # This ensure empty permissions list for action without permissions
+    # This ensures empty permissions list for action without permissions
     permissions_by_action = {action.code_action: [] for action in TActions.query.all()}
     # Note: groupby require sorted data, which is done at SQL level
     permissions_by_action.update(
@@ -87,37 +69,39 @@ def get_user_permissions_by_action(id_role=None):
 
 def get_permissions(action_code, id_role=None, module_code=None, object_code=None):
     """
-    This function ensure module and object inheritance.
-    Permissions have been sorted (which is required for using groupby) by module_code and object_code,
-    with insurance GEONATURE module and ALL object are latest.
-    We return first list of permissions found.
+    This function returns a list of all the permissions that match (action_code, id_role, module_code, object_code).
+    If module_code is None, it is set as the code of the current module or as "GEONATURE" if no current module found.
+    If object_code is None, it is set as the code of the current object or as "ALL" if no current object found.
+
+    :returns : the list of permissions that match, and an empty list if no match
     """
-    if module_code is None and hasattr(g, "current_module"):
-        module_code = g.current_module.module_code
+    if module_code is None:
+        if hasattr(g, "current_module"):
+            module_code = g.current_module.module_code
+        else:
+            module_code = "GEONATURE"
 
-    if object_code is None and hasattr(g, "current_object"):
-        object_code = g.current_object.code_object
+    if object_code is None:
+        if hasattr(g, "current_object"):
+            object_code = g.current_object.code_object
+        else:
+            object_code = "ALL"
 
-    permissions = get_user_permissions_by_action(id_role)[action_code]
-    for _module_code, _permissions in groupby(permissions, key=lambda p: p.module.module_code):
-        if _module_code not in [module_code, "GEONATURE"]:
-            continue
-        for _object_code, __permissions in groupby(
-            _permissions, key=lambda p: p.object.code_object
-        ):
-            if _object_code not in [object_code, "ALL"]:
-                continue
-            return list(__permissions)
-    return []
+    return [
+        p
+        for p in get_user_permissions_by_action(id_role)[action_code]
+        if p.module.module_code == module_code and p.object.code_object == object_code
+    ]
 
 
 def get_scope(action_code, id_role=None, module_code=None, object_code=None):
     """
-    Note: we filter permissions by scope *after* module / object inheritance.
-    This means we get null scope if there are non-scope permissions at module level
-    but scope permissions at GEONATURE level.
-    If we want to inherite scope without others permissions types considered,
-    we should filter non-scope permissions *before* inheritance.
+    This function gets the final scope permission.
+
+    It takes the maximum for all the permissions that match (action_code, id_role, module_code, object_code) and with
+    of a "SCOPE" filter type.
+
+    :returns : (int) The scope computed for specified arguments
     """
     permissions = get_permissions(action_code, id_role, module_code, object_code)
     max_scope = 0
@@ -129,6 +113,12 @@ def get_scope(action_code, id_role=None, module_code=None, object_code=None):
 
 
 def get_scopes_by_action(id_role=None, module_code=None, object_code=None):
+    """
+    This function gets the scopes permissions for each one of the 6 actions in "CRUVED",
+    that match (id_role, module_code, object_code)
+
+    :returns : (dict) A dict of the scope for each one of the 6 actions (the char in "CRUVED")
+    """
     return {
         action_code: get_scope(action_code, id_role, module_code, object_code)
         for action_code in "CRUVED"
