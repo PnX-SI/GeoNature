@@ -102,7 +102,7 @@ class TModules(DB.Model):
     meta_update_date = DB.Column(DB.DateTime)
 
     objects = DB.relationship(
-        "TObjects", secondary=lambda: _resolve_import_cor_object_module(), backref="modules"
+        "PermObject", secondary=lambda: _resolve_import_cor_object_module(), backref="modules"
     )
     # relationship datasets add via backref
 
