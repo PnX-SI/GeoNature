@@ -74,7 +74,8 @@ def app():
 
 
 @pytest.fixture(scope="function")
-def module():
+def module(users):
+    other_module = TModules.query.filter_by(module_code="GEONATURE").one()
     with db.session.begin_nested():
         new_module = TModules(
             module_code="MODULE_1",
@@ -84,6 +85,19 @@ def module():
             active_backend=False,
         )
         db.session.add(new_module)
+    # Copy perission from another module
+    with db.session.begin_nested():
+        for perm in CorRoleActionFilterModuleObject.query.filter_by(
+            id_module=other_module.id_module
+        ):
+            new_perm = CorRoleActionFilterModuleObject(
+                id_role=perm.id_role,
+                id_action=perm.id_action,
+                id_filter=perm.id_filter,
+                id_module=new_module.id_module,
+                id_object=perm.id_object,
+            )
+            db.session.add(new_perm)
     return new_module
 
 
@@ -128,13 +142,19 @@ def users(app):
                 id_role=user.id_role, id_application=app.id_application, id_profil=profil.id_profil
             )
             db.session.add(right)
+            object_all = TObjects.query.filter_by(code_object="ALL").one()
             if scope:
                 for action in actions.values():
                     for module in modules:
-                        permission = CorRoleActionFilterModuleObject(
-                            role=user, action=action, filter=scope, module=module
-                        )
-                        db.session.add(permission)
+                        for obj in [object_all] + module.objects:
+                            permission = CorRoleActionFilterModuleObject(
+                                role=user,
+                                action=action,
+                                filter=scope,
+                                module=module,
+                                object=obj,
+                            )
+                            db.session.add(permission)
         return user
 
     users = {}
