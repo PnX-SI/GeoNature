@@ -13,11 +13,12 @@ from geoalchemy2.shape import from_shape
 from geonature import create_app
 from geonature.utils.env import db
 from geonature.core.gn_permissions.models import (
-    TActions,
-    TFilters,
-    BibFiltersType,
-    CorRoleActionFilterModuleObject,
-    TObjects,
+    PermFilterType,
+    PermFilterValue,
+    PermAction,
+    PermObject,
+    Permission,
+    PermissionFilter,
 )
 from geonature.core.gn_commons.models import TModules, TMedias, BibTablesLocation
 from geonature.core.gn_meta.models import (
@@ -91,7 +92,7 @@ def module():
 @pytest.fixture(scope="function")
 def perm_object():
     with db.session.begin_nested():
-        new_object = TObjects(code_object="TEST_OBJECT")
+        new_object = PermObject(code_object="TEST_OBJECT")
         db.session.add(new_object)
     return new_object
 
@@ -103,12 +104,13 @@ def users(app):
 
     modules = TModules.query.all()
 
-    actions = {
-        code: TActions.query.filter(TActions.code_action == code).one() for code in "CRUVED"
-    }
+    actions = {code: PermAction.query.filter_by(code_action=code).one() for code in "CRUVED"}
     scope_filters = {
-        scope: TFilters.query.filter(TFilters.value_filter == str(scope)).one()
-        for scope in [0, 1, 2, 3]
+        scope: PermFilterValue.query.filter(
+            PermFilterValue.filter_type.has(PermFilterType.code_filter_type == "SCOPE"),
+            PermFilterValue.value_filter == str(scope),
+        ).one()
+        for scope in [0, 1, 2]
     }
 
     def create_user(username, organisme=None, scope=None):
@@ -129,13 +131,17 @@ def users(app):
                 id_role=user.id_role, id_application=app.id_application, id_profil=profil.id_profil
             )
             db.session.add(right)
-            if scope:
-                for action in actions.values():
-                    for module in modules:
-                        permission = CorRoleActionFilterModuleObject(
-                            role=user, action=action, filter=scope, module=module
+            for action in actions.values():
+                for module in modules:
+                    filters = []
+                    if scope:
+                        filters.append(
+                            PermissionFilter(filter_type=scope.filter_type, filter_value=scope)
                         )
-                        db.session.add(permission)
+                    permission = Permission(
+                        role=user, action=action, filters=filters, module=module
+                    )
+                    db.session.add(permission)
         return user
 
     users = {}
@@ -149,7 +155,7 @@ def users(app):
         ("associate_user", organisme, scope_filters[2]),
         ("self_user", organisme, scope_filters[1]),
         ("user", organisme, scope_filters[2]),
-        ("admin_user", organisme, scope_filters[3]),
+        ("admin_user", organisme, None),
     ]
 
     for username, *args in users_to_create:
@@ -321,19 +327,20 @@ def synthese_data(app, users, datasets, source):
     return data
 
 
+# TODO: move to test_gn_permission
 @pytest.fixture(scope="function")
 def filters():
     """
     Creates one filter per filter type
     """
     # Gather all types
-    avail_filter_types = BibFiltersType.query.order_by(BibFiltersType.id_filter_type).all()
+    avail_filter_types = PermFilterType.query.order_by(PermFilterType.id_filter_type).all()
     # Init returned filter_dict
     filters_dict = {}
     # For each type, generate a Filter
     with db.session.begin_nested():
         for i, filter_type in enumerate(avail_filter_types):
-            new_filter = TFilters(
+            new_filter = BibFilterValue(
                 label_filter=f"test_{i}",
                 value_filter=f"value_{i}",
                 description_filter="Filtre test",

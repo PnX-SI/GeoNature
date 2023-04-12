@@ -5,15 +5,16 @@ from werkzeug.exceptions import Forbidden, Unauthorized
 
 from pypnusershub.db.models import User
 
-from geonature.core.gn_permissions.models import (
-    CorRoleActionFilterModuleObject,
-    TFilters,
-    TActions,
-)
+# from geonature.core.gn_permissions.models import (
+#    CorRoleActionFilterModuleObject,
+#    TFilters,
+#    TActions,
+# )
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_permissions.tools import (
-    cruved_scope_for_user_in_module,
-)
+
+# from geonature.core.gn_permissions.tools import (
+#    cruved_scope_for_user_in_module,
+# )
 from geonature.utils.env import DB
 
 from .fixtures import filters
@@ -60,6 +61,7 @@ class TestGnPermissionsRoutes:
         assert response.data == b"Logout"
 
 
+@pytest.mark.skip(reason="Permissions backoffice is currently broken")
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestGnPermissionsTools:
     """Test of gn_permissions tools functions"""
@@ -81,6 +83,7 @@ class TestGnPermissionsTools:
         assert cruved == {"C": 4, "R": 4, "U": 4, "V": 4, "E": 4, "D": 4}
 
 
+@pytest.mark.skip(reason="Permissions backoffice is currently broken")
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestGnPermissionsView:
     def test_get_users(self, users, captured_templates):

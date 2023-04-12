@@ -5,11 +5,12 @@ import pytest
 
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.models import (
-    TObjects,
-    TFilters,
-    TActions,
-    BibFiltersType,
-    CorRoleActionFilterModuleObject as Permission,
+    PermObject,
+    PermAction,
+    PermFilterValue,
+    PermFilterType,
+    Permission,
+    PermissionFilter,
 )
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.utils.env import db
@@ -19,13 +20,15 @@ from pypnusershub.db.models import User
 
 @pytest.fixture
 def actions():
-    return {action.code_action: action for action in TActions.query.all()}
+    return {action.code_action: action for action in PermAction.query.all()}
 
 
 @pytest.fixture
 def scopes():
-    scope_type = BibFiltersType.query.filter_by(code_filter_type="SCOPE").one()
-    return {f.value_filter: f for f in TFilters.query.filter_by(filter_type=scope_type).all()}
+    scope_type = PermFilterType.query.filter_by(code_filter_type="SCOPE").one()
+    return {
+        f.value_filter: f for f in PermFilterValue.query.filter_by(filter_type=scope_type).all()
+    }
 
 
 def create_module(label):
@@ -45,18 +48,18 @@ def module_gn():
 
 @pytest.fixture
 def object_all():
-    return TObjects.query.filter_by(code_object="ALL").one()
+    return PermObject.query.filter_by(code_object="ALL").one()
 
 
 @pytest.fixture
 def object_a():
-    obj = TObjects(code_object="object_a")
+    obj = PermObject(code_object="object_a")
     return obj
 
 
 @pytest.fixture
 def object_b():
-    obj = TObjects(code_object="object_b")
+    obj = PermObject(code_object="object_b")
     return obj
 
 
@@ -124,13 +127,17 @@ def permissions(roles, groups, actions, scopes):
 
     def _permissions(role, cruved, **kwargs):
         role = roles[role]
+        scope_type = PermFilterType.query.filter_by(code_filter_type="SCOPE").one()
         with db.session.begin_nested():
             for a, s in zip("CRUVED", cruved):
                 if s == "-":
                     continue
-                db.session.add(
-                    Permission(role=role, action=actions[a], filter=scopes[s], **kwargs)
-                )
+                filters = []
+                if s != "3":  # '3' means admin so no scope filtering
+                    filters.append(
+                        PermissionFilter(filter_type=scope_type, filter_value=scopes[s])
+                    )
+                db.session.add(Permission(role=role, action=actions[a], filters=filters, **kwargs))
 
     return _permissions
 
