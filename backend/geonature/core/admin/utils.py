@@ -8,7 +8,7 @@ class CruvedProtectedMixin:
     def is_accessible(self):
         if g.current_user is None:
             raise Unauthorized  # return False leads to Forbidden which is different
-        return True
+        return self._can_action("R")
 
     def _can_action(self, action):
         scope = get_scopes_by_action(
