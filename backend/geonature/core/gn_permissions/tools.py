@@ -1,13 +1,8 @@
-import logging, json
 from itertools import groupby
 
 import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
-from sqlalchemy.sql.expression import func
-from flask import current_app, redirect, Response, g
-from werkzeug.exceptions import Forbidden, Unauthorized
-from werkzeug.routing import RequestRedirect
-from authlib.jose.errors import ExpiredTokenError, JoseError
+from flask import g
 
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.models import (
@@ -16,81 +11,9 @@ from geonature.core.gn_permissions.models import (
     TActions,
     TObjects,
 )
-from geonature.utils.env import db, DB
+from geonature.utils.env import db
 
 from pypnusershub.db.models import User
-
-log = logging.getLogger(__name__)
-
-
-def beautifulize_cruved(actions, cruved):
-    """
-    Build more readable the cruved dict with the actions label
-    Params:
-        actions: dict action {'C': 'Action de créer'}
-        cruved: dict of cruved
-    Return:
-        Array<dict> [{'label': 'Action de Lire', 'value': '3'}]
-    """
-    cruved_beautiful = []
-    for key, value in cruved.items():
-        temp = {}
-        temp["label"] = actions.get(key)
-        temp["value"] = value
-        cruved_beautiful.append(temp)
-    return cruved_beautiful
-
-
-def cruved_scope_for_user_in_module(
-    id_role=None,
-    module_code=None,
-    object_code=None,
-    get_id=False,
-):
-    """
-    get the user cruved for a module or object
-    if no cruved for a module, the cruved parent module is taken
-    Child app cruved alway overright parent module cruved
-    Params:
-        - id_role(int)
-        - module_code(str)
-        - object_code(str)
-        - get_id(bool): if true return the id_scope for each action
-            if false return the filter_value for each action
-        - append_to_select (dict) : dict of extra select module object for heritage
-    Return a tuple
-    - index 0: the cruved as a dict : {'C': 0, 'R': 2 ...}
-    - index 1: a boolean which say if its an herited cruved
-    """
-    cruved = {}
-    herited_object = [None, None]
-    no_access_filter = (
-        TFilters.query.filter(TFilters.filter_type.has(code_filter_type="SCOPE"))
-        .filter_by(value_filter="0")
-        .one()
-    )
-    for action_code in "CRUVED":
-        permissions, _module_code, _object_code = _get_permissions(
-            action_code, id_role, module_code, object_code
-        )
-        if (_module_code != module_code) or (_object_code != (object_code or "ALL")):
-            herited_object = [_module_code, _object_code]
-        max_scope = 0
-        max_permission = None
-        for permission in permissions:
-            if permission.filter.filter_type.code_filter_type != "SCOPE":
-                continue
-            scope = int(permission.filter.value_filter)
-            if scope >= max_scope:
-                max_scope = scope
-                max_permission = permission
-        if max_permission is not None:
-            cruved[action_code] = max_permission.filter.id_filter if get_id else str(max_scope)
-        else:
-            cruved[action_code] = (
-                no_access_filter.id_filter if get_id else str(no_access_filter.value_filter)
-            )
-    return cruved, herited_object != [None, None], herited_object
 
 
 def _get_user_permissions(id_role):
@@ -161,7 +84,7 @@ def get_user_permissions_by_action(id_role=None):
     return g.permissions_by_action[id_role]
 
 
-def _get_permissions(action_code, id_role, module_code, object_code):
+def get_permissions(action_code, id_role=None, module_code=None, object_code=None):
     """
     This function ensure module and object inheritance.
     Permissions have been sorted (which is required for using groupby) by module_code and object_code,
@@ -183,12 +106,8 @@ def _get_permissions(action_code, id_role, module_code, object_code):
         ):
             if _object_code not in [object_code, "ALL"]:
                 continue
-            return list(__permissions), _module_code, _object_code
-    return [], None, None
-
-
-def get_permissions(action_code, id_role=None, module_code=None, object_code=None):
-    return _get_permissions(action_code, id_role, module_code, object_code)[0]
+            return list(__permissions)
+    return []
 
 
 def get_scope(action_code, id_role=None, module_code=None, object_code=None):
