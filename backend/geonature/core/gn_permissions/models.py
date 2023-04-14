@@ -29,6 +29,9 @@ class PermScope(db.Model):
     label = db.Column(db.Unicode)
     description = db.Column(db.Unicode)
 
+    def __str__(self):
+        return self.description
+
 
 @serializable
 class PermAction(db.Model):
@@ -37,6 +40,9 @@ class PermAction(db.Model):
     id_action = db.Column(db.Integer, primary_key=True)
     code_action = db.Column(db.Unicode)
     description_action = db.Column(db.Unicode)
+
+    def __str__(self):
+        return self.description_action
 
 
 cor_object_module = db.Table(
