@@ -56,6 +56,7 @@ def list_stations(scope):
     stations = (
         Station.query.filter_by_params(request.args)
         .filter_by_scope(scope)
+        .order_by(Station.date_min.desc())
         .options(
             raiseload("*"),
             joinedload("observers"),
