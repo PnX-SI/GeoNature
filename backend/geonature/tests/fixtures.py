@@ -46,7 +46,6 @@ __all__ = [
     "synthese_data",
     "source",
     "reports_data",
-    "filters",
     "medium",
     "module",
     "perm_object",
@@ -330,30 +329,6 @@ def synthese_data(app, users, datasets, source):
             db.session.add(s)
             data[name] = s
     return data
-
-
-@pytest.fixture(scope="function")
-def filters():
-    """
-    Creates one filter per filter type
-    """
-    # Gather all types
-    avail_filter_types = BibFiltersType.query.order_by(BibFiltersType.id_filter_type).all()
-    # Init returned filter_dict
-    filters_dict = {}
-    # For each type, generate a Filter
-    with db.session.begin_nested():
-        for i, filter_type in enumerate(avail_filter_types):
-            new_filter = TFilters(
-                label_filter=f"test_{i}",
-                value_filter=f"value_{i}",
-                description_filter="Filtre test",
-                id_filter_type=filter_type.id_filter_type,
-            )
-            filters_dict[filter_type.code_filter_type] = new_filter
-            db.session.add(new_filter)
-
-    return filters_dict
 
 
 def create_media(media_path=""):
