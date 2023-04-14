@@ -43,12 +43,18 @@ from pypnusershub.db.models import User, AppRole
 routes = Blueprint("gn_permissions_backoffice", __name__, template_folder="templates")
 
 
+@routes.before_request
+def set_current_module_and_object():
+    g.current_module = TModules.query.filter_by(module_code="ADMIN").one()
+    g.current_object = TObjects.query.filter_by(code_object="PERMISSIONS").one()
+
+
 @routes.route(
     "cruved_form/module/<int:id_module>/role/<int:id_role>/object/<int:id_object>",
     methods=["GET", "POST"],
 )
 @routes.route("cruved_form/module/<int:id_module>/role/<int:id_role>", methods=["GET", "POST"])
-@permissions.check_cruved_scope("R", object_code="PERMISSIONS")
+@permissions.check_cruved_scope("R")
 def permission_form(id_module, id_role, id_object=None):
     """
     .. :quickref: View_Permission;
@@ -153,7 +159,7 @@ def permission_form(id_module, id_role, id_object=None):
 
 
 @routes.route("/users", methods=["GET"])
-@permissions.check_cruved_scope("R", get_scope=True, object_code="PERMISSIONS")
+@permissions.check_cruved_scope("R", get_scope=True)
 def users(scope):
     """
     .. :quickref: View_Permission;
@@ -196,10 +202,7 @@ def users(scope):
 
 
 @routes.route("/user_cruved/<id_role>", methods=["GET"])
-@permissions.check_cruved_scope(
-    "R",
-    object_code="PERMISSIONS",
-)
+@permissions.check_cruved_scope("R")
 def user_cruved(id_role):
     """
     .. :quickref: View_Permission;
@@ -254,10 +257,7 @@ def user_cruved(id_role):
 
 
 @routes.route("/user_other_permissions/<id_role>", methods=["GET"])
-@permissions.check_cruved_scope(
-    "R",
-    object_code="PERMISSIONS",
-)
+@permissions.check_cruved_scope("R")
 def user_other_permissions(id_role):
     """
     .. :quickref: View_Permission;
@@ -298,10 +298,7 @@ def user_other_permissions(id_role):
     "/other_permissions_form/user/<int:id_role>/filter_type/<int:id_filter_type>",
     methods=["GET", "POST"],
 )
-@permissions.check_cruved_scope(
-    "R",
-    object_code="PERMISSIONS",
-)
+@permissions.check_cruved_scope("R")
 def other_permissions_form(id_role, id_filter_type, id_permission=None):
     """
     Form to define permisisons for a user expect SCOPE permissions
