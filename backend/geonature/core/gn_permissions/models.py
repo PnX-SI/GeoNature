@@ -84,6 +84,31 @@ class PermObject(db.Model):
 TObjects = PermObject
 
 
+class PermissionAvailable(db.Model):
+    __tablename__ = "t_permissions_available"
+    __table_args__ = {"schema": "gn_permissions"}
+    id_module = db.Column(
+        db.Integer, ForeignKey("gn_commons.t_modules.id_module"), primary_key=True
+    )
+    id_object = db.Column(
+        db.Integer,
+        ForeignKey(PermObject.id_object),
+        default=select([PermObject.id_object]).where(PermObject.code_object == "ALL"),
+        primary_key=True,
+    )
+    id_action = db.Column(db.Integer, ForeignKey(PermAction.id_action), primary_key=True)
+    label = db.Column(db.Unicode)
+
+    module = db.relationship("TModules")
+    object = db.relationship(PermObject)
+    action = db.relationship(PermAction)
+
+    scope_filter = db.Column(db.Boolean, server_default=sa.false())
+
+    def __str__(self):
+        return self.label
+
+
 @serializable
 class Permission(db.Model):
     __tablename__ = "t_permissions"
@@ -105,6 +130,15 @@ class Permission(db.Model):
 
     scope_value = db.Column(db.Integer, ForeignKey(PermScope.value), nullable=True)
     scope = db.relationship(PermScope)
+
+    availability = db.relationship(
+        PermissionAvailable,
+        primaryjoin=sa.and_(
+            foreign(id_module) == PermissionAvailable.id_module,
+            foreign(id_object) == PermissionAvailable.id_object,
+            foreign(id_action) == PermissionAvailable.id_action,
+        ),
+    )
 
     filters_fields = {
         "SCOPE": scope_value,
