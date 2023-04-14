@@ -3,7 +3,7 @@ from flask_admin.contrib.sqla import ModelView
 from geonature.utils.env import db
 from geonature.core.admin.admin import admin
 from geonature.core.admin.utils import CruvedProtectedMixin
-from geonature.core.gn_permissions.models import PermObject, Permission
+from geonature.core.gn_permissions.models import PermObject, Permission, PermissionAvailable
 
 
 class ObjectAdmin(CruvedProtectedMixin, ModelView):
@@ -37,6 +37,21 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
     }
 
 
+class PermissionAvailableAdmin(CruvedProtectedMixin, ModelView):
+    module_code = "ADMIN"
+    object_code = "PERMISSIONS"
+
+    column_labels = {
+        "scope": "Portée",
+        "object": "Objet",
+        "scope_filter": "Filtre appartenance",
+    }
+    column_formatters = {
+        "module": lambda v, c, m, p: m.module.module_code,
+        "object": lambda v, c, m, p: m.object.code_object,
+    }
+
+
 admin.add_view(
     ObjectAdmin(
         PermObject,
@@ -52,6 +67,16 @@ admin.add_view(
         Permission,
         db.session,
         name="Permissions",
+        category="Permissions",
+    )
+)
+
+
+admin.add_view(
+    PermissionAvailableAdmin(
+        PermissionAvailable,
+        db.session,
+        name="Permissions disponibles",
         category="Permissions",
     )
 )
