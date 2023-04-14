@@ -6,8 +6,7 @@
 
 <div class="wrapper" data-qa="pnx-synthese">
   <nav [(ngbCollapse)]="isCollapseSyntheseNavBar" #navBar id="sidebar">
-    <!-- <pnx-synthese-search (searchClicked)="loadAndStoreData($event)"></pnx-synthese-search> -->
-    <pnx-synthese-search (searchClicked)="onSearchEvent()" [defaultFilters]="config.SYNTHESE.DEFAULT_FILTERS"> </pnx-synthese-search>
+    <pnx-synthese-search (searchClicked)="onSearchEvent()"> </pnx-synthese-search>
   </nav>
 
   <div class="row row-sm page-content">
