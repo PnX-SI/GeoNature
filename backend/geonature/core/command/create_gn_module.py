@@ -42,7 +42,11 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
             raise ClickException(f"Aucun module ayant pour code {module_code} n’a été trouvé")
     else:
         for module_dist in iter_modules_dist():
-            path = Path(sys.modules[module_dist.entry_points["code"].module].__file__)
+            module = module_dist.entry_points["code"].module
+            if module not in sys.modules:
+                path = Path(importlib.import_module(module).__file__)
+            else:
+                path = Path(sys.modules[module].__file__)
             if module_path.resolve() in path.parents:
                 module_code = module_dist.entry_points["code"].load()
                 break
