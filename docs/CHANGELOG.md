@@ -1,6 +1,19 @@
 CHANGELOG
 =========
 
+2.12.2 (unreleased)
+-------------------
+
+**🐛 Corrections**
+
+- Backoffice des permissions : correction du module lors de la récuperation des permissions (#2483, par @VincentCauchois)
+- Commande `install-gn-module` : correction de la détection du module code (#2482)
+- Occhab : tri des stations par date (#2477)
+- Validation : correction des filters avancées (#2470, par @joelclems)
+- Admin : contrôle du R pour l’accès en lecture (#2491)
+- Admin : rajout de l’objet NOTIFICATIONS afin de pouvoir en définir ses permissions (#2490)
+
+
 2.12.1 (2023-04-11)
 -------------------
 
