@@ -71,14 +71,12 @@ export class SyntheseComponent implements OnInit {
       this._fs.selectedStatus = [];
       this._fs.selectedTaxRefAttributs = [];
 
-      // application des valeurs par defaut (input this.defaults)
-
-      // application des valeurs par defaut (input this.defaults)
+      // application des valeurs par defaut
       this._fs
         .processDefaultFilters(this.config.SYNTHESE.DEFAULT_FILTERS)
         .subscribe((processedDefaultFilters) => {
-          this._fs.processedDefaultFilters = processedDefaultFilters;
           this._fs.searchForm.patchValue(this._fs.processedDefaultFilters);
+          this._fs.processedDefaultFilters = processedDefaultFilters;
 
           this.loadAndStoreData(this._fs.formatParams());
         });
