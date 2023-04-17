@@ -4,6 +4,10 @@ CHANGELOG
 2.12.2 (unreleased)
 -------------------
 
+**🚀 Nouveautés**
+
+- Synthèse : ajout d’un filtre sur les observations avec / sans commentaire (#2469, par @mvergez)
+
 **🐛 Corrections**
 
 - Backoffice des permissions : correction du module lors de la récuperation des permissions (#2483, par @VincentCauchois)
@@ -14,6 +18,7 @@ CHANGELOG
 - Validation : correction des filters avancées (#2470, par @joelclems)
 - Admin : contrôle du R pour l’accès en lecture (#2491)
 - Admin : rajout de l’objet NOTIFICATIONS afin de pouvoir en définir ses permissions (#2490)
+- Synthèse : correction des filtres médias / épinglage / signalement / commentaires pour fonctionner également de manière négative (#2469)
 
 
 2.12.1 (2023-04-11)
