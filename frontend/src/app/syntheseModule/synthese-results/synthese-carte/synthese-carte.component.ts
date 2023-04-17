@@ -125,12 +125,19 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     // On table click, change style layer and zoom
     this.mapListService.onTableClick$.subscribe((id) => {
       const selectedLayers = this.layersDict[id];
-      this.toggleStyleFromList(selectedLayers);
-      const tempFeatureGroup = new L.FeatureGroup();
-      selectedLayers.forEach((layer) => {
-        tempFeatureGroup.addLayer(layer);
-      });
-      this._ms.map.fitBounds(tempFeatureGroup.getBounds(), { maxZoom: 18 });
+      if (selectedLayers) {
+        this.toggleStyleFromList(selectedLayers);
+        const tempFeatureGroup = new L.FeatureGroup();
+        selectedLayers.forEach((layer) => {
+          tempFeatureGroup.addLayer(layer);
+        });
+        this._ms.map.fitBounds(tempFeatureGroup.getBounds(), { maxZoom: 18 });
+      } else {
+        this._commonService.regularToaster(
+          'warning',
+          "L'observation selectionnée n'est présente dans aucune maille - passez en mode 'point' pour la localiser"
+        );
+      }
     });
 
     // add the featureGroup to the map
