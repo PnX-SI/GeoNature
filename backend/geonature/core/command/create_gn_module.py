@@ -12,6 +12,7 @@ from geonature.utils.env import ROOT_DIR
 from geonature.utils.module import iter_modules_dist, get_dist_from_code, module_db_upgrade
 
 from geonature.core.command.main import main
+import geonature.utils.config
 from geonature.utils.config import config
 from geonature.utils.command import (
     install_frontend_dependencies,
@@ -34,6 +35,7 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
 
     # refresh list of entry points
     importlib.reload(site)
+    importlib.reload(geonature.utils.config)
 
     if module_code:
         # load python package

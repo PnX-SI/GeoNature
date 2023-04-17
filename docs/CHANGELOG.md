@@ -7,7 +7,9 @@ CHANGELOG
 **🐛 Corrections**
 
 - Backoffice des permissions : correction du module lors de la récuperation des permissions (#2483, par @VincentCauchois)
-- Commande `install-gn-module` : correction de la détection du module code (#2482)
+- Commande `install-gn-module` :
+  - Correction de la détection du module code (#2482)
+  - Reload de la config après l’exécution de `pip install` (#2493)
 - Occhab : tri des stations par date (#2477)
 - Validation : correction des filters avancées (#2470, par @joelclems)
 - Admin : contrôle du R pour l’accès en lecture (#2491)
