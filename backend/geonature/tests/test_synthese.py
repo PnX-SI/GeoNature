@@ -146,10 +146,10 @@ class TestSynthese:
 
         # test on synonymy and taxref attrs
         filters = {
-            "cd_ref": taxon_attribut.bib_nom.cd_ref,
-            "taxhub_attribut_{}".format(
-                taxon_attribut.bib_attribut.id_attribut
-            ): taxon_attribut.valeur_attribut,
+            "cd_ref": [taxon_attribut.bib_nom.cd_ref],
+            "taxhub_attribut_{}".format(taxon_attribut.bib_attribut.id_attribut): [
+                taxon_attribut.valeur_attribut
+            ],
         }
         r = self.client.post(url, json=filters)
         assert r.status_code == 200
@@ -190,7 +190,7 @@ class TestSynthese:
         # test ref geo area filter
         com_type = BibAreasTypes.query.filter_by(type_code="COM").one()
         chambery = LAreas.query.filter_by(area_type=com_type, area_name="Chambéry").one()
-        filters = {f"area_{com_type.id_type}": chambery.id_area}
+        filters = {f"area_{com_type.id_type}": [chambery.id_area]}
         r = self.client.post(url, json=filters)
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
@@ -203,7 +203,7 @@ class TestSynthese:
 
         # test organism
         filters = {
-            "id_organism": users["self_user"].id_organisme,
+            "id_organism": [users["self_user"].id_organisme],
         }
         r = self.client.post(url, json=filters)
         assert r.status_code == 200
