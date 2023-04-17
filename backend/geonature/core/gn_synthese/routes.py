@@ -551,10 +551,7 @@ def export_metadata(scope):
 
     POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
     """
-    if request.is_json:
-        filters = request.json
-    else:
-        filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    filters = request.json if request.is_json else {}
 
     metadata_view = GenericTable(
         tableName="v_metadata_for_export", schemaName="gn_synthese", engine=DB.engine
@@ -602,10 +599,7 @@ def export_status(scope):
     Parameters:
         - HTTP-GET: the same that the /synthese endpoint (all the filter in web app)
     """
-    if request.is_json:
-        filters = request.json
-    else:
-        filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    filters = request.json if request.is_json else {}
 
     # Initalize the select object
     q = select(

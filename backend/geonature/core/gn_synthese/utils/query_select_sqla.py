@@ -67,13 +67,6 @@ class SyntheseQuery:
     ):
         self.query = query
 
-        # Passage de l'ensemble des filtres
-        #   en array pour des questions de compatibilité
-        # TODO voir si ça ne peut pas être modifié
-        for k in filters.keys():
-            if not isinstance(filters[k], list):
-                filters[k] = [filters[k]]
-
         self.filters = filters
         self.first = query_joins is None
         self.model = model
@@ -229,8 +222,8 @@ class SyntheseQuery:
                 )
                 # Check if a checkbox was used.
                 if (
-                    isinstance(value, list)
-                    and value[0] == True
+                    isinstance(value, bool)
+                    and value == True
                     and len(status_cfg["status_types"]) == 1
                 ):
                     value = status_cfg["status_types"]
@@ -274,7 +267,7 @@ class SyntheseQuery:
             )
         if "observers" in self.filters:
             # découpe des éléments saisies par les espaces
-            observers = (self.filters.pop("observers")[0]).split()
+            observers = self.filters.pop("observers").split()
             self.query = self.query.where(
                 and_(*[self.model.observers.ilike("%" + observer + "%") for observer in observers])
             )
@@ -298,11 +291,11 @@ class SyntheseQuery:
             formated_datasets = [d[0] for d in datasets]
             self.query = self.query.where(self.model.id_dataset.in_(formated_datasets))
         if "date_min" in self.filters:
-            self.query = self.query.where(self.model.date_min >= self.filters.pop("date_min")[0])
+            self.query = self.query.where(self.model.date_min >= self.filters.pop("date_min"))
 
         if "date_max" in self.filters:
             # set the date_max at 23h59 because a hour can be set in timestamp
-            date_max = datetime.datetime.strptime(self.filters.pop("date_max")[0], "%Y-%m-%d")
+            date_max = datetime.datetime.strptime(self.filters.pop("date_max"), "%Y-%m-%d")
             date_max = date_max.replace(hour=23, minute=59, second=59)
             self.query = self.query.where(self.model.date_max <= date_max)
 
@@ -323,32 +316,28 @@ class SyntheseQuery:
 
         if "geoIntersection" in self.filters:
             # Insersect with the geom send from the map
-            ors = []
+            str_wkt = self.filters["geoIntersection"]
+            # if the geom is a circle
+            if "radius" in self.filters:
+                radius = self.filters.pop("radius")
+                wkt = loads(str_wkt)
+                geom_wkb = from_shape(wkt, srid=4326)
+                geo_filter = func.ST_DWithin(
+                    func.ST_GeogFromWKB(self.model.the_geom_4326),
+                    func.ST_GeogFromWKB(geom_wkb),
+                    radius,
+                )
+            else:
+                wkt = loads(str_wkt)
+                geom_wkb = from_shape(wkt, srid=4326)
+                geo_filter = self.model.the_geom_4326.ST_Intersects(geom_wkb)
 
-            for str_wkt in self.filters["geoIntersection"]:
-                # if the geom is a circle
-                if "radius" in self.filters:
-                    radius = self.filters.pop("radius")[0]
-                    wkt = loads(str_wkt)
-                    geom_wkb = from_shape(wkt, srid=4326)
-                    ors.append(
-                        func.ST_DWithin(
-                            func.ST_GeogFromWKB(self.model.the_geom_4326),
-                            func.ST_GeogFromWKB(geom_wkb),
-                            radius,
-                        ),
-                    )
-                else:
-                    wkt = loads(str_wkt)
-                    geom_wkb = from_shape(wkt, srid=4326)
-                    ors.append(self.model.the_geom_4326.ST_Intersects(geom_wkb))
-
-            self.query = self.query.where(or_(*ors))
+            self.query = self.query.where(geo_filter)
             self.filters.pop("geoIntersection")
 
         if "period_start" in self.filters and "period_end" in self.filters:
-            period_start = self.filters.pop("period_start")[0]
-            period_end = self.filters.pop("period_end")[0]
+            period_start = self.filters.pop("period_start")
+            period_end = self.filters.pop("period_end")
             self.query = self.query.where(
                 or_(
                     func.gn_commons.is_in_period(
@@ -365,7 +354,7 @@ class SyntheseQuery:
             )
         if "unique_id_sinp" in self.filters:
             try:
-                uuid_filter = uuid.UUID(self.filters.pop("unique_id_sinp")[0])
+                uuid_filter = uuid.UUID(self.filters.pop("unique_id_sinp"))
             except ValueError as e:
                 raise BadRequest(str(e))
             self.query = self.query.where(self.model.unique_id_sinp == uuid_filter)
@@ -381,11 +370,11 @@ class SyntheseQuery:
                 col = getattr(self.model.__table__.columns, colname)
                 if str(col.type) == "INTEGER":
                     if colname in ["precision"]:
-                        self.query = self.query.where(col <= value[0])
+                        self.query = self.query.where(col <= value)
                     else:
-                        self.query = self.query.where(col == value[0])
+                        self.query = self.query.where(col == value)
                 else:
-                    self.query = self.query.where(col.ilike("%{}%".format(value[0])))
+                    self.query = self.query.where(col.ilike("%{}%".format(value)))
 
     def apply_all_filters(self, user, scope):
         self.filter_query_with_cruved(user, scope)
