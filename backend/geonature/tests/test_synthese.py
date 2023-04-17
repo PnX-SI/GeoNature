@@ -240,6 +240,24 @@ class TestSynthese:
         r = self.client.get(url, json=filters)
         assert r.status_code == 200
 
+    def test_get_observations_for_web_filter_comment(self, users, synthese_data, taxon_attribut):
+        set_logged_user_cookie(self.client, users["self_user"])
+
+        # Post a comment
+        url = "gn_synthese.create_report"
+        synthese = synthese_data["obs1"]
+        id_synthese = synthese.id_synthese
+        data = {"item": id_synthese, "content": "comment 4", "type": "discussion"}
+        resp = self.client.post(url_for(url), data=data)
+        assert resp.status_code == 204
+
+        # Filter synthese to at least have this comment
+        url = url_for("gn_synthese.get_observations_for_web")
+        filters = {"has_comment": True}
+        r = self.client.get(url, json=filters)
+
+        assert id_synthese in (feature["properties"]["id"] for feature in r.json["features"])
+
     def test_get_synthese_data_cruved(self, app, users, synthese_data, datasets):
         set_logged_user_cookie(self.client, users["self_user"])
 
