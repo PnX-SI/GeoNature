@@ -90,7 +90,7 @@ def permission_form(id_module, id_role, id_object=None):
         )
         if len(real_cruved) == 0 and not module.module_code == "ADMIN":
             msg_heritage_obj = ""
-            if herited_obj:
+            if herited:
                 msg_heritage_obj = f" - objet {herited_obj[1]}"
                 if herited_obj[1] == "ALL":
                     msg_heritage_obj = ""

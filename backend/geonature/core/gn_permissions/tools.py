@@ -63,7 +63,12 @@ def cruved_scope_for_user_in_module(
     - index 1: a boolean which say if its an herited cruved
     """
     cruved = {}
-    herited_object = None
+    herited_object = [None, None]
+    no_access_filter = (
+        TFilters.query.filter(TFilters.filter_type.has(code_filter_type="SCOPE"))
+        .filter_by(value_filter="0")
+        .one()
+    )
     for action_code in "CRUVED":
         permissions, _module_code, _object_code = _get_permissions(
             action_code, id_role, module_code, object_code
@@ -79,8 +84,13 @@ def cruved_scope_for_user_in_module(
             if scope >= max_scope:
                 max_scope = scope
                 max_permission = permission
-        cruved[action_code] = max_permission.filter.id_filter if get_id else str(max_scope)
-    return cruved, herited_object is not None, herited_object
+        if max_permission is not None:
+            cruved[action_code] = max_permission.filter.id_filter if get_id else str(max_scope)
+        else:
+            cruved[action_code] = (
+                no_access_filter.id_filter if get_id else str(no_access_filter.value_filter)
+            )
+    return cruved, herited_object != [None, None], herited_object
 
 
 def _get_user_permissions(id_role):
