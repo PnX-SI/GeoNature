@@ -191,18 +191,30 @@ def get_observations_for_web(scope):
     obs_query = synthese_query_class.query
 
     if output_format == "grouped_geom_by_areas":
-        cas = aliased(CorAreaSynthese)
         # SQLAlchemy 1.4: replace column by add_columns
         obs_query = obs_query.column(VSyntheseForWebApp.id_synthese).cte("OBS")
+        agg_areas = (
+            select([CorAreaSynthese.id_synthese, LAreas.id_area])
+            .select_from(
+                CorAreaSynthese.__table__.join(
+                    LAreas, LAreas.id_area == CorAreaSynthese.id_area
+                ).join(
+                    BibAreasTypes,
+                    BibAreasTypes.id_type == LAreas.id_type,
+                ),
+            )
+            .where(CorAreaSynthese.id_synthese == VSyntheseForWebApp.id_synthese)
+            .where(
+                BibAreasTypes.type_code == current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"]
+            )
+            .lateral("agg_areas")
+        )
         obs_query = (
             select([LAreas.geojson_4326.label("geojson"), obs_query.c.obs_as_json])
             .select_from(
-                obs_query.join(cas, cas.id_synthese == obs_query.c.id_synthese)
-                .join(LAreas, LAreas.id_area == cas.id_area)
-                .join(BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type)
-            )
-            .where(
-                BibAreasTypes.type_code == current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"]
+                obs_query.outerjoin(
+                    agg_areas, agg_areas.c.id_synthese == obs_query.c.id_synthese
+                ).outerjoin(LAreas, LAreas.id_area == agg_areas.c.id_area)
             )
             .cte("OBSERVATIONS")
         )
@@ -228,7 +240,7 @@ def get_observations_for_web(scope):
     for geom_as_geojson, properties in results:
         geojson_features.append(
             Feature(
-                geometry=json.loads(geom_as_geojson),
+                geometry=json.loads(geom_as_geojson) if geom_as_geojson else None,
                 properties=properties,
             )
         )
