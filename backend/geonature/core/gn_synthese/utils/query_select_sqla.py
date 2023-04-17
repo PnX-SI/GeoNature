@@ -244,23 +244,33 @@ class SyntheseQuery:
         Other filters
         """
         if "has_medias" in self.filters:
-            self.query = self.query.where(self.model.medias.any())
+            media_filter = self.model.medias.any()
+            if self.filters["has_medias"] is False:
+                media_filter = ~media_filter
+            self.query = self.query.where(media_filter)
 
         if "has_alert" in self.filters:
-            self.query = self.query.where(
-                self.model.reports.any(TReport.report_type.has(BibReportsTypes.type == "alert"))
+            alert_filter = self.model.reports.any(
+                TReport.report_type.has(BibReportsTypes.type == "alert")
             )
+            if self.filters["has_alert"] is False:
+                alert_filter = ~alert_filter
+            self.query = self.query.where(alert_filter)
 
         if "has_pin" in self.filters:
-            self.query = self.query.where(
-                self.model.reports.any(TReport.report_type.has(BibReportsTypes.type == "pin"))
+            pin_filter = self.model.reports.any(
+                TReport.report_type.has(BibReportsTypes.type == "pin")
             )
+            if self.filters["has_pin"] is False:
+                pin_filter = ~pin_filter
+            self.query = self.query.where(pin_filter)
         if "has_comment" in self.filters:
-            self.query = self.query.where(
-                self.model.reports.any(
-                    TReport.report_type.has(BibReportsTypes.type == "discussion")
-                )
+            comment_filter = self.model.reports.any(
+                TReport.report_type.has(BibReportsTypes.type == "discussion")
             )
+            if self.filters["has_comment"] is False:
+                comment_filter = ~comment_filter
+            self.query = self.query.where(comment_filter)
         if "id_dataset" in self.filters:
             self.query = self.query.where(
                 self.model.id_dataset.in_(self.filters.pop("id_dataset"))
