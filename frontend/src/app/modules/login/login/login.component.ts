@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
   }
 
   async register(user) {
-    this._authService.handleLoader();
+    this._authService.enableLoader();
     const data = await this._authService
       .signinUser(user)
       .toPromise()
@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
         this._authService.handleLoginError();
       });
     this.handleRegister(data);
-    this._authService.handleLoader();
+    this._authService.disableLoader();
   }
 
   async registerPublic() {

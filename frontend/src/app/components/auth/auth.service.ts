@@ -161,7 +161,11 @@ export class AuthService {
     this.loginError = true;
   }
 
-  handleLoader() {
-    this.isLoading = !this.isLoading;
+  enableLoader() {
+    this.isLoading = true;
+  }
+
+  disableLoader() {
+    this.isLoading = false;
   }
 }
