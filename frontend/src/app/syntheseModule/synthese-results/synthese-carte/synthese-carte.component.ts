@@ -320,6 +320,8 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   ngOnChanges(change) {
+    // clear layerDict cache
+    this.layersDict = {};
     // on change delete the previous layer and load the new ones from the geojson data send by the API
     // here we don't use geojson component for performance reasons
     if (this._ms.map) {
