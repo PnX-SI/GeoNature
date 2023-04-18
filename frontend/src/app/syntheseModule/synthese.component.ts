@@ -195,7 +195,12 @@ export class SyntheseComponent implements OnInit {
   }
 
   private simplifyGeoJson(geojson) {
+    let noGeomMessage = false;
     for (let feature of geojson.features) {
+      if (!feature.geometry) {
+        noGeomMessage = true;
+      }
+
       let ids = [];
       for (let obs of Object.values(feature.properties.observations)) {
         if (obs['id']) {
@@ -203,6 +208,11 @@ export class SyntheseComponent implements OnInit {
         }
       }
       feature.properties.observations = { id: ids };
+    }
+    if (noGeomMessage) {
+      this._toasterService.warning(
+        "Certaine(s) observation(s) n'ont pas pu être affiché(es) sur la carte car leur maille d’aggrégation n'est pas disponible"
+      );
     }
     return geojson;
   }
