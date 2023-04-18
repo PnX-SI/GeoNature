@@ -10,7 +10,9 @@ CHANGELOG
 
 **🐛 Corrections**
 
-- Backoffice des permissions : correction du module lors de la récuperation des permissions (#2483, par @VincentCauchois)
+- Backoffice des permissions :
+  - Correction du module lors du contrôle d’accès (#2483, par @VincentCauchois)
+  - Correction de la gestion du CRUVED des rôles sans permissions (#2496)
 - Commande `install-gn-module` :
   - Correction de la détection du module code (#2482)
   - Reload de la config après l’exécution de `pip install` (#2493)
@@ -19,6 +21,8 @@ CHANGELOG
 - Admin : contrôle du R pour l’accès en lecture (#2491)
 - Admin : rajout de l’objet NOTIFICATIONS afin de pouvoir en définir ses permissions (#2490)
 - Synthèse : correction des filtres médias / épinglage / signalement / commentaires pour fonctionner également de manière négative (#2469)
+- Login : désactivation du spinner après une tentative de login échouée
+- Synthèse - mode maille : récupération des observations hors référentiel de mailles pour affichage dans la liste, garantissant ainsi un nombre d’observations indentique entre le mode point et le mode maille (#2495, par @TheoLechemia)
 
 
 2.12.1 (2023-04-11)
