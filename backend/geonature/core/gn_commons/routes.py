@@ -68,25 +68,29 @@ def list_modules():
     for module in modules:
         if module.module_code in current_app.config["DISABLED_MODULES"]:
             continue
-        cruved = get_scopes_by_action(module_code=module.module_code)
-        if cruved["R"] > 0:
-            module_dict = module.as_dict(fields=["objects"])
-            module_dict["cruved"] = cruved
-            if module.active_frontend:
-                module_dict["module_url"] = "{}/#/{}".format(
-                    current_app.config["URL_APPLICATION"], module.module_path
-                )
-            else:
-                module_dict["module_url"] = module.module_external_url
-            module_dict["module_objects"] = {}
-            # get cruved for each object
-            for obj_dict in module_dict["objects"]:
-                obj_code = obj_dict["code_object"]
-                obj_dict["cruved"] = get_scopes_by_action(
-                    module_code=module.module_code,
-                    object_code=obj_code,
-                )
-                module_dict["module_objects"][obj_code] = obj_dict
+        module_allowed = False
+        module_dict = module.as_dict(fields=["objects"])
+        module_dict["cruved"] = get_scopes_by_action(module_code=module.module_code)
+        if any(module_dict["cruved"].values()):
+            module_allowed = True
+        if module.active_frontend:
+            module_dict["module_url"] = "{}/#/{}".format(
+                current_app.config["URL_APPLICATION"], module.module_path
+            )
+        else:
+            module_dict["module_url"] = module.module_external_url
+        module_dict["module_objects"] = {}
+        # get cruved for each object
+        for obj_dict in module_dict["objects"]:
+            obj_code = obj_dict["code_object"]
+            obj_dict["cruved"] = get_scopes_by_action(
+                module_code=module.module_code,
+                object_code=obj_code,
+            )
+            if any(obj_dict["cruved"].values()):
+                module_allowed = True
+            module_dict["module_objects"][obj_code] = obj_dict
+        if module_allowed:
             allowed_modules.append(module_dict)
     return jsonify(allowed_modules)
 
