@@ -96,7 +96,7 @@ def downgrade():
        ALTER COLUMN id_nomenclature_bio_condition DROP DEFAULT;   
 
        ALTER TABLE pr_occtax.t_occurrences_occtax  
-       ALTER COLUMN id_nomenclature_bio_status SET DROP DEFAULT;   
+       ALTER COLUMN id_nomenclature_bio_status DROP DEFAULT;   
 
        ALTER TABLE pr_occtax.t_occurrences_occtax  
        ALTER COLUMN id_nomenclature_naturalness DROP DEFAULT;     
