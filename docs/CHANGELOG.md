@@ -6,23 +6,23 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
-- Synthèse : ajout d’un filtre sur les observations avec / sans commentaire (#2469, par @mvergez)
+- Synthèse : ajout d’un filtre sur les observations avec ou sans commentaire (#2469, par @mvergez)
 
 **🐛 Corrections**
 
+- Synthèse - mode maille : récupération des observations hors référentiel de mailles pour affichage dans la liste, garantissant ainsi un nombre d’observations indentique entre le mode point et le mode maille (#2495, par @TheoLechemia)
+- Synthèse : correction des filtres médias / épinglage / signalement / commentaires pour fonctionner également de manière négative (#2469)
 - Backoffice des permissions :
   - Correction du module lors du contrôle d’accès (#2483, par @VincentCauchois)
   - Correction de la gestion du CRUVED des rôles sans permissions (#2496)
 - Commande `install-gn-module` :
-  - Correction de la détection du module code (#2482)
+  - Correction de la détection du module_code (#2482)
   - Reload de la config après l’exécution de `pip install` (#2493)
 - Occhab : tri des stations par date (#2477)
-- Validation : correction des filters avancées (#2470, par @joelclems)
+- Validation : correction des filtres avancés (#2470, par @joelclems)
 - Admin : contrôle du R pour l’accès en lecture (#2491)
 - Admin : rajout de l’objet NOTIFICATIONS afin de pouvoir en définir ses permissions (#2490)
-- Synthèse : correction des filtres médias / épinglage / signalement / commentaires pour fonctionner également de manière négative (#2469)
 - Login : désactivation du spinner après une tentative de login échouée
-- Synthèse - mode maille : récupération des observations hors référentiel de mailles pour affichage dans la liste, garantissant ainsi un nombre d’observations indentique entre le mode point et le mode maille (#2495, par @TheoLechemia)
 
 
 2.12.1 (2023-04-11)
