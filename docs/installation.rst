@@ -291,7 +291,7 @@ Sauf mentions contraires dans les notes de version, vous pouvez sauter des versi
     
     ./install/migration/migration.sh
 
-Depuis la version 2.12, le script `migration.sh` peut prendre en argument le chemin vers l'ancien dossier d'installation GeoNature. Il peut s’agir du même dossier que la nouvelle installation de GeoNature. Cela permet d'utiliser ce script si la nouvelle version de GeoNature est dans le même dossier et donc de gérer le cas où GeoNature est installé et mis à jour avec git.
+Depuis la version 2.12, le script `migration.sh` peut prendre en argument le chemin vers l'ancien dossier d'installation de GeoNature. Il peut s’agir du même dossier que la nouvelle installation de GeoNature. Cela permet d'utiliser ce script si la nouvelle version de GeoNature est dans le même dossier et donc de gérer le cas où GeoNature est installé et mis à jour avec git.
 
 Dans ce cas, les commandes à exécuter sont : 
 
