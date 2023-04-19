@@ -40,6 +40,7 @@ from apptax.taxonomie.models import (
     TaxrefBdcStatutValues,
 )
 from ref_geo.models import LAreas, BibAreasTypes
+from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 
 class SyntheseQuery:
@@ -135,10 +136,26 @@ class SyntheseQuery:
         )
         datasets_by_scope = {}  # to avoid fetching datasets several time for same scope
         permissions_filters = []
+        nomenclature_non_sensible = None
         for perm in permissions:
-            if perm.has_other_filters_than("SCOPE"):
+            if perm.has_other_filters_than("SCOPE", "SENSITIVITY"):
                 continue
             perm_filters = []
+            if perm.sensitivity_filter:
+                if nomenclature_non_sensible is None:
+                    nomenclature_non_sensible = (
+                        TNomenclatures.query.filter(
+                            TNomenclatures.nomenclature_type.has(
+                                BibNomenclaturesTypes.mnemonique == "SENSIBILITE"
+                            )
+                        )
+                        .filter(TNomenclatures.cd_nomenclature == "0")
+                        .one()
+                    )
+                perm_filters.append(
+                    self.model.id_nomenclature_sensitivity
+                    == nomenclature_non_sensible.id_nomenclature
+                )
             if perm.scope_value:
                 if perm.scope_value not in datasets_by_scope:
                     datasets_by_scope[perm.scope_value] = [
