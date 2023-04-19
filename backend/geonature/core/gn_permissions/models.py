@@ -104,6 +104,7 @@ class PermissionAvailable(db.Model):
     action = db.relationship(PermAction)
 
     scope_filter = db.Column(db.Boolean, server_default=sa.false())
+    sensitivity_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
 
     def __str__(self):
         return self.label
@@ -130,6 +131,7 @@ class Permission(db.Model):
 
     scope_value = db.Column(db.Integer, ForeignKey(PermScope.value), nullable=True)
     scope = db.relationship(PermScope)
+    sensitivity_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
 
     availability = db.relationship(
         PermissionAvailable,
@@ -142,11 +144,17 @@ class Permission(db.Model):
 
     filters_fields = {
         "SCOPE": scope_value,
+        "SENSITIVITY": sensitivity_filter,
     }
 
     @staticmethod
     def __SCOPE_le__(a, b):
         return b is None or (a is not None and a < b)
+
+    @staticmethod
+    def __SENSITIVITY_le__(a, b):
+        # False only if: A is False and b is True
+        return (not a) <= (not b)
 
     @staticmethod
     def __default_le__(a, b):
