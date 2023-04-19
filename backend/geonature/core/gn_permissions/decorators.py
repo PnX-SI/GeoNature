@@ -7,7 +7,16 @@ from warnings import warn
 from flask import request, g
 from werkzeug.exceptions import Unauthorized, Forbidden
 
-from geonature.core.gn_permissions.tools import get_scopes_by_action
+from geonature.core.gn_permissions.tools import get_permissions, get_scopes_by_action
+
+
+def _forbidden_message(action, module_code, object_code):
+    message = f"User {g.current_user.id_role} has no permissions to {action}"
+    if module_code:
+        message += f" in {module_code}"
+    if object_code:
+        message += f" on {object_code}"
+    return message
 
 
 def login_required(view_func):
@@ -47,10 +56,7 @@ def check_cruved_scope(
                 raise Unauthorized
             scope = get_scopes_by_action(module_code=module_code, object_code=object_code)[action]
             if not scope:
-                message = f"User {g.current_user.id_role} can not {action} in {module_code}"
-                if object_code:
-                    message += f" on {object_code}"
-                raise Forbidden(description=message)
+                raise Forbidden(description=_forbidden_message(action, module_code, object_code))
             if get_scope:
                 kwargs["scope"] = scope
             return view_func(*args, **kwargs)
@@ -58,3 +64,24 @@ def check_cruved_scope(
         return decorated_view
 
     return _check_cruved_scope
+
+
+def permissions_required(
+    action,
+    module_code=None,
+    object_code=None,
+):
+    def _permission_required(view_func):
+        @wraps(view_func)
+        def decorated_view(*args, **kwargs):
+            if g.current_user is None:
+                raise Unauthorized
+            permissions = get_permissions(action, module_code=module_code, object_code=object_code)
+            if not permissions:
+                raise Forbidden(description=_forbidden_message(action, module_code, object_code))
+            kwargs["permissions"] = permissions
+            return view_func(*args, **kwargs)
+
+        return decorated_view
+
+    return _permission_required
