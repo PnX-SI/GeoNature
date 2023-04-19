@@ -1,3 +1,5 @@
+from functools import partial
+
 from flask import g
 from werkzeug.exceptions import Unauthorized
 
@@ -33,3 +35,21 @@ class CruvedProtectedMixin:
     @property
     def can_export(self):
         return self._can_action("E")
+
+
+# https://github.com/flask-admin/flask-admin/issues/1807
+# https://stackoverflow.com/questions/54638047/correct-way-to-register-flask-admin-views-with-application-factory
+class ReloadingIterator:
+    def __init__(self, iterator_factory):
+        self.iterator_factory = iterator_factory
+
+    def __iter__(self):
+        return self.iterator_factory()
+
+
+class DynamicOptionsMixin:
+    def get_dynamic_options(self, view):
+        raise NotImplementedError
+
+    def get_options(self, view):
+        return ReloadingIterator(partial(self.get_dynamic_options, view))
