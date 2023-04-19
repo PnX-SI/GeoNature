@@ -50,6 +50,7 @@ from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_permissions.decorators import login_required
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 
 from ref_geo.models import LAreas, BibAreasTypes
@@ -719,6 +720,7 @@ def general_stats(scope):
 
 
 @routes.route("/taxons_tree", methods=["GET"])
+@login_required
 @json_resp
 def get_taxon_tree():
     """Get taxon tree.
@@ -733,6 +735,7 @@ def get_taxon_tree():
 
 
 @routes.route("/taxons_autocomplete", methods=["GET"])
+@login_required
 @json_resp
 def get_autocomplete_taxons_synthese():
     """Autocomplete taxon for web search (based on all taxon in Synthese).
@@ -773,6 +776,7 @@ def get_autocomplete_taxons_synthese():
 
 
 @routes.route("/sources", methods=["GET"])
+@login_required
 @json_resp
 def get_sources():
     """Get all sources.
@@ -785,6 +789,7 @@ def get_sources():
 
 
 @routes.route("/defaultsNomenclatures", methods=["GET"])
+@login_required
 def getDefaultsNomenclatures():
     """Get default nomenclatures
 
@@ -821,6 +826,7 @@ def getDefaultsNomenclatures():
 
 
 @routes.route("/color_taxon", methods=["GET"])
+@login_required
 def get_color_taxon():
     """Get color of taxon in areas (vue synthese.v_color_taxon_area).
 
@@ -864,6 +870,7 @@ def get_color_taxon():
 
 
 @routes.route("/taxa_count", methods=["GET"])
+@login_required
 @json_resp
 def get_taxa_count():
     """
@@ -890,6 +897,7 @@ def get_taxa_count():
 
 
 @routes.route("/observation_count", methods=["GET"])
+@login_required
 @json_resp
 def get_observation_count():
     """
@@ -918,9 +926,10 @@ def get_observation_count():
 
 
 @routes.route("/observations_bbox", methods=["GET"])
+@login_required
 def get_bbox():
     """
-    Get bbbox of observations
+    Get bbox of observations
 
     .. :quickref: Synthese;
 
@@ -1103,7 +1112,7 @@ def notify_new_report_change(synthese, user, id_roles, content):
 
 
 @routes.route("/reports/<int:id_report>", methods=["PUT"])
-@permissions.login_required
+@login_required
 @json_resp
 def update_content_report(id_report):
     """
@@ -1175,7 +1184,7 @@ def list_reports(scope):
 
 
 @routes.route("/reports/<int:id_report>", methods=["DELETE"])
-@permissions.login_required
+@login_required
 @json_resp
 def delete_report(id_report):
     reportItem = TReport.query.get_or_404(id_report)
@@ -1200,13 +1209,12 @@ def delete_report(id_report):
 
 
 @routes.route("/log", methods=["get"])
-@permissions.check_cruved_scope("R", module_code="SYNTHESE")
+@login_required
 def list_synthese_log_entries() -> dict:
     """Get log history from synthese
 
     Parameters
     ----------
-    scope
 
     Returns
     -------
