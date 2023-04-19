@@ -923,16 +923,16 @@ Configuration générale de l'application
 """""""""""""""""""""""""""""""""""""""
 
 La configuration générale de GeoNature se fait dans le fichier ``config/geonature_config.toml``.
-Une version minimaliste est généré à l’installation à partir du fichier ``config/settings.ini``.
-Vous pouvez compléter votre configuration en vous inspirant des paramètres par défaut présent dans le fichier ``config/default_config.toml.example``.
-
-Le frontend lit sa configuration depuis le fichier ``frontend/conf/app.config.ts`` mais ce dernier n’est pas à modifier manuellement : il est généré à partir des paramètres présents dans le fichier ``config/geonature_config.toml``.
+Une version minimaliste est générée à l’installation à partir du fichier ``config/settings.ini``.
+Vous pouvez compléter votre configuration en vous inspirant des paramètres par défaut présents dans le fichier ``config/default_config.toml.example``.
 
 .. _post_config_change:
 
-Depuis la version 2.12.0 de GeoNature, la configuration de GeoNature est envoyée dynamiquement du backend au frontend par l'API de GeoNature et ne nécessite donc plus de regénérer la configuration ni de rebuilder le frontend.
+Depuis la version 2.12.0 de GeoNature, la configuration de GeoNature et de ses modules est envoyée dynamiquement du backend au frontend par l'API de GeoNature et ne nécessite donc plus de regénérer la configuration ni de rebuilder le frontend.
 
-De plus, à chaque modification du fichier de configuration de GeoNature, le backend est rechargé automatiquement.
+De plus, à chaque modification du fichier de configuration de GeoNature ou d'un de ses modules, le backend est rechargé automatiquement.
+
+Cependant, si vous faites une erreur dans un des fichiers de configuration, le chargement automatique va entrainer un plantage de GeoNature. Dans ce cas, mme si l'erreur d'un des fichiers de configuration est corrigée, il faut redémarrer manuellement GeoNature avec la commande ``systemctl restart geonature``.
 
 Pour les versions précédentes de GeoNature, à chaque modification du fichier de configuration, vous devez :
 
