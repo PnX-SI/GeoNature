@@ -247,49 +247,6 @@ def get_observations_for_web(scope):
     return jsonify(FeatureCollection(geojson_features))
 
 
-@routes.route("", methods=["GET"])
-@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
-@json_resp
-def get_synthese(scope):
-    """Return synthese row(s) filtered by form params. NOT USED ANY MORE FOR PERFORMANCE ISSUES
-
-    .. :quickref: Synthese; Deprecated
-
-    .. deprecated:: 2?
-    Use :route: /for_web instead
-
-    Params must have same synthese fields names
-
-    :returns dict[dict, int, bool]: See description above
-    """
-    # change all args in a list of value
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
-    if "limit" in filters:
-        result_limit = filters.pop("limit")[0]
-    else:
-        result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
-
-    query = select([VSyntheseForWebApp]).order_by(VSyntheseForWebApp.date_min.desc())
-    synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
-    synthese_query_class.filter_query_all_filters(g.current_user, scope)
-    data = DB.engine.execute(synthese_query_class.query.limit(result_limit))
-
-    # data = q.limit(result_limit)
-    columns = current_app.config["SYNTHESE"]["COLUMNS_API_SYNTHESE_WEB_APP"] + MANDATORY_COLUMNS
-    features = []
-    for d in data:
-        feature = d.as_geofeature(fields=columns)
-        feature["properties"]["nom_vern_or_lb_nom"] = (
-            d.lb_nom if d.nom_vern is None else d.nom_vern
-        )
-        features.append(feature)
-    return {
-        "data": FeatureCollection(features),
-        "nb_obs_limited": len(features) == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
-        "nb_total": len(features),
-    }
-
-
 @routes.route("/vsynthese/<id_synthese>", methods=["GET"])
 @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
 def get_one_synthese(scope, id_synthese):
