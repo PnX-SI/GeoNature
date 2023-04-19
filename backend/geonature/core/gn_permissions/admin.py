@@ -70,6 +70,15 @@ class ScopeFilter(DynamicOptionsMixin, FilterEqual):
             yield from [(a.value, a.label) for a in PermScope.query.all()]
 
 
+def filters_formatter(v, c, m, p):
+    filters = []
+    if m.scope:
+        filters.append(m.scope.label)
+    if m.sensitivity_filter:
+        filters.append("Données non sensibles")
+    return Markup("<ul>" + "".join(["<li>{}</li>".format(f) for f in filters]) + "</ul>")
+
+
 class PermissionAdmin(CruvedProtectedMixin, ModelView):
     module_code = "ADMIN"
     object_code = "PERMISSIONS"
@@ -77,11 +86,12 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
     column_list = ("role", "module", "object", "action", "label", "filters")
     column_labels = {
         "role": "Rôle",
-        "filters": "Restrictions",
+        "filters": "Restriction(s)",
         "object": "Objet",
         "role.identifiant": "identifiant du rôle",
         "role.nom_complet": "nom du rôle",
         "availability": "Permission disponible",
+        "sensitivity_filter": "Exclure les données sensibles",
     }
     column_searchable_list = ("role.identifiant", "role.nom_complet")
     column_formatters = {
@@ -91,7 +101,7 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         "module": lambda v, c, m, p: m.module.module_code,
         "object": lambda v, c, m, p: m.object.code_object,
         "label": lambda v, c, m, p: m.availability.label if m.availability else None,
-        "filters": lambda v, c, m, p: m.scope.label if m.scope else None,
+        "filters": filters_formatter,
     }
     column_filters = (
         RoleFilter(column=Permission.id_role, name="Rôle"),
@@ -113,7 +123,7 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         ("object.code_object", True),
         ("action.code_action", True),
     ]
-    form_columns = ("role", "module", "object", "action", "scope")
+    form_columns = ("role", "module", "object", "action", "scope", "sensitivity_filter")
 
 
 class PermissionAvailableAdmin(CruvedProtectedMixin, ModelView):
@@ -124,6 +134,7 @@ class PermissionAvailableAdmin(CruvedProtectedMixin, ModelView):
         "scope": "Portée",
         "object": "Objet",
         "scope_filter": "Filtre appartenance",
+        "sensitivity_filter": "Filtre sensibilité",
     }
     column_formatters = {
         "module": lambda v, c, m, p: m.module.module_code,
