@@ -1,5 +1,5 @@
 """
-Utility function to manage cruved and all filter of Synthese
+Utility function to manage permissions and all filter of Synthese
 Use these functions rather than query.py
 Filter the query of synthese using SQLA expression language and 'select' object
 https://docs.sqlalchemy.org/en/latest/core/tutorial.html#selecting
@@ -10,6 +10,7 @@ import uuid
 
 from flask import current_app
 
+import sqlalchemy as sa
 from sqlalchemy import func, or_, and_, select, distinct
 from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
@@ -123,6 +124,45 @@ class SyntheseQuery:
                 self.query_joins = self.query_joins.join(right_table, and_(*conditions))
                 # push the joined table in _already_joined_table list
                 self._already_joined_table.append(right_table)
+
+    def filter_query_with_permissions(self, user, permissions):
+        """
+        Filter the query with the permissions of a user
+        """
+        subquery_observers = (
+            select([CorObserverSynthese.id_synthese])
+            .select_from(CorObserverSynthese)
+            .where(CorObserverSynthese.id_role == user.id_role)
+        )
+        datasets_by_scope = {}  # to avoid fetching datasets several time for same scope
+        permissions_filters = []
+        for perm in permissions:
+            if perm.has_other_filters_than("SCOPE"):
+                continue
+            perm_filters = []
+            if perm.scope_value:
+                if perm.scope_value not in datasets_by_scope:
+                    datasets_by_scope[perm.scope_value] = [
+                        d.id_dataset
+                        for d in TDatasets.query.filter_by_scope(perm.scope_value).all()
+                    ]
+                datasets = datasets_by_scope[perm.scope_value]
+                scope_filters = [
+                    self.model_id_syn_col.in_(subquery_observers),  # user is observer
+                    self.model_id_digitiser_column == user.id_role,  # user id digitizer
+                    self.model_id_dataset_column.in_(
+                        datasets
+                    ),  # user is dataset (or parent af) actor
+                ]
+                perm_filters.append(or_(*scope_filters))
+            if perm_filters:
+                permissions_filters.append(and_(*perm_filters))
+            else:
+                permissions_filters.append(sa.true())
+        if permissions_filters:
+            self.query = self.query.where(or_(*permissions_filters))
+        else:
+            self.query = self.query.where(sa.false())
 
     def filter_query_with_cruved(self, user, scope):
         """
@@ -397,8 +437,11 @@ class SyntheseQuery:
                 else:
                     self.query = self.query.where(col.ilike("%{}%".format(value)))
 
-    def apply_all_filters(self, user, scope):
-        self.filter_query_with_cruved(user, scope)
+    def apply_all_filters(self, user, permissions):
+        if type(permissions) == int:  # scope
+            self.filter_query_with_cruved(user, scope=permissions)
+        else:
+            self.filter_query_with_permissions(user, permissions)
         self.filter_taxonomy()
         self.filter_other_filters(user)
 
@@ -407,7 +450,7 @@ class SyntheseQuery:
             self.query = self.query.select_from(self.query_joins)
         return self.query
 
-    def filter_query_all_filters(self, user, scope):
+    def filter_query_all_filters(self, user, permissions):
         """High level function to manage query with all filters.
 
         Apply CRUVED, toxonomy and other filters.
@@ -422,7 +465,7 @@ class SyntheseQuery:
         sqlalchemy.orm.query.Query.filter
             Combined filter to apply.
         """
-        self.apply_all_filters(user, scope)
+        self.apply_all_filters(user, permissions)
         return self.build_query()
 
     def build_bdc_status_pr_nb_lateral_join(self, protection_status_value, red_list_filters):

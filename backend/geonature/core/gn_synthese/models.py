@@ -413,7 +413,7 @@ class Synthese(DB.Model):
 
     cor_observers = DB.relationship(User, secondary=cor_observer_synthese)
 
-    def has_instance_permission(self, scope):
+    def _has_scope_grant(self, scope):
         if scope == 0:
             return False
         elif scope in (1, 2):
@@ -424,6 +424,29 @@ class Synthese(DB.Model):
             return self.dataset.has_instance_permission(scope)
         elif scope == 3:
             return True
+
+    def _has_permissions_grant(self, permissions):
+        if not permissions:
+            return False
+        for perm in permissions:
+            if perm.has_other_filters_than("SCOPE"):
+                continue  # unsupported filters
+            if perm.scope_value:
+                if g.current_user == self.digitiser:
+                    return True
+                if g.current_user in self.cor_observers:
+                    return True
+                if self.dataset.has_instance_permission(perm.scope_value):
+                    return True
+                continue  # scope filter denied access, check next permission
+            return True  # no filter exclude this permission
+        return False
+
+    def has_instance_permission(self, permissions):
+        if type(permissions) == int:
+            return self._has_scope_grant(permissions)
+        else:
+            return self._has_permissions_grant(permissions)
 
 
 @serializable

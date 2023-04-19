@@ -49,7 +49,7 @@ from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.decorators import login_required
+from geonature.core.gn_permissions.decorators import login_required, permissions_required
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 
 from ref_geo.models import LAreas, BibAreasTypes
@@ -76,8 +76,8 @@ routes = Blueprint("gn_synthese", __name__)
 
 
 @routes.route("/for_web", methods=["GET", "POST"])
-@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
-def get_observations_for_web(scope):
+@permissions_required("R", module_code="SYNTHESE")
+def get_observations_for_web(permissions):
     """Optimized route to serve data for the frontend with all filters.
 
     .. :quickref: Synthese; Get filtered observations
@@ -188,7 +188,7 @@ def get_observations_for_web(scope):
         obs_query,
         filters,
     )
-    synthese_query_class.filter_query_all_filters(g.current_user, scope)
+    synthese_query_class.filter_query_all_filters(g.current_user, permissions)
     obs_query = synthese_query_class.query
 
     if output_format == "grouped_geom_by_areas":
@@ -249,8 +249,8 @@ def get_observations_for_web(scope):
 
 
 @routes.route("/vsynthese/<id_synthese>", methods=["GET"])
-@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
-def get_one_synthese(scope, id_synthese):
+@permissions_required("R", module_code="SYNTHESE")
+def get_one_synthese(permissions, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature"""
     synthese = Synthese.query.join_nomenclatures().options(
         joinedload("dataset").options(
@@ -309,7 +309,7 @@ def get_one_synthese(scope, id_synthese):
 
     synthese = synthese.get_or_404(id_synthese)
 
-    if not synthese.has_instance_permission(scope=scope):
+    if not synthese.has_instance_permission(permissions=permissions):
         raise Forbidden()
 
     geofeature = synthese.as_geofeature(fields=Synthese.nomenclature_fields + fields)
@@ -1148,7 +1148,7 @@ def delete_report(id_report):
     reportItem = TReport.query.get_or_404(id_report)
     # alert control to check cruved - allow validators only
     if reportItem.report_type.type in ["alert"]:
-        scope = get_scopes_by_action(module_code="VALIDATION")["C"]
+        scope = get_scopes_by_action(module_code="VALIDATION")["C"]  # FIXME
         if not reportItem.synthese.has_instance_permission(scope):
             raise Forbidden("Permission required to delete this report !")
     # only owner could delete a report for pin and discussion
