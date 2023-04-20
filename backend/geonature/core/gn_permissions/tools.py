@@ -77,11 +77,12 @@ def get_user_permissions_by_action(id_role=None):
     """
     if id_role is None:
         id_role = g.current_user.id_role
-    if "permissions_by_action" not in g:
-        g.permissions_by_action = dict()
-    if id_role not in g.permissions_by_action:
-        g.permissions_by_action[id_role] = _get_user_permissions_by_action(id_role)
-    return g.permissions_by_action[id_role]
+    if "permissions_by_action" in g:  # before_request have been called
+        if id_role not in g.permissions_by_action:
+            g.permissions_by_action[id_role] = _get_user_permissions_by_action(id_role)
+        return g.permissions_by_action[id_role]
+    else:
+        return _get_user_permissions_by_action(id_role)
 
 
 def get_permissions(action_code, id_role=None, module_code=None, object_code=None):
