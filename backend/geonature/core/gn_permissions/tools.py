@@ -33,6 +33,13 @@ def _get_user_permissions(id_role):
         )
         # These ordering ensure groupby is working properly
         .order_by(Permission.id_action)
+        # remove duplicate permissions (defined at group and user level, or defined in several groups)
+        .distinct(
+            Permission.id_action,
+            Permission.id_module,
+            Permission.id_object,
+            *Permission.filters_fields.values(),
+        )
         .all()
     )
 
