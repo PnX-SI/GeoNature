@@ -791,15 +791,14 @@ def delete_acquisition_framework(scope, af_id):
 def acquisitionFrameworkHandler(request, *, acquisition_framework):
     # Test des droits d'édition du acquisition framework si modification
     if acquisition_framework.id_acquisition_framework is not None:
-        user_cruved = get_scopes_by_action(module_code="META_DATA")
+        user_cruved = get_scopes_by_action(module_code="METADATA")
 
         # verification des droits d'édition pour le acquisition framework
         if not acquisition_framework.has_instance_permission(user_cruved["U"]):
-            raise InsufficientRightsError(
+            raise Forbidden(
                 "User {} has no right in acquisition_framework {}".format(
                     g.current_user, acquisition_framework.id_acquisition_framework
-                ),
-                403,
+                )
             )
     else:
         acquisition_framework.id_digitizer = g.current_user.id_role
