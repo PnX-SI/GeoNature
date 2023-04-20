@@ -131,7 +131,7 @@ class Permission(db.Model):
 
     scope_value = db.Column(db.Integer, ForeignKey(PermScope.value), nullable=True)
     scope = db.relationship(PermScope)
-    sensitivity_filter = db.Column(db.Boolean, server_default=sa.false())
+    sensitivity_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
 
     availability = db.relationship(
         PermissionAvailable,
@@ -142,9 +142,24 @@ class Permission(db.Model):
         ),
     )
 
-    def has_other_filters_than(self, *args):
-        if self.scope_value is not None and "SCOPE" not in args:
-            return True
-        if self.sensitivity_filter is True and "SENSITIVITY" not in args:
-            return True
+    filters_fields = {
+        "SCOPE": scope_value,
+        "SENSITIVITY": sensitivity_filter,
+    }
+
+    def has_other_filters_than(self, *expected_filters):
+        for name, field in self.filters_fields.items():
+            if name in expected_filters:
+                continue  # this filter is expected, defined or not
+            # for unexpected filters, return True if filter is set
+            value = getattr(self, field.name)
+            if field.nullable:
+                # for nullable field, consider filter in use if not None
+                if value is not None:
+                    return True
+            else:
+                # for non-nullable field, consider filter in use if value evaluate as True
+                # XXX may not be appropriate for futur non bool filters
+                if value:
+                    return True
         return False
