@@ -144,6 +144,27 @@ class Permission(db.Model):
         "SCOPE": scope_value,
     }
 
+    @staticmethod
+    def __SCOPE_le__(a, b):
+        return b is None or (a is not None and a < b)
+
+    @staticmethod
+    def __default_le__(a, b):
+        return a == b or b is None
+
+    def __le__(self, other):
+        """
+        Return True if this permission is supersed by 'other' permission.
+        This requires all filters to be supersed by 'other' filters.
+        """
+        for name, field in self.filters_fields.items():
+            # Get filter comparison function or use default comparison function
+            __le_fct__ = getattr(self, f"__{name}_le__", Permission.__default_le__)
+            self_value, other_value = getattr(self, field.name), getattr(other, field.name)
+            if not __le_fct__(self_value, other_value):
+                return False
+        return True
+
     def has_other_filters_than(self, *expected_filters):
         for name, field in self.filters_fields.items():
             if name in expected_filters:

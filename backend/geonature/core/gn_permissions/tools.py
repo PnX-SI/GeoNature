@@ -1,4 +1,4 @@
-from itertools import groupby
+from itertools import groupby, permutations
 
 import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
@@ -73,7 +73,7 @@ def get_user_permissions_by_action(id_role=None):
 
 def get_permissions(action_code, id_role=None, module_code=None, object_code=None):
     """
-    This function returns a list of all the permissions that match (action_code, id_role, module_code, object_code).
+    This function returns a set of all the permissions that match (action_code, id_role, module_code, object_code).
     If module_code is None, it is set as the code of the current module or as "GEONATURE" if no current module found.
     If object_code is None, it is set as the code of the current object or as "ALL" if no current object found.
 
@@ -91,11 +91,18 @@ def get_permissions(action_code, id_role=None, module_code=None, object_code=Non
         else:
             object_code = "ALL"
 
-    return [
+    permissions = {
         p
         for p in get_user_permissions_by_action(id_role)[action_code]
         if p.module.module_code == module_code and p.object.code_object == object_code
-    ]
+    }
+
+    # Remove all permissions supersed by another permission
+    for p1, p2 in permutations(permissions, 2):
+        if p1 in permissions and p1 <= p2:
+            permissions.remove(p1)
+
+    return permissions
 
 
 def get_scope(action_code, id_role=None, module_code=None, object_code=None):
