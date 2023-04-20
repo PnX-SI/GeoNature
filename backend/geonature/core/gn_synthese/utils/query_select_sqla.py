@@ -239,7 +239,7 @@ class SyntheseQuery:
             if not colname.startswith("taxhub_attribut")
         }
 
-    def filter_other_filters(self):
+    def filter_other_filters(self, user):
         """
         Other filters
         """
@@ -259,7 +259,10 @@ class SyntheseQuery:
 
         if "has_pin" in self.filters:
             pin_filter = self.model.reports.any(
-                TReport.report_type.has(BibReportsTypes.type == "pin")
+                and_(
+                    TReport.report_type.has(BibReportsTypes.type == "pin"),
+                    TReport.id_role == user.id_role,
+                )
             )
             if self.filters["has_pin"] is False:
                 pin_filter = ~pin_filter
@@ -389,7 +392,7 @@ class SyntheseQuery:
     def apply_all_filters(self, user, scope):
         self.filter_query_with_cruved(user, scope)
         self.filter_taxonomy()
-        self.filter_other_filters()
+        self.filter_other_filters(user)
 
     def build_query(self):
         if self.query_joins is not None:
