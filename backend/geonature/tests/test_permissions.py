@@ -184,7 +184,7 @@ class TestPermissions:
         assert_cruved("r1", "000011", module=module_a)
 
     def test_group_inheritance(self, permissions, assert_cruved, module_gn, module_a):
-        permissions("g1", "0123--", module=module_a)
+        permissions("g1", "-123--", module=module_a)
 
         assert_cruved("r1", "000000")
         assert_cruved("r1", "000000", module_a)
@@ -194,13 +194,13 @@ class TestPermissions:
         assert_cruved("g2_r1", "000000", module_a)
 
     def test_user_and_group_perm(self, permissions, assert_cruved, module_a):
-        permissions("g1", "0123--", module=module_a)
-        permissions("g1_r1", "1023--", module=module_a)
+        permissions("g1", "-123--", module=module_a)
+        permissions("g1_r1", "1-23--", module=module_a)
 
         assert_cruved("g1_r1", "112300", module=module_a)  # max of user and group permission
 
     def test_multi_groups_one_perm(self, permissions, assert_cruved, module_a):
-        permissions("g1", "0123--", module=module_a)
+        permissions("g1", "-123--", module=module_a)
 
         assert_cruved("g1_r1", "012300", module_a)
         assert_cruved("g12_r1", "012300", module_a)
@@ -208,7 +208,7 @@ class TestPermissions:
 
     def test_multi_groups_multi_perms(self, permissions, assert_cruved, module_a):
         permissions("g1", "12131-", module=module_a)
-        permissions("g2", "0121-3", module=module_a)
+        permissions("g2", "-121-3", module=module_a)
 
         assert_cruved("g1_r1", "121310", module_a)
         assert_cruved("g2_r1", "012103", module_a)
