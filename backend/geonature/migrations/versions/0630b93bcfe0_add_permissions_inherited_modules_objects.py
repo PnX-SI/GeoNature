@@ -96,6 +96,7 @@ def upgrade():
         """
     )
     # Associate FK 'fk_backup_cor_r_a_f_m_o_id_filter' to 'backup_t_filters' instead of 't_filters'
+    # to be able to delete scope 0 from 't_filters' while keeping the associated rows in backup of permissions
     # ON DELETE and ON UPDATE rules should not matter, as no modification from 'backup_t_filters' is expected
     op.drop_constraint(
         "backup_fk_cor_r_a_f_m_o_id_filter",
@@ -536,6 +537,48 @@ def upgrade():
     """
     )
 
+    """
+    Remove scope '0'
+    """
+    # Remove associated permissions
+    op.execute(
+        """
+        DELETE FROM
+            gn_permissions.cor_role_action_filter_module_object p
+        WHERE
+            id_filter = (
+                SELECT
+                    f.id_filter
+                FROM
+                    gn_permissions.t_filters f
+                JOIN
+                    gn_permissions.bib_filters_type t USING (id_filter_type)
+                WHERE
+                    t.code_filter_type = 'SCOPE'
+                    AND
+                    f.value_filter = '0'
+            )
+        """
+    )
+    # Remove filter
+    # we assume that we have 'ON DELETE NO ACTION' for 'fk_cor_r_a_f_m_o_id_filter',
+    # and thus for 'fk_backup_cor_r_a_f_m_o_id_filter, and that removal of the filter for 'scope 0' will not
+    # lead, by cascade, to a suppression of the associated permissions in the backup table of permissions.
+    op.execute(
+        """
+        DELETE FROM
+            gn_permissions.t_filters
+        WHERE
+            id_filter_type = (
+                SELECT id_filter_type 
+                FROM gn_permissions.bib_filters_type 
+                WHERE code_filter_type = 'SCOPE'
+                )
+        AND
+            value_filter = '0'
+        """
+    )
+
 
 def downgrade():
     """
@@ -565,6 +608,8 @@ def downgrade():
 
     """
     Restore filters from backup table
+    
+    restores, in particular, the filter for scope 0
     """
     op.execute(
         """

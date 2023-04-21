@@ -121,7 +121,7 @@ def users(app):
     }
     scope_filters = {
         scope: TFilters.query.filter(TFilters.value_filter == str(scope)).one()
-        for scope in [0, 1, 2, 3]
+        for scope in [1, 2, 3]
     }
 
     def create_user(username, organisme=None, scope=None):
@@ -163,7 +163,7 @@ def users(app):
     db.session.add(organisme)
 
     users_to_create = [
-        ("noright_user", organisme, scope_filters[0]),
+        ("noright_user", organisme, None),
         ("stranger_user", None, scope_filters[2]),
         ("associate_user", organisme, scope_filters[2]),
         ("self_user", organisme, scope_filters[1]),
