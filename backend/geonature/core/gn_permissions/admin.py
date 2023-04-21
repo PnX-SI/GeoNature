@@ -123,7 +123,17 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         ("object.code_object", True),
         ("action.code_action", True),
     ]
-    form_columns = ("role", "module", "object", "action", "scope", "sensitivity_filter")
+    # form_columns = ("role", "module", "object", "action", "scope", "sensitivity_filter")
+    form_columns = ("role", "availability", "scope", "sensitivity_filter")
+
+    def edit_form(self, obj=None):
+        form = super().edit_form(obj)
+        form.availability.query_factory = lambda: PermissionAvailable.query.order_by(
+            PermissionAvailable.id_module,
+            PermissionAvailable.id_object,
+            PermissionAvailable.id_action,
+        ).all()
+        return form
 
 
 class PermissionAvailableAdmin(CruvedProtectedMixin, ModelView):

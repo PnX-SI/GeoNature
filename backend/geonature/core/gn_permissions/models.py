@@ -107,7 +107,11 @@ class PermissionAvailable(db.Model):
     sensitivity_filter = db.Column(db.Boolean, server_default=sa.false())
 
     def __str__(self):
-        return self.label
+        s = self.module.module_label
+        if self.object.code_object != "ALL":
+            s += f" | {self.object.code_object.capitalize()}"
+        s += f" | {self.label}"
+        return s
 
 
 @serializable
@@ -189,3 +193,11 @@ class Permission(db.Model):
                 if value:
                     return True
         return False
+
+    def __repr__(self):
+        return (
+            f"<Permission {self.id_permission} ("
+            "SCOPE={self.scope_value}"
+            ",SENSITIVITY={self.sensitivity_filter}"
+            ")>"
+        )
