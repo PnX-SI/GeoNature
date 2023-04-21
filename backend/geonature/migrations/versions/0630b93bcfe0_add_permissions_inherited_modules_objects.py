@@ -130,6 +130,36 @@ def upgrade():
         	);
     """
     )
+    # Remove scope '0'
+    op.execute(
+        """
+        DELETE FROM
+            gn_permissions.cor_role_action_filter_module_object p
+        WHERE
+            id_filter = (
+                SELECT
+                    f.id_filter
+                FROM
+                    gn_permissions.t_filters f
+                JOIN
+                    gn_permissions.bib_filters_type t USING (id_filter_type)
+                WHERE
+                    t.code_filter_type = 'SCOPE'
+                    AND
+                    f.value_filter = '0'
+            )
+        """
+    )
+    op.execute(
+        """
+        DELETE FROM
+            gn_permissions.t_filters
+        WHERE
+            id_filter_type = (SELECT id_filter_type FROM gn_permissions.bib_filters_type WHERE code_filter_type = 'SCOPE')
+        AND
+            value_filter = '0'
+        """
+    )
 
 
 def downgrade():
