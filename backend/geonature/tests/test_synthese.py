@@ -281,6 +281,22 @@ class TestSynthese:
 
         assert id_synthese in (feature["properties"]["id"] for feature in r.json["features"])
 
+    def test_get_observations_for_web_filter_id_source(self, users, synthese_data, source):
+        set_logged_user_cookie(self.client, users["self_user"])
+        id_source = source.id_source
+
+        url = url_for("gn_synthese.get_observations_for_web")
+        filters = {"id_source": id_source}
+        r = self.client.get(url, json=filters)
+
+        expected_data = {
+            synthese.id_synthese
+            for synthese in synthese_data.values()
+            if synthese.id_source == id_source
+        }
+        response_data = {feature["properties"]["id"] for feature in r.json["features"]}
+        assert expected_data.issubset(response_data)
+
     def test_get_synthese_data_cruved(self, app, users, synthese_data, datasets):
         set_logged_user_cookie(self.client, users["self_user"])
 
