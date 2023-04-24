@@ -23,6 +23,7 @@ from geonature.core.gn_synthese.models import (
     CorAreaSynthese,
     BibReportsTypes,
     TReport,
+    TSources,
 )
 from geonature.core.gn_meta.models import (
     CorDatasetActor,
@@ -308,6 +309,10 @@ class SyntheseQuery:
             date_max = datetime.datetime.strptime(self.filters.pop("date_max"), "%Y-%m-%d")
             date_max = date_max.replace(hour=23, minute=59, second=59)
             self.query = self.query.where(self.model.date_max <= date_max)
+
+        if "id_source" in self.filters:
+            self.add_join(TSources, self.model.id_source, TSources.id_source)
+            self.query = self.query.where(self.model.id_source == self.filters.pop("id_source"))
 
         if "id_acquisition_framework" in self.filters:
             if hasattr(self.model, "id_acquisition_framework"):
