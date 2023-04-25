@@ -193,6 +193,7 @@ def create_app(with_external_mods=True):
         ("geonature.core.gn_permissions.backoffice.views:routes", "/permissions_backoffice"),
         ("geonature.core.users.routes:routes", "/users"),
         ("geonature.core.gn_synthese.routes:routes", "/synthese"),
+        ("geonature.core.gn_synthese.exchanges.routes:routes", "/exchanges"),
         ("geonature.core.gn_meta.routes:routes", "/meta"),
         ("geonature.core.auth.routes:routes", "/gn_auth"),
         ("geonature.core.gn_monitoring.routes:routes", "/gn_monitoring"),
