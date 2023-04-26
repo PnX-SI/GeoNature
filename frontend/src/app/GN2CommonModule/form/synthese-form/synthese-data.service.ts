@@ -24,6 +24,10 @@ export class SyntheseDataService {
   public isDownloading: Boolean = false;
   public downloadProgress: BehaviorSubject<number>;
   private _blob: Blob;
+  public regexExpUUID = new RegExp(
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+  );
+
   constructor(private _api: HttpClient, public config: ConfigService) {
     this.downloadProgress = <BehaviorSubject<number>>new BehaviorSubject(0.0);
   }
@@ -234,5 +238,13 @@ export class SyntheseDataService {
 
   modifyReport(id, params) {
     return this._api.put(`${this.config.API_ENDPOINT}/synthese/reports/${id}`, params);
+  }
+
+  getSyntheseFromUUID(uniqueIdSinp) {
+    return this._api.get(`${this.config.API_ENDPOINT}/synthese/vsynthese/${uniqueIdSinp}`);
+  }
+
+  isUUID(str) {
+    return this.regexExpUUID.test(str);
   }
 }
