@@ -271,6 +271,12 @@ export const DYNAMIC_FORM_DEF = [
     required: false,
   },
   {
+    type_widget: 'number',
+    attribut_label: 'ID (id_synthese)',
+    attribut_name: 'id_synthese',
+    required: false,
+  },
+  {
     type_widget: 'datalist',
     attribut_name: 'id_source',
     attribut_label: 'Source de la donnée',
