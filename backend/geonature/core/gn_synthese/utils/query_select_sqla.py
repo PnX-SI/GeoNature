@@ -391,7 +391,10 @@ class SyntheseQuery:
                 self.query = self.query.where(CorAreaSynthese.id_area.in_(value))
             elif colname.startswith("id_"):
                 col = getattr(self.model.__table__.columns, colname)
-                self.query = self.query.where(col.in_(value))
+                if isinstance(value, list):
+                    self.query = self.query.where(col.in_(value))
+                else:
+                    self.query = self.query.where(col == value)
             elif hasattr(self.model.__table__.columns, colname):
                 col = getattr(self.model.__table__.columns, colname)
                 if str(col.type) == "INTEGER":
