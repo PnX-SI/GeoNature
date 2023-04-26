@@ -51,6 +51,8 @@ from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 
+from geonature.utils.commons import is_valid_uuid
+
 from ref_geo.models import LAreas, BibAreasTypes
 
 from apptax.taxonomie.models import (
@@ -290,9 +292,10 @@ def get_synthese(scope):
     }
 
 
-@routes.route("/vsynthese/<id_synthese>", methods=["GET"])
+@routes.route("/vsynthese/<int:id_synthese>", defaults={'unique_id_sinp': None}, methods=["GET"])
+@routes.route("/vsynthese/<uuid:unique_id_sinp>", defaults={'id_synthese': None}, methods=["GET"])
 @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
-def get_one_synthese(scope, id_synthese):
+def get_one_synthese(scope, id_synthese, unique_id_sinp):
     """Get one synthese record for web app with all decoded nomenclature"""
     synthese = Synthese.query.join_nomenclatures().options(
         joinedload("dataset").options(
@@ -349,7 +352,13 @@ def get_one_synthese(scope, id_synthese):
         fields.append("reports.report_type.type")
         synthese = synthese.options(lazyload(Synthese.reports).joinedload(TReport.report_type))
 
-    synthese = synthese.get_or_404(id_synthese)
+    if id_synthese:
+        synthese = synthese.get_or_404(id_synthese)
+    elif is_valid_uuid(unique_id_sinp):
+        synthese = synthese.filter_by(unique_id_sinp=unique_id_sinp)
+        synthese = synthese.first_or_404()
+    else:
+        raise NotFound
 
     if not synthese.has_instance_permission(scope=scope):
         raise Forbidden()
