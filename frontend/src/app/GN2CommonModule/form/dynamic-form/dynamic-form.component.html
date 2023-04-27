@@ -148,7 +148,7 @@
             id="{{ item.label }}_{{ rand }}"
             [name]="formDefComp['attribut_name']"
             [value]="item.value"
-            (change)="onCheckChange($event, form.get(formDefComp['attribut_name']))"
+            (change)="onCheckChange($event, form.get(formDefComp['attribut_name']), item.value)"
             [checked]="form.get(formDefComp['attribut_name']).value?.includes(item.value)"
           />
           <label for="{{ item.label }}_{{ rand }}" class="custom-control-label">
