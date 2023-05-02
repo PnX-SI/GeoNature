@@ -85,7 +85,6 @@ export class SyntheseFormService {
       period_end: null,
       municipalities: null,
       geoIntersection: null,
-      radius: null,
       taxonomy_lr: null,
       taxonomy_id_hab: null,
       taxonomy_group2_inpn: null,
@@ -162,11 +161,12 @@ export class SyntheseFormService {
         // stringify accepte uniquement les geojson simple (pas les feature collection)
         // on boucle sur les feature pour les transformer en WKT
         if (Array.isArray(params['geoIntersection'])) {
-          updatedParams['geoIntersection'] = params['geoIntersection'].map((geojson) => {
-            return stringify(geojson);
-          });
+          updatedParams['geoIntersection'] = {
+            type: 'FeatureCollection',
+            features: params['geoIntersection'],
+          };
         } else {
-          updatedParams['geoIntersection'] = stringify(params['geoIntersection']);
+          updatedParams['geoIntersection'] = params['geoIntersection'];
         }
         // remove null/undefined but not zero (use for boolean)
       } else if (params[key] != null || params[key] != undefined) {

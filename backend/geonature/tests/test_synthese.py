@@ -160,7 +160,22 @@ class TestSynthese:
 
         # test intersection filters
         filters = {
-            "geoIntersection": "POLYGON ((5.852731 45.7775, 5.852731 44.820481, 7.029224 44.820481, 7.029224 45.7775, 5.852731 45.7775))",
+            "geoIntersection": {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [5.852731, 45.7775],
+                            [5.852731, 44.820481],
+                            [7.029224, 44.820481],
+                            [7.029224, 45.7775],
+                            [5.852731, 45.7775],
+                        ],
+                    ],
+                },
+                "properties": {},
+            },
         }
         r = self.client.post(url, json=filters)
         assert r.status_code == 200
@@ -174,8 +189,16 @@ class TestSynthese:
 
         # test geometry filter with circle radius
         filters = {
-            "geoIntersection": "POINT (5.92 45.56)",
-            "radius": "20000",  # 20km
+            "geoIntersection": {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [5.92, 45.56],
+                },
+                "properties": {
+                    "radius": "20000",  # 20km
+                },
+            },
         }
         r = self.client.post(url, json=filters)
         assert r.status_code == 200

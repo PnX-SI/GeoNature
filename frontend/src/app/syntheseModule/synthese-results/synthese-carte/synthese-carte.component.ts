@@ -428,7 +428,6 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   bindGeojsonForm(geojson) {
-    this.formService.searchForm.controls.radius.setValue(geojson.properties['radius']);
     this.formService.searchForm.controls.geoIntersection.setValue(geojson);
     // set the current coord of the geojson to remove layer from filelayer component via the input removeLayer
     this.currentLeafletDrawCoord = geojson;
@@ -445,6 +444,5 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
 
   deleteControlValue() {
     this.formService.searchForm.controls.geoIntersection.reset();
-    this.formService.searchForm.controls.radius.reset();
   }
 }

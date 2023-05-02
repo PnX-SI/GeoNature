@@ -36,7 +36,6 @@ export class SyntheseFormService {
       period_start: null,
       period_end: null,
       geoIntersection: null,
-      radius: null,
       taxonomy_lr: null,
       taxonomy_id_hab: null,
       taxonomy_group2_inpn: null,
