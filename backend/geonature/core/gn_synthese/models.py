@@ -269,35 +269,43 @@ class Synthese(DB.Model):
     nomenclature_geo_object_nature = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_geo_object_nature]
     )
-    id_nomenclature_grp_typ = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_grp_typ = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_grp_typ = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_grp_typ])
     id_nomenclature_obs_technique = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_obs_technique = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_obs_technique]
     )
-    id_nomenclature_bio_status = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_bio_status = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_bio_status = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_bio_status]
     )
     id_nomenclature_bio_condition = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_bio_condition = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_bio_condition]
     )
-    id_nomenclature_naturalness = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_naturalness = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_naturalness = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_naturalness]
     )
     id_nomenclature_valid_status = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_valid_status = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_valid_status]
     )
-    id_nomenclature_exist_proof = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_exist_proof = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_exist_proof = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_exist_proof]
     )
@@ -307,17 +315,25 @@ class Synthese(DB.Model):
     nomenclature_diffusion_level = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_diffusion_level]
     )
-    id_nomenclature_life_stage = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_life_stage = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_life_stage = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_life_stage]
     )
-    id_nomenclature_sex = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_sex = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_sex = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_sex])
-    id_nomenclature_obj_count = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_obj_count = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_obj_count = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_obj_count]
     )
-    id_nomenclature_type_count = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_type_count = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_type_count = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_type_count]
     )
@@ -326,39 +342,44 @@ class Synthese(DB.Model):
         TNomenclatures, foreign_keys=[id_nomenclature_sensitivity]
     )
     id_nomenclature_observation_status = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_observation_status = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_observation_status]
     )
-    id_nomenclature_blurring = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_blurring = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_blurring = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_blurring]
     )
     id_nomenclature_source_status = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_source_status = db.relationship(
-        TNomenclatures, foreign_keys=[id_nomenclature_source_status]
+        TNomenclatures,
+        foreign_keys=[id_nomenclature_source_status],
     )
     id_nomenclature_info_geo_type = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_info_geo_type = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_info_geo_type]
     )
-    id_nomenclature_behaviour = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_behaviour = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_behaviour = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_behaviour]
     )
     id_nomenclature_biogeo_status = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_biogeo_status = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_biogeo_status]
     )
     id_nomenclature_determination_method = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_determination_method = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_determination_method]
@@ -450,6 +471,7 @@ class BibReportsTypes(DB.Model):
 @serializable
 class TReport(DB.Model):
     __tablename__ = "t_reports"
+
     __table_args__ = {"schema": "gn_synthese"}
     id_report = DB.Column(DB.Integer(), primary_key=True)
     id_synthese = DB.Column(DB.Integer(), ForeignKey("gn_synthese.synthese.id_synthese"))
