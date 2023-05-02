@@ -223,12 +223,12 @@ geonature upgrade-modules-db || exit 1
 # GeoNature cassé mais les médias déjà déplacé de l’ancien GN au nouveau GN non fonctionnel.
 echo "Déplacement des anciens fichiers static vers les médias …"  # before GN 2.12
 cd "${olddir}/backend"
-if [ -d static/medias ]; then mkdir -p media; mv static/medias media/attachments; fi  # medias becomes attachments
-if [ -d static/pdf ]; then mkdir -p media; mv static/pdf media/pdf; fi
-if [ -d static/exports ]; then mkdir -p media; mv static/exports media/exports; fi
-if [ -d static/geopackages ]; then mkdir -p media; mv static/geopackages media/geopackages; fi
-if [ -d static/shapefiles ]; then mkdir -p media; mv static/shapefiles media/shapefiles; fi
-if [ -d static/mobile ]; then mkdir -p media; mv static/mobile media/mobile; fi
+if [ -d static/medias ]; then mkdir -p media/attachments; mv static/medias/* media/attachments/; fi  # medias becomes attachments
+if [ -d static/pdf ]; then mkdir -p media; mv static/pdf media/; fi
+if [ -d static/exports ]; then mkdir -p media; mv static/exports media/; fi
+if [ -d static/geopackages ]; then mkdir -p media; mv static/geopackages media/; fi
+if [ -d static/shapefiles ]; then mkdir -p media; mv static/shapefiles media/; fi
+if [ -d static/mobile ]; then mkdir -p media; mv static/mobile media/; fi
 echo "Déplacement des médias …"
 shopt -s nullglob
 for dir in "${olddir}"/backend/media/*; do
