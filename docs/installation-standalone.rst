@@ -66,7 +66,7 @@ Configuration Apache
 
 * Le script ``install/06_configure_apache.sh`` copie le fichier de configuration de référence ``install/assets/geonature_apache.conf``, le place dans ``/etc/apache2/conf-available/geonature.conf`` et remplace ses variables à partir de votre configuration de GeoNature.
 
-  Relancez ce script si vous changer l'URL de votre GeoNature ou les paramètres liés aux chemins et URL des fichiers statiques et des médias.
+  Relancez ce script si vous changez l'URL de votre GeoNature ou les paramètres liés aux chemins et URL des fichiers statiques et des médias.
 
 * Créez la configuration du vhost, incluant la configuration par défaut créée précédemment :
 
@@ -89,6 +89,20 @@ Configuration Apache
 
 * L'application est disponible à l'adresse suivante : http://monurl.fr/geonature
 
+Une page HTML de maintenance et un vhost dédié sont aussi disponibles. Pour les mettre en place :
+
+  .. code:: console
+
+    $ sudo cp install/assets/vhost_apache_maintenance.conf /etc/apache2/sites-available/geonature_maintenance.conf # Copier le vhost
+    $ sudo nano /etc/apache2/sites-available/geonature_maintenance.conf # Modifier la variable ``${DOMAIN_NAME}``
+    $ cp install/assets/maintenance.html /var/www/geonature_maintenance/index.html
+
+Pour passer votre GeoNature en maintenance, vous pouvez alors désactiver le vhost de GeoNature et activer celui de la page de maintenance : 
+
+  .. code:: console
+
+    $ sudo a2dissite geonature.conf
+    $ sudo a2ensite geonature_maintenance.conf
 
 Dépendances
 -----------
