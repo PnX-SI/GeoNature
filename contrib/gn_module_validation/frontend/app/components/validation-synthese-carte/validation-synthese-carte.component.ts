@@ -45,7 +45,6 @@ export class ValidationSyntheseCarteComponent implements OnInit {
   }
 
   bindGeojsonForm(geojson) {
-    this.formService.searchForm.controls.radius.setValue(geojson.properties['radius']);
     this.formService.searchForm.controls.geoIntersection.setValue(geojson);
     // set the current coord of the geojson to remove layer from filelayer component via the input removeLayer
     //this.currentLeafletDrawCoord = geojson;
@@ -53,6 +52,5 @@ export class ValidationSyntheseCarteComponent implements OnInit {
 
   deleteControlValue() {
     this.formService.searchForm.controls.geoIntersection.reset();
-    this.formService.searchForm.controls.radius.reset();
   }
 }

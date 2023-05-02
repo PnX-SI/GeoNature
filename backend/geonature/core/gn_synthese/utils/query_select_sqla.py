@@ -13,8 +13,8 @@ from flask import current_app
 from sqlalchemy import func, or_, and_, select, distinct
 from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
-from shapely.wkt import loads
 from werkzeug.exceptions import BadRequest
+from shapely.geometry import shape
 from geoalchemy2.shape import from_shape
 
 from geonature.utils.env import DB
@@ -39,6 +39,7 @@ from apptax.taxonomie.models import (
     TaxrefBdcStatutValues,
 )
 from ref_geo.models import LAreas, BibAreasTypes
+from utils_flask_sqla_geo.schema import FeatureSchema, FeatureCollectionSchema
 
 
 class SyntheseQuery:
@@ -329,23 +330,30 @@ class SyntheseQuery:
 
         if "geoIntersection" in self.filters:
             # Insersect with the geom send from the map
-            str_wkt = self.filters["geoIntersection"]
-            # if the geom is a circle
-            if "radius" in self.filters:
-                radius = self.filters.pop("radius")
-                wkt = loads(str_wkt)
-                geom_wkb = from_shape(wkt, srid=4326)
-                geo_filter = func.ST_DWithin(
-                    func.ST_GeogFromWKB(self.model.the_geom_4326),
-                    func.ST_GeogFromWKB(geom_wkb),
-                    radius,
-                )
+            geojson = self.filters["geoIntersection"]
+            if type(geojson) is not dict or "type" not in geojson:
+                raise BadRequest("geoIntersection is missing type")
+            if geojson["type"] == "Feature":
+                features = [FeatureSchema().load(geojson)]
+            elif geojson["type"] == "FeatureCollection":
+                features = FeatureCollectionSchema().load(geojson)["features"]
             else:
-                wkt = loads(str_wkt)
-                geom_wkb = from_shape(wkt, srid=4326)
-                geo_filter = self.model.the_geom_4326.ST_Intersects(geom_wkb)
-
-            self.query = self.query.where(geo_filter)
+                raise BadRequest("Unsupported geoIntersection type")
+            geo_filters = []
+            for feature in features:
+                geom_wkb = from_shape(shape(feature["geometry"]), srid=4326)
+                # if the geom is a circle
+                if "radius" in feature["properties"]:
+                    radius = feature["properties"]["radius"]
+                    geo_filter = func.ST_DWithin(
+                        func.ST_GeogFromWKB(self.model.the_geom_4326),
+                        func.ST_GeogFromWKB(geom_wkb),
+                        radius,
+                    )
+                else:
+                    geo_filter = self.model.the_geom_4326.ST_Intersects(geom_wkb)
+                geo_filters.append(geo_filter)
+            self.query = self.query.where(or_(*geo_filters))
             self.filters.pop("geoIntersection")
 
         if "period_start" in self.filters and "period_end" in self.filters:
