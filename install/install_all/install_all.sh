@@ -135,7 +135,7 @@ echo "Installation des modules GeoNature"
 ./04_install_gn_modules.sh || exit 1
 echo "Installation du frontend GeoNature"
 ./05_install_frontend.sh || exit 1
-echo "Installation de la config apache pour GeoNature"
+echo "Installation de la config Apache pour GeoNature"
 ./06_configure_apache.sh || exit 1
 
 if [ "${mode}" != dev ]; then
@@ -232,7 +232,7 @@ if [ "$install_usershub_app" = true ]; then
 
     # Installation of UsersHub database through geonature db as UsersHub does not known all revisions
     if [ "${mode}" != "dev" ]; then
-	    # Tell geonature where to find UsersHub alembic revision files
+	    # Tell GeoNature where to find UsersHub alembic revision files
 	    grep '\[ALEMBIC\]' "${GEONATURE_DIR}/config/geonature_config.toml" > /dev/null || echo -e "\n[ALEMBIC]\nVERSION_LOCATIONS = '${USERSHUB_DIR}/app/migrations/versions/'" >> "${GEONATURE_DIR}/config/geonature_config.toml"
     fi
     source "${GEONATURE_DIR}/backend/venv/bin/activate"
@@ -253,6 +253,8 @@ deactivate
 # Apache vhost for GeoNature, TaxHub and UsersHub
 envsubst '${DOMAIN_NAME}' < "${GEONATURE_DIR}/install/assets/vhost_apache.conf" | sudo tee /etc/apache2/sites-available/geonature.conf || exit 1
 envsubst '${DOMAIN_NAME}' < "${GEONATURE_DIR}/install/assets/vhost_apache_maintenance.conf" | sudo tee /etc/apache2/sites-available/geonature_maintenance.conf || exit 1
+sudo mkdir -p /var/www/geonature_maintenance/
+sudo cp "${GEONATURE_DIR}/install/assets/maintenance.html" /var/www/geonature_maintenance/index.html
 sudo a2ensite geonature || exit 1
 sudo systemctl reload apache2 || exit 1
 
