@@ -299,7 +299,7 @@ Dans ce cas, les commandes à exécuter sont :
   
   cd ~/GeoNature
   git status # optionnel, pour connaitre l'état et la version ou branche actuellement utilisée
-  git pull
+  git fetch
   git checkout X.Y.Z # où X.Y.Z est le numéro du tag de la version vers laquelle faire la mise à jour, ou le nom de la branche à utiliser
   git submodule update # ou "git config submodule.recurse true" lancé une seule fois, pour que la mise à jour des sous-modules soit relancée automatiquement à chaque git pull
   ./install/migration/migration.sh .
