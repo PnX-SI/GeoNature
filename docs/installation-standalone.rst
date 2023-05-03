@@ -95,7 +95,7 @@ Une page HTML de maintenance et un vhost dédié sont aussi disponibles. Pour le
 
     $ sudo cp install/assets/vhost_apache_maintenance.conf /etc/apache2/sites-available/geonature_maintenance.conf # Copier le vhost
     $ sudo nano /etc/apache2/sites-available/geonature_maintenance.conf # Modifier la variable ``${DOMAIN_NAME}``
-    $ cp install/assets/maintenance.html /var/www/geonature_maintenance/index.html
+    $ sudo cp install/assets/maintenance.html /var/www/geonature_maintenance/index.html
 
 Pour passer votre GeoNature en maintenance, vous pouvez alors désactiver le vhost de GeoNature et activer celui de la page de maintenance : 
 
