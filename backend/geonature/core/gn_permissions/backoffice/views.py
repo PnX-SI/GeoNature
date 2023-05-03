@@ -221,7 +221,7 @@ def user_cruved(id_role):
         actions_label[action.code_action] = action.description_action
     modules = []
     for module in modules_data:
-        module = module.as_dict(depth=1)
+        module = module.as_dict(fields=["objects"])
         # get cruved for all objects
         module_objects_as_dict = []
         for _object in module.get("objects", []):
