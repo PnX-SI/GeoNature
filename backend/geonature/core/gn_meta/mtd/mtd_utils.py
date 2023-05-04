@@ -39,7 +39,7 @@ def sync_ds(ds, cd_nomenclatures):
     Will create or update a given DS according to UUID.
     Only process DS if dataset's cd_nomenclatures exists in ref_normenclatures.t_nomenclatures.
 
-    :param af: <dict> DS infos
+    :param ds: <dict> DS infos
     :param cd_nomenclatures: <array> cd_nomenclature from ref_normenclatures.t_nomenclatures
     """
     if ds["id_nomenclature_data_origin"] not in cd_nomenclatures:
@@ -78,7 +78,13 @@ def sync_ds(ds, cd_nomenclatures):
             .on_conflict_do_nothing(index_elements=["unique_dataset_id"])
         )
     DB.session.execute(statement)
-    return TDatasets.query.filter_by(unique_dataset_id=ds["unique_dataset_id"]).first()
+    dataset = TDatasets.query.filter_by(unique_dataset_id=ds["unique_dataset_id"]).first()
+
+    # Associate dataset to the modules if new dataset
+    if not ds_exists:
+        associate_dataset_modules(dataset)
+
+    return dataset
 
 
 def sync_af(af):
@@ -183,3 +189,16 @@ def associate_actors(actors, CorActor, pk_name, pk_value):
             )
         )
         DB.session.execute(statement)
+
+
+def associate_dataset_modules(dataset):
+    """
+    Associate a dataset to modules specified in [MTD][JDD_MODULE_CODE_ASSOCIATION] parameter (geonature config)
+
+    :param dataset: <geonature.core.gn_meta.models.TDatasets> dataset (SQLAlchemy model object)
+    """
+    dataset.modules.extend(
+        DB.session.query(TModules)
+        .filter(TModules.module_code.in_(current_app.config["MTD"]["JDD_MODULE_CODE_ASSOCIATION"]))
+        .all()
+    )
