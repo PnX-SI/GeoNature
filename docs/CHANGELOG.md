@@ -13,6 +13,7 @@ CHANGELOG
 - [Métadonnées] Correction des droits de modification des cadres d'acquisition
 - Correction du script `migration.sh` (#2525 par @bouttier)
 - Correction du downgrade d'une migration Alembic d'Occtax (#2500 par @JulienCorny)
+- Correction et amélioration de la page de maintenance (#2535)
 
 2.12.2 (2023-04-18)
 -------------------
