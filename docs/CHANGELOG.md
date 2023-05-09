@@ -1,6 +1,26 @@
 CHANGELOG
 =========
 
+2.12.3 (unreleased)
+-------------------
+
+**🐛 Corrections**
+
+- [Synthèse] Correction du filtre des observations épinglées pour ne remonter que celles de l'utilisateur connecté (#2507 par @mvergez)
+- [Synthèse] Correction de la recherche géographique avec chargement d'un fichier local (#2522 par @bouttier et @mvergez)
+- [Admin] Correction d'une régression des performances d'édition des permissions (#2523 par @bouttier)
+- Compléments de la documentation (page maintenance, migration avec git, configuratrion dynamique, #2526, #2501, #2503 par @camillemonchicourt)
+- [Métadonnées] Correction des droits de modification des cadres d'acquisition
+- Correction du script `migration.sh` (#2525 par @bouttier)
+- Correction du downgrade d'une migration Alembic d'Occtax (#2500 par @JulienCorny)
+- Correction et amélioration de la page de maintenance (#2535)
+- Correction de la synchronisation des JDD et de l’association aux modules (#2532 par @VincentCauchois)
+
+**⚠️ Notes de version**
+
+Si vous utilisez la page de maintenance, celle-ci a été revue, [référez vous à la documentation](https://docs.geonature.fr/installation.html#configuration-apache) afin de la mettre à jour.
+
+
 2.12.2 (2023-04-18)
 -------------------
 
