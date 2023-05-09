@@ -1086,11 +1086,11 @@ Respecte le standard Occurrence de taxon du SINP.</p>
 <section id="configuration-generale-de-l-application">
 <h3>Configuration générale de l’application<a class="headerlink" href="#configuration-generale-de-l-application" title="Lien permanent vers cette rubrique"></a></h3>
 <p>La configuration générale de GeoNature se fait dans le fichier <code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code>.
-Une version minimaliste est généré à l’installation à partir du fichier <code class="docutils literal notranslate"><span class="pre">config/settings.ini</span></code>.
-Vous pouvez compléter votre configuration en vous inspirant des paramètres par défaut présent dans le fichier <code class="docutils literal notranslate"><span class="pre">config/default_config.toml.example</span></code>.</p>
-<p>Le frontend lit sa configuration depuis le fichier <code class="docutils literal notranslate"><span class="pre">frontend/conf/app.config.ts</span></code> mais ce dernier n’est pas à modifier manuellement : il est généré à partir des paramètres présents dans le fichier <code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code>.</p>
-<p id="post-config-change">Depuis la version 2.12.0 de GeoNature, la configuration de GeoNature est envoyée dynamiquement du backend au frontend par l’API de GeoNature et ne nécessite donc plus de regénérer la configuration ni de rebuilder le frontend.</p>
-<p>De plus, à chaque modification du fichier de configuration de GeoNature, le backend est rechargé automatiquement.</p>
+Une version minimaliste est générée à l’installation à partir du fichier <code class="docutils literal notranslate"><span class="pre">config/settings.ini</span></code>.
+Vous pouvez compléter votre configuration en vous inspirant des paramètres par défaut présents dans le fichier <code class="docutils literal notranslate"><span class="pre">config/default_config.toml.example</span></code>.</p>
+<p id="post-config-change">Depuis la version 2.12.0 de GeoNature, la configuration de GeoNature et de ses modules est envoyée dynamiquement du backend au frontend par l’API de GeoNature et ne nécessite donc plus de regénérer la configuration ni de rebuilder le frontend.</p>
+<p>De plus, à chaque modification du fichier de configuration de GeoNature ou d’un de ses modules, le backend est rechargé automatiquement.</p>
+<p>Cependant, si vous faites une erreur dans un des fichiers de configuration, le chargement automatique va entrainer un plantage de GeoNature. Dans ce cas, mme si l’erreur d’un des fichiers de configuration est corrigée, il faut redémarrer manuellement GeoNature avec la commande <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">geonature</span></code>.</p>
 <p>Pour les versions précédentes de GeoNature, à chaque modification du fichier de configuration, vous devez :</p>
 <ul class="simple">
 <li><p>relancer le backend : <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">geonature</span></code></p></li>

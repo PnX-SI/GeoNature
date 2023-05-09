@@ -363,7 +363,7 @@ $ nano config/settings.ini
 <h3>Configuration Apache<a class="headerlink" href="#configuration-apache" title="Lien permanent vers cette rubrique"></a></h3>
 <ul>
 <li><p>Le script <code class="docutils literal notranslate"><span class="pre">install/06_configure_apache.sh</span></code> copie le fichier de configuration de référence <code class="docutils literal notranslate"><span class="pre">install/assets/geonature_apache.conf</span></code>, le place dans <code class="docutils literal notranslate"><span class="pre">/etc/apache2/conf-available/geonature.conf</span></code> et remplace ses variables à partir de votre configuration de GeoNature.</p>
-<p>Relancez ce script si vous changer l’URL de votre GeoNature ou les paramètres liés aux chemins et URL des fichiers statiques et des médias.</p>
+<p>Relancez ce script si vous changez l’URL de votre GeoNature ou les paramètres liés aux chemins et URL des fichiers statiques et des médias.</p>
 </li>
 <li><p>Créez la configuration du vhost, incluant la configuration par défaut créée précédemment :</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo cp install/assets/vhost_apache.conf /etc/apache2/sites-available/geonature.conf <span class="c1"># Copier le vhost</span>
@@ -383,6 +383,21 @@ $ nano config/settings.ini
 </li>
 <li><p>L’application est disponible à l’adresse suivante : <a class="reference external" href="http://monurl.fr/geonature">http://monurl.fr/geonature</a></p></li>
 </ul>
+<p>Une page HTML de maintenance et un vhost dédié sont aussi disponibles. Pour les mettre en place :</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo cp install/assets/vhost_apache_maintenance.conf /etc/apache2/sites-available/geonature_maintenance.conf <span class="c1"># Copier le vhost</span>
+<span class="gp">$ </span>sudo nano /etc/apache2/sites-available/geonature_maintenance.conf <span class="c1"># Modifier la variable ``${DOMAIN_NAME}``</span>
+<span class="gp">$ </span>sudo cp install/assets/maintenance.html /var/www/geonature_maintenance/index.html
+</pre></div>
+</div>
+</div></blockquote>
+<p>Pour passer votre GeoNature en maintenance, vous pouvez alors désactiver le vhost de GeoNature et activer celui de la page de maintenance :</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo a2dissite geonature.conf
+<span class="gp">$ </span>sudo a2ensite geonature_maintenance.conf
+</pre></div>
+</div>
+</div></blockquote>
 </section>
 <section id="dependances">
 <h3>Dépendances<a class="headerlink" href="#dependances" title="Lien permanent vers cette rubrique"></a></h3>
@@ -649,9 +664,9 @@ d’installer la nouvelle version du module.</p>
 </div>
 </li>
 <li><p>Renommer l’ancien repertoire de l’application, ainsi que le nouveau :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mv /home/`whoami`/geonature/ /home/`whoami`/geonature_old/
-mv GeoNature-X.Y.Z /home/`whoami`/geonature/
-cd geonature
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mv</span> <span class="o">~/</span><span class="n">geonature</span><span class="o">/</span> <span class="o">~/</span><span class="n">geonature_old</span><span class="o">/</span>
+<span class="n">mv</span> <span class="o">~/</span><span class="n">GeoNature</span><span class="o">-</span><span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span> <span class="o">~/</span><span class="n">geonature</span><span class="o">/</span>
+<span class="n">cd</span> <span class="o">~/</span><span class="n">geonature</span>
 </pre></div>
 </div>
 </li>
@@ -666,6 +681,16 @@ cd geonature
 </div>
 </li>
 </ul>
+<p>Depuis la version 2.12, le script <cite>migration.sh</cite> peut prendre en argument le chemin vers l’ancien dossier d’installation de GeoNature. Il peut s’agir du même dossier que la nouvelle installation de GeoNature. Cela permet d’utiliser ce script si la nouvelle version de GeoNature est dans le même dossier et donc de gérer le cas où GeoNature est installé et mis à jour avec git.</p>
+<p>Dans ce cas, les commandes à exécuter sont :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">GeoNature</span>
+<span class="n">git</span> <span class="n">status</span> <span class="c1"># optionnel, pour connaitre l&#39;état et la version ou branche actuellement utilisée</span>
+<span class="n">git</span> <span class="n">fetch</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span> <span class="c1"># où X.Y.Z est le numéro du tag de la version vers laquelle faire la mise à jour, ou le nom de la branche à utiliser</span>
+<span class="n">git</span> <span class="n">submodule</span> <span class="n">update</span> <span class="c1"># ou &quot;git config submodule.recurse true&quot; lancé une seule fois, pour que la mise à jour des sous-modules soit relancée automatiquement à chaque git pull</span>
+<span class="o">./</span><span class="n">install</span><span class="o">/</span><span class="n">migration</span><span class="o">/</span><span class="n">migration</span><span class="o">.</span><span class="n">sh</span> <span class="o">.</span>
+</pre></div>
+</div>
 </section>
 </section>
 
