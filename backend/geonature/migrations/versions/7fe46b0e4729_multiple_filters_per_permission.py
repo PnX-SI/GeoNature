@@ -36,23 +36,6 @@ def upgrade():
     op.execute("DROP TRIGGER tri_check_no_multiple_scope_perm ON gn_permissions.t_permissions")
     op.execute("DROP FUNCTION gn_permissions.fct_tri_does_user_have_already_scope_filter()")
 
-    # Remove permissions with filters which are not of SCOPE type
-    op.execute(
-        """
-        DELETE FROM
-            gn_permissions.t_permissions p
-        USING
-            gn_permissions.t_filters f,
-            gn_permissions.bib_filters_type t
-        WHERE
-            p.id_filter = f.id_filter
-        AND
-            f.id_filter_type = t.id_filter_type
-        AND
-            t.code_filter_type != 'SCOPE'
-        """
-    )
-
     # Remove SCOPE '3' as equivalent to no filters
     op.alter_column(
         schema="gn_permissions",
@@ -184,17 +167,6 @@ def downgrade():
             gn_permissions.bib_filters_scope s
         JOIN
             gn_permissions.bib_filters_type t ON t.code_filter_type = 'SCOPE'
-        """
-    )
-    op.execute(
-        """
-        INSERT INTO gn_permissions.t_filters
-            (value_filter, label_filter, description_filter, id_filter_type)
-        VALUES
-            ('61098', 'Les bouquetins', 'Filtre taxonomique sur les bouquetins', (SELECT id_filter_type FROM gn_permissions.bib_filters_type WHERE code_filter_type = 'TAXONOMIC')),
-            ('185961', 'Les oiseaux', 'Filtre taxonomique sur les oiseaux - classe Aves', (SELECT id_filter_type FROM gn_permissions.bib_filters_type WHERE code_filter_type = 'TAXONOMIC')),
-            ('DONNEES_DEGRADEES', 'Données dégradées', 'Filtre pour afficher les données sensibles dégradées/floutées à l''utilisateur', (SELECT id_filter_type FROM gn_permissions.bib_filters_type WHERE code_filter_type = 'SENSITIVITY')),
-            ('DONNEES_PRECISES', 'Données précises', 'Filtre qui affiche les données sensibles  précises à l''utilisateur', (SELECT id_filter_type FROM gn_permissions.bib_filters_type WHERE code_filter_type = 'SENSITIVITY'))
         """
     )
     op.add_column(
