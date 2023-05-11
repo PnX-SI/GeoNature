@@ -43,7 +43,7 @@ def upgrade():
             rec record;
         begin
             execute format(
-                'create table %s (like %s including all)',
+                'create table %s (like %s including constraints including identity including indexes)',
                 new_table, source_table);
             for rec in
                 select oid, conname
