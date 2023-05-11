@@ -145,7 +145,10 @@ def downgrade():
         Column(
             "id_filter_type",
             Integer,
-            ForeignKey("gn_permissions.bib_filters_type.id_filter_type"),
+            ForeignKey(
+                "gn_permissions.bib_filters_type.id_filter_type",
+                name="fk_t_filters_id_filter_type",
+            ),
         ),
         schema="gn_permissions",
     )
@@ -175,7 +178,7 @@ def downgrade():
         column=Column(
             "id_filter",
             Integer,
-            ForeignKey("gn_permissions.t_filters.id_filter"),
+            ForeignKey("gn_permissions.t_filters.id_filter", name="fk_cor_r_a_f_m_o_id_filter"),
             nullable=True,
         ),
     )
