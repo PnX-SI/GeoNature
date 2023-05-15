@@ -103,6 +103,35 @@ def upgrade():
             gn_permissions.bib_actions a ON a.code_action = v.action_code
         """
     )
+    op.execute(
+        """
+        WITH bad_permissions AS (
+            SELECT
+                p.id_permission
+            FROM
+                gn_permissions.t_permissions p
+            JOIN gn_commons.t_modules m
+                    USING (id_module)
+            WHERE
+                m.module_code IN ('GEONATURE', 'ADMIN', 'METADATA', 'SYNTHESE')
+            EXCEPT
+            SELECT
+                p.id_permission
+            FROM
+                gn_permissions.t_permissions p
+            JOIN gn_permissions.t_permissions_available pa ON
+                (p.id_module = pa.id_module
+                    AND p.id_object = pa.id_object
+                    AND p.id_action = pa.id_action)
+        )
+        DELETE
+        FROM
+            gn_permissions.t_permissions p
+                USING bad_permissions bp
+        WHERE
+            bp.id_permission = p.id_permission;
+        """
+    )
 
 
 def downgrade():
