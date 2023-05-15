@@ -140,7 +140,7 @@ class Permission(db.Model):
         default=select([PermObject.id_object]).where(PermObject.code_object == "ALL"),
     )
 
-    role = db.relationship(User)
+    role = db.relationship(User, backref="permissions")
     action = db.relationship(PermAction)
     module = db.relationship("TModules")
     object = db.relationship(PermObject)
