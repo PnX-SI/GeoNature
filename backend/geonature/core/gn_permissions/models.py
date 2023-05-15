@@ -110,6 +110,22 @@ class PermissionAvailable(db.Model):
         return self.label
 
 
+class PermFilter:
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+
+    def __str__(self):
+        if self.name == "SCOPE":
+            if self.value == 1:
+                return """<i class="fa fa-user" aria-hidden="true"></i> à moi"""
+            elif self.value == 2:
+                return """<i class="fa fa-users" aria-hidden="true"></i> de mon organisme"""
+        elif self.name == "SENSITIVITY":
+            if self.value:
+                return """<i class="fa fa-low-vision" aria-hidden="true"></i>  non sensible"""
+
+
 @serializable
 class Permission(db.Model):
     __tablename__ = "t_permissions"
@@ -173,19 +189,22 @@ class Permission(db.Model):
                 return False
         return True
 
-    def has_other_filters_than(self, *expected_filters):
+    @property
+    def filters(self):
+        filters = []
         for name, field in self.filters_fields.items():
-            if name in expected_filters:
-                continue  # this filter is expected, defined or not
-            # for unexpected filters, return True if filter is set
             value = getattr(self, field.name)
             if field.nullable:
-                # for nullable field, consider filter in use if not None
-                if value is not None:
-                    return True
-            else:
-                # for non-nullable field, consider filter in use if value evaluate as True
-                # XXX may not be appropriate for futur non bool filters
-                if value:
-                    return True
+                if value is None:
+                    continue
+            if field.type.python_type == bool:
+                if not value:
+                    continue
+            filters.append(PermFilter(name, value))
+        return filters
+
+    def has_other_filters_than(self, *expected_filters):
+        for flt in self.filters:
+            if flt.name not in expected_filters:
+                return True
         return False
