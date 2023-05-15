@@ -956,8 +956,16 @@ def get_bbox():
 
 
 @routes.route("/observation_count_per_column/<column>", methods=["GET"])
+@login_required
 def observation_count_per_column(column):
-    """Get observations count group by a given column"""
+    """
+    Get observations count group by a given column
+
+    This function was used to count observations per dataset,
+    but this usage have been replaced by
+    TDatasets.synthese_records_count.
+    Remove this function as it is very inefficient?
+    """
     if column not in sa.inspect(Synthese).column_attrs:
         raise BadRequest(f"No column name {column} in Synthese")
     synthese_column = getattr(Synthese, column)
@@ -973,7 +981,7 @@ def observation_count_per_column(column):
 
 
 @routes.route("/taxa_distribution", methods=["GET"])
-@json_resp
+@login_required
 def get_taxa_distribution():
     """
     Get taxa distribution for a given dataset or acquisition framework
@@ -1013,7 +1021,7 @@ def get_taxa_distribution():
         query = query.filter(Synthese.id_source == id_source)
 
     data = query.group_by(rank).all()
-    return [{"count": d[0], "group": d[1]} for d in data]
+    return jsonify([{"count": d[0], "group": d[1]} for d in data])
 
 
 @routes.route("/reports", methods=["POST"])

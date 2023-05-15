@@ -484,9 +484,13 @@ class TestSynthese:
             },
         )
 
-    def test_taxa_distribution(self, synthese_data):
+    def test_taxa_distribution(self, users, synthese_data):
         s = synthese_data["p1_af1"]
 
+        response = self.client.get(url_for("gn_synthese.get_taxa_distribution"))
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user_cookie(self.client, users["self_user"])
         response = self.client.get(url_for("gn_synthese.get_taxa_distribution"))
         assert response.status_code == 200
         assert len(response.json)
