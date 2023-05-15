@@ -225,7 +225,7 @@ def api_get_id_table_location(schema_dot_table):
 # Gestion des lieux (places) #
 ##############################
 @routes.route("/places", methods=["GET"])
-@permissions.check_cruved_scope("R")
+@login_required
 def list_places():
     places = TPlaces.query.filter_by(id_role=g.current_user.id_role).all()
     return jsonify([p.as_geofeature() for p in places])
@@ -233,7 +233,7 @@ def list_places():
 
 @routes.route("/place", methods=["POST"])  #  XXX best practices recommend plural nouns
 @routes.route("/places", methods=["POST"])
-@permissions.check_cruved_scope("C")
+@login_required
 def add_place():
     data = request.get_json()
     # FIXME check data validity!
@@ -259,7 +259,7 @@ def add_place():
     "/place/<int:id_place>", methods=["DELETE"]
 )  # XXX best practices recommend plural nouns
 @routes.route("/places/<int:id_place>", methods=["DELETE"])
-@permissions.check_cruved_scope("D")
+@login_required
 def delete_place(id_place):
     place = TPlaces.query.get_or_404(id_place)
     if g.current_user.id_role != place.id_role:
