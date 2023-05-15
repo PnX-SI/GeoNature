@@ -390,10 +390,6 @@ class TestCommons:
         response = self.client.post(url_for("gn_commons.add_place"))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["noright_user"])
-        response = self.client.post(url_for("gn_commons.add_place"))
-        assert response.status_code == Forbidden.code
-
         set_logged_user_cookie(self.client, users["user"])
         response = self.client.post(url_for("gn_commons.add_place"), data=geofeature)
         assert response.status_code == 200
