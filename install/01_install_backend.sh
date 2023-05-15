@@ -51,7 +51,7 @@ parseScriptOptions "${@}"
 cd "${BASE_DIR}"
 
 if [ -f config/geonature_config.toml ]; then
-  echo "Utilisation du fichier de configuration GeoNature exisant"
+  echo "Utilisation du fichier de configuration GeoNature existant"
 else
   echo "Création du fichier de configuration GeoNature..."
   cp config/geonature_config.toml.sample config/geonature_config.toml
@@ -60,7 +60,6 @@ else
   sed -i "s|^URL_APPLICATION = .*$|URL_APPLICATION = '${my_url}geonature'|" config/geonature_config.toml
   sed -i "s|^API_ENDPOINT = .*$|API_ENDPOINT = '${my_url}geonature\/api'|" config/geonature_config.toml
   sed -i "s|^API_TAXHUB = .*$|API_TAXHUB = '${my_url}taxhub\/api'|" config/geonature_config.toml
-  sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 16`'|" config/geonature_config.toml
   sed -i "s|^DEFAULT_LANGUAGE = .*$|DEFAULT_LANGUAGE = '${default_language}'|" config/geonature_config.toml
   sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 32`'|" config/geonature_config.toml
 fi
@@ -111,6 +110,7 @@ fi
 EOF
 fi
 
+# QUESTION VINCENT : pourquoi install paquets npm dans script install backend
 echo "Installation des paquets npm"
 cd "${BASE_DIR}/frontend"
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"

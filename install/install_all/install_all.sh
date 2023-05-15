@@ -113,13 +113,8 @@ sed -i "s/install_default_dem=.*$/install_default_dem=$install_default_dem/g" co
 sed -i "s/vectorise_dem=.*$/vectorise_dem=$vectorise_dem/g" config/settings.ini
 sed -i "s/install_ref_sensitivity=.*$/install_ref_sensitivity=$install_ref_sensitivity/g" config/settings.ini
 sed -i "s/add_sample_data=.*$/add_sample_data=$add_sample_data/g" config/settings.ini
-sed -i "s/usershub_release=.*$/usershub_release=$usershub_release/g" config/settings.ini
-sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini
-sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini
 sed -i "s/install_module_validation=.*$/install_module_validation=$install_module_validation/g" config/settings.ini
 sed -i "s/install_module_occhab=.*$/install_module_occhab=$install_module_occhab/g" config/settings.ini
-sed -i "s/proxy_http=.*$/proxy_http=$proxy_http/g" config/settings.ini
-sed -i "s/proxy_https=.*$/proxy_https=$proxy_https/g" config/settings.ini
 
 cd "${GEONATURE_DIR}/install"
 

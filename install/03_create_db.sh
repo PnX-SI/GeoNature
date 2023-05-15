@@ -29,7 +29,7 @@ mkdir -p var/log
 
 if database_exists "${db_name}"; then
     if $drop_apps_db; then
-        echo "Close all Postgresql conections on GeoNature DB"
+        echo "Close all Postgresql connections on GeoNature DB"
         query=("SELECT pg_terminate_backend(pg_stat_activity.pid) "
             "FROM pg_stat_activity "
             "WHERE pg_stat_activity.datname = '${db_name}' "
