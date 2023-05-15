@@ -140,7 +140,7 @@ class Permission(db.Model):
         default=select([PermObject.id_object]).where(PermObject.code_object == "ALL"),
     )
 
-    role = db.relationship(User)
+    role = db.relationship(User, backref="permissions")
     action = db.relationship(PermAction)
     module = db.relationship("TModules")
     object = db.relationship(PermObject)
@@ -202,6 +202,19 @@ class Permission(db.Model):
                     continue
             filters.append(PermFilter(name, value))
         return filters
+
+    def filters_display(self):
+        display = []
+        for name, value in self.filters:
+            if name == "SCOPE":
+                if value == 1:
+                    display.append("m’appartenant")
+                elif value == 2:
+                    display.append("appartenant à mon organisme")
+            elif name == "SENSITIVITY":
+                if value:
+                    display.append("non sensible")
+        return ", ".join(display)
 
     def has_other_filters_than(self, *expected_filters):
         for flt in self.filters:
