@@ -149,7 +149,7 @@ class Permission(db.Model):
 
     @staticmethod
     def __SCOPE_le__(a, b):
-        return b is None or (a is not None and a < b)
+        return b is None or (a is not None and a <= b)
 
     @staticmethod
     def __SENSITIVITY_le__(a, b):
