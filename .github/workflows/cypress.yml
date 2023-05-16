@@ -72,7 +72,7 @@ jobs:
         working-directory: ./backend
       - name: Install database
         run: |
-          install/db/populate_db_for_test.sh
+          install/03b_populate_db_for_test.sh
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
         # FRONTEND

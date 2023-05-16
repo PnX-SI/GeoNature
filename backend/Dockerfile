@@ -139,7 +139,7 @@ COPY --from=build-utils /build/dist/*.whl .
 COPY --from=build-utils-geo /build/dist/*.whl .
 COPY --from=build-geonature /build/dist/*.whl .
 
-COPY --chmod=755 /install/db/populate_db.sh ./populate_db.sh
+COPY --chmod=755 /install/03b_populate_db.sh ./populate_db.sh
 
 
 ENV GEONATURE_CONFIG_FILE ""
