@@ -19,6 +19,8 @@ from flask_cors import CORS
 from flask_sqlalchemy import before_models_committed
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.middleware.shared_data import SharedDataMiddleware
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+from werkzeug.wrappers import Response
 from psycopg2.errors import UndefinedTable
 import sqlalchemy as sa
 from sqlalchemy.exc import OperationalError, ProgrammingError
@@ -97,9 +99,6 @@ def create_app(with_external_mods=True):
 
     app.config.update(config)
 
-    if "SCRIPT_NAME" not in os.environ:
-        os.environ["SCRIPT_NAME"] = app.config["APPLICATION_ROOT"].rstrip("/")
-
     # Enable deprecation warnings in debug mode
     if app.debug and not sys.warnoptions:
         warnings.filterwarnings(action="default", category=DeprecationWarning)
@@ -108,6 +107,11 @@ def create_app(with_external_mods=True):
     app.wsgi_app = SchemeFix(app.wsgi_app, scheme=config.get("PREFERRED_URL_SCHEME"))
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
     app.wsgi_app = RequestID(app.wsgi_app)
+    if app.config["APPLICATION_ROOT"] != "/":
+        app.wsgi_app = DispatcherMiddleware(
+            Response("Not Found", status=404),
+            {app.config["APPLICATION_ROOT"].rstrip("/"): app.wsgi_app},
+        )
 
     if config.get("CUSTOM_STATIC_FOLDER"):
         app.wsgi_app = SharedDataMiddleware(
