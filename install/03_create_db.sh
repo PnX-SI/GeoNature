@@ -58,26 +58,8 @@ fi
 write_log "Creating GeoNature database..."
 sudo -u postgres -s createdb -O $user_pg $db_name -T template0 -E UTF-8 -l $my_local |& tee -a "${LOG_FILE}"
 
-write_log "Adding default PostGIS extension"
-sudo -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS postgis;" |& tee -a "${LOG_FILE}"
-
-write_log "Extracting PostGIS version"
-postgis_full_version=$(sudo -u postgres -s psql -d "${db_name}" -c "SELECT PostGIS_Version();")
-postgis_short_version=$(echo "${postgis_full_version}" | sed -n 's/^\s*\([0-9]*\.[0-9]*\)\s.*/\1/p')
-write_log "PostGIS full version:\n ${postgis_full_version}"
-write_log  "PostGIS short version extract: '${postgis_short_version}'"
-
-write_log "Adding Raster PostGIS extension if necessary"
-postgis_required_version="3.0"
-if [[ "$(printf '%s\n' "${postgis_required_version}" "${postgis_short_version}" | sort -V | head -n1)" = "${postgis_required_version}" ]]; then
-    write_log "PostGIS version greater than or equal to ${postgis_required_version} --> adding Raster extension"
-    sudo -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS postgis_raster;" |& tee -a "${LOG_FILE}"
-else
-    write_log "PostGIS version lower than ${postgis_required_version} --> do nothing"
-fi
-
-write_log "Adding other use PostgreSQL extensions"
-sudo -u postgres -s psql -d $db_name -f "${SCRIPT_DIR}/db/create_extentions.sql" |& tee -a "${LOG_FILE}"
+write_log "Adding PostgreSQL extensions"
+sudo -u postgres -s psql -d $db_name -f "${SCRIPT_DIR}/db/add_extentions.sql" |& tee -a "${LOG_FILE}"
 
 
 # Mise en place de la structure de la BDD et des données permettant son fonctionnement avec l'application
