@@ -4,7 +4,7 @@ import pytest
 from datetime import datetime as dt
 
 from flask import url_for, current_app, g
-from werkzeug.exceptions import Forbidden, NotFound
+from werkzeug.exceptions import Unauthorized, Forbidden, NotFound
 from shapely.geometry import Point
 from geoalchemy2.shape import from_shape
 from sqlalchemy import func
@@ -231,7 +231,12 @@ class TestOcctax:
         data = response.json
         assert data["properties"]["id_module"] == module.id_module
 
-    def test_get_defaut_nomenclatures(self):
+    def test_get_defaut_nomenclatures(self, users):
+        response = self.client.get(url_for("pr_occtax.getDefaultNomenclatures"))
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user_cookie(self.client, users["user"])
+
         response = self.client.get(url_for("pr_occtax.getDefaultNomenclatures"))
         assert response.status_code == 200
 
