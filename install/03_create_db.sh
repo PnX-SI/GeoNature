@@ -78,4 +78,4 @@ if [[ "${MODE}" == "dev" ]]; then
     mkdir -p "${DATA_DIRECTORY}"
 fi
 
-. ${SCRIPT_DIR}/db/process_migration_and_data.sh |& tee -a "${LOG_FILE}"
+. ${SCRIPT_DIR}/db/populate_db.sh |& tee -a "${LOG_FILE}"
