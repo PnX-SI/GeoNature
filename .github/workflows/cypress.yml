@@ -37,14 +37,14 @@ jobs:
           psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "postgis_raster";'
         env:
           PGPASSWORD: geonatpasswd
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
       - name: Add database extensions
         run: |
           psql -h localhost -U geonatadmin -d geonature2db -f install/db/create_extentions.sql
         env:
           PGPASSWORD: geonatpasswd
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
       - name: Set up Python 3.9
         uses: actions/setup-python@v4
         with:
