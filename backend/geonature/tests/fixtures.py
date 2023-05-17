@@ -50,6 +50,7 @@ __all__ = [
     "medium",
     "module",
     "perm_object",
+    "celery_eager",
 ]
 
 
@@ -371,8 +372,13 @@ def create_media(media_path=""):
 
 @pytest.fixture
 def medium(app):
+    # FIXME: find a better way to get the id_media that will be created
+    new_id_media = (db.session.query(func.max(TMedias.id_media)).scalar() or 0) + 1
     image = Image.new("RGBA", size=(1, 1), color=(155, 0, 0))
-    with tempfile.NamedTemporaryFile(dir=TMedias.base_dir(), suffix=".png") as f:
+    # Delete = false since it will be done automatically
+    with tempfile.NamedTemporaryFile(
+        dir=TMedias.base_dir(), prefix=f"{new_id_media}_", suffix=".png", delete=False
+    ) as f:
         image.save(f, "png")
         yield create_media(media_path=str(f.name))
 
