@@ -106,6 +106,15 @@ class PermissionAvailable(db.Model):
     scope_filter = db.Column(db.Boolean, server_default=sa.false())
     sensitivity_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
 
+    filters_fields = {
+        "SCOPE": scope_filter,
+        "SENSITIVITY": sensitivity_filter,
+    }
+
+    @property
+    def filters(self):
+        return [k for k, v in self.filters_fields.items() if getattr(self, v.name)]
+
     def __str__(self):
         return self.label
 
