@@ -1,6 +1,7 @@
 from flask import url_for, has_app_context, Markup, request
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.sqla.filters import FilterEqual
+import sqlalchemy as sa
 from sqlalchemy.orm import contains_eager, joinedload
 
 from geonature.utils.env import db
@@ -105,18 +106,7 @@ def role_formatter(view, context, model, name):
 
 
 def permissions_formatter(view, context, model, name):
-    available_permissions = (
-        PermissionAvailable.query.join(PermissionAvailable.module)
-        .join(PermissionAvailable.object)
-        .join(PermissionAvailable.action)
-        .options(
-            contains_eager(PermissionAvailable.module),
-            contains_eager(PermissionAvailable.object),
-            contains_eager(PermissionAvailable.action),
-        )
-        .order_by(TModules.module_code, PermObject.id_object, PermAction.id_action)
-        .all()
-    )
+    available_permissions = PermissionAvailable.query.nice_order().all()
 
     o = '<table class="table">'
     columns = ["Module", "Object", "Action", "Label"]
@@ -163,6 +153,8 @@ def permissions_formatter(view, context, model, name):
         for perms, managable in permissions:
             o += "<td>"
             if perms:
+                if len(perms) > 1:
+                    o += f"{len(perms)} permissions :"
                 o += '<table class="table table-bordered table-sm" style="border-collapse: separate; border-spacing:0 8px;">'
                 for perm in perms:
                     flts = perm.filters
@@ -242,6 +234,10 @@ class ObjectAdmin(CruvedProtectedMixin, ModelView):
     module_code = "ADMIN"
     object_code = "PERMISSIONS"
 
+    can_create = False
+    can_edit = False
+    can_delete = False
+
     column_list = ("code_object", "description_object", "modules")
     column_labels = {
         "code_object": "Code",
@@ -251,10 +247,6 @@ class ObjectAdmin(CruvedProtectedMixin, ModelView):
     column_formatters = {
         "modules": modules_formatter,
     }
-
-    can_create = False
-    can_edit = False
-    can_delete = False
 
 
 class PermissionAdmin(CruvedProtectedMixin, ModelView):
@@ -271,6 +263,7 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         "availability": "Permission disponible",
         "sensitivity_filter": "Exclure les données sensibles",
     }
+    column_select_related_list = ("availability",)
     column_searchable_list = ("role.identifiant", "role.nom_complet")
     column_formatters = {
         "role": role_formatter,
@@ -294,15 +287,17 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         ("action", "action.code_action"),
     )
     column_default_sort = [
-        ("role.nom_complet", True),
-        ("module.module_code", True),
-        ("object.code_object", True),
-        ("action.code_action", True),
+        ("role.nom_complet", False),
+        ("module.module_code", False),
+        ("object.code_object", False),
+        ("id_action", False),
     ]
     form_columns = ("role", "availability", "scope", "sensitivity_filter")
-
-    def get_query(self):
-        return super().get_query().join(Permission.availability)
+    form_args = dict(
+        availability=dict(
+            query_factory=lambda: PermissionAvailable.query.nice_order(),
+        )
+    )
 
     def create_form(self):
         form = super().create_form()
@@ -329,6 +324,10 @@ class PermissionAvailableAdmin(CruvedProtectedMixin, ModelView):
     module_code = "ADMIN"
     object_code = "PERMISSIONS"
 
+    can_create = False
+    can_delete = False
+    can_export = False
+
     column_labels = {
         "scope": "Portée",
         "object": "Objet",
@@ -339,6 +338,17 @@ class PermissionAvailableAdmin(CruvedProtectedMixin, ModelView):
         "module": lambda v, c, m, p: m.module.module_code,
         "object": lambda v, c, m, p: m.object.code_object,
     }
+    column_sortable_list = (
+        ("module", "module.module_code"),
+        ("object", "object.code_object"),
+        ("action", "action.code_action"),
+    )
+    column_default_sort = [
+        ("module.module_code", False),
+        ("object.code_object", False),
+        ("id_action", False),
+    ]
+    form_columns = ("scope_filter", "sensitivity_filter")
 
 
 class RolePermAdmin(CruvedProtectedMixin, ModelView):
