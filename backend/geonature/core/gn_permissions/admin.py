@@ -193,11 +193,14 @@ def permissions_formatter(view, context, model, name):
                             id=perm.id_permission,
                             url=return_url,
                         )
+                        o += f"""<form method="post" action="{delete_url}">"""
+                        if len(ap.filters) > 0:
+                            o += (
+                                f"""<a class="btn btn-primary btn-sm" href="{edit_url}">"""
+                                """<i class="fa fa-pencil" aria-hidden="true"></i>"""
+                                """</a>"""
+                            )
                         o += (
-                            f"""<form method="post" action="{delete_url}">"""
-                            f"""<a class="btn btn-primary btn-sm" href="{edit_url}">"""
-                            """<i class="fa fa-pencil" aria-hidden="true"></i>"""
-                            """</a>"""
                             """<button class="btn btn-danger btn-sm" onclick="return faHelpers.safeConfirm('Supprimer cette permission ?');">"""
                             """<i class="fa fa-trash" aria-hidden="true"></i>"""
                             "</button>"
@@ -206,7 +209,7 @@ def permissions_formatter(view, context, model, name):
                         o += """</div></div>"""
                     o += "</td></tr>"
                 o += "</table>"
-            if managable:
+            if managable and (not perms or len(ap.filters) > 1):
                 add_url = url_for(
                     "permissions/permission.create_view",
                     id_role=model.id_role,
