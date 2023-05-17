@@ -91,6 +91,6 @@ def downgrade():
         WHERE
             pa.id_module = m.id_module
             AND
-            module_code = 'OCCTAX'
+            module_code = 'OCCHAB'
         """
     )
