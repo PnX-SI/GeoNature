@@ -323,8 +323,8 @@ def get_one_synthese(permissions, id_synthese):
 
 
 @routes.route("/export_taxons", methods=["POST"])
-@permissions.check_cruved_scope("E", get_scope=True, module_code="SYNTHESE")
-def export_taxon_web(scope):
+@permissions_required("E", module_code="SYNTHESE")
+def export_taxon_web(permissions):
     """Optimized route for taxon web export.
 
     .. :quickref: Synthese;
@@ -364,7 +364,6 @@ def export_taxon_web(scope):
 
     id_list = request.get_json()
 
-    # check R and E CRUVED to know if we filter with cruved
     cruved = get_scopes_by_action(module_code="SYNTHESE")
     sub_query = (
         select(
@@ -385,9 +384,7 @@ def export_taxon_web(scope):
         {},
     )
 
-    if cruved["R"] > cruved["E"]:
-        # filter on cruved
-        synthese_query_class.filter_query_with_cruved(g.current_user, scope)
+    synthese_query_class.filter_query_all_filters(g.current_user, permissions)
 
     subq = synthese_query_class.query.alias("subq")
 
@@ -403,8 +400,8 @@ def export_taxon_web(scope):
 
 
 @routes.route("/export_observations", methods=["POST"])
-@permissions.check_cruved_scope("E", get_scope=True, module_code="SYNTHESE")
-def export_observations_web(scope):
+@permissions_required("E", module_code="SYNTHESE")
+def export_observations_web(permissions):
     """Optimized route for observations web export.
 
     .. :quickref: Synthese;
@@ -418,13 +415,28 @@ def export_observations_web(scope):
 
     """
     params = request.args
+    # set default to csv
     export_format = params.get("export_format", "csv")
     # Test export_format
     if not export_format in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
         raise BadRequest("Unsupported format")
 
+    # get list of id synthese from POST
+    id_list = request.get_json()
+
+    # Get the SRID for the export
     srid = DB.session.execute(func.Find_SRID("gn_synthese", "synthese", "the_geom_local")).scalar()
-    # set default to csv
+
+    # Get the CTE for synthese filtered by user permissions
+    synthese_query_class = SyntheseQuery(
+        Synthese,
+        select([Synthese.id_synthese]),
+        {},
+    )
+    synthese_query_class.filter_query_all_filters(g.current_user, permissions)
+    cte_synthese_filtered = synthese_query_class.build_query().cte("cte_synthese_filtered")
+
+    # Get the view for export
     export_view = GenericTableGeo(
         tableName="v_synthese_for_export",
         schemaName="gn_synthese",
@@ -433,8 +445,26 @@ def export_observations_web(scope):
         srid=srid,
     )
 
-    # get list of id synthese from POST
-    id_list = request.get_json()
+    # Get the query for export
+    export_query = (
+        select([export_view.tableDef])
+        .select_from(
+            export_view.tableDef.join(
+                cte_synthese_filtered,
+                cte_synthese_filtered.c.id_synthese == export_view.tableDef.c.id_synthese,
+            )
+        )
+        .where(
+            export_view.tableDef.columns[
+                current_app.config["SYNTHESE"]["EXPORT_ID_SYNTHESE_COL"]
+            ].in_(id_list)
+        )
+    )
+
+    # Get the results for export
+    results = DB.session.execute(
+        export_query.limit(current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"])
+    )
 
     db_cols_for_shape = []
     columns_to_serialize = []
@@ -444,37 +474,12 @@ def export_observations_web(scope):
             db_cols_for_shape.append(db_col)
             columns_to_serialize.append(db_col.key)
 
-    query = select([export_view.tableDef]).where(
-        export_view.tableDef.columns[current_app.config["SYNTHESE"]["EXPORT_ID_SYNTHESE_COL"]].in_(
-            id_list
-        )
-    )
-    synthese_query_class = SyntheseQuery(
-        export_view.tableDef,
-        query,
-        {},
-        id_synthese_column=current_app.config["SYNTHESE"]["EXPORT_ID_SYNTHESE_COL"],
-        id_dataset_column=current_app.config["SYNTHESE"]["EXPORT_ID_DATASET_COL"],
-        observers_column=current_app.config["SYNTHESE"]["EXPORT_OBSERVERS_COL"],
-        id_digitiser_column=current_app.config["SYNTHESE"]["EXPORT_ID_DIGITISER_COL"],
-        with_generic_table=True,
-    )
-    # check R and E CRUVED to know if we filter with cruved
-    cruved = get_scopes_by_action(module_code="SYNTHESE")
-    if cruved["R"] > cruved["E"]:
-        synthese_query_class.filter_query_with_cruved(g.current_user, scope)
-
-    results = DB.session.execute(
-        synthese_query_class.query.limit(current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"])
-    )
-
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
 
     if export_format == "csv":
         formated_data = [export_view.as_dict(d, columns=columns_to_serialize) for d in results]
         return to_csv_resp(file_name, formated_data, separator=";", columns=columns_to_serialize)
-
     elif export_format == "geojson":
         features = []
         for r in results:
