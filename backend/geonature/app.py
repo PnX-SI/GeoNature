@@ -51,8 +51,8 @@ def configure_alembic(alembic_config):
     'migrations' entry point value of the 'gn_module' group for all modules having such entry point.
     Thus, alembic will find migrations of all installed geonature modules.
     """
-    version_locations = set(
-        alembic_config.get_main_option("version_locations", default="").split()
+    version_locations = list(
+        set(alembic_config.get_main_option("version_locations", default="").split())
     )
     if "VERSION_LOCATIONS" in config["ALEMBIC"]:
         version_locations.extend(config["ALEMBIC"]["VERSION_LOCATIONS"].split())
@@ -60,7 +60,7 @@ def configure_alembic(alembic_config):
         entry_points(group="alembic", name="migrations"),
         entry_points(group="gn_module", name="migrations"),
     ):
-        version_locations.add(entry_point.value)
+        version_locations.append(entry_point.value)
     alembic_config.set_main_option("version_locations", " ".join(version_locations))
     return alembic_config
 
@@ -180,7 +180,9 @@ def create_app(with_external_mods=True):
     # Enable serving of media files
     app.add_url_rule(
         f"{config['MEDIA_URL']}/<path:filename>",
-        view_func=lambda filename: send_from_directory(config["MEDIA_FOLDER"], filename),
+        view_func=lambda filename: send_from_directory(
+            config["MEDIA_FOLDER"], filename
+        ),
         endpoint="media",
     )
 
@@ -192,7 +194,10 @@ def create_app(with_external_mods=True):
         ("ref_geo.routes:routes", "/geo"),
         ("geonature.core.gn_commons.routes:routes", "/gn_commons"),
         ("geonature.core.gn_permissions.routes:routes", "/permissions"),
-        ("geonature.core.gn_permissions.backoffice.views:routes", "/permissions_backoffice"),
+        (
+            "geonature.core.gn_permissions.backoffice.views:routes",
+            "/permissions_backoffice",
+        ),
         ("geonature.core.users.routes:routes", "/users"),
         ("geonature.core.gn_synthese.routes:routes", "/synthese"),
         ("geonature.core.gn_meta.routes:routes", "/meta"),
@@ -224,6 +229,8 @@ def create_app(with_external_mods=True):
                     current_app.config["DISABLED_MODULES"].append(module_code)
                 else:
                     module_blueprint.config = config[module_code]
-                    app.register_blueprint(module_blueprint, url_prefix=f"/{module_code.lower()}")
+                    app.register_blueprint(
+                        module_blueprint, url_prefix=f"/{module_code.lower()}"
+                    )
 
     return app
