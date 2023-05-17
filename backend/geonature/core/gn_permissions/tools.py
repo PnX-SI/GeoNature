@@ -19,6 +19,8 @@ from pypnusershub.db.models import User
 def _get_user_permissions(id_role):
     return (
         Permission.query.options(
+            joinedload(Permission.module),
+            joinedload(Permission.object),
             joinedload(Permission.action),
         )
         .filter(
@@ -29,46 +31,41 @@ def _get_user_permissions(id_role):
                 Permission.role.has(User.members.any(User.id_role == id_role)),
             ),
         )
-        # These ordering ensure groupby is working properly
-        .order_by(Permission.id_action)
         # remove duplicate permissions (defined at group and user level, or defined in several groups)
+        .order_by(Permission.id_module, Permission.id_object, Permission.id_action)
         .distinct(
-            Permission.id_action,
             Permission.id_module,
             Permission.id_object,
+            Permission.id_action,
             *Permission.filters_fields.values(),
         )
         .all()
     )
 
 
-def _get_user_permissions_by_action(id_role):
-    permissions = _get_user_permissions(id_role)
-    # This ensures empty permissions list for action without permissions
-    permissions_by_action = {action.code_action: [] for action in PermAction.query.all()}
-    # Note: groupby require sorted data, which is done at SQL level
-    permissions_by_action.update(
-        {
-            action_code: list(perms)
-            for action_code, perms in groupby(permissions, key=lambda p: p.action.code_action)
-        }
-    )
-    return permissions_by_action
-
-
-def get_user_permissions_by_action(id_role=None):
-    """
-    This function add caching to _get_user_permissions_by_action
-    and use g.current_user as default role.
-    """
+def get_user_permissions(id_role=None):
     if id_role is None:
         id_role = g.current_user.id_role
-    if "permissions_by_action" in g:  # before_request have been called
-        if id_role not in g.permissions_by_action:
-            g.permissions_by_action[id_role] = _get_user_permissions_by_action(id_role)
-        return g.permissions_by_action[id_role]
-    else:
-        return _get_user_permissions_by_action(id_role)
+    if id_role not in g._permissions_by_user:
+        g._permissions_by_user[id_role] = _get_user_permissions(id_role)
+    return g._permissions_by_user[id_role]
+
+
+def _get_permissions(id_role, module_code, object_code, action_code):
+    permissions = {
+        p
+        for p in get_user_permissions(id_role)
+        if p.module.module_code == module_code
+        and p.object.code_object == object_code
+        and p.action.code_action == action_code
+    }
+
+    # Remove all permissions supersed by another permission
+    for p1, p2 in permutations(permissions, 2):
+        if p1 in permissions and p1 <= p2:
+            permissions.remove(p1)
+
+    return permissions
 
 
 def get_permissions(action_code, id_role=None, module_code=None, object_code=None):
@@ -91,18 +88,10 @@ def get_permissions(action_code, id_role=None, module_code=None, object_code=Non
         else:
             object_code = "ALL"
 
-    permissions = {
-        p
-        for p in get_user_permissions_by_action(id_role)[action_code]
-        if p.module.module_code == module_code and p.object.code_object == object_code
-    }
-
-    # Remove all permissions supersed by another permission
-    for p1, p2 in permutations(permissions, 2):
-        if p1 in permissions and p1 <= p2:
-            permissions.remove(p1)
-
-    return permissions
+    ident = (id_role, module_code, object_code, action_code)
+    if ident not in g._permissions:
+        g._permissions[ident] = _get_permissions(*ident)
+    return g._permissions[ident]
 
 
 def get_scope(action_code, id_role=None, module_code=None, object_code=None):
