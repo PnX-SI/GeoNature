@@ -59,7 +59,7 @@ jobs:
           submodules: true
       - name: Add database extensions
         run: |
-          psql -h localhost -U geonatadmin -d geonature2db -f install/assets/db/add_extentions.sql
+          psql -h localhost -U geonatadmin -d geonature2db -f install/assets/db/add_pg_extensions.sql
         env:
           PGPASSWORD: geonatpasswd
       - name: Set up Python ${{ matrix.python-version }}
