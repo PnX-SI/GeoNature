@@ -478,7 +478,7 @@ class SyntheseQuery:
     def filter_query_all_filters(self, user, permissions):
         """High level function to manage query with all filters.
 
-        Apply CRUVED, toxonomy and other filters.
+        Apply CRUVED, taxonomy and other filters.
 
         Parameters
         ----------
