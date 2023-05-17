@@ -18,9 +18,11 @@ from pypnusershub.db.models import User
 
 def _get_user_permissions(id_role):
     return (
-        Permission.query.join(Permission.module)
-        .join(Permission.object)
-        .join(Permission.action)
+        Permission.query.options(
+            joinedload(Permission.module),
+            joinedload(Permission.object),
+            joinedload(Permission.action),
+        )
         .filter(
             sa.or_(
                 # direct permissions
