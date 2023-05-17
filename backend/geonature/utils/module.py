@@ -18,7 +18,7 @@ from geonature.core.gn_commons.models import TModules
 
 
 def iter_modules_dist():
-    for module_code_entry in entry_points(group="gn_module", name="code"):
+    for module_code_entry in set(entry_points(group="gn_module", name="code")):
         yield module_code_entry.dist
 
 
