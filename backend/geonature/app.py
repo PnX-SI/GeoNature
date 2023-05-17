@@ -55,7 +55,7 @@ def configure_alembic(alembic_config):
         alembic_config.get_main_option("version_locations", default="").split()
     )
     if "VERSION_LOCATIONS" in config["ALEMBIC"]:
-        version_locations.extend(config["ALEMBIC"]["VERSION_LOCATIONS"].split())
+        version_locations |= set(config["ALEMBIC"]["VERSION_LOCATIONS"].split())
     for entry_point in chain(
         entry_points(group="alembic", name="migrations"),
         entry_points(group="gn_module", name="migrations"),
