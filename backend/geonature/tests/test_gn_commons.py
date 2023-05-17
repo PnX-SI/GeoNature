@@ -14,7 +14,7 @@ from geonature.core.gn_commons.admin import BibFieldAdmin
 from geonature.core.gn_commons.models import TAdditionalFields, TMedias, TPlaces, BibTablesLocation
 from geonature.core.gn_commons.models.base import TModules, TParameters, BibWidgets
 from geonature.core.gn_commons.repositories import TMediaRepository
-
+from geonature.core.gn_commons.tasks import clean_attachments
 from geonature.core.gn_permissions.models import TObjects
 from geonature.utils.env import db
 from geonature.utils.errors import GeoNatureError
@@ -539,3 +539,23 @@ class TestCommons:
 
         assert response.status_code == 204  # No content
         assert response.json is None
+
+
+@pytest.mark.usefixtures("temporary_transaction")
+class TestTasks:
+    def test_clean_attachements(self, monkeypatch, celery_eager, medium):
+        # Monkey patch the __before_commit_delete not to remove file
+        # when deleting the medium, so the clean_attachments can work
+        def mock_delete_media(self):
+            return None
+
+        monkeypatch.setattr(TMedias, "__before_commit_delete__", mock_delete_media)
+
+        # Remove media to trigger the cleaning
+        db.session.delete(medium)
+        db.session.commit()
+
+        clean_attachments()
+
+        # File should be removed
+        assert not Path(medium.media_path).is_file()
