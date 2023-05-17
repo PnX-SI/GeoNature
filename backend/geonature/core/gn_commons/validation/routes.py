@@ -18,7 +18,7 @@ log = logging.getLogger()
 
 
 @routes.route("/history/<uuid_attached_row>", methods=["GET"])
-@permissions.check_cruved_scope("R")
+@permissions.check_cruved_scope("R", module_code="SYNTHESE")
 @json_resp
 def get_hist(uuid_attached_row):
     # Test if uuid_attached_row is uuid
