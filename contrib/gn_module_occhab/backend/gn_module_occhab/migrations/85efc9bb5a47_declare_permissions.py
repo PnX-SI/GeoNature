@@ -37,7 +37,7 @@ def upgrade():
             (
                 VALUES
                      ('OCCHAB', 'ALL', 'C', True, 'Créer des habitats')
-                    ,('OCCHAB', 'ALL', 'R', True, 'Voir les habitats)
+                    ,('OCCHAB', 'ALL', 'R', True, 'Voir les habitats')
                     ,('OCCHAB', 'ALL', 'U', True, 'Modifier les habitats')
                     ,('OCCHAB', 'ALL', 'E', True, 'Exporter les habitats')
                     ,('OCCHAB', 'ALL', 'D', True, 'Supprimer des habitats')
