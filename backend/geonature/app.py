@@ -158,7 +158,8 @@ def create_app(with_external_mods=True):
             g.current_user = user_from_token(request.cookies["token"]).role
         except (KeyError, UnreadableAccessRightsError, AccessRightsExpiredError):
             g.current_user = None
-        g.permissions_by_action = {}
+        g._permissions_by_user = {}
+        g._permissions = {}
 
     if config.get("SENTRY_DSN"):
         from sentry_sdk import set_tag, set_user
