@@ -260,6 +260,7 @@ def export_all_habitats(
 
 
 @blueprint.route("/defaultNomenclatures", methods=["GET"])
+@login_required
 def get_default_nomenclatures():
     """Get default nomenclatures define in occhab module
 

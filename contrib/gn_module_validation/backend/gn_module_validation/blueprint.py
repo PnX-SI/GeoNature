@@ -4,6 +4,7 @@ import json
 
 from flask import Blueprint, request, jsonify, current_app, g
 from flask.json import jsonify
+from werkzeug.exceptions import Forbidden
 import sqlalchemy as sa
 from sqlalchemy.orm import aliased, contains_eager, selectinload
 from marshmallow import ValidationError
@@ -28,7 +29,7 @@ log = logging.getLogger()
 
 
 @blueprint.route("", methods=["GET", "POST"])
-@permissions.check_cruved_scope("R", get_scope=True, module_code="VALIDATION")
+@permissions.check_cruved_scope("C", get_scope=True, module_code="VALIDATION")
 def get_synthese_data(scope):
     """
     Return synthese and t_validations data filtered by form params
@@ -193,7 +194,7 @@ def get_synthese_data(scope):
 
 
 @blueprint.route("/statusNames", methods=["GET"])
-@permissions.check_cruved_scope("R", module_code="VALIDATION")
+@permissions.check_cruved_scope("C", module_code="VALIDATION")
 def get_statusNames():
     nomenclatures = (
         TNomenclatures.query.join(BibNomenclaturesTypes)
@@ -212,8 +213,8 @@ def get_statusNames():
 
 
 @blueprint.route("/<id_synthese>", methods=["POST"])
-@permissions.check_cruved_scope("C", module_code="VALIDATION")
-def post_status(id_synthese):
+@permissions.check_cruved_scope("C", get_scope=True, module_code="VALIDATION")
+def post_status(scope, id_synthese):
     data = dict(request.get_json())
     try:
         id_validation_status = data["statut"]
@@ -232,6 +233,10 @@ def post_status(id_synthese):
 
         # t_validations.uuid_attached_row:
         synthese = Synthese.query.get_or_404(int(id))
+
+        if not synthese.has_instance_permission(scope):
+            raise Forbidden
+
         uuid = synthese.unique_id_sinp
 
         # t_validations.id_validator:
@@ -269,12 +274,15 @@ def post_status(id_synthese):
 
 
 @blueprint.route("/date/<uuid:uuid>", methods=["GET"])
-def get_validation_date(uuid):
+@permissions.check_cruved_scope("C", get_scope=True, module_code="VALIDATION")
+def get_validation_date(scope, uuid):
     """
     Retourne la date de validation
     pour l'observation uuid
     """
     s = Synthese.query.filter_by(unique_id_sinp=uuid).lateraljoin_last_validation().first_or_404()
+    if not s.has_instance_permission(scope):
+        raise Forbidden
     if s.last_validation:
         return jsonify(str(s.last_validation.validation_date))
     else:

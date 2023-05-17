@@ -376,6 +376,9 @@ class TestOcchab:
             Station.query.filter_by(id_station=station.id_station).exists()
         ).scalar()
 
-    def test_get_default_nomenclatures(self):
+    def test_get_default_nomenclatures(self, users):
+        response = self.client.get(url_for("occhab.get_default_nomenclatures"))
+        assert response.status_code == Unauthorized.code
+        set_logged_user_cookie(self.client, users["user"])
         response = self.client.get(url_for("occhab.get_default_nomenclatures"))
         assert response.status_code == 200
