@@ -26,6 +26,7 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkActor,
 )
 from geonature.core.gn_synthese.models import TSources, Synthese, TReport, BibReportsTypes
+from geonature.core.sensitivity.models import SensitivityRule
 
 from pypnusershub.db.models import (
     User,
@@ -43,6 +44,7 @@ __all__ = [
     "datasets",
     "acquisition_frameworks",
     "synthese_data",
+    "synthese_sensitive_data",
     "source",
     "reports_data",
     "medium",
@@ -286,8 +288,9 @@ def source():
     return source
 
 
-def create_synthese(geom, taxon, user, dataset, source, uuid, cor_observers):
+def create_synthese(geom, taxon, user, dataset, source, uuid, cor_observers, **kwargs):
     now = datetime.datetime.now()
+
     return Synthese(
         id_source=source.id_source,
         unique_id_sinp=uuid,
@@ -302,6 +305,7 @@ def create_synthese(geom, taxon, user, dataset, source, uuid, cor_observers):
         date_min=now,
         date_max=now,
         cor_observers=cor_observers,
+        **kwargs,
     )
 
 
@@ -339,6 +343,84 @@ def synthese_data(app, users, datasets, source):
             )
             db.session.add(s)
             data[name] = s
+    return data
+
+
+@pytest.fixture()
+def synthese_sensitive_data(app, users, datasets, source):
+    data = {}
+
+    # Retrieve a cd_nom and point for a sensitivity rule
+    sensitivity_rule = SensitivityRule.query.filter(
+        SensitivityRule.active == True,
+        SensitivityRule.areas.any(),
+        SensitivityRule.criterias.any(),
+    ).first()
+    sensitive_cd_nom = sensitivity_rule.cd_nom
+    sensitive_area = sensitivity_rule.areas[0]
+    # Get one point in the geom : the first point of the bounding, assuming its a MULTIPOLYGON
+    sensitive_point = db.session.query(
+        func.ST_Centroid(func.ST_Transform(sensitive_area.geom, 4326))
+    ).first()[0]
+    id_nomenclature_bio_status = None
+    id_type_nomenclature_bio_status = (
+        BibNomenclaturesTypes.query.filter(BibNomenclaturesTypes.mnemonique == "STATUT_BIO")
+        .one()
+        .id_type
+    )
+    id_nomenclature_behaviour = None
+    id_type_nomenclature_behaviour = (
+        BibNomenclaturesTypes.query.filter(BibNomenclaturesTypes.mnemonique == "OCC_COMPORTEMENT")
+        .one()
+        .id_type
+    )
+    # Add a criteria to the sensitivity rule if needed
+    list_criterias_for_sensitivity_rule = sensitivity_rule.criterias
+    if list_criterias_for_sensitivity_rule:
+        one_critera_for_sensitive_rule = list_criterias_for_sensitivity_rule[0]
+        id_type_criteria_for_sensitive_rule = one_critera_for_sensitive_rule.id_type
+        if id_type_criteria_for_sensitive_rule == id_type_nomenclature_bio_status:
+            id_nomenclature_bio_status = one_critera_for_sensitive_rule.id_nomenclature
+        elif id_type_criteria_for_sensitive_rule == id_type_nomenclature_behaviour:
+            id_nomenclature_behaviour = one_critera_for_sensitive_rule.id_nomenclature
+
+    with db.session.begin_nested():
+        for name, cd_nom, point, ds, comment_description in [
+            (
+                "obs1",
+                sensitive_cd_nom,
+                sensitive_point,
+                datasets["own_dataset"],
+                "obs_sensitive_1",
+            ),
+        ]:
+            unique_id_sinp = func.uuid_generate_v4()
+            geom = point
+            taxon = Taxref.query.filter_by(cd_nom=cd_nom).one()
+            kwargs = {}
+            if id_nomenclature_bio_status:
+                kwargs["id_nomenclature_bio_status"] = id_nomenclature_bio_status
+            elif id_nomenclature_behaviour:
+                kwargs["id_nomenclature_behaviour"] = id_nomenclature_behaviour
+            kwargs["comment_description"] = comment_description
+            s = create_synthese(
+                geom, taxon, users["self_user"], ds, source, unique_id_sinp, [], **kwargs
+            )
+            db.session.add(s)
+            data[name] = s
+
+    # Assert that obs_sensitive_1 is a sensitive observation
+    id_nomenclature_sensitive = (
+        TNomenclatures.query.filter(
+            TNomenclatures.nomenclature_type.has(BibNomenclaturesTypes.mnemonique == "SENSIBILITE")
+        )
+        .filter(TNomenclatures.cd_nomenclature == "4")
+        .one()
+    ).id_nomenclature
+    Synthese.query.filter(
+        Synthese.cd_nom == sensitive_cd_nom
+    ).first().id_nomenclature_sensitivity != id_nomenclature_sensitive
+
     return data
 
 
