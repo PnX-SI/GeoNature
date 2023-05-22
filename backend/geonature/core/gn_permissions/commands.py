@@ -37,9 +37,9 @@ def supergrant(skip_existing, dry_run, **filters):
     try:
         role = User.query.filter_by(**filters).one()
     except MultipleResultsFound:
-        raise UsageError("Plusieurs rôles correspondent à vos viltres, veuillez les affiner.")
+        raise UsageError("Plusieurs rôles correspondent à vos filtres, veuillez les affiner.")
     except NoResultFound:
-        raise UsageError("Aucun rôle ne corresponds à vos viltres, veuillez les corriger.")
+        raise UsageError("Aucun rôle ne correspond à vos filtres, veuillez les corriger.")
     if not click.confirm(
         f"Ajouter les permissions administrateur au rôle {role.id_role} ({role.nom_complet}) ?"
     ):
