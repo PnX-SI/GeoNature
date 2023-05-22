@@ -1,4 +1,4 @@
-"""add_comment_notification
+"""add comment notification
 
 Revision ID: 95acee9f0452
 Revises: 9e9218653d6c
@@ -16,7 +16,7 @@ from geonature.core.notifications.models import (
 
 # revision identifiers, used by Alembic.
 revision = "95acee9f0452"
-down_revision = "9e9218653d6c"
+down_revision = "e2a94808cf76"
 branch_labels = None
 depends_on = None
 
