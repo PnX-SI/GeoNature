@@ -128,10 +128,10 @@ export class DynamicFormService {
   createControl(formDef): AbstractControl {
     const formControl = new UntypedFormControl();
     const value = formDef.value || null;
-    this.setControl(formControl, formDef, value);
+    const defaultValue = parseFloat(value) ? parseFloat(value) : value;
+    this.setControl(formControl, formDef, defaultValue);
     return formControl;
   }
-
   addNewControl(formDef, formGroup: UntypedFormGroup) {
     //Mise en fonction des valeurs des dynamic-form ex: "hidden: "({value}) => value.monChamps != 'maValeur'""
     for (const keyParam of Object.keys(formDef)) {
