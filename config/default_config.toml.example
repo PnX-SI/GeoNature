@@ -73,6 +73,8 @@ MAIL_ON_ERROR = false
 # Notifications (true / false)
 NOTIFICATIONS_ENABLED = true
 
+MEDIA_CLEAN_CRONTAB = "0 1 * * *"
+
 [USERSHUB]
     # URL de l'application Usershub
     URL_USERSHUB = "http://127.0.0.1:5001"
