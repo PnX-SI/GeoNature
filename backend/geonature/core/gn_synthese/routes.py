@@ -15,10 +15,11 @@ from flask import (
     g,
 )
 from pypnusershub.db.models import User
+from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from werkzeug.datastructures import MultiDict
 from sqlalchemy import distinct, func, desc, asc, select, case
-from sqlalchemy.orm import joinedload, lazyload, selectinload
+from sqlalchemy.orm import joinedload, lazyload, selectinload, contains_eager
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 from sqlalchemy.orm import load_only, aliased, Load
@@ -48,12 +49,19 @@ from geonature.core.gn_synthese.models import (
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 
+from geonature.core.gn_synthese.utils.blurring import (
+    build_allowed_geom_cte,
+    build_blurred_precise_geom_queries,
+    build_synthese_obs_query,
+    split_blurring_precise_permissions,
+)
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_synthese.utils.orm import is_already_joined
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required, permissions_required
 from geonature.core.gn_permissions.tools import get_scopes_by_action, get_permissions
+from geonature.core.sensitivity.models import cor_sensitivity_area_type
 
 from ref_geo.models import LAreas, BibAreasTypes
 
@@ -141,7 +149,10 @@ def get_observations_for_web(permissions):
             VSyntheseForWebApp.count_min != VSyntheseForWebApp.count_max,
             func.concat(VSyntheseForWebApp.count_min, " - ", VSyntheseForWebApp.count_max),
         ),
-        (VSyntheseForWebApp.count_min != None, func.concat(VSyntheseForWebApp.count_min)),
+        (
+            VSyntheseForWebApp.count_min != None,
+            func.concat(VSyntheseForWebApp.count_min),
+        ),
         else_="",
     )
 
@@ -175,25 +186,60 @@ def get_observations_for_web(permissions):
     ]
     observations = func.json_build_object(*columns).label("obs_as_json")
 
-    obs_query = (
-        # select(VSyntheseForWebApp.id_synthese, observations)
-        select(observations)
-        .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
-        .order_by(VSyntheseForWebApp.date_min.desc())
-        .limit(result_limit)
-    )
+    # Need to check if there are blurring permissions so that the blurring process
+    # does not affect the performance if there is no blurring permissions
+    blurring_permissions, precise_permissions = split_blurring_precise_permissions(permissions)
+    if not blurring_permissions:
+        # No need to apply blurring => same path as before blurring feature
+        obs_query = (
+            select(observations)
+            .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
+            .order_by(VSyntheseForWebApp.date_min.desc())
+            .limit(result_limit)
+        )
 
-    # Add filters to observations CTE query
-    synthese_query_class = SyntheseQuery(
-        VSyntheseForWebApp,
-        obs_query,
-        filters,
-    )
-    synthese_query_class.filter_query_all_filters(g.current_user, permissions)
-    obs_query = synthese_query_class.query
+        # Add filters to observations CTE query
+        synthese_query_class = SyntheseQuery(
+            VSyntheseForWebApp,
+            obs_query,
+            dict(filters),
+        )
+        synthese_query_class.apply_all_filters(g.current_user, permissions)
+        obs_query = synthese_query_class.build_query()
+        geojson_column = VSyntheseForWebApp.st_asgeojson
+    else:
+        # Build 2 queries that will be UNIONed
+        # Select size hierarchy if mesh mode is selected
+        select_size_hierarchy = output_format == "grouped_geom_by_areas"
+        blurred_geom_query, precise_geom_query = build_blurred_precise_geom_queries(
+            filters, select_size_hierarchy=select_size_hierarchy
+        )
+
+        allowed_geom_cte = build_allowed_geom_cte(
+            blurring_permissions=blurring_permissions,
+            precise_permissions=precise_permissions,
+            blurred_geom_query=blurred_geom_query,
+            precise_geom_query=precise_geom_query,
+            limit=result_limit,
+            blur_sensitive_observations=current_app.config["SYNTHESE"][
+                "BLUR_SENSITIVE_OBSERVATIONS"
+            ],
+        )
+
+        obs_query = build_synthese_obs_query(
+            observations=observations,
+            allowed_geom_cte=allowed_geom_cte,
+            limit=result_limit,
+        )
+        geojson_column = func.st_asgeojson(allowed_geom_cte.c.geom)
 
     if output_format == "grouped_geom_by_areas":
-        obs_query = obs_query.add_columns(VSyntheseForWebApp.id_synthese).cte("OBS")
+        obs_query = obs_query.add_columns(VSyntheseForWebApp.id_synthese)
+        # Need to select the size_hierarchy to use is after (only if blurring permissions are found)
+        if blurring_permissions:
+            obs_query = obs_query.add_columns(allowed_geom_cte.c.size_hierarchy.label("size_hierarchy"))
+        obs_query = obs_query.cte("OBS")
+
         agg_areas = (
             select(CorAreaSynthese.id_synthese, LAreas.id_area)
             .select_from(
@@ -208,10 +254,16 @@ def get_observations_for_web(permissions):
             .where(
                 BibAreasTypes.type_code == current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"]
             )
-            .lateral("agg_areas")
         )
+
+        if blurring_permissions:
+            # Do not select cells which size_hierarchy is bigger than AREA_AGGREGATION_TYPE
+            # It means that we do not aggregate obs that have a blurring geometry greater in
+            # size than the aggregation area
+            agg_areas = agg_areas.where(obs_query.c.size_hierarchy <= BibAreasTypes.size_hierarchy)
+        agg_areas = agg_areas.lateral("agg_areas")
         obs_query = (
-            select(LAreas.geojson_4326.label("geojson"), obs_query.c.obs_as_json)
+            select(func.ST_AsGeoJSON(LAreas.geom_4326).label("geojson"), obs_query.c.obs_as_json)
             .select_from(
                 obs_query.outerjoin(
                     agg_areas, agg_areas.c.id_synthese == obs_query.c.id_synthese
@@ -220,9 +272,7 @@ def get_observations_for_web(permissions):
             .cte("OBSERVATIONS")
         )
     else:
-        obs_query = obs_query.add_columns(VSyntheseForWebApp.st_asgeojson.label("geojson")).cte(
-            "OBSERVATIONS"
-        )
+        obs_query = obs_query.add_columns(geojson_column.label("geojson")).cte("OBSERVATIONS")
 
     if output_format == "ungrouped_geom":
         query = select(obs_query.c.geojson, obs_query.c.obs_as_json)
@@ -259,6 +309,8 @@ def get_one_synthese(permissions, id_synthese):
                 joinedload("nomenclature_financing_type"),
             ),
         ),
+        # Used to check the sensitivity after
+        joinedload("nomenclature_sensitivity"),
         lazyload("areas").options(
             joinedload("area_type"),
         ),
@@ -301,16 +353,83 @@ def get_one_synthese(permissions, id_synthese):
     ]
 
     # get reports info only if activated by admin config
-    alertModulesActivated = current_app.config["SYNTHESE"]["ALERT_MODULES"]
-    if len(alertModulesActivated) and "SYNTHESE" in alertModulesActivated:
+    if "SYNTHESE" in current_app.config["SYNTHESE"]["ALERT_MODULES"]:
         fields.append("reports.report_type.type")
         synthese = synthese.options(lazyload(Synthese.reports).joinedload(TReport.report_type))
 
     synthese = synthese.get_or_404(id_synthese)
 
-    if not synthese.has_instance_permission(permissions=permissions):
+    if not synthese.has_instance_permission(
+        permissions=permissions,
+        blur_sensitive_observations=current_app.config["SYNTHESE"]["BLUR_SENSITIVE_OBSERVATIONS"],
+    ):
         raise Forbidden()
 
+    blurring_permissions, precise_permissions = split_blurring_precise_permissions(permissions)
+
+    # If blurring permissions and obs sensitive.
+    if (
+        not synthese.has_instance_permission(precise_permissions)
+        and synthese.nomenclature_sensitivity.cd_nomenclature != "0"
+    ):
+        # Use a cte to have the areas associated with the current id_synthese
+        cte = select(CorAreaSynthese).where(CorAreaSynthese.id_synthese == id_synthese).cte()
+        # Blurred area of the observation
+        BlurredObsArea = aliased(LAreas)
+        # Blurred area type of the observation
+        BlurredObsAreaType = aliased(BibAreasTypes)
+        # Types "larger" or equal in area hierarchy size that the blurred area type
+        BlurredAreaTypes = aliased(BibAreasTypes)
+        # Areas associates with the BlurredAreaTypes
+        BlurredAreas = aliased(LAreas)
+
+        # Inner join that retrieve the blurred area of the obs and the bigger areas
+        # used for "Zonages" in Synthese. Need to have size_hierarchy from ref_geo
+        inner = (
+            sa.join(CorAreaSynthese, BlurredObsArea)
+            .join(BlurredObsAreaType)
+            .join(
+                cor_sensitivity_area_type,
+                cor_sensitivity_area_type.c.id_area_type == BlurredObsAreaType.id_type,
+            )
+            .join(
+                BlurredAreaTypes,
+                BlurredAreaTypes.size_hierarchy >= BlurredObsAreaType.size_hierarchy,
+            )
+            .join(BlurredAreas, BlurredAreaTypes.id_type == BlurredAreas.id_type)
+            .join(cte, cte.c.id_area == BlurredAreas.id_area)
+        )
+
+        # Outer join to join CorAreaSynthese taking into account the sensitivity
+        outer = (
+            inner,
+            sa.and_(
+                Synthese.id_synthese == CorAreaSynthese.id_synthese,
+                Synthese.id_nomenclature_sensitivity
+                == cor_sensitivity_area_type.c.id_nomenclature_sensitivity,
+            ),
+        )
+
+        query = (
+            DB.session.query(
+                Synthese,
+                func.coalesce(BlurredObsArea.geom.st_transform(4326), Synthese.the_geom_4326),
+            )
+            .outerjoin(*outer)
+            # contains_eager: to populate Synthese.areas directly
+            .options(contains_eager(Synthese.areas.of_type(BlurredAreas)))
+            .filter(Synthese.id_synthese == id_synthese)
+            .order_by(BlurredAreaTypes.size_hierarchy)
+        )
+
+        # Use one here not first
+        synthese_for_areas, the_geom = query.one()
+        # Careful: do not db.session.commit after these lines !!!
+        # Because we set manually the synthese attributes
+        synthese.the_geom_4326 = the_geom
+        synthese.areas = synthese_for_areas.areas
+
+    # Careful: do not db.session.commit before and after these lines
     geofeature = synthese.as_geofeature(fields=Synthese.nomenclature_fields + fields)
     return jsonify(geofeature)
 
@@ -421,29 +540,86 @@ def export_observations_web(permissions):
     id_list = request.get_json()
 
     # Get the SRID for the export
-    srid = DB.session.execute(func.Find_SRID("gn_synthese", "synthese", "the_geom_local")).scalar()
+    local_srid = DB.session.execute(
+        func.Find_SRID("gn_synthese", "synthese", "the_geom_local")
+    ).scalar()
 
-    # Get the CTE for synthese filtered by user permissions
-    synthese_query_class = SyntheseQuery(
-        Synthese,
-        select(Synthese.id_synthese),
-        {},
-    )
-    synthese_query_class.filter_query_all_filters(g.current_user, permissions)
-    cte_synthese_filtered = synthese_query_class.build_query().cte("cte_synthese_filtered")
+    blurring_permissions, precise_permissions = split_blurring_precise_permissions(permissions)
 
     # Get the view for export
+    # Useful to have geom column so that they can be replaced by blurred geoms
+    # (only if the user has sensitive permissions)
     export_view = GenericTableGeo(
         tableName="v_synthese_for_export",
         schemaName="gn_synthese",
         engine=DB.engine,
         geometry_field=None,
-        srid=srid,
+        srid=local_srid,
     )
+
+    # If there is no sensitive permissions => same path as before blurring implementation
+    if not blurring_permissions:
+        # Get the CTE for synthese filtered by user permissions
+        synthese_query_class = SyntheseQuery(
+            Synthese,
+            select(Synthese.id_synthese),
+            {},
+        )
+        synthese_query_class.filter_query_all_filters(g.current_user, permissions)
+        cte_synthese_filtered = synthese_query_class.build_query().cte("cte_synthese_filtered")
+        selectable_columns = [export_view.tableDef]
+    else:
+        # Use slightly the same process as for get_observations_for_web()
+        # Add a where_clause to filter the id_synthese provided to reduce the
+        # UNION queries
+        where_clauses = [Synthese.id_synthese.in_(id_list)]
+        blurred_geom_query, precise_geom_query = build_blurred_precise_geom_queries(
+            filters={}, where_clauses=where_clauses
+        )
+
+        cte_synthese_filtered = build_allowed_geom_cte(
+            blurring_permissions=blurring_permissions,
+            precise_permissions=precise_permissions,
+            blurred_geom_query=blurred_geom_query,
+            precise_geom_query=precise_geom_query,
+            limit=current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"],
+            blur_sensitive_observations=current_app.config["SYNTHESE"][
+                "BLUR_SENSITIVE_OBSERVATIONS"
+            ],
+        )
+
+        # Overwrite geometry columns to compute the blurred geometry from the blurring cte
+        geojson_4326_col = current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"]
+        geojson_local_col = current_app.config["SYNTHESE"]["EXPORT_GEOJSON_LOCAL_COL"]
+        columns_with_geom_excluded = [
+            col
+            for col in export_view.tableDef.columns
+            if col.name
+            not in [
+                "geometrie_wkt_4326",  # FIXME: hardcoded column names?
+                "x_centroid_4326",
+                "y_centroid_4326",
+                geojson_4326_col,
+                geojson_local_col,
+            ]
+        ]
+        # Recomputed the blurred geometries
+        blurred_geom_columns = [
+            func.st_astext(cte_synthese_filtered.c.geom).label("geometrie_wkt_4326"),
+            func.st_x(func.st_centroid(cte_synthese_filtered.c.geom)).label("x_centroid_4326"),
+            func.st_y(func.st_centroid(cte_synthese_filtered.c.geom)).label("y_centroid_4326"),
+            func.st_asgeojson(cte_synthese_filtered.c.geom).label(geojson_4326_col),
+            func.st_asgeojson(func.st_transform(cte_synthese_filtered.c.geom, local_srid)).label(
+                geojson_local_col
+            ),
+        ]
+
+        # Finally provide all the columns to be selected in the export query
+        selectable_columns = columns_with_geom_excluded + blurred_geom_columns
 
     # Get the query for export
     export_query = (
-        select(export_view.tableDef)
+        select(*selectable_columns)
         .select_from(
             export_view.tableDef.join(
                 cte_synthese_filtered,

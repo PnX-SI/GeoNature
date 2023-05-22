@@ -27,11 +27,12 @@ cor_sensitivity_area_type = db.Table(
         "id_nomenclature_sensitivity",
         db.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        primary_key=True
+        primary_key=True,
     ),
     db.Column("id_area_type", db.Integer, ForeignKey(BibAreasTypes.id_type), primary_key=True),
-    schema="gn_sensitivity"
+    schema="gn_sensitivity",
 )
+
 
 class SensitivityRule(db.Model):
     __tablename__ = "t_sensitivity_rules"

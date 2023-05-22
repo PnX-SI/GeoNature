@@ -448,14 +448,24 @@ class Synthese(DB.Model):
         elif scope == 3:
             return True
 
-    def _has_permissions_grant(self, permissions):
+    def _has_permissions_grant(self, permissions, blur_sensitive_observations=False):
         if not permissions:
             return False
+        unloaded_objs = sa.inspect(self).unloaded
         for perm in permissions:
             if perm.has_other_filters_than("SCOPE", "SENSITIVITY"):
                 continue  # unsupported filters
-            if perm.sensitivity_filter and self.nomenclature_sensitivity.cd_nomenclature != "0":
-                continue  # sensitivity filter denied access, check next permission
+            if perm.sensitivity_filter and "nomenclature_sensitivity" not in unloaded_objs:
+                if (
+                    blur_sensitive_observations
+                    and self.nomenclature_sensitivity.cd_nomenclature == "4"
+                ):
+                    continue
+                if (
+                    not blur_sensitive_observations
+                    and self.nomenclature_sensitivity.cd_nomenclature != "0"
+                ):
+                    continue
             if perm.scope_value:
                 if g.current_user == self.digitiser:
                     return True
@@ -467,11 +477,13 @@ class Synthese(DB.Model):
             return True  # no filter exclude this permission
         return False
 
-    def has_instance_permission(self, permissions):
+    def has_instance_permission(self, permissions, blur_sensitive_observations=False):
         if type(permissions) == int:
             return self._has_scope_grant(permissions)
         else:
-            return self._has_permissions_grant(permissions)
+            return self._has_permissions_grant(
+                permissions, blur_sensitive_observations=blur_sensitive_observations
+            )
 
 
 @serializable

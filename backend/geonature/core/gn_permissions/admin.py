@@ -10,6 +10,7 @@ from markupsafe import Markup
 from sqlalchemy.orm import contains_eager, joinedload
 
 from geonature.utils.env import db
+from geonature.utils.config import config
 from geonature.core.admin.admin import admin
 from geonature.core.admin.utils import CruvedProtectedMixin, DynamicOptionsMixin
 from geonature.core.gn_permissions.models import (
@@ -355,7 +356,10 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         "role.nom_complet": "nom du rôle",
         "availability": "Permission",
         "scope": "Filtre sur l'appartenance des données",
-        "sensitivity_filter": "Exclure les données sensibles",
+        "sensitivity_filter": (
+            "Flouter" if config["SYNTHESE"]["BLUR_SENSITIVE_OBSERVATIONS"] else "Masquer"
+        )
+        + " les données sensibles",
     }
     column_select_related_list = ("availability",)
     column_searchable_list = ("role.identifiant", "role.nom_complet")

@@ -13,7 +13,11 @@ from shapely.geometry import Point
 
 from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_synthese.models import Synthese, TSources, VSyntheseForWebApp
+from geonature.core.gn_synthese.models import Synthese, TSources
+from geonature.core.gn_synthese.routes import split_blurring_permissions
+from geonature.core.gn_commons.models.base import TModules
+from geonature.core.gn_permissions.models import PermAction, Permission
+from geonature.core.gn_permissions.tools import get_permissions
 
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user
 from ref_geo.models import BibAreasTypes, LAreas
@@ -1234,3 +1238,58 @@ class TestSynthese:
 
         assert response.status_code == 200
         assert response.json[0]["cd_nom"] == synthese_data["obs1"].cd_nom
+
+
+@pytest.fixture(scope="class")
+def synthese_module():
+    return TModules.query.filter_by(module_code="SYNTHESE").one()
+
+
+@pytest.fixture()
+def synthese_read_permissions(synthese_module):
+    def _synthese_read_permissions(role, scope_value, action="R", **kwargs):
+        action = PermAction.query.filter_by(code_action=action).one()
+        with db.session.begin_nested():
+            db.session.add(
+                Permission(
+                    role=role,
+                    action=action,
+                    module=synthese_module,
+                    scope_value=scope_value,
+                    **kwargs,
+                )
+            )
+
+    return _synthese_read_permissions
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestSyntheseBlurring:
+    def test_split_blurring_permissions(
+        self, app, users, synthese_module, synthese_read_permissions
+    ):
+        current_user = users["self_user"]
+        with app.test_request_context(headers=logged_user_headers(current_user)):
+            app.preprocess_request()
+            permissions = get_permissions(
+                action_code="R",
+                id_role=current_user.id_role,
+                module_code=synthese_module.module_code,
+                object_code="ALL",
+            )
+        sensitive, unsensitive = split_blurring_permissions(permissions=permissions)
+
+        assert all(s.sensitivity_filter for s in sensitive)
+        assert all(not s.sensitivity_filter for s in unsensitive)
+
+    def test_synthese_blurring(self, users, synthese_module, synthese_read_permissions):
+        current_user = users["self_user"]
+        set_logged_user_cookie(self.client, current_user)
+        # None is 3
+        synthese_read_permissions(current_user, None, sensitivity_filter=True)
+        synthese_read_permissions(current_user, 2, sensitivity_filter=False)
+
+        url = url_for("gn_synthese.get_observations_for_web")
+        r = self.client.get(url)
+
+        assert False
