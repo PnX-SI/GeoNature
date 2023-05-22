@@ -259,19 +259,6 @@ class Permission(db.Model):
             filters.append(PermFilter(name, value))
         return filters
 
-    def filters_display(self):
-        display = []
-        for name, value in self.filters:
-            if name == "SCOPE":
-                if value == 1:
-                    display.append("m’appartenant")
-                elif value == 2:
-                    display.append("appartenant à mon organisme")
-            elif name == "SENSITIVITY":
-                if value:
-                    display.append("non sensible")
-        return ", ".join(display)
-
     def has_other_filters_than(self, *expected_filters):
         for flt in self.filters:
             if flt.name not in expected_filters:
