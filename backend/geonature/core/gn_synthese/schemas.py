@@ -8,7 +8,7 @@ from pypnusershub.schemas import UserSchema
 from pypnnomenclature.utils import NomenclaturesConverter
 from ref_geo.schemas import AreaSchema
 from utils_flask_sqla.schema import SmartRelationshipsMixin
-from utils_flask_sqla_geo.schema import GeoAlchemyAutoSchema, GeoModelConverter
+from utils_flask_sqla_geo.schema import GeoAlchemyAutoSchema, GeoModelConverter, GeometryField
 
 
 class ReportTypeSchema(ma.SQLAlchemyAutoSchema):
@@ -48,6 +48,7 @@ class SyntheseSchema(SmartRelationshipsMixin, GeoAlchemyAutoSchema):
         model_converter = SyntheseConverter
 
     the_geom_4326 = ma.auto_field(metadata={"exclude": True})
+    the_geom_authorized = GeometryField(metadata={"exclude": True}, dump_only=True)
     source = ma.Nested(SourceSchema, dump_only=True)
     module = ma.Nested(ModuleSchema, dump_only=True)
     dataset = ma.Nested("DatasetSchema", dump_only=True)
