@@ -1,6 +1,55 @@
 CHANGELOG
 =========
 
+2.13.0 (unreleased)
+-------------------
+
+Révision globale des permissions
+
+**TODO**
+
+- MAJ des modules définissant leurs permissions disponibles
+- Release TH et UH + Flask-utils ?
+
+**🚀 Nouveautés**
+
+- Refonte complète des permissions (#2487)
+- Suppression de l'héritage des permissions du module "GeoNature" vers les autres modules, et de l'objet "All" vers les éventuels autres objets des modules. Chaque permission dans un module doit désormais être définie explicitement. Cela entraine de devoir définir plus de permissions (à l'installation d'un nouveau module notamment) mais aussi de les rendre plus lisibles, additives et explicites (#2474)
+- Evolution du modèle de données des permissions pour élargir les possibilités de filtrage des permissions au-delà de la portée (AKA appartenance AKA scope) (#2472)
+- Suppression Scope 0 et 3
+- Définition des permissions disponibles dans chaque module dans la nouvelle table `gn_permissions.t_permissions_available`, pour ne proposer que des permissions qui ont un usage quand on ajoute ou modifie les permissions d'un utilisateur (#2489)
+- Admin des permissions (Flask-admin) ne proposant que les permissions disponibles, calculant les permissions explicites d'un utilisateur et celles provenant d'un groupe auquel il appartient
+- Optimisation et agrégation des permissions
+- [Synthèse] Ajout d'un filtre sur la sensibilité des données, permettant de les afficher ou non à un groupe ou utilisateurs (pas de floutage pour le moment) (#2504)
+- Ajout de la commande `geonature permissions supergrant` permettant d'ajouter toutes les permissions disponibles à un utilisateur ou groupe super-administrateur (#2557)
+- Ajout de la vérification des permissions manquantes sur différentes routes (#2542 / #1863)
+- Ajout de notifications quand un commentaire est ajouté sur une observation (#2460)
+- [Admin] Fixer la barre de navigation du menu latéral et possibilité de la rabbatre (#2556)
+- [Synthèse] Ajout d'un filtre par source (#2513)
+- [Synthèse] Ajout d'un filtre par `id_synthese` (#2516)
+- Suppression des médias orphelins basculée dans une tache Celery Beat lancée automatiquement toutes les nuits (`clean_attachments`), et non plus à l'ajout ou suppression d'un autre média (#2436)
+
+**🐛 Corrections**
+
+- [Occtax] Correction du déplacement du marqueur de localisation poncutelle d'un relevé (#2554 et #2552)
+- Correction de la sélection automatique des valeurs par défaut numériques dans les champs de type "Liste déroulante (Select)" des formulaires dynamiques (#2540)
+
+**💻 Développement**
+
+- Découpage du script `install/03_create_db.sh` en 2 (avec la création du fichier `install/03b_populate_db.sh`) notamment pour améliorer la dockerisation de GeoNature (#2544)
+- Ajout d'un script `install/03b_populate_db_for_test.sh` pouvant être utilisé par la CI de test des modules GeoNature (#2544)
+- Ajout d'un script `install/assets/docker_startup.sh` pour lancer les migrations Alembic depuis le docker de GeoNature (#2544)
+- Création d'un fichier `install/assets/db/add_pg_extensions.sql` regroupant la création des extensions PostgreSQL (#2544)
+- Amélioration de `APPLICATION_ROOT` pour qu'il fonctionne en mode développement (#2546)
+- Amélioration des modèles de la Synthèse pour prendre en compte les valeurs par défaut des nomenclatures (#2524)
+- Meilleure portabilité des scripts dans les différents systèmes Unix (#2435)
+
+**⚠️ Notes de version**
+
+- Les permissions existantes sont récupérées et remises à plat automatiquement sans système d'héritage. Vérifiez cependant les permissions après la mise à jour de vos groupes et utilisateurs.
+- Restart worker à cause de la nouvelle tache Celery beat ?
+
+
 2.12.3 (2023-05-09)
 -------------------
 
