@@ -30,5 +30,8 @@ if [ "$install_module_validation" = true ]; then
     geonature install-gn-module "${BASE_DIR}/contrib/gn_module_validation" VALIDATION --build false
 fi
 
+# Grant admin group permissions on new installed modules
+geonature permissions supergrant --group --nom "Grp_admin"
+
 echo "Désactivation du virtual env"
 deactivate
