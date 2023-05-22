@@ -155,3 +155,5 @@ then
 fi
 
 geonature db autoupgrade -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
+
+geonature permissions supergrant --group --nom "Grp_admin"
