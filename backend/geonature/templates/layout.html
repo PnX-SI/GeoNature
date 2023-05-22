@@ -25,6 +25,7 @@
         }
         .main-item {
             font-weight: bold;
+            background-color: gainsboro!important;
         }
         .child-item {
             padding-left: 35px;
@@ -61,7 +62,10 @@
 <nav id="header" class="navbar navbar-expand-lg navbar-light fixed-top">
     
     <button id="sideNavToggler" class="mr-2 btn btn-light" type="button" onclick="toggleSideBar()" > <span class="navbar-toggler-icon"></span></button>
-    <a class="navbar-brand mr-auto" href=" {{url_for("admin.index")}} ">Administration GeoNature</a>
+    <a class="navbar-brand mr-auto" href=" {{url_for("admin.index")}} "> 
+        <i class="fa fa-home"></i>
+         Administration GeoNature
+    </a>
     <ul class="navbar-nav my-2 my-lg-0">
         <li class="nav-item">
             {{layout.menu_links()}}
