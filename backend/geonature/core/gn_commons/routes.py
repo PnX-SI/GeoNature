@@ -26,6 +26,7 @@ from geonature.utils.config import config_frontend, config
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required
 from geonature.core.gn_permissions.tools import get_scopes_by_action
+import geonature.core.gn_commons.tasks  # noqa: F401
 
 from shapely.geometry import asShape
 from geoalchemy2.shape import from_shape
