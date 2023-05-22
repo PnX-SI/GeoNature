@@ -2,7 +2,9 @@ from flask import url_for, has_app_context, Markup, request
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.sqla.filters import FilterEqual
 import sqlalchemy as sa
+from flask_admin.contrib.sqla.tools import get_primary_key
 from flask_admin.contrib.sqla.fields import QuerySelectField
+from flask_admin.contrib.sqla.ajax import QueryAjaxModelLoader
 from flask_admin.form.widgets import Select2Widget
 from sqlalchemy.orm import contains_eager, joinedload
 
@@ -268,6 +270,41 @@ class OptionQuerySelectField(QuerySelectField):
             yield (pk, self.get_label(obj), options)
 
 
+### ModelLoader
+
+
+class UserAjaxModelLoader(QueryAjaxModelLoader):
+    def format(self, user):
+        if not user:
+            return None
+
+        def format_availability(availability):
+            return ":".join(
+                [str(getattr(availability, attr)) for attr in get_primary_key(PermissionAvailable)]
+            )
+
+        def filter_availability(availability):
+            filters_count = sum(
+                [
+                    getattr(availability, field.name)
+                    for field in PermissionAvailable.filters_fields.values()
+                ]
+            )
+            return filters_count < 2
+
+        availabilities = {p.availability for p in user.permissions if p.availability}
+        excluded_availabilities = filter(filter_availability, availabilities)
+        excluded_availabilities = map(format_availability, excluded_availabilities)
+        return super().format(user) + (list(excluded_availabilities),)
+
+    def get_query(self):
+        return (
+            super()
+            .get_query()
+            .options(joinedload(User.permissions).joinedload(Permission.availability))
+        )
+
+
 ### ModelViews
 
 
@@ -342,6 +379,22 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
             options_additional_values=["sensitivity_filter", "scope_filter"],
         )
     )
+    create_template = "admin/hide_select2_options_create.html"
+    edit_template = "admin/hide_select2_options_edit.html"
+    form_ajax_refs = {
+        "role": UserAjaxModelLoader(
+            "role",
+            db.session,
+            User,
+            fields=(
+                "identifiant",
+                "nom_role",
+                "prenom_role",
+            ),
+            placeholder="Veuillez sélectionner un utilisateur ou un groupe",
+            minimum_input_length=0,
+        ),
+    }
 
     def render(self, template, **kwargs):
         self.extra_js = [url_for("static", filename="js/hide_unnecessary_filters.js")]
