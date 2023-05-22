@@ -296,21 +296,23 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
 
     def create_form(self):
         form = super().create_form()
-        if "id_role" in request.args:
-            form.role.data = User.query.get(request.args.get("id_role", type=int))
-        if {"module_code", "code_object", "code_action"}.issubset(request.args.keys()):
-            form.availability.data = (
-                PermissionAvailable.query.join(PermissionAvailable.module)
-                .join(PermissionAvailable.object)
-                .join(PermissionAvailable.action)
-                .filter(
-                    TModules.module_code == request.args.get("module_code"),
-                    PermObject.code_object == request.args.get("code_object"),
-                    PermAction.code_action == request.args.get("code_action"),
+        if request.method == "GET":
+            # Set default values from request.args
+            if "id_role" in request.args:
+                form.role.data = User.query.get(request.args.get("id_role", type=int))
+            if {"module_code", "code_object", "code_action"}.issubset(request.args.keys()):
+                form.availability.data = (
+                    PermissionAvailable.query.join(PermissionAvailable.module)
+                    .join(PermissionAvailable.object)
+                    .join(PermissionAvailable.action)
+                    .filter(
+                        TModules.module_code == request.args.get("module_code"),
+                        PermObject.code_object == request.args.get("code_object"),
+                        PermAction.code_action == request.args.get("code_action"),
+                    )
+                    .one_or_none()
                 )
-                .one_or_none()
-            )
-        form.availability.query_factory = lambda: PermissionAvailable.query.nice_order()
+            form.availability.query_factory = lambda: PermissionAvailable.query.nice_order()
         return form
 
     def edit_form(self, obj):
