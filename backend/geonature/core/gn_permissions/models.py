@@ -212,6 +212,7 @@ class Permission(db.Model):
             foreign(id_object) == PermissionAvailable.id_object,
             foreign(id_action) == PermissionAvailable.id_action,
         ),
+        backref="permissions",
     )
 
     filters_fields = {
