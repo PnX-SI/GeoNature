@@ -58,6 +58,7 @@ export class MarkerComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.map = this.mapservice.map;
     this.zoomLevel = this.zoomLevel || this.config.MAPCONFIG.ZOOM_LEVEL_RELEVE;
+
     this.setMarkerLegend();
     // activation or not of the marker
     if (this.defaultEnable) {
@@ -138,7 +139,9 @@ export class MarkerComponent implements OnInit, OnChanges {
         this.map.addLayer(this.mapservice.marker);
         this.markerMoveEvent(this.mapservice.marker);
       } else {
-        this.markerChanged.emit(this.markerToGeojson(this.mapservice.marker.getLatLng()));
+        const geojsonCoord = this.markerToGeojson(this.mapservice.marker.getLatLng());
+        this.mapservice.setGeojsonCoord(geojsonCoord);
+        this.markerChanged.emit(geojsonCoord);
       }
     });
   }
