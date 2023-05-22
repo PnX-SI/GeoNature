@@ -434,6 +434,8 @@ class Synthese(Schema):
             {"min": 0, "color": "#FFEDA0"},
         ],
     )
+    # Activate the blurring of sensitive observations. Otherwise, exclude them
+    BLUR_SENSITIVE_OBSERVATIONS = fields.Boolean(load_default=False)
 
 
 # Map configuration
