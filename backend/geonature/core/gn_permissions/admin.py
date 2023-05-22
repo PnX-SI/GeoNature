@@ -2,6 +2,8 @@ from flask import url_for, has_app_context, Markup, request
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.sqla.filters import FilterEqual
 import sqlalchemy as sa
+from flask_admin.contrib.sqla.fields import QuerySelectField
+from flask_admin.form.widgets import Select2Widget
 from sqlalchemy.orm import contains_eager, joinedload
 
 from geonature.utils.env import db
@@ -249,6 +251,37 @@ class ObjectAdmin(CruvedProtectedMixin, ModelView):
     }
 
 
+class OptionSelect2Widget(Select2Widget):
+    @classmethod
+    def render_option(cls, value, label, options):
+        return super().render_option(value, label, options.pop("selected"), **options)
+
+
+class OptionQuerySelectField(QuerySelectField):
+    """
+    Overrides the QuerySelectField class from flask admin to allow
+    other attributes on a select option.
+
+    options_additional_values is added in form_args, it is a list of
+    strings, each element is the name of the attribute in the model
+    which will be added on the option
+    """
+
+    widget = OptionSelect2Widget()
+
+    def __init__(self, *args, **kwargs):
+        self.options_additional_values = kwargs.pop("options_additional_values")
+        super().__init__(*args, **kwargs)
+
+    def iter_choices(self):
+        if self.allow_blank:
+            yield ("__None", self.blank_text, {"selected": self.data is None})
+        for pk, obj in self._get_object_list():
+            options = {k: getattr(obj, k) for k in self.options_additional_values}
+            options["selected"] = obj == self.data
+            yield (pk, self.get_label(obj), options)
+
+
 class PermissionAdmin(CruvedProtectedMixin, ModelView):
     module_code = "ADMIN"
     object_code = "PERMISSIONS"
@@ -292,7 +325,18 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         ("object.code_object", False),
         ("id_action", False),
     ]
+    form_overrides = dict(availability=OptionQuerySelectField)
+    form_args = dict(
+        availability=dict(
+            query_factory=lambda: db.session.query(PermissionAvailable),
+            options_additional_values=["sensitivity_filter", "scope_filter"],
+        )
+    )
     form_columns = ("role", "availability", "scope", "sensitivity_filter")
+
+    def render(self, template, **kwargs):
+        self.extra_js = [url_for("static", filename="js/hide_unnecessary_filters.js")]
+        return super().render(template, **kwargs)
 
     def create_form(self):
         form = super().create_form()
