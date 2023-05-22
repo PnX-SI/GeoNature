@@ -600,7 +600,7 @@
 
   <mat-tab
     label="{{ 'Synthese.Discussion' | translate }}"
-    *ngIf="config.SYNTHESE.DISCUSSION_MODULES.includes(moduleInfos.code)"
+    *ngIf="idSynthese && config.SYNTHESE.DISCUSSION_MODULES.includes(moduleInfos.code)"
   >
     <pnx-discussion-card
       [validationColor]="validationColor"

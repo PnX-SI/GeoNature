@@ -19,6 +19,7 @@ import { ConfigService } from '@geonature/services/config.service';
 })
 export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   @Input() idSynthese: number;
+  @Input() uniqueIdSinp: string;
   @Input() header: false;
   @Input() mailCustomSubject: string;
   @Input() mailCustomBody: string;
@@ -70,7 +71,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit() {
-    this.loadAllInfo(this.idSynthese);
+    this.loadAllInfo(this.idSynthese, this.uniqueIdSinp);
     this._moduleService.currentModule$.subscribe((module) => {
       if (module) {
         this.moduleInfos = { id: module.id_module, code: module.module_code };
@@ -81,8 +82,11 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.idSynthese && changes.idSynthese.currentValue) {
-      this.loadAllInfo(changes.idSynthese.currentValue);
+    if (
+      (changes.idSynthese && changes.idSynthese.currentValue) ||
+      (changes.uniqueIdSinp && changes.uniqueIdSinp.currentValue)
+    ) {
+      this.loadAllInfo(changes.idSynthese.currentValue, changes.uniqueIdSinp.currentValue);
     }
   }
 
@@ -96,16 +100,18 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     }
   }
 
-  loadAllInfo(idSynthese) {
+  loadAllInfo(idSynthese, uniqueIdSinp) {
     this.isLoading = true;
     this._dataService
-      .getOneSyntheseObservation(idSynthese)
+      .getOneSyntheseObservation(idSynthese || uniqueIdSinp)
       .pipe(
         finalize(() => {
           this.isLoading = false;
         })
       )
       .subscribe((data) => {
+        this.idSynthese = data.properties.id_synthese;
+        this.uniqueIdSinp = data.properties.unique_id_sinp;
         this.selectedObs = data['properties'];
         this.alert = find(data.properties.reports, ['report_type.type', 'alert']);
         this.pin = find(data.properties.reports, ['report_type.type', 'pin']);
@@ -164,12 +170,12 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
           this._gnDataService.getProfile(taxInfo.cd_ref).subscribe((profile) => {
             this.profile = profile;
           });
+
+          this._gnDataService.getProfileConsistancyData(this.idSynthese).subscribe((dataChecks) => {
+            this.profileDataChecks = dataChecks;
+          });
         });
       });
-
-    this._gnDataService.getProfileConsistancyData(this.idSynthese).subscribe((dataChecks) => {
-      this.profileDataChecks = dataChecks;
-    });
   }
 
   sendMail() {

@@ -57,11 +57,16 @@ export class SyntheseComponent implements OnInit {
           id_acquisition_framework: params.get('id_acquisition_framework'),
         });
       }
-      const idSynthese = this._route.snapshot.paramMap.get('id_synthese');
+      let uniqueIdSinp,
+        idSynthese = this._route.snapshot.paramMap.get('id_synthese');
 
       if (idSynthese) {
-        this._fs.searchForm.patchValue({ id_synthese: params.get('idSynthese') });
-        this.openInfoModal(idSynthese);
+        // this._fs.searchForm.patchValue({ id_synthese: params.get('idSynthese') });
+        if (this.searchService.isUUID(idSynthese)) {
+          uniqueIdSinp = idSynthese;
+          idSynthese = null;
+        }
+        this.openInfoModal(idSynthese, uniqueIdSinp);
       }
 
       this._fs.selectedCdRefFromTree = [];
@@ -217,12 +222,13 @@ export class SyntheseComponent implements OnInit {
     return geojson;
   }
 
-  openInfoModal(idSynthese) {
+  openInfoModal(idSynthese, uniqueIdSinp) {
     const modalRef = this._ngModal.open(SyntheseInfoObsComponent, {
       size: 'lg',
       windowClass: 'large-modal',
     });
     modalRef.componentInstance.idSynthese = idSynthese;
+    modalRef.componentInstance.uniqueIdSinp = uniqueIdSinp;
     modalRef.componentInstance.header = true;
     modalRef.componentInstance.useFrom = 'synthese';
   }
