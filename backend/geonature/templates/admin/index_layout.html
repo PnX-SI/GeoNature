@@ -10,36 +10,38 @@
       {% set children = item.get_children() %}
       {%- if children %}
       <a 
-        data-toggle="collapse" 
-        href="#collapseExample" 
-        class="list-group-item disabled list-group-item-action main-item">
+        class="list-group-item list-group-item-action main-item">
         {{ layout.menu_icon(item) }}{{ item.name }}
       </a>
+
           {%- for child in children -%}
-            {%- if child.is_category() -%}
-              {{ menu(menu_root=[child]) }}
-            {% else %}
+          {%- if child.is_category() -%}
+                {{ menu(menu_root=[child]) }}
+              {% else %}
+              
+                <a 
+                  href="{{ child.get_url() }}" 
+                  class="list-group-item list-group-item-action child-item">
+                  {{ layout.menu_icon(child) }}{{ child.name }}
+                </a>
+                
+                {%- endif %}
+                {%- endfor %}
 
-              <a 
-                href="{{ child.get_url() }}" 
-                class="list-group-item list-group-item-action child-item">
-                {{ layout.menu_icon(child) }}{{ child.name }}
-              </a>
-
-            {%- endif %}
-          {%- endfor %}
       {% endif %}
     {%- else %}
-      {%- if item.is_accessible() and item.is_visible() -%}
+      {%- if item.is_accessible() and item.is_visible() and item.name != 'Accueil' -%}
+      
           <a 
             href="{{ item.get_url() }}"  
             {% if item.target %} target="{{ item.target }}"{% endif %} 
             class="list-group-item list-group-item-action main-item">
-            {{ layout.menu_icon(item) }}{{ item.name }}
+            {{ layout.menu_icon(item) }}{{ item.name }} 
           </a>
 
       {%- endif -%}
     {% endif -%}
   {% endfor %}
 </div>
+
 {% endmacro %}
