@@ -15,6 +15,7 @@ from geonature.core.gn_permissions.models import (
     PermScope,
     Permission,
     PermissionAvailable,
+    PermFilter,
 )
 from geonature.core.gn_permissions.tools import get_permissions
 from geonature.core.gn_commons.models.base import TModules
@@ -169,9 +170,10 @@ def permissions_formatter(view, context, model, name):
                     if not flts:
                         o += """<i class="fa fa-check" aria-hidden="true"></i>"""
                     else:
-                        o += "Restrictions :"
                         o += """<ul class="list-group">"""
-                        for flt in flts:
+                        for flt_name in perm.availability.filters:
+                            flt_field = Permission.filters_fields[flt_name]
+                            flt = PermFilter(flt_name, getattr(perm, flt_field.name))
                             o += f"""<li class="list-group-item">{flt}</li>"""
                         o += "</ul>"
                     o += """</div></div>"""
@@ -300,6 +302,7 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         "role.identifiant": "identifiant du rôle",
         "role.nom_complet": "nom du rôle",
         "availability": "Permission disponible",
+        "scope": "Appartenance des données",
         "sensitivity_filter": "Exclure les données sensibles",
     }
     column_select_related_list = ("availability",)
