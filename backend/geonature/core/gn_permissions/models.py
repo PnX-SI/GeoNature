@@ -171,13 +171,17 @@ class PermFilter:
 
     def __str__(self):
         if self.name == "SCOPE":
-            if self.value == 1:
+            if self.value is None:
+                return """<i class="fa fa-users" aria-hidden="true"></i> de tout le monde"""
+            elif self.value == 1:
                 return """<i class="fa fa-user" aria-hidden="true"></i> à moi"""
             elif self.value == 2:
-                return """<i class="fa fa-users" aria-hidden="true"></i> de mon organisme"""
+                return """<i class="fa fa-user-circle" aria-hidden="true"></i> de mon organisme"""
         elif self.name == "SENSITIVITY":
             if self.value:
                 return """<i class="fa fa-low-vision" aria-hidden="true"></i>  non sensible"""
+            else:
+                return """<i class="fa fa-eye" aria-hidden="true"></i>  sensible et non sensible"""
 
 
 @serializable
