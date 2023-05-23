@@ -4,7 +4,8 @@ CHANGELOG
 2.13.0 (unreleased)
 -------------------
 
-Révision globale des permissions
+- Révision globale des permissions pour pouvoir leur associer d'autres types de filtres (sensibilité notamment), les simplifier et clarifier en supprimant l'héritage et en définissant les permissions disponibles pour chaque module
+- Vérifiez que vos modules sont compatibles avec le nouveau mécanisme de permissions disponibles
 
 **TODO**
 
@@ -15,10 +16,11 @@ Révision globale des permissions
 
 - Refonte complète des permissions (#2487)
 - Suppression de l'héritage des permissions du module "GeoNature" vers les autres modules, et de l'objet "All" vers les éventuels autres objets des modules. Chaque permission dans un module doit désormais être définie explicitement. Cela entraine de devoir définir plus de permissions (à l'installation d'un nouveau module notamment) mais aussi de les rendre plus lisibles, additives et explicites (#2474)
-- Evolution du modèle de données des permissions pour élargir les possibilités de filtrage des permissions au-delà de la portée (AKA appartenance AKA scope) (#2472)
-- Suppression Scope 0 et 3
+- Evolution du modèle de données des permissions pour élargir les possibilités de filtrage des permissions au-delà de l'appartenance (anciennement nommée portée ou scope) (#2472)
+- Suppression des permissions ayant une appartenance de niveau 0 (Aucune donnée). En effet, en supprimant l'héritage des permissions et en les définissant par module de manière explicite, si un groupe ou utilisateur n'a aucune permission sur un module, alors il n'y accède pas et ne le voit pas dans le menu latéral. Si il a n'importe quelle permission sur un module, alors il y accède.
+- Suppression du filtre d'appartenance de niveau 3 (Toutes les données). En effet, celui-ci est désormais redondant avec l'ajout d'une permission sans filtre.
 - Définition des permissions disponibles dans chaque module dans la nouvelle table `gn_permissions.t_permissions_available`, pour ne proposer que des permissions qui ont un usage quand on ajoute ou modifie les permissions d'un utilisateur (#2489)
-- Admin des permissions (Flask-admin) ne proposant que les permissions disponibles, calculant les permissions explicites d'un utilisateur et celles provenant d'un groupe auquel il appartient
+- Admin des permissions (Flask-admin) ne proposant que les permissions disponibles, affichant les permissions explicites d'un utilisateur et calculant celles effectives provenant d'un groupe auquel il appartient
 - Optimisation et agrégation des permissions
 - [Synthèse] Ajout d'un filtre sur la sensibilité des données, permettant de les afficher ou non à un groupe ou utilisateurs (pas de floutage pour le moment) (#2504)
 - Ajout de la commande `geonature permissions supergrant` permettant d'ajouter toutes les permissions disponibles à un utilisateur ou groupe super-administrateur (#2557)
@@ -47,8 +49,7 @@ Révision globale des permissions
 **⚠️ Notes de version**
 
 - Les permissions existantes sont récupérées et remises à plat automatiquement sans système d'héritage. Vérifiez cependant les permissions après la mise à jour de vos groupes et utilisateurs.
-- Restart worker à cause de la nouvelle tache Celery beat ?
-
+- Si vous avez des modules externes, vous devez déclarer ses permissions disponibles (exemple : #2543)
 
 2.12.3 (2023-05-09)
 -------------------
