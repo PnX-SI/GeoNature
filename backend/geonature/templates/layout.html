@@ -80,6 +80,8 @@
             </div>
 
             <div class="col-10 offset-2" id="main">
+                <h2>{{ admin_view.name|capitalize }}</h2>
+                {{ layout.messages() }}
                 {% block body %}
                  {% endblock %}
             </div>
