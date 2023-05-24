@@ -282,9 +282,9 @@ class SyntheseQuery:
             )
         if "observers" in self.filters:
             # découpe des éléments saisies par les espaces
-            observers = self.filters.pop("observers").split()
+            observers = self.filters.pop("observers").split(";")
             self.query = self.query.where(
-                and_(*[func.unaccent(self.model.observers).ilike("%" + func.unaccent(observer) + "%") for observer in observers])
+                or_(*[func.unaccent(self.model.observers).ilike("%" + func.unaccent(observer) + "%") for observer in observers])
             )
 
         if "observers_list" in self.filters:
