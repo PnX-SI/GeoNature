@@ -51,7 +51,7 @@ from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required, permissions_required
-from geonature.core.gn_permissions.tools import get_scopes_by_action
+from geonature.core.gn_permissions.tools import get_scopes_by_action, get_permissions
 
 from ref_geo.models import LAreas, BibAreasTypes
 
@@ -1031,9 +1031,9 @@ def get_taxa_distribution():
 
 
 @routes.route("/reports", methods=["POST"])
-@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+@permissions_required("R", module_code="SYNTHESE")
 @json_resp
-def create_report(scope):
+def create_report(permissions):
     """
     Create a report (e.g report) for a given synthese id
 
@@ -1050,35 +1050,36 @@ def create_report(scope):
         type_name = data["type"]
         id_synthese = data["item"]
         content = data["content"]
-        if not id_synthese:
-            raise BadRequest("id_synthese is missing from the request")
-        if not type_name:
-            raise BadRequest("Report type is missing from the request")
-        if not content and type_name == "discussion":
-            raise BadRequest("Discussion content is required")
-        type_exists = BibReportsTypes.query.filter_by(type=type_name).first()
-        if not type_exists:
-            raise BadRequest("This report type does not exist")
-        synthese = Synthese.query.options(
-            Load(Synthese).raiseload("*"),
-            joinedload("cor_observers"),
-            joinedload("digitiser"),
-            joinedload("dataset"),
-        ).get_or_404(id_synthese)
-        if not synthese.has_instance_permission(scope):
-            raise Forbidden
-
-        report_query = TReport.query.filter(
-            TReport.id_synthese == id_synthese,
-            TReport.report_type.has(BibReportsTypes.type == type_name),
-        )
-        # only allow one alert by id_synthese
-        if type_name in ["alert", "pin"]:
-            alert_exists = report_query.one_or_none()
-            if alert_exists is not None:
-                raise Conflict("This type already exists for this id")
     except KeyError:
         raise BadRequest("Empty request data")
+    if not id_synthese:
+        raise BadRequest("id_synthese is missing from the request")
+    if not type_name:
+        raise BadRequest("Report type is missing from the request")
+    if not content and type_name == "discussion":
+        raise BadRequest("Discussion content is required")
+    type_exists = BibReportsTypes.query.filter_by(type=type_name).first()
+    if not type_exists:
+        raise BadRequest("This report type does not exist")
+
+    synthese = Synthese.query.options(
+        Load(Synthese).raiseload("*"),
+        joinedload("cor_observers"),
+        joinedload("digitiser"),
+        joinedload("dataset"),
+    ).get_or_404(id_synthese)
+    if not synthese.has_instance_permission(permissions):
+        raise Forbidden
+
+    report_query = TReport.query.filter(
+        TReport.id_synthese == id_synthese,
+        TReport.report_type.has(BibReportsTypes.type == type_name),
+    )
+    # only allow one alert by id_synthese
+    if type_name in ["alert", "pin"]:
+        alert_exists = report_query.one_or_none()
+        if alert_exists is not None:
+            raise Conflict("This type already exists for this id")
     new_entry = TReport(
         id_synthese=id_synthese,
         id_role=g.current_user.id_role,
@@ -1147,14 +1148,14 @@ def update_content_report(id_report):
 
 
 @routes.route("/reports", methods=["GET"])
-@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
-def list_reports(scope):
+@permissions_required("R", module_code="SYNTHESE")
+def list_reports(permissions):
     type_name = request.args.get("type")
     id_synthese = request.args.get("idSynthese")
     sort = request.args.get("sort")
     # VERIFY ID SYNTHESE
     synthese = Synthese.query.get_or_404(id_synthese)
-    if not synthese.has_instance_permission(scope):
+    if not synthese.has_instance_permission(permissions):
         raise Forbidden
     # START REQUEST
     req = TReport.query.filter(TReport.id_synthese == id_synthese)
@@ -1203,8 +1204,8 @@ def delete_report(id_report):
     reportItem = TReport.query.get_or_404(id_report)
     # alert control to check cruved - allow validators only
     if reportItem.report_type.type in ["alert"]:
-        scope = get_scopes_by_action(module_code="VALIDATION")["C"]  # FIXME
-        if not reportItem.synthese.has_instance_permission(scope):
+        permissions = get_permissions(module_code="SYNTHESE", action_code="R")
+        if not reportItem.synthese.has_instance_permission(permissions):
             raise Forbidden("Permission required to delete this report !")
     # only owner could delete a report for pin and discussion
     if reportItem.id_role != g.current_user.id_role and reportItem.report_type.type in [
