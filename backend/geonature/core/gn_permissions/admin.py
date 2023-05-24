@@ -72,7 +72,7 @@ def filters_formatter(v, c, m, p):
     if m.scope:
         filters.append(m.scope.label)
     if m.sensitivity_filter:
-        filters.append("Données non sensible")
+        filters.append("Données non sensibles")
     return Markup("<ul>" + "".join(["<li>{}</li>".format(f) for f in filters]) + "</ul>")
 
 
