@@ -690,9 +690,9 @@ def export_status(scope):
 
 
 @routes.route("/general_stats", methods=["GET"])
-@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+@permissions_required("R", module_code="SYNTHESE")
 @json_resp
-def general_stats(scope):
+def general_stats(permissions):
     """Return stats about synthese.
 
     .. :quickref: Synthese;
@@ -711,7 +711,7 @@ def general_stats(scope):
         ]
     )
     synthese_query_obj = SyntheseQuery(Synthese, q, {})
-    synthese_query_obj.filter_query_with_cruved(g.current_user, scope)
+    synthese_query_obj.filter_query_with_cruved(g.current_user, permissions)
     result = DB.session.execute(synthese_query_obj.query)
     synthese_counts = result.fetchone()
 
