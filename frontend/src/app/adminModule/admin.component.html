@@ -3,26 +3,13 @@
     <h3 class="underlined main-color">Module d'administration de GeoNature</h3>
   </div>
 
-  <div class="card-body" *ngIf="_cruvedStore.cruved?.ADMIN?.module_objects.NOMENCLATURES">
+  <div class="card-body">
     <h5 class="underlined second-color">Backoffice GeoNature</h5>
 
     <li class="no-bullet">
-      <a target="_blank" [href]="URL_NOMENCLATURE_ADMIN" class="nomenclature">
+      <a target="_blank" [href]="URL_ADMIN" class="nomenclature">
         <button mat-raised-button color="primary" class="uppercase">
           Backoffice
-          <mat-icon>create</mat-icon>
-        </button>
-      </a>
-    </li>
-  </div>
-
-  <div class="card-body" *ngIf="_cruvedStore.cruved?.ADMIN?.module_objects?.PERMISSIONS">
-    <h5 class="underlined second-color">Administration des permissions (CRUVED)</h5>
-
-    <li class="no-bullet">
-      <a target="_blank" [href]="URL_BACKOFFICE_PERM" class="nomenclature">
-        <button mat-raised-button class="uppercase" color="primary">
-          Permissions
           <mat-icon>create</mat-icon>
         </button>
       </a>
