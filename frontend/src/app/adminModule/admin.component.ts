@@ -9,12 +9,10 @@ import { ConfigService } from '@geonature/services/config.service';
   providers: [],
 })
 export class AdminComponent implements OnInit {
-  URL_NOMENCLATURE_ADMIN = null;
-  URL_BACKOFFICE_PERM = null;
+  URL_ADMIN = null;
 
   constructor(public _cruvedStore: CruvedStoreService, public config: ConfigService) {
-    this.URL_NOMENCLATURE_ADMIN = this.config.API_ENDPOINT + '/admin/';
-    this.URL_BACKOFFICE_PERM = this.config.API_ENDPOINT + '/permissions_backoffice/users';
+    this.URL_ADMIN = this.config.API_ENDPOINT + '/admin/';
   }
 
   ngOnInit() {}
