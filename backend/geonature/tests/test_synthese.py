@@ -1,5 +1,6 @@
 import pytest
 import json
+import datetime
 import itertools
 from collections import Counter
 
@@ -7,18 +8,21 @@ from flask import url_for, current_app
 from sqlalchemy import func
 from werkzeug.exceptions import Forbidden, BadRequest, Unauthorized
 from jsonschema import validate as validate_json
-from geoalchemy2.shape import to_shape
-from geojson import Point
+from geoalchemy2.shape import to_shape, from_shape
+from shapely.geometry import Point
 
 from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_synthese.models import Synthese, TSources
+from geonature.core.gn_synthese.models import Synthese, TSources, VSyntheseForWebApp
 
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user_cookie
 from ref_geo.models import BibAreasTypes, LAreas
 from apptax.tests.fixtures import noms_example, attribut_example
+from apptax.taxonomie.models import Taxref
+
 
 from .fixtures import *
+from .fixtures import create_synthese
 from .utils import jsonschema_definitions
 
 
@@ -53,6 +57,34 @@ def taxon_attribut(noms_example, attribut_example, synthese_data):
         c = CorTaxonAttribut(bib_nom=nom, bib_attribut=attribut, valeur_attribut="eau")
         db.session.add(c)
     return c
+
+
+@pytest.fixture()
+def synthese_for_observers(source, datasets):
+    """
+    Seems redondant with synthese_data fixture, but synthese data
+    insert in cor_observers_synthese and run a trigger which override the observers_txt field
+    """
+    now = datetime.datetime.now()
+    taxon = Taxref.query.first()
+    point = Point(5.486786, 42.832182)
+    geom = from_shape(point, srid=4326)
+    with db.session.begin_nested():
+        for obs in ["Vincent", "Camille", "Camille, Xavier"]:
+            db.session.add(
+                Synthese(
+                    id_source=source.id_source,
+                    nom_cite=taxon.lb_nom,
+                    cd_nom=taxon.cd_nom,
+                    dataset=datasets["own_dataset"],
+                    date_min=now,
+                    date_max=now,
+                    observers=obs,
+                    the_geom_4326=geom,
+                    the_geom_point=geom,
+                    the_geom_local=func.st_transform(geom, 2154),
+                )
+            )
 
 
 synthese_properties = {
@@ -144,6 +176,7 @@ class TestSynthese:
 
         r = self.client.get(url)
         assert r.status_code == 200
+        print(r.json)
         validate_json(instance=r.json, schema=schema)
 
         # test on synonymy and taxref attrs
@@ -298,6 +331,21 @@ class TestSynthese:
         }
         response_data = {feature["properties"]["id"] for feature in r.json["features"]}
         assert expected_data.issubset(response_data)
+
+    @pytest.mark.parametrize(
+        "observer_input,expected_length_synthese",
+        [("Vincent", 1), ("Camillé", 2), ("Camille, Elie", 2), ("Jane Doe", 0)],
+    )
+    def test_get_observations_for_web_filter_observers(
+        self, users, synthese_for_observers, observer_input, expected_length_synthese
+    ):
+        set_logged_user_cookie(self.client, users["admin_user"])
+
+        filters = {"observers": observer_input}
+        r = self.client.get(url_for("gn_synthese.get_observations_for_web"), json=filters)
+        for s in r.json["features"]:
+            print(s)
+        assert len(r.json["features"]) == expected_length_synthese
 
     def test_get_synthese_data_cruved(self, app, users, synthese_data, datasets):
         set_logged_user_cookie(self.client, users["self_user"])
