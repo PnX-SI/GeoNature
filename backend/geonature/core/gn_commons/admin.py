@@ -110,7 +110,7 @@ class BibFieldAdmin(CruvedProtectedMixin, ModelView):
 
 class TMobileAppsAdmin(CruvedProtectedMixin, ModelView):
     module_code = "ADMIN"
-    object_code = "ALL"
+    object_code = "MOBILE_APPS"
 
     column_list = (
         "app_code",
@@ -132,7 +132,7 @@ class TMobileAppsAdmin(CruvedProtectedMixin, ModelView):
 
 class TModulesAdmin(CruvedProtectedMixin, ModelView):
     module_code = "ADMIN"
-    object_code = "ALL"
+    object_code = "MODULES"
 
     can_view_details = True
     action_disallowed_list = ["delete"]
