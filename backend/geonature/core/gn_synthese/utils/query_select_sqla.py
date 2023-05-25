@@ -9,7 +9,7 @@ import datetime
 import uuid
 
 from flask import current_app
-
+import unicodedata
 from sqlalchemy import func, or_, and_, select, distinct
 from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
@@ -94,6 +94,10 @@ class SyntheseQuery:
                     e=e, model=model
                 )
             )
+
+    # def remove_accents(input_str):
+    #     nfkd_form = unicodedata.normalize('NFKD', input_str)
+    #     return u"".join([c for c in nfkd_form if not unicodedata.combining(c)])
 
     def add_join(self, right_table, right_column, left_column, join_type="right"):
         if self.first:
@@ -287,7 +291,7 @@ class SyntheseQuery:
                 or_(
                     *[
                         func.unaccent(self.model.observers).ilike(
-                            "%" + func.unaccent(observer) + "%"
+                            "%" + remove_accents(observer) + "%"
                         )
                         for observer in observers
                     ]
@@ -536,3 +540,8 @@ class SyntheseQuery:
                 == (len(protection_status_value) + len(red_list_filters)),
             ],
         )
+
+
+def remove_accents(input_str):
+    nfkd_form = unicodedata.normalize("NFKD", input_str)
+    return "".join([c for c in nfkd_form if not unicodedata.combining(c)])
