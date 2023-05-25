@@ -44,6 +44,8 @@ Si vous utilisez la page de maintenance, celle-ci a été revue, [référez vous
 - Admin : rajout de l’objet NOTIFICATIONS afin de pouvoir en définir ses permissions (#2490)
 - Login : désactivation du spinner après une tentative de login échouée
 
+Note de version : 
+Si vous utilisiez des champs additionnels avec des checkbox, lors de leur changement de type (recommandé dans les notes de version de la 2.12.0) il est important que les valeurs du champ `field_values` continue à avoir des "string" dans la clé values : [{"label": "Un", "value": "1"}] sans quoi il y aura des problème à l'édition. Pour les nouveaux champs additionnels, il est cependant bien possible de mettre des entiers dans la clé `value` [{"label": "Un", "value": 1}]
 
 2.12.1 (2023-04-11)
 -------------------
