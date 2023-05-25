@@ -233,6 +233,11 @@ class TestSynthese:
         validate_json(instance=r.json, schema=schema)
         assert len(r.json["features"]) >= 2  # FIXME
 
+        filters = {"observers": "Léa, Eluard"}
+        r = self.client.get(url)
+        validate_json(instance=r.json, schema=schema)
+        assert len(r.json["features"]) > 0
+
         # test status lr
         filters = {"regulations_protection_status": ["REGLLUTTE"]}
         r = self.client.get(url, json=filters)
@@ -296,6 +301,27 @@ class TestSynthese:
         }
         response_data = {feature["properties"]["id"] for feature in r.json["features"]}
         assert expected_data.issubset(response_data)
+
+    @pytest.mark.parametrize(
+        "test_input,expected_length_observer",
+        [
+            ("Leaa, Robert", 0),
+            ("Léa, éluard", 4),
+            ("lea, eluard", 4),
+            ("lea", 2),
+        ],
+    )
+    def test_get_observations_for_web_filter_observers(
+        self, users, synthese_data, test_input, expected_length_observer
+    ):
+        set_logged_user_cookie(self.client, users["self_user"])
+
+        url = url_for("gn_synthese.get_observations_for_web")
+        filters = {"observers": test_input}
+        r = self.client.get(url, json=filters)
+
+        response_data = {feature["properties"] for feature in r.json["features"]}
+        assert len(response_data) == expected_length_observer
 
     def test_get_synthese_data_cruved(self, app, users, synthese_data, datasets):
         set_logged_user_cookie(self.client, users["self_user"])
