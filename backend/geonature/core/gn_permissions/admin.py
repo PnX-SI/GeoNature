@@ -37,7 +37,7 @@ class RoleFilter(DynamicOptionsMixin, FilterEqual):
 class ModuleFilter(DynamicOptionsMixin, FilterEqual):
     def get_dynamic_options(self, view):
         if has_app_context():
-            yield from [(m.id_module, m.module_code) for m in TModules.query.all()]
+            yield from [(m.id_module, m.module_code) for m in TModules.query.order_by(TModules.module_code).all()]
 
 
 class ObjectFilter(DynamicOptionsMixin, FilterEqual):
