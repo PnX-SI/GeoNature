@@ -281,8 +281,8 @@ class SyntheseQuery:
                 self.model.id_dataset.in_(self.filters.pop("id_dataset"))
             )
         if "observers" in self.filters:
-            # découpe des éléments saisies par les espaces
-            observers = self.filters.pop("observers").split(";")
+            # découpe des éléments saisies par des ","
+            observers = self.filters.pop("observers").split(",")
             self.query = self.query.where(
                 or_(
                     *[
