@@ -16,6 +16,9 @@ CHANGELOG
 - Correction et amélioration de la page de maintenance (#2535)
 - Correction de la synchronisation des JDD et de l’association aux modules (#2532 par @VincentCauchois)
 
+**💻 Développement**
+- La fonction `geonature.core.gn_permissions.tools.cruved_scope_for_user_in_module` est remplacée par `geonature.core.gn_permissions.tools.get_scopes_by_action`
+
 **⚠️ Notes de version**
 
 Si vous utilisez la page de maintenance, celle-ci a été revue, [référez vous à la documentation](https://docs.geonature.fr/installation.html#configuration-apache) afin de la mettre à jour.
