@@ -444,6 +444,7 @@ class PermissionAvailableAdmin(CruvedProtectedMixin, ModelView):
         ("object", "object.code_object"),
         ("action", "action.code_action"),
     )
+    column_filters = (ModuleFilter(column=PermissionAvailable.id_module, name="Module"),)
     column_default_sort = [
         ("module.module_code", False),
         ("object.code_object", False),
@@ -470,6 +471,7 @@ class RolePermAdmin(CruvedProtectedMixin, ModelView):
         "permissions": "Permissions",
         "permissions_count": "Nombre de permissions",
     }
+    column_searchable_list = ("identifiant", "nom_complet")
     column_formatters = {
         "groups": groups_formatter,
         "permissions_count": permissions_count_formatter,
