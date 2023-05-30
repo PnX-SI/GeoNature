@@ -796,12 +796,136 @@ class TestSynthese:
         )
         assert_export_status_results(user, set_expected_cd_ref)
 
-    def test_export_metadata(self, users):
-        set_logged_user_cookie(self.client, users["self_user"])
+    def test_export_metadata(self, users, synthese_data, synthese_sensitive_data):
+        data_synthese = synthese_data.values()
+        data_synthese_sensitive = synthese_sensitive_data.values()
+        list_id_synthese = [obs_data_synthese.id_synthese for obs_data_synthese in data_synthese]
+        list_id_synthese.extend(
+            [obs_data_synthese.id_synthese for obs_data_synthese in data_synthese_sensitive]
+        )
 
-        response = self.client.get(url_for("gn_synthese.export_metadata"))
+        expected_columns_exports = [
+            '"jeu_donnees"',
+            '"jdd_id"',
+            '"jdd_uuid"',
+            '"cadre_acquisition"',
+            '"ca_uuid"',
+            '"acteurs"',
+            '"nombre_total_obs"',
+        ]
+        index_column_jdd_id = expected_columns_exports.index('"jdd_id"')
 
-        assert response.status_code == 200
+        def assert_export_metadata_results(user, dict_expected_datasets):
+            set_logged_user_cookie(self.client, user)
+
+            response = self.client.post(
+                url_for("gn_synthese.export_metadata"),
+            )
+
+            assert response.status_code == 200
+
+            rows_data_response = response.data.decode("utf-8").split("\r\n")[0:-1]
+            row_header = rows_data_response[0]
+            rows_datasets_data_response = rows_data_response[1:]
+
+            assert row_header.split(";") == expected_columns_exports
+
+            nb_expected_datasets = len(dict_expected_datasets)
+            set_id_datasets_data_response = set(
+                row.split(";")[index_column_jdd_id] for row in rows_datasets_data_response
+            )
+            nb_datasets_response = len(set_id_datasets_data_response)
+
+            assert nb_datasets_response >= nb_expected_datasets
+
+            set_expected_id_datasets = set(dict_expected_datasets.keys())
+            assert set(
+                f'"{expected_id_dataset}"' for expected_id_dataset in set_expected_id_datasets
+            ).issubset(set_id_datasets_data_response)
+
+            for expected_id_dataset, expected_nb_obs in dict_expected_datasets.items():
+                row_dataset_data_response = [
+                    row
+                    for row in rows_datasets_data_response
+                    if row.split(";")[index_column_jdd_id] == f'"{expected_id_dataset}"'
+                ][0]
+                nb_obs_response = row_dataset_data_response.split(";")[-1]
+                assert nb_obs_response >= f'"{expected_nb_obs}"'
+
+        ## "self_user" : scope 1 and include sensitive data
+        user = users["self_user"]
+        # Create a dict (id_dataset, nb_obs) for the expected data
+        dict_expected_datasets = {}
+        expected_data_synthese = [
+            obs_synthese
+            for name_obs, obs_synthese in synthese_data.items()
+            if name_obs
+            in [
+                "obs1",
+                "obs2",
+                "obs3",
+                "p1_af1",
+                "p1_af1_2",
+                "p1_af2",
+                "p2_af2",
+                "p2_af1",
+                "p3_af3",
+            ]
+        ]
+        for obs_data_synthese in expected_data_synthese:
+            id_dataset = obs_data_synthese.id_dataset
+            if id_dataset in dict_expected_datasets:
+                dict_expected_datasets[id_dataset] += 1
+            else:
+                dict_expected_datasets[id_dataset] = 1
+        expected_data_synthese = [
+            obs_synthese
+            for name_obs, obs_synthese in synthese_sensitive_data.items()
+            if name_obs
+            in [
+                "obs_sensitive_protected",
+                "obs_protected_not_sensitive",
+                "obs_sensitive_protected_2",
+            ]
+        ]
+        for obs_data_synthese in expected_data_synthese:
+            id_dataset = obs_data_synthese.id_dataset
+            if id_dataset in dict_expected_datasets:
+                dict_expected_datasets[id_dataset] += 1
+            else:
+                dict_expected_datasets[id_dataset] = 1
+        assert_export_metadata_results(user, dict_expected_datasets)
+
+        ## "associate_user_2_exclude_sensitive" : scope 2 and exclude sensitive data
+        user = users["associate_user_2_exclude_sensitive"]
+        # Create a dict (id_dataset, nb_obs) for the expected data
+        dict_expected_datasets = {}
+        expected_data_synthese = [
+            obs_synthese
+            for name_obs, obs_synthese in synthese_data.items()
+            if name_obs in ["obs1"]
+        ]
+        for obs_data_synthese in expected_data_synthese:
+            id_dataset = obs_data_synthese.id_dataset
+            if id_dataset in dict_expected_datasets:
+                dict_expected_datasets[id_dataset] += 1
+            else:
+                dict_expected_datasets[id_dataset] = 1
+        expected_data_synthese = [
+            obs_synthese
+            for name_obs, obs_synthese in synthese_sensitive_data.items()
+            if name_obs
+            in [
+                "obs_protected_not_sensitive",
+            ]
+        ]
+        for obs_data_synthese in expected_data_synthese:
+            id_dataset = obs_data_synthese.id_dataset
+            if id_dataset in dict_expected_datasets:
+                dict_expected_datasets[id_dataset] += 1
+            else:
+                dict_expected_datasets[id_dataset] = 1
+        assert_export_metadata_results(user, dict_expected_datasets)
 
     def test_general_stat(self, users):
         set_logged_user_cookie(self.client, users["self_user"])
