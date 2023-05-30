@@ -22,6 +22,7 @@ from apptax.taxonomie.models import Taxref
 
 
 from pypnusershub.db.models import User
+from apptax.taxonomie.models import Taxref
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 from .fixtures import *
@@ -627,6 +628,105 @@ class TestSynthese:
             ]
         )
         assert_export_results(user, expected_id_synthese_list)
+
+    def test_export_taxons(self, users, synthese_data, synthese_sensitive_data):
+        data_synthese = synthese_data.values()
+        data_synthese_sensitive = synthese_sensitive_data.values()
+        list_id_synthese = [obs_data_synthese.id_synthese for obs_data_synthese in data_synthese]
+        list_id_synthese.extend(
+            [obs_data_synthese.id_synthese for obs_data_synthese in data_synthese_sensitive]
+        )
+
+        expected_columns_exports = [
+            '"nom_valide"',
+            '"cd_ref"',
+            '"nom_vern"',
+            '"group1_inpn"',
+            '"group2_inpn"',
+            '"regne"',
+            '"phylum"',
+            '"classe"',
+            '"ordre"',
+            '"famille"',
+            '"id_rang"',
+            '"nb_obs"',
+            '"date_min"',
+            '"date_max"',
+        ]
+        index_colummn_cd_ref = expected_columns_exports.index('"cd_ref"')
+
+        def assert_export_taxons_results(user, set_expected_cd_ref):
+            set_logged_user_cookie(self.client, user)
+
+            response = self.client.post(
+                url_for("gn_synthese.export_taxon_web"),
+                json=list_id_synthese,
+            )
+
+            assert response.status_code == 200
+
+            rows_data_response = response.data.decode("utf-8").split("\r\n")[0:-1]
+            row_header = rows_data_response[0]
+            rows_taxons_data_response = rows_data_response[1:]
+
+            assert row_header.split(";") == expected_columns_exports
+
+            nb_expected_cd_noms = len(set_expected_cd_ref)
+
+            assert len(rows_taxons_data_response) >= nb_expected_cd_noms
+
+            set_cd_ref_data_response = set(
+                row.split(";")[index_colummn_cd_ref] for row in rows_taxons_data_response
+            )
+
+            assert set(f'"{expected_cd_ref}"' for expected_cd_ref in set_expected_cd_ref).issubset(
+                set_cd_ref_data_response
+            )
+
+        ## "self_user" : scope 1 and include sensitive data
+        user = users["self_user"]
+        set_expected_cd_ref = set(
+            Taxref.query.filter(Taxref.cd_nom == synthese_data[name_obs].cd_nom).one().cd_ref
+            for name_obs in [
+                "obs1",
+                "obs2",
+                "obs3",
+                "p1_af1",
+                "p1_af1_2",
+                "p1_af2",
+                "p2_af2",
+                "p2_af1",
+                "p3_af3",
+            ]
+        )
+        set_expected_cd_ref.update(
+            set(
+                Taxref.query.filter(Taxref.cd_nom == synthese_sensitive_data[name_obs].cd_nom)
+                .one()
+                .cd_ref
+                for name_obs in [
+                    "obs_sensitive_protected",
+                    "obs_protected_not_sensitive",
+                    "obs_sensitive_protected_2",
+                ]
+            )
+        )
+        assert_export_taxons_results(user, set_expected_cd_ref)
+
+        ## "associate_user_2_exclude_sensitive" : scope 2 and exclude sensitive data
+        user = users["associate_user_2_exclude_sensitive"]
+        set_expected_cd_ref = set(
+            Taxref.query.filter(Taxref.cd_nom == synthese_data[name_obs].cd_nom).one().cd_ref
+            for name_obs in ["obs1"]
+        )
+        set_expected_cd_ref.add(
+            Taxref.query.filter(
+                Taxref.cd_nom == synthese_sensitive_data["obs_protected_not_sensitive"].cd_nom
+            )
+            .one()
+            .cd_ref
+        )
+        assert_export_taxons_results(user, set_expected_cd_ref)
 
     def test_export_status(self, users):
         set_logged_user_cookie(self.client, users["self_user"])
