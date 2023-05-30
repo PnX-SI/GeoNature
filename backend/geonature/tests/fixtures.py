@@ -326,22 +326,24 @@ def synthese_data(app, users, datasets, source):
     point3 = Point(-3.486786, 48.832182)
     data = {}
     with db.session.begin_nested():
-        for name, cd_nom, point, ds in [
-            ("obs1", 713776, point1, datasets["own_dataset"]),
-            ("obs2", 212, point2, datasets["own_dataset"]),
-            ("obs3", 2497, point3, datasets["own_dataset"]),
-            ("p1_af1", 713776, point1, datasets["belong_af_1"]),
-            ("p1_af1_2", 212, point1, datasets["belong_af_1"]),
-            ("p1_af2", 212, point1, datasets["belong_af_2"]),
-            ("p2_af2", 2497, point2, datasets["belong_af_2"]),
-            ("p2_af1", 2497, point2, datasets["belong_af_1"]),
-            ("p3_af3", 2497, point3, datasets["belong_af_3"]),
+        for name, cd_nom, point, ds, comment_description in [
+            ("obs1", 713776, point1, datasets["own_dataset"], "obs1"),
+            ("obs2", 212, point2, datasets["own_dataset"], "obs2"),
+            ("obs3", 2497, point3, datasets["own_dataset"], "obs3"),
+            ("p1_af1", 713776, point1, datasets["belong_af_1"], "p1_af1"),
+            ("p1_af1_2", 212, point1, datasets["belong_af_1"], "p1_af1_2"),
+            ("p1_af2", 212, point1, datasets["belong_af_2"], "p1_af2"),
+            ("p2_af2", 2497, point2, datasets["belong_af_2"], "p2_af2"),
+            ("p2_af1", 2497, point2, datasets["belong_af_1"], "p2_af1"),
+            ("p3_af3", 2497, point3, datasets["belong_af_3"], "p3_af3"),
         ]:
             unique_id_sinp = (
                 "f4428222-d038-40bc-bc5c-6e977bbbc92b" if not data else func.uuid_generate_v4()
             )
             geom = from_shape(point, srid=4326)
             taxon = Taxref.query.filter_by(cd_nom=cd_nom).one()
+            kwargs = {}
+            kwargs["comment_description"] = comment_description
             s = create_synthese(
                 geom,
                 taxon,
@@ -350,6 +352,7 @@ def synthese_data(app, users, datasets, source):
                 source,
                 unique_id_sinp,
                 [users["admin_user"], users["user"]],
+                **kwargs,
             )
             db.session.add(s)
             data[name] = s
