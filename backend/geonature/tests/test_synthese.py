@@ -815,6 +815,7 @@ class TestSynthese:
         ]
         index_column_jdd_id = expected_columns_exports.index('"jdd_id"')
 
+        # TODO: assert that some data is excluded from the response
         def assert_export_metadata_results(user, dict_expected_datasets):
             set_logged_user_cookie(self.client, user)
 
@@ -925,6 +926,7 @@ class TestSynthese:
                 dict_expected_datasets[id_dataset] += 1
             else:
                 dict_expected_datasets[id_dataset] = 1
+        # TODO: s'assurer qu'on ne récupère pas le dataset "associate_2_dataset_sensitive", car ne contient que des données sensibles, bien que l'utilisateur ait le scope nécessaire par ailleurs (scope 2, et ce dataset lui est associé)
         assert_export_metadata_results(user, dict_expected_datasets)
 
     def test_general_stat(self, users):
