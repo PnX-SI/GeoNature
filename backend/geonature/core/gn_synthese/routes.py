@@ -515,6 +515,7 @@ def export_observations_web(permissions):
         )
 
 
+# TODO: Change the following line to set method as "POST" only ?
 @routes.route("/export_metadata", methods=["GET", "POST"])
 @permissions_required("E", module_code="SYNTHESE")
 def export_metadata(permissions):
@@ -525,6 +526,7 @@ def export_metadata(permissions):
     The table synthese is join with gn_synthese.v_metadata_for_export
     The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export
 
+    TODO: Remove the following comment line ? or add the where clause for id_synthese in id_list ?
     POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
     """
     filters = request.json if request.is_json else {}
