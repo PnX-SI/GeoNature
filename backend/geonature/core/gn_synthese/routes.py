@@ -563,8 +563,8 @@ def export_metadata(scope):
 
 
 @routes.route("/export_statuts", methods=["POST"])
-@permissions.check_cruved_scope("E", get_scope=True, module_code="SYNTHESE")
-def export_status(scope):
+@permissions_required("E", module_code="SYNTHESE")
+def export_status(permissions):
     """Route to get all the protection status of a synthese search
 
     .. :quickref: Synthese;
@@ -598,7 +598,8 @@ def export_status(scope):
     # Initialize SyntheseQuery class
     synthese_query = SyntheseQuery(VSyntheseForWebApp, q, filters)
 
-    synthese_query.apply_all_filters(g.current_user, scope)
+    # Filter query with permissions
+    synthese_query.filter_query_all_filters(g.current_user, permissions)
 
     # Add join
     synthese_query.add_join(Taxref, Taxref.cd_nom, VSyntheseForWebApp.cd_nom)
@@ -641,7 +642,7 @@ def export_status(scope):
     q = q.where(TaxrefBdcStatutText.enable == True)
 
     protection_status = []
-    data = DB.engine.execute(q)
+    data = DB.session.execute(q)
     for d in data:
         row = OrderedDict(
             [
