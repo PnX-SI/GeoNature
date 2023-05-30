@@ -344,10 +344,10 @@ def export_taxon_web(permissions):
         engine=DB.engine,
     )
     columns = taxon_view.tableDef.columns
+
     # Test de conformité de la vue v_synthese_for_export_view
     try:
         assert hasattr(taxon_view.tableDef.columns, "cd_ref")
-
     except AssertionError as e:
         return (
             {
@@ -364,7 +364,6 @@ def export_taxon_web(permissions):
 
     id_list = request.get_json()
 
-    cruved = get_scopes_by_action(module_code="SYNTHESE")
     sub_query = (
         select(
             [
@@ -391,6 +390,7 @@ def export_taxon_web(permissions):
     q = DB.session.query(*columns, subq.c.nb_obs, subq.c.date_min, subq.c.date_max).join(
         subq, subq.c.cd_ref == columns.cd_ref
     )
+
     return to_csv_resp(
         datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
         data=serializeQuery(q.all(), q.column_descriptions),
