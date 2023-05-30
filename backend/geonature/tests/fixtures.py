@@ -282,6 +282,11 @@ def datasets(users, acquisition_frameworks, module):
             ("belong_af_1", af_1.id_acquisition_framework, users["stranger_user"]),
             ("belong_af_2", af_2.id_acquisition_framework, users["stranger_user"]),
             ("belong_af_3", af_3.id_acquisition_framework, users["stranger_user"]),
+            (
+                "associate_2_dataset_sensitive",
+                af.id_acquisition_framework,
+                users["associate_user_2_exclude_sensitive"],
+            ),
         ]
     }
     datasets["with_module_1"] = create_dataset(
@@ -472,6 +477,13 @@ def synthese_sensitive_data(app, users, datasets, source):
                 protected_not_sensitive_point,
                 datasets["own_dataset"],
                 "obs_protected_not_sensitive",
+            ),
+            (
+                "obs_sensitive_protected_2",
+                sensitive_protected_cd_nom,
+                sensitive_protected_point,
+                datasets["associate_2_dataset_sensitive"],
+                "obs_sensitive_protected_2",
             ),
         ]:
             unique_id_sinp = func.uuid_generate_v4()
