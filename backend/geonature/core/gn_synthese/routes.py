@@ -516,8 +516,8 @@ def export_observations_web(permissions):
 
 
 @routes.route("/export_metadata", methods=["GET", "POST"])
-@permissions.check_cruved_scope("E", get_scope=True, module_code="SYNTHESE")
-def export_metadata(scope):
+@permissions_required("E", module_code="SYNTHESE")
+def export_metadata(permissions):
     """Route to export the metadata in CSV
 
     .. :quickref: Synthese;
@@ -530,19 +530,35 @@ def export_metadata(scope):
     filters = request.json if request.is_json else {}
 
     metadata_view = GenericTable(
-        tableName="v_metadata_for_export", schemaName="gn_synthese", engine=DB.engine
-    )
-    q = DB.session.query(distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef).join(
-        metadata_view.tableDef,
-        getattr(
-            metadata_view.tableDef.columns,
-            current_app.config["SYNTHESE"]["EXPORT_METADATA_ID_DATASET_COL"],
-        )
-        == VSyntheseForWebApp.id_dataset,
+        tableName="v_metadata_for_export",
+        schemaName="gn_synthese",
+        engine=DB.engine,
     )
 
+    # Test de conformité de la vue v_metadata_for_export
+    try:
+        assert hasattr(metadata_view.tableDef.columns, "jdd_id")
+    except AssertionError as e:
+        return (
+            {
+                "msg": """
+                        View v_metadata_for_export
+                        must have a jdd_id column \n
+                        trace: {}
+                        """.format(
+                    str(e)
+                )
+            },
+            500,
+        )
+
     q = select([distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef])
-    synthese_query_class = SyntheseQuery(VSyntheseForWebApp, q, filters)
+
+    synthese_query_class = SyntheseQuery(
+        VSyntheseForWebApp,
+        q,
+        filters,
+    )
     synthese_query_class.add_join(
         metadata_view.tableDef,
         getattr(
@@ -551,14 +567,26 @@ def export_metadata(scope):
         ),
         VSyntheseForWebApp.id_dataset,
     )
-    synthese_query_class.filter_query_all_filters(g.current_user, scope)
 
-    data = DB.engine.execute(synthese_query_class.query)
+    # Filter query with permissions (scope, sensitivity, ...)
+    synthese_query_class.filter_query_all_filters(g.current_user, permissions)
+
+    data = DB.session.execute(synthese_query_class.query)
+
+    # Define the header of the csv file
+    columns = [db_col.key for db_col in metadata_view.tableDef.columns]
+    columns[columns.index("nombre_obs")] = "nombre_total_obs"
+
+    # Retrieve the data to write in the csv file
+    data = [metadata_view.as_dict(d) for d in data]
+    for d in data:
+        d["nombre_total_obs"] = d.pop("nombre_obs")
+
     return to_csv_resp(
         datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
-        data=[metadata_view.as_dict(d) for d in data],
+        data=data,
         separator=";",
-        columns=[db_col.key for db_col in metadata_view.tableDef.columns],
+        columns=columns,
     )
 
 
