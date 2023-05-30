@@ -21,6 +21,9 @@ from apptax.tests.fixtures import noms_example, attribut_example
 from apptax.taxonomie.models import Taxref
 
 
+from pypnusershub.db.models import User
+from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
+
 from .fixtures import *
 from .fixtures import create_synthese
 from .utils import jsonschema_definitions
@@ -440,6 +443,190 @@ class TestSynthese:
             query_string={"export_format": "shapefile"},
         )
         assert response.status_code == 200
+
+    def test_export_observations(self, users, synthese_data, synthese_sensitive_data):
+        data_synthese = synthese_data.values()
+        data_synthese_sensitive = synthese_sensitive_data.values()
+        list_id_synthese = [obs_data_synthese.id_synthese for obs_data_synthese in data_synthese]
+        list_id_synthese.extend(
+            [obs_data_synthese.id_synthese for obs_data_synthese in data_synthese_sensitive]
+        )
+
+        expected_columns_exports = [
+            '"id_synthese"',
+            '"date_debut"',
+            '"date_fin"',
+            '"heure_debut"',
+            '"heure_fin"',
+            '"cd_nom"',
+            '"cd_ref"',
+            '"nom_valide"',
+            '"nom_vernaculaire"',
+            '"nom_cite"',
+            '"regne"',
+            '"group1_inpn"',
+            '"group2_inpn"',
+            '"classe"',
+            '"ordre"',
+            '"famille"',
+            '"rang_taxo"',
+            '"nombre_min"',
+            '"nombre_max"',
+            '"alti_min"',
+            '"alti_max"',
+            '"prof_min"',
+            '"prof_max"',
+            '"observateurs"',
+            '"determinateur"',
+            '"communes"',
+            '"geometrie_wkt_4326"',
+            '"x_centroid_4326"',
+            '"y_centroid_4326"',
+            '"nom_lieu"',
+            '"comment_releve"',
+            '"comment_occurrence"',
+            '"validateur"',
+            '"niveau_validation"',
+            '"date_validation"',
+            '"comment_validation"',
+            '"preuve_numerique_url"',
+            '"preuve_non_numerique"',
+            '"jdd_nom"',
+            '"jdd_uuid"',
+            '"jdd_id"',
+            '"ca_nom"',
+            '"ca_uuid"',
+            '"ca_id"',
+            '"cd_habref"',
+            '"cd_habitat"',
+            '"nom_habitat"',
+            '"precision_geographique"',
+            '"nature_objet_geo"',
+            '"type_regroupement"',
+            '"methode_regroupement"',
+            '"technique_observation"',
+            '"biologique_statut"',
+            '"etat_biologique"',
+            '"biogeographique_statut"',
+            '"naturalite"',
+            '"preuve_existante"',
+            '"niveau_precision_diffusion"',
+            '"stade_vie"',
+            '"sexe"',
+            '"objet_denombrement"',
+            '"type_denombrement"',
+            '"niveau_sensibilite"',
+            '"statut_observation"',
+            '"floutage_dee"',
+            '"statut_source"',
+            '"type_info_geo"',
+            '"methode_determination"',
+            '"comportement"',
+            '"reference_biblio"',
+            '"id_origine"',
+            '"uuid_perm_sinp"',
+            '"uuid_perm_grp_sinp"',
+            '"date_creation"',
+            '"date_modification"',
+            '"champs_additionnels"',
+        ]
+
+        def assert_export_results(user, expected_id_synthese_list):
+            set_logged_user_cookie(self.client, user)
+            response = self.client.post(
+                url_for("gn_synthese.export_observations_web"),
+                json=list_id_synthese,
+                query_string={"export_format": "csv"},
+            )
+            assert response.status_code == 200
+
+            rows_data_response = response.data.decode("utf-8").split("\r\n")[0:-1]
+            row_header = rows_data_response[0]
+            rows_synthese_data_response = rows_data_response[1:]
+
+            assert row_header.split(";") == expected_columns_exports
+
+            expected_response_data_synthese = [
+                obs_data_synthese
+                for obs_data_synthese in data_synthese
+                if obs_data_synthese.id_synthese in expected_id_synthese_list
+            ]
+            expected_response_data_synthese.extend(
+                [
+                    obs_data_synthese
+                    for obs_data_synthese in data_synthese_sensitive
+                    if obs_data_synthese.id_synthese in expected_id_synthese_list
+                ]
+            )
+            nb_expected_synthese_data = len(expected_response_data_synthese)
+            assert len(rows_synthese_data_response) >= nb_expected_synthese_data
+            list_id_synthese_data_response = [
+                row.split(";")[0] for row in rows_synthese_data_response
+            ]
+            assert set(
+                f'"{expected_id_synthese}"' for expected_id_synthese in expected_id_synthese_list
+            ).issubset(set(list_id_synthese_data_response))
+            # Some checks on the data of the response : cd_nom, comment_occurrence (comment_description in synthese)
+            for expected_obs_data_synthese in expected_response_data_synthese:
+                id_synthese_expected_obs_data_synthese = expected_obs_data_synthese.id_synthese
+                row_response_obs_data_synthese = [
+                    row
+                    for row in rows_synthese_data_response
+                    if row.split(";")[0] == f'"{id_synthese_expected_obs_data_synthese}"'
+                ][0]
+                # Check cd_nom
+                expected_cd_nom = expected_obs_data_synthese.cd_nom
+                index_cd_nom_response = expected_columns_exports.index('"cd_nom"')
+                response_cd_nom = row_response_obs_data_synthese.split(";")[index_cd_nom_response]
+                assert response_cd_nom == f'"{expected_cd_nom}"'
+                # Check comment_occurrence
+                expected_comment_occurrence = expected_obs_data_synthese.comment_description
+                index_comment_occurrence_response = expected_columns_exports.index(
+                    '"comment_occurrence"'
+                )
+                response_comment_occurrence = row_response_obs_data_synthese.split(";")[
+                    index_comment_occurrence_response
+                ]
+                assert response_comment_occurrence == f'"{expected_comment_occurrence}"'
+
+        ## "self_user" : scope 1 and include sensitive data
+        user = users["self_user"]
+        expected_id_synthese_list = [
+            synthese_data[name_obs].id_synthese
+            for name_obs in [
+                "obs1",
+                "obs2",
+                "obs3",
+                "p1_af1",
+                "p1_af1_2",
+                "p1_af2",
+                "p2_af2",
+                "p2_af1",
+                "p3_af3",
+            ]
+        ]
+        expected_id_synthese_list.extend(
+            [
+                synthese_sensitive_data[name_obs].id_synthese
+                for name_obs in [
+                    "obs_sensitive_protected",
+                    "obs_protected_not_sensitive",
+                    "obs_sensitive_protected_2",
+                ]
+            ]
+        )
+        assert_export_results(user, expected_id_synthese_list)
+
+        ## "associate_user_2_exclude_sensitive" : scope 2 and exclude sensitive data
+        user = users["associate_user_2_exclude_sensitive"]
+        expected_id_synthese_list = [synthese_data[name_obs].id_synthese for name_obs in ["obs1"]]
+        expected_id_synthese_list.extend(
+            [
+                synthese_sensitive_data[name_obs].id_synthese
+                for name_obs in ["obs_protected_not_sensitive"]
+            ]
+        )
+        assert_export_results(user, expected_id_synthese_list)
 
     def test_export_status(self, users):
         set_logged_user_cookie(self.client, users["self_user"])
