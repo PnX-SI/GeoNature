@@ -129,7 +129,7 @@ def users(app):
 
     actions = {code: PermAction.query.filter_by(code_action=code).one() for code in "CRUVED"}
 
-    def create_user(username, organisme=None, scope=None):
+    def create_user(username, organisme=None, scope=None, sensitivity_filter=False):
         # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
         with db.session.begin_nested():
             user = User(
@@ -158,6 +158,7 @@ def users(app):
                                 module=module,
                                 object=obj,
                                 scope_value=scope if scope != 3 else None,
+                                sensitivity_filter=sensitivity_filter,
                             )
                             db.session.add(permission)
         return user
@@ -174,6 +175,7 @@ def users(app):
         ("self_user", organisme, 1),
         ("user", organisme, 2),
         ("admin_user", organisme, 3),
+        ("associate_user_2_exclude_sensitive", organisme, 2, True),
     ]
 
     for username, *args in users_to_create:
