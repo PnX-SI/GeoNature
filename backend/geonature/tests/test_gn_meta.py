@@ -542,6 +542,7 @@ class TestGNMeta:
                 [
                     datasets["own_dataset"],
                     datasets["associate_dataset"],
+                    datasets["associate_2_dataset_sensitive"],
                 ]
             )
             assert set(qs.filter_by_scope(3).all()) == set(datasets.values())
