@@ -10,6 +10,10 @@
   <li><b>Prénom :</b> {{user.prenom_role}}</li>
   <li><b>Identifiant :</b> {{user.identifiant}}</li>
   <li><b>Email :</b> {{user.email}}</li>
+{% if  user.remarques %}
+  <li><b>Remarques :</b> {{user.remarques}}</li>
+{% endif%}
+
 </ul>
 
 {% if additional_fields | length > 0 %}

@@ -300,7 +300,28 @@ def confirmation():
     if r.status_code != 200:
         return Response(r), r.status_code
 
-    return redirect(config["URL_APPLICATION"], code=302)
+    new_user = r.json()
+
+    txt_champs_addi = ""
+    for key in new_user["champs_addi"]:
+        txt_champs_addi += (
+            f"&nbsp;&nbsp;&nbsp;&nbsp;- <b>{key}</b>: {new_user['champs_addi'][key]}<br>"
+        )
+
+    return (
+        f"""Le compte suivant à bien été ajouté à l'application GeoNature<br>
+    <br>
+    - <b>Nom</b>: {new_user['nom_role']}<br>
+    - <b>Prénom</b>: {new_user['prenom_role']}<br>
+    - <b>Identifiant</b>: {new_user['identifiant']}<br>
+    - <b>Email</b>: {new_user['email']}<br>
+    - <b>Champs additionnels</b>:<br>
+    {txt_champs_addi}
+    <br>
+    <a href="{config["URL_APPLICATION"]}">Retour à l'application GeoNature</a>
+        """,
+        200,
+    )
 
 
 @routes.route("/after_confirmation", methods=["POST"])
