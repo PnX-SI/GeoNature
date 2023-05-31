@@ -214,6 +214,9 @@
                 </button>
               </div>
             </form>
+            <ngb-alert type="danger" *ngIf="errorMsg">
+              {{errorMsg}}
+            </ngb-alert>
           </div>
         </div>
       </div>
