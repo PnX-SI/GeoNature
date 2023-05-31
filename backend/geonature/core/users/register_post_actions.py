@@ -20,6 +20,15 @@ from geonature.utils.utilsmails import send_mail
 from geonature.utils.env import db, DB
 
 
+def validators_emails():
+    return (
+        current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]
+        .replace(" ", "")
+        .replace("\n", "")
+        .split(",")
+    )
+
+
 def validate_temp_user(data):
     """
     Send an email after the action of account creation.
@@ -44,7 +53,7 @@ def validate_temp_user(data):
         recipients = [user.email]
     else:
         template = "email_admin_validate_account.html"
-        recipients = [current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]]
+        recipients = validators_emails()
     url_validation = url_for("users.confirmation", token=user.token_role, _external=True)
 
     additional_fields = [
@@ -152,7 +161,11 @@ def inform_user(user):
         text_addon=html_text_addon,
     )
     subject = f"Confirmation inscription {app_name}"
-    send_mail([user["email"]], subject, msg_html)
+    recipients = [user["email"]]
+    # dans le cas ou on a plusieurs validateurs et on veut prévenir tout le monde
+    # de la validation du compte ????????
+    # recipients + validators_emails()
+    send_mail(recipients, subject, msg_html)
 
 
 def send_email_for_recovery(data):
