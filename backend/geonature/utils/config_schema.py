@@ -29,7 +29,7 @@ class EmailStrOrListOfEmailStrField(fields.Field):
     def _deserialize(self, value, attr, data, **kwargs):
         if isinstance(value, str):
             self._check_email(value)
-            return value
+            return [value]
         elif isinstance(value, list) and all(isinstance(x, str) for x in value):
             self._check_email(value)
             return value
