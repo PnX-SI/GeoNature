@@ -2126,7 +2126,7 @@ Pour chaque dictionnaire, voici le détail des champs (ils sont tous obligatoire
 * ``status_type`` : pour les statuts de protection cela correspond à une liste des codes de types de statuts de protections à afficher dans la liste déroulante. Les codes existant sont consultables dans le champ ``cd_type_statut`` de la table ``taxonomie.bdc_statut_type``. Pour les listes rouges, il faut seulement indiquer le code de la liste.
 
 Au niveau de la base de données, il est possible de limiter les recherches uniquement aux textes correspondant à la zone géographique des observations de votre installation.  
-Pour cela, il suffit de mettre une valeur ``false`` dans le champ ``enable`` de la table ``taxonomie.bdc_statut_texte`` pour tous les textes que vous ne souhaitez pas prendre en compte. Si vous avez une grande quantité d'observations, cette étape est fortement recommandée !
+Pour cela, il suffit de mettre une valeur ``false`` dans le champ ``enable`` de la table ``taxonomie.bdc_statut_text`` pour tous les textes que vous ne souhaitez pas prendre en compte. Si vous avez une grande quantité d'observations, cette étape est fortement recommandée !
 
 Exemple de requête de mise à jour de la table ``taxonomie.bdc_statut_text`` pour désactiver les textes des DOM-TOM : :
 
