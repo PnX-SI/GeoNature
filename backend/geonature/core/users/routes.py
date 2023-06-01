@@ -298,6 +298,8 @@ def confirmation():
     )
 
     if r.status_code != 200:
+        if r.json() and r.json().get("msg"):
+            return r.json().get("msg"), r.status_code
         return Response(r), r.status_code
 
     new_user = r.json()
