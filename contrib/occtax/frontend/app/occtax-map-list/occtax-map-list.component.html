@@ -2,16 +2,16 @@
   <div class="map-list-container">
     <div class="float-btns">
       <ng-container *ngIf="userCruved?.C != '0'">
-        <a
+        <button
           mat-raised-button
-          color="primary"
+          color="accent"
           data-qa="gn-occtax-btn-add-releve"
-          class="btn-action hard-shadow button-success uppercase ml-3"
+          class="btn-action hard-shadow uppercase ml-3"
           [routerLink]="['form/releve']"
         >
           {{ 'Releve.AddReleve' | translate }}
           <mat-icon>add_circle_outline</mat-icon>
-        </a>
+      </button>
         <!-- <a [routerLink]="['form']" class="btn btn-success btn-action hard-shadow uppercase">
           {{ 'Releve.AddReleve' | translate }} <i class="fa fa-plus-circle" aria-hidden="true"> </i>
         </a> -->
@@ -36,16 +36,16 @@
       <pnx-occtax-map-list-filter></pnx-occtax-map-list-filter>
     </div>
 
-    <div class="row">
+    <div class="row row-sm">
       <div
-        class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm-occ"
+        class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm"
         [ngStyle]="{ 'min-height.px': cardContentHeight }"
       >
         <!-- MAP -->
         <pnx-map-list [idName]="mapListService.idName" height="100%"> </pnx-map-list>
       </div>
       <div
-        class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm-occ"
+        class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm"
         [ngStyle]="{ 'min-height.px': cardContentHeight }"
       >
         <!-- LIST -->
@@ -286,7 +286,7 @@
           *ngIf="userCruved?.E != '0'"
           id="download-btn"
           class="uppercase"
-          mat-raised-button
+          mat-stroked-button
           color="primary"
           (click)="openModalDownload($event, modalDownload)"
         >
