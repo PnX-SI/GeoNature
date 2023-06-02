@@ -1783,6 +1783,16 @@ Associer des jeux de données et des champs additionnels
 
 Dans le module Métadonnées (formulaire des jeux de données), associez les jeux de données que vous souhaitez rendre saissisables au nouveau module dupliqué.
 
+Ajouter le nouveau module dans la liste des modules implémentés
+```````````````````````````````````````````````````````````````
+
+Dans le fichier de configuration de GeoNature (geonature_config.toml) ajoutez une section `ADDITIONAL_FIELDS` qui contient tableau `IMPLEMENTED_MODULES` listant les modules qui implémentent les champs additionnels (Occtax doit y figurer en plus du nouveau module)
+
+::
+
+    [ADDITIONAL_FIELDS]
+      IMPLEMENTED_MODULES = ["OCCTAX", "FLORE_STATION"]
+
 Vous pouvez ensuite créer des nouveaux champs additionnels et les associer à ce module. De la même manière que dans Occtax, on peut les associer aux trois niveaux du formulaire (relevé, occurrence, dénombrement).
 
 
