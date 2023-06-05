@@ -1306,6 +1306,38 @@ Ainsi, l’API « scope » (décorateur ``@check_cruved_scope``, fonctions ``get
 L’utilisateur héritant des permissions des différents groupes auquel il appartient en plus de ses permissions personnelles, l’API « scope » s’occupe de calculer le scope maximal de l’utilisateur.
 
 
+Rajouter un nouveau type de filtre
+""""""""""""""""""""""""""""""""""
+
+On suppose souhaiter l’ajout d’un nouveau type de filtre « foo ».
+
+1. Rajouter une colonne dans la table ``t_permissions`` nommé ``foo_filter`` du type désiré (booléen, entier, …) avec éventuellement une contrainte de clé étrangère.
+   Dans le cas où le filtre peut contenir une liste de valeur contrôlées par une Foreign Key, on préfèrera l’ajout d’une nouvelle table contenant une Foreign Key vers ``t_permissions.id_permission`` (par exemple, filtre géographique avec liste d’``id_area`` ou filtre taxonomique avec liste de ``cd_nom``).
+
+2. Rajouter une colonne booléenne dans la table ``t_permissions_available`` nommé ``foo_filter``.
+
+3. Faire évoluer les modèles Python ``Permission`` et ``PermissionAvailable`` pour refléter les changements du schéma de base de données.
+
+4. Compléter ``Permission.filters_fields`` et ``PermissionAvailable.filters_fields`` (*e.g.* ``"FOO": foo_filter``).
+
+5. Vérifier que la propriété ``Permission.filters`` fonctionne correctement avec le nouveau filtre : celui-ci doit être renvoyé uniquement s’il est défini.
+   Le cas d’une relationship n’a encore jamais été traité.
+
+6. Optionel : Rajouter une méthode statique ``Permission.__FOO_le__(a, b)``.
+   Celle-ci reçoit en argument 2 filtres FOO et doit renvoyer ``True`` lorsque le filtre ``a`` est plus restrictif (au autant) que le filtre ``b``.
+   Par exemple, dans le cas d’un filtre géographique, on renvera ``True`` si ``b`` vaut ``None`` (pas de restriction géographique) ou si la liste des zonages ``a`` est un sous-ensemble de la liste des zonages ``b``.
+   Cette méthode permet d’optimiser le jeu de permission en supprimant les permissions redondantes.
+
+7. Compléter la classe ``PermFilter`` qui permet l’affichage des permissions dans Flask-Admin (permissions des utilisateurs et des groupes).
+   Attention, Flask-Admin utilise FontAwesome version **4**.
+
+8. Faire évoluer Flask-Admin (classes ``PermissionAdmin`` et ``PermissionAvailableAdmin``) pour prendre en charge le nouveau type de filtre.
+
+9. Implémenter le support de son nouveau filtre à l’endroit voulu (typiquement la synthèse).
+
+10. Compléter ou faire évoluer la table ``t_permissions_available`` pour déclarer le nouveau filtre comme disponible pour son module.
+
+
 Développement Frontend
 ----------------------
 
