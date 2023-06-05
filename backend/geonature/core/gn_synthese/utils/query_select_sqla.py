@@ -286,7 +286,7 @@ class SyntheseQuery:
             )
         if "observers" in self.filters:
             # découpe des éléments saisies par des ","
-            observers = self.filters.pop("observers").split(",")
+            observers = self.filters.pop("observers")[0].split(",")
             self.query = self.query.where(
                 or_(
                     *[
