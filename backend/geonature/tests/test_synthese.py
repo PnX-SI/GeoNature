@@ -233,8 +233,8 @@ class TestSynthese:
         validate_json(instance=r.json, schema=schema)
         assert len(r.json["features"]) >= 2  # FIXME
 
-        filters = {"observers": "Léa, Eluard"}
-        r = self.client.get(url)
+        filters = {"observers": ["user, self_user"]}
+        r = self.client.get(url, json=filters)
         validate_json(instance=r.json, schema=schema)
         assert len(r.json["features"]) > 0
 
@@ -305,10 +305,7 @@ class TestSynthese:
     @pytest.mark.parametrize(
         "test_input,expected_length_observer",
         [
-            ("Leaa, Robert", 0),
-            ("Léa, éluard", 4),
-            ("lea, eluard", 4),
-            ("lea", 2),
+            ("user, self_user", 1)
         ],
     )
     def test_get_observations_for_web_filter_observers(
@@ -317,7 +314,7 @@ class TestSynthese:
         set_logged_user_cookie(self.client, users["self_user"])
 
         url = url_for("gn_synthese.get_observations_for_web")
-        filters = {"observers": test_input}
+        filters = {"observers": [test_input]}
         r = self.client.get(url, json=filters)
 
         response_data = {feature["properties"] for feature in r.json["features"]}

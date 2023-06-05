@@ -152,10 +152,6 @@ def users(app):
         ("self_user", organisme, scope_filters[1]),
         ("user", organisme, scope_filters[2]),
         ("admin_user", organisme, scope_filters[3]),
-        ("Léa Dupont", organisme, scope_filters[2]),
-        ("Test user", organisme, scope_filters[2]),
-        ("claude éluard", organisme, scope_filters[2]),
-        ("Thomas Badu", organisme, scope_filters[2]),
     ]
 
     for username, *args in users_to_create:
@@ -307,30 +303,16 @@ def synthese_data(app, users, datasets, source):
     point3 = Point(-3.486786, 48.832182)
     data = {}
     with db.session.begin_nested():
-        for name, cd_nom, point, ds, user_name, observer in [
-            ("obs1", 713776, point1, datasets["own_dataset"], users["Léa Dupont"], "Léa Dupont"),
-            ("obs2", 212, point2, datasets["own_dataset"], users["Thomas Badu"], "Thomas Badu"),
-            ("obs3", 2497, point3, datasets["own_dataset"], users["Test user"], "Test user"),
-            ("p1_af1", 713776, point1, datasets["belong_af_1"], users["Test user"], "Test user"),
-            (
-                "p1_af1_2",
-                212,
-                point1,
-                datasets["belong_af_1"],
-                users["claude éluard"],
-                "claude éluard",
-            ),
-            ("p1_af2", 212, point1, datasets["belong_af_2"], users["Léa Dupont"], "Léa Dupont"),
-            (
-                "p2_af2",
-                2497,
-                point2,
-                datasets["belong_af_2"],
-                users["claude éluard"],
-                "claude éluard",
-            ),
-            ("p2_af1", 2497, point2, datasets["belong_af_1"], users["Test user"], "Test user"),
-            ("p3_af3", 2497, point3, datasets["belong_af_3"], users["Test user"], "Test user"),
+        for name, cd_nom, point, ds in [
+            ("obs1", 713776, point1, datasets["own_dataset"]),
+            ("obs2", 212, point2, datasets["own_dataset"]),
+            ("obs3", 2497, point3, datasets["own_dataset"]),
+            ("p1_af1", 713776, point1, datasets["belong_af_1"]),
+            ("p1_af1_2", 212, point1, datasets["belong_af_1"]),
+            ("p1_af2", 212, point1, datasets["belong_af_2"]),
+            ("p2_af2", 2497, point2, datasets["belong_af_2"]),
+            ("p2_af1", 2497, point2, datasets["belong_af_1"]),
+            ("p3_af3", 2497, point3, datasets["belong_af_3"]),
         ]:
             unique_id_sinp = (
                 "f4428222-d038-40bc-bc5c-6e977bbbc92b" if not data else func.uuid_generate_v4()
@@ -340,12 +322,12 @@ def synthese_data(app, users, datasets, source):
             s = create_synthese(
                 geom,
                 taxon,
-                user_name,
+                users["self_user"],
                 ds,
                 source,
                 unique_id_sinp,
-                [users["admin_user"], user_name],
-                observer,
+                [users["admin_user"], users["user"]],
+                "user"
             )
             db.session.add(s)
             data[name] = s
