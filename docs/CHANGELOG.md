@@ -10,7 +10,7 @@ CHANGELOG
 **TODO**
 
 - MAJ des modules définissant leurs permissions disponibles
-- Release TH et UH + Flask-utils ?
+- Release TH et UH + Flask-utils = bump dépendances ?
 
 **🚀 Nouveautés**
 
@@ -49,7 +49,8 @@ CHANGELOG
 **⚠️ Notes de version**
 
 - Les permissions existantes sont récupérées et remises à plat automatiquement sans système d'héritage. Vérifiez cependant les permissions après la mise à jour de vos groupes et utilisateurs.
-- Si vous avez des modules externes, vous devez déclarer ses permissions disponibles (exemple : #2543)
+- Désormais, quand vous installerez un nouveau module (ou sous-module), il faudra lui appliquer des permissions aux groupes ou utilisateurs qui doivent y accéder.
+- Si vous avez des modules externes, vous devez déclarer ses permissions disponibles (exemple : #2543).
 
 2.12.3 (2023-05-09)
 -------------------
