@@ -560,6 +560,8 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     NB_AF_DISPLAYED = 100
     # activer la fonctionalité de dépot/publication
     ENABLE_CLOSE_AF = false
+    # Paramétrer le label du bouton d'export PDF pour un CA clôturé
++   LABEL_BUTTON_EXPORT_PDF_CLOSED_AF = "Export PDF"
 
     AF_PDF_TITLE = ""
     DS_PDF_TITLE = ""

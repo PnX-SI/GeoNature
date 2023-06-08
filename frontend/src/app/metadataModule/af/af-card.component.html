@@ -36,8 +36,8 @@
     <div class="col-4">
       <div class="card">
         <div class="card-body">
-          <button mat-raised-button color="primary" (click)="getPdf()">
-            Export PDF
+          <button mat-raised-button color="primary" (click)="getPdf()" *ngIf="af != null">
+            {{ af.opened ? 'Export PDF' : config.METADATA.LABEL_BUTTON_EXPORT_PDF_CLOSED_AF }}
             <mat-icon>file_download</mat-icon>
           </button>
           <br />

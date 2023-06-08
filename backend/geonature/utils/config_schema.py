@@ -152,6 +152,7 @@ class HomeConfig(Schema):
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(load_default=50, validate=OneOf([10, 25, 50, 100]))
     ENABLE_CLOSE_AF = fields.Boolean(load_default=False)
+    LABEL_BUTTON_EXPORT_PDF_CLOSED_AF = fields.String(load_default="Export PDF")
     CLOSED_AF_TITLE = fields.String(load_default="")
     AF_PDF_TITLE = fields.String(load_default="Cadre d'acquisition: ")
     DS_PDF_TITLE = fields.String(load_default="")
