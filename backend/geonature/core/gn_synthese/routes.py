@@ -788,7 +788,7 @@ def get_autocomplete_taxons_synthese():
     q = (
         DB.session.query(
             VMTaxrefListForautocomplete,
-            func.similarity(VMTaxrefListForautocomplete.search_name, search_name).label(
+            func.similarity(VMTaxrefListForautocomplete.unaccent_search_name, search_name).label(
                 "idx_trgm"
             ),
         )
@@ -796,7 +796,7 @@ def get_autocomplete_taxons_synthese():
         .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
     )
     search_name = search_name.replace(" ", "%")
-    q = q.filter(VMTaxrefListForautocomplete.search_name.ilike("%" + search_name + "%"))
+    q = q.filter(VMTaxrefListForautocomplete.unaccent_search_name.ilike("%" + search_name + "%"))
     regne = request.args.get("regne")
     if regne:
         q = q.filter(VMTaxrefListForautocomplete.regne == regne)
