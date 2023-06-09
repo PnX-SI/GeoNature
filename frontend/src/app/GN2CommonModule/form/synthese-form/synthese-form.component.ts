@@ -47,7 +47,7 @@ export class SyntheseSearchComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       this.params = params;
     });
-    this.taxonApiEndPoint = `${this.config.API_ENDPOINT}/synthese/taxons_autocomplete`;
+    this.taxonApiEndPoint = `${this.config.API_TAXHUB}/taxref/allnamebylist`;
   }
 
   ngOnInit() {
