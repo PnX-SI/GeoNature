@@ -739,47 +739,6 @@ def get_taxon_tree():
     return [taxon_tree_table.as_dict(d) for d in data]
 
 
-@routes.route("/taxons_autocomplete", methods=["GET"])
-@login_required
-@json_resp
-def get_autocomplete_taxons_synthese():
-    """Autocomplete taxon for web search (based on all taxon in Synthese).
-
-    .. :quickref: Synthese;
-
-    The request use trigram algorithm to get relevent results
-
-    :query str search_name: the search name (use sql ilike statement and puts "%" for spaces)
-    :query str regne: filter with kingdom
-    :query str group2_inpn : filter with INPN group 2
-    """
-    search_name = request.args.get("search_name", "")
-    q = (
-        DB.session.query(
-            VMTaxrefListForautocomplete,
-            func.similarity(VMTaxrefListForautocomplete.search_name, search_name).label(
-                "idx_trgm"
-            ),
-        )
-        .distinct()
-        .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
-    )
-    search_name = search_name.replace(" ", "%")
-    q = q.filter(VMTaxrefListForautocomplete.search_name.ilike("%" + search_name + "%"))
-    regne = request.args.get("regne")
-    if regne:
-        q = q.filter(VMTaxrefListForautocomplete.regne == regne)
-
-    group2_inpn = request.args.get("group2_inpn")
-    if group2_inpn:
-        q = q.filter(VMTaxrefListForautocomplete.group2_inpn == group2_inpn)
-
-    q = q.order_by(desc(VMTaxrefListForautocomplete.cd_nom == VMTaxrefListForautocomplete.cd_ref))
-    limit = request.args.get("limit", 20)
-    data = q.order_by(desc("idx_trgm")).limit(20).all()
-    return [d[0].as_dict() for d in data]
-
-
 @routes.route("/sources", methods=["GET"])
 @login_required
 @json_resp
