@@ -59,7 +59,7 @@ write_log "Creating GeoNature database..."
 sudo -u postgres -s createdb -O $user_pg $db_name -T template0 -E UTF-8 -l $my_local |& tee -a "${LOG_FILE}"
 
 write_log "Adding PostgreSQL extensions"
-sudo -u postgres -s psql -d $db_name -f "${SCRIPT_DIR}/assets/db/add_pg_extensions.sql" |& tee -a "${LOG_FILE}"
+cat "${SCRIPT_DIR}/assets/db/add_pg_extensions.sql" | sudo -u postgres -s psql -d $db_name |& tee -a "${LOG_FILE}"
 
 
 # Mise en place de la structure de la BDD et des données permettant son fonctionnement avec l'application
