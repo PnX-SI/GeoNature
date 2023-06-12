@@ -21,12 +21,11 @@ from geonature.utils.env import db, DB
 
 
 def validators_emails():
-    return (
-        current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]
-        .replace(" ", "")
-        .replace("\n", "")
-        .split(",")
-    )
+    """
+    On souhaite récupérer une liste de mails
+    """
+    emails = current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]
+    return emails if isinstance(emails, list) else [emails]
 
 
 def validate_temp_user(data):
@@ -162,9 +161,6 @@ def inform_user(user):
     )
     subject = f"Confirmation inscription {app_name}"
     recipients = [user["email"]]
-    # dans le cas ou on a plusieurs validateurs et on veut prévenir tout le monde
-    # de la validation du compte ????????
-    # recipients + validators_emails()
     send_mail(recipients, subject, msg_html)
 
 
