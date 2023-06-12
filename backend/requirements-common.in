@@ -1,6 +1,6 @@
 celery[redis]
 click>=7.0
-fiona
+fiona>=1.8.22,<1.9
 flask
 flask-cors
 flask-mail

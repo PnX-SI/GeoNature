@@ -120,7 +120,7 @@ dnspython==2.2.1
     # via email-validator
 email-validator==1.3.0
     # via wtforms-components
-fiona==1.8.21
+fiona==1.8.22
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
@@ -333,9 +333,12 @@ sqlalchemy==1.3.24
     #   flask-sqlalchemy
     #   geoalchemy2
     #   marshmallow-sqlalchemy
+    #   pypn-habref-api
     #   pypn-ref-geo
+    #   pypnnomenclature
     #   pypnusershub
     #   taxhub
+    #   utils-flask-sqlalchemy
     #   utils-flask-sqlalchemy-geo
     #   wtforms-sqlalchemy
 tinycss2==1.1.1
