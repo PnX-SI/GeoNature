@@ -1675,7 +1675,13 @@ Release
 Pour sortir une nouvelle version de GeoNature :
 
 - Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, RefGeo, Utils-Flask-SQLAlchemy, Utils-Flask-SQLAlchemy-Geo)
-- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances
+- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances et que le  `requirements-dependencies.in` a bien été MAJ.
+- Regénérer les `requirements.txt` et `requirements-dev.txt` avec les commandes suivantes dans la plus petite version de python supportée par GeoNature
+::
+    
+    pip-compile requirements.in > requirements.txt
+    pip-compile requirements-dev.in > requirements-dev.txt
+
 - Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``, ``backend/requirements-dependencies.in`` (puis regénérer ``backend/requirements.txt`` avec ``pip compile``)
 - Complétez le fichier ``docs/CHANGELOG.md`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
 - Mettez à jour le fichier ``VERSION``
