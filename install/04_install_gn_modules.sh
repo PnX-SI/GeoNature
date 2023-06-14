@@ -31,7 +31,7 @@ if [ "$install_module_validation" = true ]; then
 fi
 
 # Grant admin group permissions on new installed modules
-geonature permissions supergrant --group --nom "Grp_admin"
+geonature permissions supergrant --group --nom "Grp_admin" --yes
 
 echo "Désactivation du virtual env"
 deactivate

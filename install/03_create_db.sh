@@ -80,4 +80,4 @@ fi
 
 . ${SCRIPT_DIR}/03b_populate_db.sh |& tee -a "${LOG_FILE}"
 
-geonature permissions supergrant --group --nom "Grp_admin"
+geonature permissions supergrant --group --nom "Grp_admin" --yes
