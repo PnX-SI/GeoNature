@@ -30,7 +30,12 @@ from geonature.core.gn_permissions.models import Permission, PermissionAvailable
     is_flag=True,
     help="Uniquement afficher les permissions nécessaires, sans les ajouter en base",
 )
-def supergrant(skip_existing, dry_run, **filters):
+@click.option(
+    "--yes",
+    is_flag=True,
+    help="Répond automatiquement oui à la confirmation",
+)
+def supergrant(skip_existing, dry_run, yes, **filters):
     filters = {k: v for k, v in filters.items() if v is not None}
     if not filters:
         raise UsageError("Veuillez sélectionner le rôle à promouvoir.")
@@ -40,11 +45,11 @@ def supergrant(skip_existing, dry_run, **filters):
         raise UsageError("Plusieurs rôles correspondent à vos filtres, veuillez les affiner.")
     except NoResultFound:
         raise UsageError("Aucun rôle ne correspond à vos filtres, veuillez les corriger.")
-    if not click.confirm(
-        f"Ajouter les permissions administrateur au rôle {role.id_role} ({role.nom_complet}) ?"
-    ):
-        raise click.Abort()
-
+    if not yes:
+        if not click.confirm(
+            f"Ajouter les permissions administrateur au rôle {role.id_role} ({role.nom_complet}) ?",
+        ):
+            raise click.Abort()
     for ap in PermissionAvailable.query.outerjoin(
         Permission, sa.and_(PermissionAvailable.permissions, Permission.id_role == role.id_role)
     ).options(

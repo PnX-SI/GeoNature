@@ -5,6 +5,7 @@ on:
       - master
       - hotfixes
       - develop
+      - fixtestfront
   pull_request:
     branches:
       - master
@@ -104,6 +105,7 @@ jobs:
           geonature install-gn-module contrib/gn_module_occhab OCCHAB --build=false
           geonature db upgrade occhab-samples@head
           geonature install-gn-module contrib/gn_module_validation VALIDATION --build=false
+          geonature permissions supergrant --group --nom "Grp_admin" --yes
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Run GeoNature backend
@@ -119,7 +121,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
-          record: false
+          record: true
           working-directory: ./frontend
           start: npm run start
           wait-on: http://127.0.0.1:4200
