@@ -4,14 +4,15 @@ fiona>=1.8.22,<1.9
 flask
 flask-cors
 flask-mail
-flask-marshmallow
+flask-marshmallow<0.15.0
 flask-migrate
 flask-sqlalchemy
 flask-weasyprint
 flask_wtf
 geojson
 gunicorn>=19.8.0
-importlib_metadata;python_version<"3.10"
+importlib_metadata==4.13.0;python_version<"3.10"
+importlib_metadata;python_version>"3.10"
 lxml
 marshmallow
 marshmallow-sqlalchemy
