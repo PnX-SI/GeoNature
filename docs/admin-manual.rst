@@ -1778,6 +1778,41 @@ Dans l'exemple ci-dessous, remplacez ``<MODULE_PATH>`` par le contenu de la colo
     INSERT INTO gn_synthese.t_sources (name_source,desc_source,entity_source_pk_field,url_source,,id_module) VALUES
     ('Flore station (sous-module Occtax)','Données issues du protocole Flore station','pr_occtax.cor_counting_occtax.id_counting_occtax','#/<MODULE_PATH>/info/id_counting', <ID_MODULE>);
 
+Bien que le module soit une copie d'Occtax, il est tout de même nécessaire de définir les permissions disponibles pour ce module (ce sont les mêmes qu'Occtax). Jouez le scrit SQL suivant en remplacant :MODULE_CODE par le code du module que vous venez de créer.
+
+::
+
+    INSERT INTO
+        gn_permissions.t_permissions_available (
+            id_module,
+            id_object,
+            id_action,
+            label,
+            scope_filter
+        )
+    SELECT
+        m.id_module,
+        o.id_object,
+        a.id_action,
+        v.label,
+        v.scope_filter
+    FROM
+        (
+            VALUES
+                  (':MODULE_CODE', 'ALL', 'C', True, 'Créer des relevés')
+                ,(':MODULE_CODE', 'ALL', 'R', True, 'Voir les relevés')
+                ,(':MODULE_CODE', 'ALL', 'U', True, 'Modifier les relevés')
+                ,(':MODULE_CODE', 'ALL', 'E', True, 'Exporter les relevés')
+                ,(':MODULE_CODE', 'ALL', 'D', True, 'Supprimer des relevés')
+        ) AS v (module_code, object_code, action_code, scope_filter, label)
+    JOIN
+        gn_commons.t_modules m ON m.module_code = v.module_code
+    JOIN
+        gn_permissions.t_objects o ON o.code_object = v.object_code
+    JOIN
+        gn_permissions.bib_actions a ON a.code_action = v.action_code;
+
+
 Associer des jeux de données et des champs additionnels
 ```````````````````````````````````````````````````````
 
