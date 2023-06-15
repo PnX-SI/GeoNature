@@ -330,6 +330,8 @@ class ObjectAdmin(CruvedProtectedMixin, ModelView):
     }
 
 
+# self.allow_blank = (True,)
+# self.blank_test = "lalala"
 class PermissionAdmin(CruvedProtectedMixin, ModelView):
     module_code = "ADMIN"
     object_code = "PERMISSIONS"
@@ -342,7 +344,7 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         "role.identifiant": "identifiant du rôle",
         "role.nom_complet": "nom du rôle",
         "availability": "Permission disponible",
-        "scope": "Appartenance des données",
+        "scope": "Filtre sur l'appartenance des données",
         "sensitivity_filter": "Exclure les données sensibles",
     }
     column_select_related_list = ("availability",)
@@ -375,12 +377,14 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         ("id_action", False),
     ]
     form_columns = ("role", "availability", "scope", "sensitivity_filter")
-    form_overrides = dict(availability=OptionQuerySelectField)
+    form_overrides = dict(
+        availability=OptionQuerySelectField,
+    )
     form_args = dict(
         availability=dict(
             query_factory=lambda: PermissionAvailable.query.nice_order(),
             options_additional_values=["sensitivity_filter", "scope_filter"],
-        )
+        ),
     )
     create_template = "admin/hide_select2_options_create.html"
     edit_template = "admin/hide_select2_options_edit.html"
@@ -545,35 +549,35 @@ admin.add_view(
     )
 )
 
-
-admin.add_view(
-    ObjectAdmin(
-        PermObject,
-        db.session,
-        name="Objets",
-        category="Permissions",
-        endpoint="permissions/object",
-    )
-)
+# Retirer pour plus de lisibilité de l'interface des permissions
+# admin.add_view(
+#     ObjectAdmin(
+#         PermObject,
+#         db.session,
+#         name="Objets",
+#         category="Permissions",
+#         endpoint="permissions/object",
+#     )
+# )
 
 
 admin.add_view(
     PermissionAdmin(
         Permission,
         db.session,
-        name="Toutes les permissions",
+        name="Permissions",
         category="Permissions",
         endpoint="permissions/permission",
     )
 )
 
-
-admin.add_view(
-    PermissionAvailableAdmin(
-        PermissionAvailable,
-        db.session,
-        name="Permissions disponibles",
-        category="Permissions",
-        endpoint="permissions/availablepermission",
-    )
-)
+# Retirer pour plus de lisibilité de l'interface des permissions
+# admin.add_view(
+#     PermissionAvailableAdmin(
+#         PermissionAvailable,
+#         db.session,
+#         name="Permissions disponibles",
+#         category="Permissions",
+#         endpoint="permissions/availablepermission",
+#     )
+# )
