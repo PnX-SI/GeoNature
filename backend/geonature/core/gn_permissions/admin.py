@@ -524,8 +524,7 @@ class UserPermAdmin(RolePermAdmin):
     )
 
     def get_query(self):
-        # TODO: filter_by_app
-        return super().get_query().filter_by(groupe=False)
+        return User.query.filter_by(groupe=False).filter_by_app()
 
 
 admin.add_view(
