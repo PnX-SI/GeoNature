@@ -21,7 +21,7 @@ from apptax.taxonomie.models import Taxref
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture(scope="function")
 def clean_all_sensitivity_rules():
     db.session.execute(sa.delete(CorSensitivityCriteria))
     db.session.execute(sa.delete(cor_sensitivity_area))
