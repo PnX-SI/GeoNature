@@ -106,8 +106,8 @@ def get_scope(action_code, id_role=None, module_code=None, object_code=None):
     permissions = get_permissions(action_code, id_role, module_code, object_code)
     max_scope = 0
     for permission in permissions:
-        if permission.has_other_filters_than("SCOPE"):
-            continue
+        # if permission.has_other_filters_than("SCOPE"):
+        #     continue
         if permission.scope_value is None:
             max_scope = 3
         else:
