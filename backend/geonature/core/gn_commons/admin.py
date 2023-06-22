@@ -97,9 +97,9 @@ class BibFieldAdmin(CruvedProtectedMixin, ModelView):
         "bib_nomenclature_type": "Si Type widget = Nomenclature",
         "field_label": "Label du champ en interface",
         "field_name": "Nom du champ en base de donnée",
-        "field_values": """Obligatoire si widget = select/multiselect/checkbox,radio (Format JSON : tableau de 'value/label'.Utilisez des doubles quotes pour les valeurs et les clés). 
+        "field_values": """Obligatoire si widget = select/multiselect/checkbox,radio (Format JSON : tableau de 'value/label'. Utilisez des doubles quotes pour les valeurs et les clés). 
             Exemple [{"label": "trois", "value": 3}, {"label": "quatre", "value": 4}]""",
-        "default_value": "La valeur par défaut doit être une des valeurs du champs 'Valeurs' ci dessus. Pour les valeurs textuelle, il n'est pas necessaire de remettre la valeur entre guillement",
+        "default_value": "La valeur par défaut doit être une des valeurs du champs 'Valeurs' ci-dessus. Pour les valeurs textuelles, il n'est pas nécessaire de remettre la valeur entre guillement",
         "id_list": "Identifiant en BDD de la liste (pour Type widget = taxonomy/observers)",
         "field_order": "Numéro d'ordonnancement du champs (si plusieurs champs pour le même module/objet/JDD)",
         "modules": "Module(s) auquel le champs est rattaché. *Obligatoire",
