@@ -37,6 +37,7 @@ CHANGELOG
 - [Occtax] Correction du déplacement du marqueur de localisation poncutelle d'un relevé (#2554 et #2552)
 - Correction de la sélection automatique des valeurs par défaut numériques dans les champs de type "Liste déroulante (Select)" des formulaires dynamiques (#2540)
 - Correction de la gestion des entiers pour les champs additionnels de type "checkbox" (#2518)
+- Correction de l'envoi à plusieurs destinataires des emails de demande de création de compte (#2389)
 - Récupération du contenu du champs "Organisme" dans le formulaire de demande de création de compte (#1760)
 - Amélioration des messages lors de la demande de création de compte (#2575)
 
