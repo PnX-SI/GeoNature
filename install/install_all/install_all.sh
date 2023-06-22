@@ -38,9 +38,9 @@ then
     exit 1
 fi
 
-if [ "$OS_VERSION" != "10" ] && [ "$OS_VERSION" != "11" ]
+if [ "$OS_VERSION" != "10" ] && [ "$OS_VERSION" != "11" ] && [ "$OS_VERSION" != "12" ]
 then
-    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 10 et Debian 11\e[0m" >&2
+    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 10, 11 ou 12\e[0m" >&2
     exit 1
 fi
 
