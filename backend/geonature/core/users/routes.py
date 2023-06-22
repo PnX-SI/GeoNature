@@ -3,7 +3,7 @@ import requests
 import json
 
 
-from flask import Blueprint, request, current_app, Response, redirect, g
+from flask import Blueprint, request, current_app, Response, redirect, g, render_template
 from sqlalchemy.sql import distinct, and_
 from werkzeug.exceptions import NotFound, BadRequest, Forbidden
 
@@ -298,9 +298,14 @@ def confirmation():
     )
 
     if r.status_code != 200:
+        if r.json() and r.json().get("msg"):
+            return r.json().get("msg"), r.status_code
         return Response(r), r.status_code
 
-    return redirect(config["URL_APPLICATION"], code=302)
+    new_user = r.json()
+    return render_template(
+        "account_created.html", user=new_user, redirect_url=config["URL_APPLICATION"]
+    )
 
 
 @routes.route("/after_confirmation", methods=["POST"])
