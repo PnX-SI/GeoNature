@@ -6,6 +6,7 @@ https://docs.sqlalchemy.org/en/latest/core/tutorial.html#selecting
 much more efficient
 """
 import datetime
+import unicodedata
 import uuid
 
 from flask import current_app
@@ -338,10 +339,17 @@ class SyntheseQuery:
                 self.model.id_dataset.in_(self.filters.pop("id_dataset"))
             )
         if "observers" in self.filters:
-            # découpe des éléments saisies par les espaces
-            observers = self.filters.pop("observers").split()
+            # découpe des éléments saisies par des ","
+            observers = self.filters.pop("observers").split(",")
             self.query = self.query.where(
-                and_(*[self.model.observers.ilike("%" + observer + "%") for observer in observers])
+                or_(
+                    *[
+                        func.unaccent(self.model.observers).ilike(
+                            "%" + remove_accents(observer) + "%"
+                        )
+                        for observer in observers
+                    ]
+                )
             )
 
         if "observers_list" in self.filters:
@@ -589,3 +597,8 @@ class SyntheseQuery:
                 == (len(protection_status_value) + len(red_list_filters)),
             ],
         )
+
+
+def remove_accents(input_str):
+    nfkd_form = unicodedata.normalize("NFKD", input_str)
+    return "".join([c for c in nfkd_form if not unicodedata.combining(c)])
