@@ -11,6 +11,7 @@ CHANGELOG
 
 - MAJ des modules définissant leurs permissions disponibles
 - Release TH et UH + Flask-utils = bump dépendances ?
+- Support Debian 12 (#2594)
 
 **🚀 Nouveautés**
 
@@ -35,6 +36,9 @@ CHANGELOG
 
 - [Occtax] Correction du déplacement du marqueur de localisation poncutelle d'un relevé (#2554 et #2552)
 - Correction de la sélection automatique des valeurs par défaut numériques dans les champs de type "Liste déroulante (Select)" des formulaires dynamiques (#2540)
+- Correction de la gestion des entiers pour les champs additionnels de type "checkbox" (#2518)
+- Récupération du contenu du champs "Organisme" dans le formulaire de demande de création de compte (#1760)
+- Amélioration des messages lors de la demande de création de compte (#2575)
 
 **💻 Développement**
 
@@ -45,6 +49,9 @@ CHANGELOG
 - Amélioration de `APPLICATION_ROOT` pour qu'il fonctionne en mode développement (#2546)
 - Amélioration des modèles de la Synthèse pour prendre en compte les valeurs par défaut des nomenclatures (#2524)
 - Meilleure portabilité des scripts dans les différents systèmes Unix (#2435)
+- Mise à jour des dépendances Python (#2596)
+- Documentation de développement des permissions (#2585)
+- Les médias orphelins sont désormais supprimés par une tache Celery Beat, et non plus à chaque ajout ou modification d'un média (#2436)
 
 **⚠️ Notes de version**
 
