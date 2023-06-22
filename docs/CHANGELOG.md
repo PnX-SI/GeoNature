@@ -21,7 +21,7 @@ CHANGELOG
 - Suppression des permissions ayant une appartenance de niveau 0 (Aucune donnée). En effet, en supprimant l'héritage des permissions et en les définissant par module de manière explicite, si un groupe ou utilisateur n'a aucune permission sur un module, alors il n'y accède pas et ne le voit pas dans le menu latéral. Si il a n'importe quelle permission sur un module, alors il y accède.
 - Suppression du filtre d'appartenance de niveau 3 (Toutes les données). En effet, celui-ci est désormais redondant avec l'ajout d'une permission sans filtre.
 - Définition des permissions disponibles dans chaque module dans la nouvelle table `gn_permissions.t_permissions_available`, pour ne proposer que des permissions qui ont un usage quand on ajoute ou modifie les permissions d'un utilisateur (#2489)
-- Admin des permissions (Flask-admin) ne proposant que les permissions disponibles, affichant les permissions explicites d'un utilisateur et calculant celles effectives provenant d'un groupe auquel il appartient
+- Refonte de l'interface d'administration des permissions (Flask-admin) ne proposant que les permissions disponibles, affichant les permissions explicites d'un utilisateur et calculant celles effectives provenant d'un groupe auquel il appartient (#2605)
 - Optimisation et agrégation des permissions
 - [Synthèse] Ajout d'un filtre sur la sensibilité des données, permettant de les afficher ou non à un groupe ou utilisateurs (pas de floutage pour le moment) (#2504)
 - Ajout de la commande `geonature permissions supergrant` permettant d'ajouter toutes les permissions disponibles à un utilisateur ou groupe super-administrateur (#2557)
