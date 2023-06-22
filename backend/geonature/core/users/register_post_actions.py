@@ -52,7 +52,7 @@ def validate_temp_user(data):
         recipients = [user.email]
     else:
         template = "email_admin_validate_account.html"
-        recipients = validators_emails()
+        recipients = current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]
     url_validation = url_for("users.confirmation", token=user.token_role, _external=True)
 
     additional_fields = [
