@@ -343,7 +343,7 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         "object": "Objet",
         "role.identifiant": "identifiant du rôle",
         "role.nom_complet": "nom du rôle",
-        "availability": "Permission disponible",
+        "availability": "Permission",
         "scope": "Filtre sur l'appartenance des données",
         "sensitivity_filter": "Exclure les données sensibles",
     }
@@ -498,8 +498,10 @@ class GroupPermAdmin(RolePermAdmin):
     column_details_list = ("nom_role", "permissions_count", "permissions")
 
     def get_query(self):
-        # TODO: filter_by_app
-        return super().get_query().filter_by(groupe=True)
+        return User.query.filter_by(groupe=True).filter_by_app()
+
+    def get_count_query(self):
+        return self.session.query(sa.func.count("*")).filter(User.groupe == True)
 
 
 class UserPermAdmin(RolePermAdmin):
@@ -526,12 +528,16 @@ class UserPermAdmin(RolePermAdmin):
     def get_query(self):
         return User.query.filter_by(groupe=False).filter_by_app()
 
+    def get_count_query(self):
+        # FIXME : must filter by app
+        return self.session.query(sa.func.count("*")).filter(User.groupe == False)
+
 
 admin.add_view(
     GroupPermAdmin(
         User,
         db.session,
-        name="Groupes",
+        name="Par groupes",
         category="Permissions",
         endpoint="permissions/group",
     )
@@ -542,7 +548,7 @@ admin.add_view(
     UserPermAdmin(
         User,
         db.session,
-        name="Utilisateurs",
+        name="Par utilisateurs",
         category="Permissions",
         endpoint="permissions/user",
     )
