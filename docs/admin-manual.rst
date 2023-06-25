@@ -392,7 +392,7 @@ Accès à GeoNature et CRUVED
 
 Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l'application GeoNature sont gérés de manière centralisée dans l'application UsersHub. Pour qu'un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de "Lecteur" dans l'application GeoNature, grâce à l'application UsersHub.
 
-La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (``gn_permissions``) depuis le module ADMIN de GeoNature. 
+La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (``gn_permissions``) depuis le module ADMIN de GeoNature. Voir https://github.com/PnX-SI/GeoNature/issues/2605.
 
 La gestion des droits dans GeoNature, comme dans beaucoup d'applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l'application nous avons rajouté deux actions : "Exporter" et "Valider" (non utilisée), ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.
 
@@ -401,12 +401,15 @@ Chaque module peut utiliser toutes ou certaines de ces actions.
 Selon les modules, on peut appliquer des filtres sur ces actions. Notamment des filtres d'appartenance (portées / scope) 
 
 - Portée 1 = Seulement mes données. Cela concerne les données sur lesquels je suis :
-   - observateur 
-   - personne ayant effectuée la saisie de la donnée
-   - personnellement acteur du jeu de données de la donnée
-   - personne ayant saisi le JDD de la donnée
+
+  - observateur 
+  - personne ayant effectuée la saisie de la donnée
+  - personnellement acteur du jeu de données de la donnée
+  - personne ayant saisi le JDD de la donnée
+
 - Portée 2 = Les données de mon organisme. Portée 1 + :
-   - les données sur lesquelles mon organisme est acteur du JDD de la donnée
+
+  - les données sur lesquelles mon organisme est acteur du JDD de la donnée
 
 Exemple :
 
@@ -432,8 +435,6 @@ Récapitulatif
 - Des fonctions PostgreSQL ont aussi été intégrées pour faciliter la récupération de ces informations (``gn_permissions.cruved_for_user_in_module``, ``gn_permissions.does_user_have_scope_permission``, ...)
 - Si un utilisateur n'a aucune permission sur un module, alors il ne lui sera pas affiché dans le menu latéral et il ne pourra pas y accéder
 - Il est aussi possible de ne pas utiliser UsersHub pour gérer les utilisateurs et de connecter GeoNature à un CAS (voir configuration). Actuellement ce paramétrage est fonctionnel en se connectant au CAS de l'INPN (MNHN)
-
-.. image :: _static/schema_cruved.png
 
 A noter que toutes les actions et tous les filtres n'ont pas été implémentées dans tous les modules. Elles le sont en fonction des besoins de chaque module. Chaque module définit la liste de ses permissions disponibles (actions et filtres).
 
