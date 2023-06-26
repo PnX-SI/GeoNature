@@ -3,14 +3,17 @@ from itertools import product
 
 import pytest
 
+from flask import g
+
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.models import (
     PermObject,
     PermAction,
     PermFilterType,
     Permission,
+    PermissionAvailable,
 )
-from geonature.core.gn_permissions.tools import get_scopes_by_action
+from geonature.core.gn_permissions.tools import get_scopes_by_action, has_any_permissions_by_action
 from geonature.utils.env import db
 
 from pypnusershub.db.models import User
@@ -111,6 +114,10 @@ def cruved_dict(scopes):
     }
 
 
+def b_cruved(code: str) -> dict:
+    return {action: bool(int(b)) for action, b in zip("CRUVED", code)}
+
+
 @pytest.fixture()
 def permissions(roles, groups, actions, module_gn):
     roles = ChainMap(roles, groups)
@@ -136,6 +143,31 @@ def permissions(roles, groups, actions, module_gn):
 
 
 @pytest.fixture()
+def permissions_available(object_all, actions):
+    def _permissions_available(
+        module, str_actions, object=object_all, scope=False, sensitivity=False
+    ):
+        with db.session.begin_nested():
+            for action in str_actions:
+                if action == "-":
+                    continue
+            else:
+                print(actions)
+
+                db.session.add(
+                    PermissionAvailable(
+                        id_module=module.id_module,
+                        id_object=object.id_object,
+                        id_action=actions[action].id_action,
+                        scope_filter=scope,
+                        sensitivity_filter=sensitivity,
+                    )
+                )
+
+    return _permissions_available
+
+
+@pytest.fixture()
 def assert_cruved(roles):
     def _assert_cruved(role, cruved, module=None, object=None):
         role = roles[role]
@@ -148,9 +180,19 @@ def assert_cruved(roles):
     return _assert_cruved
 
 
-@pytest.mark.usefixtures("temporary_transaction")
+@pytest.fixture(scope="class")
+def g_permissions():
+    """
+    Fixture to initialize flask g variable
+    Mandatory if we want to run this test file standalone
+    """
+    g._permissions_by_user = {}
+    g._permissions = {}
+
+
+@pytest.mark.usefixtures("temporary_transaction", "g_permissions")
 class TestPermissions:
-    def test_no_right(self, assert_cruved, module_gn, module_a, object_a):
+    def test_no_right(self, assert_cruved, module_gn, module_a, object_a, g_permissions):
         assert_cruved("r1", "000000")
         assert_cruved("g1_r1", "000000", module_a)
         assert_cruved("r1", "000000", module_gn, object_a)
@@ -223,3 +265,27 @@ class TestPermissions:
         assert_cruved("r1", "010001", module_a, object_a)
         assert_cruved("r1", "001000", module_b, object_a)
         assert_cruved("r1", "000100", module_a, object_b)
+
+    def test_multiple_scope_with_permissions_available(
+        self, permissions, permissions_available, assert_cruved, module_a
+    ):
+        # scope cruved must be 3 even if other permissions that scope are declared
+        permissions_available(module_a, "CRUVED", scope=True, sensitivity=True)
+        permissions("r1", "333333", module=module_a, sensitivity_filter=True)
+        assert_cruved("r1", "333333", module_a)
+
+    def test_has_any_perms(
+        self, permissions, permissions_available, assert_cruved, module_a, roles
+    ):
+        # scope cruved must be 3 even if other permissions that scope are declared
+        permissions_available(module_a, "CRUVED", scope=True, sensitivity=True)
+        permissions("r1", "333---", module=module_a, sensitivity_filter=False)
+
+        assert has_any_permissions_by_action(
+            id_role=roles["r1"].id_role, module_code=module_a.module_code
+        ) == b_cruved("111000")
+
+        permissions("r2", "333333", module=module_a, sensitivity_filter=True)
+        assert has_any_permissions_by_action(
+            id_role=roles["r2"].id_role, module_code=module_a.module_code
+        ) == b_cruved("111111")
