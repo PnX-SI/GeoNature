@@ -13,7 +13,7 @@ from geonature.core.gn_permissions.models import (
     Permission,
     PermissionAvailable,
 )
-from geonature.core.gn_permissions.tools import get_scopes_by_action
+from geonature.core.gn_permissions.tools import get_scopes_by_action, has_any_permissions_by_action
 from geonature.utils.env import db
 
 from pypnusershub.db.models import User
@@ -112,6 +112,10 @@ def cruved_dict(scopes):
         "E": int(scopes[4]),
         "D": int(scopes[5]),
     }
+
+
+def b_cruved(code: str) -> dict:
+    return {action: bool(int(b)) for action, b in zip("CRUVED", code)}
 
 
 @pytest.fixture()
@@ -269,3 +273,19 @@ class TestPermissions:
         permissions_available(module_a, "CRUVED", scope=True, sensitivity=True)
         permissions("r1", "333333", module=module_a, sensitivity_filter=True)
         assert_cruved("r1", "333333", module_a)
+
+    def test_has_any_perms(
+        self, permissions, permissions_available, assert_cruved, module_a, roles
+    ):
+        # scope cruved must be 3 even if other permissions that scope are declared
+        permissions_available(module_a, "CRUVED", scope=True, sensitivity=True)
+        permissions("r1", "333---", module=module_a, sensitivity_filter=False)
+
+        assert has_any_permissions_by_action(
+            id_role=roles["r1"].id_role, module_code=module_a.module_code
+        ) == b_cruved("111000")
+
+        permissions("r2", "333333", module=module_a, sensitivity_filter=True)
+        assert has_any_permissions_by_action(
+            id_role=roles["r2"].id_role, module_code=module_a.module_code
+        ) == b_cruved("111111")
