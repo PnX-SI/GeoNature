@@ -15,7 +15,7 @@ async-timeout==4.0.2
     # via redis
 attrs==23.1.0
     # via fiona
-authlib==1.2.0
+authlib==1.2.1
     # via pypnusershub
 bcrypt==4.0.1
     # via pypnusershub
@@ -23,9 +23,9 @@ billiard==3.6.4.0
     # via celery
 blinker==1.6.2
     # via flask-mail
-boto3==1.26.153
+boto3==1.26.160
     # via taxhub
-botocore==1.29.153
+botocore==1.29.160
     # via
     #   boto3
     #   s3transfer
@@ -67,7 +67,7 @@ click-plugins==1.1.1
     # via
     #   celery
     #   fiona
-click-repl==0.2.0
+click-repl==0.3.0
     # via celery
 cligj==0.7.2
     # via fiona
@@ -101,8 +101,10 @@ flask==2.2.5
     #   taxhub
     #   utils-flask-sqlalchemy
 flask-admin==1.6.1
-    # via pypnnomenclature
-flask-cors==3.0.10
+    # via
+    #   -r requirements-common.in
+    #   pypnnomenclature
+flask-cors==4.0.0
     # via
     #   -r requirements-common.in
     #   taxhub
@@ -239,7 +241,7 @@ pypn-ref-geo==1.3.0
     #   taxhub
 pypnnomenclature==1.5.4
     # via -r requirements-dependencies.in
-pypnusershub==1.6.7
+pypnusershub==1.6.8
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
@@ -257,7 +259,7 @@ python-dotenv==0.21.1
     #   taxhub
 pytz==2023.3
     # via celery
-redis==4.5.5
+redis==4.6.0
     # via celery
 requests==2.31.0
     # via
@@ -272,9 +274,7 @@ shapely==1.8.5.post1
     #   utils-flask-sqlalchemy-geo
 six==1.16.0
     # via
-    #   click-repl
     #   fiona
-    #   flask-cors
     #   flask-marshmallow
     #   html5lib
     #   munch
