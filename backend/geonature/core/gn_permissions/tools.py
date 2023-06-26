@@ -1,3 +1,5 @@
+import logging
+
 from itertools import groupby, permutations
 
 import sqlalchemy as sa
@@ -14,6 +16,8 @@ from geonature.core.gn_permissions.models import (
 from geonature.utils.env import db
 
 from pypnusershub.db.models import User
+
+log = logging.getLogger()
 
 
 def _get_user_permissions(id_role):
@@ -94,7 +98,7 @@ def get_permissions(action_code, id_role=None, module_code=None, object_code=Non
     return g._permissions[ident]
 
 
-def get_scope(action_code, id_role=None, module_code=None, object_code=None):
+def get_scope(action_code, id_role=None, module_code=None, object_code=None, bypass_warning=False):
     """
     This function gets the final scope permission.
 
@@ -106,8 +110,11 @@ def get_scope(action_code, id_role=None, module_code=None, object_code=None):
     permissions = get_permissions(action_code, id_role, module_code, object_code)
     max_scope = 0
     for permission in permissions:
-        # if permission.has_other_filters_than("SCOPE"):
-        #     continue
+        if permission.has_other_filters_than("SCOPE") and not bypass_warning:
+            log.warning(
+                f"""WARNING : You are trying to get scope permission for a module ({module_code}) which implements other permissions type. Please use get_permission instead
+            """
+            )
         if permission.scope_value is None:
             max_scope = 3
         else:
@@ -124,5 +131,27 @@ def get_scopes_by_action(id_role=None, module_code=None, object_code=None):
     """
     return {
         action_code: get_scope(action_code, id_role, module_code, object_code)
+        for action_code in "CRUVED"
+    }
+
+
+def has_any_permissions(action_code, id_role=None, module_code=None, object_code=None) -> bool:
+    """
+    This function return the scope for an action, a module and an object as a Boolean
+    Use for frontend
+    """
+    permissions = get_permissions(action_code, id_role, module_code, object_code)
+    return True if len(permissions) > 0 else False
+
+
+def has_any_permissions_by_action(id_role=None, module_code=None, object_code=None):
+    """
+    This function gets the scopes permissions for each one of the 6 actions in "CRUVED",
+    that match (id_role, module_code, object_code)
+
+    :returns : (dict) A dict of the boolean for each one of the 6 actions (the char in "CRUVED")
+    """
+    return {
+        action_code: has_any_permissions(action_code, id_role, module_code, object_code)
         for action_code in "CRUVED"
     }

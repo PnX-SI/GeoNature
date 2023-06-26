@@ -24,7 +24,7 @@ from geonature.utils.env import DB, db, BACKEND_DIR
 from geonature.utils.config import config_frontend, config
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required
-from geonature.core.gn_permissions.tools import get_scopes_by_action
+from geonature.core.gn_permissions.tools import get_scope
 import geonature.core.gn_commons.tasks  # noqa: F401
 
 from shapely.geometry import asShape
@@ -69,7 +69,11 @@ def list_modules():
             continue
         module_allowed = False
         module_dict = module.as_dict(fields=["objects"])
-        module_dict["cruved"] = get_scopes_by_action(module_code=module.module_code)
+        # TODO : use has_any_permissions instead - must refactor the front
+        module_dict["cruved"] = {
+            action: get_scope(action, module_code=module.module_code, bypass_warning=True)
+            for action in "CRUVED"
+        }
         if any(module_dict["cruved"].values()):
             module_allowed = True
         if module.active_frontend:
@@ -82,10 +86,15 @@ def list_modules():
         # get cruved for each object
         for obj_dict in module_dict["objects"]:
             obj_code = obj_dict["code_object"]
-            obj_dict["cruved"] = get_scopes_by_action(
-                module_code=module.module_code,
-                object_code=obj_code,
-            )
+            obj_dict["cruved"] = {
+                action: get_scope(
+                    action,
+                    module_code=module.module_code,
+                    object_code=obj_code,
+                    bypass_warning=True,
+                )
+                for action in "CRUVED"
+            }
             if any(obj_dict["cruved"].values()):
                 module_allowed = True
             module_dict["module_objects"][obj_code] = obj_dict
