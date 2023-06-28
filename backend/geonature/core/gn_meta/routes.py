@@ -620,7 +620,9 @@ def get_acquisition_frameworks_list(scope):
     )
 
 
-@routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["POST"])
+@routes.route(
+    "/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["POST", "GET"]
+)
 @permissions.check_cruved_scope("E", module_code="METADATA")
 def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     """
