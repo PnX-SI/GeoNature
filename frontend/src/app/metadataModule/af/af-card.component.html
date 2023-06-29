@@ -268,11 +268,13 @@
           <div style="display: block">
             <canvas
               baseChart
-              [data]="pieChartData"
-              [labels]="pieChartLabels"
-              [chartType]="pieChartType"
-              [colors]="pieChartColors"
+              *ngIf="pieChartData[0].data.length"
               [options]="pieChartOptions"
+              [datasets]="pieChartData"
+              [labels]="pieChartLabels"
+              [type]="pieChartType"
+              [colors]="pieChartColors"
+              [plugins]="pieChartOptions.plugins"
               padding="20px"
             >
             </canvas>

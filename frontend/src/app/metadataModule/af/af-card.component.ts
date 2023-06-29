@@ -24,12 +24,17 @@ export class AfCardComponent implements OnInit {
   // Tableau contenant les labels du graphe
   public pieChartLabels = [];
   // Tableau contenant les données du graphe
-  public pieChartData = [];
+  public pieChartData = [
+    {
+      data: [],
+    },
+  ];
   // Tableau contenant les couleurs et la taille de bordure du graphe
   public pieChartColors = [];
   // Dictionnaire contenant les options à implémenter sur le graphe (calcul des pourcentages notamment)
   public pieChartOptions = {
     cutoutPercentage: 80,
+    responsive: true,
     legend: {
       display: 'true',
       position: 'left',
@@ -127,12 +132,11 @@ export class AfCardComponent implements OnInit {
       .getTaxaDistribution('group2_inpn', { id_af: this.id_af })
       .pipe(tap(() => (this.spinner = false)))
       .subscribe((res) => {
-        this.pieChartData.length = 0;
         this.pieChartLabels.length = 0;
-        this.pieChartData = [];
+        this.pieChartData[0].data = [];
         this.pieChartLabels = [];
         for (let row of res) {
-          this.pieChartData.push(row['count']);
+          this.pieChartData[0].data.push(row['count']);
           this.pieChartLabels.push(row['group']);
         }
 
