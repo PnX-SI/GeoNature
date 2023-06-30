@@ -99,6 +99,7 @@ def upgrade():
                     ,('METADATA', 'ALL', 'C', False, 'Créer des métadonnées')
                     ,('METADATA', 'ALL', 'R', True, 'Voir les métadonnées')
                     ,('METADATA', 'ALL', 'U', True, 'Modifier les métadonnées')
+                    ,('METADATA', 'ALL', 'E', True, 'Exporter les métadonnées')
                     ,('METADATA', 'ALL', 'D', True, 'Supprimer des métadonnées')
                     ,('SYNTHESE', 'ALL', 'R', True, 'Voir les observations')
                     ,('SYNTHESE', 'ALL', 'E', True, 'Exporter les observations')
