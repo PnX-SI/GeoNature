@@ -19,6 +19,7 @@ export class TaxonAdvancedStoreService {
   public formBuilded: boolean;
   public taxonomyHab: Array<any>;
   public taxonomyGroup2Inpn: Array<any>;
+  public taxonomyGroup3Inpn: Array<any>;
   public redListsValues: any = {};
 
   constructor(
@@ -87,6 +88,18 @@ export class TaxonAdvancedStoreService {
         });
       }
       this.taxonomyGroup2Inpn = all_groups;
+    });
+    this._dataService.getRegneAndGroup3Inpn().subscribe((data) => {
+      this.taxonomyGroup3Inpn = data;
+      // eslint-disable-next-line guard-for-in
+      for (let regne in data) {
+        data[regne].forEach((group) => {
+          if (group.length > 0) {
+            all_groups.push({ value: group });
+          }
+        });
+      }
+      this.taxonomyGroup3Inpn = all_groups;
     });
   }
 }
