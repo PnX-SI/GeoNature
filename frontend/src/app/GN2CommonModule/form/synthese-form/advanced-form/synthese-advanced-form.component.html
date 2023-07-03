@@ -164,6 +164,18 @@
         >
         </pnx-multiselect>
       </div>
+      <div class="form-group">
+        <pnx-multiselect
+          [values]="storeService.taxonomyGroup3Inpn"
+          [parentFormControl]="formService.searchForm.controls.taxonomy_group3_inpn"
+          keyLabel="value"
+          keyValue="value"
+          label="Groupe 3 INPN"
+          (onChange)="onTaxRefAttributsSelected($event.value)"
+          (onDelete)="onTaxRefAttributsDeleted($event.value.value)"
+        >
+        </pnx-multiselect>
+      </div>
     </div>
 
     <div *ngIf="storeService.formBuilded && storeService.taxhubAttributes.length > 0">

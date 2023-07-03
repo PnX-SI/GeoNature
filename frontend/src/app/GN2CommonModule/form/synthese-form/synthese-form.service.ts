@@ -88,6 +88,7 @@ export class SyntheseFormService {
       taxonomy_lr: null,
       taxonomy_id_hab: null,
       taxonomy_group2_inpn: null,
+      taxonomy_group3_inpn: null,
       taxon_rank: null,
     });
 
