@@ -260,7 +260,11 @@ class SyntheseQuery:
             self.query = self.query.where(
                 Taxref.group2_inpn.in_(self.filters.pop("taxonomy_group2_inpn"))
             )
-
+        if "taxonomy_group3_inpn" in self.filters:
+            self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
+            self.query = self.query.where(
+                Taxref.group3_inpn.in_(self.filters.pop("taxonomy_group3_inpn"))
+            )
         if "taxonomy_id_hab" in self.filters:
             self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
             self.query = self.query.where(
