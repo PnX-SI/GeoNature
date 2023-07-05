@@ -227,6 +227,10 @@ export class DataFormService {
     return this._http.get<any>(`${this.config.API_TAXHUB}/taxref/regnewithgroupe2`);
   }
 
+  getRegneAndGroup3Inpn() {
+    return this._http.get<any>(`${this.config.API_TAXHUB}/taxref/regnewithgroupe3`);
+  }
+
   getTaxhubBibAttributes() {
     return this._http.get<any>(`${this.config.API_TAXHUB}/bibattributs/`);
   }
