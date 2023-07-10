@@ -207,6 +207,15 @@ export class MapComponent implements OnInit {
       this.mapService.loadOverlay(overlay);
     });
 
+    map.on('baselayerchange', (layer) => {
+      localStorage.setItem('MapLayer', layer.name);
+    });
+
+    const userMapLayer = localStorage.getItem('MapLayer');
+    if (userMapLayer !== null && baseControl[userMapLayer] !== undefined) {
+      map.addLayer(baseControl[userMapLayer]);
+    }
+
     setTimeout(() => {
       this.map.invalidateSize();
     }, 50);
