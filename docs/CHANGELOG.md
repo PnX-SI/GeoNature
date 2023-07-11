@@ -64,6 +64,10 @@ Si vous mettez à jour GeoNature :
 - Les permissions existantes sur vos différents groupes et utilisateurs sont récupérées et remises à plat automatiquement sans système d'héritage. Vérifiez cependant les permissions après la mise à jour de vos groupes et utilisateurs.
 - Désormais, quand vous installerez un nouveau module (ou sous-module), il faudra lui appliquer des permissions aux groupes ou utilisateurs qui doivent y accéder.
 
+**📝 Merci aux contributeurs**
+
+@bouttier / @TheoLechemia / @VincentCauchois / @Pierre-Narcisi / @joelclems / @andriacap / @mvergez / @MathRdt / @camillemonchicourt
+
 
 2.12.3 (2023-05-09)
 -------------------
