@@ -68,7 +68,7 @@ class CorCountingOccurrence(DB.Model):
 
     # additional fields dans occtax MET 14/10/2020
     additional_fields = DB.Column(JSONB)
-
+    occurrence = db.relationship("TOccurrencesOccurrence")
     readonly_fields = [
         "id_counting_occtax",
         "unique_id_sinp_occtax",
@@ -127,7 +127,6 @@ class TOccurrencesOccurrence(DB.Model):
         lazy="joined",
         cascade="all,delete-orphan",
         uselist=True,
-        backref=DB.backref("occurence", lazy="joined"),
     )
 
     taxref = relationship(Taxref, lazy="joined")
