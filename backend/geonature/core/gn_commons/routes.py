@@ -68,6 +68,9 @@ def list_modules():
         if module.module_code in current_app.config["DISABLED_MODULES"]:
             continue
         module_allowed = False
+        # HACK : on a besoin d'avoir le module GeoNature en front pour l'URL de la doc
+        if module.module_code == "GEONATURE":
+            module_allowed = True
         module_dict = module.as_dict(fields=["objects"])
         # TODO : use has_any_permissions instead - must refactor the front
         module_dict["cruved"] = {
