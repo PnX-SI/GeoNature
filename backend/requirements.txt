@@ -23,9 +23,9 @@ billiard==3.6.4.0
     # via celery
 blinker==1.6.2
     # via flask-mail
-boto3==1.26.160
+boto3==1.28.2
     # via taxhub
-botocore==1.29.160
+botocore==1.31.2
     # via
     #   boto3
     #   s3transfer
@@ -48,9 +48,9 @@ cffi==1.15.1
     #   cairocffi
     #   cryptography
     #   weasyprint
-charset-normalizer==3.1.0
+charset-normalizer==3.2.0
     # via requests
-click==8.1.3
+click==8.1.4
     # via
     #   -r requirements-common.in
     #   celery
@@ -71,7 +71,7 @@ click-repl==0.3.0
     # via celery
 cligj==0.7.2
     # via fiona
-cryptography==41.0.1
+cryptography==41.0.2
     # via authlib
 cssselect2==0.7.0
     # via
@@ -177,7 +177,7 @@ jmespath==1.0.1
     #   botocore
 kombu==5.2.4
     # via celery
-lxml==4.9.2
+lxml==4.9.3
     # via -r requirements-common.in
 mako==1.2.4
     # via alembic
@@ -205,7 +205,7 @@ marshmallow-sqlalchemy==0.28.2
     #   pypnusershub
     #   taxhub
     #   utils-flask-sqlalchemy-geo
-munch==3.0.0
+munch==4.0.0
     # via fiona
 packaging==23.1
     # via
@@ -219,7 +219,7 @@ pillow==9.5.0
     #   cairosvg
     #   taxhub
     #   weasyprint
-prompt-toolkit==3.0.38
+prompt-toolkit==3.0.39
     # via click-repl
 psycopg2==2.9.6
     # via
@@ -277,7 +277,6 @@ six==1.16.0
     #   fiona
     #   flask-marshmallow
     #   html5lib
-    #   munch
     #   python-dateutil
 sqlalchemy==1.3.24
     # via
@@ -294,7 +293,7 @@ sqlalchemy==1.3.24
     #   utils-flask-sqlalchemy
     #   utils-flask-sqlalchemy-geo
     #   wtforms-sqlalchemy
-taxhub==1.11.2
+taxhub==1.12.0
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
@@ -305,7 +304,7 @@ tinycss2==1.2.1
     #   weasyprint
 toml==0.10.2
     # via -r requirements-common.in
-typing-extensions==4.6.3
+typing-extensions==4.7.1
     # via
     #   alembic
     #   async-timeout
