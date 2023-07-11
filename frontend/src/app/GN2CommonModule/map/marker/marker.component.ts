@@ -76,7 +76,7 @@ export class MarkerComponent implements OnInit, OnChanges {
       .pipe(filter((coords) => this.map !== undefined && coords != null))
       .subscribe((coords) => {
         this.previousCoord = coords;
-        this.generateMarkerAndEvent(coords[0], coords[1], false);
+        this.generateMarkerAndEvent(coords[0], coords[1], false, true);
       });
   }
 
@@ -102,11 +102,11 @@ export class MarkerComponent implements OnInit, OnChanges {
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
       } else {
-        this.generateMarkerAndEvent(e.latlng.lng, e.latlng.lat);
+        this.generateMarkerAndEvent(e.latlng.lng, e.latlng.lat, true);
       }
     });
   }
-  generateMarkerAndEvent(x, y, withEvents = true) {
+  generateMarkerAndEvent(x, y, withEvents = true, zoomOnLayer = false) {
     if (this.mapservice.marker !== undefined) {
       this.mapservice.marker.remove();
       this.mapservice.marker = this.mapservice.createMarker(x, y, true).addTo(this.map);
@@ -123,6 +123,10 @@ export class MarkerComponent implements OnInit, OnChanges {
     if (withEvents) {
       this.mapservice.setGeojsonCoord(geojsonMarker);
       this.markerChanged.emit(geojsonMarker);
+    }
+
+    if (zoomOnLayer) {
+      this.mapservice.zoomOnMarker([x, y]);
     }
   }
 
