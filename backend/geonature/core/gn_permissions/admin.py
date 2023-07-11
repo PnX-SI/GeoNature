@@ -305,6 +305,7 @@ class UserAjaxModelLoader(QueryAjaxModelLoader):
             super()
             .get_query()
             .options(joinedload(User.permissions).joinedload(Permission.availability))
+            .order_by(User.groupe.desc(), User.nom_role)
         )
 
 
