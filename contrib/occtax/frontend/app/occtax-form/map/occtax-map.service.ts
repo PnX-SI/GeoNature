@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { UntypedFormControl, Validators } from '@angular/forms';
-import { isEqual } from 'lodash';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
-import { OcctaxFormService } from '../occtax-form.service';
-import { OcctaxFormParamService } from '../form-param/form-param.service';
+import { Injectable } from "@angular/core";
+import { UntypedFormControl, Validators } from "@angular/forms";
+import { isEqual } from "lodash";
+import { BehaviorSubject, Observable, of } from "rxjs";
+import { filter, map, switchMap } from "rxjs/operators";
+import { OcctaxFormService } from "../occtax-form.service";
+import { OcctaxFormParamService } from "../form-param/form-param.service";
 
 @Injectable()
 export class OcctaxFormMapService {
@@ -35,7 +35,7 @@ export class OcctaxFormMapService {
 
   setGeometryFromAPI(geojson) {
     this.manageGeometryChange(geojson);
-    if (geojson.type == 'Point') {
+    if (geojson.type == "Point") {
       this.markerCoordinates = geojson.coordinates;
     } else {
       this.leafletDrawGeoJson = geojson;
@@ -59,7 +59,9 @@ export class OcctaxFormMapService {
       .pipe(
         switchMap((editionMode: boolean) => {
           //Le switch permet, selon si édition ou creation, de récuperer les valeur par defaut ou celle de l'API
-          return editionMode ? this.releveGeojsonValue : of(this.occtaxParamS.get('geometry'));
+          return editionMode
+            ? this.releveGeojsonValue
+            : of(this.occtaxParamS.get("geometry"));
         }),
         filter((geojson) => geojson != null)
       )
