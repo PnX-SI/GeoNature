@@ -906,6 +906,8 @@ Pour configurer GeoNature, actuellement il y a :
 - Une configuration optionnelle par module : placée dans le dossier de configuration de GeoNature (``<GEONATURE_DIRECTORY>/config/``)
 - Une table ``gn_commons.t_parameters`` pour des paramètres gérés dans la BDD
 
+TODO : Partie "Configuration applicative" du schéma à mettre à jour, car caduque.
+
 .. image :: https://geonature.fr/docs/img/admin-manual/administration-geonature.png
 
 Configuration générale de l'application
