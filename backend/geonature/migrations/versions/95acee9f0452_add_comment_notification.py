@@ -18,7 +18,7 @@ from geonature.core.notifications.models import (
 revision = "95acee9f0452"
 down_revision = "e2a94808cf76"
 branch_labels = None
-depends_on = None
+depends_on = ("09a637f06b96",)  # Geonature Notifications
 
 CATEGORY_CODE = "OBSERVATION-COMMENT"
 EMAIL_CONTENT = (
@@ -55,6 +55,16 @@ def upgrade():
 
     session.commit()
 
+    op.execute(
+        f"""
+        INSERT INTO 
+            gn_notifications.t_notifications_rules (code_category, code_method)
+        VALUES
+            ('{CATEGORY_CODE}', 'DB'),
+            ('{CATEGORY_CODE}', 'EMAIL')
+        """
+    )
+
 
 def downgrade():
     bind = op.get_bind()
@@ -77,3 +87,14 @@ def downgrade():
 
         session.delete(category)
         session.commit()
+
+    op.execute(
+        f"""
+        DELETE FROM
+            gn_notifications.t_notifications_rules
+        WHERE
+            code_category = '{CATEGORY_CODE}'
+        AND
+            id_role IS NULL
+        """
+    )
