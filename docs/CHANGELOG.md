@@ -5,41 +5,41 @@ CHANGELOG
 -------------------
 
 - Révision globale des permissions pour pouvoir leur associer d'autres types de filtres (sensibilité notamment), les simplifier et clarifier en supprimant l'héritage et en définissant les permissions disponibles pour chaque module
-- Vérifiez que vos modules sont compatibles avec le nouveau mécanisme de permissions disponibles
-
-**TODO**
-
-- MAJ des modules définissant leurs permissions disponibles
-- Release TH et UH + Flask-utils = bump dépendances ?
-- Support Debian 12 (#2594)
+- Possibilité de filtrer les données dans la Synthèse selon leur sensibilité, mais sans floutage pour le moment, en affichant ou non les données sensibles selon les permissions de l'utilisateur
+- Vérifiez que vos modules soient compatibles avec le nouveau mécanisme de déclaration des permissions disponibles
 
 **🚀 Nouveautés**
 
 - Refonte complète des permissions (#2487)
-- Suppression de l'héritage des permissions du module "GeoNature" vers les autres modules, et de l'objet "All" vers les éventuels autres objets des modules. Chaque permission dans un module doit désormais être définie explicitement. Cela entraine de devoir définir plus de permissions (à l'installation d'un nouveau module notamment) mais aussi de les rendre plus lisibles, additives et explicites (#2474)
-- Evolution du modèle de données des permissions pour élargir les possibilités de filtrage des permissions au-delà de l'appartenance (anciennement nommée portée ou scope) (#2472)
-- Suppression des permissions ayant une appartenance de niveau 0 (Aucune donnée). En effet, en supprimant l'héritage des permissions et en les définissant par module de manière explicite, si un groupe ou utilisateur n'a aucune permission sur un module, alors il n'y accède pas et ne le voit pas dans le menu latéral. Si il a n'importe quelle permission sur un module, alors il y accède.
-- Suppression du filtre d'appartenance de niveau 3 (Toutes les données). En effet, celui-ci est désormais redondant avec l'ajout d'une permission sans filtre.
-- Définition des permissions disponibles dans chaque module dans la nouvelle table `gn_permissions.t_permissions_available`, pour ne proposer que des permissions qui ont un usage quand on ajoute ou modifie les permissions d'un utilisateur (#2489)
-- Refonte de l'interface d'administration des permissions (Flask-admin) ne proposant que les permissions disponibles, affichant les permissions explicites d'un utilisateur et calculant celles effectives provenant d'un groupe auquel il appartient (#2605)
-- Optimisation et agrégation des permissions
-- [Synthèse] Ajout d'un filtre sur la sensibilité des données, permettant de les afficher ou non à un groupe ou utilisateurs (pas de floutage pour le moment) (#2504)
-- Ajout de la commande `geonature permissions supergrant` permettant d'ajouter toutes les permissions disponibles à un utilisateur ou groupe super-administrateur (#2557)
-- Ajout de la vérification des permissions manquantes sur différentes routes (#2542 / #1863)
+  - Suppression de l'héritage des permissions du module "GeoNature" vers les autres modules, et de l'objet "All" vers les éventuels autres objets des modules. Chaque permission dans un module doit désormais être définie explicitement. Cela entraine de devoir définir plus de permissions (à l'installation d'un nouveau module notamment) mais aussi de les rendre plus lisibles, additives et explicites (#2474)
+  - Evolution du modèle de données des permissions pour élargir les possibilités de filtrage des permissions au-delà de l'appartenance (anciennement nommée portée ou scope) (#2472)
+  - Suppression des permissions ayant une appartenance de niveau 0 (Aucune donnée). En effet, en supprimant l'héritage des permissions et en les définissant par module de manière explicite, si un groupe ou utilisateur n'a aucune permission sur un module, alors il n'y accède pas et ne le voit pas dans le menu latéral. Si il a n'importe quelle permission sur un module, alors il y accède.
+  - Suppression du filtre d'appartenance de niveau 3 (Toutes les données). En effet, celui-ci est désormais redondant avec l'ajout d'une permission sans filtre.
+  - Définition des permissions disponibles dans chaque module dans la nouvelle table `gn_permissions.t_permissions_available`, pour ne proposer que des permissions qui ont un usage quand on ajoute ou modifie les permissions d'un utilisateur (#2489)
+  - Refonte de l'interface d'administration des permissions (Flask-admin) ne proposant que les permissions disponibles, affichant les permissions explicites d'un utilisateur et calculant celles effectives provenant d'un groupe auquel il appartient (#2605)
+  - Optimisation et agrégation des permissions
+  - [Synthèse] Ajout d'un filtre sur la sensibilité des données, permettant de les afficher et de les exporter ou non à un groupe ou utilisateurs (pas de floutage pour le moment) (#2504)
+  - Ajout de la commande `geonature permissions supergrant` permettant d'ajouter toutes les permissions disponibles à un utilisateur ou groupe super-administrateur (#2557)
+  - Ajout de la vérification des permissions manquantes sur différentes routes (#2542 / #1863)
 - Ajout de notifications quand un commentaire est ajouté sur une observation (#2460)
+- Support de Debian 12 (avec Python 3.11, PostgreSQL 15 et PostGIS 3.3) (#1787)
 - [Admin] Fixer la barre de navigation du menu latéral et possibilité de la rabbatre (#2556)
 - [Synthèse] Ajout d'un filtre par source (#2513)
 - [Synthèse] Ajout d'un filtre par `id_synthese` (#2516)
+- [Synthèse] Recherche des observateurs multiples et insensible aux accents (#2568)
+- Conservation du fond de carte utilisé quand on navigue dans les modules (#2619)
 - Suppression des médias orphelins basculée dans une tache Celery Beat lancée automatiquement toutes les nuits (`clean_attachments`), et non plus à l'ajout ou suppression d'un autre média (#2436)
 
 **🐛 Corrections**
 
 - [Occtax] Correction du déplacement du marqueur de localisation poncutelle d'un relevé (#2554 et #2552)
+- [Occtax] Correction du centrage sur la carte quand on modifie un relevé
 - Correction de la sélection automatique des valeurs par défaut numériques dans les champs de type "Liste déroulante (Select)" des formulaires dynamiques (#2540)
 - Correction de la gestion des entiers pour les champs additionnels de type "checkbox" (#2518)
 - Correction de l'envoi à plusieurs destinataires des emails de demande de création de compte (#2389)
 - Récupération du contenu du champs "Organisme" dans le formulaire de demande de création de compte (#1760)
 - Amélioration des messages lors de la demande de création de compte (#2575)
+- Correction du graphique dans l'export PDF des cadres d'acquisition (#2618)
 
 **💻 Développement**
 
@@ -52,13 +52,18 @@ CHANGELOG
 - Meilleure portabilité des scripts dans les différents systèmes Unix (#2435)
 - Mise à jour des dépendances Python (#2596)
 - Documentation de développement des permissions (#2585)
-- Les médias orphelins sont désormais supprimés par une tache Celery Beat, et non plus à chaque ajout ou modification d'un média (#2436)
 
 **⚠️ Notes de version**
 
-- Les permissions existantes sont récupérées et remises à plat automatiquement sans système d'héritage. Vérifiez cependant les permissions après la mise à jour de vos groupes et utilisateurs.
+Si vous mettez à jour GeoNature :
+
+- Mettre à jour TaxHub en version 1.12.0 (ou plus) et optionnellement UsersHub
+- Si vous les utilisez, mettez à jour les modules Import, Export, Monitoring et Dashboard dans leurs versions compatibles avec GeoNature 2.13, avec la nouvelle procédure consistant uniquement à télécharger, dézipper et renommer les dossiers des modules et de leur configuration
+- Si vous utilisez d'autres modules externes, vérifiez qu'ils disposent d'une version compatible avec GeoNature 2.13, ou faites-les évoluer pour qu'ils déclarent leurs permissions disponibles (exemple : #2543)
+- Suivez la procédure de mise à jour classique de GeoNature (<https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application>)
+- Les permissions existantes sur vos différents groupes et utilisateurs sont récupérées et remises à plat automatiquement sans système d'héritage. Vérifiez cependant les permissions après la mise à jour de vos groupes et utilisateurs.
 - Désormais, quand vous installerez un nouveau module (ou sous-module), il faudra lui appliquer des permissions aux groupes ou utilisateurs qui doivent y accéder.
-- Si vous avez des modules externes, vous devez déclarer ses permissions disponibles (exemple : #2543).
+
 
 2.12.3 (2023-05-09)
 -------------------
