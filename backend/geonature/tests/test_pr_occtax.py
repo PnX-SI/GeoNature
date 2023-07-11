@@ -240,6 +240,17 @@ class TestOcctax:
         response = self.client.get(url_for("pr_occtax.getDefaultNomenclatures"))
         assert response.status_code == 200
 
+    def test_get_one_counting(self, occurrence, users):
+        print(occurrence.cor_counting_occtax)
+        set_logged_user_cookie(self.client, users["admin_user"])
+        response = self.client.get(
+            url_for(
+                "pr_occtax.getOneCounting",
+                id_counting=occurrence.cor_counting_occtax[0].id_counting_occtax,
+            )
+        )
+        assert response.status_code == 200
+
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestOcctaxGetReleveFilter:
