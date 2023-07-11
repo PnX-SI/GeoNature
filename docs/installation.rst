@@ -23,7 +23,7 @@ Prérequis
 
 - Ressources minimum serveur :
 
-  - Un serveur Debian 10 ou Debian 11 architecture 64-bits
+  - Un serveur Debian 10, 11 ou 12, architecture 64-bits
   - 4 Go RAM
   - 20 Go d’espace disque
 
