@@ -48,7 +48,7 @@ async-timeout==4.0.2
     # via redis
 attrs==23.1.0
     # via fiona
-authlib==1.2.0
+authlib==1.2.1
     # via pypnusershub
 bcrypt==4.0.1
     # via pypnusershub
@@ -56,9 +56,9 @@ billiard==3.6.4.0
     # via celery
 blinker==1.6.2
     # via flask-mail
-boto3==1.26.153
+boto3==1.28.2
     # via taxhub
-botocore==1.29.153
+botocore==1.31.2
     # via
     #   boto3
     #   s3transfer
@@ -81,9 +81,9 @@ cffi==1.15.1
     #   cairocffi
     #   cryptography
     #   weasyprint
-charset-normalizer==3.1.0
+charset-normalizer==3.2.0
     # via requests
-click==8.1.3
+click==8.1.4
     # via
     #   -r requirements-common.in
     #   celery
@@ -100,11 +100,11 @@ click-plugins==1.1.1
     # via
     #   celery
     #   fiona
-click-repl==0.2.0
+click-repl==0.3.0
     # via celery
 cligj==0.7.2
     # via fiona
-cryptography==41.0.1
+cryptography==41.0.2
     # via authlib
 cssselect2==0.7.0
     # via
@@ -141,8 +141,10 @@ flask==2.2.5
     #   usershub
     #   utils-flask-sqlalchemy
 flask-admin==1.6.1
-    # via pypnnomenclature
-flask-cors==3.0.10
+    # via
+    #   -r requirements-common.in
+    #   pypnnomenclature
+flask-cors==4.0.0
     # via
     #   -r requirements-common.in
     #   taxhub
@@ -226,7 +228,7 @@ jmespath==1.0.1
     #   botocore
 kombu==5.2.4
     # via celery
-lxml==4.9.2
+lxml==4.9.3
     # via -r requirements-common.in
 mako==1.2.4
     # via alembic
@@ -256,7 +258,7 @@ marshmallow-sqlalchemy==0.28.2
     #   taxhub
     #   usershub
     #   utils-flask-sqlalchemy-geo
-munch==3.0.0
+munch==4.0.0
     # via fiona
 packaging==23.1
     # via
@@ -270,7 +272,7 @@ pillow==9.5.0
     #   cairosvg
     #   taxhub
     #   weasyprint
-prompt-toolkit==3.0.38
+prompt-toolkit==3.0.39
     # via click-repl
 psycopg2==2.9.6
     # via
@@ -300,7 +302,7 @@ python-dotenv==0.21.1
     #   usershub
 pytz==2023.3
     # via celery
-redis==4.5.5
+redis==4.6.0
     # via celery
 requests==2.31.0
     # via
@@ -315,12 +317,9 @@ shapely==1.8.5.post1
     #   utils-flask-sqlalchemy-geo
 six==1.16.0
     # via
-    #   click-repl
     #   fiona
-    #   flask-cors
     #   flask-marshmallow
     #   html5lib
-    #   munch
     #   python-dateutil
     #   wtforms-components
 sqlalchemy==1.3.24
@@ -345,7 +344,7 @@ tinycss2==1.2.1
     #   weasyprint
 toml==0.10.2
     # via -r requirements-common.in
-typing-extensions==4.6.3
+typing-extensions==4.7.1
     # via
     #   alembic
     #   async-timeout
