@@ -318,16 +318,16 @@ class TestTMediaRepositoryHeader:
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestCommons:
     def test_list_modules(self, users):
-        response = self.client.get(url_for("gn_commons.list_modules"))
+        response = self.client.get(url_for("gn_commons.list_modules", exclude="GEONATURE"))
         assert response.status_code == Unauthorized.code
 
         set_logged_user_cookie(self.client, users["noright_user"])
-        response = self.client.get(url_for("gn_commons.list_modules"))
+        response = self.client.get(url_for("gn_commons.list_modules", exclude="GEONATURE"))
         assert response.status_code == 200
         assert len(response.json) == 0
 
         set_logged_user_cookie(self.client, users["admin_user"])
-        response = self.client.get(url_for("gn_commons.list_modules"))
+        response = self.client.get(url_for("gn_commons.list_modules", exclude="GEONATURE"))
         assert response.status_code == 200
         assert len(response.json) > 0
 
