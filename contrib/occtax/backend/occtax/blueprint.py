@@ -141,7 +141,7 @@ def getOneCounting(scope, id_counting):
     :rtype: dict<CorCountingOccurrence>
     """
     ccc = CorCountingOccurrence.query.get_or_404(id_counting)
-    if not ccc.occurrence.releve.has_instance_permissions(scope):
+    if not ccc.occurrence.releve.has_instance_permission(scope):
         raise Forbidden
 
     try:
