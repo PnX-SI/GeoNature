@@ -264,16 +264,6 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
-  markerStyle(layer, countObs) {
-    layer.setIcon(this.defaultIcon);
-    layer.bindTooltip(`${countObs}`, {
-      permanent: true,
-      direction: 'center',
-      offset: L.point({ x: 0, y: -25 }),
-      className: 'number-obs',
-    });
-  }
-
   layerEvent(feature, layer, idSyntheseIds) {
     layer.on({
       click: (e) => {
@@ -287,17 +277,12 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   onEachFeature(feature, layer) {
-    let countObs = feature.properties.observations.id.length;
     // make a cache a layers in a dict with id key
     this.layerDictCache(feature.properties.observations.id, layer);
     // set style
     if (this.areasEnable) {
       this.setAreasStyle(layer, feature.properties.observations.id.length);
     }
-    if (feature.geometry.type == 'Point' || feature.geometry.type == 'MultiPoint') {
-      this.markerStyle(layer, countObs);
-    }
-    // set events
     this.layerEvent(feature, layer, feature.properties.observations.id);
   }
 
@@ -307,8 +292,8 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   clusterCountOverrideFn(cluster) {
     const obsChildCount = cluster
       .getAllChildMarkers()
-      .map((marker) => {
-        return marker.feature.properties.observations.id.length;
+      .map((layer) => {
+        return layer.nb_obs;
       })
       .reduce((previous, next) => previous + next);
     const clusterSize = obsChildCount > 100 ? 'large' : obsChildCount > 10 ? 'medium' : 'small';
@@ -336,6 +321,19 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
           })
         : new L.FeatureGroup();
       const geojsonLayer = new L.GeoJSON(change.inputSyntheseData.currentValue, {
+        pointToLayer: (feature, latlng) => {
+          const circleMarker = L.circleMarker(latlng);
+          let countObs = feature.properties.observations.id.length;
+          (circleMarker as any).nb_obs = countObs;
+          circleMarker.bindTooltip(`${countObs}`, {
+            permanent: true,
+            direction: 'center',
+            offset: L.point({ x: 0, y: 0 }),
+            className: 'number-obs',
+          });
+
+          return circleMarker;
+        },
         onEachFeature: this.onEachFeature.bind(this),
       });
       this.cluserOrSimpleFeatureGroup.addLayer(geojsonLayer);
@@ -378,22 +376,15 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     // restore initial style
     let originStyle = this.areasEnable ? this.originAreasStyle : this.originDefaultStyle;
     let selectedStyle = this.areasEnable ? this.selectedAreasStyle : this.selectedDefaultStyle;
+
     if (this.selectedLayers.length > 0) {
       this.selectedLayers.forEach((layer) => {
-        if ('setStyle' in layer) {
-          (layer as L.GeoJSON).setStyle(originStyle);
-        } else {
-          (layer as L.Marker).setIcon(this.defaultIcon);
-        }
+        (layer as L.GeoJSON).setStyle(originStyle);
       });
     }
     // set selected style
-    if (this.areasEnable || !(feature.geometry.type == 'Point')) {
-      layer.setStyle(selectedStyle);
-    } else {
-      layer.setIcon(this.selectedIcon);
-    }
 
+    layer.setStyle(selectedStyle);
     this.selectedLayers = [layer];
   }
 
@@ -402,11 +393,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     let originStyle = this.areasEnable ? this.originAreasStyle : this.originDefaultStyle;
     if (this.selectedLayers.length > 0) {
       this.selectedLayers.forEach((layer) => {
-        if ('setStyle' in layer) {
-          (layer as L.GeoJSON).setStyle(originStyle);
-        } else {
-          (layer as L.Marker).setIcon(this.defaultIcon);
-        }
+        (layer as L.GeoJSON).setStyle(originStyle);
       });
     }
     // Apply new selected layer
@@ -414,11 +401,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
 
     let selectedStyle = this.areasEnable ? this.selectedAreasStyle : this.selectedDefaultStyle;
     this.selectedLayers.forEach((layer) => {
-      if ('setStyle' in layer) {
-        (layer as any).setStyle(selectedStyle);
-      } else {
-        (layer as L.Marker).setIcon(this.selectedIcon);
-      }
+      (layer as L.GeoJSON).setStyle(selectedStyle);
     });
   }
 
