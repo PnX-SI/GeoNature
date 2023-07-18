@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
 import { MapListService } from '@geonature_common/map-list/map-list.service';
@@ -35,6 +35,7 @@ export class SyntheseComponent implements OnInit {
     private _toasterService: ToastrService,
     private _route: ActivatedRoute,
     private _ngModal: NgbModal,
+    private _changeDetector: ChangeDetectorRef,
     public config: ConfigService
   ) {}
 
@@ -77,6 +78,7 @@ export class SyntheseComponent implements OnInit {
         .subscribe((processedDefaultFilters) => {
           this._fs.searchForm.patchValue(this._fs.processedDefaultFilters);
           this._fs.processedDefaultFilters = processedDefaultFilters;
+          this._changeDetector.detectChanges();
 
           this.loadAndStoreData(this._fs.formatParams());
         });
