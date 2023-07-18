@@ -1174,6 +1174,11 @@ Customisation
 
 Tous les fichiers par défaut présents dans le dossier ``geonature/backend/static/`` peuvent être surcouchés, en placant un fichier du même nom dans ``geonature/custom/``.
 
+Customisation CSS
+"""""""""""""""""
+
+Pour customiser l'apparence de l'application, créer ou éditer le fichier `geonature/custom/css/frontend.css`
+
 Intégrer son logo
 """""""""""""""""
 
