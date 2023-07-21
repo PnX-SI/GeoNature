@@ -15,6 +15,7 @@ DEFAULT_EXPORT_COLUMNS = [
     "regne",
     "group1_inpn",
     "group2_inpn",
+    "group3_inpn",
     "classe",
     "ordre",
     "famille",
