@@ -4,7 +4,11 @@
    Fichier à ne pas modifier. Paramètres surcouchables dans config/config_gn_module.tml
 """
 
-from marshmallow import Schema, fields, post_load
+from marshmallow import Schema, fields
+
+
+from geonature.utils.module import get_module_config_path
+from geonature.utils.utilstoml import load_toml
 
 
 class MapListConfig(Schema):
@@ -157,7 +161,7 @@ default_media_fields_details = [
 ]
 
 
-class GnModuleSchemaConf(Schema):
+class OcctaxSchemaConf(Schema):
     form_fields = fields.Nested(FormConfig, load_default=FormConfig().load({}))
     observers_txt = fields.Boolean(load_default=False)
     export_view_name = fields.String(load_default="v_export_occtax")
@@ -191,3 +195,22 @@ class GnModuleSchemaConf(Schema):
     ADD_MEDIA_IN_EXPORT = fields.Boolean(load_default=False)
     ID_LIST_HABITAT = fields.Integer(load_default=None)
     CD_TYPO_HABITAT = fields.Integer(load_default=None)
+
+
+occtax_config_path = get_module_config_path("OCCTAX")
+occtax_config = load_toml(occtax_config_path) if occtax_config_path else {}
+submodules = occtax_config.get("SUBMODULES", [])
+
+config_fields = OcctaxSchemaConf().fields
+
+
+if len(submodules) > 0:
+    submodules.append("DEFAULT")
+    dict_nested = {}
+    for sub in submodules:
+        dict_nested[sub] = fields.Nested(config_fields, load_default=OcctaxSchemaConf().load({}))
+
+    GnModuleSchemaConf = type("GnModuleSchemaConf", (Schema,), dict_nested)
+
+else:
+    GnModuleSchemaConf = type("GnModuleSchemaConf", (Schema,), config_fields)
