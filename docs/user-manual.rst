@@ -437,30 +437,30 @@ Les métadonnées jouent un rôle central dans GeoNature, et sont nécessaires d
 
 **Saisie ou import de données**
 
-	Lors de sa création dans GeoNature, chaque donnée est obligatoirement associée à un jeu de données. Ainsi le module d'import et la majorité des modules de saisie (Occtax, OccHab...) nécessitent de sélectionner le jeu de données auquel seront rattachées les données en cours de création. 
-	Dans certains cas plus spécifiques (monitorings par exemple), le module peut ne pas demander cette information à l'utilisateur. Pour autant, les données en cours de création sont automatiquement rattachées à un jeu de données défini dans la configuration, de manière transparente pour l'utilisateur. 
+Lors de sa création dans GeoNature, chaque donnée est obligatoirement associée à un jeu de données. Ainsi le module d'import et la majorité des modules de saisie (Occtax, OccHab...) nécessitent de sélectionner le jeu de données auquel seront rattachées les données en cours de création. 
+Dans certains cas plus spécifiques (monitorings par exemple), le module peut ne pas demander cette information à l'utilisateur. Pour autant, les données en cours de création sont automatiquement rattachées à un jeu de données défini dans la configuration, de manière transparente pour l'utilisateur. 
 
 	
 **Requêtage**
 	
-	Les métadonnées constituent des "boîtes" dans lesquelles sont rangées les données. Tous les modules de GeoNature permettant de requêter des données (Synthèse, Dashboard, Validation, Occtax...) offrent la possibilité de filtrer par cadre d'acquisition ou par jeu de données. 
-	De cette manière, l'outil permet aisément de rechercher ou exporter ses données par "campagnes", par "études", par "projet" etc, selon l'organisation des métadonnées mise en place au sein de l'instance et selon la manière de produire les données de chaque utilisateur.
+Les métadonnées constituent des "boîtes" dans lesquelles sont rangées les données. Tous les modules de GeoNature permettant de requêter des données (Synthèse, Dashboard, Validation, Occtax...) offrent la possibilité de filtrer par cadre d'acquisition ou par jeu de données. 
+De cette manière, l'outil permet aisément de rechercher ou exporter ses données par "campagnes", par "études", par "projet" etc, selon l'organisation des métadonnées mise en place au sein de l'instance et selon la manière de produire les données de chaque utilisateur.
 
 
 **Permissions**
 
-	Enfin, les métadonnées font également partie des critères d'application des permissions ou restrictions imposées à chaque utilisateur au sein de l'instance (cf https://docs.geonature.fr/admin-manual.html#gestion-des-droits). 
-	Ainsi les acteurs associés aux métadonnées pourront définir les utilisateurs pouvant alimenter les jeux de données en question selon les paramètres définis : un utilisateur disposant uniquement des droits sur ses propres données pourra alimenter un jeu de données sont il est personnellement acteur, tandis qu'un utilisateur ayant des droits sur les données de son organisme pourra potentiellement alimenter tous jeux de données associés à sa structure.
+Enfin, les métadonnées font également partie des critères d'application des permissions ou restrictions imposées à chaque utilisateur au sein de l'instance (cf https://docs.geonature.fr/admin-manual.html#gestion-des-droits). 
+Ainsi les acteurs associés aux métadonnées pourront définir les utilisateurs pouvant alimenter les jeux de données en question selon les paramètres définis : un utilisateur disposant uniquement des droits sur ses propres données pourra alimenter un jeu de données sont il est personnellement acteur, tandis qu'un utilisateur ayant des droits sur les données de son organisme pourra potentiellement alimenter tous jeux de données associés à sa structure.
 
 **Champs additionnels**
 
-	GeoNature permet de configurer des champs additionnels "personnalisés", qui viennent compléter les champs du standard du sinp (sexe, stade de vie etc). Ces champs additionnels sont implémentés dans le module de saisie Occtax notamment, et peuvent être rendus disponibles uniquement pour certains jeux de données. Il devient ainsi possible, pour un jeu de données en particulier, de recueillir une variable ou une information supplémentaire.
+GeoNature permet de configurer des champs additionnels "personnalisés", qui viennent compléter les champs du standard du sinp (sexe, stade de vie etc). Ces champs additionnels sont implémentés dans le module de saisie Occtax notamment, et peuvent être rendus disponibles uniquement pour certains jeux de données. Il devient ainsi possible, pour un jeu de données en particulier, de recueillir une variable ou une information supplémentaire.
 
 
 Fonctionnement du module métadonnées
 """"""""""""""""""""""""""""""""""""
 
-	Le module métadonnées de GeoNature permet de consulter, rechercher et gérer ses cadres d'acquisitions et jeux de données, nécessaires à la gestion des données.
+Le module métadonnées de GeoNature permet de consulter, rechercher et gérer ses cadres d'acquisitions et jeux de données, nécessaires à la gestion des données.
 
 **Consulter, rechercher ou modifier ses métadonnées**
 TODO
@@ -486,11 +486,11 @@ La case à cocher "actif à la saisie" permet d'ouvrir ou fermer le jeu de donn�
 
 Enfin comme pour les cadres d'acquisition, l'utilisateur devra définir le ou les acteurs associés au jeu de données en question (producteur, financeur etc) : organismes, personnes, ou les deux. Ces choix pourront influer sur les permissions des utilisateurs à alimenter, ou non, le jeu de données considéré. 
 
-	*Associer un jeu de données à des modules*
+*Associer un jeu de données à des modules*
 
 Afin de faciliter la saisie et limiter les erreurs, GeoNature nécessite d'associer chaque jeu de données à un ou des modules. De cette manière, l'utilisateur peut choisir depuis quel(s) module(s) (de saisie ou d'import) son jeu de données pourra être sélectionné et alimenté. Cette association se fait depuis le formulaire de création/d'édition du jeu de données.
 
-	*Associer un jeu de données à une liste de taxons*
+*Associer un jeu de données à une liste de taxons*
 
 De la même manière, GeoNature permet d'associer un jeu de données à une liste de taxons. Cette association n'est pas obligatoire (par défaut, c'est la liste du module de saisie ou tout taxref qui seront disponibles). Cela permet notamment de réduire le nombre de taxons proposés à la saisie dans des jeux de données dédiés à un groupe d'espèces restreints (protocoles, suivis etc).
 Cette association se fait depuis le formulaire de création/d'édition du jeu de données.
