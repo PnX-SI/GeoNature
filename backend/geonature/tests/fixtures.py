@@ -497,6 +497,7 @@ def synthese_sensitive_data(app, users, datasets, source):
                 cte_taxa_area_with_status.c.id_area == cte_taxa_area_with_sensitivity.c.id_area,
             ),
         )
+        .order_by(cte_taxa_area_with_status.c.cd_nom)
         .first()
     )
     sensitivity_rule = SensitivityRule.query.filter(
@@ -588,22 +589,44 @@ def synthese_sensitive_data(app, users, datasets, source):
             db.session.add(s)
             data[name] = s
 
+    for orm_object in data.values():
+        db.session.refresh(orm_object, ("id_nomenclature_sensitivity",))
+
     # Assert that obs_sensitive_protected is a sensitive observation
-    id_nomenclature_not_sensitive = (
+    nomenclature_not_sensitive = (
         TNomenclatures.query.filter(
             TNomenclatures.nomenclature_type.has(BibNomenclaturesTypes.mnemonique == "SENSIBILITE")
         )
-        .filter(TNomenclatures.cd_nomenclature == "4")
+        .filter(TNomenclatures.cd_nomenclature == "0")
         .one()
-    ).id_nomenclature
-    Synthese.query.filter(
-        Synthese.cd_nom == sensitive_protected_cd_nom
-    ).first().id_nomenclature_sensitivity != id_nomenclature_not_sensitive
+    )
+
+    id_nomenclature_not_sensitive = nomenclature_not_sensitive.id_nomenclature
+
+    synthese_to_assert = Synthese.query.filter(
+        Synthese.id_synthese.in_(
+            (
+                data[key].id_synthese
+                for key in ["obs_sensitive_protected", "obs_sensitive_protected_2"]
+            )
+        )
+    ).first()
+
+    assert synthese_to_assert.id_nomenclature_sensitivity != id_nomenclature_not_sensitive, (
+        f"cd_nom: {synthese_to_assert.cd_nom}, id_nomenclature_bio_status: {synthese_to_assert.id_nomenclature_bio_status}, "
+        f"id_nomenclature_behaviour: {synthese_to_assert}.id_nomenclature_behaviour, "
+        f"geojson: {synthese_to_assert.the_geom_4326_geojson}"
+    )
 
     # Assert that obs_protected_not_sensitive is not a sensitive observation
-    Synthese.query.filter(
-        Synthese.cd_nom == protected_not_sensitive_cd_nom
-    ).first().id_nomenclature_sensitivity == id_nomenclature_not_sensitive
+    assert (
+        Synthese.query.filter(
+            Synthese.id_synthese == data["obs_protected_not_sensitive"].id_synthese
+        )
+        .first()
+        .id_nomenclature_sensitivity
+        == id_nomenclature_not_sensitive
+    )
 
     ## Assert that obs_sensitive_protected and obs_protected_not_sensitive are protected observation
     def assert_observation_is_protected(name_observation):

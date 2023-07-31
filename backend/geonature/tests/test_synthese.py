@@ -1,3 +1,5 @@
+from io import StringIO
+import csv
 import pytest
 import json
 import datetime
@@ -9,15 +11,17 @@ from sqlalchemy import func
 from werkzeug.exceptions import Forbidden, BadRequest, Unauthorized
 from jsonschema import validate as validate_json
 from geoalchemy2.shape import to_shape, from_shape
+from geojson import Feature
 from shapely.geometry import Point
 
 from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_synthese.models import Synthese, TSources
-from geonature.core.gn_synthese.routes import split_blurring_permissions
+from geonature.core.gn_synthese.routes import split_blurring_precise_permissions
 from geonature.core.gn_commons.models.base import TModules
 from geonature.core.gn_permissions.models import PermAction, Permission
 from geonature.core.gn_permissions.tools import get_permissions
+from geonature.core.sensitivity.models import cor_sensitivity_area_type
 
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user
 from ref_geo.models import BibAreasTypes, LAreas
@@ -1249,26 +1253,82 @@ def synthese_module():
 def synthese_read_permissions(synthese_module):
     def _synthese_read_permissions(role, scope_value, action="R", **kwargs):
         action = PermAction.query.filter_by(code_action=action).one()
+        perm = Permission(
+            role=role,
+            action=action,
+            module=synthese_module,
+            scope_value=scope_value,
+            **kwargs,
+        )
         with db.session.begin_nested():
-            db.session.add(
-                Permission(
-                    role=role,
-                    action=action,
-                    module=synthese_module,
-                    scope_value=scope_value,
-                    **kwargs,
-                )
-            )
+            db.session.add(perm)
+        return perm
 
     return _synthese_read_permissions
 
 
+@pytest.fixture()
+def synthese_export_permissions(synthese_module):
+    def _synthese_export_permissions(role, scope_value, action="E", **kwargs):
+        action = PermAction.query.filter_by(code_action=action).one()
+        perm = Permission(
+            role=role,
+            action=action,
+            module=synthese_module,
+            scope_value=scope_value,
+            **kwargs,
+        )
+        with db.session.begin_nested():
+            db.session.add(perm)
+        return perm
+
+    return _synthese_export_permissions
+
+
+def get_one_synthese_reponse_from_id(response: dict, id_synthese: int):
+    return [
+        synthese
+        for synthese in response["features"]
+        if synthese["properties"]["id"] == id_synthese
+    ][0]
+
+
+def assert_unsensitive_synthese(json_synthese, synthese_from_db):
+    # Need to pass through a Feature because rounding of coordinates is done
+    assert (
+        Feature(geometry=json.loads(synthese_from_db.the_geom_4326_geojson)).geometry
+        == json_synthese["geometry"]
+    )
+
+
+def assert_sensitive_synthese(json_synthese, synthese_from_db):
+    id_type_area = (
+        db.session.query(cor_sensitivity_area_type.c.id_area_type)
+        .filter(
+            cor_sensitivity_area_type.c.id_nomenclature_sensitivity
+            == synthese_from_db.id_nomenclature_sensitivity
+        )
+        .one()
+    )[0]
+
+    sensitive_area = [area for area in synthese_from_db.areas if area.id_type == id_type_area][0]
+
+    assert (
+        Feature(geometry=json.loads(sensitive_area.geojson_4326)).geometry
+        == json_synthese["geometry"]
+    )
+
+
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestSyntheseBlurring:
-    def test_split_blurring_permissions(
+    def test_split_blurring_precise_permissions(
         self, app, users, synthese_module, synthese_read_permissions
     ):
         current_user = users["self_user"]
+
+        blurring_perm = synthese_read_permissions(current_user, None, sensitivity_filter=True)
+        precise_perm = synthese_read_permissions(current_user, 2, sensitivity_filter=False)
+
         with app.test_request_context(headers=logged_user_headers(current_user)):
             app.preprocess_request()
             permissions = get_permissions(
@@ -1277,19 +1337,273 @@ class TestSyntheseBlurring:
                 module_code=synthese_module.module_code,
                 object_code="ALL",
             )
-        sensitive, unsensitive = split_blurring_permissions(permissions=permissions)
+        blurring_perms, precise_perms = split_blurring_precise_permissions(permissions)
 
-        assert all(s.sensitivity_filter for s in sensitive)
-        assert all(not s.sensitivity_filter for s in unsensitive)
+        assert all(s.sensitivity_filter for s in blurring_perms)
+        assert all(not s.sensitivity_filter for s in precise_perms)
+        assert blurring_perm in blurring_perms
+        assert precise_perm in precise_perms
 
-    def test_synthese_blurring(self, users, synthese_module, synthese_read_permissions):
-        current_user = users["self_user"]
-        set_logged_user_cookie(self.client, current_user)
+    def test_get_observations_for_web_blurring(
+        self, users, synthese_sensitive_data, source, synthese_read_permissions, monkeypatch
+    ):
+        # So that all burred geoms will not appear on the aggregated areas
+        monkeypatch.setitem(current_app.config["SYNTHESE"], "BLUR_SENSITIVE_OBSERVATIONS", True)
+
+        current_user = users["stranger_user"]
         # None is 3
         synthese_read_permissions(current_user, None, sensitivity_filter=True)
-        synthese_read_permissions(current_user, 2, sensitivity_filter=False)
+        synthese_read_permissions(current_user, 1, sensitivity_filter=False)
+
+        set_logged_user(self.client, current_user)
+        url = url_for("gn_synthese.get_observations_for_web")
+
+        response_json = self.client.post(url, json={"id_source": [source.id_source]}).json
+
+        # Check unsensitive synthese obs geometry
+        unsensitive_synthese = synthese_sensitive_data["obs_protected_not_sensitive"]
+        unsensitive_synthese_from_response = get_one_synthese_reponse_from_id(
+            response_json, unsensitive_synthese.id_synthese
+        )
+
+        # Need to pass through a Feature because rounding of coordinates is done
+        assert_unsensitive_synthese(
+            json_synthese=unsensitive_synthese_from_response, synthese_from_db=unsensitive_synthese
+        )
+
+        # Check sensitive synthese obs geometry
+        sensitive_synthese = synthese_sensitive_data["obs_sensitive_protected"]
+        sensitive_synthese_from_response = get_one_synthese_reponse_from_id(
+            response_json, sensitive_synthese.id_synthese
+        )
+
+        assert_sensitive_synthese(
+            json_synthese=sensitive_synthese_from_response, synthese_from_db=sensitive_synthese
+        )
+
+    def test_get_observations_for_web_blurring_excluded(
+        self, users, synthese_sensitive_data, source, synthese_read_permissions
+    ):
+        current_user = users["stranger_user"]
+        # None is 3
+        synthese_read_permissions(current_user, None, sensitivity_filter=True)
+        synthese_read_permissions(current_user, 1, sensitivity_filter=False)
+
+        set_logged_user(self.client, current_user)
 
         url = url_for("gn_synthese.get_observations_for_web")
-        r = self.client.get(url)
 
-        assert False
+        response_json = self.client.post(url, json={"id_source": [source.id_source]}).json
+
+        sensitive_synthese_ids = (
+            synthese.id_synthese
+            for synthese in [
+                synthese_sensitive_data["obs_sensitive_protected"],
+                synthese_sensitive_data["obs_sensitive_protected_2"],
+            ]
+        )
+
+        json_synthese_ids = (feature["properties"]["id"] for feature in response_json["features"])
+        assert all(synthese_id not in json_synthese_ids for synthese_id in sensitive_synthese_ids)
+
+    def test_get_observations_for_web_blurring_grouped_geom(
+        self,
+        users,
+        synthese_sensitive_data,
+        source,
+        synthese_read_permissions,
+        monkeypatch,
+    ):
+        # So that all burred geoms will not appear on the aggregated areas
+        monkeypatch.setitem(current_app.config["SYNTHESE"], "AREA_AGGREGATION_TYPE", "M1")
+
+        current_user = users["stranger_user"]
+        set_logged_user(self.client, current_user)
+        # None is 3
+        synthese_read_permissions(current_user, None, sensitivity_filter=True)
+        synthese_read_permissions(current_user, 1, sensitivity_filter=False)
+
+        response = self.client.get(
+            url_for("gn_synthese.get_observations_for_web"),
+            query_string={
+                "format": "grouped_geom_by_areas",
+            },
+            json={
+                "id_source": [source.id_source],
+            },
+        )
+
+        json_resp = response.json
+
+        # Retrieve only sensitive synthese ids
+        sensitive_synthese_ids = [
+            synthese.id_synthese
+            for synthese in (
+                synthese_sensitive_data["obs_sensitive_protected"],
+                synthese_sensitive_data["obs_sensitive_protected_2"],
+            )
+        ]
+
+        # If an observation is blurred and the AREA_AGGREGATION_TYPE is smaller in
+        # size than the blurred observation then the observation should not appear
+        assert all(
+            feature["geometry"] is None
+            for feature in json_resp["features"]
+            if all(
+                observation["id"] in sensitive_synthese_ids
+                for observation in feature["properties"]["observations"]
+            )
+        )
+
+    def test_get_one_synthese_sensitive(
+        self, users, synthese_sensitive_data, synthese_read_permissions, monkeypatch
+    ):
+        # So that all burred geoms will not appear on the aggregated areas
+        monkeypatch.setitem(current_app.config["SYNTHESE"], "BLUR_SENSITIVE_OBSERVATIONS", True)
+
+        current_user = users["stranger_user"]
+        sensitive_synthese = synthese_sensitive_data["obs_sensitive_protected"]
+        # None is 3
+        synthese_read_permissions(current_user, None, sensitivity_filter=True)
+        synthese_read_permissions(current_user, 1, sensitivity_filter=False)
+
+        set_logged_user(self.client, current_user)
+        url = url_for("gn_synthese.get_one_synthese", id_synthese=sensitive_synthese.id_synthese)
+
+        response_json = self.client.get(url).json
+
+        sensitive_synthese = synthese_sensitive_data["obs_sensitive_protected"]
+
+        assert_sensitive_synthese(json_synthese=response_json, synthese_from_db=sensitive_synthese)
+
+    def test_get_one_synthese_unsensitive(
+        self, users, synthese_sensitive_data, synthese_read_permissions
+    ):
+        current_user = users["stranger_user"]
+        unsensitive_synthese = synthese_sensitive_data["obs_protected_not_sensitive"]
+        # None is 3
+        synthese_read_permissions(current_user, None, sensitivity_filter=True)
+        synthese_read_permissions(current_user, 1, sensitivity_filter=False)
+
+        set_logged_user(self.client, current_user)
+        url = url_for("gn_synthese.get_one_synthese", id_synthese=unsensitive_synthese.id_synthese)
+
+        response_json = self.client.get(url).json
+
+        assert_unsensitive_synthese(
+            json_synthese=response_json, synthese_from_db=unsensitive_synthese
+        )
+
+    def test_get_one_synthese_sensitive_excluded(
+        self, users, synthese_sensitive_data, synthese_read_permissions
+    ):
+        current_user = users["stranger_user"]
+        sensitive_synthese = synthese_sensitive_data["obs_sensitive_protected"]
+        # None is 3
+        synthese_read_permissions(current_user, None, sensitivity_filter=True)
+        synthese_read_permissions(current_user, 1, sensitivity_filter=False)
+
+        set_logged_user(self.client, current_user)
+        url = url_for("gn_synthese.get_one_synthese", id_synthese=sensitive_synthese.id_synthese)
+
+        response = self.client.get(url)
+
+        assert response.status_code == Forbidden.code
+
+    def test_export_observations_unsensitive(
+        self, users, synthese_export_permissions, synthese_sensitive_data
+    ):
+        current_user = users["stranger_user"]
+        # None is 3
+        synthese_export_permissions(current_user, None, sensitivity_filter=True)
+        synthese_export_permissions(current_user, 1, sensitivity_filter=False)
+
+        set_logged_user(self.client, current_user)
+
+        list_id_synthese = [synthese.id_synthese for synthese in synthese_sensitive_data.values()]
+
+        response = self.client.post(
+            url_for("gn_synthese.export_observations_web"),
+            json=list_id_synthese,
+            query_string={"export_format": "csv"},
+        )
+
+        assert response.status_code == 200
+        file_like_obj = StringIO(response.data.decode("utf-8"))
+        reader = csv.DictReader(file_like_obj, delimiter=";")
+        for row in reader:
+            if (
+                int(row["id_synthese"])
+                == synthese_sensitive_data["obs_protected_not_sensitive"].id_synthese
+            ):
+                unsensitive_response_synthese = row
+
+        # Unsensitive
+        geom_shape = to_shape(synthese_sensitive_data["obs_protected_not_sensitive"].the_geom_4326)
+        assert float(unsensitive_response_synthese["x_centroid_4326"]) == pytest.approx(
+            geom_shape.x, 0.000001
+        )
+        assert float(unsensitive_response_synthese["y_centroid_4326"]) == pytest.approx(
+            geom_shape.y, 0.000001
+        )
+
+    def test_export_observations_sensitive(
+        self, users, synthese_export_permissions, synthese_sensitive_data, monkeypatch
+    ):
+        # So that all burred geoms will not appear on the aggregated areas
+        monkeypatch.setitem(current_app.config["SYNTHESE"], "BLUR_SENSITIVE_OBSERVATIONS", True)
+
+        current_user = users["stranger_user"]
+        # None is 3
+        synthese_export_permissions(current_user, None, sensitivity_filter=True)
+        synthese_export_permissions(current_user, 1, sensitivity_filter=False)
+
+        set_logged_user(self.client, current_user)
+
+        list_id_synthese = [synthese.id_synthese for synthese in synthese_sensitive_data.values()]
+
+        response = self.client.post(
+            url_for("gn_synthese.export_observations_web"),
+            json=list_id_synthese,
+            query_string={"export_format": "geojson"},
+        )
+
+        assert response.status_code == 200
+        sensitive_synthese = synthese_sensitive_data["obs_sensitive_protected"]
+        json_feature_synthese = [
+            feature
+            for feature in response.json["features"]
+            if feature["properties"]["id_synthese"] == sensitive_synthese.id_synthese
+        ][0]
+        assert_sensitive_synthese(
+            json_synthese=json_feature_synthese, synthese_from_db=sensitive_synthese
+        )
+
+    def test_export_observations_sensitive_excluded(
+        self, users, synthese_export_permissions, synthese_sensitive_data
+    ):
+        current_user = users["stranger_user"]
+        # None is 3
+        synthese_export_permissions(current_user, None, sensitivity_filter=True)
+        synthese_export_permissions(current_user, 1, sensitivity_filter=False)
+
+        set_logged_user(self.client, current_user)
+
+        list_id_synthese = [
+            synthese.id_synthese
+            for synthese in [
+                synthese_sensitive_data["obs_sensitive_protected"],
+                synthese_sensitive_data["obs_sensitive_protected_2"],
+            ]
+        ]
+
+        response = self.client.post(
+            url_for("gn_synthese.export_observations_web"),
+            json=list_id_synthese,
+            query_string={"export_format": "geojson"},
+        )
+
+        assert response.status_code == 200
+        # No feature accessible because sensitive data excluded if
+        # the user has no right to see it
+        assert len(response.json["features"]) == 0
