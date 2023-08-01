@@ -601,49 +601,75 @@ def synthese_sensitive_data(app, users, datasets, source):
     ).first()
     assert sensitivity_rule is None, "Le référentiel de sensibilité ne convient pas aux tests"
 
-    for name, taxon, geom, ds in [
-        (
-            "obs_sensitive_protected",
-            sensitive_protected_taxon,
-            sensitive_area_centroid,
-            datasets["own_dataset"],
-        ),
-        (
-            "obs_protected_not_sensitive",
-            unsensitive_protected_taxon,
-            unsensitive_area_centroid,
-            datasets["own_dataset"],
-        ),
-        (
-            "obs_sensitive_protected_2",
-            sensitive_protected_taxon,
-            sensitive_area_centroid,
-            datasets["associate_2_dataset_sensitive"],
-        ),
-    ]:
-        s = create_synthese(
-            geom,
-            taxon,
-            users["self_user"],
-            ds,
-            source,
-            comment_description=name,
+    with db.session.begin_nested():
+        for name, cd_nom, point, ds, comment_description in [
+            (
+                "obs_sensitive_protected",
+                sensitive_protected_cd_nom,
+                sensitive_protected_point,
+                datasets["own_dataset"],
+                "obs_sensitive_protected",
+            ),
+            (
+                "obs_protected_not_sensitive",
+                protected_not_sensitive_cd_nom,
+                protected_not_sensitive_point,
+                datasets["own_dataset"],
+                "obs_protected_not_sensitive",
+            ),
+            (
+                "obs_sensitive_protected_2",
+                sensitive_protected_cd_nom,
+                sensitive_protected_point,
+                datasets["associate_2_dataset_sensitive"],
+                "obs_sensitive_protected_2",
+            ),
+        ]:
+            unique_id_sinp = func.uuid_generate_v4()
+            geom = point
+            taxon = Taxref.query.filter_by(cd_nom=cd_nom).one()
+            kwargs = {}
+            if id_nomenclature_bio_status:
+                kwargs["id_nomenclature_bio_status"] = id_nomenclature_bio_status
+            elif id_nomenclature_behaviour:
+                kwargs["id_nomenclature_behaviour"] = id_nomenclature_behaviour
+            kwargs["comment_description"] = comment_description
+            s = create_synthese(
+                geom, taxon, users["self_user"], ds, source, unique_id_sinp, [], **kwargs
+            )
+            db.session.add(s)
+            data[name] = s
+
+    # Assert that obs_sensitive_protected is a sensitive observation
+    nomenclature_not_sensitive = (
+        TNomenclatures.query.filter(
+            TNomenclatures.nomenclature_type.has(BibNomenclaturesTypes.mnemonique == "SENSIBILITE")
         )
         .filter(TNomenclatures.cd_nomenclature == "0")
         .one()
-    ).id_nomenclature
+    )
     assert (
-        Synthese.query.filter(
-            Synthese.id_synthese.in_(
-                (
-                    data[key].id_synthese
-                    for key in ["obs_sensitive_protected", "obs_sensitive_protected_2"]
-                )
+        nomenclature_not_sensitive.mnemonique == "Non sensible - Diffusion précise",
+        nomenclature_not_sensitive.mnemonique,
+    )
+    id_nomenclature_not_sensitive = nomenclature_not_sensitive.id_nomenclature
+
+    synthese_to_assert = Synthese.query.filter(
+        Synthese.id_synthese.in_(
+            (
+                data[key].id_synthese
+                for key in ["obs_sensitive_protected", "obs_sensitive_protected_2"]
             )
         )
-        .first()
-        .id_nomenclature_sensitivity
-        != id_nomenclature_not_sensitive
+    ).first()
+
+    assert (
+        synthese_to_assert.id_nomenclature_sensitivity != id_nomenclature_not_sensitive,
+        (
+            f"cd_nom: {synthese_to_assert.cd_nom}, id_nomenclature_bio_status: {synthese_to_assert.id_nomenclature_bio_status}, "
+            f"id_nomenclature_behaviour: {synthese_to_assert}.id_nomenclature_behaviour, "
+            f"geojson: {synthese_to_assert.the_geom_4326_geojson}"
+        ),
     )
 
     # Assert that obs_protected_not_sensitive is not a sensitive observation
