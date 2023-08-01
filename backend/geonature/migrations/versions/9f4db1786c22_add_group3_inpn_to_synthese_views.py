@@ -14,7 +14,7 @@ from sqlalchemy.sql import text
 revision = "9f4db1786c22"
 down_revision = "f1dd984bff97"
 branch_labels = None
-depends_on = None
+depends_on = ("c4415009f164",)  # Taxref v15 db structure
 
 
 def upgrade():
