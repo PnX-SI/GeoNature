@@ -633,7 +633,14 @@ def synthese_sensitive_data(app, users, datasets, source):
         .one()
     ).id_nomenclature
     assert (
-        Synthese.query.filter(Synthese.cd_nom == sensitive_protected_cd_nom)
+        Synthese.query.filter(
+            Synthese.id_synthese.in_(
+                (
+                    data[key].id_synthese
+                    for key in ["obs_sensitive_protected", "obs_sensitive_protected_2"]
+                )
+            )
+        )
         .first()
         .id_nomenclature_sensitivity
         != id_nomenclature_not_sensitive
@@ -641,7 +648,9 @@ def synthese_sensitive_data(app, users, datasets, source):
 
     # Assert that obs_protected_not_sensitive is not a sensitive observation
     assert (
-        Synthese.query.filter(Synthese.cd_nom == protected_not_sensitive_cd_nom)
+        Synthese.query.filter(
+            Synthese.id_synthese == data["obs_protected_not_sensitive"].id_synthese
+        )
         .first()
         .id_nomenclature_sensitivity
         == id_nomenclature_not_sensitive
