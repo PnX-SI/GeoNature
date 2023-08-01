@@ -597,7 +597,19 @@ def synthese_sensitive_data(app, users, datasets, source):
             SensitivityRule.cd_nom == sensitive_protected_taxon.cd_nom,
             SensitivityRule.areas.any(LAreas.id_area == unsensitive_area.id_area),
         )
-        .limit(1)
+        .join(
+            cte_taxa_area_with_sensitivity,
+            sa.and_(
+                cte_taxa_area_with_status.c.cd_nom == cte_taxa_area_with_sensitivity.c.cd_nom,
+                cte_taxa_area_with_status.c.id_area == cte_taxa_area_with_sensitivity.c.id_area,
+            ),
+        )
+        .order_by(cte_taxa_area_with_status.c.cd_nom)
+        .first()
+    )
+    sensitivity_rule = SensitivityRule.query.filter(
+        SensitivityRule.cd_nom == sensitive_protected_cd_nom,
+        SensitivityRule.areas.any(LAreas.id_area == sensitive_protected_id_area),
     ).first()
     assert sensitivity_rule is None, "Le référentiel de sensibilité ne convient pas aux tests"
 
