@@ -629,13 +629,23 @@ def synthese_sensitive_data(app, users, datasets, source):
             source,
             comment_description=name,
         )
-        db.session.add(s)
-        data[name] = s
+        .filter(TNomenclatures.cd_nomenclature == "0")
+        .one()
+    ).id_nomenclature
+    assert (
+        Synthese.query.filter(Synthese.cd_nom == sensitive_protected_cd_nom)
+        .first()
+        .id_nomenclature_sensitivity
+        != id_nomenclature_not_sensitive
+    )
 
-    # retrieves sensitive nomenclatures computed by trigger
-    db.session.flush()
-    for s in data.values():
-        db.session.refresh(s)
+    # Assert that obs_protected_not_sensitive is not a sensitive observation
+    assert (
+        Synthese.query.filter(Synthese.cd_nom == protected_not_sensitive_cd_nom)
+        .first()
+        .id_nomenclature_sensitivity
+        == id_nomenclature_not_sensitive
+    )
 
     assert data["obs_sensitive_protected"].nomenclature_sensitivity.cd_nomenclature == "2"
     assert data["obs_sensitive_protected_2"].nomenclature_sensitivity.cd_nomenclature == "2"
