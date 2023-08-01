@@ -623,6 +623,7 @@ class TestSynthese:
             '"date_creation"',
             '"date_modification"',
             '"champs_additionnels"',
+            '"group3_inpn"',
         ]
 
         def assert_export_results(user, expected_id_synthese_list):
@@ -745,6 +746,7 @@ class TestSynthese:
             '"nb_obs"',
             '"date_min"',
             '"date_max"',
+            '"group3_inpn"',
         ]
         index_colummn_cd_ref = expected_columns_exports.index('"cd_ref"')
 
