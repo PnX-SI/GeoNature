@@ -452,8 +452,13 @@ class SyntheseQuery:
         # generic filters
         for colname, value in self.filters.items():
             if colname.startswith("area"):
-                self.add_join(CorAreaSynthese, CorAreaSynthese.id_synthese, self.model.id_synthese)
-                self.query = self.query.where(CorAreaSynthese.id_area.in_(value))
+                cor_area_synthese_alias = aliased(CorAreaSynthese)
+                self.add_join(
+                    cor_area_synthese_alias,
+                    cor_area_synthese_alias.id_synthese,
+                    self.model.id_synthese,
+                )
+                self.query = self.query.where(cor_area_synthese_alias.id_area.in_(value))
             elif colname.startswith("id_"):
                 col = getattr(self.model.__table__.columns, colname)
                 if isinstance(value, list):
