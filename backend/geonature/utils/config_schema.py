@@ -3,14 +3,9 @@
 """
 
 import os
+import warnings
 
-from marshmallow import (
-    Schema,
-    fields,
-    validates_schema,
-    ValidationError,
-    post_load,
-)
+from marshmallow import Schema, fields, validates_schema, ValidationError, post_load, pre_load
 from marshmallow.validate import OneOf, Regexp, Email, Length
 
 from geonature.core.gn_synthese.synthese_config import (
@@ -529,7 +524,7 @@ class GnGeneralSchemaConf(Schema):
     DEBUG = fields.Boolean(load_default=False)
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)
-    API_TAXHUB = fields.Url(required=True)
+    API_TAXHUB = fields.Url()
     CODE_APPLICATION = fields.String(load_default="GN")
     XML_NAMESPACE = fields.String(load_default="{http://inpn.mnhn.fr/mtd}")
     MTD_API_ENDPOINT = fields.Url(load_default="https://preprod-inpn.mnhn.fr/mtd")
@@ -583,6 +578,16 @@ class GnGeneralSchemaConf(Schema):
                 "Si AUTO_ACCOUNT_CREATION = False, veuillez remplir le paramètre VALIDATOR_EMAIL",
                 "AUTO_ACCOUNT_CREATION, VALIDATOR_EMAIL",
             )
+
+    @pre_load
+    def _pre_load(self, data, **kwargs):
+        if "API_TAXHUB" in data:
+            warnings.warn(
+                "Le paramètre API_TAXHUB est déprécié, il sera automatiquement déduit API_ENDPOINT et supprimé dans la version 2.14",
+                Warning,
+            )
+        data["API_TAXHUB"] = f"{data['API_ENDPOINT']}/taxhub/api"
+        return data
 
     @post_load
     def insert_module_config(self, data, **kwargs):

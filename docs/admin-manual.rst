@@ -1883,6 +1883,12 @@ Le champs "Attribut additionnels" permet d'ajouter des éléments de configurati
 - Ajouter un sous-titre descriptif : `{"help" : "mon sous titre"}`
 - Ajouter des valeurs min/max pour un input `number` : `{"min": 1, "max": 10}`
 
+TaxHub
+""""""
+
+Backoffice de gestion des taxons (basé sur TaxHub) permettant de faire des liste de taxons ainsi que d'ajouter des attributs etdes médias aux taxons.
+Voir la documentation de TaxHub : https://taxhub.readthedocs.io/fr/latest/
+
 Module OCCHAB
 -------------
 

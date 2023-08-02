@@ -6,7 +6,6 @@
 SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:5432/mabase"
 URL_APPLICATION = 'http://url.com/geonature'
 API_ENDPOINT = 'http://url.com/geonature/api'
-API_TAXHUB = 'http://url.com/taxhub/api'
 
 # Remplacer par une clé alétoire complexe
 SECRET_KEY = 'super secret key'

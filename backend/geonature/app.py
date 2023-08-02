@@ -15,6 +15,7 @@ else:
 from flask import Flask, g, request, current_app, send_from_directory
 from flask.json.provider import DefaultJSONProvider
 from flask_mail import Message
+from flask_babelex import Babel
 from flask_cors import CORS
 from flask_login import current_user
 from flask_sqlalchemy import before_models_committed
@@ -182,6 +183,13 @@ def create_app(with_external_mods=True):
 
     admin.init_app(app)
 
+    # babel
+    babel = Babel(app)
+
+    @babel.localeselector
+    def get_locale():
+        return request.accept_languages.best_match(["de", "fr", "en"])
+
     # Enable serving of media files
     app.add_url_rule(
         f"{config['MEDIA_URL']}/<path:filename>",
@@ -211,6 +219,18 @@ def create_app(with_external_mods=True):
         app.register_blueprint(blueprint, url_prefix=url_prefix)
 
     with app.app_context():
+        # taxhub
+        from apptax import taxhub_routes
+
+        for blueprint_path, url_prefix in taxhub_routes:
+            module_name, blueprint_name = blueprint_path.split(":")
+            blueprint = getattr(import_module(module_name), blueprint_name)
+            app.register_blueprint(blueprint, url_prefix="/taxhub" + url_prefix)
+        # register taxhub admin view which need app context
+        from geonature.core.taxonomie.admin import load_admin_views
+
+        load_admin_views(app, admin)
+
         # register errors handlers
         import geonature.core.errors
 

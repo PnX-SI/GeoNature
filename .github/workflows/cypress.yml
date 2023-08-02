@@ -114,12 +114,6 @@ jobs:
         run: geonature dev_back &
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
-      - name: Run TaxHub backend
-        run: flask run --host=0.0.0.0 &
-        working-directory: ./backend/dependencies/TaxHub/
-        env:
-          TAXHUB_SETTINGS: test_config.py
-          TAXHUB_SQLALCHEMY_DATABASE_URI: "postgresql://geonatadmin:geonatpasswd@127.0.0.1:5432/geonature2db"
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
