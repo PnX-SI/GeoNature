@@ -3,6 +3,7 @@ click>=7.0
 fiona>=1.9.6
 flask>=3.0
 flask-admin
+flask-babelex
 flask-cors
 flask-mail
 flask-marshmallow
