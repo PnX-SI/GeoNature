@@ -32,6 +32,10 @@ export class MetadataComponent implements OnInit {
   public organisms: any[] = [];
   /* liste des roles issues de l'API pour le select. */
   public roles: any[] = [];
+  public meta_type: any[] = [
+    { label: 'Jeu de données', value: 'ds' },
+    { label: "Cadre d'acquisition", value: 'af' },
+  ];
 
   public areaFilters: Array<any>;
 
