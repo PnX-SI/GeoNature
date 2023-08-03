@@ -660,10 +660,6 @@ def synthese_sensitive_data(app, users, datasets, source):
         .filter(TNomenclatures.cd_nomenclature == "0")
         .one()
     )
-    assert (
-        nomenclature_not_sensitive.mnemonique == "Non sensible - Diffusion précise",
-        nomenclature_not_sensitive.mnemonique,
-    )
     id_nomenclature_not_sensitive = nomenclature_not_sensitive.id_nomenclature
 
     synthese_to_assert = Synthese.query.filter(
@@ -675,13 +671,10 @@ def synthese_sensitive_data(app, users, datasets, source):
         )
     ).first()
 
-    assert (
-        synthese_to_assert.id_nomenclature_sensitivity != id_nomenclature_not_sensitive,
-        (
-            f"cd_nom: {synthese_to_assert.cd_nom}, id_nomenclature_bio_status: {synthese_to_assert.id_nomenclature_bio_status}, "
-            f"id_nomenclature_behaviour: {synthese_to_assert}.id_nomenclature_behaviour, "
-            f"geojson: {synthese_to_assert.the_geom_4326_geojson}"
-        ),
+    assert synthese_to_assert.id_nomenclature_sensitivity != id_nomenclature_not_sensitive, (
+        f"cd_nom: {synthese_to_assert.cd_nom}, id_nomenclature_bio_status: {synthese_to_assert.id_nomenclature_bio_status}, "
+        f"id_nomenclature_behaviour: {synthese_to_assert}.id_nomenclature_behaviour, "
+        f"geojson: {synthese_to_assert.the_geom_4326_geojson}"
     )
 
     # Assert that obs_protected_not_sensitive is not a sensitive observation
