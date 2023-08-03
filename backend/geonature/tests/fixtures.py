@@ -611,7 +611,51 @@ def synthese_sensitive_data(app, users, datasets, source):
         SensitivityRule.cd_nom == sensitive_protected_cd_nom,
         SensitivityRule.areas.any(LAreas.id_area == sensitive_protected_id_area),
     ).first()
-    assert sensitivity_rule is None, "Le référentiel de sensibilité ne convient pas aux tests"
+    sensitive_protected_area = LAreas.query.filter(
+        LAreas.id_area == sensitive_protected_id_area
+    ).first()
+    # Get one point inside the area : the centroid (assuming the area is convex)
+    sensitive_protected_point = db.session.query(
+        func.ST_PointOnSurface(func.ST_Transform(sensitive_protected_area.geom, 4326))
+    ).first()[0]
+    # Add a criteria to the sensitivity rule if needed
+    id_nomenclature_bio_status = None
+    id_type_nomenclature_bio_status = (
+        BibNomenclaturesTypes.query.filter(BibNomenclaturesTypes.mnemonique == "STATUT_BIO")
+        .one()
+        .id_type
+    )
+    id_nomenclature_behaviour = None
+    id_type_nomenclature_behaviour = (
+        BibNomenclaturesTypes.query.filter(BibNomenclaturesTypes.mnemonique == "OCC_COMPORTEMENT")
+        .one()
+        .id_type
+    )
+    # Get one criteria for the sensitivity rule if needed
+    list_criterias_for_sensitivity_rule = sensitivity_rule.criterias
+    if list_criterias_for_sensitivity_rule:
+        one_criteria_for_sensitive_rule = list_criterias_for_sensitivity_rule[0]
+        id_type_criteria_for_sensitive_rule = one_criteria_for_sensitive_rule.id_type
+        if id_type_criteria_for_sensitive_rule == id_type_nomenclature_bio_status:
+            id_nomenclature_bio_status = one_criteria_for_sensitive_rule.id_nomenclature
+        elif id_type_criteria_for_sensitive_rule == id_type_nomenclature_behaviour:
+            id_nomenclature_behaviour = one_criteria_for_sensitive_rule.id_nomenclature
+
+    # Retrieve a cd_nom and point that fit a protection status but no sensitivity rule
+    protected_not_sensitive_cd_nom, protected_not_sensitive_id_area = (
+        db.session.query(cte_taxa_area_with_status.c.cd_nom, cte_taxa_area_with_status.c.id_area)
+        .filter(
+            cte_taxa_area_with_status.c.cd_nom.notin_([cte_taxa_area_with_sensitivity.c.cd_nom])
+        )
+        .first()
+    )
+    protected_not_sensitive_area = LAreas.query.filter(
+        LAreas.id_area == protected_not_sensitive_id_area
+    ).first()
+    # Get one point inside the area : the centroid (assuming the area is convex)
+    protected_not_sensitive_point = db.session.query(
+        func.ST_PointOnSurface(func.ST_Transform(protected_not_sensitive_area.geom, 4326))
+    ).first()[0]
 
     with db.session.begin_nested():
         for name, cd_nom, point, ds, comment_description in [
@@ -673,7 +717,8 @@ def synthese_sensitive_data(app, users, datasets, source):
 
     assert synthese_to_assert.id_nomenclature_sensitivity != id_nomenclature_not_sensitive, (
         f"cd_nom: {synthese_to_assert.cd_nom}, id_nomenclature_bio_status: {synthese_to_assert.id_nomenclature_bio_status}, "
-        f"id_nomenclature_behaviour: {synthese_to_assert}.id_nomenclature_behaviour, "
+        f"id_nomenclature_behaviour: {synthese_to_assert.id_nomenclature_behaviour}, "
+        f"id_nomenclature_sensitivity: {synthese_to_assert.id_nomenclature_sensitivity}, "
         f"geojson: {synthese_to_assert.the_geom_4326_geojson}"
     )
 
