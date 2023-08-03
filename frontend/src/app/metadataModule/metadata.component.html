@@ -225,15 +225,26 @@
     style="align-items: flex-end"
   >
     <label> Rechercher sur:</label>
-    <select
+    <ng-select
+      [items]="meta_type"
       [formControl]="metadataService.form.get('selector')"
+      bindLabel="label"
+      bindValue="value"
       name="selecteur"
       id="selector"
-      class="form-control"
+      clearable=""false
     >
-      <option value="ds">Jeu de données</option>
-      <option value="af">Cadre d'acquisition</option>
-    </select>
+      <ng-template
+        ng-option-tmp
+        let-item="item"
+        let-index="index"
+        let-search="searchTerm"
+      >
+        <div [attr.data-qa]="item.value">
+          <span class="pre-wrap">{{item.label}}</span>
+        </div>
+      </ng-template>
+    </ng-select>
     <label>UUID</label>
     <input
       [formControl]="metadataService.form.get('uuid')"
@@ -251,40 +262,51 @@
       [parentFormControl]="metadataService.form.get('date')"
       label="Date de création"
     ></pnx-date>
-    <label>Acteur (organisme)</label>
 
-    <select
+    <label>Acteur (organisme)</label>
+    
+    <ng-select
+      [items]="organisms"
       [formControl]="metadataService.form.get('organism')"
-      class="form-control form-control"
-    >
-      <option
-        value=""
-        selected
-      >--</option>
-      <option
-        *ngFor="let org of organisms"
-        value="{{ org.id_organisme }}"
+      bindLabel="nom_organisme"
+      bindValue="id_organisme"
+      [multiple]="false"
+      [searchable]="true"
+      [clearable]="true"
       >
-        {{ org.nom_organisme }}
-      </option>
-    </select>
+      <ng-template
+        ng-option-tmp
+        let-item="item"
+        let-index="index"
+        let-search="searchTerm"
+      >
+        <div [matTooltip]="item.nom_organisme" [attr.data-qa]="item.id_organism">
+          <span class="pre-wrap">{{item.nom_organisme}}</span>
+        </div>
+      </ng-template>
+    </ng-select>
+
     <label> Acteur (personne)</label>
 
-    <select
-      class="form-control form-control"
+    <ng-select
+      [items]="roles"
       [formControl]="metadataService.form.get('person')"
-    >
-      <option
-        value=""
-        selected
-      >--</option>
-      <option
-        *ngFor="let role of roles"
-        value="{{ role.id_role }}"
+      bindLabel="nom_complet"
+      bindValue="id_role"
+      [multiple]="false"
+      [virtualScroll]="true"
       >
-        {{ role?.nom_complet }}
-      </option>
-    </select>
+      <ng-template
+        ng-option-tmp
+        let-item="item"
+        let-index="index"
+        let-search="searchTerm"
+      >
+        <div [matTooltip]="item.nom_complet" [attr.data-qa]="item.id_role">
+          <span class="pre-wrap">{{item.nom_complet}}</span>
+        </div>
+      </ng-template>
+    </ng-select>
 
     <div *ngIf="displayMetaAreaFilters() && metadataService.formBuilded">
       <div *ngFor="let area of areaFilters; let i = index">
