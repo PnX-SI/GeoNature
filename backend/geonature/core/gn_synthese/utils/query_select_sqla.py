@@ -255,16 +255,6 @@ class SyntheseQuery:
         if len(cd_ref_childs) > 0:
             self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
             self.query = self.query.where(Taxref.cd_ref.in_(cd_ref_childs))
-        if "taxonomy_group2_inpn" in self.filters:
-            self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
-            self.query = self.query.where(
-                Taxref.group2_inpn.in_(self.filters.pop("taxonomy_group2_inpn"))
-            )
-        if "taxonomy_group3_inpn" in self.filters:
-            self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
-            self.query = self.query.where(
-                Taxref.group3_inpn.in_(self.filters.pop("taxonomy_group3_inpn"))
-            )
         if "taxonomy_id_hab" in self.filters:
             self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
             self.query = self.query.where(
@@ -276,6 +266,13 @@ class SyntheseQuery:
         red_list_filters = {}
 
         for colname, value in self.filters.items():
+            if colname.startswith("taxonomy_group"):
+                # colname = group type (group2 or group3 inpn)
+                # value = list of group values
+                colname = colname.split("taxonomy_")[-1]
+                self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
+                self.query = self.query.where(getattr(Taxref, colname).in_(value))
+
             if colname.startswith("taxhub_attribut"):
                 self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
                 taxhub_id_attr = colname[16:]
