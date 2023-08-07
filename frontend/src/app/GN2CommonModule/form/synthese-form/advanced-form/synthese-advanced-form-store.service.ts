@@ -90,18 +90,8 @@ export class TaxonAdvancedStoreService {
       this.taxonomyGroup2Inpn = all_groups;
     });
 
-    all_groups = [];
-    this._dataService.getRegneAndGroup3Inpn().subscribe((data) => {
-      this.taxonomyGroup3Inpn = data;
-      // eslint-disable-next-line guard-for-in
-      for (let regne in data) {
-        data[regne].forEach((group) => {
-          if (group.length > 0) {
-            all_groups.push({ value: group });
-          }
-        });
-      }
-      this.taxonomyGroup3Inpn = all_groups;
+    this._dataService.getGroup3Inpn().subscribe((data) => {
+      this.taxonomyGroup3Inpn = data.map((item) => ({ value: item }));
     });
   }
 }
