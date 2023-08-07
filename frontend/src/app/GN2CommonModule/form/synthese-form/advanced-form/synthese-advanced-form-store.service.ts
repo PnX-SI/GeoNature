@@ -76,7 +76,7 @@ export class TaxonAdvancedStoreService {
       this.taxonomyHab = data;
     });
 
-    let all_groups = [];
+    const all_groups = [];
     this._dataService.getRegneAndGroup2Inpn().subscribe((data) => {
       this.taxonomyGroup2Inpn = data;
       // eslint-disable-next-line guard-for-in
