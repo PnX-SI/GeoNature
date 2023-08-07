@@ -227,8 +227,8 @@ export class DataFormService {
     return this._http.get<any>(`${this.config.API_TAXHUB}/taxref/regnewithgroupe2`);
   }
 
-  getRegneAndGroup3Inpn() {
-    return this._http.get<any>(`${this.config.API_TAXHUB}/taxref/regnewithgroupe3`);
+  getGroup3Inpn() {
+    return this._http.get<any>(`${this.config.API_TAXHUB}/taxref/groupe3_inpn`);
   }
 
   getTaxhubBibAttributes() {
