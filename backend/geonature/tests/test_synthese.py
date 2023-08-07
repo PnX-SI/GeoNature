@@ -484,33 +484,29 @@ class TestSynthese:
         assert response.status_code == 200
 
     @pytest.mark.parametrize(
-        "additionnal_column",
-        [("altitude_min"), ("count_min_max"), ("nom_vern_or_lb_nom")],
+        "group_inpn",
+        [
+            ("group2_inpn"),
+            ("group3_inpn"),
+        ],
     )
-    def test_get_observations_for_web_param_column_frontend(
-        self, app, users, synthese_data, additionnal_column
-    ):
-        """
-        Test de renseigner le paramètre LIST_COLUMNS_FRONTEND pour renvoyer uniquement
-        les colonnes souhaitées
-        """
-        app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"] = [
-            {
-                "prop": additionnal_column,
-                "name": "My label",
-            }
-        ]
+    def test_get_observations_for_web_filter_group_inpn(self, users, synthese_data, group_inpn):
+        obs = synthese_data["obs1"]
+        taxref_from_cd_nom = Taxref.query.filter_by(cd_nom=obs.cd_nom).one()
+        group_from_taxref = getattr(taxref_from_cd_nom, group_inpn)
+        filter_name = "taxonomie_" + group_inpn
 
-        set_logged_user(self.client, users["self_user"])
-
-        response = self.client.get(url_for("gn_synthese.get_observations_for_web"))
-        data = response.get_json()
-
-        expected_columns = {"id", "url_source", additionnal_column}
-
-        assert all(
-            set(feature["properties"].keys()) == expected_columns for feature in data["features"]
+        set_logged_user_cookie(self.client, users["self_user"])
+        response = self.client.get(
+            url_for("gn_synthese.get_observations_for_web"),
+            json={
+                filter_name: [group_from_taxref],
+            },
         )
+        response_json = response.json
+        assert obs.id_synthese in {
+            synthese["properties"]["id"] for synthese in response_json["features"]
+        }
 
     def test_export(self, users):
         set_logged_user(self.client, users["self_user"])
