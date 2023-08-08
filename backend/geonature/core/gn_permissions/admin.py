@@ -478,6 +478,7 @@ class RolePermAdmin(CruvedProtectedMixin, ModelView):
     can_export = False
     can_view_details = True
 
+    details_template = "role_or_group_detail.html"
     column_select_related_list = ("permissions",)
     column_labels = {
         "nom_role": "Nom",

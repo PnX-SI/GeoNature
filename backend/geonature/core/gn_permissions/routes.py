@@ -15,7 +15,9 @@ from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.commands import supergrant
 
 
-routes = Blueprint("gn_permissions", __name__, cli_group="permissions")
+routes = Blueprint(
+    "gn_permissions", __name__, cli_group="permissions", template_folder="./templates"
+)
 
 routes.cli.add_command(supergrant)
 
