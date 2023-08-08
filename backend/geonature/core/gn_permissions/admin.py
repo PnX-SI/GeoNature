@@ -116,7 +116,7 @@ def role_formatter(view, context, model, name):
 def permissions_formatter(view, context, model, name):
     available_permissions = PermissionAvailable.query.nice_order().all()
 
-    o = '<table class="table">'
+    o = "<table class='table'>"
     columns = ["Module", "Object", "Action", "Label"]
     if model.groupe:
         return_url = url_for("permissions/group.details_view", id=model.id_role)
@@ -146,7 +146,14 @@ def permissions_formatter(view, context, model, name):
                 )
             )
             permissions.append((effective_permissions, False))
-        o += "<tr>"
+            o += (
+                "<tr>"
+                if own_permissions or effective_permissions
+                else "<tr class='text-muted alert alert-danger'>"
+            )
+        else:
+            o += "<tr>" if own_permissions else "<tr class='text-muted alert alert-danger'>"
+
         o += "".join(
             [
                 f"<td>{col}</td>"
