@@ -164,6 +164,7 @@ Exemple pour le module Import :
 Aucune permission n'est définie par défaut lors de l'installation d'un module. En tant qu'administrateur, vous pouvez une commande ajoutant tous les droits sur tous les modules à un groupe ou utilisateur. Vous pourrez ensuite définir des droits à vos utilisateurs module par module, action par action.
 
 .. code-block:: bash
+
     # changer "Grp_Admin" par le nom de votre groupe d'administrateur si vous l'avez changé
     geonature permissions supergrant --group --nom "Grp_admin"
 
