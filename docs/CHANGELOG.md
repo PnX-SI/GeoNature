@@ -7,6 +7,9 @@ CHANGELOG
 - Révision globale des permissions pour pouvoir leur associer d'autres types de filtres (sensibilité notamment), les simplifier et clarifier en supprimant l'héritage et en définissant les permissions disponibles pour chaque module
 - Possibilité de filtrer les données dans la Synthèse selon leur sensibilité, mais sans floutage pour le moment, en affichant ou non les données sensibles selon les permissions de l'utilisateur
 - Vérifiez que vos modules soient compatibles avec le nouveau mécanisme de déclaration des permissions disponibles
+- Cette nouvelle version est compatible avec Debian 12. Le support de Debian 10 sera arrêté prochainement.
+
+++++++ Améliorations performances recherche taxons (#2592) et TaxHub (https://github.com/PnX-SI/TaxHub/pull/385)
 
 **🚀 Nouveautés**
 
@@ -62,7 +65,7 @@ Si vous mettez à jour GeoNature :
 - Si vous utilisez d'autres modules externes, vérifiez qu'ils disposent d'une version compatible avec GeoNature 2.13, ou faites-les évoluer pour qu'ils déclarent leurs permissions disponibles (exemple : #2543)
 - Suivez la procédure de mise à jour classique de GeoNature (<https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application>)
 - Les permissions existantes sur vos différents groupes et utilisateurs sont récupérées et remises à plat automatiquement sans système d'héritage. Vérifiez cependant les permissions après la mise à jour de vos groupes et utilisateurs.
-- Désormais, quand vous installerez un nouveau module (ou sous-module), il faudra lui appliquer des permissions aux groupes ou utilisateurs qui doivent y accéder.
+- Désormais, quand vous installerez un nouveau module (ou sous-module), pour le voir affiché dans le menu et y avoir accès, il faudra lui appliquer des permissions aux groupes ou utilisateurs qui doivent y accéder.
 
 **📝 Merci aux contributeurs**
 
