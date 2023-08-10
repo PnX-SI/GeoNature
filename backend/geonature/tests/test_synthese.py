@@ -743,10 +743,10 @@ class TestSynthese:
             '"ordre"',
             '"famille"',
             '"id_rang"',
+            '"group3_inpn"',
             '"nb_obs"',
             '"date_min"',
             '"date_max"',
-            '"group3_inpn"',
         ]
         index_colummn_cd_ref = expected_columns_exports.index('"cd_ref"')
 
