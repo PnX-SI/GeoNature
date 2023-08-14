@@ -1,24 +1,25 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { combineLatest } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MatDialog } from '@angular/material/dialog';
-import { TranslateService } from '@ngx-translate/core';
-import { OcctaxFormService } from '../occtax-form.service';
-import { OcctaxFormOccurrenceService } from '../occurrence/occurrence.service';
-import { OcctaxTaxaListService } from './taxa-list.service';
-import { MediaService } from '@geonature_common/service/media.service';
+import { Component, OnInit, ElementRef, ViewChild } from "@angular/core";
+import { combineLatest } from "rxjs";
+import { filter, map } from "rxjs/operators";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { MatDialog } from "@angular/material/dialog";
+import { TranslateService } from "@ngx-translate/core";
+import { OcctaxFormService } from "../occtax-form.service";
+import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
+import { OcctaxTaxaListService } from "./taxa-list.service";
+import { MediaService } from "@geonature_common/service/media.service";
 
-import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
-import { ConfigService } from '@geonature/services/config.service';
+import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
+import { OcctaxDataService } from "../../services/occtax-data.service";
 
 @Component({
-  selector: 'pnx-occtax-form-taxa-list',
-  templateUrl: './taxa-list.component.html',
-  styleUrls: ['./taxa-list.component.scss'],
+  selector: "pnx-occtax-form-taxa-list",
+  templateUrl: "./taxa-list.component.html",
+  styleUrls: ["./taxa-list.component.scss"],
 })
 export class OcctaxFormTaxaListComponent implements OnInit {
-  @ViewChild('tabOccurence') tabOccurence: ElementRef;
+  @ViewChild("tabOccurence") tabOccurence: ElementRef;
+  public moduleConfig;
 
   constructor(
     public ngbModal: NgbModal,
@@ -28,15 +29,19 @@ export class OcctaxFormTaxaListComponent implements OnInit {
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxTaxaListService: OcctaxTaxaListService,
     public ms: MediaService,
-    public config: ConfigService
+    private _ds: OcctaxDataService,
   ) {}
 
   ngOnInit() {
-    combineLatest(this.occtaxFormService.occtaxData, this.occtaxFormOccurrenceService.occurrence)
+    this.moduleConfig = this._ds.moduleConfig;
+    combineLatest(
+      this.occtaxFormService.occtaxData,
+      this.occtaxFormOccurrenceService.occurrence,
+    )
       .pipe(
         filter(
           ([occtaxData, occurrence]: any) =>
-            occtaxData && occtaxData.releve.properties.t_occurrences_occtax
+            occtaxData && occtaxData.releve.properties.t_occurrences_occtax,
         ),
         map(([occtaxData, occurrence]: any) => {
           return occtaxData.releve.properties.t_occurrences_occtax
@@ -61,7 +66,7 @@ export class OcctaxFormTaxaListComponent implements OnInit {
               }
               return 0;
             });
-        })
+        }),
       )
       .subscribe((occurrences) => {
         this.occtaxTaxaListService.occurrences$.next(occurrences);
@@ -73,10 +78,12 @@ export class OcctaxFormTaxaListComponent implements OnInit {
   }
 
   deleteOccurrence(occurrence) {
-    const message = `${this.translate.instant('Delete')} ${this.taxonTitle(occurrence)} ?`;
+    const message = `${this.translate.instant("Delete")} ${this.taxonTitle(
+      occurrence,
+    )} ?`;
     const dialogRef = this.dialog.open(ConfirmationDialog, {
-      width: '350px',
-      position: { top: '5%' },
+      width: "350px",
+      position: { top: "5%" },
       data: { message: message },
     });
 
@@ -99,7 +106,7 @@ export class OcctaxFormTaxaListComponent implements OnInit {
    *  Supprime les balises HTML d'un string
    **/
   removeHtml(str: string): string {
-    return str.replace(/<[^>]*>/g, '');
+    return str.replace(/<[^>]*>/g, "");
   }
 
   /**
@@ -113,7 +120,7 @@ export class OcctaxFormTaxaListComponent implements OnInit {
    *  Permet de replacer un taxon ayant subit une erreur dans le formulaire pour modif et réenregistrement
    **/
   inProgressErrorToForm(occ_in_progress) {
-    if (occ_in_progress.state !== 'error') {
+    if (occ_in_progress.state !== "error") {
       return;
     }
 

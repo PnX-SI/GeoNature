@@ -204,13 +204,9 @@ submodules = occtax_config.get("SUBMODULES", [])
 config_fields = OcctaxSchemaConf().fields
 
 
-if len(submodules) > 0:
-    submodules.append("DEFAULT")
-    dict_nested = {}
-    for sub in submodules:
-        dict_nested[sub] = fields.Nested(config_fields, load_default=OcctaxSchemaConf().load({}))
+submodules.append("DEFAULT")
+dict_nested = {}
+for sub in submodules:
+    dict_nested[sub] = fields.Nested(config_fields, load_default=OcctaxSchemaConf().load({}))
 
-    GnModuleSchemaConf = type("GnModuleSchemaConf", (Schema,), dict_nested)
-
-else:
-    GnModuleSchemaConf = type("GnModuleSchemaConf", (Schema,), config_fields)
+GnModuleSchemaConf = type("GnModuleSchemaConf", (Schema,), dict_nested)

@@ -9,7 +9,7 @@
 
 <div class="row">
   <div
-    *ngIf="config.OCCTAX.form_fields.precision"
+    *ngIf="moduleConfig.form_fields.precision"
     class="col-8"
   >
     <small>Précision du pointage (m)</small>
@@ -24,7 +24,7 @@
 
 <div class="row">
   <div class="col-8">
-    <div *ngIf="config.OCCTAX.form_fields.place_name">
+    <div *ngIf="moduleConfig.form_fields.place_name">
       <small> {{ 'Releve.PlaceName' | translate }} </small>
       <input
         class="form-control form-control-sm"
@@ -39,11 +39,11 @@
 
     <!-- OBSERVATEURS -->
     <pnx-observers
-      *ngIf="!config.OCCTAX.observers_txt; else elseBlock"
+      *ngIf="!moduleConfig.observers_txt; else elseBlock"
       data-qa="pnx-occtax-releve-form-observers"
       [parentFormControl]="propertiesForm.get('observers')"
       [multiSelect]="true"
-      [idMenu]="config.OCCTAX.id_observers_list"
+      [idMenu]="moduleConfig.id_observers_list"
       label="{{ 'Releve.Observers' | translate }}"
     >
     </pnx-observers>
@@ -90,7 +90,7 @@
   <div class="col-xl-4 col-md-6 col-sm-8 col-11">
     <!-- DATE MIN -->
     <pnx-date
-      *ngIf="config.OCCTAX.form_fields.date_min"
+      *ngIf="moduleConfig.form_fields.date_min"
       [isInvalid]="propertiesForm.hasError('invalidDate') || propertiesForm.get('date_min').invalid"
       data-qa="pnx-occtax-releve-form-datemin"
       label="{{ 'Releve.MinDate' | translate }}"
@@ -106,7 +106,7 @@
   >
     <!-- DATE MAX -->
     <pnx-date
-      *ngIf="config.OCCTAX.form_fields.date_max"
+      *ngIf="moduleConfig.form_fields.date_max"
       data-qa="pnx-occtax-releve-form-datemax"
       [isInvalid]="propertiesForm.hasError('invalidDate') || propertiesForm.get('date_max').invalid"
       label="{{ 'Releve.MaxDate' | translate }} "
@@ -145,7 +145,7 @@
 
     <!-- HOUR MIN -->
     <div
-      *ngIf="config.OCCTAX.form_fields.hour_min"
+      *ngIf="moduleConfig.form_fields.hour_min"
       class="form-group"
     >
       <small> {{'Releve.HourMin' | translate }} </small>
@@ -166,7 +166,7 @@
   >
     <!-- HOUR MAX -->
     <div
-      *ngIf="config.OCCTAX.form_fields.hour_max"
+      *ngIf="moduleConfig.form_fields.hour_max"
       class="form-group"
     >
       <small> {{'Releve.HourMax' | translate }} </small>
@@ -193,7 +193,7 @@
 <div class="row">
   <!-- ALTITUDE MIN -->
   <div
-    *ngIf="config.OCCTAX.form_fields.altitude_min"
+    *ngIf="moduleConfig.form_fields.altitude_min"
     class="col-4"
   >
     <small> {{ 'Releve.MinAltitude' | translate }} </small>
@@ -207,7 +207,7 @@
 
   <!-- ALTITUDE MAX -->
   <div
-    *ngIf="config.OCCTAX.form_fields.altitude_max"
+    *ngIf="moduleConfig.form_fields.altitude_max"
     class="col-4"
   >
     <small> {{ 'Releve.MaxAltitude' | translate }} </small>
@@ -241,7 +241,7 @@
 
 <div class="row">
   <div class="col-xl-4 col-md-6 col-sm-8 col-10">
-    <div *ngIf="config.OCCTAX.form_fields.depth_min">
+    <div *ngIf="moduleConfig.form_fields.depth_min">
       <small> {{ 'Releve.MinDepth' | translate }} </small>
       <input
         class="form-control form-control-sm"
@@ -252,7 +252,7 @@
     </div>
   </div>
   <div class="col-xl-4 col-md-6 col-sm-8 col-10">
-    <div *ngIf="config.OCCTAX.form_fields.depth_min">
+    <div *ngIf="moduleConfig.form_fields.depth_min">
       <small> {{ 'Releve.MaxDepth' | translate }} </small>
       <input
         class="form-control form-control-sm"
@@ -276,7 +276,7 @@
   <div class="col-xl-4 col-md-5">
     <!-- TYPE REGROUPEMENT -->
     <pnx-nomenclature
-      *ngIf="config.OCCTAX.form_fields.group_type"
+      *ngIf="moduleConfig.form_fields.group_type"
       label="{{ 'Releve.GroupType' | translate }}"
       [parentFormControl]="propertiesForm.get('id_nomenclature_grp_typ')"
       codeNomenclatureType="TYP_GRP"
@@ -284,7 +284,7 @@
     </pnx-nomenclature>
   </div>
   <div
-    *ngIf="config.OCCTAX.form_fields.grp_method"
+    *ngIf="moduleConfig.form_fields.grp_method"
     class="col-xl-4 col-md-5"
   >
 
@@ -297,7 +297,7 @@
   </div>
   <div class="col-xl-4 col-md-5">
     <pnx-nomenclature
-      *ngIf="config.OCCTAX.form_fields.geo_object_nature"
+      *ngIf="moduleConfig.form_fields.geo_object_nature"
       label="{{ 'Releve.GeoObjectNature' | translate }}"
       [parentFormControl]="propertiesForm.get('id_nomenclature_geo_object_nature')"
       codeNomenclatureType="NAT_OBJ_GEO"
@@ -313,7 +313,7 @@
   <!-- TECHNIQUE OBSERVATION -->
   <div class="col-6">
     <pnx-nomenclature
-      *ngIf="config.OCCTAX.form_fields.tech_collect"
+      *ngIf="moduleConfig.form_fields.tech_collect"
       label="{{ 'Releve.TechCollectCampanule' | translate }}"
       [parentFormControl]="propertiesForm.get('id_nomenclature_tech_collect_campanule')"
       codeNomenclatureType="TECHNIQUE_OBS"
@@ -326,12 +326,12 @@
 <div class="row">
   <div class="col-6">
     <pnx-autocomplete
-      *ngIf="config.OCCTAX.form_fields.habitat"
+      *ngIf="moduleConfig.form_fields.habitat"
       apiEndPoint="{{config.API_ENDPOINT}}/habref/habitats/autocomplete"
       [searchAsParameter]="false"
       [parentFormControl]="occtaxFormReleveService.habitatForm"
       queryParamSearch="search_name"
-      [othersGetParams]="{cd_typo: this.config.OCCTAX?.CD_TYPO_HABITAT, id_list: this.config.OCCTAX?.ID_LIST_HABITAT}"
+      [othersGetParams]="{cd_typo: this.moduleConfig?.CD_TYPO_HABITAT, id_list: this.moduleConfig?.ID_LIST_HABITAT}"
       keyValue="search_name"
       [formatter]="formatter"
       label="Habitat"
@@ -343,7 +343,7 @@
 
 
 <!-- COMMENTAIRE -->
-<div *ngIf="config.OCCTAX.form_fields.comment_releve">
+<div *ngIf="moduleConfig.form_fields.comment_releve">
   <small> {{ 'Releve.Comment' | translate }} </small>
   <textarea
     class="form-control"
