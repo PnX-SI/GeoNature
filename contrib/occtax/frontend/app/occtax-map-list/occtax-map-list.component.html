@@ -63,7 +63,7 @@
           [headerHeight]="35"
           [limit]="occtaxMapListS.rowPerPage"
           [loadingIndicator]="mapListService.isLoading"
-          [messages]="config.OCCTAX.list_messages"
+          [messages]="moduleConfig.list_messages"
           [offset]="mapListService.page.pageNumber"
           [rowClass]="mapListService.getRowClass"
           [rowHeight]="40"
@@ -346,18 +346,18 @@
             <h5 class="modal-title" id="exampleModalLabel">{{ 'DownloadData' | translate }}</h5>
           </div>
           <div class="modal-body">
-            <span [innerHTML]="config.OCCTAX.export_message"> </span> <br><br>
+            <span [innerHTML]="moduleConfig.export_message"> </span> <br><br>
 
-            <div *ngIf="mapListService.page.totalElements > config.OCCTAX.MAX_EXPORT_NUMBER">
+            <div *ngIf="mapListService.page.totalElements > moduleConfig.MAX_EXPORT_NUMBER">
               {{'DownloadOverflow' | translate }}
               <br><br>
             </div>
 
             <div class="export-button">
               <button
-                *ngFor="let format of config.OCCTAX.export_available_format"
+                *ngFor="let format of moduleConfig.export_available_format"
                 (click)="downloadData(format); c()"
-                [disabled]="mapListService.page.totalElements > config.OCCTAX.MAX_EXPORT_NUMBER"
+                [disabled]="mapListService.page.totalElements > moduleConfig.MAX_EXPORT_NUMBER"
                 type="button"
                 mat-raised-button
                 class="button-success mr-1 mb-2"
