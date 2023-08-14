@@ -161,19 +161,21 @@ Exemple pour le module Import :
     source ~/GeoNature/backend/venv/bin/activate
     geonature install-gn-module ~/gn_module_import/ IMPORT
 
-Aucune permission n'est définie par défaut lors de l'installation d'un module. En tant qu'administrateur, lancez la commande suivante pour vous ajoutez des droits. Vous pourrez ensuite definir des droits à vos utilisateurs
-
-.. code-block:: bash
-    # changer "Grp_Admin" par le nom de votre groupe d'administrateur si vous l'avez changé
-    geonature permissions supergrant --group --nom "Grp_admin"
-
-
-Puis relancer GeoNature :
+Puis relancer GeoNatureet son worker :
 
 .. code-block:: bash
 
     sudo systemctl restart geonature
+    sudo systemctl restart geonature-worker
 
+Aucune permission n'est définie par défaut lors de l'installation d'un module. En tant qu'administrateur, vous pouvez une commande ajoutant tous les droits sur tous les modules à un groupe ou utilisateur. Cette commande peut être relancée après l'installation d'un module pour automatiquement attribuer toutes les permissions à un groupe ou utilisateur administrateur :
+
+.. code-block:: bash
+
+    # changer "Grp_Admin" par le nom de votre groupe d'administrateur si vous l'avez changé
+    geonature permissions supergrant --group --nom "Grp_admin"
+
+Vous devrez ensuite définir des droits à vos utilisateurs pour le nouveau module installé.
 
 Installation manuelle
 ---------------------

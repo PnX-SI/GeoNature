@@ -398,7 +398,7 @@ La gestion des droits dans GeoNature, comme dans beaucoup d'applications, est li
 
 Chaque module peut utiliser toutes ou certaines de ces actions.
 
-Selon les modules, on peut appliquer des filtres sur ces actions. Notamment des filtres d'appartenance (portées / scope) 
+Selon les modules, on peut appliquer des filtres sur ces actions. Notamment des filtres d'appartenance (portées / scope) :
 
 - Portée 1 = Seulement mes données. Cela concerne les données sur lesquels je suis :
 
@@ -425,6 +425,13 @@ Cas particulier de l'action "C"
 | La liste des JDD ouverts à la saisie est contrôlée par l'action "CREATE" du module dans lequel on se trouve. 
 | Comme il n'est pas "normal" de pouvoir saisir dans des JDD sur lesquels on n'a pas les droits de lecture, la portée de l'action "CREATE" vient simplement réduire la liste des JDD sur lesquels on a les droits de lecture ("READ").
 | Même si la portée de l'action "CREATE" sur le module est supérieure à celle de l'action "READ", l'utilisateur ne verra que les JDD sur lesquels il a des droits de lecture
+
+Une commande dédiée permet d'ajouter tous les droits sur tous les modules à un groupe ou utilisateur ayant le rôle d'administrateur. Cette commande peut être relancée après l'installation d'un nouveau module :
+
+.. code-block:: bash
+
+    # changer "Grp_Admin" par le nom de votre groupe d'administrateur si vous l'avez changé
+    geonature permissions supergrant --group --nom "Grp_admin"
 
 Récapitulatif
 `````````````
@@ -1173,11 +1180,6 @@ Customisation
 -------------
 
 Tous les fichiers par défaut présents dans le dossier ``geonature/backend/static/`` peuvent être surcouchés, en placant un fichier du même nom dans ``geonature/custom/``.
-
-Customisation CSS
-"""""""""""""""""
-
-Pour customiser l'apparence de l'application, créer ou éditer le fichier `geonature/custom/css/frontend.css`
 
 Intégrer son logo
 """""""""""""""""
