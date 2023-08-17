@@ -37,6 +37,7 @@ export class OcctaxFormMapService {
     this.manageGeometryChange(geojson);
     if (geojson.type == 'Point') {
       this.markerCoordinates = geojson.coordinates;
+      this.leafletDrawGeoJson = geojson;
     } else {
       this.leafletDrawGeoJson = geojson;
     }
