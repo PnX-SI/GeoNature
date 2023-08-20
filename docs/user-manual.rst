@@ -145,12 +145,12 @@ Ce formulaire permet également d'associer les jeux de données à un ou des mod
 .. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_10_SpecifiqueGeoNature.png
 
 
-*Association entre jeux de données et modules*
+**Association entre jeux de données et modules**
 
 Afin de faciliter la saisie et limiter les erreurs, GeoNature permet d'associer chaque jeu de données à un ou des modules. De cette manière, il est possible de définir depuis quel(s) module(s) le jeu de données considéré pourra être alimenté par les différents utilisateurs. 
 Cette association se fait depuis le formulaire de création/d'édition du jeu de données.
 
-*Associer un jeu de données à une liste de taxons*
+**Association entre Jeu de données et liste de taxons**
 
 De la même manière, GeoNature permet d'associer un jeu de données à une liste de taxons. Cette association n'est pas obligatoire (par défaut, c'est la liste du module de saisie ou tout taxref qui seront disponibles). 
 Cela permet notamment de réduire le nombre de taxons proposés à la saisie dans des jeux de données dédiés à un groupe d'espèces restreint (protocoles, suivis etc).
