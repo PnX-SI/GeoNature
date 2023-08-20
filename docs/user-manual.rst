@@ -27,6 +27,136 @@ Un bouton en haut à droite permet de se déconnecter de l'application.
 
 .. image :: https://geonature.fr/docs/img/user-manual/01-home-logout.jpg
 
+
+Metadonnées
+-----------
+
+Ce module permet de gérer les métadonnées (Cadres d'acquisition et jeux de données) de votre instance GeoNature, basées sur le standard Métadonnées du SINP (https://standards-sinp.mnhn.fr/category/standards/metadonnees/).
+
+Ces métadonnées permettent de décrire et d'organiser les données (occurrences de taxons, d'habitats, données protocolées...) au sein de lots de données cohérents et documentés. Les métadonnées ainsi créées sont propres à chaque instance de GeoNature, mais leur format standard permet de les diffuser vers d'autres outils ou dans le cadre du SINP.
+
+Pour les utilisateurs disposant des droits suffisants, le module métadonnées est accessible depuis le menu gauche de GeoNature. 
+
+.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_00_Acceder_au_module.png
+
+
+Structure des métadonnées
+"""""""""""""""""""""""""
+
+Les métadonnées comprennent deux niveaux distincts, comportant chacun un ensemble d'informations descriptives : 
+
+- Le cadre d'acquisition, qui permet de décrire le contexte ou le projet dans lequel les données ont été produites
+- Le jeu de données, qui permet de regrouper un sous-ensemble ou lot de données similaires (groupées par protocole, localités, périodes...)
+
+Un Cadre d'acquisition peut comporter un ou plusieurs Jeux de données, comportant eux-mêmes les données de biodiversité. GeoNature permet également de regrouper des Cadres d'acquisitions ensemble, au sein d'un Cadre d'acquisition dit "parent". Dans le cas le plus complet, l'outil permet ainsi d'organiser les données selon le schéma suivant : 
+
+- Un cadre d'acquisition "parent" (ou méta-cadre selon le standard SINP) décrit un projet complexe
+- Ce cadre d'acquisition parent comporte un ou plusieurs Cadres d'acquisitions, décrivant des "sous-projets" simples
+- Ces Cadres d'acquisition comportent chacun un ou plusieurs Jeux de données
+- Ces Jeux de données comportent chacun un ensemble de données de biodiversité : données protocolées, occurrences de taxons, occurrences d'habitats etc
+
+.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_01_Imbrication_notions.png
+
+
+Utilisation des métadonnées dans GeoNature
+""""""""""""""""""""""""""""""""""""""""""
+
+Les métadonnées jouent un rôle central dans GeoNature, et sont nécessaires dans les différents module de saisie ou de consultation des données. **La gestion des métadonnées est donc la première étape à effectuer, avant de pouvoir produire ou exploiter les données de biodiversité en elles-mêmes**. La notion de jeux de données intervient notamment pour les fonctionnalités suivantes :
+
+**- Saisie ou import de données**
+
+Lors de sa création dans GeoNature, chaque donnée doit être obligatoirement associée à un jeu de données préalablement créé. Ainsi le module d'import et la majorité des modules de saisie (Occtax, OccHab...) nécessitent de sélectionner le jeu de données auquel seront rattachées la ou les données en cours de création. 
+Dans certains cas plus spécifiques (monitorings par exemple), le module peut ne pas demander cette information à l'utilisateur car le jeu de données est sélectionné de manière "transparente" par la configuration du module.
+
+.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_exemple_selection_jdd.png
+	
+**- Requêtage**
+	
+Les métadonnées constituent des "boîtes" dans lesquelles sont rangées les données. Tous les modules de GeoNature permettant de requêter des données (Synthèse, Dashboard, Validation, Occtax...) offrent la possibilité de filtrer par cadre d'acquisition ou par jeu de données. 
+De cette manière, l'outil permet de rechercher ou exporter facilement ses données par "campagnes", par "études", par "projet" etc, selon l'organisation des métadonnées mise en place au sein de chaque instance.
+
+.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_exemple_requetage.png
+
+**- Permissions**
+
+Les métadonnées sont également utilisées pour l'application des permissions ou restrictions imposées à chaque utilisateur au sein de l'instance (cf https://docs.geonature.fr/admin-manual.html#gestion-des-droits). 
+Ainsi les acteurs associés à chaque jeu de données permettront de définir les utilisateurs pouvant consulter ou alimenter les jeux de données en question selon les paramètres définis : 
+
+- un utilisateur disposant uniquement des droits sur ses propres données pourra alimenter un jeu de données sont il est personnellement acteur, 
+- qu'un utilisateur ayant des droits sur les données de son organisme pourra potentiellement alimenter tous jeux de données associés à sa structure,
+- enfin un utilisateur ayant les droits sur toutes les données pourra alimenter/consulter les données de tous les jeux de données, quelques soient les acteurs associés
+
+**- Champs additionnels**
+
+GeoNature permet de configurer des champs additionnels "personnalisés" (https://docs.geonature.fr/admin-manual.html#administration-des-champs-additionnels), qui viennent compléter les champs du standard du sinp (sexe, stade de vie etc). Ces champs additionnels sont implémentés dans le module de saisie Occtax notamment, et peuvent être rendus disponibles uniquement pour certains jeux de données. Il devient ainsi possible, pour un jeu de données en particulier, de recueillir une variable ou une information supplémentaire qui n'apparaitrait pas dans les champs "standards".
+
+
+Fonctionnement du module métadonnées
+""""""""""""""""""""""""""""""""""""
+
+Le module métadonnées de GeoNature permet de consulter, rechercher et gérer ses cadres d'acquisitions et jeux de données, nécessaires à la gestion des données.
+
+**Consulter, rechercher ou modifier ses métadonnées**
+L'accueil du module métadonnées liste l'ensemble des Cadres d'acquisition disponibles dans l'instance GeoNature. Chaque cadre d'acquisition peut être "déplié" pour afficher les jeux de données qu'il contient. 
+
+.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_02_Catalogue_mtd.png
+
+Cette page comporte également une barre de recherche pour effectuer une recherche rapide dans les métadonnées disponibles, et une fonctionnalité de "recherche avancée". Elle permet également de consulter les fiches détaillées, de modifier, ou de supprimer les métadonnées existantes. 
+
+.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_03_Actions_catalogue
+
+.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_04_RechercheAvancee
+
+**Créer un cadre d'acquisition**
+
+Cette page permet également d'accéder au formulaire de création des Cadres d'acquisition via le bouton "Ajouter un Cadre d'acquisition". 
+
+.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_05_AjouterCA.png
+
+Ce formulaire permet de renseigner les différentes informations descriptions du Cadre d'acquisition (projet/programme). Les champs obligatoires (Nom, description, objectifs, territoire...) sont marqués d'un trait rouge.
+
+Les cadres d'acquisition doivent également comporter un ou des acteurs associés (organismes, utilisateurs, ou les deux). 
+
+.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_06_FormulaireCA.png
+
+Il est également possible d'associer des références bibliographiques (publications etc) au cadre d'acquisition. 
+
+.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_07_BiblioCA.png
+
+En cliquant sur la case à cocher "est un cadre d'acquisition parent", l'utilisateur peut créer un "métacadre" d'acquisition, qui pourra ensuite regrouper plusieurs cadres d'acquisition "simples". A l'inverse, en sélectionnant un cadre d'acquisition parent, l'utilisateur pourra associer son cadre d'acquisition à un cadre "parent" créé préalablement. 
+
+
+**Créer un jeu de données**
+
+De la même manière que pour les Cadres d'acquisition, la page d'accueil du module métadonnées comporte un bouton "Ajouter un jeu de données" qui  permet d'accéder au formulaire de création d'un nouveau Jeu de Données. 
+
+.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_08_AjoutJDD.png
+
+Ce formulaire permet à l'utilisateur de décrire son lot de données (nom, description, méthodes...) et d'indiquer à quel cadre d'acquisition (projet) il est rattaché. 
+
+Enfin comme pour les cadres d'acquisition, l'utilisateur devra définir le ou les acteurs associés au jeu de données en question (producteur, financeur etc) : organismes, personnes, ou les deux. Ces choix permettront de définir les utilisateurs qui pourront - ou non - alimenter le jeu de données considéré en fonction des permissions configurées.
+
+.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_09_Formulaire_JDD.png
+
+La case à cocher "actif à la saisie" permet d'ouvrir ou fermer le jeu de données, qui sera ou non proposé aux utilisateurs dans les modules de saisie ou d'import. De même, les jeux de données peuvent être - ou non - rendus validables.
+
+Ce formulaire permet également d'associer les jeux de données à un ou des modules de GeoNature, et éventuellement à une liste de taxons.
+
+.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_10_SpecifiqueGeoNature.png
+
+
+*Association entre jeux de données et modules*
+
+Afin de faciliter la saisie et limiter les erreurs, GeoNature permet d'associer chaque jeu de données à un ou des modules. De cette manière, il est possible de définir depuis quel(s) module(s) le jeu de données considéré pourra être alimenté par les différents utilisateurs. 
+Cette association se fait depuis le formulaire de création/d'édition du jeu de données.
+
+*Associer un jeu de données à une liste de taxons*
+
+De la même manière, GeoNature permet d'associer un jeu de données à une liste de taxons. Cette association n'est pas obligatoire (par défaut, c'est la liste du module de saisie ou tout taxref qui seront disponibles). 
+Cela permet notamment de réduire le nombre de taxons proposés à la saisie dans des jeux de données dédiés à un groupe d'espèces restreint (protocoles, suivis etc).
+Cette association se fait depuis le formulaire de création/d'édition du jeu de données.
+
+
 OccTax
 ------
 
@@ -401,97 +531,4 @@ Admin
 
 C'est le module "backoffice" de GeoNature.
 Il permet notamment de gérer les permissions (CRUVED et autres filtres), les nomenclatures (typologies et vocabulaires) utilisées dans les différents modules de GeoNature ainsi que les champs additionnels.
-
-
-
-Metadonnées
------------
-
-Ce module permet de gérer les métadonnées (Cadres d'acquisition et jeux de données) de votre instance GeoNature, basées sur le standard Métadonnées du SINP (https://standards-sinp.mnhn.fr/category/standards/metadonnees/).
-
-Ces métadonnées permettent de décrire et d'organiser les données (occurrences de taxons, d'habitats, données protocolées...) au sein de lots de données cohérents et documentés. Les métadonnées ainsi créées sont propres à chaque instance de GeoNature. Pour autant, leur format standard permet aisément de les diffuser et les partager vers d'autres outils.
-
-
-Structure des métadonnées
-"""""""""""""""""""""""""
-
-Les métadonnées comprennent deux niveaux distincts, comportant chacun un ensemble d'informations descriptives : 
-
-- Le cadre d'acquisition, qui permet de décrire le contexte ou le projet dans lequel les données ont été produites
-- Le jeu de données, qui permet de regrouper un sous-ensemble ou lot de données similaires (groupées par protocole, localités, périodes...)
-
-Dans GeoNature, un Cadre d'Acquisition peut comporter un ou plusieurs jeux de données, comportant eux-mêmes les données de biodiversité. GeoNature permet également de regrouper des Cadres d'Acquisitions ensemble, au sein d'un Cadre d'Acquisition dit "parent". Dans le cas le plus complet, l'outil permet ainsi d'organiser les données selon le schéma suivant : 
-
-- Un cadre d'acquisition "parent" (ou méta-cadre selon le standard SINP) décrit un projet complexe
-- Ce cadre d'acquisition parent comporte un ou plusieurs cadres d'acquisitions, décrivant des "sous-projets" d'un niveau inférieur
-- Ces cadres d'acquisition comportent chacun un ou plusieurs jeux de données
-- Ces jeux de données comportent chacun un ensemble de données de biodiversité : données protocoles, occurrences de taxons, occurrences d'habitats etc
-
---> Schéma
-
-
-Utilisation des métadonnées dans GeoNature
-""""""""""""""""""""""""""""""""""""""""""
-
-Les métadonnées jouent un rôle central dans GeoNature, et sont nécessaires dans les différents module de saisie ou de consultation des données. La gestion des métadonnées est donc la première étape à effectuer, avant de pouvoir produire ou exploiter les données de biodiversité en elles-mêmes. La notion de jeux de données intervient notamment pour les fonctionnalités suivantes :
-
-**Saisie ou import de données**
-
-Lors de sa création dans GeoNature, chaque donnée est obligatoirement associée à un jeu de données. Ainsi le module d'import et la majorité des modules de saisie (Occtax, OccHab...) nécessitent de sélectionner le jeu de données auquel seront rattachées les données en cours de création. 
-Dans certains cas plus spécifiques (monitorings par exemple), le module peut ne pas demander cette information à l'utilisateur. Pour autant, les données en cours de création sont automatiquement rattachées à un jeu de données défini dans la configuration, de manière transparente pour l'utilisateur. 
-
-	
-**Requêtage**
-	
-Les métadonnées constituent des "boîtes" dans lesquelles sont rangées les données. Tous les modules de GeoNature permettant de requêter des données (Synthèse, Dashboard, Validation, Occtax...) offrent la possibilité de filtrer par cadre d'acquisition ou par jeu de données. 
-De cette manière, l'outil permet aisément de rechercher ou exporter ses données par "campagnes", par "études", par "projet" etc, selon l'organisation des métadonnées mise en place au sein de l'instance et selon la manière de produire les données de chaque utilisateur.
-
-
-**Permissions**
-
-Enfin, les métadonnées font également partie des critères d'application des permissions ou restrictions imposées à chaque utilisateur au sein de l'instance (cf https://docs.geonature.fr/admin-manual.html#gestion-des-droits). 
-Ainsi les acteurs associés aux métadonnées pourront définir les utilisateurs pouvant alimenter les jeux de données en question selon les paramètres définis : un utilisateur disposant uniquement des droits sur ses propres données pourra alimenter un jeu de données sont il est personnellement acteur, tandis qu'un utilisateur ayant des droits sur les données de son organisme pourra potentiellement alimenter tous jeux de données associés à sa structure.
-
-**Champs additionnels**
-
-GeoNature permet de configurer des champs additionnels "personnalisés", qui viennent compléter les champs du standard du sinp (sexe, stade de vie etc). Ces champs additionnels sont implémentés dans le module de saisie Occtax notamment, et peuvent être rendus disponibles uniquement pour certains jeux de données. Il devient ainsi possible, pour un jeu de données en particulier, de recueillir une variable ou une information supplémentaire.
-
-
-Fonctionnement du module métadonnées
-""""""""""""""""""""""""""""""""""""
-
-Le module métadonnées de GeoNature permet de consulter, rechercher et gérer ses cadres d'acquisitions et jeux de données, nécessaires à la gestion des données.
-
-**Consulter, rechercher ou modifier ses métadonnées**
-TODO
-
-**Créer un cadre d'acquisition**
-Le module permet la création d'un nouveau cadre d'acquisition en appuyant sur "Ajouter un cadre d'acquisition". Il suffit ensuite d'alimenter le formulaire en décrivant le cadre d'acquisition (le projet ou programme) qui conduit à la production de données de biodiversité.
-
-Les champs obligatoires (Nom, description, objectifs, territoire...) sont marqués d'un trait rouge.
-
-Les cadres d'acquisition doivent comporter un ou des acteurs associés (organismes, utilisateurs, ou les deux). 
-
-L'outil permet également d'associer des références bibliographiques (publications etc) à un cadre d'acquisition. 
-
-En cliquant sur la case à cocher "est un cadre d'acquisition parent", l'utilisateur peut créer un cadre d'acquisition "supra", qui pourra ensuite regrouper plusieurs cadres d'acquisition "simples". A l'inverse, en sélectionnant un cadre d'acquisition parent, l'utilisateur pourra associer son cadre d'acquisition à un cadre "parent", de niveau supérieur. 
-
--> Captures d'écran
-
-**Créer un jeu de données**
-De la même manière que pour les cadres d'acquisition, le module "métadonnées" permet de créer des jeux de données en cliquant sur "Ajouter un jeu de données". 
-
-L'utilisateur est alors invité à décrire son lot de données (nom, description, méthodes...) et à indiquer à quel cadre d'acquisition son jeu de données est rattaché. 
-La case à cocher "actif à la saisie" permet d'ouvrir ou fermer le jeu de données, qui sera ou non proposé aux utilisateurs dans les modules de saisie et/ou module d'import. De même, les données peuvent être - ou non - rendues validables.
-
-Enfin comme pour les cadres d'acquisition, l'utilisateur devra définir le ou les acteurs associés au jeu de données en question (producteur, financeur etc) : organismes, personnes, ou les deux. Ces choix pourront influer sur les permissions des utilisateurs à alimenter, ou non, le jeu de données considéré. 
-
-*Associer un jeu de données à des modules*
-
-Afin de faciliter la saisie et limiter les erreurs, GeoNature nécessite d'associer chaque jeu de données à un ou des modules. De cette manière, l'utilisateur peut choisir depuis quel(s) module(s) (de saisie ou d'import) son jeu de données pourra être sélectionné et alimenté. Cette association se fait depuis le formulaire de création/d'édition du jeu de données.
-
-*Associer un jeu de données à une liste de taxons*
-
-De la même manière, GeoNature permet d'associer un jeu de données à une liste de taxons. Cette association n'est pas obligatoire (par défaut, c'est la liste du module de saisie ou tout taxref qui seront disponibles). Cela permet notamment de réduire le nombre de taxons proposés à la saisie dans des jeux de données dédiés à un groupe d'espèces restreints (protocoles, suivis etc).
-Cette association se fait depuis le formulaire de création/d'édition du jeu de données.
 
