@@ -77,7 +77,9 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
         )
         .subscribe((display: boolean) => (this.displayProofFromElements = display))
     );
-
+    this.advanced = this.config.OCCTAX.ADVANCED_DETAILS_OCCURRENCE_EXPANDED
+      ? 'expanded'
+      : 'collapsed';
     this.initTaxrefSearch();
   }
 

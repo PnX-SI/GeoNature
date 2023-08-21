@@ -191,3 +191,4 @@ class GnModuleSchemaConf(Schema):
     ADD_MEDIA_IN_EXPORT = fields.Boolean(load_default=False)
     ID_LIST_HABITAT = fields.Integer(load_default=None)
     CD_TYPO_HABITAT = fields.Integer(load_default=None)
+    ADVANCED_DETAILS_OCCURRENCE_EXPANDED = fields.Boolean(load_default=False)
