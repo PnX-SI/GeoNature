@@ -104,9 +104,9 @@ L'accueil du module Métadonnées liste l'ensemble des Cadres d'acquisition disp
 
 Cette page comporte également une barre de recherche pour effectuer une recherche rapide dans les métadonnées disponibles, et une fonctionnalité de "recherche avancée". Elle permet également de consulter les fiches détaillées, de modifier, ou de supprimer les métadonnées existantes. 
 
-.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_03_Actions_catalogue
+.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_03_Actions_catalogue.png
 
-.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_04_RechercheAvancee
+.. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_04_RechercheAvancee.png
 
 **Créer un cadre d'acquisition**
 
