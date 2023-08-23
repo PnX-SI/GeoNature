@@ -536,3 +536,60 @@ Admin
 C'est le module "backoffice" de GeoNature.
 Il permet notamment de gérer les permissions (CRUVED et autres filtres), les nomenclatures (typologies et vocabulaires) utilisées dans les différents modules de GeoNature ainsi que les champs additionnels.
 
+Gestion des permissions
+"""""""""""""""""""""""
+
+Depuis le version 2.13.0 de GeoNature, le système des permissions a été entièrement revu pour : 
+- pouvoir leur associer d'autres types de filtres (sensibilité notamment), 
+- les simplifier et clarifier en supprimant l'héritage et en définissant les permissions disponibles pour chaque module
+
+Le modèle de données des permissions et leur logique ayant été revu, il a fallu faire évoluer leur interface d'administration.
+
+Il a été retenu de réaliser cette nouvelle interface d'administration des permissions dans le module ADMIN existant de GeoNature.
+
+Il y est possible de lister toutes les permissions attribuées dans une instance GeoNature : 
+
+.. image :: https://github.com/PnX-SI/GeoNature/assets/4418840/2002df3e-733e-4894-b001-2b3608bb896e
+
+Il est possible de filtrer rapidement cette liste en saisissant un nom d'utilisateur ou de groupe, ou en appliquant un filtre par module, action, par utilisateur ou groupe... : 
+
+.. image :: https://github.com/PnX-SI/GeoNature/assets/4418840/8649033a-21cf-489d-b522-01f7b88333dc
+
+-----------------------------
+
+Il est possible de modifier, supprimer ou ajouter une nouvelle permission : 
+
+.. image :: https://github.com/PnX-SI/GeoNature/assets/4418840/c07beff6-197c-4f28-b8d1-43ead470b00d
+
+La liste des permissions ne contient que celles qui ont un réel usage car elles sont déclarées par chaque module.
+Une fois que l'on a sélectionné un groupe ou utilisateur, la liste des permissions ne propose que des permissions qui n'ont pas été définies pour celui-ci, ou alors pour lesquelles on peut définir plusieurs permissions se combinant (Exemple du Read de la Synthèse pour lequel on peut créer une permission indiquant qu'un utilisateur voit toutes les données de son organisme sans filtre de sensibilité, mais qu'il voit toutes les données avec un filtre de sensibilité) : 
+
+.. image :: https://github.com/PnX-SI/GeoNature/assets/4418840/7aa6ec8c-2244-4a18-9af6-c11140af9afc
+
+Une fois qu'une permission a été selectionnée, si des filtres peuvent être appliqués à celle-ci dans ce module, alors les filtres sont affichés : 
+
+.. image :: https://github.com/PnX-SI/GeoNature/assets/4418840/6f90e1cc-d71d-44bd-81c8-47bc6dfe11d9
+
+Si aucun filtre n'est sélectionné, alors la permission s'applique sur toutes les données concernées.
+
+----------------------------
+
+Il est aussi possible d'afficher et de gérer les permissions par groupes ou par utilisateurs : 
+
+.. image :: https://github.com/PnX-SI/GeoNature/assets/4418840/1f59af83-683e-4e1b-ba85-95649558ea0f
+
+Quand on clique sur un groupe ou utilisateur pour en consulter le détail des permissions, toutes les permissions disponibles de tous les modules sont affichées : 
+
+.. image :: https://github.com/PnX-SI/GeoNature/assets/4418840/6cd94fc1-b597-423e-99de-c58e48291a0f
+
+Les permissions sur fond rouge, qui affichent uniquement un + indiquent que le groupe ou utilisateur n'a pas cette permission et qu'on peut lui ajouter en cliquant sur ce +.
+
+Les permissions dont disposent le groupe ou l'utilisateur sont indiquées en vert (si sans filtre) ou en bleu (si avec filtre) : 
+
+.. image :: https://github.com/PnX-SI/GeoNature/assets/4418840/6a3bb721-0741-4aec-b8ad-eb0bbeade675
+
+------------------------------
+
+Pour les utilisateurs sont listées les permissions qui lui sont attribués directement individuellement, mais aussi les permissions effectives qui s'appliquent à lui (selon les groupes auquel il appartient) : 
+
+.. image :: https://github.com/PnX-SI/GeoNature/assets/4418840/75486b5c-a571-4c3a-9fd5-ff57328776c7
