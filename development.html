@@ -104,8 +104,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#authentification-et-autorisations">Authentification et autorisations</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#acceder-a-lutilisateur-courant">Accéder à l’utilisateur courant</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#restreindre-une-route-aux-utilisateurs-connectes">Restreindre une route aux utilisateurs connectés</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#restreindre-une-route-aux-utilisateurs-ayant-certains-droits">Restreindre une route aux utilisateurs ayant certains droits</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#recuperation-manuelle-des-permissions">Récupération manuelle des permissions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#restreindre-une-route-aux-utilisateurs-avec-un-certain-scope">Restreindre une route aux utilisateurs avec un certain scope</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#recuperation-manuelle-du-scope">Récupération manuelle du scope</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#restreindre-une-route-aux-utilisateurs-avec-des-permissions-avancees">Restreindre une route aux utilisateurs avec des permissions avancées</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#recuperation-manuelle-des-permissions-avancees">Récupération manuelle des permissions avancées</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#a-propos-de-lapi-scope">À propos de l’API « scope »</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rajouter-un-nouveau-type-de-filtre">Rajouter un nouveau type de filtre</a></li>
 </ul>
 </li>
 </ul>
@@ -1163,8 +1167,8 @@ Si l’utilisateur n’est pas connecté, <code class="docutils literal notransl
 </div>
 <p>Si l’utilisateur n’est pas authentifié, celui-ci est redirigé vers une page d’authentification, à moins que la requête contienne un header <code class="docutils literal notranslate"><span class="pre">Accept:</span> <span class="pre">application/json</span></code> (requête effectuée par le frontend) auquel cas une erreur 401 (Unauthorized) est levé.</p>
 </section>
-<section id="restreindre-une-route-aux-utilisateurs-ayant-certains-droits">
-<h4>Restreindre une route aux utilisateurs ayant certains droits<a class="headerlink" href="#restreindre-une-route-aux-utilisateurs-ayant-certains-droits" title="Lien permanent vers cette rubrique"></a></h4>
+<section id="restreindre-une-route-aux-utilisateurs-avec-un-certain-scope">
+<h4>Restreindre une route aux utilisateurs avec un certain scope<a class="headerlink" href="#restreindre-une-route-aux-utilisateurs-avec-un-certain-scope" title="Lien permanent vers cette rubrique"></a></h4>
 <p>Utiliser le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;check_cruved_scope</span></code> :</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="check_cruved_scope">
@@ -1174,9 +1178,8 @@ Si l’utilisateur n’est pas connecté, <code class="docutils literal notransl
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>action</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.11)"><em>str</em></a><em>[</em><em>&quot;C&quot;</em><em>, </em><em>&quot;R&quot;</em><em>, </em><em>&quot;U&quot;</em><em>, </em><em>&quot;V&quot;</em><em>, </em><em>&quot;E&quot;</em><em>, </em><em>&quot;D&quot;</em><em>]</em>) – Type d’action effectuée par la route
 (Create, Read, Update, Validate, Export, Delete)</p></li>
-<li><p><strong>module_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Code du module sur lequel on veut vérifier la portée.
-Si non fourni, on vérifie le CRUVED de GeoNature.</p></li>
-<li><p><strong>object_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Code de l’objet sur lequel on veut vérifié la portée.
+<li><p><strong>module_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.11)"><em>str</em></a>) – Code du module sur lequel on veut vérifier les permissions.</p></li>
+<li><p><strong>object_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Code de l’objet sur lequel on veut vérifier les permissions.
 Si non fourni, on vérifie la portée sur l’objet <code class="docutils literal notranslate"><span class="pre">ALL</span></code>.</p></li>
 <li><p><strong>get_scope</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – si <code class="docutils literal notranslate"><span class="pre">True</span></code>, ajoute le scope aux kwargs de la vue</p></li>
 </ul>
@@ -1207,9 +1210,34 @@ scope.</p>
 </pre></div>
 </div>
 </section>
-<section id="recuperation-manuelle-des-permissions">
-<h4>Récupération manuelle des permissions<a class="headerlink" href="#recuperation-manuelle-des-permissions" title="Lien permanent vers cette rubrique"></a></h4>
-<p>La fonction suivante permet de récupérer manuellement le scope pour chaque actions pour un rôle et un module donnés :</p>
+<section id="recuperation-manuelle-du-scope">
+<h4>Récupération manuelle du scope<a class="headerlink" href="#recuperation-manuelle-du-scope" title="Lien permanent vers cette rubrique"></a></h4>
+<p>La fonction suivante permet de récupérer manuellement le scope pour un rôle, une action et un module donnés :</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="get_scope">
+<span class="sig-name descname"><span class="pre">get_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_code</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#get_scope" title="Lien permanent vers cette définition"></a></dt>
+<dd><p>Retourne le scope de l’utilisateur donnée une action dans le module demandé.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>action_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.11)"><em>str</em></a><em>[</em><em>&quot;C&quot;</em><em>, </em><em>&quot;R&quot;</em><em>, </em><em>&quot;U&quot;</em><em>, </em><em>&quot;V&quot;</em><em>, </em><em>&quot;E&quot;</em><em>, </em><em>&quot;D&quot;</em><em>]</em>) – Code de l’action.</p></li>
+<li><p><strong>id_role</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Identifiant du role. Utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_user</span></code> si non spécifié
+(nécessite de se trouver dans une route authentifiée).</p></li>
+<li><p><strong>module_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Code du module. Si non spécifié, utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_module</span></code></p></li>
+<li><p><strong>object_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Code de l’objet. Si non spécifié, utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_object</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ALL</span></code> à défaut.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie</dt>
+<dd class="field-even"><p>Valeur du scope</p>
+</dd>
+<dt class="field-odd">Type renvoyé</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.11)">int</a>[0, 1, 2, 3]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Il est également possible de récupérer les scopes pour l’ensemble des actions possibles grâce à la fonction suivante :</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="get_scopes_by_action">
 <span class="sig-name descname"><span class="pre">get_scopes_by_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_code</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#get_scopes_by_action" title="Lien permanent vers cette définition"></a></dt>
@@ -1240,6 +1268,116 @@ si définie, <code class="docutils literal notranslate"><span class="pre">GEONAT
 <span class="go">{&#39;C&#39;: 3, &#39;R&#39;: 3, &#39;U&#39;: 3, &#39;V&#39;: 3, &#39;E&#39;: 3, &#39;D&#39;: 3}</span>
 </pre></div>
 </div>
+</section>
+<section id="restreindre-une-route-aux-utilisateurs-avec-des-permissions-avancees">
+<h4>Restreindre une route aux utilisateurs avec des permissions avancées<a class="headerlink" href="#restreindre-une-route-aux-utilisateurs-avec-des-permissions-avancees" title="Lien permanent vers cette rubrique"></a></h4>
+<p>Utiliser le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;permissions_required</span></code> :</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="permissions_required">
+<span class="sig-prename descclassname"><span class="pre">&#64;</span></span><span class="sig-name descname"><span class="pre">permissions_required</span></span><a class="headerlink" href="#permissions_required" title="Lien permanent vers cette définition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Paramètres</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>action</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.11)"><em>str</em></a><em>[</em><em>&quot;C&quot;</em><em>, </em><em>&quot;R&quot;</em><em>, </em><em>&quot;U&quot;</em><em>, </em><em>&quot;V&quot;</em><em>, </em><em>&quot;E&quot;</em><em>, </em><em>&quot;D&quot;</em><em>]</em>) – Type d’action effectuée par la route
+(Create, Read, Update, Validate, Export, Delete)</p></li>
+<li><p><strong>module_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.11)"><em>str</em></a>) – Code du module sur lequel on veut vérifier les permissions.</p></li>
+<li><p><strong>object_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Code de l’objet sur lequel on veut vérifier les permissions.
+Si non fourni, on vérifie la portée sur l’objet <code class="docutils literal notranslate"><span class="pre">ALL</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Lorsque l’utilisateur n’est pas connecté, le comportement est le même que le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;login_required</span></code>.
+Lorsque celui-ci est connecté, le décorateur va récupérer l’ensemble des permissions pour l’action donnée dans le module donnée (et éventuellement l’objet donnée).
+Si aucune permission n’est trouvée, alors une erreur 403 (Forbidden) est levée.</p>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Le décorateur ne vérifie pas si le jeu de permissions est suffisant pour accéder
+aux ressources demandées. C’est à votre route d’implémenter cette vérification,
+celle-ci recevant le jeu de permissions en argument.</p>
+</div>
+<p>Exemple d’utilisation :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.decorators</span> <span class="kn">import</span> <span class="n">permissions_required</span>
+
+<span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/mysensibleview&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@permissions_required</span><span class="p">(</span>
+        <span class="s1">&#39;R&#39;</span><span class="p">,</span>
+        <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;SYNTHESE&quot;</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">my_sensible_view</span><span class="p">(</span><span class="n">permissions</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">perm</span> <span class="ow">in</span> <span class="n">permissions</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">perm</span><span class="o">.</span><span class="n">has_other_filters_than</span><span class="p">(</span><span class="s2">&quot;SCOPE&quot;</span><span class="p">,</span> <span class="s2">&quot;SENSITIVITY&quot;</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">perm</span><span class="o">.</span><span class="n">scope_value</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">perm</span><span class="o">.</span><span class="n">sensitivity_filter</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+</pre></div>
+</div>
+</section>
+<section id="recuperation-manuelle-des-permissions-avancees">
+<h4>Récupération manuelle des permissions avancées<a class="headerlink" href="#recuperation-manuelle-des-permissions-avancees" title="Lien permanent vers cette rubrique"></a></h4>
+<p>Utiliser la fonction <code class="docutils literal notranslate"><span class="pre">get_permissions</span></code> :</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="get_permissions">
+<span class="sig-name descname"><span class="pre">get_permissions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_code</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#get_permissions" title="Lien permanent vers cette définition"></a></dt>
+<dd><p>Retourne l’ensemble des permissions de l’utilisateur donnée pour l’action, le module et l’objet précisé.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>action_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.11)"><em>str</em></a><em>[</em><em>&quot;C&quot;</em><em>, </em><em>&quot;R&quot;</em><em>, </em><em>&quot;U&quot;</em><em>, </em><em>&quot;V&quot;</em><em>, </em><em>&quot;E&quot;</em><em>, </em><em>&quot;D&quot;</em><em>]</em>) – Code de l’action.</p></li>
+<li><p><strong>id_role</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Identifiant du role. Utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_user</span></code> si non spécifié
+(nécessite de se trouver dans une route authentifiée).</p></li>
+<li><p><strong>module_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Code du module. Si non spécifié, utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_module</span></code></p></li>
+<li><p><strong>object_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Code de l’objet. Si non spécifié, utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_object</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ALL</span></code> à défaut.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie</dt>
+<dd class="field-even"><p>Liste de permissions</p>
+</dd>
+<dt class="field-odd">Type renvoyé</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(disponible dans Python v3.11)">list</a>[Permission]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="a-propos-de-lapi-scope">
+<h4>À propos de l’API « scope »<a class="headerlink" href="#a-propos-de-lapi-scope" title="Lien permanent vers cette rubrique"></a></h4>
+<p>Certains modules supportent des permissions avec plusieurs types de filtres (par exemple, filtre d’appartenance et filtre de sensibilité), ce qui amène à devoir définir plusieurs permissions pour une même action dans un module donnée (par exemple, droit de lecteur des données de mon organisme sans restriction de sensibilité + droit de lecteur des données non sensible sans restriction d’appartenance).</p>
+<p>Cependant, cet usage est très peu répandu, la plupart des modules acceptant uniquement un filtre d’appartenance, voir aucun filtre.
+Ainsi, l’API « scope » (décorateur <code class="docutils literal notranslate"><span class="pre">&#64;check_cruved_scope</span></code>, fonctions <code class="docutils literal notranslate"><span class="pre">get_scope</span></code> et <code class="docutils literal notranslate"><span class="pre">get_scopes_by_action</span></code>) visent à simplifier l’usage des permissions dans ces modules en résumant les droits de l’utilisateur par un entier de 0 à 4 :</p>
+<ul class="simple">
+<li><p>0 : aucune donnée (pas de permission)</p></li>
+<li><p>1 : données m’appartenant</p></li>
+<li><p>2 : données appartenant à mon organisme</p></li>
+<li><p>3 : toutes les données (permission sans filtre d’appartenance)</p></li>
+</ul>
+<p>L’utilisateur héritant des permissions des différents groupes auquel il appartient en plus de ses permissions personnelles, l’API « scope » s’occupe de calculer le scope maximal de l’utilisateur.</p>
+</section>
+<section id="rajouter-un-nouveau-type-de-filtre">
+<h4>Rajouter un nouveau type de filtre<a class="headerlink" href="#rajouter-un-nouveau-type-de-filtre" title="Lien permanent vers cette rubrique"></a></h4>
+<p>On suppose souhaiter l’ajout d’un nouveau type de filtre « foo ».</p>
+<ol class="arabic simple">
+<li><p>Rajouter une colonne dans la table <code class="docutils literal notranslate"><span class="pre">t_permissions</span></code> nommé <code class="docutils literal notranslate"><span class="pre">foo_filter</span></code> du type désiré (booléen, entier, …) avec éventuellement une contrainte de clé étrangère.
+Dans le cas où le filtre peut contenir une liste de valeur contrôlées par une Foreign Key, on préfèrera l’ajout d’une nouvelle table contenant une Foreign Key vers <code class="docutils literal notranslate"><span class="pre">t_permissions.id_permission</span></code> (par exemple, filtre géographique avec liste d’<code class="docutils literal notranslate"><span class="pre">id_area</span></code> ou filtre taxonomique avec liste de <code class="docutils literal notranslate"><span class="pre">cd_nom</span></code>).</p></li>
+<li><p>Rajouter une colonne booléenne dans la table <code class="docutils literal notranslate"><span class="pre">t_permissions_available</span></code> nommé <code class="docutils literal notranslate"><span class="pre">foo_filter</span></code>.</p></li>
+<li><p>Faire évoluer les modèles Python <code class="docutils literal notranslate"><span class="pre">Permission</span></code> et <code class="docutils literal notranslate"><span class="pre">PermissionAvailable</span></code> pour refléter les changements du schéma de base de données.</p></li>
+<li><p>Compléter <code class="docutils literal notranslate"><span class="pre">Permission.filters_fields</span></code> et <code class="docutils literal notranslate"><span class="pre">PermissionAvailable.filters_fields</span></code> (<em>e.g.</em> <code class="docutils literal notranslate"><span class="pre">&quot;FOO&quot;:</span> <span class="pre">foo_filter</span></code>).</p></li>
+<li><p>Vérifier que la propriété <code class="docutils literal notranslate"><span class="pre">Permission.filters</span></code> fonctionne correctement avec le nouveau filtre : celui-ci doit être renvoyé uniquement s’il est défini.
+Le cas d’une relationship n’a encore jamais été traité.</p></li>
+<li><p>Optionel : Rajouter une méthode statique <code class="docutils literal notranslate"><span class="pre">Permission.__FOO_le__(a,</span> <span class="pre">b)</span></code>.
+Celle-ci reçoit en argument 2 filtres FOO et doit renvoyer <code class="docutils literal notranslate"><span class="pre">True</span></code> lorsque le filtre <code class="docutils literal notranslate"><span class="pre">a</span></code> est plus restrictif (au autant) que le filtre <code class="docutils literal notranslate"><span class="pre">b</span></code>.
+Par exemple, dans le cas d’un filtre géographique, on renvera <code class="docutils literal notranslate"><span class="pre">True</span></code> si <code class="docutils literal notranslate"><span class="pre">b</span></code> vaut <code class="docutils literal notranslate"><span class="pre">None</span></code> (pas de restriction géographique) ou si la liste des zonages <code class="docutils literal notranslate"><span class="pre">a</span></code> est un sous-ensemble de la liste des zonages <code class="docutils literal notranslate"><span class="pre">b</span></code>.
+Cette méthode permet d’optimiser le jeu de permission en supprimant les permissions redondantes.</p></li>
+<li><p>Compléter la classe <code class="docutils literal notranslate"><span class="pre">PermFilter</span></code> qui permet l’affichage des permissions dans Flask-Admin (permissions des utilisateurs et des groupes).
+Attention, Flask-Admin utilise FontAwesome version <strong>4</strong>.</p></li>
+<li><p>Faire évoluer Flask-Admin (classes <code class="docutils literal notranslate"><span class="pre">PermissionAdmin</span></code> et <code class="docutils literal notranslate"><span class="pre">PermissionAvailableAdmin</span></code>) pour prendre en charge le nouveau type de filtre.</p></li>
+<li><p>Implémenter le support de son nouveau filtre à l’endroit voulu (typiquement la synthèse).</p></li>
+<li><p>Compléter ou faire évoluer la table <code class="docutils literal notranslate"><span class="pre">t_permissions_available</span></code> pour déclarer le nouveau filtre comme disponible pour son module.</p></li>
+</ol>
 </section>
 </section>
 </section>
@@ -1804,7 +1942,14 @@ Elle est écrites en ReStructuredText et généré avec Sphinx.</p>
 <p>Pour sortir une nouvelle version de GeoNature :</p>
 <ul class="simple">
 <li><p>Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, RefGeo, Utils-Flask-SQLAlchemy, Utils-Flask-SQLAlchemy-Geo)</p></li>
-<li><p>Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances</p></li>
+<li><p>Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances et que le  <cite>requirements-dependencies.in</cite> a bien été MAJ.</p></li>
+<li><p>Regénérer les <cite>requirements.txt</cite> et <cite>requirements-dev.txt</cite> avec les commandes suivantes dans la plus petite version de python supportée par GeoNature</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span><span class="o">-</span><span class="nb">compile</span> <span class="n">requirements</span><span class="o">.</span><span class="ow">in</span> <span class="o">&gt;</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">pip</span><span class="o">-</span><span class="nb">compile</span> <span class="n">requirements</span><span class="o">-</span><span class="n">dev</span><span class="o">.</span><span class="ow">in</span> <span class="o">&gt;</span> <span class="n">requirements</span><span class="o">-</span><span class="n">dev</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<ul class="simple">
 <li><p>Mettez à jour la version de GeoNature et éventuellement des dépendances dans <code class="docutils literal notranslate"><span class="pre">install/install_all/install_all.ini</span></code>, <code class="docutils literal notranslate"><span class="pre">backend/requirements-dependencies.in</span></code> (puis regénérer <code class="docutils literal notranslate"><span class="pre">backend/requirements.txt</span></code> avec <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">compile</span></code>)</p></li>
 <li><p>Complétez le fichier <code class="docutils literal notranslate"><span class="pre">docs/CHANGELOG.md</span></code> (en comparant les branches <a class="reference external" href="https://github.com/PnX-SI/GeoNature/compare/develop">https://github.com/PnX-SI/GeoNature/compare/develop</a>) et dater la version à sortir</p></li>
 <li><p>Mettez à jour le fichier <code class="docutils literal notranslate"><span class="pre">VERSION</span></code></p></li>

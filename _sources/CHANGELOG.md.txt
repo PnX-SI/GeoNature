@@ -1,6 +1,83 @@
 CHANGELOG
 =========
 
+2.13.0 - [Carpodacus erythrinus](https://www.ecrins-parcnational.fr/breve/roselin-gondouins) 🐤 (2023-08-23)
+------------------------------------------------------------------------------------------------------------
+
+- Révision globale des permissions pour pouvoir leur associer d'autres types de filtres (sensibilité notamment), les simplifier et clarifier en supprimant l'héritage et en définissant les permissions disponibles pour chaque module.
+- Possibilité de filtrer les données dans la Synthèse selon leur sensibilité, mais sans floutage pour le moment (à venir), en affichant ou non les données sensibles selon les permissions de l'utilisateur.
+- Vérifiez que vos modules soient compatibles avec le nouveau mécanisme de déclaration des permissions disponibles. C'est le cas pour les modules Import, Export, Dashboard, Monitorings et Zones humides.
+- Cette nouvelle version est compatible avec Debian 12. Le support de Debian 10 sera arrêté prochainement.
+
+**🚀 Nouveautés**
+
+- Refonte complète des permissions (#2487)
+  - Suppression de l'héritage des permissions du module "GeoNature" vers les autres modules, et de l'objet "All" vers les éventuels autres objets des modules. Chaque permission dans un module doit désormais être définie explicitement. Cela entraine de devoir définir plus de permissions (à l'installation d'un nouveau module notamment) mais aussi de les rendre plus lisibles, additives et explicites (#2474)
+  - Evolution du modèle de données des permissions pour élargir les possibilités de filtrage des permissions au-delà de l'appartenance (anciennement nommée portée ou scope) (#2472)
+  - Suppression des permissions ayant une appartenance de niveau 0 (Aucune donnée). En effet, en supprimant l'héritage des permissions et en les définissant par module de manière explicite, si un groupe ou utilisateur n'a aucune permission sur un module, alors il n'y accède pas et ne le voit pas dans le menu latéral. Si il a n'importe quelle permission sur un module, alors il y accède.
+  - Suppression du filtre d'appartenance de niveau 3 (Toutes les données). En effet, celui-ci est désormais redondant avec l'ajout d'une permission sans filtre.
+  - Définition des permissions disponibles dans chaque module dans la nouvelle table `gn_permissions.t_permissions_available`, pour ne proposer que des permissions qui ont un usage quand on ajoute ou modifie les permissions d'un utilisateur (#2489)
+  - Refonte de l'interface d'administration des permissions (Flask-admin) ne proposant que les permissions disponibles, affichant les permissions explicites d'un utilisateur et calculant celles effectives provenant d'un groupe auquel il appartient (#2605)
+  - Optimisation et agrégation des permissions
+  - [Synthèse] Ajout d'un filtre sur la sensibilité des données, permettant de les afficher et de les exporter ou non à un groupe ou utilisateurs (pas de floutage pour le moment) (#2504)
+  - Ajout de la commande `geonature permissions supergrant` permettant d'ajouter toutes les permissions disponibles à un utilisateur ou groupe super-administrateur (#2557)
+  - Ajout de la vérification des permissions manquantes sur différentes routes (#2542 / #1863)
+- Ajout de notifications quand un commentaire est ajouté sur une observation (#2460)
+- Amélioration des performances de la recherche de taxons dans Occtax et dans la Synthèse (#2592 / https://github.com/PnX-SI/TaxHub/issues/384)
+- Support de Debian 12 (avec Python 3.11, PostgreSQL 15 et PostGIS 3.3) (#1787)
+- [Admin] Fixer la barre de navigation du menu latéral et possibilité de la rabbatre (#2556)
+- [Synthèse] Ajout d'un filtre par source (#2513)
+- [Synthèse] Ajout d'un filtre par `id_synthese` (#2516)
+- [Synthèse] Recherche des observateurs multiples et insensible aux accents (#2568)
+- [Occtax] Ajout du paramètre `EXPANDED_TAXON_ADVANCED_DETAILS` permettant d'ouvrir par défaut les champs avancés du formulaire de renseignement du taxon (#2446)
+- Conservation du fond de carte utilisé quand on navigue dans les modules (#2619)
+- Suppression des médias orphelins basculée dans une tache Celery Beat lancée automatiquement toutes les nuits (`clean_attachments`), et non plus à l'ajout ou suppression d'un autre média (#2436)
+- Ajout d'une documentation utilisateur sur le module Métadonnées (#2662)
+
+**🐛 Corrections**
+
+- [Occtax] Correction du déplacement du marqueur de localisation poncutelle d'un relevé (#2554 et #2552)
+- [Occtax] Correction du centrage sur la carte quand on modifie un relevé
+- [Occtax] Correction de l'affichage de la géométrie du précédent relevé quand on enchaine des relevés de type polygone puis point (#2657)
+- Correction de la sélection automatique des valeurs par défaut numériques dans les champs de type "Liste déroulante (Select)" des formulaires dynamiques (#2540)
+- Correction de la gestion des entiers pour les champs additionnels de type "checkbox" (#2518)
+- Correction de l'envoi à plusieurs destinataires des emails de demande de création de compte (#2389)
+- Récupération du contenu du champs "Organisme" dans le formulaire de demande de création de compte (#1760)
+- Amélioration des messages lors de la demande de création de compte (#2575)
+- Correction du graphique dans l'export PDF des cadres d'acquisition (#2618)
+- [Synthèse] Correction de l'affichage des géométries de type multipoint (#2536)
+- [Synthèse] Correction des filtres par défaut (#2634)
+- [Synthèse] Correction des filtres géographiques multiples (#2639)
+- [Métadonnées] Correction de l'affichage du formulaire de filtres avancés (#2649)
+
+**💻 Développement**
+
+- Découpage du script `install/03_create_db.sh` en 2 (avec la création du fichier `install/03b_populate_db.sh`) notamment pour améliorer la dockerisation de GeoNature (#2544)
+- Ajout d'un script `install/03b_populate_db_for_test.sh` pouvant être utilisé par la CI de test des modules GeoNature (#2544)
+- Ajout d'un script `install/assets/docker_startup.sh` pour lancer les migrations Alembic depuis le docker de GeoNature (#2544)
+- Création d'un fichier `install/assets/db/add_pg_extensions.sql` regroupant la création des extensions PostgreSQL (#2544)
+- Amélioration de `APPLICATION_ROOT` pour qu'il fonctionne en mode développement (#2546)
+- Amélioration des modèles de la Synthèse pour prendre en compte les valeurs par défaut des nomenclatures (#2524)
+- Meilleure portabilité des scripts dans les différents systèmes Unix (#2435)
+- Mise à jour des dépendances Python (#2596)
+- Documentation de développement des permissions (#2585)
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+- Mettre à jour TaxHub en version 1.12.0 (ou plus) et optionnellement UsersHub
+- Si vous les utilisez, mettez à jour les modules Import, Export, Monitoring et Dashboard dans leurs versions compatibles avec GeoNature 2.13, avec la nouvelle procédure consistant uniquement à télécharger, dézipper et renommer les dossiers des modules et de leur configuration
+- Si vous utilisez d'autres modules externes, vérifiez qu'ils disposent d'une version compatible avec GeoNature 2.13, ou faites-les évoluer pour qu'ils déclarent leurs permissions disponibles (exemple : #2543)
+- Suivez la procédure de mise à jour classique de GeoNature (<https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application>)
+- Les permissions existantes sur vos différents groupes et utilisateurs sont récupérées et remises à plat automatiquement sans système d'héritage. Vérifiez cependant les permissions après la mise à jour de vos groupes et utilisateurs.
+- Désormais, quand vous installerez un nouveau module (ou sous-module), pour le voir affiché dans le menu et y avoir accès, il faudra lui appliquer des permissions aux groupes ou utilisateurs qui doivent y accéder.
+
+**📝 Merci aux contributeurs**
+
+@bouttier / @TheoLechemia / @VincentCauchois / @Pierre-Narcisi / @joelclems / @andriacap / @mvergez / @JulienCorny / @MathRdt / @DonovanMaillard / @camillemonchicourt
+
+
 2.12.3 (2023-05-09)
 -------------------
 
@@ -16,10 +93,14 @@ CHANGELOG
 - Correction et amélioration de la page de maintenance (#2535)
 - Correction de la synchronisation des JDD et de l’association aux modules (#2532 par @VincentCauchois)
 
+**💻 Développement**
+- La fonction `geonature.core.gn_permissions.tools.cruved_scope_for_user_in_module` est remplacée par `geonature.core.gn_permissions.tools.get_scopes_by_action`
+
 **⚠️ Notes de version**
 
 Si vous utilisez la page de maintenance, celle-ci a été revue, [référez vous à la documentation](https://docs.geonature.fr/installation.html#configuration-apache) afin de la mettre à jour.
 
+Si vous utilisiez des champs additionnels avec des checkbox, lors de leur changement de type (recommandé dans les notes de version de la 2.12.0) il est important que les valeurs du champ `field_values` continue à avoir des "string" dans la clé values : [{"label": "Un", "value": "1"}] sans quoi il y aura des problème à l'édition. Pour les nouveaux champs additionnels, il est cependant bien possible de mettre des entiers dans la clé `value` [{"label": "Un", "value": 1}]
 
 2.12.2 (2023-04-18)
 -------------------
@@ -43,6 +124,7 @@ Si vous utilisez la page de maintenance, celle-ci a été revue, [référez vous
 - Admin : contrôle du R pour l’accès en lecture (#2491)
 - Admin : rajout de l’objet NOTIFICATIONS afin de pouvoir en définir ses permissions (#2490)
 - Login : désactivation du spinner après une tentative de login échouée
+
 
 
 2.12.1 (2023-04-11)
@@ -119,7 +201,7 @@ Si vous mettez à jour GeoNature :
 - Configuration dynamique du frontend : le frontend récupère dynamiquement sa configuration depuis le backend. Pour cela, il nécessite uniquement l’adresse de l’`API_ENDPOINT` qui doit être renseignée dans le fichier `frontend/src/assets/config.json`. En conséquence, il n’est plus nécessaire de rebuilder le frontend lors d’une modification de la configuration de GeoNature ou de ses modules (#2205)
 - Personnalisation de la page d’accueil : ajout d’une section `[HOME]` contenant les paramètres `TITLE`, `INTRODUCTION` et `FOOTER`. Ceux-ci peuvent contenir du code HTML qui est chargé dynamiquement avec la configuration, évitant ainsi la nécessité d’un rebuild du frontend (#2300)
 - Synthèse : Agrégation des observations ayant la même géométrie pour ne les charger qu'une seule fois, et ainsi améliorer les performances et la lisibilité (#1847)
-- Synthèse : Possibilité d'afficher les données agrégées par maille (#1878). La fonctionnalité est configurable avec les paramètres suivant :
+- Synthèse : Possibilité d'afficher les données agrégées par maille (#1878). La fonctionnalité est configurable avec les paramètres suivants :
   ```toml
   [SYNTHESE]
       AREA_AGGREGATION_ENABLED = true
@@ -127,7 +209,7 @@ Si vous mettez à jour GeoNature :
       AREA_AGGREGATION_BY_DEFAULT = false    # affichage groupé par défaut
       AREA_AGGREGATION_LEGEND_CLASSES = .   # voir fichier de configuration d’exemple
   ```
-- Synthèse : Possibilité de définir des filtres par défaut à travers le paramètre `SYNTHESE.DEFAULT_FILTERS` (#2261)
+- Synthèse : Possibilité de définir des filtres par défaut avec le paramètre `SYNTHESE.DEFAULT_FILTERS` (#2261)
 - Métadonnées : Chargement des jeux de données seulement quand on clique sur un cadre d'acquisition dans la liste des métadonnées, pour améliorer les performances du module, en ne chargeant pas tous les jeux de données par défaut (#2004)
 - Champs additionnels : Les champs de formulaire de type `radio`, `select`, `multiselect` et `checkbox`, attendent désormais une liste de dictionnaire `{value, label}` (voir doc des champs additionnels) (#2214)
 - Admin : Possibilité de gérer la table des applications mobiles (`t_mobile_apps`) dans le module "Admin" de GeoNature, notamment pour faciliter la gestion des mises à jour de Occtax-mobile (#2352)
@@ -1586,10 +1668,10 @@ Si vous mettez à jour GeoNature :
 -   Synthèse : correction de l’affichage du filtre "statut de
     validation" (#1267)
 -   Permissions : correction de l’URL de redirection après
-    l’éditiondes permissions (#1253)
+    l’édition des permissions (#1253)
 -   Précision de la documentation de mise à jour de GeoNature (#1251)
 -   Ajout du paramètre `DISPLAY_EMAIL_INFO_OBS` dans le fichier
-    d’exemple de configuration (#1066 par \@jbdesbas)
+    d’exemple de configuration (#1066 par @jbdesbas)
 -   Sécurité : suppression d’une route inutile
 -   Correction de l’URL de la doc sur la page d’accueil
 
@@ -1601,14 +1683,15 @@ Si vous mettez à jour GeoNature :
     notes des versions intermédiaires
 -   Exécuter le script de mise à jour de la BDD du sous-module de
     nomenclature :
-    <https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.5to1.3.6.sql>
+    https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.5to1.3.6.sql
 -   Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature
-    (<https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.0to2.6.1.sql>)
+    (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.0to2.6.1.sql)
 -   Suivez la procédure classique de mise à jour de GeoNature
-    (<http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application>)
+    (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 
-2.6.0 - Saxifraga (2021-02-04) 🌸 
---------------------------------
+
+2.6.0 - Saxifraga 🌸 (2021-02-04)
+---------------------------------
 
 Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10
 minimum (qui n’est pas fourni par défaut avec Debian 9) pour les

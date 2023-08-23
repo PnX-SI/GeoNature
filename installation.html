@@ -140,7 +140,7 @@
 <ul class="simple">
 <li><p>Ressources minimum serveur :</p>
 <ul>
-<li><p>Un serveur Debian 10 ou Debian 11 architecture 64-bits</p></li>
+<li><p>Un serveur Debian 10, 11 ou 12, architecture 64-bits</p></li>
 <li><p>4 Go RAM</p></li>
 <li><p>20 Go d’espace disque</p></li>
 </ul>
@@ -573,10 +573,17 @@ geonature install-gn-module &lt;dossier du module&gt; &lt;code du module&gt;
 geonature install-gn-module ~/gn_module_import/ IMPORT
 </pre></div>
 </div>
-<p>Puis relancer GeoNature :</p>
+<p>Puis relancer GeoNatureet son worker :</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo systemctl restart geonature
+sudo systemctl restart geonature-worker
 </pre></div>
 </div>
+<p>Aucune permission n’est définie par défaut lors de l’installation d’un module. En tant qu’administrateur, vous pouvez une commande ajoutant tous les droits sur tous les modules à un groupe ou utilisateur. Cette commande peut être relancée après l’installation d’un module pour automatiquement attribuer toutes les permissions à un groupe ou utilisateur administrateur :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># changer &quot;Grp_Admin&quot; par le nom de votre groupe d&#39;administrateur si vous l&#39;avez changé</span>
+geonature permissions supergrant --group --nom <span class="s2">&quot;Grp_admin&quot;</span>
+</pre></div>
+</div>
+<p>Vous devrez ensuite définir des droits à vos utilisateurs pour le nouveau module installé.</p>
 </section>
 <section id="installation-manuelle">
 <h3>Installation manuelle<a class="headerlink" href="#installation-manuelle" title="Lien permanent vers cette rubrique"></a></h3>
