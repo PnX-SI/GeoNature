@@ -201,15 +201,15 @@ Si vous mettez à jour GeoNature :
 - Configuration dynamique du frontend : le frontend récupère dynamiquement sa configuration depuis le backend. Pour cela, il nécessite uniquement l’adresse de l’`API_ENDPOINT` qui doit être renseignée dans le fichier `frontend/src/assets/config.json`. En conséquence, il n’est plus nécessaire de rebuilder le frontend lors d’une modification de la configuration de GeoNature ou de ses modules (#2205)
 - Personnalisation de la page d’accueil : ajout d’une section `[HOME]` contenant les paramètres `TITLE`, `INTRODUCTION` et `FOOTER`. Ceux-ci peuvent contenir du code HTML qui est chargé dynamiquement avec la configuration, évitant ainsi la nécessité d’un rebuild du frontend (#2300)
 - Synthèse : Agrégation des observations ayant la même géométrie pour ne les charger qu'une seule fois, et ainsi améliorer les performances et la lisibilité (#1847)
-- Synthèse : Possibilité d'afficher les données agrégées par maille (#1878). La fonctionnalité est configurable avec les paramètres suivant :
-  ```toml
+- Synthèse : Possibilité d'afficher les données agrégées par maille (#1878). La fonctionnalité est configurable avec les paramètres suivants :
+  ```
   [SYNTHESE]
       AREA_AGGREGATION_ENABLED = true
       AREA_AGGREGATION_TYPE = "M10"
       AREA_AGGREGATION_BY_DEFAULT = false    # affichage groupé par défaut
       AREA_AGGREGATION_LEGEND_CLASSES = .   # voir fichier de configuration d’exemple
   ```
-- Synthèse : Possibilité de définir des filtres par défaut à travers le paramètre `SYNTHESE.DEFAULT_FILTERS` (#2261)
+- Synthèse : Possibilité de définir des filtres par défaut avec le paramètre `SYNTHESE.DEFAULT_FILTERS` (#2261)
 - Métadonnées : Chargement des jeux de données seulement quand on clique sur un cadre d'acquisition dans la liste des métadonnées, pour améliorer les performances du module, en ne chargeant pas tous les jeux de données par défaut (#2004)
 - Champs additionnels : Les champs de formulaire de type `radio`, `select`, `multiselect` et `checkbox`, attendent désormais une liste de dictionnaire `{value, label}` (voir doc des champs additionnels) (#2214)
 - Admin : Possibilité de gérer la table des applications mobiles (`t_mobile_apps`) dans le module "Admin" de GeoNature, notamment pour faciliter la gestion des mises à jour de Occtax-mobile (#2352)
