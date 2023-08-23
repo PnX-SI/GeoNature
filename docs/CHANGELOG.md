@@ -1663,10 +1663,10 @@ Si vous mettez à jour GeoNature :
 -   Synthèse : correction de l’affichage du filtre "statut de
     validation" (#1267)
 -   Permissions : correction de l’URL de redirection après
-    l’éditiondes permissions (#1253)
+    l’édition des permissions (#1253)
 -   Précision de la documentation de mise à jour de GeoNature (#1251)
 -   Ajout du paramètre `DISPLAY_EMAIL_INFO_OBS` dans le fichier
-    d’exemple de configuration (#1066 par \@jbdesbas)
+    d’exemple de configuration (#1066 par @jbdesbas)
 -   Sécurité : suppression d’une route inutile
 -   Correction de l’URL de la doc sur la page d’accueil
 
@@ -1678,11 +1678,12 @@ Si vous mettez à jour GeoNature :
     notes des versions intermédiaires
 -   Exécuter le script de mise à jour de la BDD du sous-module de
     nomenclature :
-    <https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.5to1.3.6.sql>
+    https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.5to1.3.6.sql
 -   Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature
-    (<https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.0to2.6.1.sql>)
+    (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.0to2.6.1.sql)
 -   Suivez la procédure classique de mise à jour de GeoNature
-    (<http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application>)
+    (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
+
 
 2.6.0 - Saxifraga 🌸 (2021-02-04)
 ---------------------------------
