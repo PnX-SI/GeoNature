@@ -25,7 +25,7 @@ DATE_FORM_WITH_TODAY = true
 ENABLE_SETTINGS_TOOLS = false
 
 # Automatically expand the advanced button when adding a taxon
-ADVANCED_DETAILS_OCCURRENCE_EXPANDED = false
+EXPANDED_TAXON_ADVANCED_DETAILS = false
 
 # -------- MAPLIST PARAMETER ------------
 
