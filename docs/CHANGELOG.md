@@ -1,15 +1,13 @@
 CHANGELOG
 =========
 
-2.13.0 (unreleased)
--------------------
+2.13.0 - [Carpodacus erythrinus](https://www.ecrins-parcnational.fr/breve/roselin-gondouins) 🐤 (2023-08-23)
+------------------------------------------------------------------------------------------------------------
 
-- Révision globale des permissions pour pouvoir leur associer d'autres types de filtres (sensibilité notamment), les simplifier et clarifier en supprimant l'héritage et en définissant les permissions disponibles pour chaque module
-- Possibilité de filtrer les données dans la Synthèse selon leur sensibilité, mais sans floutage pour le moment, en affichant ou non les données sensibles selon les permissions de l'utilisateur
-- Vérifiez que vos modules soient compatibles avec le nouveau mécanisme de déclaration des permissions disponibles
+- Révision globale des permissions pour pouvoir leur associer d'autres types de filtres (sensibilité notamment), les simplifier et clarifier en supprimant l'héritage et en définissant les permissions disponibles pour chaque module.
+- Possibilité de filtrer les données dans la Synthèse selon leur sensibilité, mais sans floutage pour le moment (à venir), en affichant ou non les données sensibles selon les permissions de l'utilisateur.
+- Vérifiez que vos modules soient compatibles avec le nouveau mécanisme de déclaration des permissions disponibles. C'est le cas pour les modules Import, Export, Dashboard, Monitorings et Zones humides.
 - Cette nouvelle version est compatible avec Debian 12. Le support de Debian 10 sera arrêté prochainement.
-
-++++++ Améliorations performances recherche taxons (#2592) et TaxHub (https://github.com/PnX-SI/TaxHub/pull/385)
 
 **🚀 Nouveautés**
 
@@ -25,24 +23,32 @@ CHANGELOG
   - Ajout de la commande `geonature permissions supergrant` permettant d'ajouter toutes les permissions disponibles à un utilisateur ou groupe super-administrateur (#2557)
   - Ajout de la vérification des permissions manquantes sur différentes routes (#2542 / #1863)
 - Ajout de notifications quand un commentaire est ajouté sur une observation (#2460)
+- Amélioration des performances de la recherche de taxons dans Occtax et dans la Synthèse (#2592 / https://github.com/PnX-SI/TaxHub/issues/384)
 - Support de Debian 12 (avec Python 3.11, PostgreSQL 15 et PostGIS 3.3) (#1787)
 - [Admin] Fixer la barre de navigation du menu latéral et possibilité de la rabbatre (#2556)
 - [Synthèse] Ajout d'un filtre par source (#2513)
 - [Synthèse] Ajout d'un filtre par `id_synthese` (#2516)
 - [Synthèse] Recherche des observateurs multiples et insensible aux accents (#2568)
+- [Occtax] Ajout du paramètre `EXPANDED_TAXON_ADVANCED_DETAILS` permettant d'ouvrir par défaut les champs avancés du formulaire de renseignement du taxon (#2446)
 - Conservation du fond de carte utilisé quand on navigue dans les modules (#2619)
 - Suppression des médias orphelins basculée dans une tache Celery Beat lancée automatiquement toutes les nuits (`clean_attachments`), et non plus à l'ajout ou suppression d'un autre média (#2436)
+- Ajout d'une documentation utilisateur sur le module Métadonnées (#2662)
 
 **🐛 Corrections**
 
 - [Occtax] Correction du déplacement du marqueur de localisation poncutelle d'un relevé (#2554 et #2552)
 - [Occtax] Correction du centrage sur la carte quand on modifie un relevé
+- [Occtax] Correction de l'affichage de la géométrie du précédent relevé quand on enchaine des relevés de type polygone puis point (#2657)
 - Correction de la sélection automatique des valeurs par défaut numériques dans les champs de type "Liste déroulante (Select)" des formulaires dynamiques (#2540)
 - Correction de la gestion des entiers pour les champs additionnels de type "checkbox" (#2518)
 - Correction de l'envoi à plusieurs destinataires des emails de demande de création de compte (#2389)
 - Récupération du contenu du champs "Organisme" dans le formulaire de demande de création de compte (#1760)
 - Amélioration des messages lors de la demande de création de compte (#2575)
 - Correction du graphique dans l'export PDF des cadres d'acquisition (#2618)
+- [Synthèse] Correction de l'affichage des géométries de type multipoint (#2536)
+- [Synthèse] Correction des filtres par défaut (#2634)
+- [Synthèse] Correction des filtres géographiques multiples (#2639)
+- [Métadonnées] Correction de l'affichage du formulaire de filtres avancés (#2649)
 
 **💻 Développement**
 
@@ -69,7 +75,7 @@ Si vous mettez à jour GeoNature :
 
 **📝 Merci aux contributeurs**
 
-@bouttier / @TheoLechemia / @VincentCauchois / @Pierre-Narcisi / @joelclems / @andriacap / @mvergez / @MathRdt / @camillemonchicourt
+@bouttier / @TheoLechemia / @VincentCauchois / @Pierre-Narcisi / @joelclems / @andriacap / @mvergez / @JulienCorny / @MathRdt / @DonovanMaillard / @camillemonchicourt
 
 
 2.12.3 (2023-05-09)
@@ -1683,8 +1689,8 @@ Si vous mettez à jour GeoNature :
 -   Suivez la procédure classique de mise à jour de GeoNature
     (<http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application>)
 
-2.6.0 - Saxifraga (2021-02-04) 🌸 
---------------------------------
+2.6.0 - Saxifraga 🌸 (2021-02-04)
+---------------------------------
 
 Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10
 minimum (qui n’est pas fourni par défaut avec Debian 9) pour les
