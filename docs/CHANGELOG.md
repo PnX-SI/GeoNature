@@ -19,7 +19,7 @@ CHANGELOG
   - Définition des permissions disponibles dans chaque module dans la nouvelle table `gn_permissions.t_permissions_available`, pour ne proposer que des permissions qui ont un usage quand on ajoute ou modifie les permissions d'un utilisateur (#2489)
   - Refonte de l'interface d'administration des permissions (Flask-admin) ne proposant que les permissions disponibles, affichant les permissions explicites d'un utilisateur et calculant celles effectives provenant d'un groupe auquel il appartient (#2605)
   - Optimisation et agrégation des permissions
-  - [Synthèse] Ajout d'un filtre sur la sensibilité des données, permettant de les afficher et de les exporter ou non à un groupe ou utilisateurs (pas de floutage pour le moment) (#2504)
+  - [Synthèse] Ajout d'un filtre sur la sensibilité des données, permettant de les afficher et de les exporter ou non à un groupe ou utilisateurs (pas de floutage pour le moment)  (#2504 / #2584)
   - Ajout de la commande `geonature permissions supergrant` permettant d'ajouter toutes les permissions disponibles à un utilisateur ou groupe super-administrateur (#2557)
   - Ajout de la vérification des permissions manquantes sur différentes routes (#2542 / #1863)
 - Ajout de notifications quand un commentaire est ajouté sur une observation (#2460)
@@ -32,7 +32,7 @@ CHANGELOG
 - [Occtax] Ajout du paramètre `EXPANDED_TAXON_ADVANCED_DETAILS` permettant d'ouvrir par défaut les champs avancés du formulaire de renseignement du taxon (#2446)
 - Conservation du fond de carte utilisé quand on navigue dans les modules (#2619)
 - Suppression des médias orphelins basculée dans une tache Celery Beat lancée automatiquement toutes les nuits (`clean_attachments`), et non plus à l'ajout ou suppression d'un autre média (#2436)
-- Ajout d'une documentation utilisateur sur le module Métadonnées (#2662)
+- Ajout d'une documentation utilisateur sur le module Métadonnées - https://docs.geonature.fr/user-manual.html#metadonnees (#2662)
 
 **🐛 Corrections**
 
