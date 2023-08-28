@@ -355,6 +355,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   private setAreasStyle(layer, obsNbr) {
     this.originAreasStyle['fillColor'] = this.getColor(obsNbr);
     layer.setStyle(this.originAreasStyle);
+    delete this.originAreasStyle['fillColor'];
   }
 
   private getColor(obsNbr) {
