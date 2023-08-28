@@ -19,6 +19,7 @@ backend/static/node_modules
 backend/media
 
 backend/run.py
+cache/*
 
 .vscode
 

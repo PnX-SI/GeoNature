@@ -5,6 +5,7 @@ on:
       - master
       - hotfixes
       - develop
+      - fixtestfront
   pull_request:
     branches:
       - master
@@ -37,17 +38,14 @@ jobs:
           psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "postgis_raster";'
         env:
           PGPASSWORD: geonatpasswd
-      - name: Add database extensions
-        run: |
-          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "hstore";'
-          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "uuid-ossp";'
-          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "pg_trgm";'
-          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
-        env:
-          PGPASSWORD: geonatpasswd
       - uses: actions/checkout@v3
         with:
           submodules: recursive
+      - name: Add database extensions
+        run: |
+          psql -h localhost -U geonatadmin -d geonature2db -f install/assets/db/add_pg_extensions.sql
+        env:
+          PGPASSWORD: geonatpasswd
       - name: Set up Python 3.9
         uses: actions/setup-python@v4
         with:
@@ -75,14 +73,7 @@ jobs:
         working-directory: ./backend
       - name: Install database
         run: |
-          geonature db upgrade geonature@head -x local-srid=2154
-          geonature db autoupgrade -x local-srid=2154
-          geonature db upgrade geonature-samples@head
-          geonature db upgrade taxhub@head
-          geonature taxref import-v15 --skip-bdc-statuts
-          geonature db upgrade nomenclatures_taxonomie_data@head
-          geonature db upgrade ref_geo_fr_departments@head
-
+          install/03b_populate_db_for_test.sh
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
         # FRONTEND
@@ -114,6 +105,7 @@ jobs:
           geonature install-gn-module contrib/gn_module_occhab OCCHAB --build=false
           geonature db upgrade occhab-samples@head
           geonature install-gn-module contrib/gn_module_validation VALIDATION --build=false
+          geonature permissions supergrant --group --nom "Grp_admin" --yes
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Run GeoNature backend

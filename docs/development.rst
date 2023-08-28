@@ -1128,7 +1128,7 @@ Utiliser le décorateur ``@login_required`` :
 Si l’utilisateur n’est pas authentifié, celui-ci est redirigé vers une page d’authentification, à moins que la requête contienne un header ``Accept: application/json`` (requête effectuée par le frontend) auquel cas une erreur 401 (Unauthorized) est levé.
 
 
-Restreindre une route aux utilisateurs ayant certains droits
+Restreindre une route aux utilisateurs avec un certain scope
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 Utiliser le décorateur ``@check_cruved_scope`` :
@@ -1138,10 +1138,9 @@ Utiliser le décorateur ``@check_cruved_scope`` :
    :param action: Type d'action effectuée par la route
                   (Create, Read, Update, Validate, Export, Delete)
    :type action: str["C", "R", "U", "V", "E", "D"]
-   :param module_code: Code du module sur lequel on veut vérifier la portée.
-    Si non fourni, on vérifie le CRUVED de GeoNature.
-   :type module_code: str, optional
-   :param object_code: Code de l’objet sur lequel on veut vérifié la portée.
+   :param module_code: Code du module sur lequel on veut vérifier les permissions.
+   :type module_code: str
+   :param object_code: Code de l’objet sur lequel on veut vérifier les permissions.
     Si non fourni, on vérifie la portée sur l’objet ``ALL``.
    :type object_code: str, optional
    :param get_scope: si ``True``, ajoute le scope aux kwargs de la vue
@@ -1174,10 +1173,29 @@ Exemple d’utilisation :
             raise Forbidden
 
 
-Récupération manuelle des permissions
-"""""""""""""""""""""""""""""""""""""
+Récupération manuelle du scope
+""""""""""""""""""""""""""""""
 
-La fonction suivante permet de récupérer manuellement le scope pour chaque actions pour un rôle et un module donnés :
+La fonction suivante permet de récupérer manuellement le scope pour un rôle, une action et un module donnés :
+
+.. py:function:: get_scope(action_code, id_role, module_code, object_code)
+
+   Retourne le scope de l’utilisateur donnée une action dans le module demandé.
+
+   :param action_code: Code de l’action.
+   :type action_code: str["C", "R", "U", "V", "E", "D"]
+   :param id_role: Identifiant du role. Utilisation de ``g.current_user`` si non spécifié
+                   (nécessite de se trouver dans une route authentifiée).
+   :type id_role: int, optional
+   :param module_code: Code du module. Si non spécifié, utilisation de ``g.current_module``
+   :type module_code: str, optional
+   :param object_code: Code de l’objet. Si non spécifié, utilisation de ``g.current_object``,
+                       ``ALL`` à défaut.
+   :type object_code: str, optional
+   :return: Valeur du scope
+   :rtype: int[0, 1, 2, 3]
+
+Il est également possible de récupérer les scopes pour l’ensemble des actions possibles grâce à la fonction suivante :
 
 .. py:function:: get_scopes_by_action(id_role, module_code, object_code)
 
@@ -1199,6 +1217,125 @@ Exemple d’usage :
     >>> from geonature.core.gn_permissions.tools import get_scopes_by_action
     >>> get_scopes_by_action(id_role=3, module_code="METADATA")
     {'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3}
+
+
+Restreindre une route aux utilisateurs avec des permissions avancées
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Utiliser le décorateur ``@permissions_required`` :
+
+.. py:decorator:: permissions_required
+
+   :param action: Type d'action effectuée par la route
+                  (Create, Read, Update, Validate, Export, Delete)
+   :type action: str["C", "R", "U", "V", "E", "D"]
+   :param module_code: Code du module sur lequel on veut vérifier les permissions.
+   :type module_code: str
+   :param object_code: Code de l’objet sur lequel on veut vérifier les permissions.
+    Si non fourni, on vérifie la portée sur l’objet ``ALL``.
+   :type object_code: str, optional
+
+Lorsque l’utilisateur n’est pas connecté, le comportement est le même que le décorateur ``@login_required``.
+Lorsque celui-ci est connecté, le décorateur va récupérer l’ensemble des permissions pour l’action donnée dans le module donnée (et éventuellement l’objet donnée).
+Si aucune permission n’est trouvée, alors une erreur 403 (Forbidden) est levée.
+
+.. warning::
+
+    Le décorateur ne vérifie pas si le jeu de permissions est suffisant pour accéder
+    aux ressources demandées. C’est à votre route d’implémenter cette vérification,
+    celle-ci recevant le jeu de permissions en argument.
+
+
+Exemple d’utilisation :
+
+.. code-block:: python
+
+    from geonature.core.gn_permissions.decorators import permissions_required
+
+    @blueprint.route('/mysensibleview', methods=['GET'])
+    @permissions_required(
+            'R',
+            module_code="SYNTHESE"
+    )
+    def my_sensible_view(permissions):
+        for perm in permissions:
+            if perm.has_other_filters_than("SCOPE", "SENSITIVITY"):
+                continue
+            if perm.scope_value > 2 and not perm.sensitivity_filter:
+                break
+        else:
+            raise Forbidden
+
+
+Récupération manuelle des permissions avancées
+""""""""""""""""""""""""""""""""""""""""""""""
+
+Utiliser la fonction ``get_permissions`` :
+
+.. py:function:: get_permissions(action_code, id_role, module_code, object_code)
+
+   Retourne l’ensemble des permissions de l’utilisateur donnée pour l’action, le module et l’objet précisé.
+
+   :param action_code: Code de l’action.
+   :type action_code: str["C", "R", "U", "V", "E", "D"]
+   :param id_role: Identifiant du role. Utilisation de ``g.current_user`` si non spécifié
+                   (nécessite de se trouver dans une route authentifiée).
+   :type id_role: int, optional
+   :param module_code: Code du module. Si non spécifié, utilisation de ``g.current_module``
+   :type module_code: str, optional
+   :param object_code: Code de l’objet. Si non spécifié, utilisation de ``g.current_object``,
+                       ``ALL`` à défaut.
+   :type object_code: str, optional
+   :return: Liste de permissions
+   :rtype: list[Permission]
+
+
+À propos de l’API « scope »
+"""""""""""""""""""""""""""
+
+Certains modules supportent des permissions avec plusieurs types de filtres (par exemple, filtre d’appartenance et filtre de sensibilité), ce qui amène à devoir définir plusieurs permissions pour une même action dans un module donnée (par exemple, droit de lecteur des données de mon organisme sans restriction de sensibilité + droit de lecteur des données non sensible sans restriction d’appartenance).
+
+Cependant, cet usage est très peu répandu, la plupart des modules acceptant uniquement un filtre d’appartenance, voir aucun filtre.
+Ainsi, l’API « scope » (décorateur ``@check_cruved_scope``, fonctions ``get_scope`` et ``get_scopes_by_action``) visent à simplifier l’usage des permissions dans ces modules en résumant les droits de l’utilisateur par un entier de 0 à 4 :
+
+- 0 : aucune donnée (pas de permission)
+- 1 : données m’appartenant
+- 2 : données appartenant à mon organisme
+- 3 : toutes les données (permission sans filtre d’appartenance)
+
+L’utilisateur héritant des permissions des différents groupes auquel il appartient en plus de ses permissions personnelles, l’API « scope » s’occupe de calculer le scope maximal de l’utilisateur.
+
+
+Rajouter un nouveau type de filtre
+""""""""""""""""""""""""""""""""""
+
+On suppose souhaiter l’ajout d’un nouveau type de filtre « foo ».
+
+1. Rajouter une colonne dans la table ``t_permissions`` nommé ``foo_filter`` du type désiré (booléen, entier, …) avec éventuellement une contrainte de clé étrangère.
+   Dans le cas où le filtre peut contenir une liste de valeur contrôlées par une Foreign Key, on préfèrera l’ajout d’une nouvelle table contenant une Foreign Key vers ``t_permissions.id_permission`` (par exemple, filtre géographique avec liste d’``id_area`` ou filtre taxonomique avec liste de ``cd_nom``).
+
+2. Rajouter une colonne booléenne dans la table ``t_permissions_available`` nommé ``foo_filter``.
+
+3. Faire évoluer les modèles Python ``Permission`` et ``PermissionAvailable`` pour refléter les changements du schéma de base de données.
+
+4. Compléter ``Permission.filters_fields`` et ``PermissionAvailable.filters_fields`` (*e.g.* ``"FOO": foo_filter``).
+
+5. Vérifier que la propriété ``Permission.filters`` fonctionne correctement avec le nouveau filtre : celui-ci doit être renvoyé uniquement s’il est défini.
+   Le cas d’une relationship n’a encore jamais été traité.
+
+6. Optionel : Rajouter une méthode statique ``Permission.__FOO_le__(a, b)``.
+   Celle-ci reçoit en argument 2 filtres FOO et doit renvoyer ``True`` lorsque le filtre ``a`` est plus restrictif (au autant) que le filtre ``b``.
+   Par exemple, dans le cas d’un filtre géographique, on renvera ``True`` si ``b`` vaut ``None`` (pas de restriction géographique) ou si la liste des zonages ``a`` est un sous-ensemble de la liste des zonages ``b``.
+   Cette méthode permet d’optimiser le jeu de permission en supprimant les permissions redondantes.
+
+7. Compléter la classe ``PermFilter`` qui permet l’affichage des permissions dans Flask-Admin (permissions des utilisateurs et des groupes).
+   Attention, Flask-Admin utilise FontAwesome version **4**.
+
+8. Faire évoluer Flask-Admin (classes ``PermissionAdmin`` et ``PermissionAvailableAdmin``) pour prendre en charge le nouveau type de filtre.
+
+9. Implémenter le support de son nouveau filtre à l’endroit voulu (typiquement la synthèse).
+
+10. Compléter ou faire évoluer la table ``t_permissions_available`` pour déclarer le nouveau filtre comme disponible pour son module.
 
 
 Développement Frontend
@@ -1538,7 +1675,13 @@ Release
 Pour sortir une nouvelle version de GeoNature :
 
 - Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, RefGeo, Utils-Flask-SQLAlchemy, Utils-Flask-SQLAlchemy-Geo)
-- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances
+- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances et que le  `requirements-dependencies.in` a bien été MAJ.
+- Regénérer les `requirements.txt` et `requirements-dev.txt` avec les commandes suivantes dans la plus petite version de python supportée par GeoNature
+::
+    
+    pip-compile requirements.in > requirements.txt
+    pip-compile requirements-dev.in > requirements-dev.txt
+
 - Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``, ``backend/requirements-dependencies.in`` (puis regénérer ``backend/requirements.txt`` avec ``pip compile``)
 - Complétez le fichier ``docs/CHANGELOG.md`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
 - Mettez à jour le fichier ``VERSION``

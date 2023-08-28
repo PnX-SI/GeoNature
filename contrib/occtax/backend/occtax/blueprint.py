@@ -51,8 +51,11 @@ from utils_flask_sqla_geo.generic import GenericTableGeo
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 
+from occtax.commands import add_submodule_permissions
 
-blueprint = Blueprint("pr_occtax", __name__)
+blueprint = Blueprint("pr_occtax", __name__, cli_group="occtax")
+blueprint.cli.add_command(add_submodule_permissions)
+
 log = logging.getLogger(__name__)
 
 
@@ -125,27 +128,11 @@ def getReleves(scope):
     }
 
 
-@blueprint.route("/<module_code>/occurrences", methods=["GET"])
-@blueprint.route("/occurrences", methods=["GET"])
-@permissions.check_cruved_scope("R")
-@json_resp
-def getOccurrences():
-    """
-    Get all Occurrences
-
-    .. :quickref: Occtax;
-
-    :returns: `dict<TOccurrencesOccurrence>`
-    """
-    q = DB.session.query(TOccurrencesOccurrence)
-    data = q.all()
-    return [n.as_dict() for n in data]
-
-
 @blueprint.route("/<module_code>/counting/<int:id_counting>", methods=["GET"])
 @blueprint.route("/counting/<int:id_counting>", methods=["GET"])
+@permissions.check_cruved_scope("R", get_scope=True)
 @json_resp
-def getOneCounting(id_counting):
+def getOneCounting(scope, id_counting):
     """
     Get one counting record, with its id_counting
 
@@ -156,6 +143,10 @@ def getOneCounting(id_counting):
     :returns: a dict representing a counting record
     :rtype: dict<CorCountingOccurrence>
     """
+    ccc = CorCountingOccurrence.query.get_or_404(id_counting)
+    if not ccc.occurrence.releve.has_instance_permission(scope):
+        raise Forbidden
+
     try:
         data = (
             DB.session.query(CorCountingOccurrence, TRelevesOccurrence.id_releve_occtax)
@@ -513,8 +504,8 @@ def deleteOneOccurence(id_occ, scope):
 
 @blueprint.route("/<module_code>/releve/occurrence_counting/<int:id_count>", methods=["DELETE"])
 @blueprint.route("/releve/occurrence_counting/<int:id_count>", methods=["DELETE"])
-@permissions.check_cruved_scope("D")
-def deleteOneOccurenceCounting(id_count):
+@permissions.check_cruved_scope("D", get_scope=True)
+def deleteOneOccurenceCounting(scope, id_count):
     """Delete one counting
 
     .. :quickref: Occtax;
@@ -523,7 +514,8 @@ def deleteOneOccurenceCounting(id_count):
 
     """
     ccc = CorCountingOccurrence.query.get_or_404(id_count)
-    # TODO check ccc ownership!
+    if not ccc.occurence.releve.has_instance_permission(scope):
+        raise Forbidden
     DB.session.delete(ccc)
     DB.session.commit()
     return "", 204
@@ -531,6 +523,7 @@ def deleteOneOccurenceCounting(id_count):
 
 @blueprint.route("/<module_code>/defaultNomenclatures", methods=["GET"])
 @blueprint.route("/defaultNomenclatures", methods=["GET"])
+@permissions.login_required
 def getDefaultNomenclatures():
     """Get default nomenclatures define in occtax module
 

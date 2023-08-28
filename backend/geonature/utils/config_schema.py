@@ -27,13 +27,14 @@ from geonature.utils.utilstoml import load_and_validate_toml
 class EmailStrOrListOfEmailStrField(fields.Field):
     def _deserialize(self, value, attr, data, **kwargs):
         if isinstance(value, str):
-            self._check_email(value)
-            return value
-        elif isinstance(value, list) and all(isinstance(x, str) for x in value):
-            self._check_email(value)
-            return value
-        else:
+            value = list(map(lambda x: x.replace("\n", "").strip(), value.split(",")))
+
+        if not isinstance(value, list) and all(isinstance(x, str) for x in value):
             raise ValidationError("Field should be str or list of str")
+
+        self._check_email(value)
+
+        return value
 
     def _check_email(self, value):
         recipients = clean_recipients(value)
@@ -555,6 +556,7 @@ class GnGeneralSchemaConf(Schema):
     HOME = fields.Nested(HomeConfig, load_default=HomeConfig().load({}))
     NOTIFICATIONS_ENABLED = fields.Boolean(load_default=True)
     PROFILES_REFRESH_CRONTAB = fields.String(load_default="0 3 * * *")
+    MEDIA_CLEAN_CRONTAB = fields.String(load_default="0 1 * * *")
 
     @validates_schema
     def validate_enable_sign_up(self, data, **kwargs):

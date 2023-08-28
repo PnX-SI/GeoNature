@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -38,9 +38,9 @@ then
     exit 1
 fi
 
-if [ "$OS_VERSION" != "10" ] && [ "$OS_VERSION" != "11" ]
+if [ "$OS_VERSION" != "10" ] && [ "$OS_VERSION" != "11" ] && [ "$OS_VERSION" != "12" ]
 then
-    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 10 et Debian 11\e[0m" >&2
+    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 10, 11 ou 12\e[0m" >&2
     exit 1
 fi
 
@@ -57,7 +57,7 @@ echo "############### Installation des paquets systèmes ###############"
 
 # Installing required environment for GeoNature and TaxHub
 echo "Installation de l'environnement logiciel..."
-sudo apt-get install -y unzip git postgresql-postgis postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis || exit 1
+sudo apt-get install -y unzip git postgresql-postgis postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis gettext-base || exit 1
 
 if [ "${mode}" = "dev" ]; then
     sudo apt-get install -y xvfb || exit 1

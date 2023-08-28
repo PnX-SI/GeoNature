@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 filepath=$(realpath $0)
 GEONATURE_ROOT=$(dirname $(dirname $(dirname $filepath)))

@@ -3,7 +3,7 @@ import requests
 import json
 
 
-from flask import Blueprint, request, current_app, Response, redirect, g
+from flask import Blueprint, request, current_app, Response, redirect, g, render_template
 from sqlalchemy.sql import distinct, and_
 from werkzeug.exceptions import NotFound, BadRequest, Forbidden
 
@@ -298,9 +298,14 @@ def confirmation():
     )
 
     if r.status_code != 200:
+        if r.json() and r.json().get("msg"):
+            return r.json().get("msg"), r.status_code
         return Response(r), r.status_code
 
-    return redirect(config["URL_APPLICATION"], code=302)
+    new_user = r.json()
+    return render_template(
+        "account_created.html", user=new_user, redirect_url=config["URL_APPLICATION"]
+    )
 
 
 @routes.route("/after_confirmation", methods=["POST"])
@@ -317,7 +322,7 @@ def after_confirmation():
 
 
 @routes.route("/role", methods=["PUT"])
-@permissions.check_cruved_scope("R")
+@permissions.login_required
 @json_resp
 def update_role():
     """
@@ -362,9 +367,9 @@ def update_role():
 
 
 @routes.route("/password/change", methods=["PUT"])
-@check_auth(1, True)
+@permissions.login_required
 @json_resp
-def change_password(id_role):
+def change_password():
     """
     Modifie le mot de passe de l'utilisateur connecté et de son ancien mdp
     Fait appel à l'API UsersHub
@@ -372,9 +377,7 @@ def change_password(id_role):
     if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
         return {"message": "Page introuvable"}, 404
 
-    user = DB.session.query(User).get(id_role)
-    if not user:
-        return {"msg": "Droit insuffisant"}, 403
+    user = g.current_user
     data = request.get_json()
 
     init_password = data.get("init_password", None)

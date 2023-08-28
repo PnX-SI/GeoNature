@@ -4,7 +4,7 @@ import json
 import datetime
 from unittest.mock import patch
 
-from flask import url_for, jsonify, current_app
+from flask import url_for
 from werkzeug.exceptions import Forbidden, Unauthorized, BadRequest
 
 from geonature.utils.env import db
@@ -16,16 +16,11 @@ from geonature.core.notifications.models import (
     NotificationTemplate,
 )
 from geonature.core.notifications import utils
-from geonature.tests.fixtures import celery_eager
+from geonature.tests.fixtures import celery_eager, notifications_enabled
 
 from .utils import set_logged_user_cookie
 
 log = logging.getLogger()
-
-
-@pytest.fixture()
-def notifications_enabled(monkeypatch):
-    monkeypatch.setitem(current_app.config, "NOTIFICATIONS_ENABLED", True)
 
 
 @pytest.fixture(scope="class")

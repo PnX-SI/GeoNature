@@ -505,11 +505,8 @@ def get_export_pdf_dataset(id_dataset, scope):
 
 
 @routes.route("/acquisition_frameworks", methods=["GET", "POST"])
-@permissions.check_cruved_scope(
-    "R",
-    get_scope=True,
-)
-def get_acquisition_frameworks(scope):
+@login_required
+def get_acquisition_frameworks():
     """
     Get a simple list of AF without any nested relationships
     Use for AF select in form
@@ -620,7 +617,9 @@ def get_acquisition_frameworks_list(scope):
     )
 
 
-@routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["POST"])
+@routes.route(
+    "/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["POST", "GET"]
+)
 @permissions.check_cruved_scope("E", module_code="METADATA")
 def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     """

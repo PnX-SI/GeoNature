@@ -19,6 +19,8 @@ from flask_cors import CORS
 from flask_sqlalchemy import before_models_committed
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.middleware.shared_data import SharedDataMiddleware
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+from werkzeug.wrappers import Response
 from psycopg2.errors import UndefinedTable
 import sqlalchemy as sa
 from sqlalchemy.exc import OperationalError, ProgrammingError
@@ -51,14 +53,16 @@ def configure_alembic(alembic_config):
     'migrations' entry point value of the 'gn_module' group for all modules having such entry point.
     Thus, alembic will find migrations of all installed geonature modules.
     """
-    version_locations = alembic_config.get_main_option("version_locations", default="").split()
+    version_locations = set(
+        alembic_config.get_main_option("version_locations", default="").split()
+    )
     if "VERSION_LOCATIONS" in config["ALEMBIC"]:
-        version_locations.extend(config["ALEMBIC"]["VERSION_LOCATIONS"].split())
+        version_locations |= set(config["ALEMBIC"]["VERSION_LOCATIONS"].split())
     for entry_point in chain(
         entry_points(group="alembic", name="migrations"),
         entry_points(group="gn_module", name="migrations"),
     ):
-        version_locations += [entry_point.value]
+        version_locations.add(entry_point.value)
     alembic_config.set_main_option("version_locations", " ".join(version_locations))
     return alembic_config
 
@@ -95,9 +99,6 @@ def create_app(with_external_mods=True):
 
     app.config.update(config)
 
-    if "SCRIPT_NAME" not in os.environ:
-        os.environ["SCRIPT_NAME"] = app.config["APPLICATION_ROOT"].rstrip("/")
-
     # Enable deprecation warnings in debug mode
     if app.debug and not sys.warnoptions:
         warnings.filterwarnings(action="default", category=DeprecationWarning)
@@ -106,6 +107,11 @@ def create_app(with_external_mods=True):
     app.wsgi_app = SchemeFix(app.wsgi_app, scheme=config.get("PREFERRED_URL_SCHEME"))
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
     app.wsgi_app = RequestID(app.wsgi_app)
+    if app.config["APPLICATION_ROOT"] != "/":
+        app.wsgi_app = DispatcherMiddleware(
+            Response("Not Found", status=404),
+            {app.config["APPLICATION_ROOT"].rstrip("/"): app.wsgi_app},
+        )
 
     if config.get("CUSTOM_STATIC_FOLDER"):
         app.wsgi_app = SharedDataMiddleware(
@@ -156,6 +162,8 @@ def create_app(with_external_mods=True):
             g.current_user = user_from_token(request.cookies["token"]).role
         except (KeyError, UnreadableAccessRightsError, AccessRightsExpiredError):
             g.current_user = None
+        g._permissions_by_user = {}
+        g._permissions = {}
 
     if config.get("SENTRY_DSN"):
         from sentry_sdk import set_tag, set_user
@@ -190,7 +198,6 @@ def create_app(with_external_mods=True):
         ("ref_geo.routes:routes", "/geo"),
         ("geonature.core.gn_commons.routes:routes", "/gn_commons"),
         ("geonature.core.gn_permissions.routes:routes", "/permissions"),
-        ("geonature.core.gn_permissions.backoffice.views:routes", "/permissions_backoffice"),
         ("geonature.core.users.routes:routes", "/users"),
         ("geonature.core.gn_synthese.routes:routes", "/synthese"),
         ("geonature.core.gn_meta.routes:routes", "/meta"),

@@ -21,11 +21,6 @@ from geonature.core.gn_meta.models import (
     TDatasets,
 )
 from geonature.core.gn_meta.routes import get_af_from_id
-from geonature.core.gn_permissions.models import (
-    CorRoleActionFilterModuleObject,
-    TActions,
-    TFilters,
-)
 from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 
@@ -547,6 +542,7 @@ class TestGNMeta:
                 [
                     datasets["own_dataset"],
                     datasets["associate_dataset"],
+                    datasets["associate_2_dataset_sensitive"],
                 ]
             )
             assert set(qs.filter_by_scope(3).all()) == set(datasets.values())

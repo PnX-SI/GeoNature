@@ -90,8 +90,6 @@ def insert_or_update_media(id_media=None):
 
     m = TMediaRepository(data=data, file=file, id_media=id_media).create_or_update_media()
 
-    TMediumRepository.sync_medias()
-
     return m.as_dict()
 
 
@@ -105,8 +103,6 @@ def delete_media(id_media):
     """
 
     TMediaRepository(id_media=id_media).delete()
-
-    TMediumRepository.sync_medias()
 
     return {"resp": "media {} deleted".format(id_media)}
 

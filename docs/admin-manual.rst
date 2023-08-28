@@ -390,64 +390,60 @@ Gestion des droits
 Accès à GeoNature et CRUVED
 ```````````````````````````
 
-Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l'application GeoNature est géré de manière centralisée dans UsersHub. Pour qu'un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de "Lecteur" dans l'application GeoNature, grâce à l'application UsersHub.
+Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l'application GeoNature sont gérés de manière centralisée dans l'application UsersHub. Pour qu'un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de "Lecteur" dans l'application GeoNature, grâce à l'application UsersHub.
 
-La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (``gn_permissions``) et un module de GeoNature dédié. 
+La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (``gn_permissions``) depuis le module ADMIN de GeoNature. Voir https://github.com/PnX-SI/GeoNature/issues/2605.
 
-Les permissions des groupes et utilisateurs peuvent en effet être administrées dans le module "Admin / Administration des permissions" de GeoNature.
-Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques.
+La gestion des droits dans GeoNature, comme dans beaucoup d'applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l'application nous avons rajouté deux actions : "Exporter" et "Valider" (non utilisée), ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.
 
-La gestion des droits dans GeoNature, comme dans beaucoup d'applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l'application nous avons rajouté deux actions : "Valider" et "Exporter", ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.
+Chaque module peut utiliser toutes ou certaines de ces actions.
 
-Sur ces actions, on peut appliquer des "portées":
+Selon les modules, on peut appliquer des filtres sur ces actions. Notamment des filtres d'appartenance (portées / scope) :
 
-- Portée 1 = "Mes données". Cela concerne les données sur lesquels je suis :
-   - observateur 
-   - personne ayant effectuée la saisie de la données
-   - personnelement acteur du jeu de données de la donnée
-   - personne ayant saisi le JDD de la donnée
+- Portée 1 = Seulement mes données. Cela concerne les données sur lesquels je suis :
+
+  - observateur 
+  - personne ayant effectuée la saisie de la donnée
+  - personnellement acteur du jeu de données de la donnée
+  - personne ayant saisi le JDD de la donnée
+
 - Portée 2 = Les données de mon organisme. Portée 1 + :
-   - les données sur lesquels mon organisme est acteur du JDD de la donnée
-- Portée 3 = Toute les données
-   - Toute les données : aucun filtre n'est appliqué
 
+  - les données sur lesquelles mon organisme est acteur du JDD de la donnée
 
 Exemple :
 
-- Utilisateur 1 peut effectuer l'action "DELETE" sur la portée "SES DONNEES"
-- Utilisateur Admin peut effectuer l'action "UPDATE" sur la portée "TOUTES LES DONNEES"
+- Utilisateur 1 peut effectuer l'action "DELETE" sur "SES DONNEES"
+- Utilisateur Admin peut effectuer l'action "UPDATE" sur "TOUTES LES DONNEES" (sans filtre d'appartenance)
 
-Enfin ces permissions vont pouvoir s'attribuer à l'ensemble de l'application GeoNature et/ou à un module.
-
-On a donc le quatriptique : Un utilisateur / Une action / Une portée / Un module
-
-**NB** : certains objets comme les JDD et CA sont transversal à tout GeoNature (ils sont utilisés dans tous les modules: saisie, synthese, métadonnées, dashbord), il sont donc contrôlé par les permissions du "module" GeoNature
+Ces permissions sont attribuées module par module, et éventuellement sur des objets de certains modules.
 
 Cas particulier de l'action "C"
 ```````````````````````````````
 
-| Dans les modules de saisie, on veut que des utilisateurs puissent saisir uniquement dans certains JDD.
-| La liste des JDD ouvert à la saisie est contrôlée par l'action "CREATE" du module dans lequel on se trouve. 
-| Comme il n'est pas "normal" de pouvoir saisir dans des JDD sur lesquels on n'a pas les droit de lecture, la portée de l'action "CREATE" vient simplement réduire la liste des JDD surlesquels on a les droits de lecture ("READ").
-| Même si la portée de l'action "CREATE" sur le module est supérieure à l'action "READ", l'utilisateur ne vera que les JDD surlesquels il a des droits de lecture
+| Dans les modules de saisie (comme Occtax), on veut que des utilisateurs puissent saisir uniquement dans certains JDD.
+| La liste des JDD ouverts à la saisie est contrôlée par l'action "CREATE" du module dans lequel on se trouve. 
+| Comme il n'est pas "normal" de pouvoir saisir dans des JDD sur lesquels on n'a pas les droits de lecture, la portée de l'action "CREATE" vient simplement réduire la liste des JDD sur lesquels on a les droits de lecture ("READ").
+| Même si la portée de l'action "CREATE" sur le module est supérieure à celle de l'action "READ", l'utilisateur ne verra que les JDD sur lesquels il a des droits de lecture
+
+Une commande dédiée permet d'ajouter tous les droits sur tous les modules à un groupe ou utilisateur ayant le rôle d'administrateur. Cette commande peut être relancée après l'installation d'un nouveau module :
+
+.. code-block:: bash
+
+    # changer "Grp_Admin" par le nom de votre groupe d'administrateur si vous l'avez changé
+    geonature permissions supergrant --group --nom "Grp_admin"
 
 Récapitulatif
 `````````````
 
-- Dans GeoNature V2 on peut attribuer à un role des actions possibles, sur lesquels on peut ajouter des filtres, dans un module ou sur toute l'application GeoNature (définis dans ``gn_permissions.cor_role_action_filter_module_object``).
+- Dans GeoNature on peut attribuer à un role des actions possibles dans un module, sur lesquels on peut ajouter des filtres (définis dans la table ``gn_permissions.t_permissions``).
 - 6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).
-- Différents types de filtre existent. Le plus courant est le filtre de type "SCOPE" (portée) : 3 portées sont attribuables à des actions: Mes données / Les données de mon organisme / Toutes les données.
-- Une vue permet de retourner toutes les actions, leurs filtres et leurs modules de GeoNature pour tous les rôles (``gn_permissions.v_users_permissions``)
+- Différents types de filtre existent. Le plus courant est le filtre d'appartenace (portée) : 2 filtres d'appartenance sont attribuables à des actions : Mes données / Les données de mon organisme. La synthèse dispose aussi d'un filtre de sensibilité.
 - Des fonctions PostgreSQL ont aussi été intégrées pour faciliter la récupération de ces informations (``gn_permissions.cruved_for_user_in_module``, ``gn_permissions.does_user_have_scope_permission``, ...)
-- Les permissions attribuées à un module surchargent les permission attribuées sur l'ensemble de l'application par un mécanisme d'héritage. Par défaut et en l'absence de permissions, tous les modules héritent des permissions de GeoNature. Attention cependant aux utilisateurs appartenant à plusieurs groupes. Si un CRUVED est définit pour un module à un seul de ses groupes, c'est ce CRUVED qui sera pris en compte. En effet, le mécanisme d'héritage ne fonctionne plus lorsqu'on surcouche implicitement le CRUVED d'un module pour un groupe.
-- Si un utilisateur n'a aucune action possible sur un module, alors il ne lui sera pas affiché et il ne pourra pas y accéder
+- Si un utilisateur n'a aucune permission sur un module, alors il ne lui sera pas affiché dans le menu latéral et il ne pourra pas y accéder
 - Il est aussi possible de ne pas utiliser UsersHub pour gérer les utilisateurs et de connecter GeoNature à un CAS (voir configuration). Actuellement ce paramétrage est fonctionnel en se connectant au CAS de l'INPN (MNHN)
 
-.. image :: _static/schema_cruved.png
-
-A noter que toutes les actions et toutes les portées n'ont pas été implémentées dans tous les modules. Elles le sont en fonction des besoins de chaque module.
-
-TODO : Lister les permissions implémentées dans chaque module.
+A noter que toutes les actions et tous les filtres n'ont pas été implémentées dans tous les modules. Elles le sont en fonction des besoins de chaque module. Chaque module définit la liste de ses permissions disponibles (actions et filtres).
 
 Nomenclatures
 """""""""""""
@@ -916,6 +912,8 @@ Pour configurer GeoNature, actuellement il y a :
 - Une configuration globale de l'application : ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` (générée lors de l'installation de GeoNature)
 - Une configuration optionnelle par module : placée dans le dossier de configuration de GeoNature (``<GEONATURE_DIRECTORY>/config/``)
 - Une table ``gn_commons.t_parameters`` pour des paramètres gérés dans la BDD
+
+TODO : Partie "Configuration applicative" du schéma à mettre à jour, car caduque.
 
 .. image :: https://geonature.fr/docs/img/admin-manual/administration-geonature.png
 
@@ -1780,10 +1778,55 @@ Dans l'exemple ci-dessous, remplacez ``<MODULE_PATH>`` par le contenu de la colo
     INSERT INTO gn_synthese.t_sources (name_source,desc_source,entity_source_pk_field,url_source,,id_module) VALUES
     ('Flore station (sous-module Occtax)','Données issues du protocole Flore station','pr_occtax.cor_counting_occtax.id_counting_occtax','#/<MODULE_PATH>/info/id_counting', <ID_MODULE>);
 
+Bien que le module soit une copie d'Occtax, il est tout de même nécessaire de définir les permissions disponibles pour ce module (ce sont les mêmes qu'Occtax). Jouez le scrit SQL suivant en remplacant :MODULE_CODE par le code du module que vous venez de créer.
+
+::
+
+    INSERT INTO
+        gn_permissions.t_permissions_available (
+            id_module,
+            id_object,
+            id_action,
+            label,
+            scope_filter
+        )
+    SELECT
+        m.id_module,
+        o.id_object,
+        a.id_action,
+        v.label,
+        v.scope_filter
+    FROM
+        (
+            VALUES
+                  (':MODULE_CODE', 'ALL', 'C', True, 'Créer des relevés')
+                ,(':MODULE_CODE', 'ALL', 'R', True, 'Voir les relevés')
+                ,(':MODULE_CODE', 'ALL', 'U', True, 'Modifier les relevés')
+                ,(':MODULE_CODE', 'ALL', 'E', True, 'Exporter les relevés')
+                ,(':MODULE_CODE', 'ALL', 'D', True, 'Supprimer des relevés')
+        ) AS v (module_code, object_code, action_code, scope_filter, label)
+    JOIN
+        gn_commons.t_modules m ON m.module_code = v.module_code
+    JOIN
+        gn_permissions.t_objects o ON o.code_object = v.object_code
+    JOIN
+        gn_permissions.bib_actions a ON a.code_action = v.action_code;
+
+
 Associer des jeux de données et des champs additionnels
 ```````````````````````````````````````````````````````
 
 Dans le module Métadonnées (formulaire des jeux de données), associez les jeux de données que vous souhaitez rendre saissisables au nouveau module dupliqué.
+
+Ajouter le nouveau module dans la liste des modules implémentés
+```````````````````````````````````````````````````````````````
+
+Dans le fichier de configuration de GeoNature (geonature_config.toml) ajoutez une section `ADDITIONAL_FIELDS` qui contient tableau `IMPLEMENTED_MODULES` listant les modules qui implémentent les champs additionnels (Occtax doit y figurer en plus du nouveau module)
+
+::
+
+    [ADDITIONAL_FIELDS]
+      IMPLEMENTED_MODULES = ["OCCTAX", "FLORE_STATION"]
 
 Vous pouvez ensuite créer des nouveaux champs additionnels et les associer à ce module. De la même manière que dans Occtax, on peut les associer aux trois niveaux du formulaire (relevé, occurrence, dénombrement).
 
@@ -2128,7 +2171,7 @@ Pour chaque dictionnaire, voici le détail des champs (ils sont tous obligatoire
 * ``status_type`` : pour les statuts de protection cela correspond à une liste des codes de types de statuts de protections à afficher dans la liste déroulante. Les codes existant sont consultables dans le champ ``cd_type_statut`` de la table ``taxonomie.bdc_statut_type``. Pour les listes rouges, il faut seulement indiquer le code de la liste.
 
 Au niveau de la base de données, il est possible de limiter les recherches uniquement aux textes correspondant à la zone géographique des observations de votre installation.  
-Pour cela, il suffit de mettre une valeur ``false`` dans le champ ``enable`` de la table ``taxonomie.bdc_statut_texte`` pour tous les textes que vous ne souhaitez pas prendre en compte. Si vous avez une grande quantité d'observations, cette étape est fortement recommandée !
+Pour cela, il suffit de mettre une valeur ``false`` dans le champ ``enable`` de la table ``taxonomie.bdc_statut_text`` pour tous les textes que vous ne souhaitez pas prendre en compte. Si vous avez une grande quantité d'observations, cette étape est fortement recommandée !
 
 Exemple de requête de mise à jour de la table ``taxonomie.bdc_statut_text`` pour désactiver les textes des DOM-TOM : :
 

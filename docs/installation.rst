@@ -23,7 +23,7 @@ Prérequis
 
 - Ressources minimum serveur :
 
-  - Un serveur Debian 10 ou Debian 11 architecture 64-bits
+  - Un serveur Debian 10, 11 ou 12, architecture 64-bits
   - 4 Go RAM
   - 20 Go d’espace disque
 
@@ -161,12 +161,21 @@ Exemple pour le module Import :
     source ~/GeoNature/backend/venv/bin/activate
     geonature install-gn-module ~/gn_module_import/ IMPORT
 
-Puis relancer GeoNature :
+Puis relancer GeoNatureet son worker :
 
 .. code-block:: bash
 
     sudo systemctl restart geonature
+    sudo systemctl restart geonature-worker
 
+Aucune permission n'est définie par défaut lors de l'installation d'un module. En tant qu'administrateur, vous pouvez une commande ajoutant tous les droits sur tous les modules à un groupe ou utilisateur. Cette commande peut être relancée après l'installation d'un module pour automatiquement attribuer toutes les permissions à un groupe ou utilisateur administrateur :
+
+.. code-block:: bash
+
+    # changer "Grp_Admin" par le nom de votre groupe d'administrateur si vous l'avez changé
+    geonature permissions supergrant --group --nom "Grp_admin"
+
+Vous devrez ensuite définir des droits à vos utilisateurs pour le nouveau module installé.
 
 Installation manuelle
 ---------------------

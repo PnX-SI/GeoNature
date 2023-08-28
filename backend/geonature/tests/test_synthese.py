@@ -1,5 +1,6 @@
 import pytest
 import json
+import datetime
 import itertools
 from collections import Counter
 
@@ -7,18 +8,25 @@ from flask import url_for, current_app
 from sqlalchemy import func
 from werkzeug.exceptions import Forbidden, BadRequest, Unauthorized
 from jsonschema import validate as validate_json
-from geoalchemy2.shape import to_shape
-from geojson import Point
+from geoalchemy2.shape import to_shape, from_shape
+from shapely.geometry import Point
 
 from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_synthese.models import Synthese, TSources
+from geonature.core.gn_synthese.models import Synthese, TSources, VSyntheseForWebApp
 
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user_cookie
 from ref_geo.models import BibAreasTypes, LAreas
 from apptax.tests.fixtures import noms_example, attribut_example
+from apptax.taxonomie.models import Taxref
+
+
+from pypnusershub.db.models import User
+from apptax.taxonomie.models import Taxref
+from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 from .fixtures import *
+from .fixtures import create_synthese
 from .utils import jsonschema_definitions
 
 
@@ -53,6 +61,34 @@ def taxon_attribut(noms_example, attribut_example, synthese_data):
         c = CorTaxonAttribut(bib_nom=nom, bib_attribut=attribut, valeur_attribut="eau")
         db.session.add(c)
     return c
+
+
+@pytest.fixture()
+def synthese_for_observers(source, datasets):
+    """
+    Seems redondant with synthese_data fixture, but synthese data
+    insert in cor_observers_synthese and run a trigger which override the observers_txt field
+    """
+    now = datetime.datetime.now()
+    taxon = Taxref.query.first()
+    point = Point(5.486786, 42.832182)
+    geom = from_shape(point, srid=4326)
+    with db.session.begin_nested():
+        for obs in ["Vincent", "Camille", "Camille, Xavier"]:
+            db.session.add(
+                Synthese(
+                    id_source=source.id_source,
+                    nom_cite=taxon.lb_nom,
+                    cd_nom=taxon.cd_nom,
+                    dataset=datasets["own_dataset"],
+                    date_min=now,
+                    date_max=now,
+                    observers=obs,
+                    the_geom_4326=geom,
+                    the_geom_point=geom,
+                    the_geom_local=func.st_transform(geom, 2154),
+                )
+            )
 
 
 synthese_properties = {
@@ -117,13 +153,15 @@ class TestSynthese:
             app.preprocess_request()
             assert sq.filter_by_scope(0).all() == []
 
-    def test_list_sources(self, source):
+    def test_list_sources(self, source, users):
+        set_logged_user_cookie(self.client, users["self_user"])
         response = self.client.get(url_for("gn_synthese.get_sources"))
         assert response.status_code == 200
         data = response.get_json()
         assert len(data) > 0
 
-    def test_get_defaut_nomenclatures(self):
+    def test_get_defaut_nomenclatures(self, users):
+        set_logged_user_cookie(self.client, users["self_user"])
         response = self.client.get(url_for("gn_synthese.getDefaultsNomenclatures"))
         assert response.status_code == 200
 
@@ -142,6 +180,7 @@ class TestSynthese:
 
         r = self.client.get(url)
         assert r.status_code == 200
+        print(r.json)
         validate_json(instance=r.json, schema=schema)
 
         # test on synonymy and taxref attrs
@@ -281,6 +320,37 @@ class TestSynthese:
 
         assert id_synthese in (feature["properties"]["id"] for feature in r.json["features"])
 
+    def test_get_observations_for_web_filter_id_source(self, users, synthese_data, source):
+        set_logged_user_cookie(self.client, users["self_user"])
+        id_source = source.id_source
+
+        url = url_for("gn_synthese.get_observations_for_web")
+        filters = {"id_source": id_source}
+        r = self.client.get(url, json=filters)
+
+        expected_data = {
+            synthese.id_synthese
+            for synthese in synthese_data.values()
+            if synthese.id_source == id_source
+        }
+        response_data = {feature["properties"]["id"] for feature in r.json["features"]}
+        assert expected_data.issubset(response_data)
+
+    @pytest.mark.parametrize(
+        "observer_input,expected_length_synthese",
+        [("Vincent", 1), ("Camillé", 2), ("Camille, Elie", 2), ("Jane Doe", 0)],
+    )
+    def test_get_observations_for_web_filter_observers(
+        self, users, synthese_for_observers, observer_input, expected_length_synthese
+    ):
+        set_logged_user_cookie(self.client, users["admin_user"])
+
+        filters = {"observers": observer_input}
+        r = self.client.get(url_for("gn_synthese.get_observations_for_web"), json=filters)
+        for s in r.json["features"]:
+            print(s)
+        assert len(r.json["features"]) == expected_length_synthese
+
     def test_get_synthese_data_cruved(self, app, users, synthese_data, datasets):
         set_logged_user_cookie(self.client, users["self_user"])
 
@@ -375,19 +445,489 @@ class TestSynthese:
         )
         assert response.status_code == 200
 
-    def test_export_status(self, users):
-        set_logged_user_cookie(self.client, users["self_user"])
+    def test_export_observations(self, users, synthese_data, synthese_sensitive_data):
+        data_synthese = synthese_data.values()
+        data_synthese_sensitive = synthese_sensitive_data.values()
+        list_id_synthese = [obs_data_synthese.id_synthese for obs_data_synthese in data_synthese]
+        list_id_synthese.extend(
+            [obs_data_synthese.id_synthese for obs_data_synthese in data_synthese_sensitive]
+        )
 
-        response = self.client.post(url_for("gn_synthese.export_status"))
+        expected_columns_exports = [
+            '"id_synthese"',
+            '"date_debut"',
+            '"date_fin"',
+            '"heure_debut"',
+            '"heure_fin"',
+            '"cd_nom"',
+            '"cd_ref"',
+            '"nom_valide"',
+            '"nom_vernaculaire"',
+            '"nom_cite"',
+            '"regne"',
+            '"group1_inpn"',
+            '"group2_inpn"',
+            '"classe"',
+            '"ordre"',
+            '"famille"',
+            '"rang_taxo"',
+            '"nombre_min"',
+            '"nombre_max"',
+            '"alti_min"',
+            '"alti_max"',
+            '"prof_min"',
+            '"prof_max"',
+            '"observateurs"',
+            '"determinateur"',
+            '"communes"',
+            '"geometrie_wkt_4326"',
+            '"x_centroid_4326"',
+            '"y_centroid_4326"',
+            '"nom_lieu"',
+            '"comment_releve"',
+            '"comment_occurrence"',
+            '"validateur"',
+            '"niveau_validation"',
+            '"date_validation"',
+            '"comment_validation"',
+            '"preuve_numerique_url"',
+            '"preuve_non_numerique"',
+            '"jdd_nom"',
+            '"jdd_uuid"',
+            '"jdd_id"',
+            '"ca_nom"',
+            '"ca_uuid"',
+            '"ca_id"',
+            '"cd_habref"',
+            '"cd_habitat"',
+            '"nom_habitat"',
+            '"precision_geographique"',
+            '"nature_objet_geo"',
+            '"type_regroupement"',
+            '"methode_regroupement"',
+            '"technique_observation"',
+            '"biologique_statut"',
+            '"etat_biologique"',
+            '"biogeographique_statut"',
+            '"naturalite"',
+            '"preuve_existante"',
+            '"niveau_precision_diffusion"',
+            '"stade_vie"',
+            '"sexe"',
+            '"objet_denombrement"',
+            '"type_denombrement"',
+            '"niveau_sensibilite"',
+            '"statut_observation"',
+            '"floutage_dee"',
+            '"statut_source"',
+            '"type_info_geo"',
+            '"methode_determination"',
+            '"comportement"',
+            '"reference_biblio"',
+            '"id_origine"',
+            '"uuid_perm_sinp"',
+            '"uuid_perm_grp_sinp"',
+            '"date_creation"',
+            '"date_modification"',
+            '"champs_additionnels"',
+        ]
 
-        assert response.status_code == 200
+        def assert_export_results(user, expected_id_synthese_list):
+            set_logged_user_cookie(self.client, user)
+            response = self.client.post(
+                url_for("gn_synthese.export_observations_web"),
+                json=list_id_synthese,
+                query_string={"export_format": "csv"},
+            )
+            assert response.status_code == 200
 
-    def test_export_metadata(self, users):
-        set_logged_user_cookie(self.client, users["self_user"])
+            rows_data_response = response.data.decode("utf-8").split("\r\n")[0:-1]
+            row_header = rows_data_response[0]
+            rows_synthese_data_response = rows_data_response[1:]
 
-        response = self.client.get(url_for("gn_synthese.export_metadata"))
+            assert row_header.split(";") == expected_columns_exports
 
-        assert response.status_code == 200
+            expected_response_data_synthese = [
+                obs_data_synthese
+                for obs_data_synthese in data_synthese
+                if obs_data_synthese.id_synthese in expected_id_synthese_list
+            ]
+            expected_response_data_synthese.extend(
+                [
+                    obs_data_synthese
+                    for obs_data_synthese in data_synthese_sensitive
+                    if obs_data_synthese.id_synthese in expected_id_synthese_list
+                ]
+            )
+            nb_expected_synthese_data = len(expected_response_data_synthese)
+            assert len(rows_synthese_data_response) >= nb_expected_synthese_data
+            list_id_synthese_data_response = [
+                row.split(";")[0] for row in rows_synthese_data_response
+            ]
+            assert set(
+                f'"{expected_id_synthese}"' for expected_id_synthese in expected_id_synthese_list
+            ).issubset(set(list_id_synthese_data_response))
+            # Some checks on the data of the response : cd_nom, comment_occurrence (comment_description in synthese)
+            for expected_obs_data_synthese in expected_response_data_synthese:
+                id_synthese_expected_obs_data_synthese = expected_obs_data_synthese.id_synthese
+                row_response_obs_data_synthese = [
+                    row
+                    for row in rows_synthese_data_response
+                    if row.split(";")[0] == f'"{id_synthese_expected_obs_data_synthese}"'
+                ][0]
+                # Check cd_nom
+                expected_cd_nom = expected_obs_data_synthese.cd_nom
+                index_cd_nom_response = expected_columns_exports.index('"cd_nom"')
+                response_cd_nom = row_response_obs_data_synthese.split(";")[index_cd_nom_response]
+                assert response_cd_nom == f'"{expected_cd_nom}"'
+                # Check comment_occurrence
+                expected_comment_occurrence = expected_obs_data_synthese.comment_description
+                index_comment_occurrence_response = expected_columns_exports.index(
+                    '"comment_occurrence"'
+                )
+                response_comment_occurrence = row_response_obs_data_synthese.split(";")[
+                    index_comment_occurrence_response
+                ]
+                assert response_comment_occurrence == f'"{expected_comment_occurrence}"'
+
+        ## "self_user" : scope 1 and include sensitive data
+        user = users["self_user"]
+        expected_id_synthese_list = [
+            synthese_data[name_obs].id_synthese
+            for name_obs in [
+                "obs1",
+                "obs2",
+                "obs3",
+                "p1_af1",
+                "p1_af1_2",
+                "p1_af2",
+                "p2_af2",
+                "p2_af1",
+                "p3_af3",
+            ]
+        ]
+        expected_id_synthese_list.extend(
+            [
+                synthese_sensitive_data[name_obs].id_synthese
+                for name_obs in [
+                    "obs_sensitive_protected",
+                    "obs_protected_not_sensitive",
+                    "obs_sensitive_protected_2",
+                ]
+            ]
+        )
+        assert_export_results(user, expected_id_synthese_list)
+
+        ## "associate_user_2_exclude_sensitive" : scope 2 and exclude sensitive data
+        user = users["associate_user_2_exclude_sensitive"]
+        expected_id_synthese_list = [synthese_data[name_obs].id_synthese for name_obs in ["obs1"]]
+        expected_id_synthese_list.extend(
+            [
+                synthese_sensitive_data[name_obs].id_synthese
+                for name_obs in ["obs_protected_not_sensitive"]
+            ]
+        )
+        assert_export_results(user, expected_id_synthese_list)
+
+    def test_export_taxons(self, users, synthese_data, synthese_sensitive_data):
+        data_synthese = synthese_data.values()
+        data_synthese_sensitive = synthese_sensitive_data.values()
+        list_id_synthese = [obs_data_synthese.id_synthese for obs_data_synthese in data_synthese]
+        list_id_synthese.extend(
+            [obs_data_synthese.id_synthese for obs_data_synthese in data_synthese_sensitive]
+        )
+
+        expected_columns_exports = [
+            '"nom_valide"',
+            '"cd_ref"',
+            '"nom_vern"',
+            '"group1_inpn"',
+            '"group2_inpn"',
+            '"regne"',
+            '"phylum"',
+            '"classe"',
+            '"ordre"',
+            '"famille"',
+            '"id_rang"',
+            '"nb_obs"',
+            '"date_min"',
+            '"date_max"',
+        ]
+        index_colummn_cd_ref = expected_columns_exports.index('"cd_ref"')
+
+        def assert_export_taxons_results(user, set_expected_cd_ref):
+            set_logged_user_cookie(self.client, user)
+
+            response = self.client.post(
+                url_for("gn_synthese.export_taxon_web"),
+                json=list_id_synthese,
+            )
+
+            assert response.status_code == 200
+
+            rows_data_response = response.data.decode("utf-8").split("\r\n")[0:-1]
+            row_header = rows_data_response[0]
+            rows_taxons_data_response = rows_data_response[1:]
+
+            assert row_header.split(";") == expected_columns_exports
+
+            nb_expected_cd_noms = len(set_expected_cd_ref)
+
+            assert len(rows_taxons_data_response) >= nb_expected_cd_noms
+
+            set_cd_ref_data_response = set(
+                row.split(";")[index_colummn_cd_ref] for row in rows_taxons_data_response
+            )
+
+            assert set(f'"{expected_cd_ref}"' for expected_cd_ref in set_expected_cd_ref).issubset(
+                set_cd_ref_data_response
+            )
+
+        ## "self_user" : scope 1 and include sensitive data
+        user = users["self_user"]
+        set_expected_cd_ref = set(
+            Taxref.query.filter(Taxref.cd_nom == synthese_data[name_obs].cd_nom).one().cd_ref
+            for name_obs in [
+                "obs1",
+                "obs2",
+                "obs3",
+                "p1_af1",
+                "p1_af1_2",
+                "p1_af2",
+                "p2_af2",
+                "p2_af1",
+                "p3_af3",
+            ]
+        )
+        set_expected_cd_ref.update(
+            set(
+                Taxref.query.filter(Taxref.cd_nom == synthese_sensitive_data[name_obs].cd_nom)
+                .one()
+                .cd_ref
+                for name_obs in [
+                    "obs_sensitive_protected",
+                    "obs_protected_not_sensitive",
+                    "obs_sensitive_protected_2",
+                ]
+            )
+        )
+        assert_export_taxons_results(user, set_expected_cd_ref)
+
+        ## "associate_user_2_exclude_sensitive" : scope 2 and exclude sensitive data
+        user = users["associate_user_2_exclude_sensitive"]
+        set_expected_cd_ref = set(
+            Taxref.query.filter(Taxref.cd_nom == synthese_data[name_obs].cd_nom).one().cd_ref
+            for name_obs in ["obs1"]
+        )
+        set_expected_cd_ref.add(
+            Taxref.query.filter(
+                Taxref.cd_nom == synthese_sensitive_data["obs_protected_not_sensitive"].cd_nom
+            )
+            .one()
+            .cd_ref
+        )
+        assert_export_taxons_results(user, set_expected_cd_ref)
+
+    def test_export_status(self, users, synthese_data, synthese_sensitive_data):
+        expected_columns_exports = [
+            '"nom_complet"',
+            '"nom_vern"',
+            '"cd_nom"',
+            '"cd_ref"',
+            '"type_regroupement"',
+            '"type"',
+            '"territoire_application"',
+            '"intitule_doc"',
+            '"code_statut"',
+            '"intitule_statut"',
+            '"remarque"',
+            '"url_doc"',
+        ]
+        index_column_cd_nom = expected_columns_exports.index('"cd_nom"')
+
+        def assert_export_status_results(user, set_expected_cd_ref):
+            set_logged_user_cookie(self.client, user)
+
+            response = self.client.post(
+                url_for("gn_synthese.export_status"),
+            )
+
+            assert response.status_code == 200
+
+            rows_data_response = response.data.decode("utf-8").split("\r\n")[0:-1]
+            row_header = rows_data_response[0]
+            rows_taxons_data_response = rows_data_response[1:]
+
+            assert row_header.split(";") == expected_columns_exports
+
+            nb_expected_cd_ref = len(set_expected_cd_ref)
+            set_cd_ref_data_response = set(
+                row.split(";")[index_column_cd_nom] for row in rows_taxons_data_response
+            )
+            nb_cd_ref_response = len(set_cd_ref_data_response)
+
+            assert nb_cd_ref_response >= nb_expected_cd_ref
+
+            assert set(f'"{expected_cd_ref}"' for expected_cd_ref in set_expected_cd_ref).issubset(
+                set_cd_ref_data_response
+            )
+
+        ## "self_user" : scope 1 and include sensitive data
+        user = users["self_user"]
+        set_expected_cd_ref = set(
+            Taxref.query.filter(Taxref.cd_nom == synthese_sensitive_data[name_obs].cd_nom)
+            .one()
+            .cd_ref
+            for name_obs in [
+                "obs_sensitive_protected",
+                "obs_protected_not_sensitive",
+                "obs_sensitive_protected_2",
+            ]
+        )
+        assert_export_status_results(user, set_expected_cd_ref)
+
+        ## "associate_user_2_exclude_sensitive" : scope 2 and exclude sensitive data
+        user = users["associate_user_2_exclude_sensitive"]
+        set_expected_cd_ref = set(
+            Taxref.query.filter(Taxref.cd_nom == synthese_sensitive_data[name_obs].cd_nom)
+            .one()
+            .cd_ref
+            for name_obs in ["obs_protected_not_sensitive"]
+        )
+        assert_export_status_results(user, set_expected_cd_ref)
+
+    def test_export_metadata(self, users, synthese_data, synthese_sensitive_data):
+        data_synthese = synthese_data.values()
+        data_synthese_sensitive = synthese_sensitive_data.values()
+        list_id_synthese = [obs_data_synthese.id_synthese for obs_data_synthese in data_synthese]
+        list_id_synthese.extend(
+            [obs_data_synthese.id_synthese for obs_data_synthese in data_synthese_sensitive]
+        )
+
+        expected_columns_exports = [
+            '"jeu_donnees"',
+            '"jdd_id"',
+            '"jdd_uuid"',
+            '"cadre_acquisition"',
+            '"ca_uuid"',
+            '"acteurs"',
+            '"nombre_total_obs"',
+        ]
+        index_column_jdd_id = expected_columns_exports.index('"jdd_id"')
+
+        # TODO: assert that some data is excluded from the response
+        def assert_export_metadata_results(user, dict_expected_datasets):
+            set_logged_user_cookie(self.client, user)
+
+            response = self.client.post(
+                url_for("gn_synthese.export_metadata"),
+            )
+
+            assert response.status_code == 200
+
+            rows_data_response = response.data.decode("utf-8").split("\r\n")[0:-1]
+            row_header = rows_data_response[0]
+            rows_datasets_data_response = rows_data_response[1:]
+
+            assert row_header.split(";") == expected_columns_exports
+
+            nb_expected_datasets = len(dict_expected_datasets)
+            set_id_datasets_data_response = set(
+                row.split(";")[index_column_jdd_id] for row in rows_datasets_data_response
+            )
+            nb_datasets_response = len(set_id_datasets_data_response)
+
+            assert nb_datasets_response >= nb_expected_datasets
+
+            set_expected_id_datasets = set(dict_expected_datasets.keys())
+            assert set(
+                f'"{expected_id_dataset}"' for expected_id_dataset in set_expected_id_datasets
+            ).issubset(set_id_datasets_data_response)
+
+            for expected_id_dataset, expected_nb_obs in dict_expected_datasets.items():
+                row_dataset_data_response = [
+                    row
+                    for row in rows_datasets_data_response
+                    if row.split(";")[index_column_jdd_id] == f'"{expected_id_dataset}"'
+                ][0]
+                nb_obs_response = row_dataset_data_response.split(";")[-1]
+                assert nb_obs_response >= f'"{expected_nb_obs}"'
+
+        ## "self_user" : scope 1 and include sensitive data
+        user = users["self_user"]
+        # Create a dict (id_dataset, nb_obs) for the expected data
+        dict_expected_datasets = {}
+        expected_data_synthese = [
+            obs_synthese
+            for name_obs, obs_synthese in synthese_data.items()
+            if name_obs
+            in [
+                "obs1",
+                "obs2",
+                "obs3",
+                "p1_af1",
+                "p1_af1_2",
+                "p1_af2",
+                "p2_af2",
+                "p2_af1",
+                "p3_af3",
+            ]
+        ]
+        for obs_data_synthese in expected_data_synthese:
+            id_dataset = obs_data_synthese.id_dataset
+            if id_dataset in dict_expected_datasets:
+                dict_expected_datasets[id_dataset] += 1
+            else:
+                dict_expected_datasets[id_dataset] = 1
+        expected_data_synthese = [
+            obs_synthese
+            for name_obs, obs_synthese in synthese_sensitive_data.items()
+            if name_obs
+            in [
+                "obs_sensitive_protected",
+                "obs_protected_not_sensitive",
+                "obs_sensitive_protected_2",
+            ]
+        ]
+        for obs_data_synthese in expected_data_synthese:
+            id_dataset = obs_data_synthese.id_dataset
+            if id_dataset in dict_expected_datasets:
+                dict_expected_datasets[id_dataset] += 1
+            else:
+                dict_expected_datasets[id_dataset] = 1
+        assert_export_metadata_results(user, dict_expected_datasets)
+
+        ## "associate_user_2_exclude_sensitive" : scope 2 and exclude sensitive data
+        user = users["associate_user_2_exclude_sensitive"]
+        # Create a dict (id_dataset, nb_obs) for the expected data
+        dict_expected_datasets = {}
+        expected_data_synthese = [
+            obs_synthese
+            for name_obs, obs_synthese in synthese_data.items()
+            if name_obs in ["obs1"]
+        ]
+        for obs_data_synthese in expected_data_synthese:
+            id_dataset = obs_data_synthese.id_dataset
+            if id_dataset in dict_expected_datasets:
+                dict_expected_datasets[id_dataset] += 1
+            else:
+                dict_expected_datasets[id_dataset] = 1
+        expected_data_synthese = [
+            obs_synthese
+            for name_obs, obs_synthese in synthese_sensitive_data.items()
+            if name_obs
+            in [
+                "obs_protected_not_sensitive",
+            ]
+        ]
+        for obs_data_synthese in expected_data_synthese:
+            id_dataset = obs_data_synthese.id_dataset
+            if id_dataset in dict_expected_datasets:
+                dict_expected_datasets[id_dataset] += 1
+            else:
+                dict_expected_datasets[id_dataset] = 1
+        # TODO: s'assurer qu'on ne récupère pas le dataset "associate_2_dataset_sensitive", car ne contient que des données sensibles, bien que l'utilisateur ait le scope nécessaire par ailleurs (scope 2, et ce dataset lui est associé)
+        assert_export_metadata_results(user, dict_expected_datasets)
 
     def test_general_stat(self, users):
         set_logged_user_cookie(self.client, users["self_user"])
@@ -445,8 +985,9 @@ class TestSynthese:
         )
         assert response.status_code == Forbidden.code
 
-    def test_color_taxon(self, synthese_data):
+    def test_color_taxon(self, synthese_data, users):
         # Note: require grids 5×5!
+        set_logged_user_cookie(self.client, users["self_user"])
         response = self.client.get(url_for("gn_synthese.get_color_taxon"))
         assert response.status_code == 200
 
@@ -481,9 +1022,13 @@ class TestSynthese:
             },
         )
 
-    def test_taxa_distribution(self, synthese_data):
+    def test_taxa_distribution(self, users, synthese_data):
         s = synthese_data["p1_af1"]
 
+        response = self.client.get(url_for("gn_synthese.get_taxa_distribution"))
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user_cookie(self.client, users["self_user"])
         response = self.client.get(url_for("gn_synthese.get_taxa_distribution"))
         assert response.status_code == 200
         assert len(response.json)
@@ -515,14 +1060,17 @@ class TestSynthese:
         assert response.status_code == 200
         assert len(response.json)
 
-    def test_get_taxa_count(self, synthese_data):
+    def test_get_taxa_count(self, synthese_data, users):
+        set_logged_user_cookie(self.client, users["self_user"])
+
         response = self.client.get(url_for("gn_synthese.get_taxa_count"))
 
         assert response.json >= len(set(synt.cd_nom for synt in synthese_data.values()))
 
-    def test_get_taxa_count_id_dataset(self, synthese_data, datasets, unexisted_id):
+    def test_get_taxa_count_id_dataset(self, synthese_data, users, datasets, unexisted_id):
         id_dataset = datasets["own_dataset"].id_dataset
         url = "gn_synthese.get_taxa_count"
+        set_logged_user_cookie(self.client, users["self_user"])
 
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
         response_empty = self.client.get(url_for(url), query_string={"id_dataset": unexisted_id})
@@ -530,17 +1078,19 @@ class TestSynthese:
         assert response.json == len(set(synt.cd_nom for synt in synthese_data.values()))
         assert response_empty.json == 0
 
-    def test_get_observation_count(self, synthese_data):
+    def test_get_observation_count(self, synthese_data, users):
         nb_observations = len(synthese_data)
+        set_logged_user_cookie(self.client, users["admin_user"])
 
         response = self.client.get(url_for("gn_synthese.get_observation_count"))
 
         assert response.json >= nb_observations
 
-    def test_get_observation_count_id_dataset(self, synthese_data, datasets, unexisted_id):
+    def test_get_observation_count_id_dataset(self, synthese_data, users, datasets, unexisted_id):
         id_dataset = datasets["own_dataset"].id_dataset
         nb_observations = len([s for s in synthese_data.values() if s.id_dataset == id_dataset])
         url = "gn_synthese.get_observation_count"
+        set_logged_user_cookie(self.client, users["self_user"])
 
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
         response_empty = self.client.get(url_for(url), query_string={"id_dataset": unexisted_id})
@@ -548,15 +1098,18 @@ class TestSynthese:
         assert response.json == nb_observations
         assert response_empty.json == 0
 
-    def test_get_bbox(self, synthese_data):
+    def test_get_bbox(self, synthese_data, users):
+        set_logged_user_cookie(self.client, users["self_user"])
+
         response = self.client.get(url_for("gn_synthese.get_bbox"))
 
         assert response.status_code == 200
         assert response.json["type"] in ["Point", "Polygon"]
 
-    def test_get_bbox_id_dataset(self, synthese_data, datasets, unexisted_id):
+    def test_get_bbox_id_dataset(self, synthese_data, users, datasets, unexisted_id):
         id_dataset = datasets["own_dataset"].id_dataset
         url = "gn_synthese.get_bbox"
+        set_logged_user_cookie(self.client, users["self_user"])
 
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
         assert response.status_code == 200
@@ -566,26 +1119,29 @@ class TestSynthese:
         assert response_empty.status_code == 204
         assert response_empty.get_data(as_text=True) == ""
 
-    def test_get_bbox_id_source(self, synthese_data, source):
+    def test_get_bbox_id_source(self, synthese_data, users, source):
         id_source = source.id_source
         url = "gn_synthese.get_bbox"
+        set_logged_user_cookie(self.client, users["self_user"])
 
         response = self.client.get(url_for(url), query_string={"id_source": id_source})
 
         assert response.status_code == 200
         assert response.json["type"] == "Polygon"
 
-    def test_get_bbox_id_source_empty(self, unexisted_id_source):
+    def test_get_bbox_id_source_empty(self, users, unexisted_id_source):
         url = "gn_synthese.get_bbox"
+        set_logged_user_cookie(self.client, users["self_user"])
 
         response = self.client.get(url_for(url), query_string={"id_source": unexisted_id_source})
 
         assert response.status_code == 204
         assert response.json is None
 
-    def test_observation_count_per_column(self, synthese_data):
+    def test_observation_count_per_column(self, users, synthese_data):
         column_name_dataset = "id_dataset"
         column_name_cd_nom = "cd_nom"
+        set_logged_user_cookie(self.client, users["self_user"])
 
         response_dataset = self.client.get(
             url_for("gn_synthese.observation_count_per_column", column=column_name_dataset)
@@ -632,8 +1188,10 @@ class TestSynthese:
                 if item["cd_nom"] == test_cd_nom["cd_nom"]:
                     assert item["count"] >= test_cd_nom["count"]
 
-    def test_get_autocomplete_taxons_synthese(self, synthese_data):
+    def test_get_autocomplete_taxons_synthese(self, synthese_data, users):
         seach_name = synthese_data["obs1"].nom_cite
+
+        set_logged_user_cookie(self.client, users["self_user"])
 
         response = self.client.get(
             url_for("gn_synthese.get_autocomplete_taxons_synthese"),

@@ -4,7 +4,7 @@ import pytest
 from datetime import datetime as dt
 
 from flask import url_for, current_app, g
-from werkzeug.exceptions import Forbidden, NotFound
+from werkzeug.exceptions import Unauthorized, Forbidden, NotFound
 from shapely.geometry import Point
 from geoalchemy2.shape import from_shape
 from sqlalchemy import func
@@ -231,8 +231,24 @@ class TestOcctax:
         data = response.json
         assert data["properties"]["id_module"] == module.id_module
 
-    def test_get_defaut_nomenclatures(self):
+    def test_get_defaut_nomenclatures(self, users):
         response = self.client.get(url_for("pr_occtax.getDefaultNomenclatures"))
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user_cookie(self.client, users["user"])
+
+        response = self.client.get(url_for("pr_occtax.getDefaultNomenclatures"))
+        assert response.status_code == 200
+
+    def test_get_one_counting(self, occurrence, users):
+        print(occurrence.cor_counting_occtax)
+        set_logged_user_cookie(self.client, users["admin_user"])
+        response = self.client.get(
+            url_for(
+                "pr_occtax.getOneCounting",
+                id_counting=occurrence.cor_counting_occtax[0].id_counting_occtax,
+            )
+        )
         assert response.status_code == 200
 
 

@@ -1,15 +1,48 @@
-import pytest
 import json
 
+import pytest
 from flask import url_for
 from sqlalchemy import func
-from werkzeug.exceptions import Forbidden, BadRequest, Unauthorized, NotFound
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Unauthorized
 
+from geonature.core.gn_synthese.models import BibReportsTypes, Synthese, TReport
+from geonature.core.notifications.models import Notification, NotificationRule
 from geonature.utils.env import db
-from geonature.core.gn_synthese.models import TReport, BibReportsTypes, Synthese
 
 from .fixtures import *
 from .utils import logged_user_headers, set_logged_user_cookie
+
+
+def add_notification_rule(user):
+    with db.session.begin_nested():
+        new_notification_rule = NotificationRule(
+            id_role=user.id_role,
+            code_method="DB",
+            code_category="OBSERVATION-COMMENT",
+            subscribed=True,
+        )
+        db.session.add(new_notification_rule)
+    return new_notification_rule
+
+
+@pytest.fixture()
+def admin_notification_rule(users):
+    return add_notification_rule(users["admin_user"])
+
+
+@pytest.fixture()
+def associate_user_notification_rule(users):
+    return add_notification_rule(users["associate_user"])
+
+
+@pytest.fixture()
+def user_notification_rule(users):
+    return add_notification_rule(users["user"])
+
+
+@pytest.fixture()
+def self_user_notification_rule(users):
+    return add_notification_rule(users["self_user"])
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -105,3 +138,144 @@ class TestReports:
             # NO TYPE - TYPE IS NOT REQUIRED
             response = self.client.get(url_for(url, idSynthese=ids[1]))
             assert response.status_code == 200
+
+
+@pytest.mark.usefixtures("client_class", "notifications_enabled", "temporary_transaction")
+class TestReportsNotifications:
+    def post_comment(self, synthese, user):
+        """Post a comment on a synthese row as a user"""
+        set_logged_user_cookie(self.client, user)
+        url = "gn_synthese.create_report"
+        id_synthese = synthese.id_synthese
+        data = {"item": id_synthese, "content": "comment 4", "type": "discussion"}
+        return self.client.post(url_for(url), data=data)
+
+    def test_report_notification_on_own_obs(
+        self,
+        synthese_data,
+        users,
+        admin_notification_rule,
+        user_notification_rule,
+        self_user_notification_rule,
+    ):
+        """
+        Given:
+        - user and admin_user are observer of a synthese data
+        - self_user is the digitiser
+        When
+        - user adds a comment
+        Then
+        - admin_user and self_user receives a notification
+        - user does not receive a notification since user wrote a comment
+        """
+        synthese = synthese_data["obs1"]
+
+        response = self.post_comment(synthese=synthese, user=users["user"])
+
+        # Just test that the comment had been sent
+        assert response.status_code == 204
+
+        # Check that admin_user (observer) and self_user (digitiser) are notified
+        id_roles = {user.id_role for user in (users["admin_user"], users["self_user"])}
+        notifications = Notification.query.filter(Notification.id_role.in_(id_roles)).all()
+
+        assert {notification.id_role for notification in notifications} == id_roles
+        assert all(synthese.nom_cite in notif.content for notif in notifications)
+        # Check that user is not notified since he posted the comment
+        assert (
+            Notification.query.filter(Notification.id_role == users["user"].id_role).first()
+            is None
+        )
+
+    def test_report_notification_on_not_own_obs(
+        self,
+        synthese_data,
+        users,
+        admin_notification_rule,
+        user_notification_rule,
+        self_user_notification_rule,
+        associate_user_notification_rule,
+    ):
+        """
+        Given:
+        - user and admin_user are observer of a synthese data
+        - self_user is the digitiser
+        When
+        - associate_user adds a comment
+        Then
+        - user, admin_user and self_user receives a notification
+        - associate_user does not receive a notification since associate_user wrote a comment
+        """
+
+        synthese = synthese_data["obs1"]
+        response = self.post_comment(synthese=synthese, user=users["associate_user"])
+
+        # Just test that the comment had been sent
+        assert response.status_code == 204
+
+        # Check that user, admin_user (observers) and self_user (digitiser) are notified
+        id_roles = {
+            user.id_role for user in (users["user"], users["admin_user"], users["self_user"])
+        }
+        notifications = Notification.query.filter(Notification.id_role.in_(id_roles)).all()
+
+        assert {notification.id_role for notification in notifications} == id_roles
+        assert all(synthese.nom_cite in notif.content for notif in notifications)
+        # But check also that associate_user is not notified for the comment he posted
+        assert (
+            Notification.query.filter(
+                Notification.id_role == users["associate_user"].id_role
+            ).first()
+            is None
+        )
+
+    def test_report_notification_on_obs_commented(
+        self,
+        synthese_data,
+        users,
+        associate_user_notification_rule,
+        admin_notification_rule,
+        user_notification_rule,
+        self_user_notification_rule,
+    ):
+        """
+        Given:
+        - user and admin_user are observer of a synthese data
+        - self_user is the digitiser
+        When
+        - associate_user adds a comment
+        - admin_user adds a comment afterwards
+        Then
+        - after the first comment is posted, associate_user does not receive a notification
+        - user, admin_user and self_user receives a notification since associate_user commented
+        - associate_user receives a notification since admin_user commented on the observation
+        associate_user commented on
+        """
+        synthese = synthese_data["obs1"]
+
+        # Post first comment so that associate_user can be notified on future comments
+        _ = self.post_comment(synthese=synthese, user=users["associate_user"])
+        # Check that associate_user is not notified (just in case)
+        assert (
+            Notification.query.filter(
+                Notification.id_role == users["associate_user"].id_role
+            ).first()
+            is None
+        )
+        # Post second comment to notify associate_user on future comments
+        _ = self.post_comment(synthese=synthese, user=users["admin_user"])
+
+        # Check that all these roles are notified. Careful, even admin_user is notified
+        # because of the first comment
+        user_roles = {
+            user.id_role
+            for user in (
+                users["associate_user"],
+                users["admin_user"],
+                users["self_user"],
+                users["user"],
+            )
+        }
+        notifications = Notification.query.filter(Notification.id_role.in_(user_roles)).all()
+
+        assert {notification.id_role for notification in notifications} == user_roles

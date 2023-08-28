@@ -1,15 +1,17 @@
 """
-Utility function to manage cruved and all filter of Synthese
+Utility function to manage permissions and all filter of Synthese
 Use these functions rather than query.py
 Filter the query of synthese using SQLA expression language and 'select' object
 https://docs.sqlalchemy.org/en/latest/core/tutorial.html#selecting
 much more efficient
 """
 import datetime
+import unicodedata
 import uuid
 
 from flask import current_app
 
+import sqlalchemy as sa
 from sqlalchemy import func, or_, and_, select, distinct
 from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
@@ -23,6 +25,7 @@ from geonature.core.gn_synthese.models import (
     CorAreaSynthese,
     BibReportsTypes,
     TReport,
+    TSources,
 )
 from geonature.core.gn_meta.models import (
     CorDatasetActor,
@@ -40,6 +43,7 @@ from apptax.taxonomie.models import (
 )
 from ref_geo.models import LAreas, BibAreasTypes
 from utils_flask_sqla_geo.schema import FeatureSchema, FeatureCollectionSchema
+from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 
 class SyntheseQuery:
@@ -123,6 +127,61 @@ class SyntheseQuery:
                 self.query_joins = self.query_joins.join(right_table, and_(*conditions))
                 # push the joined table in _already_joined_table list
                 self._already_joined_table.append(right_table)
+
+    def filter_query_with_permissions(self, user, permissions):
+        """
+        Filter the query with the permissions of a user
+        """
+        subquery_observers = (
+            select([CorObserverSynthese.id_synthese])
+            .select_from(CorObserverSynthese)
+            .where(CorObserverSynthese.id_role == user.id_role)
+        )
+        datasets_by_scope = {}  # to avoid fetching datasets several time for same scope
+        permissions_filters = []
+        nomenclature_non_sensible = None
+        for perm in permissions:
+            if perm.has_other_filters_than("SCOPE", "SENSITIVITY"):
+                continue
+            perm_filters = []
+            if perm.sensitivity_filter:
+                if nomenclature_non_sensible is None:
+                    nomenclature_non_sensible = (
+                        TNomenclatures.query.filter(
+                            TNomenclatures.nomenclature_type.has(
+                                BibNomenclaturesTypes.mnemonique == "SENSIBILITE"
+                            )
+                        )
+                        .filter(TNomenclatures.cd_nomenclature == "0")
+                        .one()
+                    )
+                perm_filters.append(
+                    self.model.id_nomenclature_sensitivity
+                    == nomenclature_non_sensible.id_nomenclature
+                )
+            if perm.scope_value:
+                if perm.scope_value not in datasets_by_scope:
+                    datasets_by_scope[perm.scope_value] = [
+                        d.id_dataset
+                        for d in TDatasets.query.filter_by_scope(perm.scope_value).all()
+                    ]
+                datasets = datasets_by_scope[perm.scope_value]
+                scope_filters = [
+                    self.model_id_syn_col.in_(subquery_observers),  # user is observer
+                    self.model_id_digitiser_column == user.id_role,  # user id digitizer
+                    self.model_id_dataset_column.in_(
+                        datasets
+                    ),  # user is dataset (or parent af) actor
+                ]
+                perm_filters.append(or_(*scope_filters))
+            if perm_filters:
+                permissions_filters.append(and_(*perm_filters))
+            else:
+                permissions_filters.append(sa.true())
+        if permissions_filters:
+            self.query = self.query.where(or_(*permissions_filters))
+        else:
+            self.query = self.query.where(sa.false())
 
     def filter_query_with_cruved(self, user, scope):
         """
@@ -280,10 +339,17 @@ class SyntheseQuery:
                 self.model.id_dataset.in_(self.filters.pop("id_dataset"))
             )
         if "observers" in self.filters:
-            # découpe des éléments saisies par les espaces
-            observers = self.filters.pop("observers").split()
+            # découpe des éléments saisies par des ","
+            observers = self.filters.pop("observers").split(",")
             self.query = self.query.where(
-                and_(*[self.model.observers.ilike("%" + observer + "%") for observer in observers])
+                or_(
+                    *[
+                        func.unaccent(self.model.observers).ilike(
+                            "%" + remove_accents(observer) + "%"
+                        )
+                        for observer in observers
+                    ]
+                )
             )
 
         if "observers_list" in self.filters:
@@ -312,6 +378,10 @@ class SyntheseQuery:
             date_max = datetime.datetime.strptime(self.filters.pop("date_max"), "%Y-%m-%d")
             date_max = date_max.replace(hour=23, minute=59, second=59)
             self.query = self.query.where(self.model.date_max <= date_max)
+
+        if "id_source" in self.filters:
+            self.add_join(TSources, self.model.id_source, TSources.id_source)
+            self.query = self.query.where(self.model.id_source == self.filters.pop("id_source"))
 
         if "id_acquisition_framework" in self.filters:
             if hasattr(self.model, "id_acquisition_framework"):
@@ -382,11 +452,19 @@ class SyntheseQuery:
         # generic filters
         for colname, value in self.filters.items():
             if colname.startswith("area"):
-                self.add_join(CorAreaSynthese, CorAreaSynthese.id_synthese, self.model.id_synthese)
-                self.query = self.query.where(CorAreaSynthese.id_area.in_(value))
+                cor_area_synthese_alias = aliased(CorAreaSynthese)
+                self.add_join(
+                    cor_area_synthese_alias,
+                    cor_area_synthese_alias.id_synthese,
+                    self.model.id_synthese,
+                )
+                self.query = self.query.where(cor_area_synthese_alias.id_area.in_(value))
             elif colname.startswith("id_"):
                 col = getattr(self.model.__table__.columns, colname)
-                self.query = self.query.where(col.in_(value))
+                if isinstance(value, list):
+                    self.query = self.query.where(col.in_(value))
+                else:
+                    self.query = self.query.where(col == value)
             elif hasattr(self.model.__table__.columns, colname):
                 col = getattr(self.model.__table__.columns, colname)
                 if str(col.type) == "INTEGER":
@@ -397,8 +475,11 @@ class SyntheseQuery:
                 else:
                     self.query = self.query.where(col.ilike("%{}%".format(value)))
 
-    def apply_all_filters(self, user, scope):
-        self.filter_query_with_cruved(user, scope)
+    def apply_all_filters(self, user, permissions):
+        if type(permissions) == int:  # scope
+            self.filter_query_with_cruved(user, scope=permissions)
+        else:
+            self.filter_query_with_permissions(user, permissions)
         self.filter_taxonomy()
         self.filter_other_filters(user)
 
@@ -407,10 +488,10 @@ class SyntheseQuery:
             self.query = self.query.select_from(self.query_joins)
         return self.query
 
-    def filter_query_all_filters(self, user, scope):
+    def filter_query_all_filters(self, user, permissions):
         """High level function to manage query with all filters.
 
-        Apply CRUVED, toxonomy and other filters.
+        Apply CRUVED, taxonomy and other filters.
 
         Parameters
         ----------
@@ -422,7 +503,7 @@ class SyntheseQuery:
         sqlalchemy.orm.query.Query.filter
             Combined filter to apply.
         """
-        self.apply_all_filters(user, scope)
+        self.apply_all_filters(user, permissions)
         return self.build_query()
 
     def build_bdc_status_pr_nb_lateral_join(self, protection_status_value, red_list_filters):
@@ -521,3 +602,8 @@ class SyntheseQuery:
                 == (len(protection_status_value) + len(red_list_filters)),
             ],
         )
+
+
+def remove_accents(input_str):
+    nfkd_form = unicodedata.normalize("NFKD", input_str)
+    return "".join([c for c in nfkd_form if not unicodedata.combining(c)])
