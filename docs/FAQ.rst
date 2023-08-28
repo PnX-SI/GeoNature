@@ -7,14 +7,14 @@ Problèmes liés au frontend
 Message d'erreur lors de la compilation du frontend
 """""""""""""""""""""""""""""""""""""""""""""""""""
 
-- **Probleme lié à Node-sass**::
+- **Problème lié à Node-sass**::
 
     at module.exports (/home/myuser/geonature2/frontend/node_modules/node-sass/lib/binding.js:15:13) at Object.<anonymous> (/home/myuser/geonature2/frontend/node_modules/node-sass/lib/index.js:14:35)
 
 Lancer la commande : ``npm rebuild node-sass --force``
 
 
-- **Probleme de mémoire**
+- **Problème de mémoire**
 
 Si vous avez un message d’erreur durant le build du frontend ressemblant à l’un des messages ci-dessous :
 
