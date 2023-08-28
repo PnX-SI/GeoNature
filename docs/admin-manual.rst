@@ -75,7 +75,7 @@ Il est possible pour n’importe quelle dépendance ou module GeoNature de fourn
         …
     )
 
-Il est également possible de spécifier l’emplacement de révisions Alembic manuellement dans la configuration de GeoNature. Cela est nécessaire entre autre pour UsersHub afin de pouvoir manipuler son schéma alors que UsersHub n’est usuellemment pas installé dans le venv de GeoNature (seul UsersHub-authentification-module l’est) :
+Il est également possible de spécifier l’emplacement de révisions Alembic manuellement dans la configuration de GeoNature. Cela est nécessaire entre autre pour UsersHub afin de pouvoir manipuler son schéma alors que UsersHub n’est usuellement pas installé dans le venv de GeoNature (seul UsersHub-authentification-module l’est) :
 
 .. code-block::
 
@@ -85,7 +85,7 @@ Il est également possible de spécifier l’emplacement de révisions Alembic m
 Chaque fichier de migration est caractérisé par :
 
 * un identifiant, `e.g.` ``f06cc80cc8ba``
-* une branche : Les branches permettent de séparer les fichiers de migrations afin de pouvoir les appliquer séparement. Par exemple, pour un déploiement de TaxHub sans GeoNature, il peut être intéressant de créer le schéma ``taxonomie`` sans créer les schémas de GeoNature, et ainsi gérer indépendamment les migrations de chaque schéma.
+* une branche : Les branches permettent de séparer les fichiers de migrations afin de pouvoir les appliquer séparément. Par exemple, pour un déploiement de TaxHub sans GeoNature, il peut être intéressant de créer le schéma ``taxonomie`` sans créer les schémas de GeoNature, et ainsi gérer indépendamment les migrations de chaque schéma.
 * un ancêtre : Lorsqu’un fichier de migration représente l’évolution d’un état antérieur de la base de données, l’ancêtre indique dans quelle version la base de données doit se trouver avant d’appliquer le-dis fichier de migration.
 * des dépendances : Il est possible d’indiquer qu’une migration nécessite qu’une ou plusieurs autres migrations aient été préalablement appliquées. Par exemple, ceci permet d’indiquer que le schéma de GeoNature nécessite les schémas ``taxonomie`` et ``utilisateurs``.
 
@@ -438,7 +438,7 @@ Récapitulatif
 
 - Dans GeoNature on peut attribuer à un role des actions possibles dans un module, sur lesquels on peut ajouter des filtres (définis dans la table ``gn_permissions.t_permissions``).
 - 6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).
-- Différents types de filtre existent. Le plus courant est le filtre d'appartenace (portée) : 2 filtres d'appartenance sont attribuables à des actions : Mes données / Les données de mon organisme. La synthèse dispose aussi d'un filtre de sensibilité.
+- Différents types de filtre existent. Le plus courant est le filtre d'appartenance (portée) : 2 filtres d'appartenance sont attribuables à des actions : Mes données / Les données de mon organisme. La synthèse dispose aussi d'un filtre de sensibilité.
 - Des fonctions PostgreSQL ont aussi été intégrées pour faciliter la récupération de ces informations (``gn_permissions.cruved_for_user_in_module``, ``gn_permissions.does_user_have_scope_permission``, ...)
 - Si un utilisateur n'a aucune permission sur un module, alors il ne lui sera pas affiché dans le menu latéral et il ne pourra pas y accéder
 - Il est aussi possible de ne pas utiliser UsersHub pour gérer les utilisateurs et de connecter GeoNature à un CAS (voir configuration). Actuellement ce paramétrage est fonctionnel en se connectant au CAS de l'INPN (MNHN)
@@ -510,7 +510,7 @@ Pour lancer manuellement cette fonction, ouvrez une console SQL et exécutez la 
 
 Cette fonction est aussi diponible en tant que fonction GeoNature qu'il est préférable d'utiliser : ``geonature profiles update``
 
-Pour automatiser l'éxecution de cette fonction (tous les jours à minuit dans cet exemple), :ref:`créer une tâche planfiée<cron>`.
+Pour automatiser l'exécution de cette fonction (tous les jours à minuit dans cet exemple), :ref:`créer une tâche planfiée<cron>`.
 
 Usage
 `````
@@ -1021,7 +1021,7 @@ Supervision des services
 Maintenance
 """""""""""
 
-Lors d'une opération de maintenance (montée en version, modification de la base de données...), vous pouvez rendre l'application momentanémment indisponible.
+Lors d'une opération de maintenance (montée en version, modification de la base de données...), vous pouvez rendre l'application momentanément indisponible.
 
 Pour cela, désactivez la configuration Apache de GeoNature, puis activez la configuration du mode de maintenance :
 
@@ -1157,7 +1157,7 @@ Restauration
 
 * Restauration de la configuration et de la customisation :
 
-  - Décompresser les fichiers précedemment sauvegardés pour les remettre au bon emplacement :
+  - Décompresser les fichiers précédemment sauvegardés pour les remettre au bon emplacement :
 
     .. code-block:: console
 
@@ -1267,7 +1267,7 @@ Intégrer des données
 Référentiel géographique
 """"""""""""""""""""""""
 
-GeoNature est fourni avec des données géographiques de base sur la métropôle (MNT national à 250m et communes de métropôle).
+GeoNature est fourni avec des données géographiques de base sur la métropole (MNT national à 250m et communes de métropole).
 
 **1.** Si vous souhaitez modifier le MNT pour mettre celui de votre territoire :
 
@@ -1546,7 +1546,7 @@ Installer le module
 
 Le module est fourni par défaut avec l'installation de GeoNature.
 
-Si vous l'avez supprimé, lancez les commandes suivantes depuis le repertoire ``backend`` de GeoNature
+Si vous l'avez supprimé, lancez les commandes suivantes depuis le répertoire ``backend`` de GeoNature
 
 .. code-block:: console
 
@@ -1816,7 +1816,7 @@ Bien que le module soit une copie d'Occtax, il est tout de même nécessaire de 
 Associer des jeux de données et des champs additionnels
 ```````````````````````````````````````````````````````
 
-Dans le module Métadonnées (formulaire des jeux de données), associez les jeux de données que vous souhaitez rendre saissisables au nouveau module dupliqué.
+Dans le module Métadonnées (formulaire des jeux de données), associez les jeux de données que vous souhaitez rendre saisissables au nouveau module dupliqué.
 
 Ajouter le nouveau module dans la liste des modules implémentés
 ```````````````````````````````````````````````````````````````
@@ -1902,7 +1902,7 @@ Base de données
 """""""""""""""
 
 Le module s'appuie sur deux schémas.:
-``ref_habitats``:  Le réferentiel habitat du MNHN
+``ref_habitats``:  Le référentiel habitat du MNHN
 ``pr_occhab``: le schéma qui contient les données d'occurrence d'habitat, basé sur standard du MNHN
 
 Configuration
@@ -2100,7 +2100,7 @@ En plus des observations brutes, il est possible d'effectuer un export des méta
 
 Deux champs sont cependant obligatoire dans la vue :
 
-- ``jdd_id`` (qui corespond à l'id du JDD de la table ``gn_meta.t_datasets``). Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable ``EXPORT_METADATA_ID_DATASET_COL``.
+- ``jdd_id`` (qui correspond à l'id du JDD de la table ``gn_meta.t_datasets``). Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable ``EXPORT_METADATA_ID_DATASET_COL``.
 - ``acteurs``:  Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable ``EXPORT_METADATA_ACTOR_COL``
 
 **Export des statuts taxonomiques (réglementations)**
@@ -2193,7 +2193,7 @@ Une commande dans TaxHub permet de désactiver automatiquement les textes en deh
 
 Il s'agit du paramètre ``DEFAULT_FILTERS``.  
 C'est un dictionnaire qui liste la valeur des champs par défaut.  
-Il faut fournir le code des nomenclature par default (liste de chaîne de caractère).  
+Il faut fournir le code des nomenclature par défaut (liste de chaîne de caractère).  
 (On prend les champs en ``id_nomenclature_...`` et on remplace ``id_nomenclature_`` par ``cd_nomenclature_``)
 
 Exemple de filtres par défaut :
