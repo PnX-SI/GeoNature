@@ -137,7 +137,7 @@ class TBaseVisits(DB.Model):
     # Pour le moment non défini comme une clé étrangère
     #   pour les questions de perfs
     #   a voir en fonction des usage
-    id_module = DB.Column(DB.Integer)
+    id_module = DB.Column(DB.Integer,ForeignKey("gn_commons.t_modules.id_module"))
 
     visit_date_min = DB.Column(DB.DateTime)
     visit_date_max = DB.Column(DB.DateTime)
