@@ -796,7 +796,11 @@ def get_autocomplete_taxons_synthese():
         .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
     )
     search_name = search_name.replace(" ", "%")
-    q = q.filter(VMTaxrefListForautocomplete.unaccent_search_name.ilike("%" + search_name + "%"))
+    q = q.filter(
+        VMTaxrefListForautocomplete.unaccent_search_name.ilike(
+            func.unaccent("%" + search_name + "%")
+        )
+    )
     regne = request.args.get("regne")
     if regne:
         q = q.filter(VMTaxrefListForautocomplete.regne == regne)
@@ -804,7 +808,6 @@ def get_autocomplete_taxons_synthese():
     group2_inpn = request.args.get("group2_inpn")
     if group2_inpn:
         q = q.filter(VMTaxrefListForautocomplete.group2_inpn == group2_inpn)
-
     q = q.order_by(desc(VMTaxrefListForautocomplete.cd_nom == VMTaxrefListForautocomplete.cd_ref))
     limit = request.args.get("limit", 20)
     data = q.order_by(desc("idx_trgm")).limit(20).all()
