@@ -59,14 +59,14 @@ def list_modules():
     """
     params = request.args
     q = TModules.query.options(joinedload(TModules.objects))
+    exclude = current_app.config["DISABLED_MODULES"]
     if "exclude" in params:
-        q = q.filter(TModules.module_code.notin_(params.getlist("exclude")))
+        exclude.extend(params.getlist("exclude"))
+    q = q.filter(TModules.module_code.notin_(exclude))
     q = q.order_by(TModules.module_order.asc()).order_by(TModules.module_label.asc())
     modules = q.all()
     allowed_modules = []
     for module in modules:
-        if module.module_code in current_app.config["DISABLED_MODULES"]:
-            continue
         module_allowed = False
         # HACK : on a besoin d'avoir le module GeoNature en front pour l'URL de la doc
         if module.module_code == "GEONATURE":
