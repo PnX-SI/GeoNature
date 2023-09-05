@@ -5,6 +5,7 @@
   class="disabled-form"
   (click)="formDisabled()"
 >
+<button *ngIf="this.occtaxFormService.chainRecording &&  this.occtaxFormService.previousReleve" mat-raised-button color="primary" id="overlay-btn" (click)="enabledForm()">Conserver la géométrie précédente</button>
 </div>
 
 <div class="row">

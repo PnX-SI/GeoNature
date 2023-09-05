@@ -28,6 +28,21 @@ button .mat-spinner {
   z-index: 1000;
 }
 
+button#overlay-btn{
+  padding:25px;
+}
+
+#overlay-btn {
+  width: 30%;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform: translate(-50%,-50%);
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  -moz-transform: translate(-50%,-50%);
+}
+
 .disabled-form {
   background-color: #00000061;
   cursor: not-allowed;
