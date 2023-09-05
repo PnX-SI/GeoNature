@@ -8,7 +8,8 @@
       codeNomenclatureType="OBJ_DENBR"
       [parentFormControl]="form.get('id_nomenclature_obj_count')"
       [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne"
-      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
+      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn"
+      [group3Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group3_inpn">
     </pnx-nomenclature>
   </div>
   <div
@@ -21,7 +22,8 @@
       codeNomenclatureType="TYP_DENBR"
       [parentFormControl]="form.get('id_nomenclature_type_count')"
       [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne"
-      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
+      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn"
+      [group3Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group3_inpn">
     </pnx-nomenclature>
   </div>
 
@@ -83,7 +85,8 @@
       codeNomenclatureType="STADE_VIE"
       [parentFormControl]="form.get('id_nomenclature_life_stage')"
       [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne"
-      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
+      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn"
+      [group3Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group3_inpn">
     </pnx-nomenclature>
     <small
       *ngIf="form.get('id_nomenclature_life_stage').hasError('required') && form.get('id_nomenclature_life_stage').touched"
@@ -102,7 +105,8 @@
       codeNomenclatureType="SEXE"
       [parentFormControl]="form.get('id_nomenclature_sex')"
       [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne"
-      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
+      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn"
+      [group3Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group3_inpn">
     </pnx-nomenclature>
     <small
       *ngIf="form.get('id_nomenclature_sex').hasError('required') && form.get('id_nomenclature_sex').touched"
