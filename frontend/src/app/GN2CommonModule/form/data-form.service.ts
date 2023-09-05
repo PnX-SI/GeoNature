@@ -35,6 +35,7 @@ export class DataFormService {
     codeNomenclatureType: string,
     regne?: string,
     group2_inpn?: string,
+    group3_inpn?: string,
     filters?: any
   ) {
     let params: HttpParams = new HttpParams();
@@ -42,6 +43,9 @@ export class DataFormService {
     group2_inpn
       ? (params = params.set('group2_inpn', group2_inpn))
       : (params = params.set('group2_inpn', ''));
+    group3_inpn
+      ? (params = params.set('group3_inpn', group3_inpn))
+      : (params = params.set('group3_inpn', ''));
     if (filters['orderby']) {
       params = params.set('orderby', filters['orderby']);
     }

@@ -55,6 +55,7 @@
       codeNomenclatureType="METH_OBS"
       [regne]="taxref?.regne"
       [group2Inpn]="taxref?.group2_inpn"
+      [group3Inpn]="taxref?.group3_inpn"
       data-qa="pnx-nomenclature-meth-obs"
     >
     </pnx-nomenclature>
@@ -77,6 +78,7 @@
       codeNomenclatureType="ETA_BIO"
       [regne]="taxref?.regne"
       [group2Inpn]="taxref?.group2_inpn"
+      [group3Inpn]="taxref?.group3_inpn"
       data-qa="pnx-nomenclature-eta-bio"
     >
     </pnx-nomenclature>
@@ -135,7 +137,8 @@
           [parentFormControl]="occurrenceForm.get('id_nomenclature_determination_method')"
           codeNomenclatureType="METH_DETERMIN" 
           [regne]="taxref?.regne"
-          [group2Inpn]="taxref?.group2_inpn">
+          [group2Inpn]="taxref?.group2_inpn"
+          [group3Inpn]="taxref?.group3_inpn">
         </pnx-nomenclature>
         <small
           *ngIf="occurrenceForm.get('id_nomenclature_determination_method').hasError('required') && occurrenceForm.get('id_nomenclature_determination_method').touched"
@@ -176,6 +179,7 @@
         codeNomenclatureType="NATURALITE"
         [regne]="taxref?.regne"
         [group2Inpn]="taxref?.group2_inpn"
+        [group3Inpn]="taxref?.group3_inpn"
       >
       </pnx-nomenclature>
     </div>
@@ -194,7 +198,8 @@
         [parentFormControl]="occurrenceForm.get('id_nomenclature_bio_status')"
         codeNomenclatureType="STATUT_BIO"
         [regne]="taxref?.regne"
-        [group2Inpn]="taxref?.group2_inpn">
+        [group2Inpn]="taxref?.group2_inpn"
+        [group3Inpn]="taxref?.group3_inpn">
       </pnx-nomenclature>
     </div>
 
@@ -208,6 +213,7 @@
         codeNomenclatureType="OCC_COMPORTEMENT"
         [regne]="taxref?.regne"
         [group2Inpn]="taxref?.group2_inpn"
+        [group3Inpn]="taxref?.group3_inpn"
       >
       </pnx-nomenclature>
     </div>
@@ -247,6 +253,7 @@
         codeNomenclatureType="PREUVE_EXIST"
         [regne]="taxref?.regne"
         [group2Inpn]="taxref?.group2_inpn"
+        [group3Inpn]="taxref?.group3_inpn"
         (labelsLoaded)="setExistProofData($event)"
       >
       </pnx-nomenclature>
