@@ -72,7 +72,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
     // if(this.nullDefault){
     //   values.push()
     // }
-    if(this.nullDefault){
+    if(this.nullDefault && !this.required){
       let obj = {}
       obj[this.keyValue] = null
       obj[this.keyLabel] = "-- Aucun --"
@@ -140,8 +140,8 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
       this.filteredValues.length === 1 &&
       !(this.parentFormControl.value && this.parentFormControl.value.length)
     ) {
-      const val = this.values[0][this.keyValue];
-      this.parentFormControl.patchValue(this.multiple ? [val] : val);
+      const val = this.nullDefault ? null :this.values[0][this.keyValue];
+      this.parentFormControl.patchValue(this.multiple && !this.nullDefault ? [val] : val);
     }
     // valeur par défaut (depuis input value)
     if (!this.parentFormControl.value && this.default) {
