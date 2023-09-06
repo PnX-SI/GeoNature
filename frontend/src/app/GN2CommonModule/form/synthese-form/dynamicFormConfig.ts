@@ -288,4 +288,16 @@ export const DYNAMIC_FORM_DEF = [
     required: false,
     designStyle: 'bootstrap',
   },
+  {
+    type_widget: 'datalist',
+    attribut_name: 'id_source_module',
+    attribut_label: 'Source de la donnée (par module)',
+    api: 'synthese/sources_modules',
+    application: 'GeoNature',
+    keyValue: 'id_source',
+    keyLabel: 'module_label',
+    data_path: '',
+    required: false,
+  },
+
 ];
