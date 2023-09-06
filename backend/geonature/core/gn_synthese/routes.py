@@ -34,6 +34,7 @@ from geonature.utils.utilsgeometrytools import export_as_geo_file
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.notifications.utils import dispatch_notifications
 
+from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_synthese.models import (
     BibReportsTypes,
     CorAreaSynthese,
@@ -825,6 +826,26 @@ def get_sources():
     q = DB.session.query(TSources)
     data = q.all()
     return [n.as_dict() for n in data]
+
+
+@routes.route("/sources_modules", methods=["GET"])
+@login_required
+@json_resp
+def get_sources_modules():
+    """Get all sources with module_label.
+
+    .. :quickref: Synthese;
+    """
+
+    q_modules = (
+        TSources.query.with_entities(
+            TSources.id_source, TSources.id_module.label("id_module"), TModules.module_label
+        )
+        .join(TModules)
+        .distinct(TSources.id_module)
+    )
+    data = q_modules.all()
+    return [n._asdict() for n in data]
 
 
 @routes.route("/defaultsNomenclatures", methods=["GET"])

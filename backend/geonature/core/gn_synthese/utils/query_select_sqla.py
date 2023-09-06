@@ -20,6 +20,8 @@ from shapely.geometry import shape
 from geoalchemy2.shape import from_shape
 
 from geonature.utils.env import DB
+
+from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_synthese.models import (
     CorObserverSynthese,
     CorAreaSynthese,
@@ -382,6 +384,12 @@ class SyntheseQuery:
         if "id_source" in self.filters:
             self.add_join(TSources, self.model.id_source, TSources.id_source)
             self.query = self.query.where(self.model.id_source == self.filters.pop("id_source"))
+
+        if "id_source_module" in self.filters:
+            self.add_join(TSources, self.model.id_source, TSources.id_source)
+            self.query = self.query.where(
+                self.model.id_source == self.filters.pop("id_source_module")
+            )
 
         if "id_acquisition_framework" in self.filters:
             if hasattr(self.model, "id_acquisition_framework"):
