@@ -123,8 +123,8 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     }
   }
 
-  enabledForm(){
-    this.occtaxFormService.disabled = false
+  enabledForm() {
+    this.occtaxFormService.disabled = false;
   }
 
   submitReleveForm() {
