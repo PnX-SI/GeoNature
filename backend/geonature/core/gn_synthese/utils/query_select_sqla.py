@@ -388,7 +388,7 @@ class SyntheseQuery:
         if "id_source_module" in self.filters:
             self.add_join(TSources, self.model.id_source, TSources.id_source)
             self.query = self.query.where(
-                self.model.id_source == self.filters.pop("id_source_module")
+                self.model.id_source.in_(self.filters.pop("id_source_module"))
             )
 
         if "id_acquisition_framework" in self.filters:
