@@ -294,7 +294,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_label: 'Source de la donnée (par module)',
     api: 'synthese/sources_modules',
     application: 'GeoNature',
-    keyValue: 'id_source',
+    keyValue: 'ids_source',
     keyLabel: 'module_label',
     data_path: '',
     required: false,

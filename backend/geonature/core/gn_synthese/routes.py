@@ -16,7 +16,8 @@ from flask import (
 )
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from werkzeug.datastructures import MultiDict
-from sqlalchemy import distinct, func, desc, asc, select, case
+from sqlalchemy import distinct, func, desc, asc, select, case, Integer
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import joinedload, lazyload, selectinload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
@@ -837,12 +838,15 @@ def get_sources_modules():
     .. :quickref: Synthese;
     """
 
+    aggreg_ids_module = func.array_agg(TSources.id_source, type_=ARRAY(Integer)).label(
+        "ids_source"
+    )
     q_modules = (
-        TSources.query.with_entities(
-            TSources.id_source, TSources.id_module.label("id_module"), TModules.module_label
+        DB.session.query(
+            TSources.id_module.label("id_module"), aggreg_ids_module, TModules.module_label
         )
-        .join(TModules)
-        .distinct(TSources.id_module)
+        .join(TModules, TModules.id_module == TSources.id_module)
+        .group_by(TSources.id_module, TModules.module_label)
     )
     data = q_modules.all()
     return [n._asdict() for n in data]
