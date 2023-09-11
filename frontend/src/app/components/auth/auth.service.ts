@@ -128,7 +128,6 @@ export class AuthService {
   }
 
   logout() {
-    this.deleteAllCookies();
     this.cleanLocalStorage();
     this.cruvedService.clearCruved();
 
@@ -139,7 +138,7 @@ export class AuthService {
       // call the logout route to delete the session
       // TODO: in case of different cruved user in DEPOBIO context must run this routes
       // but actually make bug the INPN CAS deconnexion
-      this._http.get<any>(`${this.config.API_ENDPOINT}/gn_auth/logout_cruved`).subscribe(() => {
+      this._http.get<any>(`${this.config.API_ENDPOINT}/auth/logout`).subscribe(() => {
         location.reload();
       });
       // refresh the page to refresh all the shared service to avoid cruved conflict
