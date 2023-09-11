@@ -311,15 +311,13 @@
       [idMenu]="formDefComp['id_menu']"
       [idList]="formDefComp['id_list']"
       [codeList]="formDefComp['code_list']"
-    ></pnx-observers>
+      [multiSelect]="formDefComp['multi_select']"
+    >
+    </pnx-observers>
 
     <pnx-observers-text
       *ngSwitchCase="'observers-text'"
       [label]="formDefComp['attribut_label']"
-      [multiSelect]="formDef.multi_select"
-      [clearable]="formDef.clearable"
-      [displayAll]="formDef.display_all"
-      [searchBar]="formDef.search_bar"
       [parentFormControl]="form.get(formDefComp['attribut_name'])"
     >
     </pnx-observers-text>
