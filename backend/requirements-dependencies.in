@@ -3,5 +3,5 @@ pypnnomenclature>=1.5.4,<2
 pypn_habref_api>=0.3.2,<1
 utils-flask-sqlalchemy-geo>=0.2.8,<1
 utils-flask-sqlalchemy>=0.3.5,<1
-taxhub>=1.12.0,<2
+taxhub>=1.12.1,<2
 pypn-ref-geo>=1.3.0,<2
