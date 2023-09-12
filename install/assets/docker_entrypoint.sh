@@ -37,10 +37,4 @@ else
     geonature upgrade-modules-db
 fi
 
-# lancement de l'application
-gunicorn "geonature:create_app()" \
-    --name=geonature \
-    --workers=2 \
-    --threads=2 \
-    --bind=0.0.0.0:8000 \
-    --reload --reload-extra-file="${GEONATURE_CONFIG_FILE}"
+exec "$@"

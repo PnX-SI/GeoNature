@@ -139,13 +139,20 @@ COPY --from=build-utils-geo /build/dist/*.whl .
 COPY --from=build-geonature /build/dist/*.whl .
 
 COPY --chmod=755 /install/03b_populate_db.sh /populate_db.sh
-COPY --chmod=755 /install/assets/docker_startup.sh /startup.sh
+COPY --chmod=755 /install/assets/docker_entrypoint.sh /entrypoint.sh
 
 ENV GEONATURE_CONFIG_FILE ""
 
 EXPOSE 8000
 
-CMD ["/startup.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD [ "gunicorn", "geonature:create_app()", \
+    "--name=geonature", \
+    "--workers=2", \
+    "--threads=2", \
+    "--access-logfile=-", \
+    "--bind=0.0.0.0:8000" \
+]
 
 
 FROM wheels-light AS wheels
