@@ -108,6 +108,8 @@ class TBaseVisits(DB.Model):
         foreign_keys=[corVisitObserver.c.id_base_visit, corVisitObserver.c.id_role],
     )
 
+    observers_txt = DB.Column(DB.Unicode)
+
     dataset = relationship(
         TDatasets,
         lazy="joined",
