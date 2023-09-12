@@ -18,7 +18,7 @@ from geonature.core.notifications.models import (
 from geonature.core.notifications import utils
 from geonature.tests.fixtures import celery_eager, notifications_enabled
 
-from .utils import set_logged_user_cookie
+from .utils import set_logged_user
 
 log = logging.getLogger()
 
@@ -126,14 +126,14 @@ class TestNotification:
         assert response.status_code == Unauthorized.code
 
         # TEST CONNECTED USER WITHOUT NOTIFICATION
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.get(url_for(url))
         assert response.status_code == 200
         data = response.get_json()
         assert len(data) == 0
 
         # TEST CONNECTED USER WITH NOTIFICATION
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.get(url_for(url))
         assert response.status_code == 200
         data = response.get_json()
@@ -149,14 +149,14 @@ class TestNotification:
         assert response.status_code == Unauthorized.code
 
         # TEST CONNECTED USER NO DATA
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.get(url_for(url))
         assert response.status_code == 200
         data = response.get_json()
         assert data == 0
 
         # TEST CONNECTED USER
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.get(url_for(url))
         assert response.status_code == 200
         data = response.get_json()
@@ -175,14 +175,14 @@ class TestNotification:
         assert response.status_code == Unauthorized.code
 
         # TEST CONNECTED USER BUT NOTIFICATION DOES NOT EXIST FOR THIS USER
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.post(
             url_for(url, id_notification=notification_data.id_notification)
         )
         assert response.status_code == Forbidden.code
 
         # TEST CONNECTED USER WITH NOTIFICATION
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.post(
             url_for(url, id_notification=notification_data.id_notification)
         )
@@ -198,7 +198,7 @@ class TestNotification:
         assert response.status_code == Unauthorized.code
 
         # TEST CONNECTED USER WITHOUT NOTIFICATION
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.delete(url_for(url))
         assert response.status_code == 200
         data = response.get_json()
@@ -210,7 +210,7 @@ class TestNotification:
         ).scalar()
 
         # TEST CONNECTED USER WITH NOTIFICATION
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.delete(url_for(url))
         assert response.status_code == 200
         data = response.get_json()
@@ -231,13 +231,13 @@ class TestNotification:
         assert response.status_code == Unauthorized.code
 
         # TEST CONNECTED USER
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.get(url_for(url))
         assert response.status_code == 200
         data = response.get_json()
         assert len(data) == 0
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.get(url_for(url))
         assert response.status_code == 200
         data = response.get_json()
@@ -269,7 +269,7 @@ class TestNotification:
         response = self.client.post(subscribe_url)
         assert response.status_code == Unauthorized.code, response.data
 
-        set_logged_user_cookie(self.client, role)
+        set_logged_user(self.client, role)
 
         response = self.client.post(subscribe_url)
         assert response.status_code == 200, response.data
@@ -301,7 +301,7 @@ class TestNotification:
         assert response.status_code == Unauthorized.code
 
         # TEST CONNECTED USER WITHOUT RULE
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.delete(url_for(url))
         assert response.status_code == 200
         data = response.get_json()
@@ -313,7 +313,7 @@ class TestNotification:
         ).scalar()
 
         # TEST CONNECTED USER WITH RULE
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.delete(url_for(url))
         assert response.status_code == 200
         data = response.get_json()
@@ -334,7 +334,7 @@ class TestNotification:
         assert response.status_code == Unauthorized.code
 
         # TEST CONNECTED USER
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.get(url_for(url))
         assert response.status_code == 200
         data = response.get_json()
@@ -350,7 +350,7 @@ class TestNotification:
         assert response.status_code == Unauthorized.code
 
         # TEST CONNECTED USER
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.get(url_for(url))
         assert response.status_code == 200
         data = response.get_json()

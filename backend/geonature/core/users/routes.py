@@ -26,7 +26,6 @@ from pypnusershub.env import REGISTER_POST_ACTION_FCT
 from pypnusershub.db.models import User, Application
 from pypnusershub.db.models_register import TempUser
 from pypnusershub.routes_register import bp as user_api
-from pypnusershub.routes import check_auth
 from utils_flask_sqla.response import json_resp
 
 
