@@ -6,7 +6,6 @@ ENV PIP_ROOT_USER_ACTION=ignore
 RUN --mount=type=cache,target=/root/.cache \
     pip install --upgrade pip setuptools wheel
 
-
 FROM build AS build-habref
 WORKDIR /build/
 COPY /backend/dependencies/Habref-api-module .
@@ -114,12 +113,12 @@ RUN --mount=type=cache,target=/root/.cache \
     pip install --upgrade pip setuptools wheel
 
 WORKDIR /dist
-ENV GEONATURE_STATIC_PATH=/dist/static/
+ENV GEONATURE_STATIC_FOLDER=/dist/static/
 COPY /backend/static/ ./static/
 COPY --from=node /dist/node_modules/ ./static/node_modules/
-ENV GEONATURE_CUSTOM_STATIC_PATH=/dist/custom/
+ENV GEONATURE_CUSTOM_STATIC_FOLDER=/dist/custom/
 RUN mkdir custom
-ENV GEONATURE_MEDIA_PATH=/dist/media/
+ENV GEONATURE_MEDIA_FOLDER=/dist/media/
 RUN mkdir -p media/attachments
 
 WORKDIR /dist/geonature
