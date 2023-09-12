@@ -1,4 +1,4 @@
-pypnusershub>=1.6.11,<2
+pypnusershub>=1.6.11
 pypnnomenclature>=1.5.4,<2
 pypn_habref_api>=0.3.2,<1
 utils-flask-sqlalchemy-geo>=0.2.8,<1

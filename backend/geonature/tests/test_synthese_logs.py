@@ -11,7 +11,7 @@ from werkzeug.datastructures import MultiDict
 from geonature.utils.env import db
 from geonature.core.gn_synthese.models import SyntheseLogEntry
 
-from pypnusershub.tests.utils import set_logged_user_cookie
+from pypnusershub.tests.utils import set_logged_user
 
 from .fixtures import *
 
@@ -49,7 +49,7 @@ class TestSyntheseLogs:
 
     def test_list_synthese_log_entries(self, users, synthese_data):
         url = url_for("gn_synthese.list_synthese_log_entries")
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         created_obs = synthese_data["obs1"]
         updated_obs = synthese_data["obs2"]
@@ -74,7 +74,7 @@ class TestSyntheseLogs:
 
     def test_list_synthese_log_entries_sort(self, users, synthese_data):
         url = url_for("gn_synthese.list_synthese_log_entries")
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url, query_string={"sort": "invalid"})
         assert response.status_code == BadRequest.code, response.json
@@ -90,7 +90,7 @@ class TestSyntheseLogs:
 
     def test_list_synthese_log_entries_filter_last_action(self, users, synthese_data):
         url = url_for("gn_synthese.list_synthese_log_entries")
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         created_obs = synthese_data["obs1"]
         updated_obs = synthese_data["obs2"]
