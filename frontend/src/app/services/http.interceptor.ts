@@ -68,6 +68,13 @@ export class MyCustomInterceptor implements HttpInterceptor {
         withCredentials: true,
       });
     }
+    // Pass JWT in header for each request
+    const idToken = localStorage.getItem('gn_id_token');
+    if (idToken) {
+      request = request.clone({
+        headers: request.headers.set('Authorization', 'Bearer ' + idToken),
+      });
+    }
 
     // pass on the modified request object
     // and intercept error

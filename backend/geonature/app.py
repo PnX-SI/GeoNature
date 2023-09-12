@@ -16,6 +16,7 @@ from flask import Flask, g, request, current_app, send_from_directory
 from flask.json.provider import DefaultJSONProvider
 from flask_mail import Message
 from flask_cors import CORS
+from flask_login import current_user
 from flask_sqlalchemy import before_models_committed
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.middleware.shared_data import SharedDataMiddleware
@@ -44,6 +45,7 @@ from pypnusershub.db.tools import (
     AccessRightsExpiredError,
 )
 from pypnusershub.db.models import Application
+from pypnusershub.login_manager import login_manager
 
 
 @migrate.configure
@@ -147,6 +149,8 @@ def create_app(with_external_mods=True):
     # Pass parameters to the submodules
     app.config["MA"] = MA
 
+    login_manager.init_app(app)
+
     # For deleting files on "delete" media
     @before_models_committed.connect_via(app)
     def on_before_models_committed(sender, changes):
@@ -157,10 +161,6 @@ def create_app(with_external_mods=True):
     # setting g.current_user on each request
     @app.before_request
     def load_current_user():
-        try:
-            g.current_user = user_from_token(request.cookies["token"]).role
-        except (KeyError, UnreadableAccessRightsError, AccessRightsExpiredError):
-            g.current_user = None
         g._permissions_by_user = {}
         g._permissions = {}
 

@@ -20,7 +20,7 @@ from geonature.utils.env import db
 from geonature.utils.errors import GeoNatureError
 
 from .fixtures import *
-from .utils import set_logged_user_cookie
+from .utils import set_logged_user
 
 
 @pytest.fixture(scope="function")
@@ -321,12 +321,12 @@ class TestCommons:
         response = self.client.get(url_for("gn_commons.list_modules", exclude="GEONATURE"))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["noright_user"])
+        set_logged_user(self.client, users["noright_user"])
         response = self.client.get(url_for("gn_commons.list_modules", exclude="GEONATURE"))
         assert response.status_code == 200
         assert len(response.json) == 0
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.get(url_for("gn_commons.list_modules", exclude="GEONATURE"))
         assert response.status_code == 200
         assert len(response.json) > 0
@@ -334,7 +334,7 @@ class TestCommons:
     def test_list_module_exclude(self, users):
         excluded_module = "GEONATURE"
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(
             url_for("gn_commons.list_modules"), query_string={"exclude": [excluded_module]}
@@ -370,12 +370,12 @@ class TestCommons:
         response = self.client.get(url_for("gn_commons.list_places"))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.get(url_for("gn_commons.list_places"))
         assert response.status_code == 200
         assert place.id_place in [p["properties"]["id_place"] for p in response.json]
 
-        set_logged_user_cookie(self.client, users["associate_user"])
+        set_logged_user(self.client, users["associate_user"])
         response = self.client.get(url_for("gn_commons.list_places"))
         assert response.status_code == 200
         assert place.id_place not in [p["properties"]["id_place"] for p in response.json]
@@ -390,7 +390,7 @@ class TestCommons:
         response = self.client.post(url_for("gn_commons.add_place"))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.post(url_for("gn_commons.add_place"), data=geofeature)
         assert response.status_code == 200
         assert db.session.query(
@@ -399,7 +399,7 @@ class TestCommons:
             ).exists()
         ).scalar()
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.post(url_for("gn_commons.add_place"), data=geofeature)
         assert response.status_code == Conflict.code
 
@@ -408,14 +408,14 @@ class TestCommons:
         response = self.client.delete(url_for("gn_commons.delete_place", id_place=unexisting_id))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["associate_user"])
+        set_logged_user(self.client, users["associate_user"])
         response = self.client.delete(url_for("gn_commons.delete_place", id_place=unexisting_id))
         assert response.status_code == NotFound.code
 
         response = self.client.delete(url_for("gn_commons.delete_place", id_place=place.id_place))
         assert response.status_code == Forbidden.code
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.delete(url_for("gn_commons.delete_place", id_place=place.id_place))
         assert response.status_code == 204
         assert not db.session.query(
@@ -463,7 +463,7 @@ class TestCommons:
         assert len(data) == 0
 
     def test_additional_field_admin(self, app, users, module, perm_object):
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_MODULES"] = [module.module_code]
         app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_OBJECTS"] = [perm_object.code_object]
         form_values = {

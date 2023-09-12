@@ -16,7 +16,7 @@ from pypn_habref_api.models import Habref
 from pypnnomenclature.models import TNomenclatures
 from utils_flask_sqla_geo.schema import FeatureSchema, FeatureCollectionSchema
 
-from .utils import set_logged_user_cookie
+from .utils import set_logged_user
 from .fixtures import *
 
 occhab = pytest.importorskip("gn_module_occhab")
@@ -117,16 +117,16 @@ class TestOcchab:
         response = self.client.get(url)
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["noright_user"])
+        set_logged_user(self.client, users["noright_user"])
         response = self.client.get(url)
         assert response.status_code == Forbidden.code
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.get(url)
         assert response.status_code == 200
         StationSchema(many=True).validate(response.json)
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.get(url, query_string={"format": "geojson"})
         assert response.status_code == 200
         StationSchema(as_geojson=True, many=True).validate(response.json)
@@ -145,15 +145,15 @@ class TestOcchab:
         response = self.client.get(url)
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["noright_user"])
+        set_logged_user(self.client, users["noright_user"])
         response = self.client.get(url)
         assert response.status_code == Forbidden.code
 
-        set_logged_user_cookie(self.client, users["stranger_user"])
+        set_logged_user(self.client, users["stranger_user"])
         response = self.client.delete(url)
         assert response.status_code == Forbidden.code
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.get(url)
         assert response.status_code == 200
         response_station = StationSchema(
@@ -205,11 +205,11 @@ class TestOcchab:
         response = self.client.post(url, data=feature)
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["noright_user"])
+        set_logged_user(self.client, users["noright_user"])
         response = self.client.post(url, data=feature)
         assert response.status_code == Forbidden.code
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.post(url, data=feature)
         assert response.status_code == 200, response.json
@@ -266,15 +266,15 @@ class TestOcchab:
         response = self.client.post(url, data=feature)
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["noright_user"])
+        set_logged_user(self.client, users["noright_user"])
         response = self.client.post(url, data=feature)
         assert response.status_code == Forbidden.code
 
-        set_logged_user_cookie(self.client, users["stranger_user"])
+        set_logged_user(self.client, users["stranger_user"])
         response = self.client.post(url, data=feature)
         assert response.status_code == Forbidden.code
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         # Try modifying id_station
         id_station = station.id_station
@@ -361,15 +361,15 @@ class TestOcchab:
         response = self.client.delete(url)
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["noright_user"])
+        set_logged_user(self.client, users["noright_user"])
         response = self.client.delete(url)
         assert response.status_code == Forbidden.code
 
-        set_logged_user_cookie(self.client, users["stranger_user"])
+        set_logged_user(self.client, users["stranger_user"])
         response = self.client.delete(url)
         assert response.status_code == Forbidden.code
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.delete(url)
         assert response.status_code == 204
         assert not db.session.query(
@@ -379,6 +379,6 @@ class TestOcchab:
     def test_get_default_nomenclatures(self, users):
         response = self.client.get(url_for("occhab.get_default_nomenclatures"))
         assert response.status_code == Unauthorized.code
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.get(url_for("occhab.get_default_nomenclatures"))
         assert response.status_code == 200
