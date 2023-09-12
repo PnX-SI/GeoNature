@@ -46,6 +46,6 @@ config = ChainMap({}, config_programmatic, config_backend, config_frontend, conf
 
 api_uri = urlsplit(config["API_ENDPOINT"])
 if "APPLICATION_ROOT" not in config:
-    config["APPLICATION_ROOT"] = api_uri.path
+    config["APPLICATION_ROOT"] = api_uri.path or "/"
 if "PREFERRED_URL_SCHEME" not in config:
     config["PREFERRED_URL_SCHEME"] = api_uri.scheme

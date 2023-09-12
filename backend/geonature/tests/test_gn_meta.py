@@ -25,7 +25,7 @@ from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 
 from .fixtures import *
-from .utils import logged_user_headers, set_logged_user_cookie
+from .utils import logged_user_headers, set_logged_user
 
 
 @pytest.fixture(scope="function")
@@ -166,7 +166,7 @@ class TestGNMeta:
         )  # DS are attached to this AF
 
     def test_create_acquisition_framework(self, users):
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         # Post with only required attributes
         response = self.client.post(
@@ -180,7 +180,7 @@ class TestGNMeta:
         assert response.status_code == 200
 
     def test_create_acquisition_framework_forbidden(self, users):
-        set_logged_user_cookie(self.client, users["noright_user"])
+        set_logged_user(self.client, users["noright_user"])
 
         response = self.client.post(url_for("gn_meta.create_acquisition_framework"), data={})
 
@@ -192,27 +192,27 @@ class TestGNMeta:
         response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["noright_user"])
+        set_logged_user(self.client, users["noright_user"])
 
         # The user has no rights on METADATA module
         response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
         assert response.status_code == Forbidden.code
         assert "METADATA" in response.json["description"]
 
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         # The user has right on METADATA module, but not on this specific AF
         response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
         assert response.status_code == Forbidden.code
         assert "METADATA" not in response.json["description"]
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         # The AF can not be deleted due to attached DS
         response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
         assert response.status_code == Conflict.code
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         af_id = acquisition_frameworks["own_af"].id_acquisition_framework
 
         response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
@@ -221,7 +221,7 @@ class TestGNMeta:
     def test_update_acquisition_framework(self, users, acquisition_frameworks):
         new_name = "thenewname"
         af = acquisition_frameworks["own_af"]
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.post(
             url_for(
@@ -236,7 +236,7 @@ class TestGNMeta:
 
     def test_update_acquisition_framework_forbidden(self, users, acquisition_frameworks):
         stranger_user = users["stranger_user"]
-        set_logged_user_cookie(self.client, stranger_user)
+        set_logged_user(self.client, stranger_user)
         af = acquisition_frameworks["own_af"]
 
         response = self.client.post(
@@ -255,7 +255,7 @@ class TestGNMeta:
 
     def test_update_acquisition_framework_forbidden_af(self, users, acquisition_frameworks):
         self_user = users["self_user"]
-        set_logged_user_cookie(self.client, self_user)
+        set_logged_user(self.client, self_user)
         af = acquisition_frameworks["own_af"]
 
         response = self.client.post(
@@ -276,7 +276,7 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks"))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks"))
         response = self.client.get(
@@ -293,14 +293,14 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"))
         assert response.status_code == 200
 
     def test_filter_acquisition_by_geo(self, synthese_data, users, commune_without_obs):
         # security test already passed in previous tests
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         # get 2 synthese observations in two differents AF and two differents communes
         s1, s2 = synthese_data["p1_af1"], synthese_data["p3_af3"]
@@ -342,7 +342,7 @@ class TestGNMeta:
 
     def test_get_acquisition_frameworks_list_excluded_fields(self, users):
         excluded = ["id_acquisition_framework", "id_digitizer"]
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(
             url_for("gn_meta.get_acquisition_frameworks_list"),
@@ -355,7 +355,7 @@ class TestGNMeta:
     def test_get_acquisition_frameworks_list_excluded_fields_not_nested(self, users):
         excluded = ["id_acquisition_framework", "id_digitizer"]
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(
             url_for("gn_meta.get_acquisition_frameworks_list"),
@@ -372,18 +372,18 @@ class TestGNMeta:
         response = self.client.get(get_af_url)
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
         response = self.client.get(get_af_url)
         assert response.status_code == Forbidden.code
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.get(get_af_url)
         assert response.status_code == 200
 
     def test_get_acquisition_frameworks_search_af_name(
         self, users, acquisition_frameworks, datasets
     ):
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         af1 = acquisition_frameworks["af_1"]
         af2 = acquisition_frameworks["af_2"]
         get_af_url = url_for("gn_meta.get_acquisition_frameworks")
@@ -397,7 +397,7 @@ class TestGNMeta:
     def test_get_acquisition_frameworks_search_ds_name(
         self, users, acquisition_frameworks, datasets
     ):
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         ds = datasets["belong_af_1"]
         af1 = acquisition_frameworks["af_1"]
         af2 = acquisition_frameworks["af_2"]
@@ -411,7 +411,7 @@ class TestGNMeta:
         assert af2.id_acquisition_framework not in af_list
 
     def test_get_acquisition_frameworks_search_af_uuid(self, users, acquisition_frameworks):
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         af1 = acquisition_frameworks["af_1"]
 
@@ -425,7 +425,7 @@ class TestGNMeta:
         }
 
     def test_get_acquisition_frameworks_search_af_date(self, users, acquisition_frameworks):
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         af1 = acquisition_frameworks["af_1"]
 
@@ -441,7 +441,7 @@ class TestGNMeta:
     def test_get_export_pdf_acquisition_frameworks(self, users, acquisition_frameworks):
         af_id = acquisition_frameworks["own_af"].id_acquisition_framework
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.post(
             url_for(
@@ -466,7 +466,7 @@ class TestGNMeta:
         self, users, acquisition_frameworks, datasets, synthese_data
     ):
         af = synthese_data["obs1"].dataset.acquisition_framework
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.get(
             url_for(
@@ -492,7 +492,7 @@ class TestGNMeta:
         # this AF contains at least 2 obs at different locations
         af = synthese_data["p1_af1"].dataset.acquisition_framework
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.get(
             url_for(
@@ -559,27 +559,27 @@ class TestGNMeta:
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["noright_user"])
+        set_logged_user(self.client, users["noright_user"])
 
         # The user has no rights on METADATA module
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
         assert response.status_code == Forbidden.code
         assert "METADATA" in response.json["description"]
 
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         # The user has right on METADATA module, but not on this specific DS
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
         assert response.status_code == Forbidden.code
         assert "METADATA" not in response.json["description"]
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         # The DS can not be deleted due to attached rows in synthese
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
         assert response.status_code == Conflict.code
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         ds_id = datasets["orphan_dataset"].id_dataset
 
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
@@ -589,7 +589,7 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.get_datasets"))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(url_for("gn_meta.get_datasets"))
         assert response.status_code == 200
@@ -618,7 +618,7 @@ class TestGNMeta:
         )
 
     def test_list_datasets_mobile(self, users, datasets, acquisition_frameworks):
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         headers = Headers()
         headers.add("User-Agent", "okhttp/")
 
@@ -630,7 +630,7 @@ class TestGNMeta:
         response = self.client.post(url_for("gn_meta.create_dataset"))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.post(url_for("gn_meta.create_dataset"))
         assert response.status_code == BadRequest.code
@@ -642,7 +642,7 @@ class TestGNMeta:
         assert response.status_code == Unauthorized.code
 
         stranger_user = users["stranger_user"]
-        set_logged_user_cookie(self.client, stranger_user)
+        set_logged_user(self.client, stranger_user)
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
         assert response.status_code == Forbidden.code
         assert (
@@ -650,12 +650,12 @@ class TestGNMeta:
             == f"User {stranger_user.identifiant} cannot read dataset {ds.id_dataset}"
         )
 
-        set_logged_user_cookie(self.client, users["associate_user"])
+        set_logged_user(self.client, users["associate_user"])
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
         assert response.status_code == 200
 
     def test_get_dataset_filter_active(self, users, datasets, module):
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(
             url_for("gn_meta.get_datasets"),
@@ -667,7 +667,7 @@ class TestGNMeta:
         assert expected_ds.issubset(filtered_ds)
 
     def test_get_dataset_filter_module_code(self, users, datasets, module):
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(
             url_for("gn_meta.get_datasets"),
@@ -699,7 +699,7 @@ class TestGNMeta:
         assert datasets["own_dataset"].id_dataset not in filtered_ds
 
     def test_get_dataset_search(self, users, datasets, module):
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         ds = datasets["with_module_1"]
 
         response = self.client.get(
@@ -714,7 +714,7 @@ class TestGNMeta:
 
     def test_get_dataset_search_uuid(self, users, datasets):
         ds = datasets["own_dataset"]
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(
             url_for("gn_meta.get_datasets"),
@@ -727,7 +727,7 @@ class TestGNMeta:
 
     def test_get_dataset_search_date(self, users, datasets):
         ds = datasets["own_dataset"]
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(
             url_for("gn_meta.get_datasets"),
@@ -746,7 +746,7 @@ class TestGNMeta:
             for af in acquisition_frameworks.values()
             if af.id_acquisition_framework == dataset.id_acquisition_framework
         ][0]
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         # If Acquisition Framework matches, returns all datasets
         response = self.client.get(
@@ -763,7 +763,7 @@ class TestGNMeta:
 
     def test_get_dataset_search_ds_matches(self, users, datasets, acquisition_frameworks):
         dataset = datasets["belong_af_1"]
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         # If Acquisition Framework matches, returns all datasets
         response = self.client.get(
@@ -784,7 +784,7 @@ class TestGNMeta:
             for af in acquisition_frameworks.values()
             if af.id_acquisition_framework == dataset.id_acquisition_framework
         ][0]
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         # If Acquisition Framework matches, returns all datasets
         response = self.client.get(
@@ -802,7 +802,7 @@ class TestGNMeta:
     def test_get_dataset_forbidden_ds(self, users, datasets):
         ds = datasets["own_dataset"]
         self_user = users["self_user"]
-        set_logged_user_cookie(self.client, self_user)
+        set_logged_user(self.client, self_user)
 
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
 
@@ -815,7 +815,7 @@ class TestGNMeta:
     def test_update_dataset(self, users, datasets):
         new_name = "thenewname"
         ds = datasets["own_dataset"]
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.patch(
             url_for("gn_meta.update_dataset", id_dataset=ds.id_dataset),
@@ -826,7 +826,7 @@ class TestGNMeta:
         assert response.json.get("dataset_name") == new_name
 
     def test_update_dataset_not_found(self, users, datasets, unexisted_id):
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.patch(url_for("gn_meta.update_dataset", id_dataset=unexisted_id))
 
@@ -834,7 +834,7 @@ class TestGNMeta:
 
     def test_update_dataset_forbidden(self, users, datasets):
         ds = datasets["own_dataset"]
-        set_logged_user_cookie(self.client, users["stranger_user"])
+        set_logged_user(self.client, users["stranger_user"])
 
         response = self.client.patch(url_for("gn_meta.update_dataset", id_dataset=ds.id_dataset))
 
@@ -849,7 +849,7 @@ class TestGNMeta:
         )
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         response = self.client.post(
             url_for("gn_meta.get_export_pdf_dataset", id_dataset=unexisting_id)
@@ -861,7 +861,7 @@ class TestGNMeta:
         )
         assert response.status_code == Forbidden.code
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.post(
             url_for("gn_meta.get_export_pdf_dataset", id_dataset=ds.id_dataset)
         )
@@ -875,7 +875,7 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.uuid_report"))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.get(url_for("gn_meta.uuid_report"))
         assert response.status_code == 200
 
@@ -885,7 +885,7 @@ class TestGNMeta:
     ):
         dataset_id = datasets["own_dataset"].id_dataset
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.get(
             url_for("gn_meta.uuid_report"), query_string={"id_dataset": dataset_id}
@@ -910,7 +910,7 @@ class TestGNMeta:
         )
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.get(
             url_for("gn_meta.sensi_report"), query_string={"id_dataset": dataset_id}
@@ -918,7 +918,7 @@ class TestGNMeta:
         assert response.status_code == 200
 
     def test_sensi_report_fail(self, users):
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(url_for("gn_meta.sensi_report"))
         # BadRequest because for now id_dataset query is required
@@ -1033,7 +1033,7 @@ class TestGNMeta:
     def test_publish_acquisition_framework_no_data(
         self, mocked_publish_mail, users, acquisition_frameworks
     ):
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         af = acquisition_frameworks["own_af"]
         response = self.client.get(
@@ -1058,7 +1058,7 @@ class TestGNMeta:
     def test_publish_acquisition_framework_with_data(
         self, mocked_publish_mail, users, acquisition_frameworks, synthese_data
     ):
-        set_logged_user_cookie(self.client, users["stranger_user"])
+        set_logged_user(self.client, users["stranger_user"])
         af = acquisition_frameworks["af_1"]
         response = self.client.get(
             url_for(

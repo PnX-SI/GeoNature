@@ -10,7 +10,7 @@ from geonature.core.notifications.models import Notification, NotificationRule
 from geonature.utils.env import db
 
 from .fixtures import *
-from .utils import logged_user_headers, set_logged_user_cookie
+from .utils import logged_user_headers, set_logged_user
 
 
 def add_notification_rule(user):
@@ -55,7 +55,7 @@ class TestReports:
         response = self.client.post(url_for(url), data=data)
         assert response.status_code == 401
         # TEST NO DATA
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.post(url_for(url))
         assert response.status_code == BadRequest.code
         # TEST VALID - ADD DISCUSSION
@@ -108,7 +108,7 @@ class TestReports:
         response = self.client.delete(url_for(url, id_report=discussionReportId))
         assert response.status_code == 401
         # NOT FOUND
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.delete(url_for(url, id_report=id_report_ko))
         assert response.status_code == NotFound.code
         # SUCCESS - NOT DELETE WITH DISCUSSION
@@ -126,7 +126,7 @@ class TestReports:
     def test_list_reports(self, reports_data, synthese_data, users):
         url = "gn_synthese.list_reports"
         # TEST GET WITHOUT REQUIRED ID SYNTHESE
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.get(url_for(url))
         assert response.status_code == NotFound.code
         ids = [s.id_synthese for s in synthese_data.values()]
@@ -154,7 +154,7 @@ class TestReports:
 class TestReportsNotifications:
     def post_comment(self, synthese, user):
         """Post a comment on a synthese row as a user"""
-        set_logged_user_cookie(self.client, user)
+        set_logged_user(self.client, user)
         url = "gn_synthese.create_report"
         id_synthese = synthese.id_synthese
         data = {"item": id_synthese, "content": "comment 4", "type": "discussion"}

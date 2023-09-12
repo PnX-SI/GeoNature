@@ -11,7 +11,7 @@ from geonature.utils.config import config
 from pypnnomenclature.models import TNomenclatures
 
 from .fixtures import *
-from .utils import set_logged_user_cookie
+from .utils import set_logged_user
 
 
 gn_module_validation = pytest.importorskip("gn_module_validation")
@@ -25,7 +25,7 @@ class TestValidation:
     def test_get_synthese_data(self, users, synthese_data):
         response = self.client.get(url_for("validation.get_synthese_data"))
         assert response.status_code == Unauthorized.code
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
         response = self.client.get(url_for("validation.get_synthese_data"))
         assert response.status_code == 200
         assert len(response.json["features"]) >= len(synthese_data)
@@ -33,12 +33,12 @@ class TestValidation:
     def test_get_status_names(self, users, synthese_data):
         response = self.client.get(url_for("validation.get_statusNames"))
         assert response.status_code == Unauthorized.code
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.get(url_for("validation.get_statusNames"))
         assert response.status_code == 200
 
     def test_add_validation_status(self, users, synthese_data):
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         synthese = synthese_data["obs1"]
         id_nomenclature_valid_status = TNomenclatures.query.filter(
             sa.and_(
@@ -69,7 +69,7 @@ class TestValidation:
         assert abs(datetime.fromisoformat(response.json) - validation_date) < timedelta(seconds=2)
 
     def test_get_validation_history(self, users, synthese_data):
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.get(url_for("gn_commons.get_hist", uuid_attached_row="invalid"))
         assert response.status_code == BadRequest.code
         s = next(filter(lambda s: s.unique_id_sinp, synthese_data.values()))

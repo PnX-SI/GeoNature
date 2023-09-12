@@ -15,7 +15,7 @@ from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_synthese.models import Synthese, TSources, VSyntheseForWebApp
 
-from pypnusershub.tests.utils import logged_user_headers, set_logged_user_cookie
+from pypnusershub.tests.utils import logged_user_headers, set_logged_user
 from ref_geo.models import BibAreasTypes, LAreas
 from apptax.tests.fixtures import noms_example, attribut_example
 from apptax.taxonomie.models import Taxref
@@ -154,14 +154,14 @@ class TestSynthese:
             assert sq.filter_by_scope(0).all() == []
 
     def test_list_sources(self, source, users):
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
         response = self.client.get(url_for("gn_synthese.get_sources"))
         assert response.status_code == 200
         data = response.get_json()
         assert len(data) > 0
 
     def test_get_defaut_nomenclatures(self, users):
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
         response = self.client.get(url_for("gn_synthese.getDefaultsNomenclatures"))
         assert response.status_code == 200
 
@@ -176,7 +176,7 @@ class TestSynthese:
         r = self.client.get(url)
         assert r.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         r = self.client.get(url)
         assert r.status_code == 200
@@ -303,7 +303,7 @@ class TestSynthese:
         assert r.status_code == 200
 
     def test_get_observations_for_web_filter_comment(self, users, synthese_data, taxon_attribut):
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         # Post a comment
         url = "gn_synthese.create_report"
@@ -321,7 +321,7 @@ class TestSynthese:
         assert id_synthese in (feature["properties"]["id"] for feature in r.json["features"])
 
     def test_get_observations_for_web_filter_id_source(self, users, synthese_data, source):
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
         id_source = source.id_source
 
         url = url_for("gn_synthese.get_observations_for_web")
@@ -377,7 +377,7 @@ class TestSynthese:
     def test_get_observations_for_web_filter_observers(
         self, users, synthese_for_observers, observer_input, expected_length_synthese
     ):
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         filters = {"observers": observer_input}
         r = self.client.get(url_for("gn_synthese.get_observations_for_web"), json=filters)
@@ -386,7 +386,7 @@ class TestSynthese:
         assert len(r.json["features"]) == expected_length_synthese
 
     def test_get_synthese_data_cruved(self, app, users, synthese_data, datasets):
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(
             url_for("gn_synthese.get_observations_for_web"), query_string={"limit": 100}
@@ -403,7 +403,7 @@ class TestSynthese:
 
     def test_get_synthese_data_aggregate(self, users, datasets, synthese_data):
         # Test geometry aggregation
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.post(
             url_for("gn_synthese.get_observations_for_web"),
             query_string={
@@ -422,7 +422,7 @@ class TestSynthese:
 
     def test_get_synthese_data_aggregate_by_areas(self, users, datasets, synthese_data):
         # Test geometry aggregation
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.get(
             url_for("gn_synthese.get_observations_for_web"),
             query_string={
@@ -443,7 +443,7 @@ class TestSynthese:
         """
         Test avec un cruved R2 qui join sur cor_synthese_observers
         """
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for("gn_synthese.get_observations_for_web"))
         data = response.get_json()
@@ -454,7 +454,7 @@ class TestSynthese:
         assert response.status_code == 200
 
     def test_export(self, users):
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         # csv
         response = self.client.post(
@@ -567,7 +567,7 @@ class TestSynthese:
         ]
 
         def assert_export_results(user, expected_id_synthese_list):
-            set_logged_user_cookie(self.client, user)
+            set_logged_user(self.client, user)
             response = self.client.post(
                 url_for("gn_synthese.export_observations_web"),
                 json=list_id_synthese,
@@ -690,7 +690,7 @@ class TestSynthese:
         index_colummn_cd_ref = expected_columns_exports.index('"cd_ref"')
 
         def assert_export_taxons_results(user, set_expected_cd_ref):
-            set_logged_user_cookie(self.client, user)
+            set_logged_user(self.client, user)
 
             response = self.client.post(
                 url_for("gn_synthese.export_taxon_web"),
@@ -780,7 +780,7 @@ class TestSynthese:
         index_column_cd_nom = expected_columns_exports.index('"cd_nom"')
 
         def assert_export_status_results(user, set_expected_cd_ref):
-            set_logged_user_cookie(self.client, user)
+            set_logged_user(self.client, user)
 
             response = self.client.post(
                 url_for("gn_synthese.export_status"),
@@ -851,7 +851,7 @@ class TestSynthese:
 
         # TODO: assert that some data is excluded from the response
         def assert_export_metadata_results(user, dict_expected_datasets):
-            set_logged_user_cookie(self.client, user)
+            set_logged_user(self.client, user)
 
             response = self.client.post(
                 url_for("gn_synthese.export_metadata"),
@@ -964,7 +964,7 @@ class TestSynthese:
         assert_export_metadata_results(user, dict_expected_datasets)
 
     def test_general_stat(self, users):
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for("gn_synthese.general_stats"))
 
@@ -976,44 +976,44 @@ class TestSynthese:
         )
         assert response.status_code == 401
 
-        set_logged_user_cookie(self.client, users["noright_user"])
+        set_logged_user(self.client, users["noright_user"])
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 403
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         not_existing = db.session.query(func.max(Synthese.id_synthese)).scalar() + 1
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=not_existing)
         )
         assert response.status_code == 404
 
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 200
 
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 200
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 200
 
-        set_logged_user_cookie(self.client, users["associate_user"])
+        set_logged_user(self.client, users["associate_user"])
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
         assert response.status_code == 200
 
-        set_logged_user_cookie(self.client, users["stranger_user"])
+        set_logged_user(self.client, users["stranger_user"])
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data["obs1"].id_synthese)
         )
@@ -1021,7 +1021,7 @@ class TestSynthese:
 
     def test_color_taxon(self, synthese_data, users):
         # Note: require grids 5×5!
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
         response = self.client.get(url_for("gn_synthese.get_color_taxon"))
         assert response.status_code == 200
 
@@ -1062,7 +1062,7 @@ class TestSynthese:
         response = self.client.get(url_for("gn_synthese.get_taxa_distribution"))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
         response = self.client.get(url_for("gn_synthese.get_taxa_distribution"))
         assert response.status_code == 200
         assert len(response.json)
@@ -1095,7 +1095,7 @@ class TestSynthese:
         assert len(response.json)
 
     def test_get_taxa_count(self, synthese_data, users):
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for("gn_synthese.get_taxa_count"))
 
@@ -1104,7 +1104,7 @@ class TestSynthese:
     def test_get_taxa_count_id_dataset(self, synthese_data, users, datasets, unexisted_id):
         id_dataset = datasets["own_dataset"].id_dataset
         url = "gn_synthese.get_taxa_count"
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
         response_empty = self.client.get(url_for(url), query_string={"id_dataset": unexisted_id})
@@ -1114,7 +1114,7 @@ class TestSynthese:
 
     def test_get_observation_count(self, synthese_data, users):
         nb_observations = len(synthese_data)
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(url_for("gn_synthese.get_observation_count"))
 
@@ -1124,7 +1124,7 @@ class TestSynthese:
         id_dataset = datasets["own_dataset"].id_dataset
         nb_observations = len([s for s in synthese_data.values() if s.id_dataset == id_dataset])
         url = "gn_synthese.get_observation_count"
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
         response_empty = self.client.get(url_for(url), query_string={"id_dataset": unexisted_id})
@@ -1133,7 +1133,7 @@ class TestSynthese:
         assert response_empty.json == 0
 
     def test_get_bbox(self, synthese_data, users):
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for("gn_synthese.get_bbox"))
 
@@ -1143,7 +1143,7 @@ class TestSynthese:
     def test_get_bbox_id_dataset(self, synthese_data, users, datasets, unexisted_id):
         id_dataset = datasets["own_dataset"].id_dataset
         url = "gn_synthese.get_bbox"
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
         assert response.status_code == 200
@@ -1156,7 +1156,7 @@ class TestSynthese:
     def test_get_bbox_id_source(self, synthese_data, users, source):
         id_source = source.id_source
         url = "gn_synthese.get_bbox"
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for(url), query_string={"id_source": id_source})
 
@@ -1165,7 +1165,7 @@ class TestSynthese:
 
     def test_get_bbox_id_source_empty(self, users, unexisted_id_source):
         url = "gn_synthese.get_bbox"
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for(url), query_string={"id_source": unexisted_id_source})
 
@@ -1175,7 +1175,7 @@ class TestSynthese:
     def test_observation_count_per_column(self, users, synthese_data):
         column_name_dataset = "id_dataset"
         column_name_cd_nom = "cd_nom"
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         response_dataset = self.client.get(
             url_for("gn_synthese.observation_count_per_column", column=column_name_dataset)
@@ -1225,7 +1225,7 @@ class TestSynthese:
     def test_get_autocomplete_taxons_synthese(self, synthese_data, users):
         seach_name = synthese_data["obs1"].nom_cite
 
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(
             url_for("gn_synthese.get_autocomplete_taxons_synthese"),
