@@ -1,6 +1,24 @@
 CHANGELOG
 =========
 
+2.13.1 (unreleased)
+-------------------
+
+**🐛 Corrections**
+
+- Correction des déconnexions non effectives sur la 2.13.0 (#2682, par @TheoLechemia)
+- Amélioration de l'affichage des taxons en passant à la ligne quand ils sont trop longs (#2690, par @JulienCorny)
+- Amélioration du `Dockerfile` de GeoNature (#2623, par @joelclems et @bouttier)
+- Correction de la configuration NGINX des préfixes quand GeoNature est déployé avec Docker (#2698, par @bouttier)
+- [Synthèse] Correction de la recherche de taxon avec des accents (#2676)
+
+**📝 Documentation**
+
+- Documentation de la nouvelle interface d'administration des permissions (#2605, par @camillemonchicourt)
+- Correction de petites fautes d'orthographe (#2674, par @omahs)
+- Correction du template d'issue (#2700, par @mvergez)
+
+
 2.13.0 - [Carpodacus erythrinus](https://www.ecrins-parcnational.fr/breve/roselin-gondouins) 🐤 (2023-08-23)
 ------------------------------------------------------------------------------------------------------------
 
