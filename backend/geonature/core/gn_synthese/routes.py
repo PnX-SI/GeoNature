@@ -829,7 +829,7 @@ def get_sources():
     return [n.as_dict() for n in data]
 
 
-@routes.route("/sources_modules", methods=["GET"])
+@routes.route("/sources/modules", methods=["GET"])
 @login_required
 @json_resp
 def get_sources_modules():
