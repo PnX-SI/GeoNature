@@ -13,8 +13,8 @@ Version de GeoNature affectée par le bug.
 **Description du bug**
 Description du problème rencontré (message d’erreur, code HTTP de retour inattendu, …).
 
-**Comportement attendue**
-Description du comportement attendue en lieu et place du problème rencontré.
+**Comportement attendu**
+Description du comportement attendu en lieu et place du problème rencontré.
 
 **Comment reproduire**
 Étapes à suivre pour reproduire le problème (sur quelle page se rendre, sur quel bouton cliquer, avec quelles données présentes, …).
