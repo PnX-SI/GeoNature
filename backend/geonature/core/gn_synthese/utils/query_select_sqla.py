@@ -381,16 +381,6 @@ class SyntheseQuery:
             date_max = date_max.replace(hour=23, minute=59, second=59)
             self.query = self.query.where(self.model.date_max <= date_max)
 
-        if "id_source" in self.filters:
-            self.add_join(TSources, self.model.id_source, TSources.id_source)
-            self.query = self.query.where(self.model.id_source == self.filters.pop("id_source"))
-
-        if "id_source_module" in self.filters:
-            self.add_join(TSources, self.model.id_source, TSources.id_source)
-            self.query = self.query.where(
-                self.model.id_source.in_(self.filters.pop("id_source_module"))
-            )
-
         if "id_acquisition_framework" in self.filters:
             if hasattr(self.model, "id_acquisition_framework"):
                 self.query = self.query.where(
@@ -467,6 +457,9 @@ class SyntheseQuery:
                     self.model.id_synthese,
                 )
                 self.query = self.query.where(cor_area_synthese_alias.id_area.in_(value))
+            elif colname.startswith("id_source"):
+                self.add_join(TSources, self.model.id_source, TSources.id_source)
+                self.query = self.query.where(self.model.id_source.in_(value))
             elif colname.startswith("id_"):
                 col = getattr(self.model.__table__.columns, colname)
                 if isinstance(value, list):
