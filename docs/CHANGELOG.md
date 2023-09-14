@@ -4,17 +4,25 @@ CHANGELOG
 2.13.1 (unreleased)
 -------------------
 
+**🚀 Nouveautés**
+
+- Amélioration de l'affichage des taxons en passant à la ligne quand ils sont trop longs (#2690, par @JulienCorny)
+- Amélioration du `Dockerfile` de GeoNature (#2623, par @joelclems et @bouttier)
+- Ne pas renvoyer les modules désactivés dans la route `/modules` (#2693)
+- Mise à jour de TaxHub en version 1.12.1
+- Mise à jour de Utils-Flask-SQLAlchemy en version 0.3.6 et UsersHub-authentification-module en version 1.6.10 (#2704)
+
 **🐛 Corrections**
 
 - Correction des déconnexions non effectives sur la 2.13.0 (#2682, par @TheoLechemia)
-- Amélioration de l'affichage des taxons en passant à la ligne quand ils sont trop longs (#2690, par @JulienCorny)
-- Amélioration du `Dockerfile` de GeoNature (#2623, par @joelclems et @bouttier)
 - Correction de la configuration NGINX des préfixes quand GeoNature est déployé avec Docker (#2698, par @bouttier)
-- [Synthèse] Correction de la recherche de taxon avec des accents (#2676)
+- [Synthèse] Correction de la recherche de taxons avec des accents (#2676)
+- [Synthèse] Correction des couleurs des mailles quand on clique sur différentes mailles successivement en mode maille (#2677)
 
 **📝 Documentation**
 
 - Documentation de la nouvelle interface d'administration des permissions (#2605, par @camillemonchicourt)
+- Mise à jour de la documentation d'installation Docker suite à la sortie d'un Docker Compose complet et fonctionnel sur [GeoNature-Docker-services](https://github.com/PnX-SI/GeoNature-Docker-services/) (#2703)
 - Correction de petites fautes d'orthographe (#2674, par @omahs)
 - Correction du template d'issue (#2700, par @mvergez)
 
@@ -74,8 +82,8 @@ CHANGELOG
 - Ajout d'un script `install/03b_populate_db_for_test.sh` pouvant être utilisé par la CI de test des modules GeoNature (#2544)
 - Ajout d'un script `install/assets/docker_startup.sh` pour lancer les migrations Alembic depuis le docker de GeoNature (#2544)
 - Création d'un fichier `install/assets/db/add_pg_extensions.sql` regroupant la création des extensions PostgreSQL (#2544)
-- Amélioration de `APPLICATION_ROOT` pour qu'il fonctionne en mode développement (#2546)
-- Amélioration des modèles de la Synthèse pour prendre en compte les valeurs par défaut des nomenclatures (#2524)
+- ation de `APPLICATION_ROOT` pour qu'il fonctionne en mode développement (#2546)
+- ation des modèles de la Synthèse pour prendre en compte les valeurs par défaut des nomenclatures (#2524)
 - Meilleure portabilité des scripts dans les différents systèmes Unix (#2435)
 - Mise à jour des dépendances Python (#2596)
 - Documentation de développement des permissions (#2585)
@@ -108,7 +116,7 @@ Si vous mettez à jour GeoNature :
 - [Métadonnées] Correction des droits de modification des cadres d'acquisition
 - Correction du script `migration.sh` (#2525 par @bouttier)
 - Correction du downgrade d'une migration Alembic d'Occtax (#2500 par @JulienCorny)
-- Correction et amélioration de la page de maintenance (#2535)
+- Correction et ation de la page de maintenance (#2535)
 - Correction de la synchronisation des JDD et de l’association aux modules (#2532 par @VincentCauchois)
 
 **💻 Développement**
@@ -155,7 +163,7 @@ Si vous utilisiez des champs additionnels avec des checkbox, lors de leur change
 
 **🐛 Corrections**
 
-- Correction et améliorations des performances des recherches par statut de protection, notamment quand elles sont associées à une recherche géographique (#2450, par @amandine-sahl)
+- Correction et ations des performances des recherches par statut de protection, notamment quand elles sont associées à une recherche géographique (#2450, par @amandine-sahl)
 - Correction d’une régression des performances lors de la récupération des JDD (#2462, par @mvergez)
 - Correction de jointures manquantes pour le calcule des permissions lors de la récupération des JDD (#2463, par @mvergez)
 - Correction des champs additionnels de type liste (#2447, par @TheoLechemia)
@@ -172,7 +180,7 @@ Si vous utilisiez des champs additionnels avec des checkbox, lors de leur change
 - Affichage agrégé des observations dans la Synthèse (performances et lisibilité) (#1847 et #1878)
 - Filtres par défaut dans la Synthèse (#2261)
 - Optimisation des performances des exports de la Synthèse (#1434)
-- Optimisation du chargement des jeux de données dans le module Métadonnées pour en améliorer les performances (#2004)
+- Optimisation du chargement des jeux de données dans le module Métadonnées pour en er les performances (#2004)
 - Intégration par défaut de Taxref v16, BDC statuts v16 et référentiel de sensibilité v16
 - Possibilité de gérer les tables des applications mobiles et des modules depuis le module "Admin"
 - Configuration dynamique sans rebuild (#2205)
