@@ -62,6 +62,8 @@ __all__ = [
     "perm_object",
     "notifications_enabled",
     "celery_eager",
+    "sources_modules",
+    "modules",
 ]
 
 
@@ -86,17 +88,55 @@ def app():
         transaction.rollback()  # rollback all database changes
 
 
+def create_module(module_code, module_label, module_path, active_frontend, active_backend):
+    return TModules(
+        module_code=module_code,
+        module_label=module_label,
+        module_path=module_path,
+        active_frontend=active_frontend,
+        active_backend=active_backend,
+    )
+
+
+@pytest.fixture()
+def modules():
+    dict_module_to_create = {
+        0: {
+            "module_code": "MODULE_TEST_1",
+            "module_label": "module_test_1",
+            "module_path": "module_test_1",
+            "active_frontend": True,
+            "active_backend": True,
+        },
+        1: {
+            "module_code": "MODULE_TEST_2",
+            "module_label": "module_test_2",
+            "module_path": "module_test_2",
+            "active_frontend": True,
+            "active_backend": True,
+        },
+    }
+    modules = []
+    for key, module in dict_module_to_create.items():
+        modules.append(
+            create_module(
+                module["module_code"],
+                module["module_label"],
+                module["module_path"],
+                module["active_frontend"],
+                module["active_backend"],
+            )
+        )
+    with db.session.begin_nested():
+        db.session.add_all(modules)
+    return modules
+
+
 @pytest.fixture(scope="function")
 def module(users):
     other_module = TModules.query.filter_by(module_code="GEONATURE").one()
     with db.session.begin_nested():
-        new_module = TModules(
-            module_code="MODULE_1",
-            module_label="module_1",
-            module_path="module_1",
-            active_frontend=True,
-            active_backend=False,
-        )
+        new_module = create_module("MODULE_1", "module_1", "module_1", True, False)
         db.session.add(new_module)
     # Copy perission from another module
     with db.session.begin_nested():
@@ -305,6 +345,16 @@ def source():
     return source
 
 
+@pytest.fixture()
+def sources_modules(modules):
+    sources = []
+    for name_source, module in [("source test 1", modules[0]), ("source test 2", modules[1])]:
+        sources.append(TSources(name_source=name_source, module=module))
+    with db.session.begin_nested():
+        db.session.add_all(sources)
+    return sources
+
+
 def create_synthese(geom, taxon, user, dataset, source, uuid, cor_observers, **kwargs):
     now = datetime.datetime.now()
 
@@ -327,22 +377,22 @@ def create_synthese(geom, taxon, user, dataset, source, uuid, cor_observers, **k
 
 
 @pytest.fixture()
-def synthese_data(app, users, datasets, source):
+def synthese_data(app, users, datasets, source, sources_modules):
     point1 = Point(5.92, 45.56)
     point2 = Point(-1.54, 46.85)
     point3 = Point(-3.486786, 48.832182)
     data = {}
     with db.session.begin_nested():
-        for name, cd_nom, point, ds, comment_description in [
-            ("obs1", 713776, point1, datasets["own_dataset"], "obs1"),
-            ("obs2", 212, point2, datasets["own_dataset"], "obs2"),
-            ("obs3", 2497, point3, datasets["own_dataset"], "obs3"),
-            ("p1_af1", 713776, point1, datasets["belong_af_1"], "p1_af1"),
-            ("p1_af1_2", 212, point1, datasets["belong_af_1"], "p1_af1_2"),
-            ("p1_af2", 212, point1, datasets["belong_af_2"], "p1_af2"),
-            ("p2_af2", 2497, point2, datasets["belong_af_2"], "p2_af2"),
-            ("p2_af1", 2497, point2, datasets["belong_af_1"], "p2_af1"),
-            ("p3_af3", 2497, point3, datasets["belong_af_3"], "p3_af3"),
+        for name, cd_nom, point, ds, comment_description, source_m in [
+            ("obs1", 713776, point1, datasets["own_dataset"], "obs1", sources_modules[0]),
+            ("obs2", 212, point2, datasets["own_dataset"], "obs2", sources_modules[0]),
+            ("obs3", 2497, point3, datasets["own_dataset"], "obs3", sources_modules[1]),
+            ("p1_af1", 713776, point1, datasets["belong_af_1"], "p1_af1", sources_modules[1]),
+            ("p1_af1_2", 212, point1, datasets["belong_af_1"], "p1_af1_2", sources_modules[1]),
+            ("p1_af2", 212, point1, datasets["belong_af_2"], "p1_af2", sources_modules[1]),
+            ("p2_af2", 2497, point2, datasets["belong_af_2"], "p2_af2", source),
+            ("p2_af1", 2497, point2, datasets["belong_af_1"], "p2_af1", source),
+            ("p3_af3", 2497, point3, datasets["belong_af_3"], "p3_af3", source),
         ]:
             unique_id_sinp = (
                 "f4428222-d038-40bc-bc5c-6e977bbbc92b" if not data else func.uuid_generate_v4()
@@ -356,7 +406,7 @@ def synthese_data(app, users, datasets, source):
                 taxon,
                 users["self_user"],
                 ds,
-                source,
+                source_m,
                 unique_id_sinp,
                 [users["admin_user"], users["user"]],
                 **kwargs,

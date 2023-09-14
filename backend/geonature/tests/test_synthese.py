@@ -26,7 +26,7 @@ from apptax.taxonomie.models import Taxref
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 from .fixtures import *
-from .fixtures import create_synthese
+from .fixtures import create_synthese, create_module
 from .utils import jsonschema_definitions
 
 
@@ -41,22 +41,6 @@ def source():
     with db.session.begin_nested():
         db.session.add(source)
     return source
-
-
-# TODO: make it work : source added but not in synthese_data when fixture called
-@pytest.fixture()
-def source_modules():
-    source = TSources(name_source="test module provenance", id_module=1)
-    with db.session.begin_nested():
-        db.session.add(source)
-    return source
-    # sources = []
-    # with db.session.begin_nested():
-    #     for name_source,id_module in [("source test 1",1),("source test 2",10)]:
-    #         source = TSources(name_source=name_source, id_module=id_module)
-    #         sources.append(TSources(name_source=name_source, id_module=id_module))
-    #         db.session.add(source)
-    # return sources
 
 
 @pytest.fixture()
@@ -175,6 +159,18 @@ class TestSynthese:
         assert response.status_code == 200
         data = response.get_json()
         assert len(data) > 0
+
+    def test_list_sources_modules(self, synthese_data, sources_modules, users):
+        set_logged_user_cookie(self.client, users["self_user"])
+        response = self.client.get(url_for("gn_synthese.get_sources_modules"))
+        assert response.status_code == 200
+        data = response.get_json()
+        assert len(data) > 0
+        assert any(
+            (source.id_source in d["ids_source"] and source.id_module == d["id_module"])
+            for d in data
+            for source in sources_modules
+        )
 
     def test_get_defaut_nomenclatures(self, users):
         set_logged_user_cookie(self.client, users["self_user"])
@@ -341,7 +337,7 @@ class TestSynthese:
         id_source = source.id_source
 
         url = url_for("gn_synthese.get_observations_for_web")
-        filters = {"id_source": id_source}
+        filters = {"id_source": [id_source]}
         r = self.client.get(url, json=filters)
 
         expected_data = {
@@ -353,16 +349,13 @@ class TestSynthese:
         assert expected_data.issubset(response_data)
 
     def test_get_observations_for_web_filter_source_by_id_module(
-        self, users, synthese_data, source_modules
+        self, users, synthese_data, source
     ):
         set_logged_user_cookie(self.client, users["self_user"])
-        id_source = source_modules.id_source
-        id_module = source_modules.id_module
-
-        # id_source_not_included = source_modules[1].id_source
+        id_source = source.id_source
 
         url = url_for("gn_synthese.get_observations_for_web")
-        filters = {"id_source_module": id_source}
+        filters = {"id_source_modules": [id_source]}
         r = self.client.get(url, json=filters)
 
         expected_data = {
@@ -370,15 +363,45 @@ class TestSynthese:
             for synthese in synthese_data.values()
             if synthese.id_source == id_source
         }
-
-        # not_expected_data = {
-        #     synthese.id_synthese
-        #     for synthese in synthese_data.values()
-        #     if synthese.id_source == id_source_not_included
-        # }
-
         response_data = {feature["properties"]["id"] for feature in r.json["features"]}
         assert expected_data.issubset(response_data)
+
+    @pytest.mark.parametrize(
+        "module_label_to_filter,expected_length",
+        [("MODULE_TEST_1", 2), ("MODULE_TEST_2", 4)],
+    )
+    def test_get_observations_for_web_filter_source_by_id_module(
+        self,
+        users,
+        synthese_data,
+        sources_modules,
+        modules,
+        module_label_to_filter,
+        expected_length,
+    ):
+        set_logged_user_cookie(self.client, users["self_user"])
+
+        for module in modules:
+            if module.module_code == module_label_to_filter:
+                id_module_selected = module.id_module
+
+        sources_id_list = []
+        for source in sources_modules:
+            if source.module.id_module == id_module_selected:
+                sources_id_list.append(source.id_source)
+
+        url = url_for("gn_synthese.get_observations_for_web")
+        filters = {"id_source_modules": sources_id_list}
+        r = self.client.get(url, json=filters)
+
+        expected_data = {
+            synthese.id_synthese
+            for synthese in synthese_data.values()
+            if synthese.id_source in sources_id_list
+        }
+        response_data = {feature["properties"]["id"] for feature in r.json["features"]}
+        assert expected_data.issubset(response_data)
+        assert len(response_data) == expected_length
 
     @pytest.mark.parametrize(
         "observer_input,expected_length_synthese",
