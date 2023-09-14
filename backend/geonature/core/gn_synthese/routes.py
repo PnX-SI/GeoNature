@@ -1109,10 +1109,20 @@ def create_report(permissions):
         TReport.id_synthese == id_synthese,
         TReport.report_type.has(BibReportsTypes.type == type_name),
     )
+
+    user_pin = TReport.query.filter(
+        TReport.id_synthese == id_synthese,
+        TReport.report_type.has(BibReportsTypes.type == "pin"),
+        TReport.id_role == g.current_user.id_role,
+    )
     # only allow one alert by id_synthese
-    if type_name in ["alert", "pin"]:
+    if type_name in ["alert"]:
         alert_exists = report_query.one_or_none()
         if alert_exists is not None:
+            raise Conflict("This type already exists for this id")
+    if type_name in ["pin"]:
+        pin_exist = user_pin.one_or_none()
+        if pin_exist is not None:
             raise Conflict("This type already exists for this id")
     new_entry = TReport(
         id_synthese=id_synthese,
