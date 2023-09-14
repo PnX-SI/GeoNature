@@ -98,6 +98,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
 
   loadAllInfo(idSynthese) {
     this.isLoading = true;
+    this.getReport('pin');
     this._dataService
       .getOneSyntheseObservation(idSynthese)
       .pipe(
@@ -108,7 +109,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       .subscribe((data) => {
         this.selectedObs = data['properties'];
         this.alert = find(data.properties.reports, ['report_type.type', 'alert']);
-        this.pin = find(data.properties.reports, ['report_type.type', 'pin']);
         this.selectCdNomenclature = this.selectedObs?.nomenclature_valid_status.cd_nomenclature;
         this.selectedGeom = data;
         this.selectedObs['municipalities'] = [];
@@ -341,8 +341,9 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   pinSelectedObs() {
     if (isEmpty(this.pin)) {
       this.addPin();
+    } else {
+      this.deletePin();
     }
-    this.deletePin();
   }
 
   copyToClipBoard() {
