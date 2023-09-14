@@ -37,14 +37,14 @@
     # via
     #   -r requirements-submodules.in
     #   pypn-ref-geo
-alembic==1.11.1
+alembic==1.12.0
     # via
     #   flask-migrate
     #   pypn-ref-geo
     #   pypnusershub
 amqp==5.1.1
     # via kombu
-async-timeout==4.0.2
+async-timeout==4.0.3
     # via redis
 attrs==23.1.0
     # via fiona
@@ -56,23 +56,23 @@ billiard==3.6.4.0
     # via celery
 blinker==1.6.2
     # via flask-mail
-boto3==1.28.2
+boto3==1.28.47
     # via taxhub
-botocore==1.31.2
+botocore==1.31.47
     # via
     #   boto3
     #   s3transfer
 cached-property==1.5.2
     # via kombu
-cairocffi==1.6.0
+cairocffi==1.6.1
     # via
     #   cairosvg
     #   weasyprint
-cairosvg==2.7.0
+cairosvg==2.7.1
     # via weasyprint
 celery[redis]==5.2.7
     # via -r requirements-common.in
-certifi==2023.5.7
+certifi==2023.7.22
     # via
     #   fiona
     #   requests
@@ -83,7 +83,7 @@ cffi==1.15.1
     #   weasyprint
 charset-normalizer==3.2.0
     # via requests
-click==8.1.4
+click==8.1.7
     # via
     #   -r requirements-common.in
     #   celery
@@ -104,7 +104,7 @@ click-repl==0.3.0
     # via celery
 cligj==0.7.2
     # via fiona
-cryptography==41.0.2
+cryptography==41.0.3
     # via authlib
 cssselect2==0.7.0
     # via
@@ -156,7 +156,7 @@ flask-marshmallow==0.14.0
     #   pypn-habref-api
     #   pypnnomenclature
     #   pypnusershub
-flask-migrate==4.0.4
+flask-migrate==4.0.5
     # via
     #   -r requirements-common.in
     #   pypn-habref-api
@@ -187,7 +187,7 @@ geojson==3.0.1
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
-gunicorn==20.1.0
+gunicorn==21.2.0
     # via
     #   -r requirements-common.in
     #   taxhub
@@ -206,6 +206,7 @@ importlib-metadata==4.13.0 ; python_version < "3.10"
     #   celery
     #   click
     #   flask
+    #   gunicorn
     #   kombu
     #   mako
     #   munch
@@ -264,6 +265,7 @@ packaging==23.1
     # via
     #   -r requirements-common.in
     #   geoalchemy2
+    #   gunicorn
     #   marshmallow
     #   marshmallow-sqlalchemy
 pillow==9.5.0
@@ -274,7 +276,7 @@ pillow==9.5.0
     #   weasyprint
 prompt-toolkit==3.0.39
     # via click-repl
-psycopg2==2.9.6
+psycopg2==2.9.7
     # via
     #   -r requirements-common.in
     #   pypn-habref-api
@@ -300,15 +302,15 @@ python-dotenv==0.21.1
     #   pypnnomenclature
     #   taxhub
     #   usershub
-pytz==2023.3
+pytz==2023.3.post1
     # via celery
-redis==4.6.0
+redis==5.0.0
     # via celery
 requests==2.31.0
     # via
     #   pypn-habref-api
     #   pypnusershub
-s3transfer==0.6.1
+s3transfer==0.6.2
     # via boto3
 shapely==1.8.5.post1
     # via
