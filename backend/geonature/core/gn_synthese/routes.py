@@ -838,12 +838,12 @@ def get_sources_modules():
     .. :quickref: Synthese;
     """
 
-    aggreg_ids_module = func.array_agg(TSources.id_source, type_=ARRAY(Integer)).label(
+    aggreg_ids_source = func.array_agg(TSources.id_source, type_=ARRAY(Integer)).label(
         "ids_source"
     )
     q_modules = (
         DB.session.query(
-            TSources.id_module.label("id_module"), aggreg_ids_module, TModules.module_label
+            TSources.id_module.label("id_module"), aggreg_ids_source, TModules.module_label
         )
         .join(TModules, TModules.id_module == TSources.id_module)
         .group_by(TSources.id_module, TModules.module_label)
