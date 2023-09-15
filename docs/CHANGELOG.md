@@ -1,27 +1,33 @@
 CHANGELOG
 =========
 
-2.13.1 (unreleased)
+2.13.1 (2023-09-15)
 -------------------
+
+L'installation de GeoNature (ainsi que ses 4 modules externes principaux, TaxHub et UsersHub) avec Docker est désormais complet et fonctionnel. Voir la documentation sur https://docs.geonature.fr/installation.html#docker.  
+C'est la manière la plus simple de déployer GeoNature avec ses 4 modules externes principaux (Import, Export, Dashboard, Monitoring) mais aussi de les mettre à jour, avec seulement quelques lignes de commandes, à partir des images construites automatiquement et du fichier `docker-compose` global, fourni dans le dépôt [GeoNature-Docker-services](https://github.com/PnX-SI/GeoNature-Docker-services).
 
 **🚀 Nouveautés**
 
 - Amélioration de l'affichage des taxons en passant à la ligne quand ils sont trop longs (#2690, par @JulienCorny)
 - Amélioration du `Dockerfile` de GeoNature (#2623, par @joelclems et @bouttier)
-- Ne pas renvoyer les modules désactivés dans la route `/modules` (#2693)
-- Mise à jour de TaxHub en version 1.12.1
-- Mise à jour de Utils-Flask-SQLAlchemy en version 0.3.6 et UsersHub-authentification-module en version 1.6.10 (#2704)
+- Ne pas renvoyer les modules désactivés dans la route `/modules` (#2693, par @bouttier)
+- Mise à jour de TaxHub en version 1.12.1 (#2623, par @joelclems)
+- Mise à jour de Utils-Flask-SQLAlchemy en version 0.3.6 et UsersHub-authentification-module en version 1.6.10 (#2704, par @TheoLechemia)
+- Mise à jour de différentes dépendances Python (#2704, par @TheoLechemia)
 
 **🐛 Corrections**
 
 - Correction des déconnexions non effectives sur la 2.13.0 (#2682, par @TheoLechemia)
 - Correction de la configuration NGINX des préfixes quand GeoNature est déployé avec Docker (#2698, par @bouttier)
-- [Synthèse] Correction de la recherche de taxons avec des accents (#2676)
-- [Synthèse] Correction des couleurs des mailles quand on clique sur différentes mailles successivement en mode maille (#2677)
+- Correction des permissions vérifiées pour pouvoir supprimer un signalement en prenant en compte le R du module Validation, et non pas le V du module Synthèse (#2705, par @Pierre-Narcisi)
+- Correction de l'épinglage des observations qui était encore partagé entre utilisateurs, et non pas individuels (#2702, par @Pierre-Narcisi)
+- [Synthèse] Correction de la recherche de taxons avec des accents (#2676, par @Pierre-Narcisi)
+- [Synthèse] Correction des couleurs des mailles quand on clique sur différentes mailles successivement en mode maille (#2677, par @Pierre-Narcisi)
 
 **📝 Documentation**
 
-- Documentation de la nouvelle interface d'administration des permissions (#2605, par @camillemonchicourt)
+- Documentation de la nouvelle interface d'administration des permissions (#2605, par @camillemonchicourt), disponible sur https://docs.geonature.fr/user-manual.html#admin
 - Mise à jour de la documentation d'installation Docker suite à la sortie d'un Docker Compose complet et fonctionnel sur [GeoNature-Docker-services](https://github.com/PnX-SI/GeoNature-Docker-services/) (#2703)
 - Correction de petites fautes d'orthographe (#2674, par @omahs)
 - Correction du template d'issue (#2700, par @mvergez)
