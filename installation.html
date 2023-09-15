@@ -61,10 +61,9 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#docker">Docker</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id3">Prérequis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#docker-compose">Docker Compose</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#image-backend">Image backend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#image-frontend">Image frontend</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#docker-compose">Docker Compose</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#https">HTTPS</a><ul>
@@ -436,23 +435,19 @@ $ nano config/settings.ini
 </section>
 <section id="docker">
 <h2>Docker<a class="headerlink" href="#docker" title="Lien permanent vers cette rubrique"></a></h2>
-<p>Depuis GeoNature 2.12, GeoNature fourni des images Docker pour le backend et le frontend.</p>
-<div class="admonition warning">
-<p class="admonition-title">Avertissement</p>
-<p>Les images Docker sont encore récentes, non éprouvées et peu documentées.
-Leur utilisation en production n’est de ce fait pas encore recommandée.</p>
-</div>
-<section id="id3">
-<h3>Prérequis<a class="headerlink" href="#id3" title="Lien permanent vers cette rubrique"></a></h3>
-<ul class="simple">
-<li><p><a class="reference external" href="https://docs.docker.com/engine/install/">Docker</a></p></li>
-</ul>
+<p>L’installation de GeoNature avec Docker est la manière la plus simple de déployer GeoNature, ses 4 modules externes principaux (Import, Export, Dashboard, Monitoring), TaxHub et UsersHub, mais aussi de les mettre à jour, avec seulement quelques lignes de commandes.</p>
+<p>Elle permet aussi d’installer GeoNature sur différents systèmes, et pas uniquement sur Debian, comme c’est le cas avec l’installation classique.</p>
+<p>Elle peut néanmoins nécessiter de connaitre le fonctionnement de Docker pour ceux qui souhaitent aller plus loin et mettre en place une installation plus spécifique.</p>
+<section id="docker-compose">
+<h3>Docker Compose<a class="headerlink" href="#docker-compose" title="Lien permanent vers cette rubrique"></a></h3>
+<p>Pour déployer facilement GeoNature avec Docker, utilisez le Docker Compose proposé et documenté dans le dépôt <a class="reference external" href="https://github.com/PnX-SI/Geonature-Docker-services/">GeoNature-Docker-services</a>.</p>
+<p>Pour des déploiements Docker plus avancés et spécifiques, des images Docker des différents outils (GeoNature, TaxHub, UsersHub, GeoNature et ses 4 modules externes principaux) sont automatiquement construites et publiées à chaque nouvelle version publiée.</p>
 </section>
 <section id="image-backend">
 <h3>Image backend<a class="headerlink" href="#image-backend" title="Lien permanent vers cette rubrique"></a></h3>
-<p>Des images pré-buildées sont présentes sur <a class="reference external" href="https://github.com/PnX-SI/GeoNature/pkgs/container/geonature-backend/versions?filters%5Bversion_type%5D=tagged">github</a>.</p>
-<p>Les images tagguées <cite>-wheels</cite> contiennent les wheels Python de GeoNature, de ses dépendances et modules contrib, de manière à pouvoir être enrichie avec vos wheels provenant de vos propres modules (images de type « builder »).</p>
-<p>Build manuel de l’image :</p>
+<p>Des images pré-construites automatiquement sont présentes sur <a class="reference external" href="https://github.com/PnX-SI/GeoNature/pkgs/container/geonature-backend/versions?filters%5Bversion_type%5D=tagged">Github</a>.</p>
+<p>Les images tagguées <cite>-wheels</cite> contiennent les wheels Python de GeoNature, de ses dépendances et modules contrib, de manière à pouvoir être enrichies avec vos wheels provenant de vos propres modules (images de type « builder »).</p>
+<p>Construction manuelle de l’image :</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span> docker build . <span class="se">\</span>
         -f backend/Dockerfile <span class="se">\</span>
         --target<span class="o">=</span>prod <span class="se">\</span>
@@ -464,19 +459,19 @@ Leur utilisation en production n’est de ce fait pas encore recommandée.</p>
 <li><p>GeoNature attend sa configuration dans le dossier <code class="docutils literal notranslate"><span class="pre">/dist/config</span></code> (à monter dans un volume afin de pouvoir la modifier).
 L’emplacement du fichier de configuration peut également être précisé via la variable d’environnement <code class="docutils literal notranslate"><span class="pre">GEONATURE_CONFIG_FILE</span></code>.</p></li>
 <li><p>Il est également possible de fournir une configuration Python via la variable d’environnement <code class="docutils literal notranslate"><span class="pre">GEONATURE_SETTINGS</span></code>.</p></li>
-<li><p>Les médias seront stocké dans le dossier <code class="docutils literal notranslate"><span class="pre">/dist/media</span></code> (à monter dans un volume afin de les sauvegarder).</p></li>
-<li><p>Toute variable d’environnement préfixée par <code class="docutils literal notranslate"><span class="pre">GEONATURE_</span></code> se verra traduit par un paramètre de configuration homonyme
+<li><p>Les médias seront stockés dans le dossier <code class="docutils literal notranslate"><span class="pre">/dist/media</span></code> (à monter dans un volume afin de les sauvegarder).</p></li>
+<li><p>Toute variable d’environnement préfixée par <code class="docutils literal notranslate"><span class="pre">GEONATURE_</span></code> se verra traduite par un paramètre de configuration homonyme
 (<a class="reference external" href="https://flask.palletsprojects.com/en/2.2.x/api/#flask.Config.from_prefixed_env">documentation Flask</a>).
-Si vous souhaitez définir une variable de configuration se trouvant dans une section, utilisé deux <em>underscore</em>.
+Si vous souhaitez définir une variable de configuration se trouvant dans une section, utilisez deux <em>underscore</em>.
 Par exemple, pour définir le paramètre <code class="docutils literal notranslate"><span class="pre">NB_LAST_OBS</span></code> de la section <code class="docutils literal notranslate"><span class="pre">[SYNTHESE]</span></code>, on définira une variable d’environnement <code class="docutils literal notranslate"><span class="pre">GEONATURE_SYNTHESE__NB_LAST_OBS</span></code>.</p></li>
-<li><p>Pour peupler la base de données, référez vous au script <code class="docutils literal notranslate"><span class="pre">install/03_create_db.sh</span></code>.</p></li>
+<li><p>Pour peupler la base de données, référez-vous au script <code class="docutils literal notranslate"><span class="pre">install/03_create_db.sh</span></code>.</p></li>
 </ul>
 </section>
 <section id="image-frontend">
 <h3>Image frontend<a class="headerlink" href="#image-frontend" title="Lien permanent vers cette rubrique"></a></h3>
-<p>Des images pré-buildées sont présentes sur <a class="reference external" href="https://github.com/PnX-SI/GeoNature/pkgs/container/geonature-frontend/versions?filters%5Bversion_type%5D=tagged">github</a>.</p>
-<p>Les images tagguées <cite>-source</cite> contiennent uniquement les sources de GeoNature et des modules contrib, et attendent d’être enrichie avec les sources de vos propres modules tandis que les images tagguées <cite>-nginx</cite> contiennent la configuration nginx prête à l’emploi pour GeoNature (images de type « builder »).</p>
-<p>Build manuel de l’image :</p>
+<p>Des images pré-construites automatiquement sont présentes sur <a class="reference external" href="https://github.com/PnX-SI/GeoNature/pkgs/container/geonature-frontend/versions?filters%5Bversion_type%5D=tagged">Github</a>.</p>
+<p>Les images tagguées <cite>-source</cite> contiennent uniquement les sources de GeoNature et des modules contrib, et attendent d’être enrichies avec les sources de vos propres modules tandis que les images tagguées <cite>-nginx</cite> contiennent la configuration NGINX prête à l’emploi pour GeoNature (images de type « builder »).</p>
+<p>Construction manuelle de l’image :</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span> docker build . <span class="se">\</span>
         -f frontend/Dockerfile <span class="se">\</span>
         --target<span class="o">=</span>prod <span class="se">\</span>
@@ -485,7 +480,7 @@ Par exemple, pour définir le paramètre <code class="docutils literal notransla
 </div>
 <p>Fonctionnement de l’image :</p>
 <ul class="simple">
-<li><p>La configuration nginx de l’image est généré dynamiquement à son démarrage à partir des variables d’environnement suivantes :</p>
+<li><p>La configuration NGINX de l’image est générée dynamiquement à son démarrage, à partir des variables d’environnement suivantes :</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">NGINX_PORT</span></code> (défaut : 80)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">NGINX_HOST</span></code> (défaut : localhost)</p></li>
@@ -494,10 +489,6 @@ Par exemple, pour définir le paramètre <code class="docutils literal notransla
 </li>
 <li><p>La variable d’environnement <code class="docutils literal notranslate"><span class="pre">API_ENDPOINT</span></code> est lue au démarrage de l’image afin de mettre à jour le fichier de configuration du frontend <code class="docutils literal notranslate"><span class="pre">assets/config.json</span></code>.</p></li>
 </ul>
-</section>
-<section id="docker-compose">
-<h3>Docker Compose<a class="headerlink" href="#docker-compose" title="Lien permanent vers cette rubrique"></a></h3>
-<p>Une configuration Docker Compose est en cours de mise au point dans <a class="reference external" href="https://github.com/PnX-SI/Geonature-Docker-services/tree/docker-compose">la branche *docker-compose* du dépôt GeoNature-Docker-services</a>.</p>
 </section>
 </section>
 <section id="https">

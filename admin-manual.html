@@ -295,7 +295,7 @@ Il est possible pour n’importe quelle dépendance ou module GeoNature de fourn
 )
 </pre></div>
 </div>
-<p>Il est également possible de spécifier l’emplacement de révisions Alembic manuellement dans la configuration de GeoNature. Cela est nécessaire entre autre pour UsersHub afin de pouvoir manipuler son schéma alors que UsersHub n’est usuellemment pas installé dans le venv de GeoNature (seul UsersHub-authentification-module l’est) :</p>
+<p>Il est également possible de spécifier l’emplacement de révisions Alembic manuellement dans la configuration de GeoNature. Cela est nécessaire entre autre pour UsersHub afin de pouvoir manipuler son schéma alors que UsersHub n’est usuellement pas installé dans le venv de GeoNature (seul UsersHub-authentification-module l’est) :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">ALEMBIC</span><span class="p">]</span>
 <span class="n">VERSION_LOCATIONS</span> <span class="o">=</span> <span class="s1">&#39;/path/to/usershub/app/migrations/versions&#39;</span>
 </pre></div>
@@ -303,7 +303,7 @@ Il est possible pour n’importe quelle dépendance ou module GeoNature de fourn
 <p>Chaque fichier de migration est caractérisé par :</p>
 <ul class="simple">
 <li><p>un identifiant, <cite>e.g.</cite> <code class="docutils literal notranslate"><span class="pre">f06cc80cc8ba</span></code></p></li>
-<li><p>une branche : Les branches permettent de séparer les fichiers de migrations afin de pouvoir les appliquer séparement. Par exemple, pour un déploiement de TaxHub sans GeoNature, il peut être intéressant de créer le schéma <code class="docutils literal notranslate"><span class="pre">taxonomie</span></code> sans créer les schémas de GeoNature, et ainsi gérer indépendamment les migrations de chaque schéma.</p></li>
+<li><p>une branche : Les branches permettent de séparer les fichiers de migrations afin de pouvoir les appliquer séparément. Par exemple, pour un déploiement de TaxHub sans GeoNature, il peut être intéressant de créer le schéma <code class="docutils literal notranslate"><span class="pre">taxonomie</span></code> sans créer les schémas de GeoNature, et ainsi gérer indépendamment les migrations de chaque schéma.</p></li>
 <li><p>un ancêtre : Lorsqu’un fichier de migration représente l’évolution d’un état antérieur de la base de données, l’ancêtre indique dans quelle version la base de données doit se trouver avant d’appliquer le-dis fichier de migration.</p></li>
 <li><p>des dépendances : Il est possible d’indiquer qu’une migration nécessite qu’une ou plusieurs autres migrations aient été préalablement appliquées. Par exemple, ceci permet d’indiquer que le schéma de GeoNature nécessite les schémas <code class="docutils literal notranslate"><span class="pre">taxonomie</span></code> et <code class="docutils literal notranslate"><span class="pre">utilisateurs</span></code>.</p></li>
 </ul>
@@ -618,7 +618,7 @@ geonature permissions supergrant --group --nom <span class="s2">&quot;Grp_admin&
 <ul class="simple">
 <li><p>Dans GeoNature on peut attribuer à un role des actions possibles dans un module, sur lesquels on peut ajouter des filtres (définis dans la table <code class="docutils literal notranslate"><span class="pre">gn_permissions.t_permissions</span></code>).</p></li>
 <li><p>6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).</p></li>
-<li><p>Différents types de filtre existent. Le plus courant est le filtre d’appartenace (portée) : 2 filtres d’appartenance sont attribuables à des actions : Mes données / Les données de mon organisme. La synthèse dispose aussi d’un filtre de sensibilité.</p></li>
+<li><p>Différents types de filtre existent. Le plus courant est le filtre d’appartenance (portée) : 2 filtres d’appartenance sont attribuables à des actions : Mes données / Les données de mon organisme. La synthèse dispose aussi d’un filtre de sensibilité.</p></li>
 <li><p>Des fonctions PostgreSQL ont aussi été intégrées pour faciliter la récupération de ces informations (<code class="docutils literal notranslate"><span class="pre">gn_permissions.cruved_for_user_in_module</span></code>, <code class="docutils literal notranslate"><span class="pre">gn_permissions.does_user_have_scope_permission</span></code>, …)</p></li>
 <li><p>Si un utilisateur n’a aucune permission sur un module, alors il ne lui sera pas affiché dans le menu latéral et il ne pourra pas y accéder</p></li>
 <li><p>Il est aussi possible de ne pas utiliser UsersHub pour gérer les utilisateurs et de connecter GeoNature à un CAS (voir configuration). Actuellement ce paramétrage est fonctionnel en se connectant au CAS de l’INPN (MNHN)</p></li>
@@ -690,7 +690,7 @@ geonature permissions supergrant --group --nom <span class="s2">&quot;Grp_admin&
 <p>La fonction <code class="docutils literal notranslate"><span class="pre">gn_profiles.refresh_profiles()</span></code> permet de rafraichir ces vues matérialisées.</p>
 <p>Pour lancer manuellement cette fonction, ouvrez une console SQL et exécutez la requête <code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">gn_profiles.refresh_profiles();</span></code>.</p>
 <p>Cette fonction est aussi diponible en tant que fonction GeoNature qu’il est préférable d’utiliser : <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">profiles</span> <span class="pre">update</span></code></p>
-<p>Pour automatiser l’éxecution de cette fonction (tous les jours à minuit dans cet exemple), <a class="reference internal" href="installation.html#cron"><span class="std std-ref">créer une tâche planfiée</span></a>.</p>
+<p>Pour automatiser l’exécution de cette fonction (tous les jours à minuit dans cet exemple), <a class="reference internal" href="installation.html#cron"><span class="std std-ref">créer une tâche planfiée</span></a>.</p>
 </section>
 <section id="usage">
 <h4>Usage<a class="headerlink" href="#usage" title="Lien permanent vers cette rubrique"></a></h4>
@@ -1164,7 +1164,7 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 </section>
 <section id="maintenance">
 <h3>Maintenance<a class="headerlink" href="#maintenance" title="Lien permanent vers cette rubrique"></a></h3>
-<p>Lors d’une opération de maintenance (montée en version, modification de la base de données…), vous pouvez rendre l’application momentanémment indisponible.</p>
+<p>Lors d’une opération de maintenance (montée en version, modification de la base de données…), vous pouvez rendre l’application momentanément indisponible.</p>
 <p>Pour cela, désactivez la configuration Apache de GeoNature, puis activez la configuration du mode de maintenance :</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo a2dissite geonature</span>
 <span class="go">sudo a2ensite geonature_maintenance</span>
@@ -1291,7 +1291,7 @@ ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
 </li>
 <li><p>Restauration de la configuration et de la customisation :</p>
 <ul>
-<li><p>Décompresser les fichiers précedemment sauvegardés pour les remettre au bon emplacement :</p>
+<li><p>Décompresser les fichiers précédemment sauvegardés pour les remettre au bon emplacement :</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo rm &lt;GEONATURE_DIRECTORY&gt;/config/*</span>
 <span class="go">cd &lt;GEONATURE_DIRECTORY&gt;/config</span>
 <span class="go">sudo tar -zxvf &lt;MY_BACKUP_DIRECTORY&gt;/201803150953-geonature_config.tar.gz</span>
@@ -1386,7 +1386,7 @@ ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
 <h2>Intégrer des données<a class="headerlink" href="#integrer-des-donnees" title="Lien permanent vers cette rubrique"></a></h2>
 <section id="referentiel-geographique">
 <h3>Référentiel géographique<a class="headerlink" href="#referentiel-geographique" title="Lien permanent vers cette rubrique"></a></h3>
-<p>GeoNature est fourni avec des données géographiques de base sur la métropôle (MNT national à 250m et communes de métropôle).</p>
+<p>GeoNature est fourni avec des données géographiques de base sur la métropole (MNT national à 250m et communes de métropole).</p>
 <p><strong>1.</strong> Si vous souhaitez modifier le MNT pour mettre celui de votre territoire :</p>
 <ul class="simple">
 <li><p>Videz le contenu des tables <code class="docutils literal notranslate"><span class="pre">ref_geo.dem</span></code> et éventuellement <code class="docutils literal notranslate"><span class="pre">ref_geo.dem_vector</span></code></p></li>
@@ -2324,7 +2324,7 @@ souhaitée mais pas encore présente dans GeoNature.</p>
 <section id="installer-le-module">
 <h3>Installer le module<a class="headerlink" href="#installer-le-module" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Le module est fourni par défaut avec l’installation de GeoNature.</p>
-<p>Si vous l’avez supprimé, lancez les commandes suivantes depuis le repertoire <code class="docutils literal notranslate"><span class="pre">backend</span></code> de GeoNature</p>
+<p>Si vous l’avez supprimé, lancez les commandes suivantes depuis le répertoire <code class="docutils literal notranslate"><span class="pre">backend</span></code> de GeoNature</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">source venv/bin/activate</span>
 <span class="go">geonature install_gn_module /home/&lt;mon_user&gt;/geonature/contrib/occtax occtax</span>
 </pre></div>
@@ -2539,7 +2539,7 @@ Pour cela, créer votre vue, et modifier les paramètres suivants :</p>
 </div>
 <section id="associer-des-jeux-de-donnees-et-des-champs-additionnels">
 <h4>Associer des jeux de données et des champs additionnels<a class="headerlink" href="#associer-des-jeux-de-donnees-et-des-champs-additionnels" title="Lien permanent vers cette rubrique"></a></h4>
-<p>Dans le module Métadonnées (formulaire des jeux de données), associez les jeux de données que vous souhaitez rendre saissisables au nouveau module dupliqué.</p>
+<p>Dans le module Métadonnées (formulaire des jeux de données), associez les jeux de données que vous souhaitez rendre saisissables au nouveau module dupliqué.</p>
 </section>
 <section id="ajouter-le-nouveau-module-dans-la-liste-des-modules-implementes">
 <h4>Ajouter le nouveau module dans la liste des modules implémentés<a class="headerlink" href="#ajouter-le-nouveau-module-dans-la-liste-des-modules-implementes" title="Lien permanent vers cette rubrique"></a></h4>
@@ -2611,7 +2611,7 @@ Exemple : <cite>[{« label »: « Trois », « value »: 3}, {« label �
 <section id="id3">
 <h3>Base de données<a class="headerlink" href="#id3" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Le module s’appuie sur deux schémas.:
-<code class="docutils literal notranslate"><span class="pre">ref_habitats</span></code>:  Le réferentiel habitat du MNHN
+<code class="docutils literal notranslate"><span class="pre">ref_habitats</span></code>:  Le référentiel habitat du MNHN
 <code class="docutils literal notranslate"><span class="pre">pr_occhab</span></code>: le schéma qui contient les données d’occurrence d’habitat, basé sur standard du MNHN</p>
 </section>
 <section id="id4">
@@ -2785,7 +2785,7 @@ Attention : Si des données sont déjà présentes dans la synthèse et que l’
 <p>En plus des observations brutes, il est possible d’effectuer un export des métadonnées associées aux observations. L’export est au format CSV et est construit à partir de la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.v_metadata_for_export</span></code>. Vous pouvez modifier le SQL de création de cette vue pour customiser votre export (niveau SQL avancé).</p>
 <p>Deux champs sont cependant obligatoire dans la vue :</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">jdd_id</span></code> (qui corespond à l’id du JDD de la table <code class="docutils literal notranslate"><span class="pre">gn_meta.t_datasets</span></code>). Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable <code class="docutils literal notranslate"><span class="pre">EXPORT_METADATA_ID_DATASET_COL</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">jdd_id</span></code> (qui correspond à l’id du JDD de la table <code class="docutils literal notranslate"><span class="pre">gn_meta.t_datasets</span></code>). Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable <code class="docutils literal notranslate"><span class="pre">EXPORT_METADATA_ID_DATASET_COL</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">acteurs</span></code>:  Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable <code class="docutils literal notranslate"><span class="pre">EXPORT_METADATA_ACTOR_COL</span></code></p></li>
 </ul>
 <p><strong>Export des statuts taxonomiques (réglementations)</strong></p>
@@ -2856,7 +2856,7 @@ Pour cela, il suffit de mettre une valeur <code class="docutils literal notransl
 <p><strong>6.</strong> Définir des filtres par défaut</p>
 <p>Il s’agit du paramètre <code class="docutils literal notranslate"><span class="pre">DEFAULT_FILTERS</span></code>.
 C’est un dictionnaire qui liste la valeur des champs par défaut.
-Il faut fournir le code des nomenclature par default (liste de chaîne de caractère).
+Il faut fournir le code des nomenclature par défaut (liste de chaîne de caractère).
 (On prend les champs en <code class="docutils literal notranslate"><span class="pre">id_nomenclature_...</span></code> et on remplace <code class="docutils literal notranslate"><span class="pre">id_nomenclature_</span></code> par <code class="docutils literal notranslate"><span class="pre">cd_nomenclature_</span></code>)</p>
 <p>Exemple de filtres par défaut :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">SYNTHESE</span><span class="p">]</span>
