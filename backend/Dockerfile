@@ -6,7 +6,6 @@ ENV PIP_ROOT_USER_ACTION=ignore
 RUN --mount=type=cache,target=/root/.cache \
     pip install --upgrade pip setuptools wheel
 
-
 FROM build AS build-habref
 WORKDIR /build/
 COPY /backend/dependencies/Habref-api-module .
@@ -114,12 +113,12 @@ RUN --mount=type=cache,target=/root/.cache \
     pip install --upgrade pip setuptools wheel
 
 WORKDIR /dist
-ENV GEONATURE_STATIC_PATH=/dist/static/
+ENV GEONATURE_STATIC_FOLDER=/dist/static/
 COPY /backend/static/ ./static/
 COPY --from=node /dist/node_modules/ ./static/node_modules/
-ENV GEONATURE_CUSTOM_STATIC_PATH=/dist/custom/
+ENV GEONATURE_CUSTOM_STATIC_FOLDER=/dist/custom/
 RUN mkdir custom
-ENV GEONATURE_MEDIA_PATH=/dist/media/
+ENV GEONATURE_MEDIA_FOLDER=/dist/media/
 RUN mkdir -p media/attachments
 
 WORKDIR /dist/geonature
@@ -140,13 +139,20 @@ COPY --from=build-utils-geo /build/dist/*.whl .
 COPY --from=build-geonature /build/dist/*.whl .
 
 COPY --chmod=755 /install/03b_populate_db.sh /populate_db.sh
-COPY --chmod=755 /install/assets/docker_startup.sh /startup.sh
+COPY --chmod=755 /install/assets/docker_entrypoint.sh /entrypoint.sh
 
 ENV GEONATURE_CONFIG_FILE ""
 
 EXPOSE 8000
 
-CMD ["/startup.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD [ "gunicorn", "geonature:create_app()", \
+    "--name=geonature", \
+    "--workers=2", \
+    "--threads=2", \
+    "--access-logfile=-", \
+    "--bind=0.0.0.0:8000" \
+]
 
 
 FROM wheels-light AS wheels

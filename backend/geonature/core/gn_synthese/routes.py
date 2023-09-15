@@ -796,7 +796,11 @@ def get_autocomplete_taxons_synthese():
         .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
     )
     search_name = search_name.replace(" ", "%")
-    q = q.filter(VMTaxrefListForautocomplete.unaccent_search_name.ilike("%" + search_name + "%"))
+    q = q.filter(
+        VMTaxrefListForautocomplete.unaccent_search_name.ilike(
+            func.unaccent("%" + search_name + "%")
+        )
+    )
     regne = request.args.get("regne")
     if regne:
         q = q.filter(VMTaxrefListForautocomplete.regne == regne)
@@ -804,7 +808,6 @@ def get_autocomplete_taxons_synthese():
     group2_inpn = request.args.get("group2_inpn")
     if group2_inpn:
         q = q.filter(VMTaxrefListForautocomplete.group2_inpn == group2_inpn)
-
     q = q.order_by(desc(VMTaxrefListForautocomplete.cd_nom == VMTaxrefListForautocomplete.cd_ref))
     limit = request.args.get("limit", 20)
     data = q.order_by(desc("idx_trgm")).limit(20).all()
@@ -1106,10 +1109,20 @@ def create_report(permissions):
         TReport.id_synthese == id_synthese,
         TReport.report_type.has(BibReportsTypes.type == type_name),
     )
+
+    user_pin = TReport.query.filter(
+        TReport.id_synthese == id_synthese,
+        TReport.report_type.has(BibReportsTypes.type == "pin"),
+        TReport.id_role == g.current_user.id_role,
+    )
     # only allow one alert by id_synthese
-    if type_name in ["alert", "pin"]:
+    if type_name in ["alert"]:
         alert_exists = report_query.one_or_none()
         if alert_exists is not None:
+            raise Conflict("This type already exists for this id")
+    if type_name in ["pin"]:
+        pin_exist = user_pin.one_or_none()
+        if pin_exist is not None:
             raise Conflict("This type already exists for this id")
     new_entry = TReport(
         id_synthese=id_synthese,
