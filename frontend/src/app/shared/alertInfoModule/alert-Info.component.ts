@@ -51,7 +51,10 @@ export class AlertInfoComponent implements OnInit, OnChanges {
       });
   }
   ngOnChanges() {
-    this.canChangeAlert = this.userCruved?.R && this.userCruved?.R > 0 && !isEmpty(this.alert);
+    let moduleValidation = this.moduleService.getModule('VALIDATION');
+
+    this.canChangeAlert =
+      moduleValidation?.cruved?.R && moduleValidation?.cruved?.R > 0 && !isEmpty(this.alert);
   }
   /**
    * Create new alert with /reports GET service
