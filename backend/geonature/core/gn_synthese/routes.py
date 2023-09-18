@@ -1098,6 +1098,7 @@ def create_report(permissions):
 
     synthese = Synthese.query.options(
         Load(Synthese).raiseload("*"),
+        joinedload("nomenclature_sensitivity"),
         joinedload("cor_observers"),
         joinedload("digitiser"),
         joinedload("dataset"),
