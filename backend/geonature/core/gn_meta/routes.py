@@ -103,6 +103,8 @@ def get_datasets():
     :returns:  `list<TDatasets>`
     """
     params = MultiDict(request.args)
+    if request.is_json:
+        params.update(MultiDict(request.json))
     fields = params.get("fields", type=str, default=[])
     if fields:
         fields = fields.split(",")
