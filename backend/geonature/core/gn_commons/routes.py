@@ -209,13 +209,13 @@ def get_t_mobile_apps():
         if app.relative_path_apk:
             relative_apk_path = Path("mobile", app.relative_path_apk)
             app_dict["url_apk"] = url_for("media", filename=str(relative_apk_path), _external=True)
-            relative_settings_path = relative_apk_path.parent / "settings.json"
-            app_dict["url_settings"] = url_for(
-                "media", filename=relative_settings_path, _external=True
-            )
-            settings_file = Path(current_app.config["MEDIA_FOLDER"]) / relative_settings_path
-            with settings_file.open() as f:
-                app_dict["settings"] = json.load(f)
+        relative_settings_path = Path(f"mobile/{app.app_code.lower()}/settings.json")
+        app_dict["url_settings"] = url_for(
+            "media", filename=relative_settings_path, _external=True
+        )
+        settings_file = Path(current_app.config["MEDIA_FOLDER"]) / relative_settings_path
+        with settings_file.open() as f:
+            app_dict["settings"] = json.load(f)
         mobile_apps.append(app_dict)
     if len(mobile_apps) == 1:
         return mobile_apps[0]
