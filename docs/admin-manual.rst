@@ -6,7 +6,7 @@ Architecture
 
 GeoNature possède une architecture modulaire et s'appuie sur plusieurs "services" indépendants pour fonctionner :
 
-- UsersHub et son sous-module d'authentification Flask (https://github.com/PnX-SI/UsersHub-authentification-module) sont utilisés pour gérer le schéma de BDD ``ref_users`` (actuellement nommé ``utilisateurs``) et l'authentification. UsersHub permet une gestion centralisée de ses utilisateurs (listes, organismes, droits), utilisable par les différentes applications de son système d'information.
+- UsersHub et son sous-module d'authentification Flask (https://github.com/PnX-SI/UsersHub-authentification-module) sont utilisés pour gérer le schéma de BDD ``ref_users`` (actuellement nommé ``utilisateurs``) et l'authentification. UsersHub permet une gestion centralisée de ses utilisateurs (listes, organismes, applications), utilisable par les différentes applications de son système d'informations.
 - TaxHub (https://github.com/PnX-SI/TaxHub) est utilisé pour la gestion du schéma de BDD ``ref_taxonomy`` (actuellement nommé ``taxonomie``). L'API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en général.
 - Un sous-module Flask (https://github.com/PnX-SI/Nomenclature-api-module/) a été créé pour une gestion centralisée des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/), il pilote le schéma ``ref_nomenclature``.
 - ``ref_geo`` est le schéma de base de données qui gère le référentiel géographique. Il est utilisé pour gérer les zonages, les communes, le MNT, le calcul automatique d'altitude et les intersections spatiales.
@@ -42,7 +42,7 @@ Schéma simplifié de la BDD :
 - En bleu, les schémas des protocoles et sources de données
 - En vert, les schémas des applications pouvant interagir avec le coeur de GeoNature
 
-Depuis la version 2.0.0-rc.4, il faut noter que les droits (CRUVED) ont été retirés du schéma ``utilisateurs`` (``ref_users``) de UsersHub pour l'intégrer dans GeoNature dans un schéma ``gn_permissions``, à ajouter en rose.
+Depuis la version 2.0.0-rc.4, il faut noter que les permissions (CRUVED) ont été retirées du schéma ``utilisateurs`` (``ref_users``) de UsersHub pour l'intégrer dans GeoNature dans un schéma ``gn_permissions``, à ajouter en rose.
 
 Modèle simplifié de la BDD (2017-12-15) :
 
@@ -392,13 +392,13 @@ Accès à GeoNature et CRUVED
 
 Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l'application GeoNature sont gérés de manière centralisée dans l'application UsersHub. Pour qu'un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de "Lecteur" dans l'application GeoNature, grâce à l'application UsersHub.
 
-La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (``gn_permissions``) depuis le module ADMIN de GeoNature. Voir https://github.com/PnX-SI/GeoNature/issues/2605.
+La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (``gn_permissions``) depuis le module ADMIN de GeoNature. Voir https://docs.geonature.fr/user-manual.html#gestion-des-permissions.
 
-La gestion des droits dans GeoNature, comme dans beaucoup d'applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l'application nous avons rajouté deux actions : "Exporter" et "Valider" (non utilisée), ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.
+La gestion des permissions dans GeoNature, comme dans beaucoup d'applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins métier de l'application, nous avons rajouté deux actions : "Exporter" et "Valider" (non utilisée), ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.
 
 Chaque module peut utiliser toutes ou certaines de ces actions.
 
-Selon les modules, on peut appliquer des filtres sur ces actions. Notamment des filtres d'appartenance (portées / scope) :
+Selon les modules, on peut appliquer des filtres sur ces actions. Notamment des filtres d'appartenance (portée / scope) :
 
 - Portée 1 = Seulement mes données. Cela concerne les données sur lesquels je suis :
 
@@ -423,10 +423,15 @@ Cas particulier de l'action "C"
 
 | Dans les modules de saisie (comme Occtax), on veut que des utilisateurs puissent saisir uniquement dans certains JDD.
 | La liste des JDD ouverts à la saisie est contrôlée par l'action "CREATE" du module dans lequel on se trouve. 
-| Comme il n'est pas "normal" de pouvoir saisir dans des JDD sur lesquels on n'a pas les droits de lecture, la portée de l'action "CREATE" vient simplement réduire la liste des JDD sur lesquels on a les droits de lecture ("READ").
-| Même si la portée de l'action "CREATE" sur le module est supérieure à celle de l'action "READ", l'utilisateur ne verra que les JDD sur lesquels il a des droits de lecture
+| Comme il n'est pas "normal" de pouvoir saisir dans des JDD sur lesquels on n'a pas les permissions de lecture, la portée de l'action "CREATE" vient simplement réduire la liste des JDD sur lesquels on a les permissions de lecture ("READ").
+| Même si la portée de l'action "CREATE" sur le module est supérieure à celle de l'action "READ", l'utilisateur ne verra que les JDD sur lesquels il a des permissions de lecture.
 
-Une commande dédiée permet d'ajouter tous les droits sur tous les modules à un groupe ou utilisateur ayant le rôle d'administrateur. Cette commande peut être relancée après l'installation d'un nouveau module :
+Permissions d'administrateur
+````````````````````````````
+
+Chaque module (ou sous-module) définit ses permissions disponibles lors de son installation. Cependant une fois installé, aucun utilisateur n'a de permission sur un nouveau module. Il faut les définir explicitement.
+
+Une commande dédiée permet d'ajouter toutes les permissions sur tous les modules à un groupe ou utilisateur ayant le rôle d'administrateur. Cette commande peut être relancée après l'installation d'un nouveau module :
 
 .. code-block:: bash
 
@@ -1490,7 +1495,8 @@ Cet espace est activable grâce au paramètre ``ENABLE_USER_MANAGEMENT``. Par d�
 Accès public
 """"""""""""
 
-Cette section de la documentation concerne l'implémentation d'un utilisateur-lecteur pour votre instance GeoNature. 
+Cette section de la documentation concerne l'implémentation d'un utilisateur générique et public accédant à votre instance GeoNature sans authentification. 
+Cela ajoute sur la page d'authentification de GeoNature, un bouton "Accès public" donnant accès à GeoNature sans authentification.
 
 Etapes :
 
@@ -1503,7 +1509,7 @@ Etapes :
    - Pour GeoNature, cliquer sur le premier icône 'Voir les membres'
    - Cliquer sur ajouter un rôle 
    - Choisir l'utilisateur juste créé
-   - Attribuer le rôle 1, 'lecteur' 
+   - Attribuer le rôle 1, 'Lecteur' 
 
 2/ Configuration GeoNature : 
 
@@ -1516,16 +1522,16 @@ Etapes :
 
 :ref:`Exécuter les actions post-modification de la configuration <post_config_change>`.
 
-A ce moment-là, cet utilisateur n’a aucun droit sur GeoNature.
-Il s'agit maintenant de gérer ses permissions dans GeoNature même.
+A ce moment-là, cet utilisateur n’a aucune permission dans GeoNature.
+Il s'agit maintenant de gérer ses permissions dans GeoNature.
 
 3/ GeoNature 
 
    - Se connecter à GeoNature avec un utilisateur administrateur
    - Aller dans le module Admin
-   - Cliquer sur 'Gestion des permissions'
+   - Cliquer sur 'Backoffice', puis "Permissions" / "Par utilisateurs"
    - Choisissez l'utilisateur sélectionné 
-   - Editer le CRUVED pour chacun des modules de l'instance. Passer à 0 tous les droits et tous les modules devant être supprimés. Laisser '1' pour les modules d'intérêt.
+   - Ajouter des permissions pour chacun des modules de l'instance auquel vous souhaitez que l'utilisateur public accède
 
 Accès public automatique
 ````````````````````````
@@ -1736,14 +1742,10 @@ La vue doit cependant contenir les champs suivants pour que les filtres de reche
     geom_4326,
     dataset_name
 
-Attribuer des droits
-""""""""""""""""""""
+Attribuer des permissions
+"""""""""""""""""""""""""
 
-La gestion des droits (CRUVED) se fait module par module. Cependant si on ne redéfinit pas de droit pour un module, ce sont les droits de l'application mère (GeoNature elle-même) qui seront attribués à l'utilisateur pour l'ensemble de ses sous-modules.
-
-Pour ne pas afficher le module Occtax à un utilisateur où à un groupe, il faut lui mettre l'action Read (R) à 0.
-
-L'administration des droits des utilisateurs pour le module Occtax se fait dans le backoffice de gestion des permissions de GeoNature.
+La gestion des permissions (CRUVED) se fait module par module, depuis le module "Admin".
 
 Dupliquer le module Occtax
 """"""""""""""""""""""""""
