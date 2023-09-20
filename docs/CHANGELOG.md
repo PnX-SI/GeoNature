@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+2.13.2 (unreleased)
+-------------------
+
+**🐛 Corrections**
+
+- Correction des déconnexions non effectives sur la 2.13.0 ni 2.13.1 (#2682, par @TheoLechemia)
+- Correction des permissions vérifiées pour pouvoir supprimer un signalement en prenant en compte le C du module Validation, et non pas le R qui n'existe pas sur ce module (#2710, par @Pierre-Narcisi)
+- Correction de l'API des applications mobiles quand le chemin de l'APK est absolu (#2708, par @joelclement)
+- Correction des permissions des listes de JDD dans les modules de saisie (Occtax, Occhab, Import) en prenant en compte la portée du C du module, et pas seulement du R du module Métadonnées (#2712)
+
 2.13.1 (2023-09-15)
 -------------------
 
