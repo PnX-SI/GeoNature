@@ -16,8 +16,7 @@ from flask import (
 )
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from werkzeug.datastructures import MultiDict
-from sqlalchemy import distinct, func, desc, asc, select, case, Integer
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy import distinct, func, desc, asc, select, case
 from sqlalchemy.orm import joinedload, lazyload, selectinload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
@@ -35,7 +34,6 @@ from geonature.utils.utilsgeometrytools import export_as_geo_file
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.notifications.utils import dispatch_notifications
 
-from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_synthese.models import (
     BibReportsTypes,
     CorAreaSynthese,
@@ -827,29 +825,6 @@ def get_sources():
     q = DB.session.query(TSources)
     data = q.all()
     return [n.as_dict() for n in data]
-
-
-@routes.route("/sources/modules", methods=["GET"])
-@login_required
-@json_resp
-def get_sources_modules():
-    """Get all sources with module_label.
-
-    .. :quickref: Synthese;
-    """
-
-    aggreg_ids_source = func.array_agg(TSources.id_source, type_=ARRAY(Integer)).label(
-        "ids_source"
-    )
-    q_modules = (
-        DB.session.query(
-            TSources.id_module.label("id_module"), aggreg_ids_source, TModules.module_label
-        )
-        .join(TModules, TModules.id_module == TSources.id_module)
-        .group_by(TSources.id_module, TModules.module_label)
-    )
-    data = q_modules.all()
-    return [n._asdict() for n in data]
 
 
 @routes.route("/defaultsNomenclatures", methods=["GET"])
