@@ -111,7 +111,7 @@ def create_app(with_external_mods=True):
         app.wsgi_app = SharedDataMiddleware(
             app.wsgi_app,
             {
-                "/static": config["CUSTOM_STATIC_FOLDER"],
+                app.static_url_path: config["CUSTOM_STATIC_FOLDER"],
             },
         )
     if app.config["APPLICATION_ROOT"] != "/":
