@@ -374,13 +374,16 @@ class SyntheseQuery:
             self.query = self.query.where(self.model.id_dataset.in_(formated_datasets))
         if "date_min" in self.filters:
             self.query = self.query.where(self.model.date_min >= self.filters.pop("date_min"))
-
         if "date_max" in self.filters:
             # set the date_max at 23h59 because a hour can be set in timestamp
             date_max = datetime.datetime.strptime(self.filters.pop("date_max"), "%Y-%m-%d")
             date_max = date_max.replace(hour=23, minute=59, second=59)
             self.query = self.query.where(self.model.date_max <= date_max)
-
+        if "id_source" in self.filters:
+            self.add_join(TSources, self.model.id_source, TSources.id_source)
+            self.query = self.query.where(self.model.id_source.in_(self.filters.pop("id_source")))
+        if "id_module" in self.filters:
+            self.query = self.query.where(self.model.id_module.in_(self.filters.pop("id_module")))
         if "id_acquisition_framework" in self.filters:
             if hasattr(self.model, "id_acquisition_framework"):
                 self.query = self.query.where(
@@ -457,9 +460,6 @@ class SyntheseQuery:
                     self.model.id_synthese,
                 )
                 self.query = self.query.where(cor_area_synthese_alias.id_area.in_(value))
-            elif colname.startswith("id_source"):
-                self.add_join(TSources, self.model.id_source, TSources.id_source)
-                self.query = self.query.where(self.model.id_source.in_(value))
             elif colname.startswith("id_"):
                 col = getattr(self.model.__table__.columns, colname)
                 if isinstance(value, list):

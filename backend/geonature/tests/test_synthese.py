@@ -160,18 +160,6 @@ class TestSynthese:
         data = response.get_json()
         assert len(data) > 0
 
-    def test_list_sources_modules(self, synthese_data, sources_modules, users):
-        set_logged_user_cookie(self.client, users["self_user"])
-        response = self.client.get(url_for("gn_synthese.get_sources_modules"))
-        assert response.status_code == 200
-        data = response.get_json()
-        assert len(data) > 0
-        assert any(
-            (source.id_source in d["ids_source"] and source.id_module == d["id_module"])
-            for d in data
-            for source in sources_modules
-        )
-
     def test_get_defaut_nomenclatures(self, users):
         set_logged_user_cookie(self.client, users["self_user"])
         response = self.client.get(url_for("gn_synthese.getDefaultsNomenclatures"))
@@ -348,27 +336,9 @@ class TestSynthese:
         response_data = {feature["properties"]["id"] for feature in r.json["features"]}
         assert expected_data.issubset(response_data)
 
-    def test_get_observations_for_web_filter_source_by_id_module(
-        self, users, synthese_data, source
-    ):
-        set_logged_user_cookie(self.client, users["self_user"])
-        id_source = source.id_source
-
-        url = url_for("gn_synthese.get_observations_for_web")
-        filters = {"id_source_modules": [id_source]}
-        r = self.client.get(url, json=filters)
-
-        expected_data = {
-            synthese.id_synthese
-            for synthese in synthese_data.values()
-            if synthese.id_source == id_source
-        }
-        response_data = {feature["properties"]["id"] for feature in r.json["features"]}
-        assert expected_data.issubset(response_data)
-
     @pytest.mark.parametrize(
         "module_label_to_filter,expected_length",
-        [("MODULE_TEST_1", 2), ("MODULE_TEST_2", 4)],
+        [(["MODULE_TEST_1"], 2), (["MODULE_TEST_2"], 4), (["MODULE_TEST_1", "MODULE_TEST_2"], 6)],
     )
     def test_get_observations_for_web_filter_source_by_id_module(
         self,
@@ -381,23 +351,20 @@ class TestSynthese:
     ):
         set_logged_user_cookie(self.client, users["self_user"])
 
+        id_modules_selected = []
         for module in modules:
-            if module.module_code == module_label_to_filter:
-                id_module_selected = module.id_module
-
-        sources_id_list = []
-        for source in sources_modules:
-            if source.module.id_module == id_module_selected:
-                sources_id_list.append(source.id_source)
+            for module_to_filt in module_label_to_filter:
+                if module.module_code == module_to_filt:
+                    id_modules_selected.append(module.id_module)
 
         url = url_for("gn_synthese.get_observations_for_web")
-        filters = {"id_source_modules": sources_id_list}
+        filters = {"id_module": id_modules_selected}
         r = self.client.get(url, json=filters)
 
         expected_data = {
             synthese.id_synthese
             for synthese in synthese_data.values()
-            if synthese.id_source in sources_id_list
+            if synthese.id_module in id_modules_selected
         }
         response_data = {feature["properties"]["id"] for feature in r.json["features"]}
         assert expected_data.issubset(response_data)
@@ -512,7 +479,7 @@ class TestSynthese:
         )
         assert response.status_code == 200
 
-    def test_export_observations(self, users, synthese_data, synthese_sensitive_data):
+    def test_export_observations(self, users, synthese_data, synthese_sensitive_data, modules):
         data_synthese = synthese_data.values()
         data_synthese_sensitive = synthese_sensitive_data.values()
         list_id_synthese = [obs_data_synthese.id_synthese for obs_data_synthese in data_synthese]

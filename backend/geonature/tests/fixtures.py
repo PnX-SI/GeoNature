@@ -360,6 +360,7 @@ def create_synthese(geom, taxon, user, dataset, source, uuid, cor_observers, **k
 
     return Synthese(
         id_source=source.id_source,
+        id_module=source.id_module,
         unique_id_sinp=uuid,
         dataset=dataset,
         digitiser=user,
