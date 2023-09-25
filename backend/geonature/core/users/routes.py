@@ -3,17 +3,21 @@ import requests
 import json
 
 
-from flask import Blueprint, request, current_app, Response, redirect, g, render_template
-from sqlalchemy.sql import distinct, and_
-from werkzeug.exceptions import NotFound, BadRequest, Forbidden
+from flask import (
+    Blueprint,
+    request,
+    current_app,
+    Response,
+    g,
+    render_template,
+)
+from sqlalchemy.sql import and_
+from werkzeug.exceptions import BadRequest, Forbidden
 
 from geonature.utils.env import DB
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
-from geonature.core.users.models import (
-    VUserslistForallMenu,
-    CorRole,
-)
+from geonature.core.users.models import VUserslistForallMenu
 from geonature.utils.config import config
 from pypnusershub.db.models import Organisme, User, UserList
 from geonature.core.users.register_post_actions import (
@@ -24,9 +28,6 @@ from geonature.core.users.register_post_actions import (
 
 from pypnusershub.env import REGISTER_POST_ACTION_FCT
 from pypnusershub.db.models import User, Application
-from pypnusershub.db.models_register import TempUser
-from pypnusershub.routes_register import bp as user_api
-from pypnusershub.routes import check_auth
 from utils_flask_sqla.response import json_resp
 
 
@@ -44,6 +45,7 @@ user_fields = {
     "id_organisme",
     "groupe",
     "active",
+    "champs_addi",
 }
 organism_fields = {
     "id_organisme",
@@ -78,7 +80,9 @@ def get_roles_by_menu_id(id_menu):
     parameters = request.args
     if parameters.get("nom_complet"):
         q = q.filter(
-            VUserslistForallMenu.nom_complet.ilike("{}%".format(parameters.get("nom_complet")))
+            VUserslistForallMenu.nom_complet.ilike(
+                "{}%".format(parameters.get("nom_complet"))
+            )
         )
     data = q.order_by(VUserslistForallMenu.nom_complet.asc()).all()
     return [n.as_dict() for n in data]
@@ -108,7 +112,9 @@ def get_roles_by_menu_code(code_liste):
     parameters = request.args
     if parameters.get("nom_complet"):
         q = q.filter(
-            VUserslistForallMenu.nom_complet.ilike("{}%".format(parameters.get("nom_complet")))
+            VUserslistForallMenu.nom_complet.ilike(
+                "{}%".format(parameters.get("nom_complet"))
+            )
         )
     data = q.order_by(VUserslistForallMenu.nom_complet.asc()).all()
     return [n.as_dict() for n in data]
@@ -231,7 +237,9 @@ def inscription():
     data = request.get_json()
     # ajout des valeurs non présentes dans le form
     data["id_application"] = (
-        Application.query.filter_by(code_application=current_app.config["CODE_APPLICATION"])
+        Application.query.filter_by(
+            code_application=current_app.config["CODE_APPLICATION"]
+        )
         .one()
         .id_application
     )
@@ -255,13 +263,16 @@ def login_recovery():
     Work only if 'ENABLE_SIGN_UP' is set to True
     """
     # test des droits
-    if not current_app.config.get("ACCOUNT_MANAGEMENT").get("ENABLE_USER_MANAGEMENT", False):
+    if not current_app.config.get("ACCOUNT_MANAGEMENT").get(
+        "ENABLE_USER_MANAGEMENT", False
+    ):
         return {"msg": "Page introuvable"}, 404
 
     data = request.get_json()
 
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/create_cor_role_token",
+        url=config["API_ENDPOINT"]
+        + "/pypn/register/post_usershub/create_cor_role_token",
         json=data,
     )
 
@@ -328,7 +339,9 @@ def update_role():
     """
     Modifie le role de l'utilisateur du token en cours
     """
-    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get(
+        "ENABLE_USER_MANAGEMENT", False
+    ):
         return {"message": "Page introuvable"}, 404
 
     data = dict(request.get_json())
@@ -374,7 +387,9 @@ def change_password():
     Modifie le mot de passe de l'utilisateur connecté et de son ancien mdp
     Fait appel à l'API UsersHub
     """
-    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get(
+        "ENABLE_USER_MANAGEMENT", False
+    ):
         return {"message": "Page introuvable"}, 404
 
     user = g.current_user
@@ -392,7 +407,8 @@ def change_password():
         # recuperation du token usershub API
         # send request to get the token (enable_post_action = False to NOT sent email)
         resp = s.post(
-            url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/create_cor_role_token",
+            url=config["API_ENDPOINT"]
+            + "/pypn/register/post_usershub/create_cor_role_token",
             json={"email": user.email, "enable_post_action": False},
         )
         if resp.status_code != 200:
@@ -425,7 +441,9 @@ def new_password():
     Modifie le mdp d'un utilisateur apres que celui-ci ai demander un renouvelement
     Necessite un token envoyer par mail a l'utilisateur
     """
-    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get(
+        "ENABLE_USER_MANAGEMENT", False
+    ):
         return {"message": "Page introuvable"}, 404
 
     data = dict(request.get_json())
