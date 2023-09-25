@@ -291,13 +291,14 @@ export const DYNAMIC_FORM_DEF = [
   },
   {
     type_widget: 'datalist',
-    attribut_name: 'id_source_modules',
-    attribut_label: 'Source de la donnée (par module)',
-    api: 'synthese/sources/modules',
+    attribut_name: 'id_module',
+    attribut_label: 'Module de provenance',
+    api: 'gn_commons/modules?exclude=GEONATURE&exclude=SYNTHESE&exclude=ADMIN',
     application: 'GeoNature',
-    keyValue: 'ids_source',
+    keyValue: 'id_module',
     keyLabel: 'module_label',
     data_path: '',
+    multiple: true,
     required: false,
   },
 ];
