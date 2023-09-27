@@ -107,18 +107,17 @@ def create_app(with_external_mods=True):
     app.wsgi_app = SchemeFix(app.wsgi_app, scheme=config.get("PREFERRED_URL_SCHEME"))
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
     app.wsgi_app = RequestID(app.wsgi_app)
-    if app.config["APPLICATION_ROOT"] != "/":
-        app.wsgi_app = DispatcherMiddleware(
-            Response("Not Found", status=404),
-            {app.config["APPLICATION_ROOT"].rstrip("/"): app.wsgi_app},
-        )
-
     if config.get("CUSTOM_STATIC_FOLDER"):
         app.wsgi_app = SharedDataMiddleware(
             app.wsgi_app,
             {
-                "/static": config["CUSTOM_STATIC_FOLDER"],
+                app.static_url_path: config["CUSTOM_STATIC_FOLDER"],
             },
+        )
+    if app.config["APPLICATION_ROOT"] != "/":
+        app.wsgi_app = DispatcherMiddleware(
+            Response("Not Found", status=404),
+            {app.config["APPLICATION_ROOT"].rstrip("/"): app.wsgi_app},
         )
 
     app.json = MyJSONProvider(app)
