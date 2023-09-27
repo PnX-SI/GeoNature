@@ -1,11 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
-import { AppConfig } from '../../../conf/app.config';
 import { ActorFormService } from '../services/actor-form.service';
+import { ConfigService } from '@geonature/services/config.service';
+
 @Component({
   selector: 'pnx-metadata-actor',
   templateUrl: 'actors.component.html',
@@ -13,7 +14,7 @@ import { ActorFormService } from '../services/actor-form.service';
 })
 export class ActorComponent implements OnInit {
   //formulaire acteur demandé par le componenent dataset-form.component ou af-form.component
-  @Input() actorForm: FormGroup;
+  @Input() actorForm: UntypedFormGroup;
   @Input() isRemovable: boolean = true;
   @Output() actorFormSubmit = new EventEmitter<boolean>();
   @Output() actorFormRemove = new EventEmitter<boolean>();
@@ -42,15 +43,15 @@ export class ActorComponent implements OnInit {
         } else {
           if (
             this.metadataType == 'dataset' &&
-            AppConfig.METADATA.CD_NOMENCLATURE_ROLE_TYPE_DS.length > 0
+            this.config.METADATA.CD_NOMENCLATURE_ROLE_TYPE_DS.length > 0
           ) {
-            return AppConfig.METADATA.CD_NOMENCLATURE_ROLE_TYPE_DS.includes(e.cd_nomenclature);
+            return this.config.METADATA.CD_NOMENCLATURE_ROLE_TYPE_DS.includes(e.cd_nomenclature);
           }
           if (
             this.metadataType == 'af' &&
-            AppConfig.METADATA.CD_NOMENCLATURE_ROLE_TYPE_AF.length > 0
+            this.config.METADATA.CD_NOMENCLATURE_ROLE_TYPE_AF.length > 0
           ) {
-            return AppConfig.METADATA.CD_NOMENCLATURE_ROLE_TYPE_AF.includes(e.cd_nomenclature);
+            return this.config.METADATA.CD_NOMENCLATURE_ROLE_TYPE_AF.includes(e.cd_nomenclature);
           }
         }
         return true;
@@ -83,9 +84,13 @@ export class ActorComponent implements OnInit {
     return this._toggleButtonValue.getValue();
   }
 
-  @Input() parentFormArray: FormArray;
+  @Input() parentFormArray: UntypedFormArray;
 
-  constructor(public dialog: MatDialog, private actorFormS: ActorFormService) {}
+  constructor(
+    public dialog: MatDialog,
+    private actorFormS: ActorFormService,
+    public config: ConfigService
+  ) {}
 
   ngOnInit() {
     if (!this.actorForm.get('id_organism').value && !this.actorForm.get('id_role').value) {

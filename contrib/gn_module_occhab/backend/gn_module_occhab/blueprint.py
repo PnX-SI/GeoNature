@@ -1,5 +1,7 @@
 import datetime
 import json
+import geojson
+from marshmallow import EXCLUDE, INCLUDE
 
 from flask import (
     Blueprint,
@@ -8,106 +10,92 @@ from flask import (
     send_from_directory,
     request,
     render_template,
+    jsonify,
     g,
 )
+from werkzeug.exceptions import BadRequest, Forbidden
 from geojson import FeatureCollection, Feature
 from geoalchemy2.shape import from_shape
 from pypnusershub.db.models import User
 from shapely.geometry import asShape
 from sqlalchemy import func, distinct
 from sqlalchemy.sql import text
+from sqlalchemy.orm import raiseload, joinedload
 
 
 from pypnnomenclature.models import TNomenclatures
 from utils_flask_sqla.response import json_resp, to_csv_resp, to_json_resp
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
+from utils_flask_sqla_geo.utils import geojsonify
 from utils_flask_sqla_geo.generic import GenericTableGeo
+from ref_geo.utils import get_local_srid
 
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
-from geonature.core.gn_commons.models import TModules
-from geonature.utils.env import DB, ROOT_DIR
+from geonature.core.gn_permissions.decorators import login_required
+from geonature.core.gn_permissions.tools import get_scopes_by_action
+from geonature.core.gn_meta.models import TDatasets as Dataset
+from geonature.utils.env import db
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils import filemanager
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
 from .models import (
-    OneStation,
-    TStationsOcchab,
-    THabitatsOcchab,
-    DefaultNomenclaturesValue,
+    Station,
+    OccurenceHabitat,
+    DefaultNomenclatureValue,
 )
-from .query import filter_query_with_cruved
+from .schemas import StationSchema
+
 
 blueprint = Blueprint("occhab", __name__)
 
 
-@blueprint.route("/station", methods=["POST"])
-@permissions.check_cruved_scope("C", True, module_code="OCCHAB")
-@json_resp
-def post_station(info_role):
-    """
-    Post one occhab station (station + habitats)
-
-    .. :quickref: OccHab;
-
-    Post one occhab station (station + habitats)
-
-    :returns: GeoJson<TStationsOcchab>
-    """
-    data = dict(request.get_json())
-    occ_hab = None
-    properties = data["properties"]
-    if "t_habitats" in properties:
-        occ_hab = properties.pop("t_habitats")
-    observers_list = None
-    if "observers" in properties:
-        observers_list = properties.pop("observers")
-
-    station = TStationsOcchab(**properties)
-    shape = asShape(data["geometry"])
-    two_dimension_geom = remove_third_dimension(shape)
-    station.geom_4326 = from_shape(two_dimension_geom, srid=4326)
-    if observers_list is not None:
-        observers = (
-            DB.session.query(User)
-            .filter(User.id_role.in_(list(map(lambda user: user["id_role"], observers_list))))
-            .all()
+@blueprint.route("/stations/", methods=["GET"])
+@permissions.check_cruved_scope("R", module_code="OCCHAB", get_scope=True)
+def list_stations(scope):
+    stations = (
+        Station.query.filter_by_params(request.args)
+        .filter_by_scope(scope)
+        .order_by(Station.date_min.desc())
+        .options(
+            raiseload("*"),
+            joinedload("observers"),
+            joinedload("dataset"),
         )
-        for o in observers:
-            station.observers.append(o)
-    t_hab_list_object = []
-    if occ_hab is not None:
-        for occ in occ_hab:
-            if occ["id_habitat"] is None:
-                occ.pop("id_habitat")
-            data_attr = [k for k in occ]
-            for att in data_attr:
-                if not getattr(THabitatsOcchab, att, False):
-                    occ.pop(att)
-            t_hab_list_object.append(THabitatsOcchab(**occ))
-
-    # set habitat complexe
-    station.is_habitat_complex = len(t_hab_list_object) > 1
-
-    station.t_habitats = t_hab_list_object
-    if station.id_station:
-        user_cruved = get_or_fetch_user_cruved(
-            session=session, id_role=info_role.id_role, module_code="OCCHAB"
+    )
+    only = [
+        "observers",
+        "dataset",
+    ]
+    if request.args.get("habitats", default=False, type=int):
+        only.extend(
+            [
+                "habitats",
+                "habitats.habref",
+            ]
         )
-        # check if allowed to update or raise 403
-        station.check_if_allowed(g.current_user, "U", user_cruved["U"])
-        DB.session.merge(station)
-    else:
-        DB.session.add(station)
-    DB.session.commit()
-    return station.get_geofeature()
+        stations = stations.options(
+            joinedload("habitats").options(
+                joinedload("habref"),
+            ),
+        )
+    if request.args.get("nomenclatures", default=False, type=int):
+        only.extend(Station.__nomenclatures__)
+        stations = stations.options(*[joinedload(nomenc) for nomenc in Station.__nomenclatures__])
+    fmt = request.args.get("format", default="geojson")
+    if fmt not in ("json", "geojson"):
+        raise BadRequest("Unsupported format")
+    if fmt == "json":
+        return jsonify(StationSchema(only=only).dump(stations.all(), many=True))
+    elif fmt == "geojson":
+        return geojsonify(
+            StationSchema(only=only, as_geojson=True).dump(stations.all(), many=True)
+        )
 
 
-@blueprint.route("/station/<int:id_station>", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="OCCHAB")
-@json_resp
-def get_one_station(id_station, info_role):
+@blueprint.route("/stations/<int:id_station>/", methods=["GET"])
+@permissions.check_cruved_scope("R", module_code="OCCHAB", get_scope=True)
+def get_station(id_station, scope):
     """
     Return one station
 
@@ -120,81 +108,96 @@ def get_one_station(id_station, info_role):
     :rtype dict<TStationsOcchab>
 
     """
-    station = DB.session.query(OneStation).get(id_station)
-    station_geojson = station.get_geofeature()
-    user_cruved = get_or_fetch_user_cruved(
-        session=session, id_role=info_role.id_role, module_code="OCCHAB"
+    station = Station.query.options(
+        raiseload("*"),
+        joinedload("observers"),
+        joinedload("dataset"),
+        joinedload("habitats").options(
+            joinedload("habref"),
+            *[joinedload(nomenc) for nomenc in OccurenceHabitat.__nomenclatures__],
+        ),
+        *[joinedload(nomenc) for nomenc in Station.__nomenclatures__],
+    ).get_or_404(id_station)
+    if not station.has_instance_permission(scope):
+        raise Forbidden("You do not have access to this station.")
+    only = [
+        "observers",
+        "dataset",
+        "habitats",
+        *Station.__nomenclatures__,
+        *[f"habitats.{nomenclature}" for nomenclature in OccurenceHabitat.__nomenclatures__],
+        "habitats.habref",
+        "+cruved",
+    ]
+    station_schema = StationSchema(as_geojson=True, only=only)
+    return geojsonify(station_schema.dump(station))
+
+
+@blueprint.route("/stations/", methods=["POST"])
+@blueprint.route("/stations/<int:id_station>/", methods=["POST"])
+@login_required
+def create_or_update_station(id_station=None):
+    """
+    Post one occhab station (station + habitats)
+
+    .. :quickref: OccHab;
+
+    Post one occhab station (station + habitats)
+
+    :returns: Station as GeoJSON
+    """
+    scopes = get_scopes_by_action(module_code="OCCHAB")
+    if id_station is None:
+        action = "C"
+    else:
+        action = "U"
+    scope = scopes[action]
+    if scope < 1:
+        raise Forbidden(f"You do not have {action} permission on stations.")
+    # Allows habitats
+    # Allows only observers.id_role
+    # Dataset are not accepted as we expect id_dataset on station directly
+    station_schema = StationSchema(
+        only=["habitats", "observers.id_role"],
+        dump_only=["habitats.id_station"],
+        unknown=EXCLUDE,
+        as_geojson=True,
     )
-    station_geojson["properties"]["rights"] = station.get_model_cruved(info_role, user_cruved)
-    return station_geojson
+    station = station_schema.load(request.json)
+    if station.id_station != id_station:
+        raise BadRequest("Unmatching id_station.")
+    if id_station and not station.has_instance_permission(scope):
+        raise Forbidden("You do not have access to this station.")
+    dataset = Dataset.query.filter_by(id_dataset=station.id_dataset).one_or_none()
+    if dataset is None:
+        raise BadRequest("Unexisting dataset")
+    if not dataset.has_instance_permission(scopes["C"]):
+        raise Forbidden("You do not have access to this dataset.")
+    db.session.add(station)
+    db.session.commit()
+    return geojsonify(station_schema.dump(station))
 
 
-@blueprint.route("/station/<int:id_station>", methods=["DELETE"])
-@permissions.check_cruved_scope("D", True, module_code="OCCHAB")
-@json_resp
-def delete_one_station(id_station, info_role):
+@blueprint.route("/stations/<int:id_station>/", methods=["DELETE"])
+@permissions.check_cruved_scope("D", module_code="OCCHAB", get_scope=True)
+def delete_station(id_station, scope):
     """
     Delete a station with its habitat and its observers
 
     .. :quickref: Occhab;
 
     """
-    station = DB.session.query(TStationsOcchab).get(id_station)
-    is_allowed = station.user_is_allowed_to(info_role, info_role.value_filter)
-    if is_allowed:
-        DB.session.delete(station)
-        DB.session.commit()
-        return station.get_geofeature()
-    else:
-        return "Forbidden", 403
-
-
-@blueprint.route("/stations", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="OCCHAB")
-@json_resp
-def get_all_habitats(info_role):
-    """
-    Get all stations with their hab
-
-    .. :quickref: Occhab;
-
-    """
-    params = request.args.to_dict()
-    q = DB.session.query(TStationsOcchab)
-
-    if "id_dataset" in params:
-        q = q.filter(TStationsOcchab.id_dataset == params["id_dataset"])
-
-    if "cd_hab" in params:
-        q = q.filter(TStationsOcchab.t_habitats.any(cd_hab=params["cd_hab"]))
-
-    if "date_low" in params:
-        q = q.filter(TStationsOcchab.date_min >= params.pop("date_low"))
-
-    if "date_up" in params:
-        q = q.filter(TStationsOcchab.date_max <= params.pop("date_up"))
-
-    q = filter_query_with_cruved(TStationsOcchab, q, info_role)
-    q = q.order_by(TStationsOcchab.date_min.desc())
-    limit = request.args.get("limit", None) or blueprint.config["NB_MAX_MAP_LIST"]
-    data = q.limit(limit)
-
-    user_cruved = get_or_fetch_user_cruved(
-        session=session, id_role=info_role.id_role, module_code="OCCHAB"
-    )
-    feature_list = []
-    for d in data:
-        feature = d.get_geofeature()
-        feature["properties"]["rights"] = d.get_model_cruved(info_role, user_cruved)
-
-        feature_list.append(feature)
-    return FeatureCollection(feature_list)
+    station = Station.query.get_or_404(id_station)
+    if not station.has_instance_permission(scope):
+        raise Forbidden("You do not have access to this station.")
+    db.session.delete(station)
+    db.session.commit()
+    return "", 204
 
 
 @blueprint.route("/export_stations/<export_format>", methods=["POST"])
-@permissions.check_cruved_scope("E", True, module_code="OCCHAB")
+@permissions.check_cruved_scope("E", module_code="OCCHAB")
 def export_all_habitats(
-    info_role,
     export_format="csv",
 ):
     """
@@ -207,13 +210,12 @@ def export_all_habitats(
 
     data = request.get_json()
 
-    DB.session.execute(func.Find_SRID("gn_synthese", "synthese", "the_geom_local")).scalar()
     export_view = GenericTableGeo(
         tableName="v_export_sinp",
         schemaName="pr_occhab",
-        engine=DB.engine,
+        engine=db.engine,
         geometry_field="geom_local",
-        srid=srid,
+        srid=get_local_srid(db.session),
     )
 
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
@@ -226,7 +228,7 @@ def export_all_habitats(
                 db_cols_for_shape.append(db_col)
             columns_to_serialize.append(db_col.key)
     results = (
-        DB.session.query(export_view.tableDef)
+        db.session.query(export_view.tableDef)
         .filter(export_view.tableDef.columns.id_station.in_(data["idsStation"]))
         .limit(blueprint.config["NB_MAX_EXPORT"])
     )
@@ -246,31 +248,20 @@ def export_all_habitats(
             FeatureCollection(features), as_file=True, filename=file_name, indent=4
         )
     else:
-        try:
-            dir_name, file_name = export_as_geo_file(
-                export_format=export_format,
-                export_view=export_view,
-                db_cols=db_cols_for_shape,
-                geojson_col=None,
-                data=results,
-                file_name=file_name,
-            )
-            return send_from_directory(dir_name, file_name, as_attachment=True)
-
-        except GeonatureApiError as e:
-            message = str(e)
-
-        module_url = TModules.query.filter_by(module_code="OCCHAB").one().module_path
-        return render_template(
-            "error.html",
-            error=message,
-            redirect=current_app.config["URL_APPLICATION"] + "/#/" + module_url,
+        dir_name, file_name = export_as_geo_file(
+            export_format=export_format,
+            export_view=export_view,
+            db_cols=db_cols_for_shape,
+            geojson_col=None,
+            data=results,
+            file_name=file_name,
         )
+        return send_from_directory(dir_name, file_name, as_attachment=True)
 
 
 @blueprint.route("/defaultNomenclatures", methods=["GET"])
-@json_resp
-def getDefaultNomenclatures():
+@login_required
+def get_default_nomenclatures():
     """Get default nomenclatures define in occhab module
 
     .. :quickref: Occhab;
@@ -284,47 +275,20 @@ def getDefaultNomenclatures():
         organism = params["organism"]
     types = request.args.getlist("mnemonique")
 
-    q = DB.session.query(
-        distinct(DefaultNomenclaturesValue.mnemonique_type),
+    q = db.session.query(
+        distinct(DefaultNomenclatureValue.mnemonique_type),
         func.pr_occhab.get_default_nomenclature_value(
-            DefaultNomenclaturesValue.mnemonique_type, organism
+            DefaultNomenclatureValue.mnemonique_type, organism
         ),
     )
     if len(types) > 0:
-        q = q.filter(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
+        q = q.filter(DefaultNomenclatureValue.mnemonique_type.in_(tuple(types)))
     data = q.all()
 
     formated_dict = {}
     for d in data:
         nomenclature_obj = None
         if d[1]:
-            nomenclature_obj = DB.session.query(TNomenclatures).get(d[1]).as_dict()
+            nomenclature_obj = db.session.query(TNomenclatures).get(d[1]).as_dict()
         formated_dict[d[0]] = nomenclature_obj
     return formated_dict
-
-    # TODO
-    # @blueprint.route("/stations/dataset/<int:id_dataset>", methods=["POST", "GET"])
-    # @json_resp
-    # def getStationsDataset(id_dataset):
-    """
-    Get all stations of a dataset
-    """
-
-
-#     data = dict(request.get_json())
-#     sql = text("""
-#         SELECT geom_4326
-#         FROM pr_occhab.t_stations
-#         WHERE id_dataset = :id_dataset AND geom_4326 <> ST_MakeEnvelope(
-#             :xmin, :ymin, :xmax, :ymax
-#         LIMIT 50
-#         )
-#     """)
-#     DB.engine.execute(
-#         sql,
-#         id_dataset=id_dataset,
-#         xmin="",
-#         ymin="",
-#         xmax="",
-#         ymax="",
-#     )

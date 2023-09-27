@@ -1,9 +1,13 @@
 """ Helpers to manipulate the execution environment """
 
 import os
-
+import sys
 from pathlib import Path
-import pkg_resources
+
+if sys.version_info < (3, 9):
+    from importlib_metadata import version, PackageNotFoundError
+else:
+    from importlib.metadata import version, PackageNotFoundError
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -21,8 +25,8 @@ ROOT_DIR = BACKEND_DIR.parent
 FRONTEND_DIR = ROOT_DIR / "frontend"
 
 try:
-    GEONATURE_VERSION = pkg_resources.get_distribution("geonature").version
-except pkg_resources.DistributionNotFound:
+    GEONATURE_VERSION = version("geonature")
+except PackageNotFoundError:
     with open(str((ROOT_DIR / "VERSION"))) as v:
         GEONATURE_VERSION = v.read()
 

@@ -6,8 +6,8 @@ from flask_admin.contrib.sqla import ModelView
 
 from geonature.utils.env import db
 from geonature.utils.config import config
-from geonature.core.gn_commons.models import TAdditionalFields
-from geonature.core.gn_commons.admin import BibFieldAdmin
+from geonature.core.gn_commons.models import TAdditionalFields, TMobileApps, TModules
+from geonature.core.gn_commons.admin import BibFieldAdmin, TMobileAppsAdmin, TModulesAdmin
 from geonature.core.notifications.admin import (
     NotificationTemplateAdmin,
     NotificationCategoryAdmin,
@@ -18,14 +18,17 @@ from geonature.core.notifications.models import (
     NotificationCategory,
     NotificationMethod,
 )
-from geonature.core.gn_permissions.tools import get_scopes_by_action
 
+from pypnnomenclature.models import (
+    BibNomenclaturesTypes,
+    TNomenclatures,
+)
 from pypnnomenclature.admin import (
-    BibNomenclaturesTypesAdminConfig,
     BibNomenclaturesTypesAdmin,
-    TNomenclaturesAdminConfig,
     TNomenclaturesAdmin,
 )
+
+from .utils import CruvedProtectedMixin
 
 
 class MyHomeView(AdminIndexView):
@@ -35,81 +38,20 @@ class MyHomeView(AdminIndexView):
         return True
 
 
-class CruvedProtectedMixin:
-    def is_accessible(self):
-        if g.current_user is None:
-            raise Unauthorized  # return False leads to Forbidden which is different
-        return True
-
-    def _can_action(self, action):
-        scope = get_scopes_by_action(
-            g.current_user.id_role, module_code=self.module_code, object_code=self.object_code
-        )[action]
-        return scope == 3
-
-    @property
-    def can_create(self):
-        return self._can_action("C")
-
-    @property
-    def can_edit(self):
-        return self._can_action("U")
-
-    @property
-    def can_delete(self):
-        return self._can_action("D")
-
-    @property
-    def can_export(self):
-        return self._can_action("E")
-
-
-class ProtectedBibNomenclaturesTypesAdminConfig(
+class ProtectedBibNomenclaturesTypesAdmin(
     CruvedProtectedMixin,
-    BibNomenclaturesTypesAdminConfig,
+    BibNomenclaturesTypesAdmin,
 ):
     module_code = "ADMIN"
     object_code = "NOMENCLATURES"
 
 
-class ProtectedTNomenclaturesAdminConfig(
+class ProtectedTNomenclaturesAdmin(
     CruvedProtectedMixin,
-    TNomenclaturesAdminConfig,
+    TNomenclaturesAdmin,
 ):
     module_code = "ADMIN"
     object_code = "NOMENCLATURES"
-
-
-class ProtectedBibFieldAdmin(
-    CruvedProtectedMixin,
-    BibFieldAdmin,
-):
-    module_code = "ADMIN"
-    object_code = "ADDITIONAL_FIELDS"
-
-
-class ProtectedNotificationTemplateAdmin(
-    CruvedProtectedMixin,
-    NotificationTemplate,
-):
-    module_code = "ADMIN"
-    object_code = "NOTIFICATIONS"
-
-
-class ProtectedNotificationCategoryAdmin(
-    CruvedProtectedMixin,
-    NotificationCategory,
-):
-    module_code = "ADMIN"
-    object_code = "NOTIFICATIONS"
-
-
-class ProtectedNotificationMethodAdmin(
-    CruvedProtectedMixin,
-    NotificationMethod,
-):
-    module_code = "ADMIN"
-    object_code = "NOTIFICATIONS"
 
 
 ## déclaration de la page d'admin
@@ -137,8 +79,8 @@ admin.add_link(
 ## ajout des elements
 
 admin.add_view(
-    ProtectedBibNomenclaturesTypesAdminConfig(
-        BibNomenclaturesTypesAdmin,
+    ProtectedBibNomenclaturesTypesAdmin(
+        BibNomenclaturesTypes,
         db.session,
         name="Type de nomenclatures",
         category="Nomenclatures",
@@ -146,20 +88,11 @@ admin.add_view(
 )
 
 admin.add_view(
-    ProtectedTNomenclaturesAdminConfig(
-        TNomenclaturesAdmin,
+    ProtectedTNomenclaturesAdmin(
+        TNomenclatures,
         db.session,
         name="Items de nomenclatures",
         category="Nomenclatures",
-    )
-)
-
-admin.add_view(
-    ProtectedBibFieldAdmin(
-        TAdditionalFields,
-        db.session,
-        name="Bibliothèque de champs additionnels",
-        category="Champs additionnels",
     )
 )
 
@@ -189,6 +122,33 @@ admin.add_view(
         db.session,
         name="Méthodes de notification",
         category="Notifications",
+    )
+)
+
+admin.add_view(
+    BibFieldAdmin(
+        TAdditionalFields,
+        db.session,
+        name="Champs additionnels",
+        category="Autres",
+    )
+)
+
+admin.add_view(
+    TMobileAppsAdmin(
+        TMobileApps,
+        db.session,
+        name="Applications mobiles",
+        category="Autres",
+    )
+)
+
+admin.add_view(
+    TModulesAdmin(
+        TModules,
+        db.session,
+        name="Modules",
+        category="Autres",
     )
 )
 

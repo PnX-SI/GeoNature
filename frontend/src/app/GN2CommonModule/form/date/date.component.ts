@@ -7,7 +7,7 @@ import {
   ElementRef,
   OnDestroy,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { NgbDateFRParserFormatter } from './ngb-date-custom-parser-formatter';
@@ -42,12 +42,14 @@ export class DateComponent implements OnInit, OnDestroy {
   @Input() label: string;
   @Input() isInvalid: string;
   @Input() disabled: boolean;
-  @Input() parentFormControl: FormControl;
+  @Input() parentFormControl: UntypedFormControl;
   @Input() defaultToday = false;
   @Input() minDate = { year: 1735, month: 1, day: 1 };
   @Input() maxDate;
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
+  /**Event fired on datepicker click on or keyboard date change */
+  @Output() onSelectOrKeyIn = new EventEmitter<any>();
   dynamicId;
   public changeSub: Subscription;
   public today: DateStruc;

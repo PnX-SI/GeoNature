@@ -1,4 +1,3 @@
-@import '~@ng-select/ng-select/themes/default.theme.css';
 @import 'conf/names_variables.scss';
 
 html,
@@ -16,7 +15,7 @@ mat-sidenav-content {
 }
 
 .cdk-overlay-container {
-  z-index: 2000 !important; 
+  z-index: 2000 !important;
 }
 
 .purple {
@@ -291,9 +290,9 @@ li.no-bullet {
   border-color: 1px solid #ced4da !important;
 }
 
-.ng-invalid,
-.custom-invalid,
-.custom-control > .ng-invalid {
+.form-control.ng-invalid,
+ng-select.ng-invalid .ng-select-container,
+.mdc-text-field--invalid{
   border-left: 5px solid #ff0000 !important;
 }
 
@@ -425,7 +424,7 @@ li.no-bullet {
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.39);
   z-index: 9999;
-  span#cover-message{
+  span#cover-message {
     display: block;
     position: absolute;
     left: calc(50% - 150px);
@@ -493,12 +492,7 @@ pnx-root:empty + #cover-spin-removable {
 .ng-select .ng-dropdown-panel {
   z-index: 3001;
 }
-.ng-select.sm,
-.ng-select.sm .ng-select-container,
-.ng-select.auto,
-.ng-select.auto .ng-select-container {
-  min-height: 0px;
-}
+
 .ng-select.sm .ng-select-container {
   height: 24px;
 }
@@ -557,7 +551,24 @@ a.mat-raised-button:hover {
 }
 
 .ngx-toastr {
-  width: 500px !important;  // Specify toastr-dialog width for all devices
+  width: 500px !important; // Specify toastr-dialog width for all devices
 }
 
 /* .loading screen is visible when app is not bootstrapped yet, my-app is empty */
+
+ngb-modal-backdrop {
+  z-index: 1050 !important;
+}
+
+.list-option-without-radio {
+  span .mdc-list-item__primary-text {
+    display:flex;
+  }
+  span.mdc-list-item__end.ng-star-inserted {
+    display:none;
+  }
+}
+
+.mat-mdc-button-touch-target {
+  display: none;
+}

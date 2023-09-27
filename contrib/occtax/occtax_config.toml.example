@@ -1,0 +1,200 @@
+# ----------- OCCTAX AVAILABLE AND DEFAULT PARAMETER ------------
+# You can override parameters defautl values in occtax_config.toml file
+# /!\ All parameters which are not in a section (between []) must be AT THE TOP OF THE FILE
+
+# Switch the form input in free text input (true) or in select input (false)
+observers_txt = false
+
+# id of the observator list -- utilisateurs.t_menus
+id_observers_list = 1
+
+# id of the taxon list -- taxonomie.bib_listes. Use for the taxonomy search in the occtax forml
+# default = None: search on full taxref
+# id_taxon_list = <an integer>
+
+# number of results in the autocomplete taxon search
+taxon_result_number = 20
+
+# Add a validation rule for digital proof. Must begin with a http:// or https://
+digital_proof_validator = true
+
+# set default form date picker with the date of today
+DATE_FORM_WITH_TODAY = true
+
+# Displays the possibility for the user to indicate a default value for the different fields of the form
+ENABLE_SETTINGS_TOOLS = false
+
+# Automatically expand the advanced button when adding a taxon
+EXPANDED_TAXON_ADVANCED_DETAILS = false
+
+# -------- MAPLIST PARAMETER ------------
+
+# Zoom level on the map from which you can add point/line/polygon
+releve_map_zoom_level = 6
+
+# Columns which are default display in the list
+default_maplist_columns = [
+    { prop = "taxons", name = "Taxon(s)" },
+    { prop = "date_min", name = "Date début", max_width = "100" },
+    { prop = "observateurs", name = "Observateur(s)" },
+    { prop = "dataset_name", name = "Jeu de données" }
+]
+
+# Available columns which can be add manualy by user
+available_maplist_column = [
+    { prop = "altitude_max", name = "altitude_max" },
+    { prop = "altitude_min", name = "altitude_min" },
+    { prop = "comment", name = "Commentaire" },
+    { prop = "date_max", name = "Date fin" },
+    { prop = "date_min", name = "Date début" },
+    { prop = "id_dataset", name = "ID dataset" },
+    { prop = "id_digitiser", name = "ID rédacteur" },
+    { prop = "id_releve_occtax", name = "ID relevé" },
+    { prop = "observateurs", name = "observateurs" },
+    { prop = "taxons", name = "taxons" }
+]
+
+# Message of the list of releve
+list_messages = { emptyMessage = "Aucune donnée à afficher", totalMessage = "observations au total" }
+
+# --------------- EXPORT PARAMETER ---------------------
+
+# Name of the view based export
+export_view_name = 'v_export_occtax'
+
+# Name of the geometry columns of the view
+export_geom_columns_name = 'geom_4326'
+
+# Name of the primary key column of the view
+export_id_column_name = 'permId'
+
+# Name of the columns with observers_txt
+export_observer_txt_column = 'obsId'
+
+# SRID for the shapefile
+export_srid = 4326
+
+# Add medias URL in export
+ADD_MEDIA_IN_EXPORT = false
+
+# Export available format (Only csv, geojson and shapefile and 'gpkg' is possible)
+export_available_format = ['csv', 'geojson', 'shapefile', 'gpkg']
+
+# Custom message to display in the export modal
+export_message = "<p> <b> Attention: </b> </br>  Vous vous apprêtez à télécharger les données de la <b>recherche courante. </b> </p>"
+
+# Max observations number the user is allowed to export at once
+MAX_EXPORT_NUMBER = 50000
+
+# Columns to display in the exports
+export_columns =  [
+  "permId",
+  "statObs",
+  "nomCite",
+  "dateDebut",
+  "dateFin",
+  "heureDebut",
+  "heureFin",
+  "altMax",
+  "altMin",
+  "cdNom",
+  "cdRef",
+  "dateDet",
+  "comment",
+  "dSPublique",
+  "statSource",
+  "idOrigine",
+  "jddId",
+  "refBiblio",
+  "obsTech",
+  "ocEtatBio",
+  "ocNat",
+  "ocSex",
+  "ocStade",
+  "ocBiogeo",
+  "ocStatBio",
+  "preuveOui",
+  "ocMethDet",
+  "preuvNum",
+  "preuvNoNum",
+  "obsCtx",
+  "permIdGrp",
+  "methGrp",
+  "typGrp",
+  "denbrMax",
+  "denbrMin",
+  "objDenbr",
+  "typDenbr",
+  "obsId",
+  "obsNomOrg",
+  "detId",
+  "detNomOrg",
+  "orgGestDat",
+  "WKT",
+  "natObjGeo",
+  "nomLieu"
+ ]
+
+# Afficher l'outil pour pointer un marker à partir des coordonnées X/Y
+ENABLE_GPS_TOOL = true
+# Activer l'outil leaflet filelayer qui permet de charger des fichier GPS, GeoJSON, et KML
+ENABLE_UPLOAD_TOOL = true
+# Activer l'outil "Mes lieux" permettant d'enregistrer et de charger les lieux des utilisateurs
+ENABLE_MY_PLACES = true
+
+# Reglage des listes d'habitat sur le formulaire
+# id list d'habitat (ref_habitats.bib_list_habitat)
+# ID_LIST_HABITAT = <integer> (defaut = null)
+
+# Code de type de typologie (ref_habitats.typoref)
+# CD_TYPO_HABITAT = <integer (defaut = null)
+
+# ------------- MEDIAS PARAMETER ---------------
+
+# Activer l'ajout de médias sur les dénombrements
+ENABLE_MEDIAS = true
+
+# Champs affichés au niveau des médias
+MEDIA_FIELDS_DETAILS = ['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author', 'bFile']
+
+# ------------- FORM PARAMETER ---------------
+
+# Allow to hide or display some fields. If hidden, database default value is used
+[form_fields]
+    date_min = true
+    date_max = true
+    hour_min = true
+    hour_max = true
+    altitude_min = true
+    altitude_max = true
+    depth_min = true
+    depth_max = true
+    tech_collect = false
+    group_type = false
+    comment_releve = true
+    obs_tech = true
+    bio_condition = true
+    bio_status = true
+    naturalness = true
+    exist_proof = true
+    observation_status = true
+    blurring = false
+    determiner = true
+    determination_method = true
+    digital_proof = true
+    non_digital_proof = true
+    source_status = false
+    comment_occ = true
+    life_stage = true
+    sex = true
+    obj_count = true
+    type_count = true
+    count_min = true
+    count_max = true
+    display_nom_valide = true
+    habitat = true
+    grp_method = false
+    behaviour = true
+    geo_object_nature = false
+    place_name = false
+    precision = false

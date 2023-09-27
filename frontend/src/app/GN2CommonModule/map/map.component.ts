@@ -1,14 +1,13 @@
 import { Component, Input, OnInit, ViewChild, Injectable } from '@angular/core';
 import { MapService } from './map.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Map, LatLngExpression, LatLngBounds } from 'leaflet';
-import { AppConfig } from '@geonature_config/app.config';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import * as L from 'leaflet';
 import { CommonService } from '../service/common.service';
 
 import 'leaflet-draw';
-import { FormControl } from '@angular/forms';
+import 'leaflet.locatecontrol';
+import { UntypedFormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import {
   catchError,
@@ -17,29 +16,34 @@ import {
   tap,
   switchMap,
   map,
-  timeout,
 } from 'rxjs/operators';
+import { ConfigService } from '@geonature/services/config.service';
 
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
-const PARAMS = new HttpParams({
-  fromObject: {
-    format: 'json',
-    limit: '10',
-    polygon_geojson: '1',
-    countrycodes: AppConfig.MAPCONFIG.OSM_RESTRICT_COUNTRY_CODES,
-  },
-});
 
 @Injectable()
 export class NominatimService {
-  constructor(private http: HttpClient) {}
+  PARAMS = null;
+
+  constructor(private http: HttpClient, public config: ConfigService) {
+    this.PARAMS = new HttpParams({
+      fromObject: {
+        format: 'json',
+        limit: '10',
+        polygon_geojson: '1',
+        countrycodes: this.config.MAPCONFIG.OSM_RESTRICT_COUNTRY_CODES,
+      },
+    });
+  }
 
   search(term: string) {
     if (term === '') {
       return of([]);
     }
 
-    return this.http.get(NOMINATIM_URL, { params: PARAMS.set('q', term) }).pipe(map((res) => res));
+    return this.http
+      .get(NOMINATIM_URL, { params: this.PARAMS.set('q', term) })
+      .pipe(map((res) => res));
   }
 }
 
@@ -60,7 +64,7 @@ export class MapComponent implements OnInit {
    */
   @Input() center: Array<number>;
   /** Niveaux de zoom à l'initialisation de la carte */
-  @Input() zoom: number = AppConfig.MAPCONFIG.ZOOM_LEVEL;
+  @Input() zoom: number = null;
   /** Hauteur de la carte (obligatoire) */
   @Input() height: string;
 
@@ -69,19 +73,23 @@ export class MapComponent implements OnInit {
   /** Activer la barre de recherche */
   @Input() searchBar: boolean = true;
 
+  /**Ajouter un bouton de géolocalisation */
+  @Input() geolocation: boolean = false;
+
   @ViewChild('mapDiv', { static: true }) mapContainer;
   searchLocation: string;
   public searching = false;
   public searchFailed = false;
-  public locationControl = new FormControl();
+  public locationControl = new UntypedFormControl();
   public map: Map;
   constructor(
     private mapService: MapService,
     private _commonService: CommonService,
-    private _http: HttpClient,
-    private _nominatim: NominatimService
+    private _nominatim: NominatimService,
+    public config: ConfigService
   ) {
     this.searchLocation = '';
+    this.zoom = this.config.MAPCONFIG.ZOOM_LEVEL;
   }
 
   ngOnInit() {
@@ -126,7 +134,7 @@ export class MapComponent implements OnInit {
     if (this.center !== undefined) {
       center = L.latLng(this.center[0], this.center[1]);
     } else {
-      center = L.latLng(AppConfig.MAPCONFIG.CENTER[0], AppConfig.MAPCONFIG.CENTER[1]);
+      center = L.latLng(this.config.MAPCONFIG.CENTER[0], this.config.MAPCONFIG.CENTER[1]);
     }
     // MAP
     const map = L.map(this.mapContainer.nativeElement, {
@@ -144,10 +152,15 @@ export class MapComponent implements OnInit {
     // SCALE
     L.control.scale().addTo(map);
 
+    // geoloc
+    if (this.geolocation && this.config.MAPCONFIG.GEOLOCATION) {
+      (L.control as any).locate().addTo(map);
+    }
+
     // LAYERS CONTROL
     // Baselayers
     const baseControl = {};
-    const BASEMAP = JSON.parse(JSON.stringify(AppConfig.MAPCONFIG.BASEMAP));
+    const BASEMAP = JSON.parse(JSON.stringify(this.config.MAPCONFIG.BASEMAP));
     BASEMAP.forEach((basemap, index) => {
       const formatedBasemap = this.formatBaseMapConfig(basemap);
       if (basemap.service === 'wms') {
@@ -193,6 +206,15 @@ export class MapComponent implements OnInit {
       // once - load JSON or WFS overlay data async if not already loaded
       this.mapService.loadOverlay(overlay);
     });
+
+    map.on('baselayerchange', (layer) => {
+      localStorage.setItem('MapLayer', layer.name);
+    });
+
+    const userMapLayer = localStorage.getItem('MapLayer');
+    if (userMapLayer !== null && baseControl[userMapLayer] !== undefined) {
+      map.addLayer(baseControl[userMapLayer]);
+    }
 
     setTimeout(() => {
       this.map.invalidateSize();

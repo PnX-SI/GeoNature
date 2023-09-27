@@ -7,7 +7,7 @@ GeoNature repose sur les composants suivants :
 - Python 3 et dépendances Python nécessaires à l'application
 - Flask (framework web Python)
 - Apache
-- Angular 7, Angular CLI, NodeJS
+- Angular 15, Angular CLI, NodeJS
 - Librairies javascript (Leaflet, ChartJS)
 - Librairies CSS (Bootstrap, Material Design)
 
@@ -23,7 +23,7 @@ Prérequis
 
 - Ressources minimum serveur :
 
-  - Un serveur Debian 10 ou Debian 11 architecture 64-bits
+  - Un serveur Debian 10, 11 ou 12, architecture 64-bits
   - 4 Go RAM
   - 20 Go d’espace disque
 
@@ -49,7 +49,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Mettre à jour de la liste des dépôts Linux :
 
-  ::
+  .. code:: console
 
     # apt update
     # apt upgrade
@@ -58,7 +58,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
   Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'installation de GeoNature, il est nécessaire de bien configurer la locale. Si la commande ``locale`` renvoie ceci :
 
-  ::
+  .. code:: console
 
     LANG=fr_FR.UTF-8
     LANGUAGE=fr_FR.UTF-8
@@ -83,19 +83,19 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Installer l’utilitaire ``sudo`` :
 
-  ::
+  .. code:: console
 
     # apt install sudo
 
 * Créer un utilisateur Linux dédié (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ``root`` :
 
-  ::
+  .. code:: console
 
     # adduser geonatureadmin
 
 * Lui donner ensuite les droits administrateur en l’ajoutant au groupe ``sudo`` :
 
-  ::
+  .. code:: console
 
     # adduser geonatureadmin sudo
 
@@ -105,7 +105,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
   
   Pour passer de l’utilisateur ``root`` à ``geonatureadmin``, vous pouvez aussi utiliser la commande :
 
-  ::
+  .. code:: console
 
     # su - geonatureadmin
 
@@ -118,6 +118,8 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 .. include:: installation-standalone.rst
 
+.. include:: installation-docker.rst
+
 .. include:: https.rst
 
 .. _cron:
@@ -125,27 +127,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 Taches planifiées
 *****************
 
-Depuis sa version 2.9.0, GeoNature permet de générer des profils pour chaque taxon à partir des observations existantes et validées. 
-
-Pour automatiser la mise à jour des profils en fonction des nouvelles observations, il est nécessaire de relancer automatiquement la fonction de calcul des profils de taxon en créant une taches planifiée (cron) 
-
-Créer une tache planifiée, exécutée tous les jours à minuit dans cet exemple :
-
-::
-
-  sudo nano /etc/cron.d/geonature
-
-Ajouter la ligne suivante en remplaçant "<CHEMIN_ABSOLU_VERS_VENV>" par le chemin absolu vers le virtualenv de GeoNature et "<GEONATURE_USER>" par l'utilisateur Linux de GeoNature :
-
-::
-
-  0 * * * * <GEONATURE_USER> <CHEMIN_ABSOLU_VERS_VENV>/bin/geonature profiles update
-  
-Exemple :
-
-::
-
-  0 * * * * geonatadmin /home/user/geonature/backend/venv/bin/geonature profiles update
+Depuis sa version 2.12.0, les taches planifiées gérées par des crons ont été remplacées par des taches lancées automatiquement par Celery Beat, pour être mis en place automatiquement lors de l'installation de GeoNature et être plus facilement administrables.
 
 
 .. _install-gn-module:
@@ -179,12 +161,21 @@ Exemple pour le module Import :
     source ~/GeoNature/backend/venv/bin/activate
     geonature install-gn-module ~/gn_module_import/ IMPORT
 
-Puis relancer GeoNature :
+Puis relancer GeoNatureet son worker :
 
 .. code-block:: bash
 
     sudo systemctl restart geonature
+    sudo systemctl restart geonature-worker
 
+Aucune permission n'est définie par défaut lors de l'installation d'un module. En tant qu'administrateur, vous pouvez une commande ajoutant tous les droits sur tous les modules à un groupe ou utilisateur. Cette commande peut être relancée après l'installation d'un module pour automatiquement attribuer toutes les permissions à un groupe ou utilisateur administrateur :
+
+.. code-block:: bash
+
+    # changer "Grp_Admin" par le nom de votre groupe d'administrateur si vous l'avez changé
+    geonature permissions supergrant --group --nom "Grp_admin"
+
+Vous devrez ensuite définir des droits à vos utilisateurs pour le nouveau module installé.
 
 Installation manuelle
 ---------------------
@@ -195,7 +186,7 @@ Installer le module avec ``pip`` en mode éditable après avoir activé le venv 
 
 .. code-block:: bash
 
-    source <dossier GeoNature>/backend/venv/bin/activate
+    source ~/geonature/backend/venv/bin/activate
     pip install --editable <dossier du module>
     sudo systemctl restart geonature
 
@@ -208,28 +199,21 @@ Installer le module avec ``pip`` en mode éditable après avoir activé le venv 
 
 .. code-block:: bash
 
-    cd <dossier GeoNature>/frontend/external_modules/
+    cd ~/geonature/frontend/external_modules/
     ln -s <dossier du module>/frontend <code du module en minuscule>
 
 Exemple pour le module Import :
 
 .. code-block:: bash
 
-    cd ~/GeoNature/frontend/external_modules/
+    cd ~/geonature/frontend/external_modules/
     ln -s ~/gn_module_import/frontend import
-
-* Générer la configuration frontend du module :
-
-.. code-block:: bash
-
-    source <dossier GeoNature>/backend/venv/bin/activate
-    geonature update-module-configuration <CODE DU MODULE>
 
 * Re-builder le frontend :
 
 .. code-block:: bash
 
-    cd <dossier GeoNature>/frontend/
+    cd ~/geonature/frontend/
     nvm use
     npm run build
 
@@ -237,7 +221,7 @@ Exemple pour le module Import :
 
 .. code-block:: bash
 
-    source <dossier GeoNature>/backend/venv/bin/activate
+    source ~/geonature/backend/venv/bin/activate
     geonature upgrade-modules-db <code du module>
 
 .. _module-config:
@@ -245,43 +229,30 @@ Exemple pour le module Import :
 Configuration du module
 -----------------------
 
-De manière facultative, vous pouvez modifier la configuration du module. La plupart des modules fournissent un fichier d’exemple ``conf_gn_module.toml.example`` dans leur dossier ``config``.
-Afin de modifier les paramètres par défaut du module, vous pouvez le copier :
+De manière facultative, vous pouvez modifier la configuration du module.
+Pour cela, vous pouvez créer un fichier de configuration dans le dossier ``config`` de GeoNature en le nommant ``<code du module en minuscule>_config.toml``.
+La plupart des modules fournissent un fichier d’exemple ``<module-code>_config.toml.example`` dans leur dossier racine dont vous pouvez vous inspirer.
 
-* Dans le dossier ``config`` de GeoNature en le nommant ``<code du module en minuscule>_config.toml`` (recommandé). Exemple pour le module d’import :
-
-.. code-block:: bash
-
-    cp ~/gn_module_import/config/conf_gn_module.toml.example ~/GeoNature/config/import_config.toml
-
-* Dans le dossier ``config`` du module en le nommant ``conf_gn_module.toml``. Exemple pour le module Import :
+Après création de ce fichier, activez le rechargement automatique de GeoNature lors des modifications du fichier en lançant les commandes suivantes :
 
 .. code-block:: bash
 
-    cp ~/gn_module_import/config/conf_gn_module.toml.example ~/gn_module_import/config/conf_gn_module.toml
+    sudo systemctl daemon-reload
+    sudo systemctl restart geonature
 
-
-Après chaque modification du module, vous devez :
-
-* Recharger GeoNature :
+Avant la version 2.12.0 de GeoNature, après chaque modification de la configuration du module, vous devez recharger GeoNature manuellement :
 
 .. code-block:: bash
 
     sudo systemctl reload geonature
 
-* Re-générer la configuration frontend du module et re-builder le frontend avec la sous-commande ``update-configuration`` :
-
-.. code-block:: bash
-
-    source <dossier GeoNature>/backend/venv/bin/activate
-    geonature update-configuration
 
 Mise à jour du module
 ---------------------
 
 * Déplacer le code de l’ancienne version du module : ``mv gn_module_xxx gn_module_xxx_old``
 * Télécharger et désarchiver la nouvelle version du module, et renommer son dossier afin qu’il porte le même nom qu’avant (*e.g.* ``gn_module_xxx``)
-* (Optionnel) Si le fichier de configuration du module est placé avec celui-ci, le récupérer : ``cp gn_module_xxx_old/config/conf_gn_module.toml gn_module_xxx/config/``
+* (Optionnel) Si le fichier de configuration du module est encore placé avec celui-ci, le déplacer dans la dossier de configuration centralisée de GeoNature : ``cp gn_module_xxx_old/config/conf_gn_module.toml geonature/config/<mode-code>_config.toml``
 * Relancer l’:ref:`installation du module<install-gn-module-auto>` : ``geonature install-gn-module gn_module_xxx XXX && sudo systemctl reload geonature``
 
 
@@ -297,7 +268,7 @@ Mise à jour de l'application
     (et la récupération éventuelle de la configuration) ; le script de migration de GeoNature s’occupera automatiquement
     d’installer la nouvelle version du module.
 
-La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans un nouveau répertoire, récupérer les fichiers de configuration et de surcouche depuis la version actuelle et de relancer l'installation dans le répertoire de la nouvelle version.
+La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans un nouveau répertoire, récupérer les fichiers de configuration et de surcouche, ainsi que les médias depuis la version actuelle et de relancer l'installation dans le répertoire de la nouvelle version.
 
 La mise à jour doit être réalisée avec votre utilisateur linux courant (``geonatureadmin`` par exemple) et non pas le super-utilisateur ``root``.
 
@@ -313,9 +284,9 @@ La mise à jour doit être réalisée avec votre utilisateur linux courant (``ge
 
   ::
 
-    mv /home/`whoami`/geonature/ /home/`whoami`/geonature_old/
-    mv GeoNature-X.Y.Z /home/`whoami`/geonature/
-    cd geonature
+    mv ~/geonature/ ~/geonature_old/
+    mv ~/GeoNature-X.Y.Z ~/geonature/
+    cd ~/geonature
 
 * Suivez les éventuelles notes de version spécifiques décrites au niveau de chaque version : https://github.com/PnX-SI/GeoNature/releases.
 
@@ -328,3 +299,16 @@ Sauf mentions contraires dans les notes de version, vous pouvez sauter des versi
   ::
     
     ./install/migration/migration.sh
+
+Depuis la version 2.12, le script `migration.sh` peut prendre en argument le chemin vers l'ancien dossier d'installation de GeoNature. Il peut s’agir du même dossier que la nouvelle installation de GeoNature. Cela permet d'utiliser ce script si la nouvelle version de GeoNature est dans le même dossier et donc de gérer le cas où GeoNature est installé et mis à jour avec git.
+
+Dans ce cas, les commandes à exécuter sont : 
+
+::
+  
+  cd ~/GeoNature
+  git status # optionnel, pour connaitre l'état et la version ou branche actuellement utilisée
+  git fetch
+  git checkout X.Y.Z # où X.Y.Z est le numéro du tag de la version vers laquelle faire la mise à jour, ou le nom de la branche à utiliser
+  git submodule update # ou "git config submodule.recurse true" lancé une seule fois, pour que la mise à jour des sous-modules soit relancée automatiquement à chaque git pull
+  ./install/migration/migration.sh .

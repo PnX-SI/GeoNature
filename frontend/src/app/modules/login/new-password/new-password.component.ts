@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 
 import { ToastrService } from 'ngx-toastr';
 import { similarValidator } from '@geonature/services/validators';
 
 import { AuthService } from '../../../components/auth/auth.service';
-import { AppConfig } from '../../../../conf/app.config';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-new-password',
@@ -15,15 +15,16 @@ import { AppConfig } from '../../../../conf/app.config';
 })
 export class NewPasswordComponent implements OnInit {
   token: string;
-  form: FormGroup;
+  form: UntypedFormGroup;
   public casLogin;
 
   constructor(
     private _authService: AuthService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private _toasterService: ToastrService
+    private _toasterService: ToastrService,
+    public config: ConfigService
   ) {
     this.activatedRoute.queryParams.subscribe((params) => {
       let token = params['token'];
@@ -32,7 +33,7 @@ export class NewPasswordComponent implements OnInit {
       }
       this.token = token;
     });
-    this.casLogin = AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION;
+    this.casLogin = this.config.CAS_PUBLIC.CAS_AUTHENTIFICATION;
   }
 
   ngOnInit() {

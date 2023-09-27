@@ -1,5 +1,5 @@
 ###############################################################################
-# Liste complète des paramètres et de leurs valeurs par défaut
+# Liste (presque) complète des paramètres et de leurs valeurs par défaut
 #
 # UTILISATION : piochez les paramètres que vous souhaitez surcoucher dans ce
 #     fichier et intégrez les au fichier 'config/geonature_config.toml'.
@@ -8,9 +8,6 @@
 #     doivent être au début du fichier !
 #     Les paramètres dans une section doivent être maintenus dans leur section.
 #
-# NOTES : après toute modification dans ce fichier, il est nécessaire de
-#     mettre à jour GeoNature à l'aide de la commande :
-#     `geonature update_configuration`
 ###############################################################################
 
 # Base de données
@@ -26,10 +23,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = true
 # Application
 
 # Nom de l'application dans la page d'accueil.
-appName = "GeoNature 2"
-
-# Nom du fichier du logo present dans le dossier custom/images
-LOGO_STRUCTURE_FILE = 'logo_structure.png'
+appName = "GeoNature"
 
 # Langue par défaut utilisée par l'application.
 # Utilisée pour l'instant seulement avec les nomenclatures.
@@ -50,9 +44,6 @@ API_ENDPOINT = "http://url.com/geonature/api"
 # URL de l'API de Taxhub
 API_TAXHUB = "http://127.0.0.1:5000/api/"
 
-# Identifiant de l'appplication GeoNature (id_application) dans UsersHub
-ID_APPLICATION_GEONATURE = 3
-
 # Type de session
 SESSION_TYPE = "filesystem"
 
@@ -68,28 +59,21 @@ COOKIE_AUTORENEW = true
 # Capturer toutes les exceptions (=true) ou pas (=false)
 TRAP_ALL_EXCEPTIONS = false
 
-# Niveau de Log pour l'API. Par défaut ERROR (=40)
-# Cf. https://docs.python.org/3/library/logging.html#logging-levels
-API_LOG_LEVEL = 40
-
 # MTD (pour la connexion au webservice de métadonnées de l'INPN)
 XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
 MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
 
-# Fichiers
-# BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-# Chemin du dossier où stocker les fichiers depuis la racine du dossier 'backend'
-UPLOAD_FOLDER = "static/medias"
-
-# Configuration de l'accès sans authentication
+# Configuration de l'accès sans authentication. Renseigner l’identifiant de l’utilisateur public.
 PUBLIC_ACCESS_USERNAME = ""
 
 # Active (=true) ou pas (=false) l'envoi d'email pour chaque erreur du backend de GeoNature
 # Attention : si activé, il est nécessaire de remplir la secetion 'MAIL_CONFIG'.
 MAIL_ON_ERROR = false
 
-# Notifications
+# Notifications (true / false)
 NOTIFICATIONS_ENABLED = true
+
+MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
 [USERSHUB]
     # URL de l'application Usershub
@@ -143,7 +127,8 @@ NOTIFICATIONS_ENABLED = true
     # Modules auxquels les JDD sont automatiquement associés
     JDD_MODULE_CODE_ASSOCIATION = ["OCCTAX", "OCCHAB"]
     # Filter les JDD par id_instance
-    ID_INSTANCE_FILTER = null
+    # ID_INSTANCE_FILTER = "null"
+    SYNC_LOG_LEVEL = "INFO"
 
 [BDD]
     id_area_type_municipality = 25
@@ -204,6 +189,9 @@ NOTIFICATIONS_ENABLED = true
     # Zoom appliqué sur la carte lors du clic sur une liste
     ZOOM_ON_CLICK = 16
 
+    # activation d'un boutton de géolocalisation sur la carte
+    GEOLOCATION = true
+
     # Restreindre la recherche OpenStreetMap (sur la carte dans l'encart "Rechercher un lieu")
     # à certains pays. Les pays doivent être au format ISO_3166-1 :
     # https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 et séparés par une virgule.
@@ -248,9 +236,9 @@ NOTIFICATIONS_ENABLED = true
     url = "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
     subdomains = ["mt0", "mt1", "mt2", "mt3"]
 
-# There are no defaut layers, but this document how to add one:
+# Add base layers on maps (from ref_geo, WMS, WFS, GeoJSON...)
 #[[MAPCONFIG.REF_LAYERS]]
-#    code = "COM",
+#    code = "COM"
 #    label = "Communes"
 #    type = "area"
 #    activate = false
@@ -273,7 +261,7 @@ NOTIFICATIONS_ENABLED = true
 
     # Colonne à afficher par défaut sur la liste des résultats de la synthese
     # Choisir le champ 'prop' parmis les colonnes suivantes :
-    # id_synthese, date_min, cd_nom, lb_nom, nom_vern_or_lb_nom, st_asgeojson,
+    # id (=id_synthese), date_min, cd_nom, lb_nom, nom_vern_or_lb_nom,
     # observers, dataset_name, url_source, count_min_max
     LIST_COLUMNS_FRONTEND = [
         { prop = "nom_vern_or_lb_nom", name = "Taxon" },
@@ -414,7 +402,7 @@ NOTIFICATIONS_ENABLED = true
         "uuid_perm_grp_sinp",
         "date_creation",
         "date_modification",
-        "champs_additionnels
+        "champs_additionnels",
     ]
     DISCUSSION_MODULES = ["SYNTHESE","VALIDATION"]
     DISCUSSION_MAX_LENGTH = 1500
@@ -436,6 +424,31 @@ NOTIFICATIONS_ENABLED = true
         { "id" = "invasive", "show" = true, "display_name" = "Espèces envahissantes", "status_types" = ["REGLLUTTE"] },
         { "id" = "znief", "show" = true, "display_name" = "Espèces déterminantes ZNIEFF", "status_types" = ["ZDET"] },
     ]
+
+    # Enable areas vizualisation with toggle slide
+    AREA_AGGREGATION_ENABLED = true
+    # Choose size of areas
+    AREA_AGGREGATION_TYPE = "M10"
+    # Activate areas mode by default
+    AREA_AGGREGATION_BY_DEFAULT = false
+    # Areas legend classes to use
+    AREA_AGGREGATION_LEGEND_CLASSES = [
+        { min = 100, color = "#800026" },
+        { min = 50, color = "#BD0026" },
+        { min = 20, color = "#E31A1C" },
+        { min = 10, color = "#FC4E2A" },
+        { min = 5, color = "#FD8D3C" },
+        { min = 2, color = "#FEB24C" },
+        { min = 1, color = "#FED976" },
+        { min = 0, color = "#FFEDA0" }
+    ]
+
+    [SYNTHESE.DEFAULT_FILTERS]
+        # Tous les statuts de validation sauf invalide '4'
+        # Il faut bien les renseigner en tant que chaîne de caractère (et non en tant que nombre)
+        cd_nomenclature_valid_status = ['0', '1', '2', '3', '5', '6']
+        # Seulement les données de présence
+        cd_nomenclature_observation_status = ['Pr']
 
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
@@ -464,7 +477,7 @@ NOTIFICATIONS_ENABLED = true
     # Les espaces présents en début et fin de chaine ainsi qu'avant et
     # après les virgules sont ignorés.
     VALIDATOR_EMAIL = """
-        Théo LECHEMIA <theo.lechemia@ecrins-parcnational.fr>,
+        Théo LECHEMIA <theo.lechemia@ecrins.fr>,
         Carl von LINNÉ <c.linnaeus@linnaeus.se>
         """
 
@@ -482,7 +495,7 @@ NOTIFICATIONS_ENABLED = true
     [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
         type_widget = "checkbox"
         attribut_label = """
-            <a target="_blank" href="http://docs.geonature.fr">
+            <a target="_blank" href="https://docs.geonature.fr">
                 J'ai lu et j'accepte la charte
             </a>"""
         attribut_name = "validate_charte"
@@ -557,7 +570,7 @@ NOTIFICATIONS_ENABLED = true
     MAIL_CONTENT_AF_CLOSED_URL = ""
     MAIL_CONTENT_AF_CLOSED_GREETINGS = ""
     CLOSED_MODAL_LABEL = "Dépôt d'un cadre d'acquisition"
-    CLOSED_MODAL_CONTENT = L'action de dépôt est une action irréversible. Il ne sera plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite. Vous ne pourrez pas supprimer votre dépôt. "
+    CLOSED_MODAL_CONTENT = "L'action de dépôt est une action irréversible. Il ne sera plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite. Vous ne pourrez pas supprimer votre dépôt. "
     # liste des types de role à afficher sur les formulaires JDD et CA
     CD_NOMENCLATURE_ROLE_TYPE_DS = ["2"]
     CD_NOMENCLATURE_ROLE_TYPE_AF = ["3"]
@@ -567,3 +580,9 @@ NOTIFICATIONS_ENABLED = true
         { "label" = "Départements", "type_code"= "DEP" },
         { "label" = "Régions", "type_code"= "REG" }
     ]
+
+# Page d’accueil
+[HOME]
+    TITLE = "Bienvenue dans GeoNature"
+    INTRODUCTION = "Texte d'introduction, configurable pour le modifier régulièrement ou le masquer"
+    FOOTER = ""

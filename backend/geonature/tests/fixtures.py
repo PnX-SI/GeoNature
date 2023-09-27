@@ -1,11 +1,10 @@
 import json
-import pkg_resources
 import datetime
 import tempfile
 
 from PIL import Image
 import pytest
-from flask import testing, url_for
+from flask import testing, url_for, current_app
 from werkzeug.datastructures import Headers
 from sqlalchemy import func
 from shapely.geometry import Point
@@ -14,10 +13,10 @@ from geoalchemy2.shape import from_shape
 from geonature import create_app
 from geonature.utils.env import db
 from geonature.core.gn_permissions.models import (
-    TActions,
-    TFilters,
-    BibFiltersType,
-    CorRoleActionFilterModuleObject,
+    PermFilterType,
+    PermAction,
+    PermObject,
+    Permission,
 )
 from geonature.core.gn_commons.models import TModules, TMedias, BibTablesLocation
 from geonature.core.gn_meta.models import (
@@ -27,6 +26,7 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkActor,
 )
 from geonature.core.gn_synthese.models import TSources, Synthese, TReport, BibReportsTypes
+from geonature.core.sensitivity.models import SensitivityRule, cor_sensitivity_area
 
 from pypnusershub.db.models import (
     User,
@@ -36,20 +36,32 @@ from pypnusershub.db.models import (
     UserApplicationRight,
 )
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
-from apptax.taxonomie.models import Taxref
+from apptax.taxonomie.models import (
+    Taxref,
+    TaxrefBdcStatutTaxon,
+    TaxrefBdcStatutCorTextValues,
+    bdc_statut_cor_text_area,
+    TaxrefBdcStatutText,
+)
+from ref_geo.models import LAreas
+
 from utils_flask_sqla.tests.utils import JSONClient
+
+import sqlalchemy as sa
 
 
 __all__ = [
     "datasets",
     "acquisition_frameworks",
     "synthese_data",
+    "synthese_sensitive_data",
     "source",
     "reports_data",
-    "filters",
     "medium",
     "module",
-    "isolate_synthese",
+    "perm_object",
+    "notifications_enabled",
+    "celery_eager",
 ]
 
 
@@ -75,7 +87,8 @@ def app():
 
 
 @pytest.fixture(scope="function")
-def module():
+def module(users):
+    other_module = TModules.query.filter_by(module_code="GEONATURE").one()
     with db.session.begin_nested():
         new_module = TModules(
             module_code="MODULE_1",
@@ -85,7 +98,26 @@ def module():
             active_backend=False,
         )
         db.session.add(new_module)
+    # Copy perission from another module
+    with db.session.begin_nested():
+        for perm in Permission.query.filter_by(id_module=other_module.id_module):
+            new_perm = Permission(
+                id_role=perm.id_role,
+                id_action=perm.id_action,
+                id_module=new_module.id_module,
+                id_object=perm.id_object,
+                scope_value=perm.scope_value,
+            )
+            db.session.add(new_perm)
     return new_module
+
+
+@pytest.fixture(scope="function")
+def perm_object():
+    with db.session.begin_nested():
+        new_object = PermObject(code_object="TEST_OBJECT")
+        db.session.add(new_object)
+    return new_object
 
 
 @pytest.fixture(scope="session")
@@ -93,18 +125,11 @@ def users(app):
     app = Application.query.filter(Application.code_application == "GN").one()
     profil = Profil.query.filter(Profil.nom_profil == "Lecteur").one()
 
-    modules_codes = ["GEONATURE", "SYNTHESE", "IMPORT", "OCCTAX", "METADATA"]
-    modules = TModules.query.filter(TModules.module_code.in_(modules_codes)).all()
+    modules = TModules.query.all()
 
-    actions = {
-        code: TActions.query.filter(TActions.code_action == code).one() for code in "CRUVED"
-    }
-    scope_filters = {
-        scope: TFilters.query.filter(TFilters.value_filter == str(scope)).one()
-        for scope in [0, 1, 2, 3]
-    }
+    actions = {code: PermAction.query.filter_by(code_action=code).one() for code in "CRUVED"}
 
-    def create_user(username, organisme=None, scope=None):
+    def create_user(username, organisme=None, scope=None, sensitivity_filter=False):
         # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
         with db.session.begin_nested():
             user = User(
@@ -122,13 +147,20 @@ def users(app):
                 id_role=user.id_role, id_application=app.id_application, id_profil=profil.id_profil
             )
             db.session.add(right)
-            if scope:
+            if scope > 0:
+                object_all = PermObject.query.filter_by(code_object="ALL").one()
                 for action in actions.values():
                     for module in modules:
-                        permission = CorRoleActionFilterModuleObject(
-                            role=user, action=action, filter=scope, module=module
-                        )
-                        db.session.add(permission)
+                        for obj in [object_all] + module.objects:
+                            permission = Permission(
+                                role=user,
+                                action=action,
+                                module=module,
+                                object=obj,
+                                scope_value=scope if scope != 3 else None,
+                                sensitivity_filter=sensitivity_filter,
+                            )
+                            db.session.add(permission)
         return user
 
     users = {}
@@ -137,12 +169,13 @@ def users(app):
     db.session.add(organisme)
 
     users_to_create = [
-        ("noright_user", organisme, scope_filters[0]),
-        ("stranger_user",),
-        ("associate_user", organisme, scope_filters[2]),
-        ("self_user", organisme, scope_filters[1]),
-        ("user", organisme, scope_filters[2]),
-        ("admin_user", organisme, scope_filters[3]),
+        ("noright_user", organisme, 0),
+        ("stranger_user", None, 2),
+        ("associate_user", organisme, 2),
+        ("self_user", organisme, 1),
+        ("user", organisme, 2),
+        ("admin_user", organisme, 3),
+        ("associate_user_2_exclude_sensitive", organisme, 2, True),
     ]
 
     for username, *args in users_to_create:
@@ -173,11 +206,11 @@ def acquisition_frameworks(users):
         TNomenclatures.mnemonique == "Contact principal",
     ).one()
 
-    def create_af(creator=None):
+    def create_af(name, creator):
         with db.session.begin_nested():
             af = TAcquisitionFramework(
-                acquisition_framework_name="test",
-                acquisition_framework_desc="test",
+                acquisition_framework_name=name,
+                acquisition_framework_desc=name,
                 creator=creator,
             )
             db.session.add(af)
@@ -189,12 +222,16 @@ def acquisition_frameworks(users):
         return af
 
     afs = {
-        "own_af": create_af(creator=users["user"]),
-        "associate_af": create_af(creator=users["associate_user"]),
-        "stranger_af": create_af(creator=users["stranger_user"]),
-        "orphan_af": create_af(),
-        "af_1": create_af(),
-        "af_2": create_af(),
+        name: create_af(name=name, creator=creator)
+        for name, creator in [
+            ("own_af", users["user"]),
+            ("associate_af", users["associate_user"]),
+            ("stranger_af", users["stranger_user"]),
+            ("orphan_af", None),
+            ("af_1", None),
+            ("af_2", None),
+            ("af_3", None),
+        ]
     }
 
     return afs
@@ -233,6 +270,7 @@ def datasets(users, acquisition_frameworks, module):
     af = acquisition_frameworks["orphan_af"]
     af_1 = acquisition_frameworks["af_1"]
     af_2 = acquisition_frameworks["af_2"]
+    af_3 = acquisition_frameworks["af_3"]
 
     datasets = {
         name: create_dataset(name, id_af, digitizer)
@@ -241,8 +279,14 @@ def datasets(users, acquisition_frameworks, module):
             ("associate_dataset", af.id_acquisition_framework, users["associate_user"]),
             ("stranger_dataset", af.id_acquisition_framework, users["stranger_user"]),
             ("orphan_dataset", af.id_acquisition_framework, None),
-            ("belong_af_1", af_1.id_acquisition_framework, None),
-            ("belong_af_2", af_2.id_acquisition_framework, None),
+            ("belong_af_1", af_1.id_acquisition_framework, users["stranger_user"]),
+            ("belong_af_2", af_2.id_acquisition_framework, users["stranger_user"]),
+            ("belong_af_3", af_3.id_acquisition_framework, users["stranger_user"]),
+            (
+                "associate_2_dataset_sensitive",
+                af.id_acquisition_framework,
+                users["associate_user_2_exclude_sensitive"],
+            ),
         ]
     }
     datasets["with_module_1"] = create_dataset(
@@ -261,8 +305,9 @@ def source():
     return source
 
 
-def create_synthese(geom, taxon, user, dataset, source, uuid):
+def create_synthese(geom, taxon, user, dataset, source, uuid, cor_observers, **kwargs):
     now = datetime.datetime.now()
+
     return Synthese(
         id_source=source.id_source,
         unique_id_sinp=uuid,
@@ -276,76 +321,221 @@ def create_synthese(geom, taxon, user, dataset, source, uuid):
         the_geom_local=func.st_transform(geom, 2154),
         date_min=now,
         date_max=now,
+        cor_observers=cor_observers,
+        **kwargs,
     )
 
 
 @pytest.fixture()
 def synthese_data(app, users, datasets, source):
-    map_center_point = Point(
-        app.config["MAPCONFIG"]["CENTER"][1],
-        app.config["MAPCONFIG"]["CENTER"][0],
-    )
-    geom_4326 = from_shape(map_center_point, srid=4326)
-    data = []
+    point1 = Point(5.92, 45.56)
+    point2 = Point(-1.54, 46.85)
+    point3 = Point(-3.486786, 48.832182)
+    data = {}
     with db.session.begin_nested():
-        for cd_nom in [713776, 2497]:
-            taxon = Taxref.query.filter_by(cd_nom=cd_nom).one()
+        for name, cd_nom, point, ds, comment_description in [
+            ("obs1", 713776, point1, datasets["own_dataset"], "obs1"),
+            ("obs2", 212, point2, datasets["own_dataset"], "obs2"),
+            ("obs3", 2497, point3, datasets["own_dataset"], "obs3"),
+            ("p1_af1", 713776, point1, datasets["belong_af_1"], "p1_af1"),
+            ("p1_af1_2", 212, point1, datasets["belong_af_1"], "p1_af1_2"),
+            ("p1_af2", 212, point1, datasets["belong_af_2"], "p1_af2"),
+            ("p2_af2", 2497, point2, datasets["belong_af_2"], "p2_af2"),
+            ("p2_af1", 2497, point2, datasets["belong_af_1"], "p2_af1"),
+            ("p3_af3", 2497, point3, datasets["belong_af_3"], "p3_af3"),
+        ]:
             unique_id_sinp = (
                 "f4428222-d038-40bc-bc5c-6e977bbbc92b" if not data else func.uuid_generate_v4()
             )
+            geom = from_shape(point, srid=4326)
+            taxon = Taxref.query.filter_by(cd_nom=cd_nom).one()
+            kwargs = {}
+            kwargs["comment_description"] = comment_description
             s = create_synthese(
-                geom_4326,
+                geom,
                 taxon,
                 users["self_user"],
-                datasets["own_dataset"],
+                ds,
                 source,
                 unique_id_sinp,
+                [users["admin_user"], users["user"]],
+                **kwargs,
             )
             db.session.add(s)
-            data.append(s)
+            data[name] = s
     return data
 
 
 @pytest.fixture()
-def isolate_synthese(users, datasets, source):
-    map_center_point = Point(-3.486786, 48.832182)
-    geom_4326 = from_shape(map_center_point, srid=4326)
-    taxon = Taxref.query.filter_by(cd_nom=79306).one()
-    with db.session.begin_nested():
-        s = create_synthese(
-            geom_4326,
-            taxon,
-            users["self_user"],
-            datasets["belong_af_1"],
-            source,
-            func.uuid_generate_v4(),
+def synthese_sensitive_data(app, users, datasets, source):
+    data = {}
+
+    # Retrieve all the taxa with a protection status, and the corresponding areas
+    cte_taxa_area_with_status = (
+        db.session.query(TaxrefBdcStatutTaxon.cd_nom, LAreas.id_area)
+        .select_from(TaxrefBdcStatutTaxon, LAreas)
+        .join(
+            TaxrefBdcStatutCorTextValues,
+            TaxrefBdcStatutTaxon.id_value_text == TaxrefBdcStatutCorTextValues.id_value_text,
         )
-        db.session.add(s)
-    return s
+        .join(
+            bdc_statut_cor_text_area,
+            LAreas.id_area == bdc_statut_cor_text_area.c.id_area,
+        )
+        .join(
+            TaxrefBdcStatutText, bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutText.id_text
+        )
+        .filter(bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutCorTextValues.id_text)
+        .filter(TaxrefBdcStatutText.enable == True)
+    ).cte("taxa_with_status")
 
+    # Retrieve all the taxa with a sensitivity rule, and the corresponding areas
+    cte_taxa_area_with_sensitivity = (
+        db.session.query(SensitivityRule.cd_nom, cor_sensitivity_area.c.id_area)
+        .select_from(SensitivityRule)
+        .join(cor_sensitivity_area, SensitivityRule.id == cor_sensitivity_area.c.id_sensitivity)
+        .filter(SensitivityRule.active == True)
+    ).cte("taxa_with_sensitivity")
 
-@pytest.fixture(scope="function")
-def filters():
-    """
-    Creates one filter per filter type
-    """
-    # Gather all types
-    avail_filter_types = BibFiltersType.query.order_by(BibFiltersType.id_filter_type).all()
-    # Init returned filter_dict
-    filters_dict = {}
-    # For each type, generate a Filter
+    # Retrieve a cd_nom and point that fit both a sensitivity rule and a protection status
+    sensitive_protected_cd_nom, sensitive_protected_id_area = (
+        db.session.query(
+            cte_taxa_area_with_status.c.cd_nom,
+            cte_taxa_area_with_status.c.id_area,
+        )
+        .join(
+            cte_taxa_area_with_sensitivity,
+            sa.and_(
+                cte_taxa_area_with_status.c.cd_nom == cte_taxa_area_with_sensitivity.c.cd_nom,
+                cte_taxa_area_with_status.c.id_area == cte_taxa_area_with_sensitivity.c.id_area,
+            ),
+        )
+        .first()
+    )
+    sensitivity_rule = SensitivityRule.query.filter(
+        SensitivityRule.cd_nom == sensitive_protected_cd_nom,
+        SensitivityRule.areas.any(LAreas.id_area == sensitive_protected_id_area),
+    ).first()
+    sensitive_protected_area = LAreas.query.filter(
+        LAreas.id_area == sensitive_protected_id_area
+    ).first()
+    # Get one point inside the area : the centroid (assuming the area is convex)
+    sensitive_protected_point = db.session.query(
+        func.ST_Centroid(func.ST_Transform(sensitive_protected_area.geom, 4326))
+    ).first()[0]
+    # Add a criteria to the sensitivity rule if needed
+    id_nomenclature_bio_status = None
+    id_type_nomenclature_bio_status = (
+        BibNomenclaturesTypes.query.filter(BibNomenclaturesTypes.mnemonique == "STATUT_BIO")
+        .one()
+        .id_type
+    )
+    id_nomenclature_behaviour = None
+    id_type_nomenclature_behaviour = (
+        BibNomenclaturesTypes.query.filter(BibNomenclaturesTypes.mnemonique == "OCC_COMPORTEMENT")
+        .one()
+        .id_type
+    )
+    # Get one criteria for the sensitivity rule if needed
+    list_criterias_for_sensitivity_rule = sensitivity_rule.criterias
+    if list_criterias_for_sensitivity_rule:
+        one_criteria_for_sensitive_rule = list_criterias_for_sensitivity_rule[0]
+        id_type_criteria_for_sensitive_rule = one_criteria_for_sensitive_rule.id_type
+        if id_type_criteria_for_sensitive_rule == id_type_nomenclature_bio_status:
+            id_nomenclature_bio_status = one_criteria_for_sensitive_rule.id_nomenclature
+        elif id_type_criteria_for_sensitive_rule == id_type_nomenclature_behaviour:
+            id_nomenclature_behaviour = one_criteria_for_sensitive_rule.id_nomenclature
+
+    # Retrieve a cd_nom and point that fit a protection status but no sensitivity rule
+    protected_not_sensitive_cd_nom, protected_not_sensitive_id_area = (
+        db.session.query(cte_taxa_area_with_status.c.cd_nom, cte_taxa_area_with_status.c.id_area)
+        .filter(
+            cte_taxa_area_with_status.c.cd_nom.notin_([cte_taxa_area_with_sensitivity.c.cd_nom])
+        )
+        .first()
+    )
+    protected_not_sensitive_area = LAreas.query.filter(
+        LAreas.id_area == protected_not_sensitive_id_area
+    ).first()
+    # Get one point inside the area : the centroid (assuming the area is convex)
+    protected_not_sensitive_point = db.session.query(
+        func.ST_Centroid(func.ST_Transform(protected_not_sensitive_area.geom, 4326))
+    ).first()[0]
+
     with db.session.begin_nested():
-        for i, filter_type in enumerate(avail_filter_types):
-            new_filter = TFilters(
-                label_filter=f"test_{i}",
-                value_filter=f"value_{i}",
-                description_filter="Filtre test",
-                id_filter_type=filter_type.id_filter_type,
+        for name, cd_nom, point, ds, comment_description in [
+            (
+                "obs_sensitive_protected",
+                sensitive_protected_cd_nom,
+                sensitive_protected_point,
+                datasets["own_dataset"],
+                "obs_sensitive_protected",
+            ),
+            (
+                "obs_protected_not_sensitive",
+                protected_not_sensitive_cd_nom,
+                protected_not_sensitive_point,
+                datasets["own_dataset"],
+                "obs_protected_not_sensitive",
+            ),
+            (
+                "obs_sensitive_protected_2",
+                sensitive_protected_cd_nom,
+                sensitive_protected_point,
+                datasets["associate_2_dataset_sensitive"],
+                "obs_sensitive_protected_2",
+            ),
+        ]:
+            unique_id_sinp = func.uuid_generate_v4()
+            geom = point
+            taxon = Taxref.query.filter_by(cd_nom=cd_nom).one()
+            kwargs = {}
+            if id_nomenclature_bio_status:
+                kwargs["id_nomenclature_bio_status"] = id_nomenclature_bio_status
+            elif id_nomenclature_behaviour:
+                kwargs["id_nomenclature_behaviour"] = id_nomenclature_behaviour
+            kwargs["comment_description"] = comment_description
+            s = create_synthese(
+                geom, taxon, users["self_user"], ds, source, unique_id_sinp, [], **kwargs
             )
-            filters_dict[filter_type.code_filter_type] = new_filter
-            db.session.add(new_filter)
+            db.session.add(s)
+            data[name] = s
 
-    return filters_dict
+    # Assert that obs_sensitive_protected is a sensitive observation
+    id_nomenclature_not_sensitive = (
+        TNomenclatures.query.filter(
+            TNomenclatures.nomenclature_type.has(BibNomenclaturesTypes.mnemonique == "SENSIBILITE")
+        )
+        .filter(TNomenclatures.cd_nomenclature == "4")
+        .one()
+    ).id_nomenclature
+    Synthese.query.filter(
+        Synthese.cd_nom == sensitive_protected_cd_nom
+    ).first().id_nomenclature_sensitivity != id_nomenclature_not_sensitive
+
+    # Assert that obs_protected_not_sensitive is not a sensitive observation
+    Synthese.query.filter(
+        Synthese.cd_nom == protected_not_sensitive_cd_nom
+    ).first().id_nomenclature_sensitivity == id_nomenclature_not_sensitive
+
+    ## Assert that obs_sensitive_protected and obs_protected_not_sensitive are protected observation
+    def assert_observation_is_protected(name_observation):
+        observation_synthese = data[name_observation]
+        list_areas_observation = [area.id_area for area in observation_synthese.areas]
+        cd_nom = observation_synthese.cd_nom
+        list_id_areas_with_status_for_cd_nom = [
+            tuple_id_area[0]
+            for tuple_id_area in db.session.query(cte_taxa_area_with_status.c.id_area)
+            .filter(cte_taxa_area_with_status.c.cd_nom == cd_nom)
+            .all()
+        ]
+        # assert that intersection of the two lists is not empty
+        assert set(list_areas_observation).intersection(set(list_id_areas_with_status_for_cd_nom))
+
+    assert_observation_is_protected("obs_sensitive_protected")
+    assert_observation_is_protected("obs_protected_not_sensitive")
+
+    return data
 
 
 def create_media(media_path=""):
@@ -374,8 +564,13 @@ def create_media(media_path=""):
 
 @pytest.fixture
 def medium(app):
+    # FIXME: find a better way to get the id_media that will be created
+    new_id_media = (db.session.query(func.max(TMedias.id_media)).scalar() or 0) + 1
     image = Image.new("RGBA", size=(1, 1), color=(155, 0, 0))
-    with tempfile.NamedTemporaryFile() as f:
+    # Delete = false since it will be done automatically
+    with tempfile.NamedTemporaryFile(
+        dir=TMedias.base_dir(), prefix=f"{new_id_media}_", suffix=".png", delete=False
+    ) as f:
         image.save(f, "png")
         yield create_media(media_path=str(f.name))
 
@@ -383,6 +578,7 @@ def medium(app):
 @pytest.fixture()
 def reports_data(users, synthese_data):
     data = []
+
     # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
     def create_report(id_synthese, id_role, content, id_type, deleted):
         new_report = TReport(
@@ -396,9 +592,7 @@ def reports_data(users, synthese_data):
         db.session.add(new_report)
         return new_report
 
-    ids = []
-    for el in synthese_data:
-        ids.append(el.id_synthese)
+    ids = [s.id_synthese for s in synthese_data.values()]
     # get id by type
     discussionId = (
         BibReportsTypes.query.filter(BibReportsTypes.type == "discussion").first().id_type
@@ -413,3 +607,8 @@ def reports_data(users, synthese_data):
             data.append(create_report(id_synthese, *args))
 
     return data
+
+
+@pytest.fixture()
+def notifications_enabled(monkeypatch):
+    monkeypatch.setitem(current_app.config, "NOTIFICATIONS_ENABLED", True)

@@ -1,8 +1,10 @@
 from collections import OrderedDict
+from packaging import version
+from typing import List
 
 import sqlalchemy as sa
 import datetime
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, Unicode, and_, DateTime
 from sqlalchemy.orm import (
     relationship,
     column_property,
@@ -12,15 +14,22 @@ from sqlalchemy.orm import (
     deferred,
 )
 from sqlalchemy.sql import select, func, exists
+from sqlalchemy.schema import FetchedValue
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 
 from geojson import Feature
 from flask import g
-from flask_sqlalchemy import BaseQuery
+import flask_sqlalchemy
+
+if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
+    from flask_sqlalchemy.query import Query
+else:
+    from flask_sqlalchemy import BaseQuery as Query
 
 from werkzeug.exceptions import NotFound
+from werkzeug.datastructures import MultiDict
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
@@ -94,7 +103,79 @@ corAreaSynthese = DB.Table(
 )
 
 
-class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
+class SyntheseLogEntryQuery(Query):
+    sortable_columns = ["meta_last_action_date"]
+    filterable_columns = ["id_synthese", "last_action", "meta_last_action_date"]
+
+    def filter_by_params(self, params):
+        for col in self.filterable_columns:
+            if col not in params:
+                continue
+            column = getattr(SyntheseLogEntry, col)
+            for value in params.getlist(col):
+                if isinstance(column.type, DateTime):
+                    self = self.filter_by_datetime(column, value)
+                elif isinstance(column.type, Unicode):
+                    self = self.filter(column.ilike(f"%{value}%"))
+                else:
+                    self = self.filter(column == value)
+        return self
+
+    def filter_by_datetime(self, col, dt: str = None):
+        """Filter on date only with operator among "<,>,=<,>="
+
+        Parameters
+        ----------
+        filters_with_operator : dict
+            params filters from url only
+
+        Returns
+        -------
+        Query
+
+        """
+
+        if ":" in dt:
+            operator, dt = dt.split(":", 1)
+        else:
+            operator = "eq"
+        dt = datetime.datetime.fromisoformat(dt)
+        if operator == "gt":
+            f = col > dt
+        elif operator == "gte":
+            f = col >= dt
+        elif operator == "lt":
+            f = col < dt
+        elif operator == "lte":
+            f = col <= dt
+        elif operator == "eq":
+            # FIXME: if datetime is at midnight (looks like date), allows all the day?
+            f = col == dt
+        else:
+            raise ValueError(f"Invalid comparison operator: {operator}")
+        return self.filter(f)
+
+    def sort(self, columns: List[str]):
+        if not columns:
+            columns = ["meta_last_action_date"]
+        for col in columns:
+            if ":" in col:
+                col, direction = col.rsplit(":")
+                if direction == "asc":
+                    direction = sa.asc
+                elif direction == "desc":
+                    direction = sa.desc
+                else:
+                    raise ValueError(f"Invalid sort direction: {direction}")
+            else:
+                direction = sa.asc
+            if col not in self.sortable_columns:
+                raise ValueError(f"Invalid sort column: {col}")
+            self = self.order_by(direction(getattr(SyntheseLogEntry, col)))
+        return self
+
+
+class SyntheseQuery(GeoFeatureCollectionMixin, Query):
     def join_nomenclatures(self):
         return self.options(*[joinedload(n) for n in Synthese.nomenclature_fields])
 
@@ -177,7 +258,7 @@ class Synthese(DB.Model):
     source = relationship(TSources)
     id_module = DB.Column(DB.Integer, ForeignKey(TModules.id_module))
     module = DB.relationship(TModules)
-    entity_source_pk_value = DB.Column(DB.Integer)  # FIXME varchar in db!
+    entity_source_pk_value = DB.Column(DB.Unicode)
     id_dataset = DB.Column(DB.Integer, ForeignKey(TDatasets.id_dataset))
     dataset = DB.relationship(TDatasets, backref=DB.backref("synthese_records", lazy="dynamic"))
     grp_method = DB.Column(DB.Unicode(length=255))
@@ -188,35 +269,43 @@ class Synthese(DB.Model):
     nomenclature_geo_object_nature = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_geo_object_nature]
     )
-    id_nomenclature_grp_typ = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_grp_typ = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_grp_typ = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_grp_typ])
     id_nomenclature_obs_technique = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_obs_technique = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_obs_technique]
     )
-    id_nomenclature_bio_status = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_bio_status = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_bio_status = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_bio_status]
     )
     id_nomenclature_bio_condition = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_bio_condition = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_bio_condition]
     )
-    id_nomenclature_naturalness = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_naturalness = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_naturalness = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_naturalness]
     )
     id_nomenclature_valid_status = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_valid_status = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_valid_status]
     )
-    id_nomenclature_exist_proof = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_exist_proof = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_exist_proof = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_exist_proof]
     )
@@ -226,17 +315,25 @@ class Synthese(DB.Model):
     nomenclature_diffusion_level = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_diffusion_level]
     )
-    id_nomenclature_life_stage = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_life_stage = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_life_stage = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_life_stage]
     )
-    id_nomenclature_sex = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_sex = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_sex = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_sex])
-    id_nomenclature_obj_count = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_obj_count = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_obj_count = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_obj_count]
     )
-    id_nomenclature_type_count = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_type_count = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_type_count = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_type_count]
     )
@@ -245,39 +342,44 @@ class Synthese(DB.Model):
         TNomenclatures, foreign_keys=[id_nomenclature_sensitivity]
     )
     id_nomenclature_observation_status = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_observation_status = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_observation_status]
     )
-    id_nomenclature_blurring = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_blurring = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_blurring = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_blurring]
     )
     id_nomenclature_source_status = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_source_status = db.relationship(
-        TNomenclatures, foreign_keys=[id_nomenclature_source_status]
+        TNomenclatures,
+        foreign_keys=[id_nomenclature_source_status],
     )
     id_nomenclature_info_geo_type = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_info_geo_type = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_info_geo_type]
     )
-    id_nomenclature_behaviour = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_behaviour = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
+    )
     nomenclature_behaviour = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_behaviour]
     )
     id_nomenclature_biogeo_status = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_biogeo_status = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_biogeo_status]
     )
     id_nomenclature_determination_method = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_determination_method = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_determination_method]
@@ -318,8 +420,8 @@ class Synthese(DB.Model):
     comment_description = DB.Column(DB.UnicodeText)
     additional_data = DB.Column(JSONB)
     meta_validation_date = DB.Column(DB.DateTime)
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
+    meta_create_date = DB.Column(DB.DateTime, server_default=FetchedValue())
+    meta_update_date = DB.Column(DB.DateTime, server_default=FetchedValue())
     last_action = DB.Column(DB.Unicode)
 
     areas = relationship(LAreas, secondary=corAreaSynthese, backref="synthese_obs")
@@ -332,7 +434,7 @@ class Synthese(DB.Model):
 
     cor_observers = DB.relationship(User, secondary=cor_observer_synthese)
 
-    def has_instance_permission(self, scope):
+    def _has_scope_grant(self, scope):
         if scope == 0:
             return False
         elif scope in (1, 2):
@@ -343,6 +445,31 @@ class Synthese(DB.Model):
             return self.dataset.has_instance_permission(scope)
         elif scope == 3:
             return True
+
+    def _has_permissions_grant(self, permissions):
+        if not permissions:
+            return False
+        for perm in permissions:
+            if perm.has_other_filters_than("SCOPE", "SENSITIVITY"):
+                continue  # unsupported filters
+            if perm.sensitivity_filter and self.nomenclature_sensitivity.cd_nomenclature != "0":
+                continue  # sensitivity filter denied access, check next permission
+            if perm.scope_value:
+                if g.current_user == self.digitiser:
+                    return True
+                if g.current_user in self.cor_observers:
+                    return True
+                if self.dataset.has_instance_permission(perm.scope_value):
+                    return True
+                continue  # scope filter denied access, check next permission
+            return True  # no filter exclude this permission
+        return False
+
+    def has_instance_permission(self, permissions):
+        if type(permissions) == int:
+            return self._has_scope_grant(permissions)
+        else:
+            return self._has_permissions_grant(permissions)
 
 
 @serializable
@@ -369,6 +496,7 @@ class BibReportsTypes(DB.Model):
 @serializable
 class TReport(DB.Model):
     __tablename__ = "t_reports"
+
     __table_args__ = {"schema": "gn_synthese"}
     id_report = DB.Column(DB.Integer(), primary_key=True)
     id_synthese = DB.Column(DB.Integer(), ForeignKey("gn_synthese.synthese.id_synthese"))
@@ -539,6 +667,24 @@ class VColorAreaTaxon(DB.Model):
     color = DB.Column(DB.Unicode())
 
 
+@serializable
+class SyntheseLogEntry(DB.Model):
+    """Log synthese table, populated with Delete Triggers on gn_synthes.synthese
+    Parameters
+    ----------
+    DB:
+        Flask SQLAlchemy controller
+    """
+
+    __tablename__ = "t_log_synthese"
+    __table_args__ = {"schema": "gn_synthese"}
+    query_class = SyntheseLogEntryQuery
+
+    id_synthese = DB.Column(DB.Integer(), primary_key=True)
+    last_action = DB.Column(DB.String(length=1))
+    meta_last_action_date = DB.Column(DB.DateTime)
+
+
 # defined here to avoid circular dependencies
 source_subquery = (
     select([TSources.id_source, Synthese.id_dataset])
@@ -552,4 +698,11 @@ TDatasets.sources = db.relationship(
     secondaryjoin=source_subquery.c.id_source == TSources.id_source,
     secondary=source_subquery,
     viewonly=True,
+)
+TDatasets.synthese_records_count = column_property(
+    select([func.count(Synthese.id_synthese)])
+    .where(Synthese.id_dataset == TDatasets.id_dataset)
+    .as_scalar()  # deprecated, replace with scalar_subquery()
+    .label("synthese_records_count"),
+    deferred=True,
 )

@@ -1,12 +1,11 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
-import { AppConfig } from '@geonature_config/app.config';
 import { AuthService, User } from '@geonature/components/auth/auth.service';
-import { DataFormService } from '@geonature_common/form/data-form.service';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { isEmpty, uniqueId } from 'lodash';
 import * as moment from 'moment';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-discussion-card',
@@ -17,18 +16,18 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   @Input() idSynthese: number;
   @Input() additionalData: any;
   @Input() validationColor: any;
-  public commentForm: FormGroup;
+  public commentForm: UntypedFormGroup;
   public open = false;
   public currentUser: User;
-  public appConfig = AppConfig;
   public discussions: any;
   public allow = false;
   public sort = 'desc';
   constructor(
     private _authService: AuthService,
-    private _formBuilder: FormBuilder,
+    private _formBuilder: UntypedFormBuilder,
     private _commonService: CommonService,
-    private _syntheseDataService: SyntheseDataService
+    private _syntheseDataService: SyntheseDataService,
+    public config: ConfigService
   ) {
     this.commentForm = this._formBuilder.group({
       content: ['', Validators.required],
@@ -75,8 +74,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   isValid() {
     return (
       this.commentForm.valid &&
-      this.commentForm.get('content').value.length <=
-        this.appConfig?.SYNTHESE?.DISCUSSION_MAX_LENGTH
+      this.commentForm.get('content').value.length <= this.config?.SYNTHESE?.DISCUSSION_MAX_LENGTH
     );
   }
 

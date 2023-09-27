@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { filter } from 'rxjs/operators';
 import { isEmpty } from 'lodash';
 import { ModuleService } from '../../services/module.service';
@@ -23,10 +23,10 @@ export class AlertInfoComponent implements OnInit, OnChanges {
   @Output() changeVisibility = new EventEmitter();
   public moduleSub: any;
   public userCruved: any;
-  public alertForm: FormGroup;
+  public alertForm: UntypedFormGroup;
   public canChangeAlert = false;
   constructor(
-    private _formBuilder: FormBuilder,
+    private _formBuilder: UntypedFormBuilder,
     private _commonService: CommonService,
     private _syntheseDataService: SyntheseDataService,
     public moduleService: ModuleService
@@ -51,7 +51,10 @@ export class AlertInfoComponent implements OnInit, OnChanges {
       });
   }
   ngOnChanges() {
-    this.canChangeAlert = this.userCruved?.V && this.userCruved?.V > 0 && !isEmpty(this.alert);
+    let moduleValidation = this.moduleService.getModule('VALIDATION');
+
+    this.canChangeAlert =
+      moduleValidation?.cruved?.R && moduleValidation?.cruved?.R > 0 && !isEmpty(this.alert);
   }
   /**
    * Create new alert with /reports GET service

@@ -16,6 +16,7 @@ from geonature.core.gn_profiles.models import (
     VmValidProfiles,
     VConsistancyData,
 )
+import geonature.core.gn_profiles.tasks  # noqa: F401
 from geonature.utils.env import DB
 
 routes = Blueprint("gn_profiles", __name__, cli_group="profiles")

@@ -5,11 +5,17 @@ npm-debug.log
 /dist/
 src/conf/app.config.ts
 
-# custom components
-src/custom/components/**/*.component.ts
-src/custom/components/**/*.component.scss
-src/custom/components/**/*.component.css
-src/custom/components/**/*.component.html
-src/custom/images/bandeau_toolbar.jpg
-src/custom/custom.scss
-src/assets/custom.css
+# Test files
+/cypress/videos
+/cypress/screenshots
+/coverage
+/.nyc_output/out.json
+
+# Angular files
+.angular/cache
+
+# External modules
+/external_modules/
+
+# GeoNature files
+src/assets/config.json

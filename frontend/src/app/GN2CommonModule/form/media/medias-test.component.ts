@@ -1,8 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
-import { Media } from './media';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { AppConfig } from '@geonature_config/app.config';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MediaService } from '@geonature_common/service/media.service';
 
 @Component({
@@ -12,9 +10,7 @@ import { MediaService } from '@geonature_common/service/media.service';
   // encapsulation: ViewEncapsulation.None
 })
 export class MediasTestComponent implements OnInit {
-  public mediaForm: FormGroup;
-
-  public appConfig = AppConfig;
+  public mediaForm: UntypedFormGroup;
 
   bInitialized = false;
 
@@ -39,7 +35,7 @@ export class MediasTestComponent implements OnInit {
   constructor(
     private _route: ActivatedRoute,
     public ms: MediaService,
-    private _formBuilder: FormBuilder
+    private _formBuilder: UntypedFormBuilder
   ) {}
 
   ngOnInit() {
@@ -47,7 +43,6 @@ export class MediasTestComponent implements OnInit {
     const a = {};
     const s = 'a["f"] = a => !!a';
     eval(s);
-    console.log(a['f'](1));
     this.mediaForm = this._formBuilder.group({});
     this._route.params.subscribe((params) => {
       if (params['uuidAttachedRow']) {

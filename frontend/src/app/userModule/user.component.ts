@@ -1,9 +1,9 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { AppConfig } from '@geonature_config/app.config';
-import { AuthService, User } from '@geonature/components/auth/auth.service';
-// import { Role, RoleFormService } from './services/form.service';
+import { AuthService } from '@geonature/components/auth/auth.service';
+// import { RoleFormService } from './services/form.service';
 // import { UserDataService } from './services/user-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 
@@ -27,14 +27,14 @@ export interface Role {
 export class UserComponent implements OnInit, AfterViewInit {
 
   private role: BehaviorSubject<Role> = new BehaviorSubject(null);
-  private roleForm: FormGroup;
+  private roleForm: UntypedFormGroup;
 
-  form: FormGroup;
+  form: UntypedFormGroup;
   public FORM_CONFIG = AppConfig.ACCOUNT_MANAGEMENT.ACCOUNT_FORM;
 
   constructor(
     private authService: AuthService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     // private roleFormService: RoleFormService,
     // private userService: UserDataService,
     private dataService: DataFormService
@@ -75,7 +75,7 @@ console.log(this.form)
     });
   }
 
-  // getForm(role: number): FormGroup {
+  // getForm(role: number): UntypedFormGroup {
   //   return this.roleFormService.getForm(role);
   // }
 

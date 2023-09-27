@@ -88,13 +88,7 @@ def insert_or_update_media(id_media=None):
     else:
         data = request.get_json(silent=True)
 
-    try:
-        m = TMediaRepository(data=data, file=file, id_media=id_media).create_or_update_media()
-
-    except GeoNatureError as e:
-        return str(e), 400
-
-    TMediumRepository.sync_medias()
+    m = TMediaRepository(data=data, file=file, id_media=id_media).create_or_update_media()
 
     return m.as_dict()
 
@@ -110,8 +104,6 @@ def delete_media(id_media):
 
     TMediaRepository(id_media=id_media).delete()
 
-    TMediumRepository.sync_medias()
-
     return {"resp": "media {} deleted".format(id_media)}
 
 
@@ -124,11 +116,8 @@ def get_media_thumb(id_media, size):
     media_repo = TMediaRepository(id_media=id_media)
     m = media_repo.media
     if not m:
-        return {"msg": "Media introuvable"}, 404
+        raise NotFound("Media introuvable")
 
-    try:
-        url_thumb = media_repo.get_thumbnail_url(size)
-    except GeoNatureError as e:
-        return {"msg": str(e)}, 500
+    url_thumb = media_repo.get_thumbnail_url(size)
 
     return redirect(url_thumb)

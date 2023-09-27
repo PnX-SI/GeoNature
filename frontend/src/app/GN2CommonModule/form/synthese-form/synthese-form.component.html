@@ -27,24 +27,21 @@
         type="checkbox"
         checked
       />
-      <label
-        for="modif_checkbox"
-        class="form-check-label"
-      >
+      <label for="modif_checkbox" class="form-check-label">
         <small>Données modifiées depuis la dernière validation</small>
       </label>
     </div>
     <button
-      *ngIf="AppConfig.FRONTEND['ENABLE_PROFILES']"
+      (click)="isCollapseScore = !isCollapseScore"
+      [attr.aria-expanded]="!isCollapseScore"
+      *ngIf="config.FRONTEND['ENABLE_PROFILES']"
       class="btn btn-sm btn-outline-shadow profile float-right"
-      data-toggle="collapse"
-      data-target="#collapseScore"
       matTooltip="Filtrer selon le profil du taxon"
       matTooltipClass="validation-tooltip"
     >
       <i class="fa fa-cog" aria-hidden="true"></i>
     </button>
-    <div class="advanded-score collapse" id="collapseScore">
+    <div [(ngbCollapse)]="isCollapseScore" class="advanded-score">
       <small> Score</small>
       <div class="input-group">
         <select
@@ -122,7 +119,7 @@
       label="{{ 'Taxon.Taxon' | translate }} "
       [parentFormControl]="formService.searchForm.controls.cd_nom"
       [charNumber]="3"
-      [listLength]="AppConfig.SYNTHESE.TAXON_RESULT_NUMBER"
+      [listLength]="config.SYNTHESE.TAXON_RESULT_NUMBER"
       [apiEndPoint]="taxonApiEndPoint"
       (onChange)="formService.getCurrentTaxon($event)"
     >
@@ -150,28 +147,27 @@
       </ul>
     </div>
 
-    <button
-      (click)="openModal()"
-      class="btn btn-xs btn-outline-secondary advanced mt-2"
-    >
+    <button (click)="openModal()" class="btn btn-xs btn-outline-secondary advanced mt-2">
       Avancé
     </button>
 
-    <div
-      *ngIf="formService.haveAdvancedFormValues()"
-      class="alert alert-warning search-alert mt-2"
-    >
+    <div *ngIf="formService.haveAdvancedFormValues()" class="alert alert-warning search-alert mt-2">
       <h2 class="h6 mb-1"><small>Champs avancé(s) sélectionné(s) :</small></h2>
       <ul class="list-unstyled search-list">
-        <li *ngIf="
-            formService.selectedCdRefFromTree.length > 0 || formService.selectedTaxonFromRankInput.length > 0
+        <li
+          *ngIf="
+            formService.selectedCdRefFromTree.length > 0 ||
+            formService.selectedTaxonFromRankInput.length > 0
           "
           class="d-flex justify-content-between align-items-center"
         >
-          {{formService.selectedCdRefFromTree.length  + formService.selectedTaxonFromRankInput.length}}
+          {{
+            formService.selectedCdRefFromTree.length + formService.selectedTaxonFromRankInput.length
+          }}
           taxons
 
-          <i class="fa fa-info-circle clickable"
+          <i
+            class="fa fa-info-circle clickable"
             [matTooltip]="'Sélection : ' + formService.getSelectedTaxonsSummary()"
             matTooltipPosition="above"
           ></i>
@@ -180,9 +176,10 @@
           *ngIf="formService.selectedRedLists.length > 0"
           class="d-flex justify-content-between align-items-center"
         >
-          {{formService.selectedRedLists.length}} catégories de listes rouges
+          {{ formService.selectedRedLists.length }} catégories de listes rouges
 
-          <i class="fa fa-info-circle clickable"
+          <i
+            class="fa fa-info-circle clickable"
             [matTooltip]="'Sélection : ' + formService.selectedRedLists.join(', ')"
             matTooltipPosition="above"
           ></i>
@@ -191,9 +188,10 @@
           *ngIf="formService.selectedStatus.length > 0"
           class="d-flex justify-content-between align-items-center"
         >
-          {{formService.selectedStatus.length}} statuts de protection
+          {{ formService.selectedStatus.length }} statuts de protection
 
-          <i class="fa fa-info-circle clickable"
+          <i
+            class="fa fa-info-circle clickable"
             [matTooltip]="'Sélection : ' + formService.selectedStatus.join(', ')"
             matTooltipPosition="above"
           ></i>
@@ -202,9 +200,10 @@
           *ngIf="formService.selectedTaxRefAttributs.length > 0"
           class="d-flex justify-content-between align-items-center"
         >
-          {{formService.selectedTaxRefAttributs.length}} attributs TaxRef
+          {{ formService.selectedTaxRefAttributs.length }} attributs TaxRef
 
-          <i class="fa fa-info-circle clickable"
+          <i
+            class="fa fa-info-circle clickable"
             [matTooltip]="'Sélection : ' + formService.selectedTaxRefAttributs.join(', ')"
             matTooltipPosition="above"
           ></i>
@@ -217,42 +216,44 @@
     <legend>Quand ?</legend>
     <div class="row row-sm">
       <pnx-date
-        label="Date min" [parentFormControl]="formService.searchForm.controls.date_min"
+        label="Date min"
+        [parentFormControl]="formService.searchForm.controls.date_min"
         data-qa="synthese-form-date-min"
-        >
+      >
       </pnx-date>
     </div>
     <div class="row row-sm">
-      <pnx-date label="Date max" [parentFormControl]="formService.searchForm.controls.date_max"
+      <pnx-date
+        label="Date max"
+        [parentFormControl]="formService.searchForm.controls.date_max"
         data-qa="synthese-form-date-max"
-
-        >
+      >
       </pnx-date>
     </div>
 
     <button
+      (click)="isCollapsePeriod = !isCollapsePeriod"
+      [attr.aria-expanded]="!isCollapsePeriod"
       class="btn btn-sm btn-outline-shadow period"
-      data-toggle="collapse"
-      data-target="#collapsePeriod"
       matTooltip="Ajouter une période"
     >
       <i class="fa fa-cog" aria-hidden="true"></i>
     </button>
-    <div class="collapse" id="collapsePeriod">
+    <div [(ngbCollapse)]="isCollapsePeriod">
       <div class="row row-sm">
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
           <pnx-period
             class="form-sm"
             label="Periode début"
             [parentFormControl]="formService.searchForm.controls.period_start"
-            >
+          >
           </pnx-period>
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
           <pnx-period
             label="Periode fin"
             [parentFormControl]="formService.searchForm.controls.period_end"
-            >
+          >
           </pnx-period>
         </div>
         <small
@@ -279,25 +280,25 @@
         </pnx-areas>
       </div>
     </div>
-
-
   </fieldset>
 
   <fieldset>
     <legend>Qui ?</legend>
 
-    <ng-container *ngIf="AppConfig.SYNTHESE.SEARCH_OBSERVER_WITH_LIST; else observersTxtBlock">
+    <ng-container *ngIf="config.SYNTHESE.SEARCH_OBSERVER_WITH_LIST; else observersTxtBlock">
+      
       <pnx-observers
-        [multiSelect]="true"
-        [parentFormControl]="formService.searchForm.get('observers_list')"
-        [idMenu]="AppConfig.SYNTHESE.ID_SEARCH_OBSERVER_LIST"
-        [label]="'Releve.Observers' | translate"
-        [bindAllItem]="true"
+      [multiSelect]="true"
+      [parentFormControl]="formService.searchForm.get('observers_list')"
+      [idMenu]="config.SYNTHESE.ID_SEARCH_OBSERVER_LIST"
+      [label]="'Releve.Observers' | translate"
+      [bindAllItem]="true"
       >
-      </pnx-observers>
-    </ng-container>
-
-    <ng-template #observersTxtBlock>
+    </pnx-observers>
+  </ng-container>
+  
+  <ng-template #observersTxtBlock>
+      <i class="fa fa-question-circle" matTooltip="Pour rechercher plusieurs observateurs, séparez-les par des virgules"></i>
       <pnx-observers-text
         [label]="'Releve.Observer' | translate"
         [parentFormControl]="formService.searchForm.get('observers')"
@@ -337,7 +338,6 @@
       [parentFormControl]="formService.searchForm.controls.id_dataset"
       label="{{ 'MetaData.Datasets' | translate }}"
       data-qa="synthese-form-dataset"
-
     >
     </pnx-datasets>
   </fieldset>
@@ -346,8 +346,10 @@
     <legend>Filtres avancés</legend>
     <small> Ajouter un filtre </small>
     <pnx-dynamic-form-generator
+      *ngIf="formService.processedDefaultFilters"
       [myFormGroup]="formService.searchForm"
       [formsDefinition]="formService.dynamycFormDef"
+      [defaults]="formService.processedDefaultFilters"
     >
     </pnx-dynamic-form-generator>
   </fieldset>
@@ -364,7 +366,12 @@
   >
     <i class="fa fa-refresh" aria-hidden="true"></i>
   </button>
-  <button data-qa="synthese-search-btn" class="button-success uppercase" mat-raised-button (click)="onSubmitForm()">
+  <button
+    data-qa="synthese-search-btn"
+    class="button-success uppercase"
+    mat-raised-button
+    (click)="onSubmitForm()"
+  >
     Rechercher
   </button>
 </div>

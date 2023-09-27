@@ -6,7 +6,7 @@
 
 .logo {
   margin-bottom: 0px;
-  padding: 40px 40px 10px 30px;
+  padding: 10px;
 }
 
 .navbar-footer {
@@ -29,4 +29,16 @@
 
 .mat-card-image {
   margin-bottom: 0px;
+}
+
+mat-card {
+  a {
+    img {
+      width: 100%;
+    }
+  }
+}
+
+a:hover {
+  text-decoration: none;
 }

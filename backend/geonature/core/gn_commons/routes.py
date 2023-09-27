@@ -1,7 +1,8 @@
 import json
 from operator import or_
+from pathlib import Path
 
-from flask import Blueprint, request, current_app, g
+from flask import Blueprint, request, current_app, g, url_for
 from flask.json import jsonify
 from werkzeug.exceptions import Forbidden, Conflict
 import requests
@@ -19,11 +20,13 @@ from geonature.core.gn_commons.models import (
 )
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.repositories import get_table_location_id
-from geonature.core.gn_permissions.models import TObjects
 from geonature.utils.env import DB, db, BACKEND_DIR
+from geonature.utils.config import config_frontend, config
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required
-from geonature.core.gn_permissions.tools import get_scopes_by_action
+from geonature.core.gn_permissions.tools import get_scope
+import geonature.core.gn_commons.tasks  # noqa: F401
+
 from shapely.geometry import asShape
 from geoalchemy2.shape import from_shape
 from geonature.utils.errors import (
@@ -38,6 +41,14 @@ from .validation.routes import *
 from .medias.routes import *
 
 
+@routes.route("/config", methods=["GET"])
+def config_route():
+    """
+    Returns geonature configuration
+    """
+    return config_frontend
+
+
 @routes.route("/modules", methods=["GET"])
 @login_required
 def list_modules():
@@ -48,33 +59,49 @@ def list_modules():
     """
     params = request.args
     q = TModules.query.options(joinedload(TModules.objects))
+    exclude = current_app.config["DISABLED_MODULES"]
     if "exclude" in params:
-        q = q.filter(TModules.module_code.notin_(params.getlist("exclude")))
+        exclude.extend(params.getlist("exclude"))
+    q = q.filter(TModules.module_code.notin_(exclude))
     q = q.order_by(TModules.module_order.asc()).order_by(TModules.module_label.asc())
     modules = q.all()
     allowed_modules = []
     for module in modules:
-        if module.module_code in current_app.config["DISABLED_MODULES"]:
-            continue
-        cruved = get_scopes_by_action(module_code=module.module_code)
-        if cruved["R"] > 0:
-            module_dict = module.as_dict(fields=["objects"])
-            module_dict["cruved"] = cruved
-            if module.active_frontend:
-                module_dict["module_url"] = "{}/#/{}".format(
-                    current_app.config["URL_APPLICATION"], module.module_path
-                )
-            else:
-                module_dict["module_url"] = module.module_external_url
-            module_dict["module_objects"] = {}
-            # get cruved for each object
-            for obj_dict in module_dict["objects"]:
-                obj_code = obj_dict["code_object"]
-                obj_dict["cruved"] = get_scopes_by_action(
+        module_allowed = False
+        # HACK : on a besoin d'avoir le module GeoNature en front pour l'URL de la doc
+        if module.module_code == "GEONATURE":
+            module_allowed = True
+        module_dict = module.as_dict(fields=["objects"])
+        # TODO : use has_any_permissions instead - must refactor the front
+        module_dict["cruved"] = {
+            action: get_scope(action, module_code=module.module_code, bypass_warning=True)
+            for action in "CRUVED"
+        }
+        if any(module_dict["cruved"].values()):
+            module_allowed = True
+        if module.active_frontend:
+            module_dict["module_url"] = "{}/#/{}".format(
+                current_app.config["URL_APPLICATION"], module.module_path
+            )
+        else:
+            module_dict["module_url"] = module.module_external_url
+        module_dict["module_objects"] = {}
+        # get cruved for each object
+        for obj_dict in module_dict["objects"]:
+            obj_code = obj_dict["code_object"]
+            obj_dict["cruved"] = {
+                action: get_scope(
+                    action,
                     module_code=module.module_code,
                     object_code=obj_code,
+                    bypass_warning=True,
                 )
-                module_dict["module_objects"][obj_code] = obj_dict
+                for action in "CRUVED"
+            }
+            if any(obj_dict["cruved"].values()):
+                module_allowed = True
+            module_dict["module_objects"][obj_code] = obj_dict
+        if module_allowed:
             allowed_modules.append(module_dict)
     return jsonify(allowed_modules)
 
@@ -131,7 +158,6 @@ def get_additional_fields():
                 q = q.filter(TAdditionalFields.datasets.any(id_dataset=params["id_dataset"]))
     if "module_code" in params:
         if len(params["module_code"].split(",")) > 1:
-
             ors = [
                 TAdditionalFields.modules.any(module_code=module_code)
                 for module_code in params["module_code"].split(",")
@@ -181,16 +207,13 @@ def get_t_mobile_apps():
         app_dict["settings"] = {}
         #  if local
         if app.relative_path_apk:
-            app_dict["url_apk"] = "{}/{}".format(
-                current_app.config["API_ENDPOINT"], app.relative_path_apk
+            relative_apk_path = Path("mobile", app.relative_path_apk)
+            app_dict["url_apk"] = url_for("media", filename=str(relative_apk_path), _external=True)
+            relative_settings_path = relative_apk_path.parent / "settings.json"
+            app_dict["url_settings"] = url_for(
+                "media", filename=relative_settings_path, _external=True
             )
-            relative_path_dir = app.relative_path_apk.rsplit("/", 1)[0]
-            app_dict["url_settings"] = "{}/{}/{}".format(
-                current_app.config["API_ENDPOINT"],
-                relative_path_dir,
-                "settings.json",
-            )
-            settings_file = BACKEND_DIR / relative_path_dir / "settings.json"
+            settings_file = Path(current_app.config["MEDIA_FOLDER"]) / relative_settings_path
             with settings_file.open() as f:
                 app_dict["settings"] = json.load(f)
         mobile_apps.append(app_dict)
@@ -206,7 +229,6 @@ def get_t_mobile_apps():
 @json_resp
 # schema_dot_table gn_commons.t_modules
 def api_get_id_table_location(schema_dot_table):
-
     schema_name = schema_dot_table.split(".")[0]
     table_name = schema_dot_table.split(".")[1]
     return get_table_location_id(schema_name, table_name)
@@ -216,7 +238,7 @@ def api_get_id_table_location(schema_dot_table):
 # Gestion des lieux (places) #
 ##############################
 @routes.route("/places", methods=["GET"])
-@permissions.check_cruved_scope("R")
+@login_required
 def list_places():
     places = TPlaces.query.filter_by(id_role=g.current_user.id_role).all()
     return jsonify([p.as_geofeature() for p in places])
@@ -224,7 +246,7 @@ def list_places():
 
 @routes.route("/place", methods=["POST"])  #  XXX best practices recommend plural nouns
 @routes.route("/places", methods=["POST"])
-@permissions.check_cruved_scope("C")
+@login_required
 def add_place():
     data = request.get_json()
     # FIXME check data validity!
@@ -250,7 +272,7 @@ def add_place():
     "/place/<int:id_place>", methods=["DELETE"]
 )  # XXX best practices recommend plural nouns
 @routes.route("/places/<int:id_place>", methods=["DELETE"])
-@permissions.check_cruved_scope("D")
+@login_required
 def delete_place(id_place):
     place = TPlaces.query.get_or_404(id_place)
     if g.current_user.id_role != place.id_role:

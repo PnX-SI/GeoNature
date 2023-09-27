@@ -1,96 +1,74 @@
 """
 Models of gn_permissions schema
 """
+from packaging import version
 
+import sqlalchemy as sa
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select
+from sqlalchemy.orm import foreign, joinedload, contains_eager
+import flask_sqlalchemy
+
+if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
+    from flask_sqlalchemy.query import Query
+else:
+    from flask_sqlalchemy import BaseQuery as Query
 
 from utils_flask_sqla.serializers import serializable
 from pypnusershub.db.models import User
 
-from geonature.utils.env import DB
+from geonature.utils.env import db
 
 
 @serializable
-class VUsersPermissions(DB.Model):
-    __tablename__ = "v_roles_permissions"
-    __table_args__ = {"schema": "gn_permissions"}
-    id_role = DB.Column(DB.Integer, primary_key=True)
-    nom_role = DB.Column(DB.Unicode)
-    prenom_role = DB.Column(DB.Unicode)
-    id_organisme = DB.Column(DB.Integer)
-    id_module = DB.Column(DB.Integer, primary_key=True)
-    module_code = DB.Column(DB.Unicode)
-    code_object = DB.Column(DB.Unicode)
-    id_action = DB.Column(DB.Integer, primary_key=True)
-    description_action = DB.Column(DB.Unicode)
-    id_filter = DB.Column(DB.Integer, primary_key=True)
-    label_filter = DB.Column(DB.Integer, primary_key=True)
-    code_action = DB.Column(DB.Unicode)
-    description_action = DB.Column(DB.Unicode)
-    value_filter = DB.Column(DB.Unicode)
-    code_filter_type = DB.Column(DB.Unicode)
-    id_filter_type = DB.Column(DB.Integer)
-    id_permission = DB.Column(DB.Integer)
-
-    def __str__(self):
-        return """VUsersPermissions
-            role='{}' action='{}' filter='{}' module='{}' filter_type='{}' object='{} >""".format(
-            self.id_role,
-            self.code_action,
-            self.value_filter,
-            self.module_code,
-            self.code_filter_type,
-            self.code_object,
-        )
-
-
-@serializable
-class BibFiltersType(DB.Model):
+class PermFilterType(db.Model):
     __tablename__ = "bib_filters_type"
     __table_args__ = {"schema": "gn_permissions"}
-    id_filter_type = DB.Column(DB.Integer, primary_key=True)
-    code_filter_type = DB.Column(DB.Unicode)
-    label_filter_type = DB.Column(DB.Unicode)
-    description_filter_type = DB.Column(DB.Unicode)
+    id_filter_type = db.Column(db.Integer, primary_key=True)
+    code_filter_type = db.Column(db.Unicode)
+    label_filter_type = db.Column(db.Unicode)
+    description_filter_type = db.Column(db.Unicode)
 
 
 @serializable
-class TFilters(DB.Model):
-    __tablename__ = "t_filters"
+class PermScope(db.Model):
+    __tablename__ = "bib_filters_scope"
     __table_args__ = {"schema": "gn_permissions"}
-    id_filter = DB.Column(DB.Integer, primary_key=True)
-    value_filter = DB.Column(DB.Unicode)
-    label_filter = DB.Column(DB.Unicode)
-    description_filter = DB.Column(DB.Unicode)
-    id_filter_type = DB.Column(DB.Integer, ForeignKey(BibFiltersType.id_filter_type))
-    filter_type = DB.relationship(BibFiltersType)
+    value = db.Column(db.Integer, primary_key=True)
+    label = db.Column(db.Unicode)
+    description = db.Column(db.Unicode)
+
+    def __str__(self):
+        return self.description
 
 
 @serializable
-class TActions(DB.Model):
-    __tablename__ = "t_actions"
+class PermAction(db.Model):
+    __tablename__ = "bib_actions"
     __table_args__ = {"schema": "gn_permissions"}
-    id_action = DB.Column(DB.Integer, primary_key=True)
-    code_action = DB.Column(DB.Unicode)
-    description_action = DB.Column(DB.Unicode)
+    id_action = db.Column(db.Integer, primary_key=True)
+    code_action = db.Column(db.Unicode)
+    description_action = db.Column(db.Unicode)
+
+    def __str__(self):
+        return self.description_action
 
 
-cor_object_module = DB.Table(
+cor_object_module = db.Table(
     "cor_object_module",
-    DB.Column(
+    db.Column(
         "id_cor_object_module",
-        DB.Integer,
+        db.Integer,
         primary_key=True,
     ),
-    DB.Column(
+    db.Column(
         "id_object",
-        DB.Integer,
+        db.Integer,
         ForeignKey("gn_permissions.t_objects.id_object"),
     ),
-    DB.Column(
+    db.Column(
         "id_module",
-        DB.Integer,
+        db.Integer,
         ForeignKey("gn_commons.t_modules.id_module"),
     ),
     schema="gn_permissions",
@@ -98,78 +76,196 @@ cor_object_module = DB.Table(
 
 
 @serializable
-class TObjects(DB.Model):
+class PermObject(db.Model):
     __tablename__ = "t_objects"
     __table_args__ = {"schema": "gn_permissions"}
-    id_object = DB.Column(DB.Integer, primary_key=True)
-    code_object = DB.Column(DB.Unicode)
-    description_object = DB.Column(DB.Unicode)
+    id_object = db.Column(db.Integer, primary_key=True)
+    code_object = db.Column(db.Unicode)
+    description_object = db.Column(db.Unicode)
 
     def __str__(self):
         return f"{self.code_object} ({self.description_object})"
 
 
-@serializable
-class CorRoleActionFilterModuleObject(DB.Model):
-    __tablename__ = "cor_role_action_filter_module_object"
-    __table_args__ = {"schema": "gn_permissions"}
-    id_permission = DB.Column(DB.Integer, primary_key=True)
-    id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
-    id_action = DB.Column(DB.Integer, ForeignKey("gn_permissions.t_actions.id_action"))
-    id_filter = DB.Column(DB.Integer, ForeignKey("gn_permissions.t_filters.id_filter"))
-    id_module = DB.Column(DB.Integer, ForeignKey("gn_commons.t_modules.id_module"))
-    id_object = DB.Column(
-        DB.Integer,
-        ForeignKey("gn_permissions.t_objects.id_object"),
-        default=select([TObjects.id_object]).where(TObjects.code_object == "ALL"),
-    )
+# compat.
+TObjects = PermObject
 
-    role = DB.relationship(User, primaryjoin=(User.id_role == id_role), foreign_keys=[id_role])
 
-    action = DB.relationship(
-        TActions,
-        primaryjoin=(TActions.id_action == id_action),
-        foreign_keys=[id_action],
-    )
+def _nice_order(model, qs):
+    from geonature.core.gn_commons.models import TModules
 
-    filter = DB.relationship(
-        TFilters,
-        primaryjoin=(TFilters.id_filter == id_filter),
-        foreign_keys=[id_filter],
-    )
-
-    module = DB.relationship("TModules")
-    object = DB.relationship("TObjects")
-
-    def is_permission_already_exist(
-        self, id_role, id_action, id_module, id_filter_type, id_object=1
-    ):
-        """
-        Tell if a permission exist for a user, an action, a module and a filter_type
-        Return:
-            A CorRoleActionFilterModuleObject if exist or None
-        """
-        privilege = {
-            "id_role": id_role,
-            "id_action": id_action,
-            "id_module": id_module,
-            "id_object": id_object,
-        }
-        return (
-            DB.session.query(CorRoleActionFilterModuleObject)
-            .filter_by(**privilege)
-            .join(TFilters, TFilters == CorRoleActionFilterModuleObject.id_filter)
-            .join(BibFiltersType, BibFiltersType.id_filter_type == TFilters.id_filter)
-            .filter(BibFiltersType.id_filter_type == id_filter_type)
-            .first()
+    return (
+        qs.join(model.module)
+        .join(model.object)
+        .join(model.action)
+        .options(
+            contains_eager(model.module),
+            contains_eager(model.object),
+            contains_eager(model.action),
         )
+        .order_by(
+            TModules.module_code,
+            # ensure ALL at first:
+            sa.case([(PermObject.code_object == "ALL", "1")], else_=PermObject.code_object),
+            model.id_action,
+        )
+    )
+
+
+class PermissionAvailableQuery(Query):
+    def nice_order(self):
+        return _nice_order(PermissionAvailable, self)
+
+
+class PermissionQuery(Query):
+    def nice_order(self):
+        return _nice_order(Permission, self)
+
+
+class PermissionAvailable(db.Model):
+    __tablename__ = "t_permissions_available"
+    __table_args__ = {"schema": "gn_permissions"}
+    query_class = PermissionAvailableQuery
+
+    id_module = db.Column(
+        db.Integer, ForeignKey("gn_commons.t_modules.id_module"), primary_key=True
+    )
+    id_object = db.Column(
+        db.Integer,
+        ForeignKey(PermObject.id_object),
+        default=select([PermObject.id_object]).where(PermObject.code_object == "ALL"),
+        primary_key=True,
+    )
+    id_action = db.Column(db.Integer, ForeignKey(PermAction.id_action), primary_key=True)
+    label = db.Column(db.Unicode)
+
+    module = db.relationship("TModules")
+    object = db.relationship(PermObject)
+    action = db.relationship(PermAction)
+
+    scope_filter = db.Column(db.Boolean, server_default=sa.false())
+    sensitivity_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
+
+    filters_fields = {
+        "SCOPE": scope_filter,
+        "SENSITIVITY": sensitivity_filter,
+    }
+
+    @property
+    def filters(self):
+        return [k for k, v in self.filters_fields.items() if getattr(self, v.name)]
 
     def __str__(self):
-        return (
-            f"Permission("
-            f"id_role={self.id_role},"
-            f"action={self.action},"
-            f"filter={self.filter},"
-            f"module={self.module},"
-            f"object={self.object})"
-        )
+        s = self.module.module_label
+        if self.object.code_object != "ALL":
+            object_label = self.object.code_object.title().replace("_", " ")
+            s += f" | {object_label}"
+        s += f" | {self.label}"
+        return s
+
+
+class PermFilter:
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+
+    def __str__(self):
+        if self.name == "SCOPE":
+            if self.value is None:
+                return """<i class="fa fa-users" aria-hidden="true"></i> de tout le monde"""
+            elif self.value == 1:
+                return """<i class="fa fa-user" aria-hidden="true"></i> à moi"""
+            elif self.value == 2:
+                return """<i class="fa fa-user-circle" aria-hidden="true"></i> de mon organisme"""
+        elif self.name == "SENSITIVITY":
+            if self.value:
+                return """<i class="fa fa-low-vision" aria-hidden="true"></i>  non sensible"""
+            else:
+                return """<i class="fa fa-eye" aria-hidden="true"></i>  sensible et non sensible"""
+
+
+@serializable
+class Permission(db.Model):
+    __tablename__ = "t_permissions"
+    __table_args__ = {"schema": "gn_permissions"}
+    query_class = PermissionQuery
+
+    id_permission = db.Column(db.Integer, primary_key=True)
+    id_role = db.Column(db.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
+    id_action = db.Column(db.Integer, ForeignKey(PermAction.id_action))
+    id_module = db.Column(db.Integer, ForeignKey("gn_commons.t_modules.id_module"))
+    id_object = db.Column(
+        db.Integer,
+        ForeignKey(PermObject.id_object),
+        default=select([PermObject.id_object]).where(PermObject.code_object == "ALL"),
+    )
+
+    role = db.relationship(User, backref="permissions")
+    action = db.relationship(PermAction)
+    module = db.relationship("TModules")
+    object = db.relationship(PermObject)
+
+    scope_value = db.Column(db.Integer, ForeignKey(PermScope.value), nullable=True)
+    scope = db.relationship(PermScope)
+    sensitivity_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
+
+    availability = db.relationship(
+        PermissionAvailable,
+        primaryjoin=sa.and_(
+            foreign(id_module) == PermissionAvailable.id_module,
+            foreign(id_object) == PermissionAvailable.id_object,
+            foreign(id_action) == PermissionAvailable.id_action,
+        ),
+        backref="permissions",
+    )
+
+    filters_fields = {
+        "SCOPE": scope_value,
+        "SENSITIVITY": sensitivity_filter,
+    }
+
+    @staticmethod
+    def __SCOPE_le__(a, b):
+        return b is None or (a is not None and a <= b)
+
+    @staticmethod
+    def __SENSITIVITY_le__(a, b):
+        # False only if: A is False and b is True
+        return (not a) <= (not b)
+
+    @staticmethod
+    def __default_le__(a, b):
+        return a == b or b is None
+
+    def __le__(self, other):
+        """
+        Return True if this permission is supersed by 'other' permission.
+        This requires all filters to be supersed by 'other' filters.
+        """
+        for name, field in self.filters_fields.items():
+            # Get filter comparison function or use default comparison function
+            __le_fct__ = getattr(self, f"__{name}_le__", Permission.__default_le__)
+            self_value, other_value = getattr(self, field.name), getattr(other, field.name)
+            if not __le_fct__(self_value, other_value):
+                return False
+        return True
+
+    @property
+    def filters(self):
+        filters = []
+        for name, field in self.filters_fields.items():
+            value = getattr(self, field.name)
+            if field.nullable:
+                if value is None:
+                    continue
+            if field.type.python_type == bool:
+                if not value:
+                    continue
+            filters.append(PermFilter(name, value))
+        return filters
+
+    def has_other_filters_than(self, *expected_filters):
+        for flt in self.filters:
+            if flt.name not in expected_filters:
+                return True
+        return False

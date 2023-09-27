@@ -4,8 +4,6 @@
 
 import os
 
-from pkg_resources import iter_entry_points, load_entry_point
-
 from marshmallow import (
     Schema,
     fields,
@@ -20,8 +18,8 @@ from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_LIST_COLUMN,
     DEFAULT_COLUMNS_API_SYNTHESE,
 )
-from geonature.utils.env import GEONATURE_VERSION
-from geonature.utils.module import get_module_config
+from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
+from geonature.utils.module import iter_modules_dist, get_module_config
 from geonature.utils.utilsmails import clean_recipients
 from geonature.utils.utilstoml import load_and_validate_toml
 
@@ -29,13 +27,14 @@ from geonature.utils.utilstoml import load_and_validate_toml
 class EmailStrOrListOfEmailStrField(fields.Field):
     def _deserialize(self, value, attr, data, **kwargs):
         if isinstance(value, str):
-            self._check_email(value)
-            return value
-        elif isinstance(value, list) and all(isinstance(x, str) for x in value):
-            self._check_email(value)
-            return value
-        else:
+            value = list(map(lambda x: x.replace("\n", "").strip(), value.split(",")))
+
+        if not isinstance(value, list) and all(isinstance(x, str) for x in value):
             raise ValidationError("Field should be str or list of str")
+
+        self._check_email(value)
+
+        return value
 
     def _check_email(self, value):
         recipients = clean_recipients(value)
@@ -71,10 +70,11 @@ class CasSchemaConf(Schema):
 class MTDSchemaConf(Schema):
     JDD_MODULE_CODE_ASSOCIATION = fields.List(fields.String, load_default=["OCCTAX", "OCCHAB"])
     ID_INSTANCE_FILTER = fields.Integer(load_default=None)
+    SYNC_LOG_LEVEL = fields.String(load_default="INFO")
 
 
 class BddConfig(Schema):
-    ID_USER_SOCLE_1 = fields.Integer(load_default=8)
+    ID_USER_SOCLE_1 = fields.Integer(load_default=7)
     ID_USER_SOCLE_2 = fields.Integer(load_default=6)
 
 
@@ -142,6 +142,14 @@ class AdditionalFields(Schema):
     )
 
 
+class HomeConfig(Schema):
+    TITLE = fields.String(load_default="Bienvenue dans GeoNature")
+    INTRODUCTION = fields.String(
+        load_default="Texte d'introduction, configurable pour le modifier régulièrement ou le masquer"
+    )
+    FOOTER = fields.String(load_default="")
+
+
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(load_default=50, validate=OneOf([10, 25, 50, 100]))
     ENABLE_CLOSE_AF = fields.Boolean(load_default=False)
@@ -190,11 +198,10 @@ class GnPySchemaConf(Schema):
     COOKIE_AUTORENEW = fields.Boolean(load_default=True)
     TRAP_ALL_EXCEPTIONS = fields.Boolean(load_default=False)
     SENTRY_DSN = fields.String()
-
-    UPLOAD_FOLDER = fields.String(load_default="static/medias")
-    BASE_DIR = fields.String(
-        load_default=os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-    )
+    ROOT_PATH = fields.String(load_default=BACKEND_DIR)
+    STATIC_FOLDER = fields.String(load_default="static")
+    CUSTOM_STATIC_FOLDER = fields.String(load_default=ROOT_DIR / "custom")
+    MEDIA_FOLDER = fields.String(load_default="media")
     CAS = fields.Nested(CasSchemaConf, load_default=CasSchemaConf().load({}))
     MAIL_ON_ERROR = fields.Boolean(load_default=False)
     MAIL_CONFIG = fields.Nested(MailConfig, load_default=MailConfig().load({}))
@@ -209,6 +216,16 @@ class GnPySchemaConf(Schema):
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
     ALEMBIC = fields.Nested(AlembicConfig, load_default=AlembicConfig().load({}))
+
+    @post_load()
+    def folders(self, data, **kwargs):
+        data["STATIC_FOLDER"] = os.path.join(data["ROOT_PATH"], data["STATIC_FOLDER"])
+        if "CUSTOM_STATIC_FOLDER" in data:
+            data["CUSTOM_STATIC_FOLDER"] = os.path.join(
+                data["ROOT_PATH"], data["CUSTOM_STATIC_FOLDER"]
+            )
+        data["MEDIA_FOLDER"] = os.path.join(data["ROOT_PATH"], data["MEDIA_FOLDER"])
+        return data
 
     @post_load()
     def unwrap_usershub(self, data, **kwargs):
@@ -233,7 +250,10 @@ class GnPySchemaConf(Schema):
                 or data["USERSHUB"].get("ADMIN_APPLICATION_PASSWORD", None) is None
             ):
                 raise ValidationError(
-                    "URL_USERSHUB, ADMIN_APPLICATION_LOGIN et ADMIN_APPLICATION_PASSWORD sont necessaires si ENABLE_SIGN_UP=True",
+                    (
+                        "URL_USERSHUB, ADMIN_APPLICATION_LOGIN et ADMIN_APPLICATION_PASSWORD sont necessaires si ENABLE_SIGN_UP=True "
+                        "ou si ENABLE_USER_MANAGEMENT=True"
+                    ),
                     "URL_USERSHUB",
                 )
             if data["MAIL_CONFIG"].get("MAIL_SERVER", None) is None:
@@ -326,6 +346,9 @@ class Synthese(Schema):
         ],
     )
 
+    # Filtres par défaut pour la synthese
+    DEFAULT_FILTERS = fields.Dict(load_default={})
+
     # --------------------------------------------------------------------
     # SYNTHESE - OBSERVATIONS LIST
     # Listes des champs renvoyés par l'API synthese '/synthese'
@@ -386,6 +409,26 @@ class Synthese(Schema):
     ALERT_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
     # Allow to activate pin tool for any, some or all VALIDATION, SYNTHESE
     PIN_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
+    # Enable areas vizualisation with toggle slide
+    AREA_AGGREGATION_ENABLED = fields.Boolean(load_default=True)
+    # Choose size of areas
+    AREA_AGGREGATION_TYPE = fields.String(load_default="M10")
+    # Activate areas mode by default
+    AREA_AGGREGATION_BY_DEFAULT = fields.Boolean(load_default=False)
+    # Areas legend classes to use
+    AREA_AGGREGATION_LEGEND_CLASSES = fields.List(
+        fields.Dict(),
+        load_default=[
+            {"min": 100, "color": "#800026"},
+            {"min": 50, "color": "#BD0026"},
+            {"min": 20, "color": "#E31A1C"},
+            {"min": 10, "color": "#FC4E2A"},
+            {"min": 5, "color": "#FD8D3C"},
+            {"min": 2, "color": "#FEB24C"},
+            {"min": 1, "color": "#FED976"},
+            {"min": 0, "color": "#FFEDA0"},
+        ],
+    )
 
 
 # Map configuration
@@ -420,6 +463,7 @@ class MapConfig(Schema):
     CENTER = fields.List(fields.Float, load_default=[46.52863469527167, 2.43896484375])
     ZOOM_LEVEL = fields.Integer(load_default=6)
     ZOOM_LEVEL_RELEVE = fields.Integer(load_default=15)
+    GEOLOCATION = fields.Boolean(load_default=False)
     # zoom appliqué sur la carte lorsque l'on clique sur une liste
     # ne s'applique qu'aux points
     ZOOM_ON_CLICK = fields.Integer(load_default=18)
@@ -477,7 +521,6 @@ class TaxHub(Schema):
 # class a utiliser pour les paramètres que l'on veut passer au frontend
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(load_default="GeoNature2")
-    LOGO_STRUCTURE_FILE = fields.String(load_default="logo_structure.png")
     GEONATURE_VERSION = fields.String(load_default=GEONATURE_VERSION.strip())
     DEFAULT_LANGUAGE = fields.String(load_default="fr")
     PASS_METHOD = fields.String(load_default="hash", validate=OneOf(["hash", "md5"]))
@@ -502,14 +545,18 @@ class GnGeneralSchemaConf(Schema):
         AccountManagement, load_default=AccountManagement().load({})
     )
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
-    UPLOAD_FOLDER = fields.String(load_default="static/medias")
+    STATIC_URL = fields.String(load_default="/static")
+    MEDIA_URL = fields.String(load_default="/media")
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     MTD = fields.Nested(MTDSchemaConf, load_default=MTDSchemaConf().load({}))
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
     PUBLIC_ACCESS_USERNAME = fields.String(load_default="")
     TAXHUB = fields.Nested(TaxHub, load_default=TaxHub().load({}))
+    HOME = fields.Nested(HomeConfig, load_default=HomeConfig().load({}))
     NOTIFICATIONS_ENABLED = fields.Boolean(load_default=True)
+    PROFILES_REFRESH_CRONTAB = fields.String(load_default="0 3 * * *")
+    MEDIA_CLEAN_CRONTAB = fields.String(load_default="0 1 * * *")
 
     @validates_schema
     def validate_enable_sign_up(self, data, **kwargs):
@@ -537,9 +584,9 @@ class GnGeneralSchemaConf(Schema):
 
     @post_load
     def insert_module_config(self, data, **kwargs):
-        for module_code_entry in iter_entry_points("gn_module", "code"):
-            module_code = module_code_entry.resolve()
+        for dist in iter_modules_dist():
+            module_code = dist.entry_points["code"].load()
             if module_code in data["DISABLED_MODULES"]:
                 continue
-            data[module_code] = get_module_config(module_code_entry.dist)
+            data[module_code] = get_module_config(dist)
         return data

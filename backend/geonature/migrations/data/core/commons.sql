@@ -711,7 +711,7 @@ INSERT INTO bib_tables_location (table_desc, schema_name, table_name, pk_field, 
 ;
 
 INSERT INTO t_parameters (id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
-((SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),'taxref_version','Version du référentiel taxonomique','Taxref V14.0',NULL)
+((SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),'taxref_version','Version du référentiel taxonomique','Taxref V16.0',NULL)
 ,((SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),'local_srid','Valeur du SRID local', :local_srid, NULL)
 ,((SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),'annee_ref_commune', 'Année du référentiel géographique des communes utilisé', '2017', NULL)
 ,((SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),'occtaxmobile_area_type', 'Type de zonage pour lequel la couleur des taxons est calculée pour Occtax-mobile', 'M5', NULL)

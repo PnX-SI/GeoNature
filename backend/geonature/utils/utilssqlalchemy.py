@@ -444,7 +444,7 @@ def serializable(cls):
         if recursif is False:
             return out
 
-        for (rel, uselist) in selected_relationship:
+        for rel, uselist in selected_relationship:
             if getattr(self, rel):
                 if uselist is True:
                     out[rel] = [

@@ -5,6 +5,7 @@ on:
       - master
       - hotfixes
       - develop
+      - fixtestfront
   pull_request:
     branches:
       - master
@@ -37,19 +38,16 @@ jobs:
           psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "postgis_raster";'
         env:
           PGPASSWORD: geonatpasswd
-      - name: Add database extensions
-        run: |
-          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "hstore";'
-          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "uuid-ossp";'
-          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "pg_trgm";'
-          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
-        env:
-          PGPASSWORD: geonatpasswd
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: recursive
+      - name: Add database extensions
+        run: |
+          psql -h localhost -U geonatadmin -d geonature2db -f install/assets/db/add_pg_extensions.sql
+        env:
+          PGPASSWORD: geonatpasswd
       - name: Set up Python 3.9
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.9
           # cache: 'pip'
@@ -59,7 +57,7 @@ jobs:
           sudo apt install -y libgdal-dev
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements-dev.txt') }}
@@ -75,16 +73,31 @@ jobs:
         working-directory: ./backend
       - name: Install database
         run: |
-          geonature db upgrade geonature@head -x local-srid=2154
-          geonature db autoupgrade -x local-srid=2154
-          geonature db upgrade geonature-samples@head
-          geonature db upgrade taxhub@head
-          geonature taxref import-v15 --skip-bdc-statuts
-          geonature db upgrade nomenclatures_taxonomie_data@head
-          geonature db upgrade ref_geo_fr_departments@head
-
+          install/03b_populate_db_for_test.sh
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
+        # FRONTEND
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: generate frontend config
+        run: |
+          cp ./config/settings.ini.sample ./config/settings.ini 
+          geonature generate_frontend_config
+          ./install/05_install_frontend.sh --ci
+        env:
+          GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
+      - name: Show generated frontend config
+        run: |
+          cat ./frontend/src/conf/app.config.ts
       - name: Install core modules
         run: |
           geonature install-gn-module contrib/occtax OCCTAX --build=false
@@ -92,30 +105,9 @@ jobs:
           geonature install-gn-module contrib/gn_module_occhab OCCHAB --build=false
           geonature db upgrade occhab-samples@head
           geonature install-gn-module contrib/gn_module_validation VALIDATION --build=false
+          geonature permissions supergrant --group --nom "Grp_admin" --yes
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
-        # FRONTEND
-      - name: Cache node modules
-        uses: actions/cache@v1
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      - name: Node ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: install frontend
-        run: |
-          cp ./config/settings.ini.sample ./config/settings.ini 
-          geonature generate_frontend_config
-          ./install/05_install_frontend.sh --ci
-        env:
-          GEONATURE_CONFIG_FILE: config/test_config.toml
-      - name: Show generated frontend config
-        run: |
-          cat ./frontend/src/conf/app.config.ts
       - name: Run GeoNature backend
         run: geonature dev_back &
         env:
@@ -127,14 +119,13 @@ jobs:
           TAXHUB_SETTINGS: test_config.py
           TAXHUB_SQLALCHEMY_DATABASE_URI: "postgresql://geonatadmin:geonatpasswd@127.0.0.1:5432/geonature2db"
       - name: Cypress run
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v5
         with:
-          record: ${{ fromJSON(github.ref_name == 'master') }}
+          record: false
           working-directory: ./frontend
           start: npm run start
           wait-on: http://127.0.0.1:4200
           headless: true
         env:
-          is_master:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

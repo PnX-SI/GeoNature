@@ -5,21 +5,18 @@
 import logging
 from os import environ
 from collections import ChainMap
-from pkg_resources import iter_entry_points
 
 import toml
 import click
 from flask.cli import run_command
 
 from geonature.utils.env import GEONATURE_VERSION
-from geonature.utils.command import (
-    create_frontend_config,
-)
+from geonature.utils.module import iter_modules_dist
 from geonature import create_app
-from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actors
 from geonature.utils.config import config
 from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
 from geonature.utils.command import (
+    create_frontend_config,
     create_frontend_module_config,
     build_frontend,
 )
@@ -119,27 +116,18 @@ def update_configuration(modules, build):
     create_frontend_config()
     click.secho("OK", fg="green")
     if modules:
-        for module_code_entry in iter_entry_points("gn_module", "code"):
-            module_code = module_code_entry.resolve()
+        for dist in iter_modules_dist():
+            module_code = dist.entry_points["code"].load()
             click.echo(f"  Module {module_code} … ", nl=False)
             if module_code in config["DISABLED_MODULES"]:
                 click.secho("désactivé, ignoré", fg="white")
                 continue
-            click.secho("OK", fg="green")
             create_frontend_module_config(module_code)
+            click.secho("OK", fg="green")
     if build:
         click.echo("Rebuild du frontend …")
         build_frontend()
         click.secho("Rebuild du frontend terminé.", fg="green")
-
-
-@main.command()
-@click.argument("table_name")
-def import_jdd_from_mtd(table_name):
-    """
-    Import les JDD et CA (et acters associé) à partir d'une table (ou vue) listant les UUID des JDD dans MTD
-    """
-    import_all_dataset_af_and_actors(table_name)
 
 
 @main.command()
@@ -158,3 +146,22 @@ def default_config():
     frontend_defaults = GnGeneralSchemaConf().load({}, partial=required_fields)
     defaults = ChainMap(backend_defaults, frontend_defaults)
     print(toml.dumps(defaults))
+
+
+@click.argument("key", type=str, required=False)
+@main.command()
+def get_config(key=None):
+    """
+    Afficher l’ensemble des paramètres
+    """
+    printed_config = config.copy()
+    if key:
+        try:
+            printed_config = printed_config[key]
+        except KeyError:
+            click.secho(f"The key {key} does not exist in config", fg="red")
+            return
+    if type(printed_config) is dict:
+        print(toml.dumps(printed_config))
+    else:
+        print(printed_config)

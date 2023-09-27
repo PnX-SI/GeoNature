@@ -14,7 +14,6 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
-import { AppConfig } from '@geonature_config/app.config';
 import { HttpParams } from '@angular/common/http/';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
@@ -23,13 +22,14 @@ import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
+import { ConfigService } from '@geonature/services/config.service';
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
   styleUrls: ['synthese-list.component.scss'],
 })
 export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
-  public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
+  public SYNTHESE_CONFIG = null;
   public selectedObs: any;
   public selectObsTaxonInfo: any;
   public selectedObsTaxonDetail: any;
@@ -46,14 +46,14 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   private _latestWidth: number;
   constructor(
     public mapListService: MapListService,
-    private _ds: SyntheseDataService,
     public ngbModal: NgbModal,
-    private _commonService: CommonService,
-    private _fs: SyntheseFormService,
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
-    public _cruvedStore: CruvedStoreService
-  ) {}
+    public _cruvedStore: CruvedStoreService,
+    public config: ConfigService
+  ) {
+    this.SYNTHESE_CONFIG = this.config.SYNTHESE;
+  }
 
   ngOnInit() {
     // get wiewport height to set the number of rows in the tabl
@@ -61,17 +61,31 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     this.rowNumber = Math.trunc(h / 37);
 
     // On map click, select on the list a change the page
-    this.mapListService.onMapClik$.subscribe((id) => {
-      this.mapListService.selectedRow = []; // clear selected list
-      const integerId = parseInt(id);
-      let i;
-      for (i = 0; i < this.mapListService.tableData.length; i++) {
-        if (this.mapListService.tableData[i]['id'] === integerId) {
-          this.mapListService.selectedRow.push(this.mapListService.tableData[i]);
-          break;
+    this.mapListService.onMapClik$.subscribe((ids) => {
+      this.resetSorting();
+
+      this.mapListService.tableData.map((row) => {
+        // mandatory to sort (each row must have a selected attr)
+        row.selected = false;
+        if (ids.includes(row.id)) {
+          row.selected = true;
         }
-      }
-      const page = Math.trunc(i / this.rowNumber);
+      });
+
+      let observations = this.mapListService.tableData.filter((e) => {
+        return ids.includes(e.id);
+      });
+
+      this.mapListService.tableData.sort((a, b) => {
+        return b.selected - a.selected;
+      });
+      this.mapListService.tableData = [...this.mapListService.tableData];
+      this.mapListService.selectedRow = observations;
+      const page = Math.trunc(
+        this.mapListService.tableData.findIndex((e) => {
+          return e.id === ids[0];
+        }) / this.rowNumber
+      );
       this.table.offset = page;
     });
   }
@@ -83,6 +97,22 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
         this.table.recalculate();
         this.ref.markForCheck();
       }
+    }
+  }
+
+  private resetSorting() {
+    this.table.sorts = [];
+  }
+
+  /**
+   * Restore previous selected rows when sort state return to 'undefined'.
+   * With ngx-datable sortType must be 'multi' to use 3 states : asc, desc and undefined !
+   * @param event sort event infos.
+   */
+  onSort(event) {
+    if (event.newValue === undefined) {
+      let selectedObsIds = this.mapListService.selectedRow.map((obs) => obs.id);
+      this.mapListService.mapSelected.next(selectedObsIds);
     }
   }
 
@@ -105,11 +135,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     document.body.appendChild(link);
     link.click();
     link.remove();
-  }
-
-  getQueryString(): HttpParams {
-    const formatedParams = this._fs.formatParams();
-    return this._ds.buildQueryUrl(formatedParams);
   }
 
   openInfoModal(row) {

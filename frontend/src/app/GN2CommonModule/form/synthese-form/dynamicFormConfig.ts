@@ -7,6 +7,13 @@ export const DYNAMIC_FORM_DEF = [
     value: true,
   },
   {
+    attribut_name: 'has_comment',
+    type_widget: 'bool_checkbox',
+    attribut_label: 'Est commenté',
+    required: false,
+    value: true,
+  },
+  {
     attribut_name: 'has_alert',
     type_widget: 'bool_checkbox',
     attribut_label: 'Est signalé',
@@ -261,6 +268,23 @@ export const DYNAMIC_FORM_DEF = [
     type_widget: 'text',
     attribut_label: 'UUID observation (unique_id_sinp)',
     attribut_name: 'unique_id_sinp',
+    required: false,
+  },
+  {
+    type_widget: 'number',
+    attribut_label: 'ID (id_synthese)',
+    attribut_name: 'id_synthese',
+    required: false,
+  },
+  {
+    type_widget: 'datalist',
+    attribut_name: 'id_source',
+    attribut_label: 'Source de la donnée',
+    api: 'synthese/sources',
+    application: 'GeoNature',
+    keyValue: 'id_source',
+    keyLabel: 'name_source',
+    data_path: '',
     required: false,
   },
 ];

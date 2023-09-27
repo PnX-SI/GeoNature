@@ -1,18 +1,7 @@
-<div
-  id="cover-spin"
-  *ngIf="!_ds.dataLoaded"
->
-</div>
-
+<div id="cover-spin" *ngIf="!_ds.dataLoaded"></div>
 
 <div class="wrapper">
-
-  <nav
-    #navBar
-    id="sidebar"
-    class="collapse show"
-    class="collapse show"
-  >
+  <nav [(ngbCollapse)]="isCollapseValidationNavBar" #navBar id="sidebar">
     <!-- <pnx-validation-search (searchClicked)="loadAndStoreData($event)"></pnx-validation-search> -->
     <pnx-synthese-search
       (resetFilter)="goHome()"
@@ -24,22 +13,18 @@
 
   <!-- Page Content  -->
   <div class="row row-sm page-content">
-
     <div class="col-sm-12 col-md-9 padding-sm middle">
       <button
         #buttonToggle
         (click)="searchBarHidden = !searchBarHidden"
-        data-toggle="collapse"
-        data-target="#sidebar"
+        (click)="isCollapseValidationNavBar = !isCollapseValidationNavBar"
+        [attr.aria-expanded]="!isCollapseValidationNavBar"
         aria-controls="sidebar"
         type="button"
         id="sidebarCollapse"
         class="btn btn-toogle-sidenav box-shadow"
       >
-        <i
-          class="fa"
-          [ngClass]="searchBarHidden ? 'fa-caret-left' : 'fa-caret-right'"
-        ></i>
+        <i class="fa" [ngClass]="searchBarHidden ? 'fa-caret-left' : 'fa-caret-right'"></i>
       </button>
       <pnx-validation-synthese-list
         (displayAll)="goHome()"
@@ -54,12 +39,11 @@
           <label for="awaiting_checkbox"> Observations en attente de validation </label>
           </div>
           -->
-
     </div>
     <div class="col-sm-12 col-md-3 padding-sm last">
-      <pnx-validation-synthese-carte [inputSyntheseData]="_mapListService.geojsonData"></pnx-validation-synthese-carte>
+      <pnx-validation-synthese-carte
+        [inputSyntheseData]="_mapListService.geojsonData"
+      ></pnx-validation-synthese-carte>
     </div>
-
   </div>
-
 </div>

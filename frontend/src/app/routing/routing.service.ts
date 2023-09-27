@@ -6,7 +6,7 @@ import { ModuleGuardService } from './module-guard.service';
 export class RoutingService {
   constructor(private _injector: Injector) {}
 
-  loadRoutes(modules) {
+  loadRoutes(modules, url?: string) {
     const router: Router = this._injector.get(Router);
     const routingConfig = router.config;
 
@@ -32,5 +32,8 @@ export class RoutingService {
       }
     });
     router.resetConfig(routingConfig);
+    if (url) {
+      router.navigateByUrl(url);
+    }
   }
 }

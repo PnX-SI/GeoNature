@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # DESC: Usage help
 # ARGS: None
@@ -68,22 +68,17 @@ fi
 cd "${BASE_DIR}"/backend
 
 # Installation du virtual env
-# Suppression du venv s'il existe
-if [ -d 'venv/' ]; then
-  echo "Suppression du virtual env existant..."
-  rm -rf venv
+if [ ! -d 'venv/' ]; then
+  echo "Création du virtual env…"
+  python3 -m venv venv
 fi
-echo "Création du virtual env…"
-python3 -m venv venv
-
-
 
 echo "Activation du virtual env..."
 source venv/bin/activate
 
 
 echo "Installation des dépendances Python..."
-pip install --upgrade "pip>=19.3"  # https://www.python.org/dev/peps/pep-0440/#direct-references
+pip install --upgrade "pip>=19.3"  "wheel"  # https://www.python.org/dev/peps/pep-0440/#direct-references
 if [[ "${MODE}" == "dev" ]]; then
   echo "Installation des dépendances Python de l'environnement de DEV..."
   git submodule status | grep -E "^-" >/dev/null
@@ -97,11 +92,14 @@ else
   pip install -e "${BASE_DIR}" -r requirements.txt
 fi
 
-
-echo "Modification du script 'activate' du virtual env pour sourcer le fichier d'autocomplétion de la commande GeoNature..."
 readonly BIN_VENV_DIR="${BASE_DIR}/backend/venv/bin"
 readonly ACTIVATE_FILE="${BIN_VENV_DIR}/activate"
 readonly COMPLETION_FILE_NAME="geonature_completion"
+
+echo "Génération du fichier d’autocomplétion de la commande Geonature…"
+_GEONATURE_COMPLETE=bash_source geonature > "${BIN_VENV_DIR}/${COMPLETION_FILE_NAME}"
+
+echo "Modification du script 'activate' du virtual env pour sourcer le fichier d'autocomplétion de la commande GeoNature..."
 if ! grep -q "${COMPLETION_FILE_NAME}" "${ACTIVATE_FILE}" ; then
   cp "${ACTIVATE_FILE}" "${ACTIVATE_FILE}.save-$(date +'%F')"
   cat >> "${ACTIVATE_FILE}" << EOF
@@ -113,8 +111,10 @@ fi
 EOF
 fi
 
-
-echo "Ajout du fichier d'autocomplétion de la commande GeoNature au virtual env..."
-if [ ! -f "${BIN_VENV_DIR}/${COMPLETION_FILE_NAME}" ]; then
-  _GEONATURE_COMPLETE=bash_source geonature > "${BIN_VENV_DIR}/${COMPLETION_FILE_NAME}"
-fi
+echo "Installation des paquets npm"
+cd "${BASE_DIR}/frontend"
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+nvm use || exit 1
+cd "${BASE_DIR}/backend/static"
+npm ci || exit 1

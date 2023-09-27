@@ -1,6 +1,8 @@
+from pathlib import Path
 import tempfile
 
 import pytest
+import json
 from flask import url_for
 from geoalchemy2.elements import WKTElement
 from PIL import Image
@@ -8,10 +10,12 @@ from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from sqlalchemy import func
 from werkzeug.exceptions import Conflict, Forbidden, NotFound, Unauthorized
 
+from geonature.core.gn_commons.admin import BibFieldAdmin
 from geonature.core.gn_commons.models import TAdditionalFields, TMedias, TPlaces, BibTablesLocation
-from geonature.core.gn_commons.models.base import TModules, TParameters
+from geonature.core.gn_commons.models.base import TModules, TParameters, BibWidgets
 from geonature.core.gn_commons.repositories import TMediaRepository
-from geonature.core.gn_permissions.models import TObjects
+from geonature.core.gn_commons.tasks import clean_attachments
+from geonature.core.gn_permissions.models import PermObject
 from geonature.utils.env import db
 from geonature.utils.errors import GeoNatureError
 
@@ -30,7 +34,7 @@ def place(users):
 @pytest.fixture(scope="function")
 def additional_field(app, datasets):
     module = TModules.query.filter(TModules.module_code == "SYNTHESE").one()
-    obj = TObjects.query.filter(TObjects.code_object == "ALL").one()
+    obj = PermObject.query.filter(PermObject.code_object == "ALL").one()
     datasets = list(datasets.values())
     additional_field = TAdditionalFields(
         field_name="test",
@@ -95,13 +99,17 @@ class TestMedia:
         assert resp_json["title_fr"] == medium.title_fr
         assert resp_json["unique_id_media"] == str(medium.unique_id_media)
 
-    def test_delete_media(self, medium):
+    def test_delete_media(self, app, medium):
         id_media = int(medium.id_media)
 
         response = self.client.delete(url_for("gn_commons.delete_media", id_media=id_media))
 
         assert response.status_code == 200
         assert response.json["resp"] == f"media {id_media} deleted"
+
+        # Re-move file in other side to does not break TemporaryFile context manager
+        media_path = medium.base_dir() / medium.media_path
+        media_path.rename(media_path.parent / media_path.name[len("deleted_") :])
 
     def test_create_media(self, medium):
         title_fr = "test_test"
@@ -163,7 +171,7 @@ class TestMedia:
         )
 
         assert response.status_code == 404
-        assert response.json["msg"] == "Media introuvable"
+        assert response.json["description"] == "Media introuvable"
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -310,16 +318,16 @@ class TestTMediaRepositoryHeader:
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestCommons:
     def test_list_modules(self, users):
-        response = self.client.get(url_for("gn_commons.list_modules"))
+        response = self.client.get(url_for("gn_commons.list_modules", exclude="GEONATURE"))
         assert response.status_code == Unauthorized.code
 
         set_logged_user_cookie(self.client, users["noright_user"])
-        response = self.client.get(url_for("gn_commons.list_modules"))
+        response = self.client.get(url_for("gn_commons.list_modules", exclude="GEONATURE"))
         assert response.status_code == 200
         assert len(response.json) == 0
 
         set_logged_user_cookie(self.client, users["admin_user"])
-        response = self.client.get(url_for("gn_commons.list_modules"))
+        response = self.client.get(url_for("gn_commons.list_modules", exclude="GEONATURE"))
         assert response.status_code == 200
         assert len(response.json) > 0
 
@@ -381,10 +389,6 @@ class TestCommons:
 
         response = self.client.post(url_for("gn_commons.add_place"))
         assert response.status_code == Unauthorized.code
-
-        set_logged_user_cookie(self.client, users["noright_user"])
-        response = self.client.post(url_for("gn_commons.add_place"))
-        assert response.status_code == Forbidden.code
 
         set_logged_user_cookie(self.client, users["user"])
         response = self.client.post(url_for("gn_commons.add_place"), data=geofeature)
@@ -458,6 +462,46 @@ class TestCommons:
         # TODO: Do better than that:
         assert len(data) == 0
 
+    def test_additional_field_admin(self, app, users, module, perm_object):
+        set_logged_user_cookie(self.client, users["admin_user"])
+        app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_MODULES"] = [module.module_code]
+        app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_OBJECTS"] = [perm_object.code_object]
+        form_values = {
+            "field_label": "pytest_valid",
+            "field_name": "pytest_valid",
+            "module": module.id_module,
+            "objects": [perm_object.id_object],
+            "type_widget": BibWidgets.query.filter_by(widget_name="select").one().id_widget,
+            "field_values": json.dumps([{"label": "un", "value": 1}]),
+        }
+
+        req = self.client.post(
+            "/admin/tadditionalfields/new/?url=/admin/tadditionalfields/",
+            data=form_values,
+            content_type="multipart/form-data",
+        )
+        assert req.status_code == 302
+        assert db.session.query(
+            db.session.query(TAdditionalFields).filter_by(field_name="pytest_valid").exists()
+        ).scalar()
+
+        form_values.update(
+            {
+                "field_label": "pytest_invvalid",
+                "field_name": "pytest_invvalid",
+                "field_values": json.dumps([{"not_label": "un", "not_value": 1}]),
+            }
+        )
+        req = self.client.post(
+            "/admin/tadditionalfields/new/?url=/admin/tadditionalfields/",
+            data=form_values,
+            content_type="multipart/form-data",
+        )
+        assert req.status_code != 302
+        assert not db.session.query(
+            db.session.query(TAdditionalFields).filter_by(field_name="pytest_invvalid").exists()
+        ).scalar()
+
     def test_get_t_mobile_apps(self):
         response = self.client.get(url_for("gn_commons.get_t_mobile_apps"))
 
@@ -491,3 +535,23 @@ class TestCommons:
 
         assert response.status_code == 204  # No content
         assert response.json is None
+
+
+@pytest.mark.usefixtures("temporary_transaction")
+class TestTasks:
+    def test_clean_attachements(self, monkeypatch, celery_eager, medium):
+        # Monkey patch the __before_commit_delete not to remove file
+        # when deleting the medium, so the clean_attachments can work
+        def mock_delete_media(self):
+            return None
+
+        monkeypatch.setattr(TMedias, "__before_commit_delete__", mock_delete_media)
+
+        # Remove media to trigger the cleaning
+        db.session.delete(medium)
+        db.session.commit()
+
+        clean_attachments()
+
+        # File should be removed
+        assert not Path(medium.media_path).is_file()

@@ -19,17 +19,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        debian-version: [ '10', '11', '12' ]
         include:
-          - name: "Debian 10"
-            python-version: "3.7"
-            postgres-version: 11
-            postgis-version: 2.5
-          - name: "Debian 11"
-            python-version: "3.9"
-            postgres-version: 13
-            postgis-version: 3.2
+          - debian-version: '10'
+            python-version: '3.7'
+            postgres-version: '11'
+            postgis-version: '2.5'
+          - debian-version: '11'
+            python-version: '3.9'
+            postgres-version: '13'
+            postgis-version: '3.2'
+          - debian-version: '12'
+            python-version: '3.11'
+            postgres-version: '15'
+            postgis-version: '3.3'
 
-    name: ${{ matrix.name }}
+    name: Debian ${{ matrix.debian-version }}
 
     services:
       postgres:
@@ -53,19 +58,16 @@ jobs:
           psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "postgis_raster";'
         env:
           PGPASSWORD: geonatpasswd
-      - name: Add database extensions
-        run: |
-          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "hstore";'
-          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "uuid-ossp";'
-          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "pg_trgm";'
-          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
-        env:
-          PGPASSWORD: geonatpasswd
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: true
+      - name: Add database extensions
+        run: |
+          psql -h localhost -U geonatadmin -d geonature2db -f install/assets/db/add_pg_extensions.sql
+        env:
+          PGPASSWORD: geonatpasswd
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
@@ -87,20 +89,7 @@ jobs:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Install database
         run: |
-          geonature db upgrade geonature@head -x local-srid=2154
-          geonature db autoupgrade -x local-srid=2154
-          geonature db upgrade ref_geo_fr_departments@head
-          geonature taxref import-v15
-          geonature db upgrade geonature-samples@head
-          geonature db upgrade nomenclatures_taxonomie_data@head
-          geonature db upgrade ref_geo_fr_municipalities@head
-          geonature db upgrade ref_geo_inpn_grids_5@head
-          geonature sensitivity add-referential \
-            --source-name "Référentiel sensibilité TAXREF v15 20220331" \
-            --url https://inpn.mnhn.fr/docs-web/docs/download/401875 \
-            --zipfile RefSensibiliteV15_20220331.zip \
-            --csvfile RefSensibilite_V15_31032022/RefSensibilite_15.csv  \
-            --encoding=iso-8859-15
+          install/03b_populate_db_for_test.sh
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Show database status
@@ -129,7 +118,7 @@ jobs:
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Upload coverage to Codecov
-        if: ${{ matrix.name == 'Debian 11' }}
-        uses: codecov/codecov-action@v2
+        if: ${{ matrix.debian-version == '11' }}
+        uses: codecov/codecov-action@v3
         with:
           flags: pytest

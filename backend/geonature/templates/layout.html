@@ -3,71 +3,92 @@
 
 {% extends 'admin/base.html' %}
 
-{% block head_tail %}
+{% block head_css %}
   {{ super() }}
-  <link href="{{ url_for('static', filename='layout.css') }}" rel="stylesheet">
-
   <style>
-        .side-nav {
-            min-height: 94vh;
-            width: 15%;
-            background-color:#EEE; ;
+        #sticky-sidebar {
+            max-height: 94vh;
+            overflow-y: auto;
         }
-        #main {
-            display: flex;
+
+        #container {
+            margin-top:80px;
         }
         .navbar {
             margin-bottom: 0px;
         }
         #header {
-            height: 6vh;
+            height: 60px;
+            z-index: 100;
+            background-color: white;
+            border-bottom: solid 1px;
         }
         .main-item {
             font-weight: bold;
+            background-color: gainsboro!important;
         }
         .child-item {
             padding-left: 35px;
         }
-        #content {
-            width: 85%;
-            padding: 20px;
-        }
-        #header {
-            border-bottom: solid 1px;
+        #sideNavToggler{
+            border-color:black
         }
 </style>
 {% endblock %}
 
+{% block head_tail %}
+<script>
+    function toggleSideBar() {
+    var main = document.getElementById("main");
+    if(main.classList.contains("offset-2")) {
+        document.getElementById("sticky-sidebar").style.display = "none"
+        main.classList.remove("offset-2");
+        main.classList.remove("col-10");
+        main.classList.add("col-12");
+    } else {
+        document.getElementById("sticky-sidebar").style.display = "block"
+        main.classList.add("offset-2");
+        main.classList.remove("col-12");
+        main.classList.add("col-10");
+    }
+
+}
+
+</script>
+{% endblock %}
+
 {% block page_body %}
 
-
-<div id="container">
-    <nav id="header" class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand mr-auto" href=" {{url_for("admin.index")}} ">Adminstration GeoNature</a>
-        <ul class="navbar-nav my-2 my-lg-0">
-            <li class="nav-item">
-                {{layout.menu_links()}}
-            </li>
-        </ul>
-      </nav>
-
-    <div id="main">
-        <nav class="side-nav">
-           {{index_layout.menu()}} 
-
-        </nav>
-        <div id="content" >
-            {% block brand %}
-            <h2 id="brand">{{ admin_view.name|capitalize }}</h2>
-            {% endblock %}
-            {{ layout.messages() }}
+<nav id="header" class="navbar navbar-expand-lg navbar-light fixed-top">
     
-            {% set render_ctx = h.resolve_ctx() %}
+    <button id="sideNavToggler" class="mr-2 btn btn-light" type="button" onclick="toggleSideBar()" > <span class="navbar-toggler-icon"></span></button>
+    <a class="navbar-brand mr-auto" href=" {{url_for("admin.index")}} "> 
+        <i class="fa fa-home"></i>
+         Administration GeoNature
+    </a>
+    <ul class="navbar-nav my-2 my-lg-0">
+        <li class="nav-item">
+            {{layout.menu_links()}}
+        </li>
+    </ul>
+  </nav>
+    <div class="container-fluid" id="container">
+        <div class="row" >
+            <div class="col-2 px-1 position-fixed" id="sticky-sidebar">
     
-            {% block body %}
-            {% endblock %}
-         </div>
+                {{index_layout.menu()}} 
+            </div>
+
+            <div class="col-10 offset-2" id="main">
+                <h2>{{ admin_view.name|capitalize }}</h2>
+                {{ layout.messages() }}
+                {% block body %}
+                 {% endblock %}
+            </div>
+        </div>
+
     </div>
-
-</div>
 {% endblock %}
+
+
+

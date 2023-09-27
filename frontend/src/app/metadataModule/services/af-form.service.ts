@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormArray, UntypedFormBuilder, Validators } from '@angular/forms';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap, filter, switchMap, map } from 'rxjs/operators';
 
@@ -8,11 +8,11 @@ import { FormService } from '@geonature_common/form/form.service';
 
 @Injectable()
 export class AcquisitionFrameworkFormService {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public acquisition_framework: BehaviorSubject<any> = new BehaviorSubject(null);
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private actorFormS: ActorFormService,
     private formS: FormService
   ) {
@@ -93,7 +93,6 @@ export class AcquisitionFrameworkFormService {
         map((value) => {
           if (value.cor_af_actor) {
             if (this.actorFormS.nbMainContact(value.cor_af_actor) == 0) {
-              console.log(value.cor_af_actor);
               value.cor_af_actor.push({
                 id_nomenclature_actor_role: this.actorFormS.getIDRoleTypeByCdNomenclature('1'),
               });
@@ -122,8 +121,8 @@ export class AcquisitionFrameworkFormService {
     });
   }
 
-  get actors(): FormArray {
-    return this.form.get('cor_af_actor') as FormArray;
+  get actors(): UntypedFormArray {
+    return this.form.get('cor_af_actor') as UntypedFormArray;
   }
 
   //ajoute un acteur au formulaire, par défaut un acteur vide est ajouté
@@ -135,12 +134,12 @@ export class AcquisitionFrameworkFormService {
     formArray.push(actorForm);
   }
 
-  removeActor(formArray: FormArray, i: number): void {
+  removeActor(formArray: UntypedFormArray, i: number): void {
     formArray.removeAt(i);
   }
 
-  get bibliographicalReferences(): FormArray {
-    return this.form.get('bibliographical_references') as FormArray;
+  get bibliographicalReferences(): UntypedFormArray {
+    return this.form.get('bibliographical_references') as UntypedFormArray;
   }
 
   //ajoute un acteur au formulaire, par défaut un acteur vide est ajouté
@@ -166,11 +165,11 @@ export class AcquisitionFrameworkFormService {
   }
 
   reset() {
-    this.clearFormArray(this.form.get('cor_af_actor') as FormArray);
+    this.clearFormArray(this.form.get('cor_af_actor') as UntypedFormArray);
     this.form.reset();
   }
 
-  private clearFormArray(formArray: FormArray) {
+  private clearFormArray(formArray: UntypedFormArray) {
     while (formArray.length !== 0) {
       formArray.removeAt(0);
     }

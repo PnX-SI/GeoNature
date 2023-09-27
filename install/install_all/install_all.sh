@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -15,7 +15,7 @@ export USERSHUB_DIR="${HOME}/usershub"
 
 # Test the server architecture
 if [ !"$OS_BITS" == "64" ]; then
-   echo "GeoNature must be installed on a 64-bits operating system ; your is $OS_BITS-bits" 1>&2
+   echo "GeoNature must be installed on a 64-bits operating system; yours is $OS_BITS-bits" 1>&2
    exit 1
 fi
 
@@ -38,9 +38,9 @@ then
     exit 1
 fi
 
-if [ "$OS_VERSION" != "10" ] && [ "$OS_VERSION" != "11" ]
+if [ "$OS_VERSION" != "10" ] && [ "$OS_VERSION" != "11" ] && [ "$OS_VERSION" != "12" ]
 then
-    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 10 et Debian 11\e[0m" >&2
+    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 10, 11 ou 12\e[0m" >&2
     exit 1
 fi
 
@@ -57,7 +57,7 @@ echo "############### Installation des paquets systèmes ###############"
 
 # Installing required environment for GeoNature and TaxHub
 echo "Installation de l'environnement logiciel..."
-sudo apt-get install -y unzip git postgresql postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis || exit 1
+sudo apt-get install -y unzip git postgresql-postgis postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis gettext-base || exit 1
 
 if [ "${mode}" = "dev" ]; then
     sudo apt-get install -y xvfb || exit 1
@@ -123,6 +123,8 @@ sed -i "s/proxy_https=.*$/proxy_https=$proxy_https/g" config/settings.ini
 
 cd "${GEONATURE_DIR}/install"
 
+echo "Installation de nvm"
+./00_install_nvm.sh || exit 1
 echo "Installation du backend GeoNature"
 ./01_install_backend.sh || exit 1
 echo "Installation des scripts systemd"
@@ -133,10 +135,8 @@ echo "Installation des modules GeoNature"
 ./04_install_gn_modules.sh || exit 1
 echo "Installation du frontend GeoNature"
 ./05_install_frontend.sh || exit 1
-echo "Installation de la config apache pour GeoNature"
+echo "Installation de la config Apache pour GeoNature"
 ./06_configure_apache.sh || exit 1
-
-sudo a2enconf geonature || exit 1
 
 if [ "${mode}" != dev ]; then
     sudo systemctl start geonature || exit 1
@@ -194,8 +194,6 @@ source "${GEONATURE_DIR}/backend/venv/bin/activate"
 geonature db upgrade taxhub-admin@head
 deactivate
 
-sudo a2enconf taxhub || exit 1
-
 sudo systemctl start taxhub || exit 1
 if [ "${mode}" != "dev" ]; then
     sudo systemctl enable taxhub || exit 1
@@ -234,14 +232,12 @@ if [ "$install_usershub_app" = true ]; then
 
     # Installation of UsersHub database through geonature db as UsersHub does not known all revisions
     if [ "${mode}" != "dev" ]; then
-	    # Tell geonature where to find UsersHub alembic revision files
+	    # Tell GeoNature where to find UsersHub alembic revision files
 	    grep '\[ALEMBIC\]' "${GEONATURE_DIR}/config/geonature_config.toml" > /dev/null || echo -e "\n[ALEMBIC]\nVERSION_LOCATIONS = '${USERSHUB_DIR}/app/migrations/versions/'" >> "${GEONATURE_DIR}/config/geonature_config.toml"
     fi
     source "${GEONATURE_DIR}/backend/venv/bin/activate"
     geonature db upgrade usershub-samples@head
     deactivate
-
-    sudo a2enconf usershub || exit 1
 
     sudo systemctl start usershub || exit 1
     if [ "${mode}" != "dev" ]; then
@@ -257,6 +253,8 @@ deactivate
 # Apache vhost for GeoNature, TaxHub and UsersHub
 envsubst '${DOMAIN_NAME}' < "${GEONATURE_DIR}/install/assets/vhost_apache.conf" | sudo tee /etc/apache2/sites-available/geonature.conf || exit 1
 envsubst '${DOMAIN_NAME}' < "${GEONATURE_DIR}/install/assets/vhost_apache_maintenance.conf" | sudo tee /etc/apache2/sites-available/geonature_maintenance.conf || exit 1
+sudo mkdir -p /var/www/geonature_maintenance/
+sudo cp "${GEONATURE_DIR}/install/assets/maintenance.html" /var/www/geonature_maintenance/index.html
 sudo a2ensite geonature || exit 1
 sudo systemctl reload apache2 || exit 1
 

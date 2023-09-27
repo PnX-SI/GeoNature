@@ -6,6 +6,7 @@ import { catchError, tap } from 'rxjs/operators';
 
 @Injectable()
 export class ModuleService {
+  public shouldLoadModules = true;
   public _modules: BehaviorSubject<any[]> = new BehaviorSubject([]);
   get modules(): any[] {
     return this._modules.getValue();
@@ -20,6 +21,11 @@ export class ModuleService {
   get currentModule(): any {
     return this.currentModule$.getValue();
   }
+  get geoNatureModule(): any {
+    return this.modules.find((module) => {
+      return module.module_code.toLowerCase() == 'geonature';
+    });
+  }
 
   constructor(private _api: DataFormService, private _router: Router) {}
 
@@ -28,6 +34,7 @@ export class ModuleService {
       catchError((err) => of([])), // TODO: error MUST be handled in case we are logged! (typically, api down)
       tap((modules) => {
         this.modules = modules;
+        this.shouldLoadModules = false;
       })
     );
   }

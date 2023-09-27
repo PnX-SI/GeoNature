@@ -104,9 +104,20 @@ Le référentiel de sensibilité fourni par le SINP est normalement intégré
 à GeoNature lors de son installation. Sinon, il peut être manuellement
 intégré avec l’une ou l’autre des commandes suivantes :
 
+TaxRef v16 :
+
+.. code-block:: bash
+
+    geonature sensitivity add-referential \
+            --source-name "Référentiel sensibilité TAXREF v16 20230203" \
+            --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip \
+            --zipfile RefSensibiliteV16_20230203.zip \
+            --csvfile RefSensibiliteV16_20230203/RefSensibilite_16.csv  \
+            --encoding=iso-8859-15
+
 TaxRef v15 :
 
-.. code-block::
+.. code-block:: bash
 
     geonature sensitivity add-referential \
             --source-name "Référentiel sensibilité TAXREF v15 20220331" \
@@ -117,7 +128,7 @@ TaxRef v15 :
 
 TaxRef v14 :
 
-.. code-block::
+.. code-block:: bash
 
     geonature sensitivity add-referential \
             --source-name "Référentiel sensibilité TAXREF v14 20220331" \
@@ -126,8 +137,8 @@ TaxRef v14 :
             --csvfile RefSensibilite_V14_31032022/RefSensibilite_14.csv  \
             --encoding=iso-8859-15
 
-Le jeu de règles est fourni pour les versions 14 et 15 de TaxRef, certaines
-espèces sensibles pouvant voir leur cd_nom changé d’une version à l’autre.
+Le jeu de règles est fourni pour chaque version précise de TaxRef, certaines
+espèces sensibles pouvant voir leur *cd_nom* changé d’une version à l’autre.
 
 Personnalisation
 ````````````````

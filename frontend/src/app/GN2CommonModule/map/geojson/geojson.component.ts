@@ -4,7 +4,6 @@ import { MapService } from '../map.service';
 import * as L from 'leaflet';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs';
-import { GeoJSON } from '@tmcw/togeojson';
 
 /**
  *         Affiche sur la carte les geojson passé en *input*
@@ -18,7 +17,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
   public currentGeojson: L.Layer;
   public layerGroup: any;
   /** Objet geojson à afficher sur la carte */
-  @Input() geojson: GeoJSON;
+  @Input() geojson: any;
   /**
    * Fonction permettant d'effectuer un traitement sur chaque layer du geojson (afficher une popup, définir un style etc...)
    * fonction définit par la librairie leaflet: ``onEachFeature(feature, layer)``. `Voir doc leaflet <http://leafletjs.com/examples/geojson/>`_

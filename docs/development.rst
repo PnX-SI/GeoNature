@@ -188,20 +188,32 @@ Si vous avez téléchargé GeoNature zippé (via la procédure d'installation gl
 
 .. code-block:: bash
 
-  --- Se créer un répertoire .git ---
+  # Se créer un répertoire .git
   mkdir .git
-  ---  récupérer l'historique du dépôt --- 
+  # Récupérer l'historique du dépôt
   git clone --depth=2 --bare https://github.com/PnX-SI/GeoNature.git .git
-  --- initialiser un dépôt git à partir de l'historique téléchargé --- 
+  # Initialiser un dépôt git à partir de l'historique téléchargé
   git init
-  --- vérifier que le dépôt distant et le contenu local sont synchronisés --- 
+  # Vérifier que le dépôt distant et le contenu local sont synchronisés
   git pull
-  --- Reset sur HEAD pour mettre à jour les status --- 
+  # Reset sur HEAD pour mettre à jour les status
   git reset HEAD
-  -> vous êtes à jour sur la branche master
-  --- Cloner les sous-modules pour récupérer les dépendances
+  # -> vous êtes à jour sur la branche master
+  # Cloner les sous-modules pour récupérer les dépendances
   git submodule init
   git submodule update
+
+
+Installation du venv en dev
+***************************
+
+Il est nécessaire d’installer les dépendances (sous-modules Git présent dans ``backend/dependencies``) en mode éditable afin de travailler avec la dernière version de celles-ci.
+
+.. code-block:: console
+
+  $ cd backend
+  $ source venv/bin/activate
+  $ pip install -e .. -r requirements-dev.txt
 
 
 Configuration des URLs de développement
@@ -259,9 +271,9 @@ Démarrage du serveur de dev backend
 
 La commande ``geonature`` fournit la sous-commande ``dev-back`` pour lancer un serveur de test :
 
-::
+.. code:: console
 
-    (venv)...$ geonature dev-back
+    (venv)$ geonature dev-back
 
 
 L’API est alors accessible à l’adresse http://127.0.0.1:8000.
@@ -334,11 +346,8 @@ On pourra ainsi implémenter une fonction pour filtrer les objets auxquels l’u
         obj_list = MyModel.query.filter_by_scope(2).all()
 
 
-Serialisation des modèles
-*************************
-
-Avec Marshmallow
-""""""""""""""""
+Serialisation des modèles avec Marshmallow
+******************************************
 
 La bibliothèque `Marshmallow <https://marshmallow.readthedocs.io/en/stable/>`_ fournit des outils de sérialisation et desérialisation.
 
@@ -348,7 +357,7 @@ Cette bibliothèque ajoute notablement une méthode ``jsonify`` aux schémas.
 
 Les schémas Marshmallow peuvent être facilement créés à partir des modèles SQLAlchemy grâce à la bibliothèque `Marshmallow-SQLAlchemy <https://marshmallow-sqlalchemy.readthedocs.io/en/latest/>`_.
 
-::
+.. code:: python
 
     from geonature.utils.env import ma
 
@@ -357,9 +366,13 @@ Les schémas Marshmallow peuvent être facilement créés à partir des modèles
             model = MyModel
             include_fk = True
 
-La propriété ``include_fk=True`` concerne les champs de type ``ForeignKey``, mais pas les ``relationships`` en elles-mêmes. Pour ces dernières, il est nécessaire d’ajouter manuellement des champs ``Nested`` à son schéma :
 
-::
+Gestion des relationships
+"""""""""""""""""""""""""
+
+L’option ``include_fk=True`` concerne les champs de type ``ForeignKey``, mais pas les ``relationships`` en elles-mêmes. Pour ces dernières, il est nécessaire d’ajouter manuellement des champs ``Nested`` à notre schéma :
+
+.. code:: python
 
     class ParentModelSchema(ma.SQLAlchemyAutoSchema):
         class Meta:
@@ -377,30 +390,30 @@ La propriété ``include_fk=True`` concerne les champs de type ``ForeignKey``, m
 
 
 Attention, la sérialisation d’un objet avec un tel schéma va provoquer une récursion infinie, le schéma parent incluant le schéma enfant, et le schéma enfant incluant le schéma parent.
+Il est donc nécessaire de restreindre les champs à inclure dans la sérialisation lors de la création du schéma :
 
-Il est donc nécessaire de restreindre les champs à inclure avec l’argument ``only`` ou ``exclude`` lors de la création des schémas :
+- avec l’argument ``only`` :
 
-::
+    .. code:: python
 
-    parent_schema = ParentModelSchema(only=['pk', 'childs.pk'])
+        parent_schema = ParentModelSchema(only=['pk', 'childs.pk'])
 
-L’utilisation de ``only`` est lourde puisqu’il faut re-spécifier tous les champs à sérialiser. On est alors tenté d’utiliser l’argument ``exclude`` :
+    L’utilisation de ``only`` a l’inconvénient d’être lourde puisqu’il faut spécifier l’ensemble les champs à sérialiser.
+    De plus, l’ajout d’une nouvelle colonne au modèle nécessite de la rajouter partout où le schéma est utilisé.
 
-::
+- avec l’argument ``exclude`` :
 
-    parent_schema = ParentModelSchema(exclude=['childs.parent'])
+    .. code:: python
 
-Cependant, l’utilisation de ``exclude`` est hautement problématique !
+        parent_schema = ParentModelSchema(exclude=['childs.parent'])
 
-En effet, l’ajout d’un nouveau champs ``Nested`` au schéma nécessiterait de le rajouter dans la liste des exclusions partout où le schéma est utilisé (que ça soit pour éviter une récursion infinie, d’alourdir une réponse JSON avec des données inutiles ou pour éviter un problème n+1 - voir section dédiée).
+    Cependant, l’utilisation de ``exclude`` est hautement problématique !
+    En effet, l’ajout d’un nouveau champs ``Nested`` au schéma nécessiterait de le rajouter dans la liste des exclusions partout où le schéma est utilisé (que ça soit pour éviter une récursion infinie, d’alourdir une réponse JSON avec des données inutiles ou pour éviter un problème n+1 - voir section dédiée).
 
-La bibliothèque Utils-Flask-SQLAlchemy fournit une classe utilitaire ``SmartRelationshipsMixin`` permettant de résoudre ces problématiques.
-
-Elle permet d’exclure par défaut les champs ``Nested``.
-
+La bibliothèque Utils-Flask-SQLAlchemy fournit une classe utilitaire ``SmartRelationshipsMixin`` permettant d’exclure par défaut les champs ``Nested``.
 Pour demander la sérialisation d’un sous-schéma, il faut le spécifier avec ``only``, mais sans nécessité de spécifier tous les champs basiques (non ``Nested``).
 
-::
+.. code:: python
 
     from utils_flask_sqla.schema import SmartRelationshipsMixin
 
@@ -419,8 +432,283 @@ Pour demander la sérialisation d’un sous-schéma, il faut le spécifier avec 
         parent = ma.Nested(ParentModelSchema)
 
 
-Avec le décorateur ``@serializable``
-""""""""""""""""""""""""""""""""""""
+Modèles avec nomenclatures
+""""""""""""""""""""""""""
+
+Le convertisseur de modèle ``NomenclaturesConverter`` permet d’automatiquement ajouter un champs ``Nested(NomenclatureSchema)`` pour les relationships vers une nomenclature.
+
+
+.. code:: python
+
+    from pypnnomenclature.models import TNomenclatures as Nomenclature
+    from pypnnomenclature.utils import NomenclaturesConverter
+
+    class MyModel(db.Model):
+        id_nomenclature_foo = db.Column(db.Integer, ForeignKey(Nomenclature.id_nomenclature))
+        nomenclature_foo = relationships(Nomenclature, foreign_keys=[id_nomenclature_foo])
+
+    class MyModelSchema(ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = MyModel
+            include_fk = True
+            model_converter = NomenclaturesConverter
+
+        # automatically added: nomenclature_foo = ma.Nested(NomenclatureSchema)
+
+
+Le mixin ``NomenclaturesMixin`` permet de définir une propriété ``__nomenclatures__`` sur un modèle contenant
+la liste des champs à nomenclature.
+Cette propriété peut être utilisé pour facilement joindre et inclure lors de la sérialisation les champs à nomenclatures.
+
+
+.. code:: python
+
+    from pypnnomenclature.models import TNomenclatures as Nomenclature
+    from pypnnomenclature.utils import NomenclaturesMixin
+
+    class MyModel(NomenclaturesMixin, db.Model):
+        id_nomenclature_foo = db.Column(db.Integer, ForeignKey(Nomenclature.id_nomenclature))
+        nomenclature_foo = relationships(Nomenclature, foreign_keys=[id_nomenclature_foo])
+
+    # joinedload all nomenclatures
+    q = MyModel.query.options(*[joinedload(n) for n in MyModel.__nomenclatures__])
+    # include all nomenclatures to serialization
+    schema = MyModelSchema(only=MyModel.__nomenclatures__).dump(q.all())
+
+
+Modèles géographiques
+"""""""""""""""""""""
+
+En utilisant ``GeoAlchemyAutoSchema`` à la place de ``SQLAlchemyAutoSchema``, il est facile de créer des schémas pour des modèles possédant des colonnes géométriques :
+
+- Utilisation automatique de ``model_converter = GeoModelConverter`` afin de convertir les colonnes géométriques
+- Exclusion par défaut des colonnes géométriques de la sérialisation
+- Possibilité de générer du `geojson` en initialisant le schéma avec ``as_geojson=True``
+
+Les options suivantes sont disponible (à rajouter comme propriété de la classe Méta, ou comme paramètre à la création du schéma) :
+
+- ``feature_id`` : Colonne à utiliser pour remplire l’``id`` des features geojson.
+  Typiquement la clé primaire du modèle. Exclue si non spécifié.
+- ``feature_geometry`` : Colonne à utiliser pour définir la ``geometry`` des features geojson.
+  Déterminée automatiquement lorsque le modèle possède une unique colonne géométrique.
+
+.. code:: python
+
+    class MyModel(db.Model):
+        pk = db.Column(Integer, primary_key=True)
+        geom = db.Column(Geometry("GEOMETRY"))
+
+    class MyModelSchema(GeoAlchemyAutoSchema):
+        class Meta:
+            model = MyModel
+            feature_id = "pk"  # optionnel
+            feature_geometry = "geom"  # automatiquement déterminé
+
+.. code:: pycon
+
+    >>> o = MyModel(pk=1, geom=from_shape(Point(6, 10)))
+    >>> MyModelSchema().dump(o)
+    {"pk": 1}  # la colonne géométrique est automatiquement exclue
+    >>> MyModelSchema(as_geojson=True).dump(o)
+    {
+        "type": "Feature",
+        "id": 1,
+        "geometry": {"type": "Point", "coordinates": [6, 10]},
+        "properties": {"pk": 1}
+    }
+
+La sortie sera une `FeatureCollection` lorsque le schéma est utilisé avec ``many=True``.
+
+Les schémas géographiques peuvent également être utilisé pour parser du geojson (`Feature` ou `FeatureCollection`).
+
+
+
+Modèles géographiques avec nomenclatures
+""""""""""""""""""""""""""""""""""""""""
+
+Si vous avez un modèle possédant à la fois des relations vers des nomenclatures et des colonnes géométriques,
+vous pouvez devoir créer votre propre convertisseur de modèle héritant à la fois de ``NomenclaturesConverter`` et de ``GeoModelConverter`` :
+
+.. code:: python
+
+    class NomenclaturesGeoModelConverter(NomenclaturesConverter, GeoModelConverter):
+        pass
+
+    class MyModelSchema(GeoAlchemyAutoSchema):
+        class Meta:
+            model = MyModel
+            model_converter = NomenclaturesGeoModelConverter
+
+
+Modèles à permission
+""""""""""""""""""""
+
+Le mixin ``CruvedSchemaMixin`` permet d’ajouter un champs ``cruved`` à la sérialisation qui contiendra un dictionnaire avec en clé les actions du cruved et en valeur des booléens indiquant si l’action est disponible.
+
+Pour l’utiliser, il faut :
+
+- Définir une propriété ``__module_code__`` (et optionnellement une propriété ``__object_code__``) au niveau du **schéma** Marshmallow.
+  Ces propriétés sont passées en argument à la fonction ``get_scopes_by_action``.
+- Le **modèle** doit définir une fonction ``has_instance_permission(scope)`` prenant en argument une portée (0, 1, 2 ou 3) et renvoyant un booléen.
+
+Par défaut, pour des raisons de performance, le cruved est exclu de la sérialisation.
+Il faut donc demander sa sérialisation lors de la création du schéma avec ``only=["+cruved"]``.
+Le préfixe ``+`` permet de spécifier que l’on souhaite rajouter le cruved aux champs à sérialiser (et non que l’on souhaite sérialiser uniquement le cruved).
+
+.. code:: python
+
+    from geonature.utils.schema import CruvedSchemaMixin
+
+    class MyModel(db.Model):
+        # …
+        owner = db.relationship(User)
+
+        def has_instance_permission(self, scope):
+            return scope == 3 or (scope in (1, 2) and self.owner == g.current_user)
+
+    class MyModelSchema(CruvedSchemaMixin, ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = MyModel
+            include_fk = True
+
+        __module_code__ = "MODULE_CODE"
+
+        # automatically added: cruved = fields.Method("get_cruved", metadata={"exclude": True})
+
+.. code:: pycon
+
+    >>> o = MyModel.query.first()
+    >>> MyModelSchema(only=["+cruved"]).dump(o)
+    {"pk": 42, "cruved": {"C": False, "R": True, "U": True, "V": False, "E": False}}
+
+
+Création d’un objet
+"""""""""""""""""""
+
+L’utilisation de ``load_instance=True`` permet, lors de l’appelle de la fonction ``load``, de directement récupérer un objet pouvant être ajouté à la session SQLAlchemy.
+
+.. code:: python
+
+    class MyModelSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = MyModel
+            include_fk = True
+            load_instance = True
+
+    o = MyModelSchema().load(request.json)
+    db.session.add(o)
+    db.session.commit()
+
+
+Gestion des relationships
+'''''''''''''''''''''''''
+
+Many-to-One
+```````````
+
+Exemple d’une relation vers une nomenclature :
+
+.. code:: python
+
+    class MyModel(db.Model):
+        id_nomenclature_foo = db.Column(db.Integer, ForeignKey(Nomenclature.id_nomenclature))
+        nomenclature_foo = relationships(Nomenclature, foreign_keys=[id_nomenclature_foo])
+
+    class MyModelSchema(ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = MyModel
+            include_fk = True
+            model_converter = NomenclaturesConverter
+
+    # Le front spécifie directement la ForeignKey et non la relationship :
+    o = MyModelSchema().load({"id_nomenclature_foo": 42})
+
+
+Many-to-Many
+````````````
+
+Exemple d’une relation vers plusieurs utilisateurs :
+
+.. code:: python
+
+    cor_mymodel_user = db.Table(...)
+
+    class MyModel(db.Model):
+        owners = relationship(User, secondary=cor_mymodel_user)
+
+    class MyModelSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = MyModel
+            include_fk = True
+
+    # Le front spécifie la ForeignKey, la relationship est ignoré :
+    o = MyModelSchema(only=["owners.id_role"]).load({
+        "owners": [{"id_role": 42}, {"id_role": 43}]
+    })
+
+
+.. warning:: Prendre garde à bien spécifier ``owners.id_role`` et non simplement ``owners``, sans quoi il devient possible d’utiliser votre route pour créer des utilisateurs !
+
+
+One-to-Many
+```````````
+
+Exemple d’une relation vers des modèles enfants, qui sont rattaché à un unique parent :
+
+.. code:: python
+
+    class Child(db.Model):
+        id_parent = db.Column(Integer, ForeignKey(Parent.id))
+        parent = relationship(Parent, back_populates="childs")
+
+    class Parent(db.Model):
+        id = db.Column(Integer, primary_key=True)
+        childs = relationship(Child, cascade="all, delete-orphan", back_populates="parent")
+
+    class ChildSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = MyModel
+            include_fk = True
+            load_instance = True
+
+        parent = Nested(ParentSchema)
+
+    class ParentSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = ParentModel
+            include_fk = True
+            load_instance = True
+
+        childs = Nested(ChildSchema, many=True)
+
+        @validates_schema
+        def validate_childs(self, data, **kwargs):
+            """
+            Ensure this schema is not leveraged to retrieve childs from other parent
+            """
+            for child in data["childs"]:
+                if child.id_parent is not None and data.get("id") != child.id_parent:
+                    raise ValidationError(
+                        "Child does not belong to this parent.", field_name="childs"
+                    )
+
+    o = ParentSchema(only=["childs"], dump_only=["childs.id_parent"]).load({
+        "pk": 1,
+        "childs": [
+            {"pk": 1},  # validate_childs checks child 1 belongs to parent 1
+        ]
+    })
+
+
+.. warning:: Prendre garde à ajouter ``dump_only=["childs.id_parent"]``, sans quoi il devient possible de créer des objets Child appartenant à un autre Parent !
+
+.. warning:: Prendre garde à ajouter une validation sur le modèle parent de l’appartenance des objets Child, sans quoi il devient possible de rattacher à un parent des objets Child appartenant à un autre parent !
+
+.. warning:: Le frontend doit systématiquement listé l’ensemble des childs, sans quoi ceux-ci seront supprimé.
+
+
+Serialisation des modèles avec le décorateur ``@serializable``
+**************************************************************
 
 .. Note::
   L’utilisation des schémas Marshmallow est probablement plus performante.
@@ -460,8 +748,8 @@ La fonction ``as_dict`` prenait autrefois en argument les paramètres ``recursif
 - augmentation non prévue des données sérialisées lors de l’ajout d’une nouvelle relationship
 - problème n+1 (voir section dédiée)
 
-Cas des modèles géographiques
-"""""""""""""""""""""""""""""
+Modèles géographiques
+"""""""""""""""""""""
 
 La bibliothèque maison `Utils-Flask-SQLAlchemy-Geo <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo>`_ fournit des décorateurs supplémentaires pour la sérialisation des modèles contenant des champs géographiques.
 
@@ -840,7 +1128,7 @@ Utiliser le décorateur ``@login_required`` :
 Si l’utilisateur n’est pas authentifié, celui-ci est redirigé vers une page d’authentification, à moins que la requête contienne un header ``Accept: application/json`` (requête effectuée par le frontend) auquel cas une erreur 401 (Unauthorized) est levé.
 
 
-Restreindre une route aux utilisateurs ayant certains droits
+Restreindre une route aux utilisateurs avec un certain scope
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 Utiliser le décorateur ``@check_cruved_scope`` :
@@ -850,10 +1138,9 @@ Utiliser le décorateur ``@check_cruved_scope`` :
    :param action: Type d'action effectuée par la route
                   (Create, Read, Update, Validate, Export, Delete)
    :type action: str["C", "R", "U", "V", "E", "D"]
-   :param module_code: Code du module sur lequel on veut vérifier la portée.
-    Si non fourni, on vérifie le CRUVED de GeoNature.
-   :type module_code: str, optional
-   :param object_code: Code de l’objet sur lequel on veut vérifié la portée.
+   :param module_code: Code du module sur lequel on veut vérifier les permissions.
+   :type module_code: str
+   :param object_code: Code de l’objet sur lequel on veut vérifier les permissions.
     Si non fourni, on vérifie la portée sur l’objet ``ALL``.
    :type object_code: str, optional
    :param get_scope: si ``True``, ajoute le scope aux kwargs de la vue
@@ -886,10 +1173,29 @@ Exemple d’utilisation :
             raise Forbidden
 
 
-Récupération manuelle des permissions
-"""""""""""""""""""""""""""""""""""""
+Récupération manuelle du scope
+""""""""""""""""""""""""""""""
 
-La fonction suivante permet de récupérer manuellement le scope pour chaque actions pour un rôle et un module donnés :
+La fonction suivante permet de récupérer manuellement le scope pour un rôle, une action et un module donnés :
+
+.. py:function:: get_scope(action_code, id_role, module_code, object_code)
+
+   Retourne le scope de l’utilisateur donnée une action dans le module demandé.
+
+   :param action_code: Code de l’action.
+   :type action_code: str["C", "R", "U", "V", "E", "D"]
+   :param id_role: Identifiant du role. Utilisation de ``g.current_user`` si non spécifié
+                   (nécessite de se trouver dans une route authentifiée).
+   :type id_role: int, optional
+   :param module_code: Code du module. Si non spécifié, utilisation de ``g.current_module``
+   :type module_code: str, optional
+   :param object_code: Code de l’objet. Si non spécifié, utilisation de ``g.current_object``,
+                       ``ALL`` à défaut.
+   :type object_code: str, optional
+   :return: Valeur du scope
+   :rtype: int[0, 1, 2, 3]
+
+Il est également possible de récupérer les scopes pour l’ensemble des actions possibles grâce à la fonction suivante :
 
 .. py:function:: get_scopes_by_action(id_role, module_code, object_code)
 
@@ -898,7 +1204,8 @@ La fonction suivante permet de récupérer manuellement le scope pour chaque act
 
    :param int id_role: Identifiant du role. Utilisation de ``g.current_user`` si non spécifié
                        (nécessite de se trouver dans une route authentifiée).
-   :param str module_code: Code du module. ``GEONATURE`` si non précisé.
+   :param str module_code: Code du module. Si non spécifié, utilisation de ``g.current_module``
+                           si définie, ``GEONATURE`` sinon.
    :param str object_code: Code de l’objet. ``ALL`` si non précisé.
    :return: Dictionnaire de scope pour chaque action du CRUVED.
    :rtype: dict[str, int]
@@ -910,6 +1217,125 @@ Exemple d’usage :
     >>> from geonature.core.gn_permissions.tools import get_scopes_by_action
     >>> get_scopes_by_action(id_role=3, module_code="METADATA")
     {'C': 3, 'R': 3, 'U': 3, 'V': 3, 'E': 3, 'D': 3}
+
+
+Restreindre une route aux utilisateurs avec des permissions avancées
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Utiliser le décorateur ``@permissions_required`` :
+
+.. py:decorator:: permissions_required
+
+   :param action: Type d'action effectuée par la route
+                  (Create, Read, Update, Validate, Export, Delete)
+   :type action: str["C", "R", "U", "V", "E", "D"]
+   :param module_code: Code du module sur lequel on veut vérifier les permissions.
+   :type module_code: str
+   :param object_code: Code de l’objet sur lequel on veut vérifier les permissions.
+    Si non fourni, on vérifie la portée sur l’objet ``ALL``.
+   :type object_code: str, optional
+
+Lorsque l’utilisateur n’est pas connecté, le comportement est le même que le décorateur ``@login_required``.
+Lorsque celui-ci est connecté, le décorateur va récupérer l’ensemble des permissions pour l’action donnée dans le module donnée (et éventuellement l’objet donnée).
+Si aucune permission n’est trouvée, alors une erreur 403 (Forbidden) est levée.
+
+.. warning::
+
+    Le décorateur ne vérifie pas si le jeu de permissions est suffisant pour accéder
+    aux ressources demandées. C’est à votre route d’implémenter cette vérification,
+    celle-ci recevant le jeu de permissions en argument.
+
+
+Exemple d’utilisation :
+
+.. code-block:: python
+
+    from geonature.core.gn_permissions.decorators import permissions_required
+
+    @blueprint.route('/mysensibleview', methods=['GET'])
+    @permissions_required(
+            'R',
+            module_code="SYNTHESE"
+    )
+    def my_sensible_view(permissions):
+        for perm in permissions:
+            if perm.has_other_filters_than("SCOPE", "SENSITIVITY"):
+                continue
+            if perm.scope_value > 2 and not perm.sensitivity_filter:
+                break
+        else:
+            raise Forbidden
+
+
+Récupération manuelle des permissions avancées
+""""""""""""""""""""""""""""""""""""""""""""""
+
+Utiliser la fonction ``get_permissions`` :
+
+.. py:function:: get_permissions(action_code, id_role, module_code, object_code)
+
+   Retourne l’ensemble des permissions de l’utilisateur donnée pour l’action, le module et l’objet précisé.
+
+   :param action_code: Code de l’action.
+   :type action_code: str["C", "R", "U", "V", "E", "D"]
+   :param id_role: Identifiant du role. Utilisation de ``g.current_user`` si non spécifié
+                   (nécessite de se trouver dans une route authentifiée).
+   :type id_role: int, optional
+   :param module_code: Code du module. Si non spécifié, utilisation de ``g.current_module``
+   :type module_code: str, optional
+   :param object_code: Code de l’objet. Si non spécifié, utilisation de ``g.current_object``,
+                       ``ALL`` à défaut.
+   :type object_code: str, optional
+   :return: Liste de permissions
+   :rtype: list[Permission]
+
+
+À propos de l’API « scope »
+"""""""""""""""""""""""""""
+
+Certains modules supportent des permissions avec plusieurs types de filtres (par exemple, filtre d’appartenance et filtre de sensibilité), ce qui amène à devoir définir plusieurs permissions pour une même action dans un module donnée (par exemple, droit de lecteur des données de mon organisme sans restriction de sensibilité + droit de lecteur des données non sensible sans restriction d’appartenance).
+
+Cependant, cet usage est très peu répandu, la plupart des modules acceptant uniquement un filtre d’appartenance, voir aucun filtre.
+Ainsi, l’API « scope » (décorateur ``@check_cruved_scope``, fonctions ``get_scope`` et ``get_scopes_by_action``) visent à simplifier l’usage des permissions dans ces modules en résumant les droits de l’utilisateur par un entier de 0 à 4 :
+
+- 0 : aucune donnée (pas de permission)
+- 1 : données m’appartenant
+- 2 : données appartenant à mon organisme
+- 3 : toutes les données (permission sans filtre d’appartenance)
+
+L’utilisateur héritant des permissions des différents groupes auquel il appartient en plus de ses permissions personnelles, l’API « scope » s’occupe de calculer le scope maximal de l’utilisateur.
+
+
+Rajouter un nouveau type de filtre
+""""""""""""""""""""""""""""""""""
+
+On suppose souhaiter l’ajout d’un nouveau type de filtre « foo ».
+
+1. Rajouter une colonne dans la table ``t_permissions`` nommé ``foo_filter`` du type désiré (booléen, entier, …) avec éventuellement une contrainte de clé étrangère.
+   Dans le cas où le filtre peut contenir une liste de valeur contrôlées par une Foreign Key, on préfèrera l’ajout d’une nouvelle table contenant une Foreign Key vers ``t_permissions.id_permission`` (par exemple, filtre géographique avec liste d’``id_area`` ou filtre taxonomique avec liste de ``cd_nom``).
+
+2. Rajouter une colonne booléenne dans la table ``t_permissions_available`` nommé ``foo_filter``.
+
+3. Faire évoluer les modèles Python ``Permission`` et ``PermissionAvailable`` pour refléter les changements du schéma de base de données.
+
+4. Compléter ``Permission.filters_fields`` et ``PermissionAvailable.filters_fields`` (*e.g.* ``"FOO": foo_filter``).
+
+5. Vérifier que la propriété ``Permission.filters`` fonctionne correctement avec le nouveau filtre : celui-ci doit être renvoyé uniquement s’il est défini.
+   Le cas d’une relationship n’a encore jamais été traité.
+
+6. Optionel : Rajouter une méthode statique ``Permission.__FOO_le__(a, b)``.
+   Celle-ci reçoit en argument 2 filtres FOO et doit renvoyer ``True`` lorsque le filtre ``a`` est plus restrictif (au autant) que le filtre ``b``.
+   Par exemple, dans le cas d’un filtre géographique, on renvera ``True`` si ``b`` vaut ``None`` (pas de restriction géographique) ou si la liste des zonages ``a`` est un sous-ensemble de la liste des zonages ``b``.
+   Cette méthode permet d’optimiser le jeu de permission en supprimant les permissions redondantes.
+
+7. Compléter la classe ``PermFilter`` qui permet l’affichage des permissions dans Flask-Admin (permissions des utilisateurs et des groupes).
+   Attention, Flask-Admin utilise FontAwesome version **4**.
+
+8. Faire évoluer Flask-Admin (classes ``PermissionAdmin`` et ``PermissionAvailableAdmin``) pour prendre en charge le nouveau type de filtre.
+
+9. Implémenter le support de son nouveau filtre à l’endroit voulu (typiquement la synthèse).
+
+10. Compléter ou faire évoluer la table ``t_permissions_available`` pour déclarer le nouveau filtre comme disponible pour son module.
 
 
 Développement Frontend
@@ -1094,6 +1520,17 @@ Exemple d'utilisation avec une liste simple :
     </table>
 
 
+Gestion des erreurs
+*******************
+
+GeoNature utilise un intercepteur générique afin d’afficher un toaster en cas d’erreur lors d’une requête HTTP.
+Si vous souhaitez traiter l’erreur vous-même, et empêcher le toaster par défaut de s’afficher, vous pouvez définir un header ``not-to-handle`` à votre requête :
+
+.. code-block:: typescript
+
+    this._http.get('/url', { headers: { "not-to-handle": 'true' } })
+
+
 Tests
 *****
 
@@ -1176,7 +1613,7 @@ Pour l’installation du module, voir :ref:`install-gn-module`.
 
 
 Bonnes pratiques Frontend
-"""""""""""""""""""""""""
+*************************
 
 - Pour l'ensemble des composants cartographiques et des formulaires (taxonomie, nomenclatures...), il est conseillé d'utiliser les composants présents dans le module 'GN2CommonModule'.
 
@@ -1238,10 +1675,16 @@ Release
 Pour sortir une nouvelle version de GeoNature :
 
 - Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, RefGeo, Utils-Flask-SQLAlchemy, Utils-Flask-SQLAlchemy-Geo)
-- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances
-- Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``, ``config/settings.ini.sample``, ``backend/requirements-dependencies.in`` (puis regénérer ``backend/requirements.txt`` avec ``pip compile``)
-- Complétez le fichier ``docs/CHANGELOG.rst`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
+- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances et que le  `requirements-dependencies.in` a bien été MAJ.
+- Regénérer les `requirements.txt` et `requirements-dev.txt` avec les commandes suivantes dans la plus petite version de python supportée par GeoNature
+::
+    
+    pip-compile requirements.in > requirements.txt
+    pip-compile requirements-dev.in > requirements-dev.txt
+
+- Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``, ``backend/requirements-dependencies.in`` (puis regénérer ``backend/requirements.txt`` avec ``pip compile``)
+- Complétez le fichier ``docs/CHANGELOG.md`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
 - Mettez à jour le fichier ``VERSION``
 - Mergez la branche ``develop`` dans la branche ``master``
 - Faites la release (https://github.com/PnX-SI/GeoNature/releases) en la taguant ``X.Y.Z`` (sans ``v`` devant) et en copiant le contenu du Changelog
-- Dans la branche ``develop``, modifiez le fichier ``VERSION`` en ``X.Y.Z.dev0`` et pareil dans le fichier ``docs/CHANGELOG.rst``
+- Dans la branche ``develop``, modifiez le fichier ``VERSION`` en ``X.Y.Z.dev0`` et pareil dans le fichier ``docs/CHANGELOG.md``

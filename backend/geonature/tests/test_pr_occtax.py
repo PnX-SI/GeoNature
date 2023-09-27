@@ -4,12 +4,11 @@ import pytest
 from datetime import datetime as dt
 
 from flask import url_for, current_app, g
-from werkzeug.exceptions import Forbidden, NotFound
+from werkzeug.exceptions import Unauthorized, Forbidden, NotFound
 from shapely.geometry import Point
 from geoalchemy2.shape import from_shape
 from sqlalchemy import func
 
-from geonature.core.gn_permissions.models import VUsersPermissions
 from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 from geonature.utils.config import config
@@ -160,11 +159,6 @@ def unexisting_id_releve():
     return (db.session.query(func.max(TRelevesOccurrence.id_releve_occtax)).scalar() or 0) + 1
 
 
-@pytest.fixture(scope="function")
-def permission(users):
-    return db.session.query(VUsersPermissions).filter_by(id_role=users["user"].id_role).first()
-
-
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets")
 class TestOcctax:
     def test_get_releve(self, users, releve_occtax):
@@ -237,8 +231,24 @@ class TestOcctax:
         data = response.json
         assert data["properties"]["id_module"] == module.id_module
 
-    def test_get_defaut_nomenclatures(self):
+    def test_get_defaut_nomenclatures(self, users):
         response = self.client.get(url_for("pr_occtax.getDefaultNomenclatures"))
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user_cookie(self.client, users["user"])
+
+        response = self.client.get(url_for("pr_occtax.getDefaultNomenclatures"))
+        assert response.status_code == 200
+
+    def test_get_one_counting(self, occurrence, users):
+        print(occurrence.cor_counting_occtax)
+        set_logged_user_cookie(self.client, users["admin_user"])
+        response = self.client.get(
+            url_for(
+                "pr_occtax.getOneCounting",
+                id_counting=occurrence.cor_counting_occtax[0].id_counting_occtax,
+            )
+        )
         assert response.status_code == 200
 
 
@@ -340,32 +350,4 @@ class TestOcctaxGetReleveFilterWrongType:
 
         response = self.client.get(url_for("pr_occtax.getReleves"), query_string=query_string)
 
-        assert response.status_code == 500
-
-
-@pytest.mark.usefixtures("temporary_transaction")
-class TestReleveRepository:
-    def test_get_one(self, releve_occtax, permission):
-        repository = ReleveRepository(TRelevesOccurrence)
-        repo = repository.get_one(id_releve=releve_occtax.id_releve_occtax, info_user=permission)
-
-        assert repo[0].id_releve_occtax == releve_occtax.id_releve_occtax
-
-    def test_get_one_not_found(self, unexisting_id_releve, permission):
-        repository = ReleveRepository(TRelevesOccurrence)
-
-        with pytest.raises(NotFound):
-            repository.get_one(id_releve=unexisting_id_releve, info_user=permission)
-
-    def test_delete(self, releve_occtax, permission):
-        repository = ReleveRepository(TRelevesOccurrence)
-
-        rel = repository.delete(releve_occtax.id_releve_occtax, permission)
-
-        assert rel.id_releve_occtax == releve_occtax.id_releve_occtax
-
-    def test_delete_not_found(self, unexisting_id_releve):
-        repository = ReleveRepository(TRelevesOccurrence)
-
-        with pytest.raises(NotFound):
-            repository.delete(unexisting_id_releve, permission)
+        assert response.status_code == 500  # FIXME 500 should not be possible

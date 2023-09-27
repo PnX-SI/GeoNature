@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
 import { tap, map } from 'rxjs/operators';
 
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '@geonature_common/service/common.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-af-card',
@@ -24,12 +24,17 @@ export class AfCardComponent implements OnInit {
   // Tableau contenant les labels du graphe
   public pieChartLabels = [];
   // Tableau contenant les données du graphe
-  public pieChartData = [];
+  public pieChartData = [
+    {
+      data: [],
+    },
+  ];
   // Tableau contenant les couleurs et la taille de bordure du graphe
   public pieChartColors = [];
   // Dictionnaire contenant les options à implémenter sur le graphe (calcul des pourcentages notamment)
   public pieChartOptions = {
     cutoutPercentage: 80,
+    responsive: true,
     legend: {
       display: 'true',
       position: 'left',
@@ -63,13 +68,13 @@ export class AfCardComponent implements OnInit {
   };
 
   public spinner = true;
-  public APP_CONFIG = AppConfig;
 
   constructor(
     private _dfs: DataFormService,
     private _route: ActivatedRoute,
     private _router: Router,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -127,12 +132,11 @@ export class AfCardComponent implements OnInit {
       .getTaxaDistribution('group2_inpn', { id_af: this.id_af })
       .pipe(tap(() => (this.spinner = false)))
       .subscribe((res) => {
-        this.pieChartData.length = 0;
         this.pieChartLabels.length = 0;
-        this.pieChartData = [];
+        this.pieChartData[0].data = [];
         this.pieChartLabels = [];
         for (let row of res) {
-          this.pieChartData.push(row['count']);
+          this.pieChartData[0].data.push(row['count']);
           this.pieChartLabels.push(row['group']);
         }
 
@@ -143,10 +147,10 @@ export class AfCardComponent implements OnInit {
   }
 
   getPdf() {
-    const url = `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${this.af.id_acquisition_framework}`;
-    const chart_img = this.chart ? this.chart.ctx['canvas'].toDataURL('image/png') : '';
-    this._dfs.uploadCanvas(chart_img).subscribe((data) => {
-      window.open(url);
-    });
+    this._dfs.exportPDF(
+      this.chart ? this.chart.toBase64Image() : '',
+      `${this.config.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${this.af.id_acquisition_framework}`,
+      'af'
+    );
   }
 }

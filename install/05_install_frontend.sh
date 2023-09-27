@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # DESC: Usage help
 # ARGS: None
@@ -53,57 +53,45 @@ parseScriptOptions "${@}"
 
 
 write_log "Préparation du frontend..."
-
-# Create external assets directory
 cd "${BASE_DIR}/frontend"
-mkdir -p "src/external_assets"
 
-# Copy the custom components
-if [[ ! -f src/assets/custom.css ]]; then
-  write_log "Création des fichiers de customisation du frontend..."
-  cp -n src/assets/custom.sample.css src/assets/custom.css
+echo "Activation du venv..."
+source "${BASE_DIR}/backend/venv/bin/activate"
+
+# create config.json
+if [[ ! -f src/assets/config.json ]]; then
+  write_log "Création des fichiers de configuration du frontend"
+  cp -n src/assets/config.sample.json src/assets/config.json
 fi
-custom_component_dir="src/custom/components/"
-for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
-  if [[ ! -f "${file%.sample}" ]]; then
-    cp "${file}" "${file%.sample}"
-  fi
-done
+api_end_point=$(geonature get-config API_ENDPOINT)
+echo "REMPLACE API ENDPOINT"
+echo $api_end_point
+sed -i 's|"API_ENDPOINT": .*$|"API_ENDPOINT" : "'${api_end_point}'"|' src/assets/config.json
+cat src/assets/config.json
 
-if [[ -z "${CI}" || "${CI}" == false ]] ; then
-  echo "Activation du venv..."
-  source "${BASE_DIR}/backend/venv/bin/activate"
+echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
+# Generate the app.config.ts
+geonature generate-frontend-config
 
-  echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
-  # Generate the app.config.ts
-  geonature generate-frontend-config
-
-  echo "Désactivation du venv..."
-  deactivate
-fi
+echo "Désactivation du venv..."
+deactivate
 
 if [[ "${CI}" == true ]] ; then
   echo "Cypress dans Github action se charge de lancer Npm build et install"
   exit 0
 fi
 
-echo "Installation de nvm"
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-nvm install
-
 # Frontend installation
 echo "Installation des paquets Npm"
 cd "${BASE_DIR}/frontend"
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 nvm use || exit 1
 if [[ "${MODE}" == "dev" ]]; then
   npm ci || exit 1
 else
   npm ci --omit=dev || exit 1
 fi
-cd "${BASE_DIR}/backend/static"
-npm ci || exit 1
 
 cd "${BASE_DIR}/frontend"
 

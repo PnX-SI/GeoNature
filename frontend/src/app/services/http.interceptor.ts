@@ -9,12 +9,17 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
-import { AppConfig } from '@geonature_config/app.config';
+import { ActivatedRoute } from '@angular/router';
+import { ConfigService } from './config.service';
 
 @Injectable()
 export class MyCustomInterceptor implements HttpInterceptor {
-  constructor(public inj: Injector, public router: Router, private _toastrService: ToastrService) {}
+  constructor(
+    public inj: Injector,
+    public route: ActivatedRoute,
+    private _toastrService: ToastrService,
+    public config: ConfigService
+  ) {}
 
   private handleError(error: any) {
     let errTitle: string;
@@ -22,7 +27,10 @@ export class MyCustomInterceptor implements HttpInterceptor {
     let enableHtml: boolean = false;
     if (error instanceof HttpErrorResponse) {
       if ([401, 404].includes(error.status)) return;
-      if (
+      if (error.status == 502) {
+        errTitle = 'Timeout';
+        errMsg = 'La requête n’a pas abouti dans le temps imparti';
+      } else if (
         typeof error.error === 'object' &&
         'name' in error.error &&
         'description' in error.error
@@ -52,7 +60,10 @@ export class MyCustomInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // set withCredential = true to send and accept cookie from the API
-    if (this.extractHostname(AppConfig.API_ENDPOINT) == this.extractHostname(request.url)) {
+    if (
+      this.config.API_ENDPOINT &&
+      this.extractHostname(this.config.API_ENDPOINT) == this.extractHostname(request.url)
+    ) {
       request = request.clone({
         withCredentials: true,
       });
@@ -62,7 +73,9 @@ export class MyCustomInterceptor implements HttpInterceptor {
     // and intercept error
     return next.handle(request).pipe(
       catchError((err) => {
-        this.handleError(err);
+        if (!request.headers.get('not-to-handle')) {
+          this.handleError(err);
+        }
         return throwError(err);
       })
     );

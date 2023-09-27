@@ -7,10 +7,10 @@ import { CookieService } from 'ng2-cookies';
 import 'rxjs/add/operator/delay';
 import { forkJoin } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { AppConfig } from '../../../conf/app.config';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { ModuleService } from '../../services/module.service';
 import { RoutingService } from '@geonature/routing/routing.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 export interface User {
   user_login: string;
@@ -35,15 +35,9 @@ export class AuthService {
     private _cookie: CookieService,
     private cruvedService: CruvedStoreService,
     private _routingService: RoutingService,
-    private moduleService: ModuleService
-  ) {
-    // Allow to use public access via a direct url, with query param "access=public"
-    this.route.queryParams.subscribe((params) => {
-      if ('access' in params && params['access'] == 'public' && AppConfig.PUBLIC_ACCESS_USERNAME) {
-        this.signinPublicUser();
-      }
-    });
-  }
+    private moduleService: ModuleService,
+    public config: ConfigService
+  ) {}
 
   setCurrentUser(user) {
     localStorage.setItem('current_user', JSON.stringify(user));
@@ -72,11 +66,11 @@ export class AuthService {
   }
 
   loginOrPwdRecovery(data: any): Observable<any> {
-    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/users/login/recovery`, data);
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/users/login/recovery`, data);
   }
 
   passwordChange(data: any): Observable<any> {
-    return this._http.put<any>(`${AppConfig.API_ENDPOINT}/users/password/new`, data);
+    return this._http.put<any>(`${this.config.API_ENDPOINT}/users/password/new`, data);
   }
 
   manageUser(data): any {
@@ -90,61 +84,24 @@ export class AuthService {
     };
     this.setCurrentUser(userForFront);
     this.loginError = false;
-    // Now that we are logged, we fetch the cruved again, and redirect once received
-    forkJoin({
-      modules: this.moduleService
-        .loadModules()
-        .pipe(tap((modules) => this._routingService.loadRoutes(modules))),
-    }).subscribe(() => {
-      this.isLoading = false;
-      let next = this.route.snapshot.queryParams['next'];
-      let route = this.route.snapshot.queryParams['route'];
-      // next means redirect to url
-      // route means navigate to angular route
-      if (next) {
-        if (route) {
-          window.location.href = next + '#' + route;
-        } else {
-          window.location.href = next;
-        }
-      } else if (route) {
-        this.router.navigateByUrl(route);
-      } else {
-        this.router.navigate(['']);
-      }
-    });
   }
 
   signinUser(user: any) {
-    this.isLoading = true;
-
     const options = {
       login: user.username,
       password: user.password,
     };
-    this._http.post<any>(`${AppConfig.API_ENDPOINT}/auth/login`, options).subscribe(
-      (data) => this.manageUser(data),
-      // error callback
-      () => {
-        this.isLoading = false;
-        this.loginError = true;
-      }
-    );
+
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/auth/login`, options);
   }
 
-  signinPublicUser() {
-    this._http.post<any>(`${AppConfig.API_ENDPOINT}/auth/public_login`, {}).subscribe(
-      (data) => this.manageUser(data),
-      // error callback
-      () => {
-        this.isLoading = false;
-        this.loginError = true;
-      }
-    );
+  signinPublicUser(): Observable<any> {
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/auth/public_login`, {});
   }
+
   signupUser(data: any): Observable<any> {
     const options = data;
-    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/users/inscription`, options);
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/users/inscription`, options);
   }
 
   decodeObjectCookies(val) {
@@ -171,18 +128,17 @@ export class AuthService {
   }
 
   logout() {
-    this.deleteAllCookies();
     this.cleanLocalStorage();
     this.cruvedService.clearCruved();
 
-    if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
-      document.location.href = `${AppConfig.CAS_PUBLIC.CAS_URL_LOGOUT}?service=${AppConfig.URL_APPLICATION}`;
+    if (this.config.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
+      document.location.href = `${this.config.CAS_PUBLIC.CAS_URL_LOGOUT}?service=${this.config.URL_APPLICATION}`;
     } else {
       this.router.navigate(['/login']);
       // call the logout route to delete the session
       // TODO: in case of different cruved user in DEPOBIO context must run this routes
       // but actually make bug the INPN CAS deconnexion
-      this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_auth/logout_cruved`).subscribe(() => {
+      this._http.get<any>(`${this.config.API_ENDPOINT}/auth/logout`).subscribe(() => {
         location.reload();
       });
       // refresh the page to refresh all the shared service to avoid cruved conflict
@@ -197,5 +153,18 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return this._cookie.get('token') !== null;
+  }
+
+  handleLoginError() {
+    this.isLoading = false;
+    this.loginError = true;
+  }
+
+  enableLoader() {
+    this.isLoading = true;
+  }
+
+  disableLoader() {
+    this.isLoading = false;
   }
 }

@@ -8,10 +8,11 @@ import {
   IterableDiffer,
 } from '@angular/core';
 import { DataFormService } from '../data-form.service';
-import { AppConfig } from '../../../../conf/app.config';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { CommonService } from '../../service/common.service';
 import { DatasetStoreService } from './dataset.service';
+import { ConfigService } from '@geonature/services/config.service';
+import { AbstractControl, Validators } from '@angular/forms';
 
 /**
  *  Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
@@ -61,7 +62,8 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     private _dfs: DataFormService,
     private _commonService: CommonService,
     private _iterableDiffers: IterableDiffers,
-    public datasetStore: DatasetStoreService
+    public datasetStore: DatasetStoreService,
+    public config: ConfigService
   ) {
     super();
     this.iterableDiffer = this._iterableDiffers.find([]).create(null);
@@ -83,22 +85,22 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     if (this.creatableInModule) {
       filter_param['create'] = this.creatableInModule;
     }
-    this._dfs.getDatasets((params = filter_param)).subscribe(
-      (res) => {
-        this.datasetStore.filteredDataSets = res;
-        this.datasetStore.datasets = res;
-        this.valueLoaded.emit({ value: this.datasetStore.datasets });
-      },
-      (error) => {
-        if (error.status === 404) {
-          if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
-            this._commonService.translateToaster('warning', 'MetaData.NoJDDMTD');
-          } else {
-            this._commonService.translateToaster('warning', 'MetaData.NoJDD');
-          }
+    this._dfs.getDatasets((params = filter_param)).subscribe((res) => {
+      this.datasetStore.filteredDataSets = res;
+      this.datasetStore.datasets = res;
+      this.valueLoaded.emit({ value: this.datasetStore.datasets });
+      if (
+        res.length == 1 &&
+        this.parentFormControl.hasValidator(Validators.required) &&
+        [null, []].includes(this.parentFormControl.value)
+      ) {
+        let value: number[] | number = res[0].id_dataset;
+        if (this.multiSelect) {
+          value = [res[0].id_dataset];
         }
+        this.parentFormControl.patchValue(value);
       }
-    );
+    });
   }
 
   filterItems(event) {

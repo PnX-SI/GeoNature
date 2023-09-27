@@ -37,7 +37,7 @@
             class="form-control form-control-sm"
             type="text"
             placeholder="Rechercher"
-            [formControl]="metadataService.rapidSearchControl"
+            [formControl]="rapidSearchControl"
             data-qa="pnx-metadata-search"
           >
         </div>
@@ -73,7 +73,7 @@
           >
             <div class="col-md-1">ID</div>
             <div class="col-md-2">Nom</div>
-            <div class="col-md-2">Date de création</div>
+            <div class="col-md-2">Date de lancement</div>
             <div class="col-md-5">Acteurs</div>
             <div class="col-md-1">Actions</div>
           </div>
@@ -89,6 +89,7 @@
             <mat-expansion-panel
               [expanded]="expandAccordions"
               [attr.data-qa]='"pnx-metadata-acq-framework"'
+              (opened)="onOpenExpansionPanel(af)"
             >
               <mat-expansion-panel-header
                 collapsedHeight="*"
@@ -111,7 +112,7 @@
                       <small style="color: gray"> {{ af.unique_acquisition_framework_id }} </small>
                     </a>
                   </div>
-                  <div class="col-md-2">{{ af.meta_create_date | date: 'd/MM/yyyy' }}</div>
+                  <div class="col-md-2">{{ af.acquisition_framework_start_date | date: 'd/MM/yyyy' }}</div>
                   <section class="col-md-5">
                     <span *ngIf="af.creator">
                       <b> {{ af.creator?.nom_complet }} : </b> créateur
@@ -155,31 +156,15 @@
                       <mat-icon> create</mat-icon>
                     </a>
                     <button
-                      *ngIf="APP_CONFIG.METADATA?.ENABLE_CLOSE_AF"
+                      *ngIf="config.METADATA?.ENABLE_CLOSE_AF"
                       type="button"
                       mat-icon-button
-                      [disabled]="!af.cruved.V || !af.opened || af['t_datasets'].length == 0"
+                      [disabled]="!af.opened"
                       (click)="
                         openPublishModalAf($event, af.id_acquisition_framework, publishModal)
                       "
                     >
-                      <mat-icon
-                        *ngIf="af.opened == false; else elifEmpty"
-                        matTooltip="Le cadre d'acquisition a déjà été déposé"
-                      >
-                        gavel
-                      </mat-icon>
-                      <ng-template #elifEmpty>
-                        <mat-icon
-                          *ngIf="af['t_datasets'].length == 0; else elsePublish"
-                          matTooltip="Le cadre d'acquisition est vide"
-                        >
-                          gavel
-                        </mat-icon>
-                      </ng-template>
-                      <ng-template #elsePublish>
                         <mat-icon matTooltip="Déposer le cadre d'acquisition"> gavel </mat-icon>
-                      </ng-template>
                     </button>
                   </div>
                 </mat-panel-title>
@@ -197,7 +182,7 @@
                 </thead>
                 <tbody>
                   <tr
-                    *ngFor="let dataset of af.datasetsTemp; let last = last"
+                    *ngFor="let dataset of af.t_datasets; let last = last"
                     [attr.data-qa]='"pnx-metadata-dataset-name-"+dataset.dataset_name'
                     pnx-metadata-dataset
                     [dataset]="dataset"
@@ -209,7 +194,7 @@
         </mat-accordion>
         <mat-paginator
           #paginator
-          [length]="(metadataService.filteredAcquisitionFrameworks | async)?.length || 0"
+          [length]="acquisitionFrameworksLength"
           [pageSize]="metadataService.pageSize | async"
           [pageSizeOptions]="metadataService.pageSizeOptions"
           [pageIndex]="metadataService.pageIndex | async"
@@ -240,15 +225,26 @@
     style="align-items: flex-end"
   >
     <label> Rechercher sur:</label>
-    <select
+    <ng-select
+      [items]="meta_type"
       [formControl]="metadataService.form.get('selector')"
+      bindLabel="label"
+      bindValue="value"
       name="selecteur"
       id="selector"
-      class="form-control"
+      clearable=""false
     >
-      <option value="ds">Jeu de données</option>
-      <option value="af">Cadre d'acquisition</option>
-    </select>
+      <ng-template
+        ng-option-tmp
+        let-item="item"
+        let-index="index"
+        let-search="searchTerm"
+      >
+        <div [attr.data-qa]="item.value">
+          <span class="pre-wrap">{{item.label}}</span>
+        </div>
+      </ng-template>
+    </ng-select>
     <label>UUID</label>
     <input
       [formControl]="metadataService.form.get('uuid')"
@@ -266,40 +262,51 @@
       [parentFormControl]="metadataService.form.get('date')"
       label="Date de création"
     ></pnx-date>
-    <label>Acteur (organisme)</label>
 
-    <select
+    <label>Acteur (organisme)</label>
+    
+    <ng-select
+      [items]="organisms"
       [formControl]="metadataService.form.get('organism')"
-      class="form-control form-control"
-    >
-      <option
-        value=""
-        selected
-      >--</option>
-      <option
-        *ngFor="let org of organisms"
-        value="{{ org.id_organisme }}"
+      bindLabel="nom_organisme"
+      bindValue="id_organisme"
+      [multiple]="false"
+      [searchable]="true"
+      [clearable]="true"
       >
-        {{ org.nom_organisme }}
-      </option>
-    </select>
+      <ng-template
+        ng-option-tmp
+        let-item="item"
+        let-index="index"
+        let-search="searchTerm"
+      >
+        <div [matTooltip]="item.nom_organisme" [attr.data-qa]="item.id_organism">
+          <span class="pre-wrap">{{item.nom_organisme}}</span>
+        </div>
+      </ng-template>
+    </ng-select>
+
     <label> Acteur (personne)</label>
 
-    <select
-      class="form-control form-control"
+    <ng-select
+      [items]="roles"
       [formControl]="metadataService.form.get('person')"
-    >
-      <option
-        value=""
-        selected
-      >--</option>
-      <option
-        *ngFor="let role of roles"
-        value="{{ role.id_role }}"
+      bindLabel="nom_complet"
+      bindValue="id_role"
+      [multiple]="false"
+      [virtualScroll]="true"
       >
-        {{ role?.nom_complet }}
-      </option>
-    </select>
+      <ng-template
+        ng-option-tmp
+        let-item="item"
+        let-index="index"
+        let-search="searchTerm"
+      >
+        <div [matTooltip]="item.nom_complet" [attr.data-qa]="item.id_role">
+          <span class="pre-wrap">{{item.nom_complet}}</span>
+        </div>
+      </ng-template>
+    </ng-select>
 
     <div *ngIf="displayMetaAreaFilters() && metadataService.formBuilded">
       <div *ngFor="let area of areaFilters; let i = index">

@@ -1,15 +1,11 @@
 import datetime
 from uuid import UUID
+from packaging import version
 
 from flask import g
-from flask_sqlalchemy import BaseQuery
-from geonature.core.gn_permissions.tools import (
-    cruved_scope_for_user_in_module,
-    get_scopes_by_action,
-)
-from geonature.utils.errors import GeonatureApiError
+import flask_sqlalchemy
 import sqlalchemy as sa
-from sqlalchemy import ForeignKey, or_
+from sqlalchemy import ForeignKey, or_, and_
 from sqlalchemy.sql import select, func, exists
 from sqlalchemy.orm import relationship, exc, synonym
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
@@ -17,38 +13,54 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
 from utils_flask_sqla.generic import testDataType
 from werkzeug.exceptions import BadRequest, NotFound
-from werkzeug.datastructures import MultiDict
+import marshmallow as ma
+
+if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
+    from flask_sqlalchemy.query import Query
+else:
+    from flask_sqlalchemy import BaseQuery as Query
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User, Organisme
 from utils_flask_sqla.serializers import serializable
 
+from geonature.utils.errors import GeonatureApiError
 from geonature.utils.env import DB, db
+from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.core.gn_commons.models import cor_field_dataset, cor_module_dataset
 
 from ref_geo.models import LAreas
 
 
-class FilterMixin:
-    @classmethod
-    def compute_filter(cls, **kwargs):
-        f = sa.true()
-        for key, value in kwargs.items():
-            if "." in key:
-                rel_name, key = key.split(".", 1)
-                try:
-                    rel = getattr(cls, rel_name)
-                except AttributeError:
-                    continue
-                remote_cls = rel.property.mapper.class_
-                if not hasattr(remote_cls, "compute_filter"):
-                    continue
-                _f = remote_cls.compute_filter(**{key: value})
-                if rel.property.uselist:
-                    f &= rel.any(_f)
-                else:
-                    f &= rel.has(_f)
-        return f
+class DateFilterSchema(ma.Schema):
+    year = ma.fields.Integer()
+    month = ma.fields.Integer()
+    day = ma.fields.Integer()
+
+
+class MetadataFilterSchema(ma.Schema):
+    class Meta:
+        unknown = ma.EXCLUDE
+
+    uuid = ma.fields.UUID(allow_none=True)
+    name = ma.fields.String()
+    date = ma.fields.Nested(DateFilterSchema)
+    person = ma.fields.Integer()
+    organism = ma.fields.Integer()
+    areas = ma.fields.List(ma.fields.Integer())
+    search = ma.fields.String()
+
+    @ma.post_load(pass_many=False)
+    def convert_date(self, data, **kwargs):
+        if "date" in data:
+            date = data["date"]
+            try:
+                data["date"] = datetime.date(
+                    year=date["year"], month=date["month"], day=date["day"]
+                )
+            except TypeError as exc:
+                raise ma.ValidationError(*exc.args, field_name="date") from exc
+        return data
 
 
 class CorAcquisitionFrameworkObjectif(DB.Model):
@@ -221,33 +233,8 @@ class CorDatasetTerritory(DB.Model):
     )
 
 
-class CruvedMixin:
-    """
-    Classe abstraite permettant d'ajouter des méthodes de
-    contrôle d'accès à la donnée des class TDatasets et TAcquisitionFramework
-    """
-
-    def get_object_cruved(self, user_cruved):
-        """
-        Return the user's cruved for a Model instance.
-        Use in the map-list interface to allow or not an action
-        params:
-            - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
-            - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
-            - id_role: identifiant de la personne qui demande la route
-            - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
-            - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
-
-        Return: dict {'C': True, 'R': False ...}
-        """
-        return {
-            action: self.has_instance_permission(int(level))
-            for action, level in user_cruved.items()
-        }
-
-
 @serializable
-class TBibliographicReference(CruvedMixin, db.Model):
+class TBibliographicReference(db.Model):
     __tablename__ = "t_bibliographical_references"
     __table_args__ = {"schema": "gn_meta"}
     id_bibliographic_reference = DB.Column(DB.Integer, primary_key=True)
@@ -259,11 +246,11 @@ class TBibliographicReference(CruvedMixin, db.Model):
     publication_reference = DB.Column(DB.Unicode)
 
 
-class TDatasetsQuery(BaseQuery):
+class TDatasetsQuery(Query):
     def _get_read_scope(self, user=None):
         if user is None:
             user = g.current_user
-        cruved = get_scopes_by_action(id_role=user.id_role, module_code="GEONATURE")
+        cruved = get_scopes_by_action(id_role=user.id_role, module_code="METADATA")
         return cruved["R"]
 
     def _get_create_scope(self, module_code, user=None):
@@ -297,31 +284,79 @@ class TDatasetsQuery(BaseQuery):
             self = self.filter(or_(*ors))
         return self
 
-    def filter_by_params(self, params: MultiDict = MultiDict()):
-        if "active" in params:
-            self = self.filter(TDatasets.active == bool(params["active"]))
-            params.pop("active")
-        table_columns = TDatasets.__table__.columns
-        if "orderby" in params:
+    def filter_by_params(self, params={}, _af_search=True):
+        class DatasetFilterSchema(MetadataFilterSchema):
+            active = ma.fields.Boolean()
+            orderby = ma.fields.String()
+            module_code = ma.fields.String()
+            id_acquisition_frameworks = ma.fields.List(ma.fields.Integer(), allow_none=True)
+
+        params = DatasetFilterSchema().load(params)
+
+        active = params.get("active")
+        if active is not None:
+            self = self.filter(TDatasets.active == active)
+
+        module_code = params.get("module_code")
+        if module_code:
+            self = self.filter(TDatasets.modules.any(module_code=module_code))
+
+        af_ids = params.get("id_acquisition_frameworks")
+        if af_ids:
+            self = self.filter(
+                sa.or_(*[TDatasets.id_acquisition_framework == af_id for af_id in af_ids])
+            )
+
+        uuid = params.get("uuid")
+        if uuid:
+            self = self.filter(TDatasets.unique_dataset_id == uuid)
+
+        name = params.get("name")
+        if name:
+            self = self.filter(TDatasets.dataset_name.ilike(f"%{name}%"))
+
+        date = params.get("date")
+        if date:
+            self = self.filter(sa.cast(TDatasets.meta_create_date, sa.DATE) == date)
+
+        actors = []
+        person = params.get("person")
+        if person:
+            actors.append(TDatasets.cor_dataset_actor.any(CorDatasetActor.id_role == person))
+        organism = params.get("organism")
+        if organism:
+            actors.append(TDatasets.cor_dataset_actor.any(CorDatasetActor.id_organism == organism))
+        if actors:
+            self = self.filter(sa.or_(*actors))
+
+        areas = params.get("areas")
+        if areas:
+            self = self.filter_by_areas(areas)
+
+        search = params.get("search")
+        if search:
+            ors = [
+                TDatasets.dataset_name.ilike(f"%{search}%"),
+                sa.cast(TDatasets.id_dataset, sa.String) == search,
+            ]
+            # enable uuid search only with at least 5 characters
+            if len(search) >= 5:
+                ors.append(sa.cast(TDatasets.unique_dataset_id, sa.String).like(f"{search}%"))
             try:
-                orderCol = getattr(table_columns, params.pop("orderby"))
-                self = self.order_by(orderCol)
-            except AttributeError:
-                raise BadRequest("the attribute to order on does not exist")
-        if "module_code" in params:
-            self = self.filter(TDatasets.modules.any(module_code=params.pop("module_code")))
-        # Generic Filters
-        for key, values in params.lists():
-            try:
-                col = getattr(TDatasets, key)
-            except AttributeError:
-                raise BadRequest(f"Column {key} does not exist")
-            col = getattr(table_columns, key)
-            for v in values:
-                testT = testDataType(v, col.type, key)
-                if testT:
-                    raise BadRequest(testT)
-            ors = [col == v for v in values]
+                date = datetime.datetime.strptime(search, "%d/%m/%Y").date()
+            except ValueError:
+                pass
+            else:
+                ors.append(sa.cast(TDatasets.meta_create_date, sa.DATE) == date)
+            if _af_search:
+                ors.append(
+                    TDatasets.acquisition_framework.has(
+                        TAcquisitionFramework.query.filter_by_params(
+                            {"search": search},
+                            _ds_search=False,
+                        ).whereclause
+                    )
+                )
             self = self.filter(or_(*ors))
         return self
 
@@ -347,13 +382,13 @@ class TDatasetsQuery(BaseQuery):
         from geonature.core.gn_synthese.models import Synthese
 
         areaFilter = []
-        for type_area, id_area in areas:
-            areaFilter.append(sa.and_(LAreas.id_type == type_area, LAreas.id_area == id_area))
+        for id_area in areas:
+            areaFilter.append(LAreas.id_area == id_area)
         return self.filter(TDatasets.synthese_records.any(Synthese.areas.any(sa.or_(*areaFilter))))
 
 
 @serializable(exclude=["user_actors", "organism_actors"])
-class TDatasets(CruvedMixin, FilterMixin, db.Model):
+class TDatasets(db.Model):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
     query_class = TDatasetsQuery
@@ -409,8 +444,8 @@ class TDatasets(CruvedMixin, FilterMixin, db.Model):
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("RESOURCE_TYP"),
     )
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
+    meta_create_date = DB.Column(DB.DateTime, server_default=FetchedValue())
+    meta_update_date = DB.Column(DB.DateTime, server_default=FetchedValue())
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean, server_default=FetchedValue())
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
@@ -491,7 +526,7 @@ class TDatasets(CruvedMixin, FilterMixin, db.Model):
         if scope == 0:
             return False
         elif scope in (1, 2):
-            if g.current_user == self.digitizer or g.current_user in self.user_actors:
+            if g.current_user.id_role == self.id_digitizer or g.current_user in self.user_actors:
                 return True
             if scope == 2 and g.current_user.organisme in self.organism_actors:
                 return True
@@ -520,29 +555,13 @@ class TDatasets(CruvedMixin, FilterMixin, db.Model):
             .scalar()
         )
 
-    @classmethod
-    def compute_filter(cls, **kwargs):
-        f = super().compute_filter(**kwargs)
-        uuid = kwargs.get("uuid")
-        if uuid is not None:
-            try:
-                uuid = UUID(uuid.strip())
-            except TypeError:
-                pass
-            else:
-                f &= TDatasets.unique_dataset_id == uuid
-        name = kwargs.get("name")
-        if name is not None:
-            f &= TDatasets.dataset_name.ilike(f"%{name}%")
-        return f
 
-
-class TAcquisitionFrameworkQuery(BaseQuery):
-    def _get_read_scope(self):
-        cruved, herited = cruved_scope_for_user_in_module(
-            id_role=g.current_user.id_role, module_code="GEONATURE"
-        )
-        return int(cruved["R"])
+class TAcquisitionFrameworkQuery(Query):
+    def _get_read_scope(self, user=None):
+        if user is None:
+            user = g.current_user
+        cruved = get_scopes_by_action(id_role=user.id_role, module_code="METADATA")
+        return cruved["R"]
 
     def filter_by_scope(self, scope, user=None):
         if user is None:
@@ -585,21 +604,88 @@ class TAcquisitionFrameworkQuery(BaseQuery):
             ),
         )
 
-    def filter_by_params(self, params={}):
+    def filter_by_params(self, params={}, _ds_search=True):
         # XXX frontend retro-compatibility
-        selector = params.get("selector")
-        areas = params.pop("areas", None)
-        if selector == "ds":
-            params = {f"datasets.{key}": value for key, value in params.items()}
-        f = TAcquisitionFramework.compute_filter(**params)
-        qs = self.filter(f)
+        if params.get("selector") == "ds":
+            ds_params = params
+            params = {"datasets": ds_params}
+            if "search" in ds_params:
+                params["search"] = ds_params.pop("search")
+        ds_params = params.get("datasets")
+        if ds_params:
+            ds_filter = TDatasets.query.filter_by_params(ds_params).whereclause
+            if ds_filter is not None:  # do not exclude AF without any DS
+                self = self.filter(TAcquisitionFramework.datasets.any(ds_filter))
+
+        params = MetadataFilterSchema().load(params)
+
+        uuid = params.get("uuid")
+        if uuid:
+            self = self.filter(TAcquisitionFramework.unique_acquisition_framework_id == uuid)
+
+        name = params.get("name")
+        if name:
+            self = self.filter(TAcquisitionFramework.acquisition_framework_name.ilike(f"%{name}%"))
+
+        date = params.get("date")
+        if date:
+            self = self.filter(TAcquisitionFramework.acquisition_framework_start_date == date)
+
+        actors = []
+        person = params.get("person")
+        if person:
+            actors.append(
+                TAcquisitionFramework.cor_af_actor.any(
+                    CorAcquisitionFrameworkActor.id_role == person
+                )
+            )
+        organism = params.get("organism")
+        if organism:
+            actors.append(
+                TAcquisitionFramework.cor_af_actor.any(
+                    CorAcquisitionFrameworkActor.id_organism == organism
+                )
+            )
+        if actors:
+            self = self.filter(sa.or_(*actors))
+
+        areas = params.get("areas")
         if areas:
-            qs = qs.filter_by_areas(areas)
-        return qs
+            self = self.filter_by_areas(areas)
+
+        search = params.get("search")
+        if search:
+            ors = [
+                TAcquisitionFramework.acquisition_framework_name.ilike(f"%{search}%"),
+                sa.cast(TAcquisitionFramework.id_acquisition_framework, sa.String) == search,
+            ]
+            # enable uuid search only with at least 5 characters
+            if len(search) >= 5:
+                ors.append(
+                    sa.cast(TAcquisitionFramework.unique_acquisition_framework_id, sa.String).like(
+                        f"{search}%"
+                    )
+                )
+            try:
+                date = datetime.datetime.strptime(search, "%d/%m/%Y").date()
+            except ValueError:
+                pass
+            else:
+                ors.append(TAcquisitionFramework.acquisition_framework_start_date == date)
+            if _ds_search:
+                ors.append(
+                    TAcquisitionFramework.datasets.any(
+                        TDatasets.query.filter_by_params(
+                            {"search": search}, _af_search=False
+                        ).whereclause
+                    ),
+                )
+            self = self.filter(sa.or_(*ors))
+        return self
 
 
 @serializable(exclude=["user_actors", "organism_actors"])
-class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
+class TAcquisitionFramework(db.Model):
     __tablename__ = "t_acquisition_frameworks"
     __table_args__ = {"schema": "gn_meta"}
     query_class = TAcquisitionFrameworkQuery
@@ -745,7 +831,7 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
         if scope == 0:
             return False
         elif scope in (1, 2):
-            if g.current_user == self.creator or g.current_user in self.user_actors:
+            if g.current_user.id_role == self.id_digitizer or g.current_user in self.user_actors:
                 return True
             if scope == 2 and g.current_user.organisme in self.organism_actors:
                 return True
@@ -804,22 +890,6 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
             return q
         data = q.all()
         return list(set([d.id_acquisition_framework for d in data]))
-
-    @classmethod
-    def compute_filter(cls, **kwargs):
-        f = super().compute_filter(**kwargs)
-        uuid = kwargs.get("uuid")
-        if uuid is not None:
-            try:
-                uuid = UUID(uuid.strip())
-            except TypeError:
-                pass
-            else:
-                f &= TAcquisitionFramework.unique_acquisition_framework_id == uuid
-        name = kwargs.get("name")
-        if name is not None:
-            f &= TAcquisitionFramework.acquisition_framework_name.ilike(f"%{name}%")
-        return f
 
 
 @serializable

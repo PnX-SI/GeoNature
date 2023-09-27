@@ -1,27 +1,21 @@
 <div id="cover-spin" *ngIf="!searchService.dataLoaded">
   <div class="alert alert-warning" id="cover-message">
-    <span >Chargement des données en cours (cela peut prendre du temps)…</span>
+    <span>Chargement des données en cours (cela peut prendre du temps)…</span>
   </div>
 </div>
 
-<div class="wrapper" data-qa='pnx-synthese'>
-  <nav
-    #navBar
-    id="sidebar"
-    class="collapse show"
-  >
-    <!-- <pnx-synthese-search (searchClicked)="loadAndStoreData($event)"></pnx-synthese-search> -->
-    <pnx-synthese-search (searchClicked)="loadAndStoreData($event)"> </pnx-synthese-search>
+<div class="wrapper" data-qa="pnx-synthese">
+  <nav [(ngbCollapse)]="isCollapseSyntheseNavBar" #navBar id="sidebar">
+    <pnx-synthese-search (searchClicked)="onSearchEvent()"> </pnx-synthese-search>
   </nav>
 
   <div class="row row-sm page-content">
     <button
+      (click)="isCollapseSyntheseNavBar = !isCollapseSyntheseNavBar"
+      [attr.aria-expanded]="!isCollapseSyntheseNavBar"
       #buttonToggle
       [style.left.px]="marginButton"
       (click)="mooveButton()"
-      data-toggle="collapse"
-      data-target="#sidebar"
-      aria-controls="sidebar"
       type="button"
       id="sidebarCollapse"
       class="btn btn-toogle-sidenav box-shadow"
@@ -30,7 +24,10 @@
       <i [hidden]="!searchBarHidden" class="fa fa-caret-right"></i>
     </button>
     <div class="col-sm-12 col-md-7 padding-sm">
-      <pnx-synthese-carte [inputSyntheseData]="_mapListService.geojsonData"></pnx-synthese-carte>
+      <pnx-synthese-carte
+      (onAreasToggle)="fetchOrRenderData($event)"
+      [inputSyntheseData]="_mapListService.geojsonData"
+      ></pnx-synthese-carte>
     </div>
     <div class="col-sm-12 col-md-5 padding-sm">
       <pnx-synthese-list

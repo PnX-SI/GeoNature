@@ -1,39 +1,37 @@
-import { Component } from "@angular/core";
-import { MapListService } from "@geonature_common/map-list/map-list.service";
-import { ValidationDataService } from "../../services/data.service";
-import { CommonService } from "@geonature_common/service/common.service";
-
-import { ModuleConfig } from "../../module.config";
+import { Component } from '@angular/core';
+import { ValidationDataService } from '../../services/data.service';
+import { CommonService } from '@geonature_common/service/common.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
-  selector: "pnx-validation-definitions",
-  templateUrl: "validation-definitions.component.html",
-  styleUrls: ["./validation-definitions.component.scss"],
-  providers: []
+  selector: 'pnx-validation-definitions',
+  templateUrl: 'validation-definitions.component.html',
+  styleUrls: ['./validation-definitions.component.scss'],
+  providers: [],
 })
 export class ValidationDefinitionsComponent {
   public definitions;
   public showDefinitions: Boolean = false;
-  public VALIDATION_CONFIG = ModuleConfig;
 
   constructor(
     public searchService: ValidationDataService,
     private _commonService: CommonService,
+    public config: ConfigService
   ) {}
 
-  getDefinitions(param) {
+  getDefinitions() {
     this.showDefinitions = !this.showDefinitions;
     this.searchService.getStatusNames().subscribe(
-      result => {
+      (result) => {
         this.definitions = result;
       },
-      error => {
-        if (error.statusText === "Unknown Error") {
+      (error) => {
+        if (error.statusText === 'Unknown Error') {
           // show error message if no connexion
-          this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER");
+          this._commonService.translateToaster('error', 'ERROR: IMPOSSIBLE TO CONNECT TO SERVER');
         } else {
           // show error message if other server error
-          this._commonService.translateToaster("error", error.error);
+          this._commonService.translateToaster('error', error.error);
         }
       }
     );

@@ -14,8 +14,7 @@ import { ActorComponent } from './actors/actors.component';
 import { MetadataComponent } from './metadata.component';
 import { MetadataDatasetComponent } from './metadata-dataset.component';
 import { AfCardComponent } from './af/af-card.component';
-import { ChartsModule } from 'ng2-charts';
-import { ChartModule } from 'angular2-chartjs';
+import { NgChartsModule } from 'ng2-charts';
 import { MetadataService } from './services/metadata.service';
 import { MetadataDataService } from './services/metadata-data.service';
 import { ActorFormService } from './services/actor-form.service';
@@ -57,8 +56,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
     }),
     CommonModule,
     GN2CommonModule,
-    ChartsModule,
-    ChartModule,
+    NgChartsModule,
     RouterModule.forChild(routes),
     MatCheckboxModule,
     MatButtonToggleModule,

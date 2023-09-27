@@ -10,6 +10,7 @@ from .models import (
     TBibliographicReference,
 )
 from geonature.utils.env import MA
+from geonature.utils.schema import CruvedSchemaMixin
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_commons.schemas import ModuleSchema
 from geonature.core.gn_synthese.schemas import SourceSchema
@@ -18,15 +19,6 @@ from geonature.core.gn_permissions.tools import get_scopes_by_action
 from utils_flask_sqla.schema import SmartRelationshipsMixin
 from pypnusershub.schemas import UserSchema, OrganismeSchema
 from pypnnomenclature.schemas import NomenclatureSchema
-
-
-class CruvedSchemaMixin:
-    cruved = fields.Method("get_user_cruved")
-
-    def get_user_cruved(self, obj):
-        if "user_cruved" in self.context:
-            return obj.get_object_cruved(self.context["user_cruved"])
-        return None
 
 
 class DatasetActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
@@ -52,6 +44,8 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
         load_instance = True
         include_fk = True
 
+    __module_code__ = "METADATA"
+
     meta_create_date = fields.DateTime(dump_only=True)
     meta_update_date = fields.DateTime(dump_only=True)
     cor_dataset_actor = MA.Nested(DatasetActorSchema, many=True, unknown=EXCLUDE)
@@ -70,7 +64,7 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
     sources = MA.Nested(SourceSchema, many=True, dump_only=True)
 
-    @post_dump(pass_original=True)
+    @post_dump(pass_many=False, pass_original=True)
     def module_input(self, item, original, many, **kwargs):
         if "modules" in item:
             for i, module in enumerate(original.modules):
@@ -88,10 +82,20 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
                     )
         return item
 
+    # retro-compatibility with mobile app
+    @post_dump(pass_many=True, pass_original=True)
+    def mobile_app_compat(self, data, original, many, **kwargs):
+        if self.context.get("mobile_app"):
+            if many:
+                for ds, orig_ds in zip(data, original):
+                    ds["meta_create_date"] = str(orig_ds.meta_create_date)
+                data = {"data": data}
+            else:
+                data["meta_create_date"] = str(original.meta_create_date)
+        return data
 
-class BibliographicReferenceSchema(
-    CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema
-):
+
+class BibliographicReferenceSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
     class Meta:
         model = TBibliographicReference
         load_instance = True
@@ -131,6 +135,8 @@ class AcquisitionFrameworkSchema(
         model = TAcquisitionFramework
         load_instance = True
         include_fk = True
+
+    __module_code__ = "METADATA"
 
     meta_create_date = fields.DateTime(dump_only=True)
     meta_update_date = fields.DateTime(dump_only=True)

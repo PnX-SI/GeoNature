@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { AppConfig } from '../../../conf/app.config';
 import { CommonService } from '@geonature_common/service/common.service';
 import * as L from 'leaflet';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MapService } from '@geonature_common/map/map.service';
 import { Map } from 'leaflet';
 import { delay, finalize } from 'rxjs/operators';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class MapListService {
@@ -30,7 +30,7 @@ export class MapListService {
 
   public urlQuery: HttpParams = new HttpParams();
   public page = new Page();
-  public genericFilterInput = new FormControl();
+  public genericFilterInput = new UntypedFormControl();
   public isLoading = false;
   public zoomOnLayer = false;
   filterableColumns: Array<any>;
@@ -53,11 +53,7 @@ export class MapListService {
     fill: true,
   };
 
-  constructor(
-    private _http: HttpClient,
-    private _commonService: CommonService,
-    private _ms: MapService
-  ) {
+  constructor(private _http: HttpClient, private _ms: MapService, public config: ConfigService) {
     this.columns = [];
     this.page.pageNumber = 0;
     this.page.size = 12;
@@ -137,7 +133,7 @@ export class MapListService {
   dataService() {
     this.isLoading = true;
     return this._http
-      .get<any>(`${AppConfig.API_ENDPOINT}/${this.endPoint}`, { params: this.urlQuery })
+      .get<any>(`${this.config.API_ENDPOINT}/${this.endPoint}`, { params: this.urlQuery })
       .pipe(
         delay(200),
         finalize(() => (this.isLoading = false))
@@ -240,23 +236,9 @@ export class MapListService {
   }
 
   zoomOnSelectedLayer(map, layer) {
-    if (layer instanceof L.Polygon || layer instanceof L.Polyline) {
-      map.fitBounds((layer as any)._bounds);
-    } else {
-      let latlng;
-      const zoom = map.getZoom();
-      // if its a multipoint
-      if (!layer._latlng) {
-        map.fitBounds(new L.GeoJSON(layer.feature).getBounds());
-      } else {
-        latlng = layer._latlng;
-        if (zoom >= 12) {
-          map.setView(latlng, zoom);
-        } else {
-          map.setView(latlng, 16);
-        }
-      }
-    }
+    const tempFeatureGroup = new L.FeatureGroup();
+    tempFeatureGroup.addLayer(layer);
+    map.fitBounds(tempFeatureGroup.getBounds(), { maxZoom: 15 });
   }
 
   zoomOnSeveralSelectedLayers(map, layers) {

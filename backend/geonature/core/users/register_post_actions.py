@@ -20,6 +20,14 @@ from geonature.utils.utilsmails import send_mail
 from geonature.utils.env import db, DB
 
 
+def validators_emails():
+    """
+    On souhaite récupérer une liste de mails
+    """
+    emails = current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]
+    return emails if isinstance(emails, list) else [emails]
+
+
 def validate_temp_user(data):
     """
     Send an email after the action of account creation.
@@ -44,17 +52,18 @@ def validate_temp_user(data):
         recipients = [user.email]
     else:
         template = "email_admin_validate_account.html"
-        recipients = [current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]]
+        recipients = current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]
     url_validation = url_for("users.confirmation", token=user.token_role, _external=True)
+
+    additional_fields = [
+        {"key": key, "value": value} for key, value in (user_dict.get("champs_addi") or {}).items()
+    ]
 
     msg_html = render_template(
         template,
         url_validation=url_validation,
         user=user_dict,
-        additional_fields=[
-            {"key": key, "value": value}
-            for key, value in (user_dict.get("champs_addi") or {}).items()
-        ],
+        additional_fields=additional_fields,
     )
 
     send_mail(recipients, subject, msg_html)
@@ -151,7 +160,8 @@ def inform_user(user):
         text_addon=html_text_addon,
     )
     subject = f"Confirmation inscription {app_name}"
-    send_mail([user["email"]], subject, msg_html)
+    recipients = [user["email"]]
+    send_mail(recipients, subject, msg_html)
 
 
 def send_email_for_recovery(data):
@@ -160,7 +170,6 @@ def send_email_for_recovery(data):
     its password
     """
     user = data["role"]
-    recipients = current_app.config["MAIL_CONFIG"]["MAIL_USERNAME"]
     url_password = (
         current_app.config["URL_APPLICATION"] + "/#/login/new-password?token=" + data["token"]
     )

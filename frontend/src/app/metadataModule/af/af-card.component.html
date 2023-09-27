@@ -41,14 +41,15 @@
             <mat-icon>file_download</mat-icon>
           </button>
           <br />
-          <span *ngIf="!af?.opened">
-            <b> {{ APP_CONFIG.METADATA.AF_SHEET_CLOSED_LINK_NAME }} </b> :
+          <span *ngIf="af && !af?.opened">
+            <b> {{ config.METADATA.AF_SHEET_CLOSED_LINK_NAME }} </b> :
             <a
-              href="{{ APP_CONFIG.API_ENDPOINT }}/meta/acquisition_frameworks/export_pdf/{{
+              href="{{ config.API_ENDPOINT }}/meta/acquisition_frameworks/export_pdf/{{
                 af?.id_acquisition_framework
               }}"
+              target="_blank"
             >
-              {{ APP_CONFIG.API_ENDPOINT }}/meta/acquisition_frameworks/export_pdf/{{
+              {{ config.API_ENDPOINT }}/meta/acquisition_frameworks/export_pdf/{{
                 af?.id_acquisition_framework
               }}</a
             >
@@ -268,11 +269,13 @@
           <div style="display: block">
             <canvas
               baseChart
-              [data]="pieChartData"
-              [labels]="pieChartLabels"
-              [chartType]="pieChartType"
-              [colors]="pieChartColors"
+              *ngIf="pieChartData[0].data.length"
               [options]="pieChartOptions"
+              [datasets]="pieChartData"
+              [labels]="pieChartLabels"
+              [type]="pieChartType"
+              [colors]="pieChartColors"
+              [plugins]="pieChartOptions.plugins"
               padding="20px"
             >
             </canvas>

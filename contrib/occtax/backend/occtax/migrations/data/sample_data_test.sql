@@ -34,6 +34,38 @@ SELECT
     (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'OCCTAX_DS')
 FROM s;
 
+---- Ajouter permissions disponibles pour les nouveau module
+
+        INSERT INTO
+            gn_permissions.t_permissions_available (
+                id_module,
+                id_object,
+                id_action,
+                label,
+                scope_filter
+            )
+        SELECT
+            m.id_module,
+            o.id_object,
+            a.id_action,
+            v.label,
+            v.scope_filter
+        FROM
+            (
+                VALUES
+                     ('OCCTAX_DS', 'ALL', 'C', True, 'Créer des relevés')
+                    ,('OCCTAX_DS', 'ALL', 'R', True, 'Voir les relevés')
+                    ,('OCCTAX_DS', 'ALL', 'U', True, 'Modifier les relevés')
+                    ,('OCCTAX_DS', 'ALL', 'E', True, 'Exporter les relevés')
+                    ,('OCCTAX_DS', 'ALL', 'D', True, 'Supprimer des relevés')
+            ) AS v (module_code, object_code, action_code, scope_filter, label)
+        JOIN
+            gn_commons.t_modules m ON m.module_code = v.module_code
+        JOIN
+            gn_permissions.t_objects o ON o.code_object = v.object_code
+        JOIN
+            gn_permissions.bib_actions a ON a.code_action = v.action_code;
+
 
 -- Insérer un cadre d'acquisition d'exemple
 

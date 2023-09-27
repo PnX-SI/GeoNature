@@ -26,7 +26,7 @@
 
   <tbody>
     <tr *ngFor="let def of definitions">
-      <td [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[def.cd_nomenclature]?.color}">
+      <td [ngStyle]="{'background': config.VALIDATION.STATUS_INFO[def.cd_nomenclature]?.color}">
         {{def.mnemonique }} </td>
       <td> {{def.definition_default}} </td>
     </tr>

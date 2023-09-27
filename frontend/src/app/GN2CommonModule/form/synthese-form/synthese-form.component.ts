@@ -2,12 +2,12 @@ import { Component, OnInit, Output, EventEmitter, Input, ViewEncapsulation } fro
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AppConfig } from '@geonature_config/app.config';
 import { MapService } from '@geonature_common/map/map.service';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ActivatedRoute } from '@angular/router';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-synthese-search',
@@ -17,13 +17,20 @@ import { ActivatedRoute } from '@angular/router';
   encapsulation: ViewEncapsulation.None,
 })
 export class SyntheseSearchComponent implements OnInit {
-  public AppConfig = AppConfig;
   public organisms: Array<any>;
-  public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
+  public taxonApiEndPoint = null;
   public validationStatus: Array<any>;
   private params: any;
 
+  public isCollapsePeriod = true;
+  public isCollapseScore = true;
+
   @Input() displayValidation = false;
+  // valeur des filtres par defaut
+  // les nomenclature sont données en liste de code de nomenclaure
+  // par exemple :
+  //    id_nomenclature_valid_status = ['0', '1', '2', '3', '5', '6']
+  @Input() defaultFilters = {};
   @Output() searchClicked = new EventEmitter();
   @Output() resetFilter = new EventEmitter();
 
@@ -34,11 +41,13 @@ export class SyntheseSearchComponent implements OnInit {
     public mapService: MapService,
     private _storeService: TaxonAdvancedStoreService,
     private _api: DataFormService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public config: ConfigService
   ) {
     this.route.queryParams.subscribe((params) => {
       this.params = params;
     });
+    this.taxonApiEndPoint = `${this.config.API_ENDPOINT}/synthese/taxons_autocomplete`;
   }
 
   ngOnInit() {
@@ -73,13 +82,10 @@ export class SyntheseSearchComponent implements OnInit {
       if (this.params.id_dataset) {
         this.formService.searchForm.controls.id_dataset.setValue([+this.params.id_dataset]);
       }
-      this.formService.searchForm.markAsDirty();
     }
   }
 
   onSubmitForm() {
-    // mark as dirty to avoid set limit=100 when download
-    this.formService.searchForm.markAsDirty();
     const updatedParams = this.formService.formatParams();
     this.searchClicked.emit(updatedParams);
   }
@@ -91,7 +97,7 @@ export class SyntheseSearchComponent implements OnInit {
     this.formService.selectedRedLists = [];
     this.formService.selectedStatus = [];
     this.formService.selectedTaxRefAttributs = [];
-    this.formService.searchForm.reset();
+    this.formService.searchForm.reset(this.formService.processedDefaultFilters);
     this.resetFilter.emit();
 
     // refresh taxon tree

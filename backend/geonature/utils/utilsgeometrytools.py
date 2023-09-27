@@ -39,12 +39,14 @@ def export_as_geo_file(export_format, export_view, db_cols, geojson_col, data, f
     """
     if export_format == "gpkg":
         geo_format = "gpkg"
-        dir_path = str(Path(current_app.static_folder) / "geopackages")
+        dir_path = Path(current_app.config["MEDIA_FOLDER"]) / "geopackages"
         dwn_extension = "gpkg"
     elif export_format == "shapefile":
         geo_format = "shp"
-        dir_path = str(Path(current_app.static_folder) / "shapefiles")
+        dir_path = Path(current_app.config["MEDIA_FOLDER"]) / "shapefiles"
         dwn_extension = "zip"
+    dir_path.mkdir(parents=True, exist_ok=True)
+    dir_path = str(dir_path)
 
     filemanager.delete_recursively(dir_path, excluded_files=[".gitkeep"])
     export_view.as_geofile(

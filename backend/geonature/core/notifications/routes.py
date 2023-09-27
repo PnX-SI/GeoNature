@@ -26,11 +26,11 @@ from geonature.core.notifications.models import (
 routes = Blueprint("notifications", __name__)
 log = logging.getLogger()
 
+
 # Get all database notification for current user
 @routes.route("/notifications", methods=["GET"])
 @permissions.login_required
 def list_database_notification():
-
     notifications = Notification.query.filter(Notification.id_role == g.current_user.id_role)
     notifications = notifications.order_by(
         Notification.code_status.desc(), Notification.creation_date.desc()
@@ -56,7 +56,6 @@ def list_database_notification():
 @routes.route("/count", methods=["GET"])
 @permissions.login_required
 def count_notification():
-
     notificationNumber = Notification.query.filter(
         Notification.id_role == g.current_user.id_role, Notification.code_status == "UNREAD"
     ).count()
@@ -67,7 +66,6 @@ def count_notification():
 @routes.route("/notifications/<int:id_notification>", methods=["POST"])
 @permissions.login_required
 def update_notification(id_notification):
-
     notification = Notification.query.get_or_404(id_notification)
     if notification.id_role != g.current_user.id_role:
         raise Forbidden
@@ -80,28 +78,20 @@ def update_notification(id_notification):
 @routes.route("/rules", methods=["GET"])
 @permissions.login_required
 def list_notification_rules():
-    rules = (
-        NotificationRule.query.filter(NotificationRule.id_role == g.current_user.id_role)
-        .order_by(
-            NotificationRule.code_category.desc(),
-            NotificationRule.code_method.desc(),
-        )
-        .options(
-            joinedload("method"),
-            joinedload("category"),
-        )
+    rules = NotificationRule.query.filter_by_role_with_defaults().options(
+        joinedload("method"),
+        joinedload("category"),
     )
     result = [
         rule.as_dict(
             fields=[
-                "id",
-                "id_role",
                 "code_method",
                 "code_category",
                 "method.label",
                 "method.description",
                 "category.label",
                 "category.description",
+                "subscribed",
             ]
         )
         for rule in rules.all()
@@ -121,39 +111,45 @@ def delete_all_notifications():
 
 
 # add rule for user
-@routes.route("/rules", methods=["PUT"])
+@routes.route(
+    "/rules/category/<code_category>/method/<code_method>/subscribe",
+    methods=["POST"],
+    defaults={"subscribe": True},
+)
+@routes.route(
+    "/rules/category/<code_category>/method/<code_method>/unsubscribe",
+    methods=["POST"],
+    defaults={"subscribe": False},
+)
 @permissions.login_required
-def create_rule():
-
-    requestData = request.get_json()
-    if requestData is None:
-        raise BadRequest("Empty request data")
-
-    code_method = requestData.get("code_method")
-    if not code_method:
-        raise BadRequest("Missing method")
+def update_rule(code_category, code_method, subscribe):
+    if not db.session.query(
+        NotificationCategory.query.filter_by(code=str(code_category)).exists()
+    ).scalar():
+        raise BadRequest("Invalid category")
     if not db.session.query(
         NotificationMethod.query.filter_by(code=str(code_method)).exists()
     ).scalar():
         raise BadRequest("Invalid method")
 
-    code_category = requestData.get("code_category")
-    if not code_category:
-        raise BadRequest("Missing category")
-    if not db.session.query(
-        NotificationCategory.query.filter_by(code=str(code_category)).exists()
-    ).scalar():
-        raise BadRequest("Invalid category")
-
     # Create new rule for current user
-    new_rule = NotificationRule(
+    rule = NotificationRule.query.filter_by(
         id_role=g.current_user.id_role,
         code_method=code_method,
         code_category=code_category,
-    )
-    db.session.add(new_rule)
+    ).one_or_none()
+    if rule:
+        rule.subscribed = subscribe
+    else:
+        rule = NotificationRule(
+            id_role=g.current_user.id_role,
+            code_method=code_method,
+            code_category=code_category,
+            subscribed=subscribe,
+        )
+        db.session.add(rule)
     db.session.commit()
-    return jsonify(new_rule.as_dict())
+    return jsonify(rule.as_dict(fields=["code_method", "code_category", "subscribed"]))
 
 
 # Delete all rules for current user
@@ -165,18 +161,6 @@ def delete_all_rules():
     ).delete()
     db.session.commit()
     return jsonify(nbRulesDeleted)
-
-
-# Delete a specific rule
-@routes.route("/rules/<int:id>", methods=["DELETE"])
-@permissions.login_required
-def delete_rule(id):
-    rule = NotificationRule.query.get_or_404(id)
-    if rule.user != g.current_user:
-        raise Forbidden
-    db.session.delete(rule)
-    db.session.commit()
-    return "", 204
 
 
 # Get all availabe method for notification
