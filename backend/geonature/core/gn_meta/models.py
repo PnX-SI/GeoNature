@@ -253,10 +253,12 @@ class TDatasetsQuery(Query):
         cruved = get_scopes_by_action(id_role=user.id_role, module_code="METADATA")
         return cruved["R"]
 
-    def _get_create_scope(self, module_code, user=None):
+    def _get_create_scope(self, module_code, user=None, object_code=None):
         if user is None:
             user = g.current_user
-        cruved = get_scopes_by_action(id_role=user.id_role, module_code=module_code)
+        cruved = get_scopes_by_action(
+            id_role=user.id_role, module_code=module_code, object_code=object_code
+        )
         return cruved["C"]
 
     def filter_by_scope(self, scope, user=None):
@@ -366,14 +368,14 @@ class TDatasetsQuery(Query):
         """
         return self.filter_by_scope(self._get_read_scope(user))
 
-    def filter_by_creatable(self, module_code, user=None):
+    def filter_by_creatable(self, module_code, user=None, object_code=None):
         """
         Return all dataset where user have read rights minus those who user to not have
         create rigth
         """
         query = self.filter(TDatasets.modules.any(module_code=module_code))
         scope = self._get_read_scope(user)
-        create_scope = self._get_create_scope(module_code, user=user)
+        create_scope = self._get_create_scope(module_code, user=user, object_code=object_code)
         if create_scope < scope:
             scope = create_scope
         return query.filter_by_scope(scope)
