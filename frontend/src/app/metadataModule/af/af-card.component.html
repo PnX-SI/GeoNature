@@ -152,6 +152,9 @@
           <br />
 
           <div class="b">Description</div>
+          <div class="a">
+            <b>Description :</b>{{ af?.acquisition_framework_desc }}
+          </div>
           <div class="a"><b>Est un méta-cadre : </b> {{ af?.is_parent ? 'Oui' : 'Non' }}</div>
           <div class="a" *ngIf="!af?.is_parent">
             Identifiant du méta-cadre : {{ af?.acquisition_framework_parent_id }}
