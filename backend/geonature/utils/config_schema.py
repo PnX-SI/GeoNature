@@ -104,6 +104,8 @@ class MailConfig(Schema):
 class CeleryConfig(Schema):
     broker_url = fields.String(load_default="redis://localhost:6379/0")
     result_backend = fields.String(load_default="redis://localhost:6379/0")
+    enable_utc = fields.Boolean(load_default=False)
+    timezone = fields.String(load_default=None)
 
 
 class AccountManagement(Schema):
