@@ -286,5 +286,6 @@ export const DYNAMIC_FORM_DEF = [
     keyLabel: 'name_source',
     data_path: '',
     required: false,
+    designStyle: 'bootstrap',
   },
 ];
