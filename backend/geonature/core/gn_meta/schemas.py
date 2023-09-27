@@ -68,18 +68,22 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     def module_input(self, item, original, many, **kwargs):
         if "modules" in item:
             for i, module in enumerate(original.modules):
+                if not hasattr(module, "generate_input_url_for_dataset"):
+                    continue
+                object_code = getattr(module.generate_input_url_for_dataset, "object_code", "ALL")
                 create_scope = get_scopes_by_action(
-                    id_role=g.current_user.id_role, module_code=module.module_code
+                    id_role=g.current_user.id_role,
+                    module_code=module.module_code,
+                    object_code=object_code,
                 )["C"]
                 if not original.has_instance_permission(create_scope):
                     continue
-                if hasattr(module, "generate_input_url_for_dataset"):
-                    item["modules"][i].update(
-                        {
-                            "input_url": module.generate_input_url_for_dataset(original),
-                            "input_label": module.generate_input_url_for_dataset.label,
-                        }
-                    )
+                item["modules"][i].update(
+                    {
+                        "input_url": module.generate_input_url_for_dataset(original),
+                        "input_label": module.generate_input_url_for_dataset.label,
+                    }
+                )
         return item
 
     # retro-compatibility with mobile app
