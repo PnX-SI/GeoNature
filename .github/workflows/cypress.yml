@@ -73,9 +73,15 @@ jobs:
         working-directory: ./backend
       - name: Install database
         run: |
-          install/03b_populate_db_for_test.sh
+          install/03b_populate_db.sh
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
+          srid_local: 2154
+          install_bdc_statuts: true
+          add_sample_data: true
+          install_sig_layers: true
+          install_grid_layer_5: true
+          install_ref_sensitivity: true
         # FRONTEND
       - name: Cache node modules
         uses: actions/cache@v3
