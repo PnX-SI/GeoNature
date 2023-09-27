@@ -54,7 +54,7 @@ export class AlertInfoComponent implements OnInit, OnChanges {
     let moduleValidation = this.moduleService.getModule('VALIDATION');
 
     this.canChangeAlert =
-      moduleValidation?.cruved?.R && moduleValidation?.cruved?.R > 0 && !isEmpty(this.alert);
+      moduleValidation?.cruved?.C && moduleValidation?.cruved?.C > 0 && !isEmpty(this.alert);
   }
   /**
    * Create new alert with /reports GET service
