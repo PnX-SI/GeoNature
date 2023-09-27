@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.2
 
-FROM python:3.9-bullseye AS build
+FROM python:3.11-bookworm AS build
 
 ENV PIP_ROOT_USER_ACTION=ignore
 RUN --mount=type=cache,target=/root/.cache \
