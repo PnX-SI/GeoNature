@@ -19,6 +19,7 @@ import { CommonService } from '../../service/common.service';
 export class DatalistComponent extends GenericFormComponent implements OnInit {
   formId: string; // Unique form id
 
+  @Input() designStyle: 'bootstrap' | 'material' = 'material';
   @Input() values: Array<any>; // list of choices
   @Input() keyLabel = 'label'; // field name for value
   @Input() keyValue = 'value'; // field name for label
