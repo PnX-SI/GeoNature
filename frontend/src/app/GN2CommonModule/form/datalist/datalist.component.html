@@ -1,44 +1,69 @@
 <div *ngIf="values">
-  <mat-form-field style="display: inline-block; width: 100%" class="mt-2" appearance="outline">
-    <mat-label>{{ label }}</mat-label>
-    <mat-select [formControl]="parentFormControl" [multiple]="multiple" [required]="required" dense>
-      <mat-option>
-        <ngx-mat-select-search
-          placeholderLabel="Filtre"
-          (ngModelChange)="searchChanged($event)"
-          [ngModel]="search"
-          [clearSearchInput]="false"
-        ></ngx-mat-select-search>
-      </mat-option>
-      <mat-select-trigger *ngIf="multiple">
-        <mat-chip-list>
-          <mat-chip
-            *ngFor="let value of selectedValues()"
-            [removable]="true"
-            (removed)="onToppingRemoved(value)"
-          >
-            {{ displayLabelFromValue(value) }}
-            <mat-icon matChipRemove> cancel </mat-icon>
-          </mat-chip>
-        </mat-chip-list>
-      </mat-select-trigger>
-      <mat-option
-        *ngFor="let value of filteredValues"
-        [value]="value[keyValue]"
-        [title]="keyTitle && value[keyTitle] || ''"
+  <div *ngIf="designStyle=='material'; else bootstrapBlock" >
+    
+    <mat-form-field style="display: inline-block; width: 100%" class="mt-2" appearance="outline">
+      <mat-label>{{ label }}</mat-label>
+      <mat-select [formControl]="parentFormControl" [multiple]="multiple" [required]="required" dense>
+        <mat-option>
+          <ngx-mat-select-search
+            placeholderLabel="Filtre"
+            (ngModelChange)="searchChanged($event)"
+            [ngModel]="search"
+            [clearSearchInput]="false"
+          ></ngx-mat-select-search>
+        </mat-option>
+        <mat-select-trigger *ngIf="multiple">
+          <mat-chip-list>
+            <mat-chip
+              *ngFor="let value of selectedValues()"
+              [removable]="true"
+              (removed)="onToppingRemoved(value)"
+            >
+              {{ displayLabelFromValue(value) }}
+              <mat-icon matChipRemove> cancel </mat-icon>
+            </mat-chip>
+          </mat-chip-list>
+        </mat-select-trigger>
+        <mat-option
+          *ngFor="let value of filteredValues"
+          [value]="value[keyValue]"
+          [title]="keyTitle && value[keyTitle] || ''"
+        >
+          {{ displayLabel(value) }}
+        </mat-option>
+      </mat-select>
+      <mat-icon
+        *ngIf="definition"
+        [matTooltip]="definition"
+        matTooltipClass="form-tooltip"
+        class="small-icon"
+        matSuffix
+        >help</mat-icon
       >
-        {{ displayLabel(value) }}
-      </mat-option>
-    </mat-select>
-    <mat-icon
-      *ngIf="definition"
-      [matTooltip]="definition"
-      matTooltipClass="form-tooltip"
-      class="small-icon"
-      matSuffix
-      >help</mat-icon
-    >
-  </mat-form-field>
+    </mat-form-field>
+  </div>
+
 
   <ng-template #loadingBlock> DataListComponent : Chargement en cours... </ng-template>
+  <ng-template #bootstrapBlock >  
+    <small> {{ label }} </small>
+  
+      <ng-select
+        [items]="values"
+        [bindLabel]="keyLabel"
+        [bindValue]="keyValue"
+        [multiple]="multiple"
+        [clearable]="false"
+        [virtualScroll]="true"
+        [required]="required"
+        [formControl]="parentFormControl"
+      >
+        <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+          <div [matTooltip]="item[keyLabel]">
+            <span class="pre-wrap">{{ item[keyLabel] }}</span>
+          </div>
+        </ng-template>
+      </ng-select>
+  
+    </ng-template>
 </div>

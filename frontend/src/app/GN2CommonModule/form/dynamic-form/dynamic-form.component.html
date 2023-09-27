@@ -326,6 +326,7 @@
     </pnx-multiselect>
     <pnx-datalist
       *ngSwitchCase="'datalist'"
+      [designStyle]="formDefComp['designStyle']"
       [parentFormControl]="form.get(formDefComp['attribut_name'])"
       [application]="formDefComp['application']"
       [values]="formDefComp['values']"
