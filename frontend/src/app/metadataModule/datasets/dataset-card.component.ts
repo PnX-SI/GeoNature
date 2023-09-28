@@ -159,6 +159,10 @@ export class DatasetCardComponent implements OnInit {
     this._router.navigateByUrl(module?.input_url);
   }
 
+  hasAnyButtons() {
+    return this.dataset?.cruved?.E || this.dataset?.modules?.some((m) => m.input_url);
+  }
+
   syntheseDs(idDataset) {
     let navigationExtras: NavigationExtras = {
       queryParams: {
