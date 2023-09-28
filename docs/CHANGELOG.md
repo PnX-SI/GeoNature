@@ -25,6 +25,10 @@ CHANGELOG
 - Déplacement du `DispatcherMiddleware` après les fichiers statiques customisés (#2720, par @bouttier)
 - Suppression du script `03b_populate_db_for_test.sh` (#2726, par @bouttier)
 
+**📝 Documentation**
+
+- Mise à jour de la documentation suite aux évolutions des permissions dans la 2.13.0 (par @camillemonchicourt)
+
 
 2.13.1 (2023-09-15)
 -------------------
