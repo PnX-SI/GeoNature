@@ -70,6 +70,16 @@ class TestReports:
         data = {"content": "comment 4", "type": "discussion"}
         response = self.client.post(url_for(url), data=data)
         assert response.status_code == BadRequest.code
+        # TEST VALID - ADD PIN
+        response = self.client.post(
+            url_for(url), data={"item": id_synthese, "content": "", "type": "pin"}
+        )
+        assert response.status_code == 204
+        # TEST INVALID - ADD PIN
+        response = self.client.post(
+            url_for(url), data={"item": id_synthese, "content": "", "type": "pin"}
+        )
+        assert response.status_code == 409
 
     def test_delete_report(self, reports_data, users):
         # NO AUTHENT

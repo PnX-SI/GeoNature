@@ -679,6 +679,25 @@ class TestGNMeta:
         assert expected_ds.issubset(filtered_ds)
         assert datasets["own_dataset"].id_dataset not in filtered_ds
 
+    def test_get_dataset_filter_create(self, users, datasets, module):
+        set_logged_user_cookie(self.client, users["admin_user"])
+
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            json={"module_code": module.module_code, "create": module.module_code},
+        )
+
+        response_with_object = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            json={"module_code": module.module_code, "create": module.module_code + ".ALL"},
+        )
+
+        expected_ds = {datasets["with_module_1"].id_dataset}
+        filtered_ds = {ds["id_dataset"] for ds in response.json}
+        assert response.json == response_with_object.json
+        assert expected_ds.issubset(filtered_ds)
+        assert datasets["own_dataset"].id_dataset not in filtered_ds
+
     def test_get_dataset_search(self, users, datasets, module):
         set_logged_user_cookie(self.client, users["admin_user"])
         ds = datasets["with_module_1"]
