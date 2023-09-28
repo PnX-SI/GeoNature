@@ -25,10 +25,16 @@ then
     geonature db upgrade ref_geo_fr_regions@head
 fi
 
-if [ "$install_grid_layer" = true ];
+if [ "$install_grid_layer" = true ] || [ "$install_grid_layer_1" = true ];
 then
     geonature db upgrade ref_geo_inpn_grids_1@head
+fi
+if [ "$install_grid_layer" = true ] || [ "$install_grid_layer_5" = true ];
+then
     geonature db upgrade ref_geo_inpn_grids_5@head
+fi
+if [ "$install_grid_layer" = true ] || [ "$install_grid_layer_10" = true ];
+then
     geonature db upgrade ref_geo_inpn_grids_10@head
 fi
 
