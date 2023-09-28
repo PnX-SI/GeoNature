@@ -1,8 +1,12 @@
 CHANGELOG
 =========
 
-2.13.2 (unreleased)
+2.13.2 (2023-09-28)
 -------------------
+
+**🚀 Nouveautés**
+
+- [Synthèse] Ajout d'un filtre par module de provenance (#2670, par @andriacap)
 
 **🐛 Corrections**
 
