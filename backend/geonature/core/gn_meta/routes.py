@@ -65,6 +65,7 @@ from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_conte
 from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_scopes_by_action
+from geonature.core.gn_permissions.models import TObjects
 from geonature.core.gn_meta.mtd import mtd_utils
 import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
@@ -99,15 +100,25 @@ def get_datasets():
     .. :quickref: Metadata;
 
     :query boolean active: filter on active fiel
+    :query string create: filter on C permission for the module_code specified
+        (we can specify the object_code by adding a . between both)
     :query int id_acquisition_framework: get only dataset of given AF
     :returns:  `list<TDatasets>`
     """
     params = MultiDict(request.args)
+    if request.is_json:
+        params.update(request.json)
     fields = params.get("fields", type=str, default=[])
     if fields:
         fields = fields.split(",")
     if "create" in params:
-        query = TDatasets.query.filter_by_creatable(params.pop("create"))
+        create = params.pop("create").split(".")
+        if len(create) > 1:
+            query = TDatasets.query.filter_by_creatable(
+                module_code=create[0], object_code=create[1]
+            )
+        else:
+            query = TDatasets.query.filter_by_creatable(module_code=create[0])
     else:
         query = TDatasets.query.filter_by_readable()
 
