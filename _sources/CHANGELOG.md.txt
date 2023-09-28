@@ -1,6 +1,35 @@
 CHANGELOG
 =========
 
+2.13.2 (2023-09-28)
+-------------------
+
+**🚀 Nouveautés**
+
+- [Synthèse] Ajout d'un filtre par module de provenance (#2670, par @andriacap)
+
+**🐛 Corrections**
+
+- Correction des déconnexions non effectives dans les versions 2.13.0 et 2.13.1 (#2682, par @TheoLechemia)
+- Correction des permissions vérifiées pour pouvoir supprimer un signalement en prenant en compte le C du module Validation, et non pas le R qui n'existe pas sur ce module (#2710, par @Pierre-Narcisi)
+- Correction de l'API des applications mobiles quand le chemin de l'APK est absolu (#2708, par @joelclement)
+- Correction des permissions des listes de JDD dans les modules de saisie (Occtax, Occhab, Import) en prenant en compte la portée du C du module, et pas seulement du R du module Métadonnées (#2712, par @Pierre-Narcisi)
+- Utilisation de l'heure locale du serveur pour lancer les taches Celery (#2725, par @bouttier)
+- Fermeture des connexions à la BDD à la fin des taches Celery (#2724, par @bouttier)
+- Correction de l'affichage du bouton permettant d'importer directement depuis la fiche d'un JDD, nécessitant la version 2.2.3 du module Import (#2713, par @bouttier)
+
+**💻 Développement**
+
+- Ajout du thème Bootstrap au composant `datalist` (#2727, par @TheoLechemia)
+- Docker : utilisation de python 3.11 (#2728, par @bouttier)
+- Déplacement du `DispatcherMiddleware` après les fichiers statiques customisés (#2720, par @bouttier)
+- Suppression du script `03b_populate_db_for_test.sh` (#2726, par @bouttier)
+
+**📝 Documentation**
+
+- Mise à jour de la documentation suite aux évolutions des permissions dans la 2.13.0 (par @camillemonchicourt)
+
+
 2.13.1 (2023-09-15)
 -------------------
 
@@ -88,8 +117,8 @@ C'est la manière la plus simple de déployer GeoNature avec ses 4 modules exter
 - Ajout d'un script `install/03b_populate_db_for_test.sh` pouvant être utilisé par la CI de test des modules GeoNature (#2544)
 - Ajout d'un script `install/assets/docker_startup.sh` pour lancer les migrations Alembic depuis le docker de GeoNature (#2544)
 - Création d'un fichier `install/assets/db/add_pg_extensions.sql` regroupant la création des extensions PostgreSQL (#2544)
-- ation de `APPLICATION_ROOT` pour qu'il fonctionne en mode développement (#2546)
-- ation des modèles de la Synthèse pour prendre en compte les valeurs par défaut des nomenclatures (#2524)
+- Amélioration de `APPLICATION_ROOT` pour qu'il fonctionne en mode développement (#2546)
+- Amélioration des modèles de la Synthèse pour prendre en compte les valeurs par défaut des nomenclatures (#2524)
 - Meilleure portabilité des scripts dans les différents systèmes Unix (#2435)
 - Mise à jour des dépendances Python (#2596)
 - Documentation de développement des permissions (#2585)
@@ -171,7 +200,7 @@ Si vous utilisiez des champs additionnels avec des checkbox, lors de leur change
 
 - Correction et ations des performances des recherches par statut de protection, notamment quand elles sont associées à une recherche géographique (#2450, par @amandine-sahl)
 - Correction d’une régression des performances lors de la récupération des JDD (#2462, par @mvergez)
-- Correction de jointures manquantes pour le calcule des permissions lors de la récupération des JDD (#2463, par @mvergez)
+- Correction de jointures manquantes pour le calcul des permissions lors de la récupération des JDD (#2463, par @mvergez)
 - Correction des champs additionnels de type liste (#2447, par @TheoLechemia)
 - Correction d’une incompatibilité Python 3.7 (#2464, par @TheoLechemia)
 - Suppression en cascade des permissions et associations aux sites lors de la suppresion d’un module (#2466, par @jbrieuclp & @VincentCauchois)

@@ -161,14 +161,14 @@ Exemple pour le module Import :
     source ~/GeoNature/backend/venv/bin/activate
     geonature install-gn-module ~/gn_module_import/ IMPORT
 
-Puis relancer GeoNatureet son worker :
+Puis relancer GeoNature et son worker :
 
 .. code-block:: bash
 
     sudo systemctl restart geonature
     sudo systemctl restart geonature-worker
 
-Aucune permission n'est définie par défaut lors de l'installation d'un module. En tant qu'administrateur, vous pouvez une commande ajoutant tous les droits sur tous les modules à un groupe ou utilisateur. Cette commande peut être relancée après l'installation d'un module pour automatiquement attribuer toutes les permissions à un groupe ou utilisateur administrateur :
+Aucune permission n'est définie par défaut lors de l'installation d'un module. En tant qu'administrateur, vous pouvez exécuter une commande ajoutant tous les droits sur tous les modules à un groupe ou utilisateur. Cette commande peut être relancée après l'installation d'un module pour automatiquement attribuer toutes les permissions à un groupe ou utilisateur administrateur :
 
 .. code-block:: bash
 
