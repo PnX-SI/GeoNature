@@ -6,10 +6,21 @@ CHANGELOG
 
 **🐛 Corrections**
 
-- Correction des déconnexions non effectives sur la 2.13.0 ni 2.13.1 (#2682, par @TheoLechemia)
+- Correction des déconnexions non effectives dans les versions 2.13.0 et 2.13.1 (#2682, par @TheoLechemia)
 - Correction des permissions vérifiées pour pouvoir supprimer un signalement en prenant en compte le C du module Validation, et non pas le R qui n'existe pas sur ce module (#2710, par @Pierre-Narcisi)
 - Correction de l'API des applications mobiles quand le chemin de l'APK est absolu (#2708, par @joelclement)
-- Correction des permissions des listes de JDD dans les modules de saisie (Occtax, Occhab, Import) en prenant en compte la portée du C du module, et pas seulement du R du module Métadonnées (#2712)
+- Correction des permissions des listes de JDD dans les modules de saisie (Occtax, Occhab, Import) en prenant en compte la portée du C du module, et pas seulement du R du module Métadonnées (#2712, par @Pierre-Narcisi)
+- Utilisation de l'heure locale du serveur pour lancer les taches Celery (#2725, par @bouttier)
+- Fermeture des connexions à la BDD à la fin des taches Celery (#2724, par @bouttier)
+- Correction de l'affichage du bouton permettant d'importer directement depuis la fiche d'un JDD, nécessitant la version 2.2.3 du module Import (#2713, par @bouttier)
+
+**💻 Développement**
+
+- Ajout du thème Bootstrap au composant `datalist` (#2727, par @TheoLechemia)
+- Docker : utilisation de python 3.11 (#2728, par @bouttier)
+- Déplacement du `DispatcherMiddleware` après les fichiers statiques customisés (#2720, par @bouttier)
+- Suppression du script `03b_populate_db_for_test.sh` (#2726, par @bouttier)
+
 
 2.13.1 (2023-09-15)
 -------------------
