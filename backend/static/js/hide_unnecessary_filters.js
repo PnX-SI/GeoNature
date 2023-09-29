@@ -4,9 +4,10 @@ $('#availability').on('change', function() {
     let selected = $(this).find(":selected")[0];
     if (selected && selected.hasAttribute("sensitivity_filter"))
         $("#sensitivity_filter").parent().show();
-    else
+    else {
         $("#sensitivity_filter").parent().hide();
         $('#sensitivity_filter').prop('checked', false);
+    }
 
     if (selected && selected.hasAttribute("scope_filter"))
         $("#scope").parent().show();
