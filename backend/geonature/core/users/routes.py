@@ -135,9 +135,11 @@ def get_role(id_role):
     :type id_role: int
     """
     user = User.query.get_or_404(id_role)
-    user_fields.add("email")
-    user_fields.add("champs_addi")
-    return user.as_dict(fields=user_fields)
+    fields = user_fields.copy()
+    if g.current_user == user:
+        fields.add("email")
+        fields.add("champs_addi")
+    return user.as_dict(fields=fields)
 
 
 @routes.route("/roles", methods=["GET"])
