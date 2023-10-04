@@ -7,7 +7,7 @@
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.sql import select, func
 
 
@@ -158,3 +158,54 @@ class TBaseSites(DB.Model):
         secondaryjoin=(corSiteModule.c.id_module == TModules.id_module),
         foreign_keys=[corSiteModule.c.id_base_site, corSiteModule.c.id_module],
     )
+
+
+@serializable
+class TBaseIndividuals(DB.Model):
+    __tablename__ = "t_base_individuals"
+    __table_args__ = {"schema": "gn_monitoring"}
+    id_base_individual = DB.Column(DB.Integer, primary_key=True)
+    uuid_individual = DB.Column(UUID, nullable=False, server_default=DB.text("uuid_generate_v4()"))
+    base_individual_name = DB.Column(DB.Unicode(255), nullable=False)
+    cd_nom = DB.Column(DB.ForeignKey("taxonomie.taxref.cd_nom"), nullable=False)
+    id_nomenclature_sex = DB.Column(
+        DB.ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        server_default=DB.text(
+            "ref_nomenclatures.get_default_nomenclature_value('SEXE'::character varying)"
+        ),
+    )
+    active = DB.Column(DB.Boolean, default=True)
+    comment = DB.Column(DB.Text)
+    id_digitiser = DB.Column(
+        DB.ForeignKey("utilisateurs.t_roles.id_role"),
+        nullable=False,
+    )
+
+    meta_create_date = DB.Column("meta_create_date", DB.DateTime(timezone=False))
+    meta_update_date = DB.Column("meta_update_date", DB.DateTime(timezone=False))
+
+
+@serializable
+class TMarkingEvent(TBaseIndividuals):
+    __tablename__ = "t_marking_events"
+    __table_args__ = {"schema": "gn_monitoring"}
+    __mapper_args__ = {
+        "polymorphic_identity": "monitoring_marking_event",
+    }
+
+    id_marking = DB.Column(DB.Integer, primary_key=True)
+    id_base_individual = DB.Column(
+        DB.ForeignKey(f"gn_monitoring.t_base_individuals.id_base_individual", ondelete="CASCADE"),
+        nullable=False,
+    )
+    marking_date = DB.Column(DB.DateTime(timezone=False), nullable=False)
+    id_operator = DB.Column(DB.ForeignKey("utilisateurs.t_roles.id_role"), nullable=False)
+    id_base_marking_site = DB.Column(DB.ForeignKey("gn_monitoring.t_base_sites.id_base_site"))
+    id_nomenclature_marking_type = DB.Column(
+        DB.ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"), nullable=False
+    )
+    marking_location = DB.Column(DB.Unicode(255))
+    marking_code = DB.Column(DB.Unicode(255))
+    marking_details = DB.Column(DB.Text)
+    additional_data = DB.Column(JSONB)
+    # meta_update_date and meta_create_date already present in TBaseIndividuals
