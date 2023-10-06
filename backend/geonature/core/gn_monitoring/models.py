@@ -9,6 +9,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.sql import select, func
+from sqlalchemy.schema import FetchedValue
 
 
 from pypnusershub.db.models import User
@@ -160,13 +161,31 @@ class TBaseSites(DB.Model):
     )
 
 
+corIndividualModule = DB.Table(
+    "cor_individual_module",
+    DB.Column(
+        "id_individual",
+        DB.Integer,
+        DB.ForeignKey("gn_monitoring.t_individual_complements.id_individual", ondelete="CASCADE"),
+        primary_key=True,
+    ),
+    DB.Column(
+        "id_module",
+        DB.Integer,
+        DB.ForeignKey("gn_commons.t_modules.id_module", ondelete="CASCADE"),
+        primary_key=True,
+    ),
+    schema="gn_monitoring",
+)
+
+
 @serializable
-class TBaseIndividuals(DB.Model):
-    __tablename__ = "t_base_individuals"
+class TIndividuals(DB.Model):
+    __tablename__ = "t_individuals"
     __table_args__ = {"schema": "gn_monitoring"}
-    id_base_individual = DB.Column(DB.Integer, primary_key=True)
+    id_individual = DB.Column(DB.Integer, primary_key=True)
     uuid_individual = DB.Column(UUID, nullable=False, server_default=DB.text("uuid_generate_v4()"))
-    base_individual_name = DB.Column(DB.Unicode(255), nullable=False)
+    individual_name = DB.Column(DB.Unicode(255), nullable=False)
     cd_nom = DB.Column(DB.ForeignKey("taxonomie.taxref.cd_nom"), nullable=False)
     id_nomenclature_sex = DB.Column(
         DB.ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
@@ -186,7 +205,7 @@ class TBaseIndividuals(DB.Model):
 
 
 @serializable
-class TMarkingEvent(TBaseIndividuals):
+class TMarkingEvent(TIndividuals):
     __tablename__ = "t_marking_events"
     __table_args__ = {"schema": "gn_monitoring"}
     __mapper_args__ = {
@@ -194,9 +213,15 @@ class TMarkingEvent(TBaseIndividuals):
     }
 
     id_marking = DB.Column(DB.Integer, primary_key=True)
-    id_base_individual = DB.Column(
-        DB.ForeignKey(f"gn_monitoring.t_base_individuals.id_base_individual", ondelete="CASCADE"),
+    id_individual = DB.Column(
+        DB.ForeignKey(f"gn_monitoring.t_individuals.id_individual", ondelete="CASCADE"),
         nullable=False,
+    )
+    id_module = DB.Column(
+        DB.ForeignKey("gn_commons.t_modules.id_module"),
+        primary_key=True,
+        nullable=False,
+        unique=True,
     )
     marking_date = DB.Column(DB.DateTime(timezone=False), nullable=False)
     id_operator = DB.Column(DB.ForeignKey("utilisateurs.t_roles.id_role"), nullable=False)
@@ -207,5 +232,15 @@ class TMarkingEvent(TBaseIndividuals):
     marking_location = DB.Column(DB.Unicode(255))
     marking_code = DB.Column(DB.Unicode(255))
     marking_details = DB.Column(DB.Text)
-    additional_data = DB.Column(JSONB)
-    # meta_update_date and meta_create_date already present in TBaseIndividuals
+    data = DB.Column(JSONB)
+
+    modules = DB.relationship(
+        "TModules",
+        lazy="select",
+        enable_typechecks=False,
+        secondary=corIndividualModule,
+        primaryjoin=(corIndividualModule.c.id_individual == id_individual),
+        secondaryjoin=(corIndividualModule.c.id_module == TModules.id_module),
+        foreign_keys=[corIndividualModule.c.id_individual, corIndividualModule.c.id_module],
+    )
+    # meta_update_date and meta_create_date already present in TIndividuals
