@@ -21,12 +21,12 @@ SCHEMA = "gn_monitoring"
 
 def upgrade():
     op.create_table(
-        "t_base_individuals",
-        sa.Column("id_base_individual", sa.Integer, primary_key=True),
+        "t_individuals",
+        sa.Column("id_individual", sa.Integer, primary_key=True),
         sa.Column(
             "uuid_individual", UUID, nullable=False, server_default=sa.text("uuid_generate_v4()")
         ),
-        sa.Column("base_individual_name", sa.Unicode(255), nullable=False),
+        sa.Column("individual_name", sa.Unicode(255), nullable=False),
         sa.Column("cd_nom", sa.Integer, sa.ForeignKey("taxonomie.taxref.cd_nom"), nullable=False),
         sa.Column(
             "id_nomenclature_sex",
@@ -69,9 +69,14 @@ def upgrade():
         "t_marking_events",
         sa.Column("id_marking", sa.Integer, primary_key=True),
         sa.Column(
-            "id_base_individual",
+            "id_module",
             sa.Integer,
-            sa.ForeignKey(f"{SCHEMA}.t_base_individuals.id_base_individual", ondelete="CASCADE"),
+            sa.ForeignKey("gn_commons.t_modules.id_module", ondelete="CASCADE"),
+        ),
+        sa.Column(
+            "id_individual",
+            sa.Integer,
+            sa.ForeignKey(f"{SCHEMA}.t_individuals.id_individual", ondelete="CASCADE"),
             nullable=False,
         ),
         sa.Column("marking_date", sa.DateTime(timezone=False), nullable=False),
@@ -95,15 +100,34 @@ def upgrade():
         sa.Column("marking_location", sa.Unicode(255)),
         sa.Column("marking_code", sa.Unicode(255)),
         sa.Column("marking_details", sa.Text),
-        sa.Column("additional_data", JSONB),
+        sa.Column("data", JSONB),
         sa.Column("meta_create_date", sa.DateTime(timezone=False)),
         sa.Column("meta_update_date", sa.DateTime(timezone=False)),
+        schema=SCHEMA,
+    )
+
+    op.create_table(
+        "cor_individual_module",
+        sa.Column(
+            "id_individual",
+            sa.Integer,
+            sa.ForeignKey(f"{SCHEMA}.t_individuals.id_individual", ondelete="CASCADE"),
+            primary_key=True,
+        ),
+        sa.Column(
+            "id_module",
+            sa.Integer,
+            sa.ForeignKey("gn_commons.t_modules.id_module", ondelete="CASCADE"),
+            primary_key=True,
+        ),
         schema=SCHEMA,
     )
     # TODO: add constraint to id_nomenclature_marking_type to check
 
 
 def downgrade():
+    op.drop_table("cor_individual_module", schema=SCHEMA)
+    op.drop_table("t_marking_events", schema=SCHEMA)
     op.execute(
         """
         DELETE FROM ref_nomenclatures.t_nomenclatures t
@@ -114,5 +138,4 @@ def downgrade():
     op.execute(
         "DELETE FROM ref_nomenclatures.bib_nomenclatures_types WHERE mnemonique='TYP_MARQUAGE'"
     )
-    op.drop_table("t_marking_events", schema=SCHEMA)
-    op.drop_table("t_base_individuals", schema=SCHEMA)
+    op.drop_table("t_individuals", schema=SCHEMA)
