@@ -35,9 +35,7 @@ class TMediaRepository:
         self.thumbnail_sizes = current_app.config["MEDIAS"]["THUMBNAIL_SIZES"]
         # filtrer les données du dict qui
         # vont être insérées dans l'objet Model
-        self.media_data = {
-            k: self.data[k] for k in TMedias.__mapper__.c.keys() if k in self.data
-        }
+        self.media_data = {k: self.data[k] for k in TMedias.__mapper__.c.keys() if k in self.data}
         self.file = file
 
         # Chargement du média
@@ -115,9 +113,7 @@ class TMediaRepository:
         except IntegrityError as exp:
             # @TODO A revoir avec les nouvelles contraintes
             if "check_entity_field_exist" in exp.args[0]:
-                raise Exception(
-                    "{} doesn't exists".format(self.data["id_table_location"])
-                )
+                raise Exception("{} doesn't exists".format(self.data["id_table_location"]))
             if "fk_t_medias_check_entity_value" in exp.args[0]:
                 raise Exception(
                     "id {} of {} doesn't exists".format(self.data["id_table_location"])
@@ -131,11 +127,7 @@ class TMediaRepository:
     def test_video_link(self):
         media_type = self.media_type()
         url = self.data["media_url"]
-        if (
-            media_type == "Vidéo Youtube"
-            and "youtube" not in url
-            and "youtu.be" not in url
-        ):
+        if media_type == "Vidéo Youtube" and "youtube" not in url and "youtu.be" not in url:
             return False
 
         if media_type == "Vidéo Dailymotion" and "dailymotion" not in url:
@@ -192,9 +184,7 @@ class TMediaRepository:
                 )
 
         except GeoNatureError as e:
-            raise GeoNatureError(
-                "Il y a un problème avec l'URL renseignée : {}".format(str(e))
-            )
+            raise GeoNatureError("Il y a un problème avec l'URL renseignée : {}".format(str(e)))
 
     def file_path(self, thumbnail_height=None):
         file_path = None
@@ -228,9 +218,7 @@ class TMediaRepository:
             self.media.remove_thumbnails()
 
         # @TODO récupérer les exceptions
-        filename = "{}_{}".format(
-            self.media.id_media, secure_filename(self.file.filename)
-        )
+        filename = "{}_{}".format(self.media.id_media, secure_filename(self.file.filename))
         filedir = TMedias.base_dir() / str(self.media.id_table_location)
         filedir.mkdir(parents=True, exist_ok=True)
         self.file.save(str(filedir / filename))
@@ -243,10 +231,7 @@ class TMediaRepository:
     def media_type(self):
         nomenclature = (
             DB.session.query(TNomenclatures)
-            .filter(
-                TNomenclatures.id_nomenclature
-                == self.data["id_nomenclature_media_type"]
-            )
+            .filter(TNomenclatures.id_nomenclature == self.data["id_nomenclature_media_type"])
             .one()
         )
         return nomenclature.label_fr
@@ -335,10 +320,7 @@ class TMediaRepository:
         # En réalité renommage
         initial_path = self.media.media_path
 
-        if (
-            self.media.media_path
-            and not current_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]
-        ):
+        if self.media.media_path and not current_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]:
             self.media.__before_commit_delete__()
 
         DB.session.delete(self.media)
@@ -363,11 +345,7 @@ class TMediumRepository:
         Retourne la liste des médias pour un objet
         en fonction de son uuid
         """
-        medium = (
-            DB.session.query(TMedias)
-            .filter(TMedias.uuid_attached_row == entity_uuid)
-            .all()
-        )
+        medium = DB.session.query(TMedias).filter(TMedias.uuid_attached_row == entity_uuid).all()
         return medium
 
     @staticmethod
@@ -420,18 +398,14 @@ class TMediumRepository:
 
         # suppression des fichiers dont le media n'existe plpus en base
         ids_media_base = (
-            DB.session.query(TMedias.id_media)
-            .filter(TMedias.id_media.in_(ids_media_file))
-            .all()
+            DB.session.query(TMedias.id_media).filter(TMedias.id_media.in_(ids_media_file)).all()
         )
         ids_media_base = [x[0] for x in ids_media_base]
 
         ids_media_to_delete = [x for x in ids_media_file if x not in ids_media_base]
 
         if ids_media_to_delete:
-            print(
-                "sync media remove unassociated medias with ids : ", ids_media_to_delete
-            )
+            print("sync media remove unassociated medias with ids : ", ids_media_to_delete)
 
         for f_data in liste_fichiers:
             if f_data["id_media"] not in ids_media_to_delete:
