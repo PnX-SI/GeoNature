@@ -19,23 +19,23 @@ from geonature.utils.config import config_frontend
 from geonature.utils.module import get_dist_from_code, get_module_config
 
 
-def create_frontend_config(input_file=None, output_file=None):
-    if input_file is None:
-        input_file = (FRONTEND_DIR / "src/conf/app.config.ts.sample").open("r")
-    else:
-        input_file = nullcontext(input_file)
-    with input_file as f:
-        template = Template(f.read())
+# def create_frontend_config(input_file=None, output_file=None):
+#     if input_file is None:
+#         input_file = (FRONTEND_DIR / "src/conf/app.config.ts.sample").open("r")
+#     else:
+#         input_file = nullcontext(input_file)
+#     with input_file as f:
+#         template = Template(f.read())
 
-    parameters = json.dumps(config_frontend, indent=True)
-    app_config_template = template.render(parameters=parameters)
+#     parameters = json.dumps(config_frontend, indent=True)
+#     app_config_template = template.render(parameters=parameters)
 
-    if output_file is None:
-        output_file = (FRONTEND_DIR / "src/conf/app.config.ts").open("w")
-    else:
-        output_file = nullcontext(output_file)
-    with output_file as f:
-        f.write(app_config_template)
+#     if output_file is None:
+#         output_file = (FRONTEND_DIR / "src/conf/app.config.ts").open("w")
+#     else:
+#         output_file = nullcontext(output_file)
+#     with output_file as f:
+#         f.write(app_config_template)
 
 
 def create_frontend_module_config(module_code, output_file=None):
