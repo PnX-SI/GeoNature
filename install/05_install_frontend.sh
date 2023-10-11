@@ -71,7 +71,7 @@ cat src/assets/config.json
 
 echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
 # Generate the app.config.ts
-geonature generate-frontend-config
+# geonature generate-frontend-config
 
 echo "Désactivation du venv..."
 deactivate

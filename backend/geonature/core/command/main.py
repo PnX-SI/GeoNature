@@ -61,25 +61,25 @@ def dev_back(ctx, host, port):
     ctx.invoke(run_command, host=host, port=port)
 
 
-@main.command()
-@click.option(
-    "--input",
-    "input_file",
-    type=click.File("r"),
-)
-@click.option(
-    "--output",
-    "output_file",
-    type=click.File("w"),
-)
-def generate_frontend_config(input_file, output_file):
-    """
-    Génération des fichiers de configurations pour javascript
-    """
-    create_frontend_config(input_file, output_file)
-    click.echo(
-        "Configuration générée. Pensez à rebuilder le frontend pour la production.", err=True
-    )
+# @main.command()
+# @click.option(
+#     "--input",
+#     "input_file",
+#     type=click.File("r"),
+# )
+# @click.option(
+#     "--output",
+#     "output_file",
+#     type=click.File("w"),
+# )
+# def generate_frontend_config(input_file, output_file):
+#     """
+#     Génération des fichiers de configurations pour javascript
+#     """
+#     create_frontend_config(input_file, output_file)
+#     click.echo(
+#         "Configuration générée. Pensez à rebuilder le frontend pour la production.", err=True
+#     )
 
 
 @main.command()
