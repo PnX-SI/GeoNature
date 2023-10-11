@@ -31,7 +31,7 @@ my_domain=$(echo $my_url | sed -r 's|^.*\/\/(.*)$|\1|')
 my_domain=$(echo $my_domain | sed s'/.$//')
 export DOMAIN_NAME="$my_domain"
 
-# Check OS and versions
+# Check OS and versions
 if [ "$OS_NAME" != "debian" ]
 then
     echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour la distribution Debian\e[0m" >&2

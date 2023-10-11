@@ -252,15 +252,6 @@ Debugger avec un navigateur
 L'extension `Angular DevTools <https://angular.io/guide/devtools>`_ permettra de debugger l'application dans la console du navigateur.
 Pour utiliser l'extension vous devez l'installer et passer obligatoirement en mode ``development``.
 
-Ouvrez le fichier ``frontend/src/conf/app.config.ts`` et modifiez la valeur ``PROD_MOD`` pour avoir :
-
-.. code-block:: javascript
-  :linenos:
-
-  "PROD_MOD": false
-
-Si le mode production (PROD_MOD) est à true, alors vous n'êtes pas en mode production lors du lancement de la commande ``npm run start``.
-
 .. _dev-backend:
 
 Développement Backend
