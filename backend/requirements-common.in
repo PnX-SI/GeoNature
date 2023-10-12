@@ -1,7 +1,8 @@
 celery[redis]
 click>=7.0
 fiona>=1.8.22,<1.9
-flask
+# pytest-flask is incompatible with flask 3
+flask < 3
 flask-admin
 flask-cors
 flask-mail
