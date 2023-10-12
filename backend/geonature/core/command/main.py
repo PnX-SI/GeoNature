@@ -16,7 +16,6 @@ from geonature import create_app
 from geonature.utils.config import config
 from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
 from geonature.utils.command import (
-    create_frontend_config,
     create_frontend_module_config,
     build_frontend,
 )
@@ -62,27 +61,6 @@ def dev_back(ctx, host, port):
 
 
 @main.command()
-@click.option(
-    "--input",
-    "input_file",
-    type=click.File("r"),
-)
-@click.option(
-    "--output",
-    "output_file",
-    type=click.File("w"),
-)
-def generate_frontend_config(input_file, output_file):
-    """
-    Génération des fichiers de configurations pour javascript
-    """
-    create_frontend_config(input_file, output_file)
-    click.echo(
-        "Configuration générée. Pensez à rebuilder le frontend pour la production.", err=True
-    )
-
-
-@main.command()
 @click.argument("module_code")
 @click.option(
     "--output",
@@ -113,7 +91,6 @@ def update_configuration(modules, build):
     """
     click.echo("Génération de la configuration du frontend :")
     click.echo("  GeoNature … ", nl=False)
-    create_frontend_config()
     click.secho("OK", fg="green")
     if modules:
         for dist in iter_modules_dist():
