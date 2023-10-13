@@ -127,6 +127,7 @@ class TOccurrencesOccurrence(DB.Model):
         lazy="joined",
         cascade="all,delete-orphan",
         uselist=True,
+        overlaps="occurrence",
     )
 
     taxref = relationship(Taxref, lazy="joined")
@@ -169,7 +170,7 @@ class TRelevesOccurrence(DB.Model):
     additional_fields = DB.Column(JSONB)
 
     t_occurrences_occtax = relationship(
-        "TOccurrencesOccurrence", lazy="joined", cascade="all, delete-orphan"
+        "TOccurrencesOccurrence", lazy="joined", cascade="all, delete-orphan", overlaps="releve"
     )
 
     observers = DB.relationship(

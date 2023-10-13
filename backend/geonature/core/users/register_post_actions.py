@@ -4,7 +4,8 @@ Action triggered after register action (create temp user, change password etc...
 import datetime
 from warnings import warn
 
-from flask import Markup, render_template, current_app, url_for
+from flask import render_template, current_app, url_for
+from markupsafe import Markup
 from pypnusershub.db.models import Application, User
 from pypnusershub.db.models_register import TempUser
 from sqlalchemy.sql import func

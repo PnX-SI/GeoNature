@@ -50,7 +50,7 @@ class TAdditionalFields(DB.Model):
         secondary=cor_field_module,
     )
     objects = DB.relationship(PermObject, secondary=cor_field_object)
-    datasets = DB.relationship(TDatasets, secondary=cor_field_dataset)
+    datasets = DB.relationship(TDatasets, secondary=cor_field_dataset, overlaps="additional_fields")
 
     def __str__(self):
         return f"{self.field_label} ({self.description})"

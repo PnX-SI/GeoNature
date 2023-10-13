@@ -1,11 +1,11 @@
 celery[redis]
 click>=7.0
 fiona>=1.8.22,<1.9
-flask
+flask<3.0.0
 flask-admin
 flask-cors
 flask-mail
-flask-marshmallow<0.15.0
+flask-marshmallow
 flask-migrate
 flask-sqlalchemy
 flask-weasyprint
@@ -22,7 +22,7 @@ packaging
 psycopg2
 python-dateutil
 shapely
-sqlalchemy<1.4
+sqlalchemy<2.0
 toml
 weasyprint<53
 wtforms

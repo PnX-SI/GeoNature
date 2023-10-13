@@ -455,7 +455,7 @@ class TDatasets(db.Model):
     id_taxa_list = DB.Column(DB.Integer)
     modules = DB.relationship("TModules", secondary=cor_module_dataset, backref="datasets")
 
-    creator = DB.relationship(User, lazy="joined")  # = digitizer
+    creator = DB.relationship(User, lazy="joined", overlaps="digitizer")  # = digitizer
     nomenclature_data_type = DB.relationship(
         TNomenclatures,
         lazy="select",
@@ -499,7 +499,8 @@ class TDatasets(db.Model):
             CorDatasetTerritory.id_dataset,
             CorDatasetTerritory.id_nomenclature_territory,
         ],
-        backref=DB.backref("territory_dataset", lazy="select"),
+        backref=DB.backref("territory_dataset", lazy="select", overlaps="nomenclature_territory"),
+        overlaps="nomenclature_territory",
     )
 
     # because CorDatasetActor could be an User or an Organisme object...
@@ -759,7 +760,8 @@ class TAcquisitionFramework(db.Model):
             CorAcquisitionFrameworkObjectif.id_acquisition_framework,
             CorAcquisitionFrameworkObjectif.id_nomenclature_objectif,
         ],
-        backref=DB.backref("objectif_af", lazy="select"),
+        backref=DB.backref("objectif_af", lazy="select", overlaps="nomenclature_objectif"),
+        overlaps="nomenclature_objectif",
     )
 
     cor_volets_sinp = DB.relationship(
@@ -777,7 +779,8 @@ class TAcquisitionFramework(db.Model):
             CorAcquisitionFrameworkVoletSINP.id_acquisition_framework,
             CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp,
         ],
-        backref=DB.backref("volet_sinp_af", lazy="select"),
+        backref=DB.backref("volet_sinp_af", lazy="select", overlaps="nomenclature_voletsinp",),
+        overlaps="nomenclature_voletsinp",
     )
 
     cor_territories = DB.relationship(
@@ -795,7 +798,8 @@ class TAcquisitionFramework(db.Model):
             CorAcquisitionFrameworkTerritory.id_acquisition_framework,
             CorAcquisitionFrameworkTerritory.id_nomenclature_territory,
         ],
-        backref=DB.backref("territory_af", lazy="select"),
+        backref=DB.backref("territory_af", lazy="select", overlaps="nomenclature_territory"),
+        overlaps="nomenclature_territory"
     )
 
     bibliographical_references = DB.relationship(
@@ -811,6 +815,7 @@ class TAcquisitionFramework(db.Model):
         lazy="joined",  # DS required for permissions checks
         cascade="all,delete-orphan",
         uselist=True,
+        overlaps="acquisition_framework",
     )
     datasets = synonym("t_datasets")
 
@@ -899,26 +904,32 @@ class TDatasetDetails(TDatasets):
     data_type = DB.relationship(
         TNomenclatures,
         foreign_keys=[TDatasets.id_nomenclature_data_type],
+        overlaps="nomenclature_data_type",
     )
     dataset_objectif = DB.relationship(
         TNomenclatures,
         foreign_keys=[TDatasets.id_nomenclature_dataset_objectif],
+        overlaps="nomenclature_dataset_objectif",
     )
     collecting_method = DB.relationship(
         TNomenclatures,
         foreign_keys=[TDatasets.id_nomenclature_collecting_method],
+        overlaps="nomenclature_collecting_method",
     )
     data_origin = DB.relationship(
         TNomenclatures,
         foreign_keys=[TDatasets.id_nomenclature_data_origin],
+        overlaps="nomenclature_data_origin",
     )
     source_status = DB.relationship(
         TNomenclatures,
         foreign_keys=[TDatasets.id_nomenclature_source_status],
+        overlaps="nomenclature_source_status",
     )
     resource_type = DB.relationship(
         TNomenclatures,
         foreign_keys=[TDatasets.id_nomenclature_resource_type],
+        overlaps="nomenclature_resource_type",
     )
     additional_fields = DB.relationship("TAdditionalFields", secondary=cor_field_dataset)
 

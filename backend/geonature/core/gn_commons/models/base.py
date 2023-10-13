@@ -214,7 +214,7 @@ class TValidations(DB.Model):
     validation_comment = DB.Column(DB.Unicode)
     validation_date = DB.Column(DB.TIMESTAMP)
     validation_auto = DB.Column(DB.Boolean)
-    validation_label = DB.relationship(TNomenclatures)
+    validation_label = DB.relationship(TNomenclatures, overlaps="nomenclature_valid_status")
 
 
 last_validation_query = (

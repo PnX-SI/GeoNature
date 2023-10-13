@@ -216,7 +216,8 @@ class Permission(db.Model):
             foreign(id_object) == PermissionAvailable.id_object,
             foreign(id_action) == PermissionAvailable.id_action,
         ),
-        backref="permissions",
+        backref=db.backref("permissions", overlaps="action, object, module"),
+        overlaps="action, object, module"
     )
 
     filters_fields = {

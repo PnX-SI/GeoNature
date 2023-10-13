@@ -1,4 +1,4 @@
-from flask import url_for, has_app_context, Markup, request
+from flask import url_for, has_app_context, request
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.sqla.filters import FilterEqual
 import sqlalchemy as sa
@@ -6,6 +6,7 @@ from flask_admin.contrib.sqla.tools import get_primary_key
 from flask_admin.contrib.sqla.fields import QuerySelectField
 from flask_admin.contrib.sqla.ajax import QueryAjaxModelLoader
 from flask_admin.form.widgets import Select2Widget
+from markupsafe import Markup
 from sqlalchemy.orm import contains_eager, joinedload
 
 from geonature.utils.env import db
