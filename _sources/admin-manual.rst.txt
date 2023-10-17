@@ -1972,8 +1972,8 @@ Attention : Si des données sont déjà présentes dans la synthèse et que l'on
         # Liste des entités géographiques sur lesquels les filtres
         # géographiques de la synthese s'appuient (type_code = code du type de l'entité géo, table ref_geo.bib_areas_types)
         AREA_FILTERS = [
-            { label = "Communes", "type_code": "COM" },
-            { label = "ZNIEFF1", "type_code": "ZNIEFF1" },
+            { label = "Communes", type_code = "COM" },
+            { label = "ZNIEFF1", type_code = "ZNIEFF1" },
         ]
 
 Il est aussi possible de passer plusieurs ``type_code`` regroupés dans un même filtre géographique (exemple : ``{ label = "Zonages réglementaires", type_code = ["ZC", "ZPS", "SIC"] }``).

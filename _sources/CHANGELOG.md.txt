@@ -1,6 +1,22 @@
 CHANGELOG
 =========
 
+2.13.3 (2023-10-17)
+-------------------
+
+**🐛 Corrections**
+
+- [Métadonnées] Correction de l'affichage des descriptions dans les fiches des cadres d'acquisition (#2716, par @mvergez)
+- [Admin] Correction de la modification des permissions sensibles (#2697, par @Pierre-Narcisi)
+- [Synthèse] Correction de la documentation du paramètre `AREA_FILTERS` (#1892, par @camillemonchicourt)
+- [Médias] Conservation de la rotation des images des vignettes (#2742, par @MathRdt)
+
+**💻 Développement**
+
+- Utilisation du fichier `requirements.txt` pour les tests automatiques des contributions dans la branche `master` (#2739, par @Pierre-Narcisi)
+- Déplacement des dépendances de développement des types Leaflet vers les dépendances de production (#2744, par @TheoLechemia)
+- Prise en compte du paramètre `creatableInModule` du composant `dataset` dans les dynamic forms (#2736, par @amandine-sahl)
+
 2.13.2 (2023-09-28)
 -------------------
 
@@ -12,7 +28,7 @@ CHANGELOG
 
 - Correction des déconnexions non effectives dans les versions 2.13.0 et 2.13.1 (#2682, par @TheoLechemia)
 - Correction des permissions vérifiées pour pouvoir supprimer un signalement en prenant en compte le C du module Validation, et non pas le R qui n'existe pas sur ce module (#2710, par @Pierre-Narcisi)
-- Correction de l'API des applications mobiles quand le chemin de l'APK est absolu (#2708, par @joelclement)
+- Correction de l'API des applications mobiles quand le chemin de l'APK est absolu (#2708, par @joelclems)
 - Correction des permissions des listes de JDD dans les modules de saisie (Occtax, Occhab, Import) en prenant en compte la portée du C du module, et pas seulement du R du module Métadonnées (#2712, par @Pierre-Narcisi)
 - Utilisation de l'heure locale du serveur pour lancer les taches Celery (#2725, par @bouttier)
 - Fermeture des connexions à la BDD à la fin des taches Celery (#2724, par @bouttier)
