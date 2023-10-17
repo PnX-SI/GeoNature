@@ -76,7 +76,18 @@ jobs:
           sudo apt update
           sudo apt install -y libgdal-dev
       - name: Install dependencies
+        if: github.base_ref == 'master'
         run: |
+          echo 'Installation des requirements de prod'
+          python -m pip install --upgrade pip
+          python -m pip install \
+            -e ..[tests] \
+            -r requirements.txt
+        working-directory: ./backend
+      - name: Install dependencies
+        if: github.base_ref != 'master'
+        run: |
+          echo 'Installation des requirements de dev'
           python -m pip install --upgrade pip
           python -m pip install \
             -e ..[tests] \
