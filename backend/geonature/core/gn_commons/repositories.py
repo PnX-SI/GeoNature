@@ -3,7 +3,7 @@ import datetime
 import requests
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageOps
 from io import BytesIO
 from flask import current_app, url_for
 from werkzeug.utils import secure_filename
@@ -283,7 +283,7 @@ class TMediaRepository:
     def create_thumbnail(self, size, image=None):
         if not image:
             image = self.get_image()
-
+        image = ImageOps.exif_transpose(image)
         image_thumb = image.copy()
         width = size / image.size[1] * image.size[0]
         image_thumb.thumbnail((width, size))
