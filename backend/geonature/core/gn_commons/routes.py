@@ -53,7 +53,7 @@ def config_route():
 @routes.route("/version", methods=["GET"])
 def version_route():
     """
-    Returns geonature configuration
+    Returns geonature version
     """
     return pkg_resources.get_distribution("geonature").version
 
