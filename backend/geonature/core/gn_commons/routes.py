@@ -1,4 +1,5 @@
 import json
+import pkg_resources
 from operator import or_
 from pathlib import Path
 
@@ -47,6 +48,14 @@ def config_route():
     Returns geonature configuration
     """
     return config_frontend
+
+
+@routes.route("/version", methods=["GET"])
+def version_route():
+    """
+    Returns geonature configuration
+    """
+    return pkg_resources.get_distribution("geonature").version
 
 
 @routes.route("/modules", methods=["GET"])
