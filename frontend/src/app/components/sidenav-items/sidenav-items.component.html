@@ -20,7 +20,7 @@
     *ngFor="let module of moduleService.getDisplayedModules(); let index = index"
     href="{{ module.module_url }}"
     [attr.data-qa]="'gn-sidenav-link-' + module.module_code"
-    target="_self"
+    [target]="module.module_target"
   >
     <mat-list-item class="sidenav-item" (click)="_sidenavService.toggleSideNav()">
       <i class="fa {{ module.module_picto }} picto" aria-hidden="true"> </i>
