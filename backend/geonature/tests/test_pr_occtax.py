@@ -12,7 +12,7 @@ from sqlalchemy import func
 from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 from geonature.utils.config import config
-from .utils import set_logged_user_cookie
+from .utils import set_logged_user
 from .fixtures import *
 
 occtax = pytest.importorskip("occtax")
@@ -162,7 +162,7 @@ def unexisting_id_releve():
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets")
 class TestOcctax:
     def test_get_releve(self, users, releve_occtax):
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.get(url_for("pr_occtax.getReleves"))
 
@@ -175,16 +175,16 @@ class TestOcctax:
 
     def test_post_releve(self, users, releve_data):
         # post with cruved = C = 2
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.post(url_for("pr_occtax.createReleve"), json=releve_data)
         assert response.status_code == 200
 
-        set_logged_user_cookie(self.client, users["noright_user"])
+        set_logged_user(self.client, users["noright_user"])
         response = self.client.post(url_for("pr_occtax.createReleve"), json=releve_data)
         assert response.status_code == Forbidden.code
 
     def test_post_occurrence(self, users, occurrence_data):
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         response = self.client.post(
             url_for("pr_occtax.createOccurrence", id_releve=occurrence_data["id_releve_occtax"]),
             json=occurrence_data,
@@ -196,7 +196,7 @@ class TestOcctax:
         # TODO : test dans la synthese qu'il y a bien 2 ligne pour l'UUID couting
 
     def test_update_occurrence(self, users, occurrence):
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
         occ_dict = OccurrenceSchema(exclude=("taxref",)).dump(occurrence)
         # change the cd_nom (occurrence level)
         occ_dict["cd_nom"] = 4516
@@ -221,7 +221,7 @@ class TestOcctax:
         {3, 5}.issubset([s.count_max for s in synthese_data])
 
     def test_post_releve_in_module_bis(self, users, releve_data, module, datasets):
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         # change id_dataset to a dataset associated whith module_1
         releve_data["properties"]["id_dataset"] = datasets["with_module_1"].id_dataset
         response = self.client.post(
@@ -235,14 +235,14 @@ class TestOcctax:
         response = self.client.get(url_for("pr_occtax.getDefaultNomenclatures"))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.get(url_for("pr_occtax.getDefaultNomenclatures"))
         assert response.status_code == 200
 
     def test_get_one_counting(self, occurrence, users):
         print(occurrence.cor_counting_occtax)
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.get(
             url_for(
                 "pr_occtax.getOneCounting",
@@ -257,7 +257,7 @@ class TestOcctaxGetReleveFilter:
     def test_get_releve_filter_observers_not_present(self, users, releve_occtax):
         query_string = {"observers": [users["admin_user"].id_role]}
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.get(url_for("pr_occtax.getReleves"), query_string=query_string)
 
@@ -270,7 +270,7 @@ class TestOcctaxGetReleveFilter:
     def test_get_releve_filter_observers(self, users, releve_occtax):
         query_string = {"observers": [users["user"].id_role]}
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.get(url_for("pr_occtax.getReleves"), query_string=query_string)
 
@@ -283,7 +283,7 @@ class TestOcctaxGetReleveFilter:
     def test_get_releve_filter_altitude_min(self, users, releve_occtax):
         query_string = {"altitude_min": releve_occtax.altitude_min - 1}
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.get(url_for("pr_occtax.getReleves"), query_string=query_string)
 
@@ -296,7 +296,7 @@ class TestOcctaxGetReleveFilter:
     def test_get_releve_filter_altitude_min_not_present(self, users, releve_occtax):
         query_string = {"altitude_min": releve_occtax.altitude_min + 1}
 
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.get(url_for("pr_occtax.getReleves"), query_string=query_string)
 
@@ -309,7 +309,7 @@ class TestOcctaxGetReleveFilter:
     def test_get_releves_by_submodule(
         self, users, module, datasets, releve_module_1, occtax_module
     ):
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         # get occtax data of OCCTAX_DS module
         # must return only releve of dataset associated with
@@ -329,6 +329,13 @@ class TestOcctaxGetReleveFilter:
         for feature in response.json["items"]["features"]:
             assert feature["properties"]["id_module"] == occtax_module.id_module
 
+    def test_jwt(self, users):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(
+            url_for("pr_occtax.getReleves"),
+        )
+        assert response.status_code == 200
+
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 @pytest.mark.parametrize(
@@ -346,7 +353,7 @@ class TestOcctaxGetReleveFilter:
 class TestOcctaxGetReleveFilterWrongType:
     def test_get_releve_filter_wrong_type(self, users, wrong_value):
         query_string = wrong_value
-        set_logged_user_cookie(self.client, users["user"])
+        set_logged_user(self.client, users["user"])
 
         response = self.client.get(url_for("pr_occtax.getReleves"), query_string=query_string)
 
