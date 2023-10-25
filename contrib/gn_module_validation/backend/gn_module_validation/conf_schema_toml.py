@@ -86,4 +86,3 @@ class GnModuleSchemaConf(Schema):
     AUTO_VALIDATION_CRONTAB = fields.String(load_default="* 1 * * *")
     AUTO_VALIDATION_ENABLED = fields.Boolean(load_default=False)
     AUTO_VALIDATION_SQL_FUNCTION = fields.String(load_default="fct_auto_validation")
-
