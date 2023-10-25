@@ -46,7 +46,7 @@ def check_cruved_scope(
     def _check_cruved_scope(view_func):
         @wraps(view_func)
         def decorated_view(*args, **kwargs):
-            if g.current_user is None:
+            if not g.current_user.is_authenticated:
                 raise Unauthorized
             scope = get_scopes_by_action(module_code=module_code, object_code=object_code)[action]
             if not scope:
@@ -68,7 +68,7 @@ def permissions_required(
     def _permission_required(view_func):
         @wraps(view_func)
         def decorated_view(*args, **kwargs):
-            if g.current_user is None:
+            if not g.current_user.is_authenticated:
                 raise Unauthorized
             permissions = get_permissions(action, module_code=module_code, object_code=object_code)
             if not permissions:
