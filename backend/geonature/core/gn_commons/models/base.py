@@ -233,6 +233,21 @@ class TValidations(DB.Model):
         overlaps="nomenclature_valid_status",  # overlaps expected
     )
 
+    def auto_validation(fct_auto_validation):
+        stmt = f"""
+            select routine_name, routine_schema 
+            from information_schema.routines 
+            where routine_name= '{fct_auto_validation}'
+            and routine_type='FUNCTION';
+         """
+        result = DB.session.execute(stmt).fetchall()
+        if len(result) == 0:
+            return
+        stmt_auto_validation = f"SELECT gn_profiles.{fct_auto_validation}()"
+        list_synthese_updated = DB.session.execute(stmt_auto_validation).fetchall()[0]
+        # DB.session.query(func.gn_profiles.fct_auto_validation())
+        return list_synthese_updated
+
 
 last_validation_query = (
     select(TValidations)

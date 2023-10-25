@@ -83,3 +83,7 @@ class GnModuleSchemaConf(Schema):
     MAIL_BODY = fields.String(load_default=MAIL_BODY)
     MAIL_SUBJECT = fields.String(load_default=MAIL_SUBJECT)
     COLUMN_LIST = fields.List(fields.Nested(ColumnSchema), load_default=COLUMN_LIST)
+    AUTO_VALIDATION_CRONTAB = fields.String(load_default="* 1 * * *")
+    AUTO_VALIDATION_ENABLED = fields.Boolean(load_default=False)
+    AUTO_VALIDATION_SQL_FUNCTION = fields.String(load_default="fct_auto_validation")
+
