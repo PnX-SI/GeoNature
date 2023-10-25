@@ -680,7 +680,7 @@ class TestGNMeta:
         assert datasets["own_dataset"].id_dataset not in filtered_ds
 
     def test_get_dataset_filter_create(self, users, datasets, module):
-        set_logged_user_cookie(self.client, users["admin_user"])
+        set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(
             url_for("gn_meta.get_datasets"),
