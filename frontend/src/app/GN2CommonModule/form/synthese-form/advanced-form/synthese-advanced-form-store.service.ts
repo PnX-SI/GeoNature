@@ -63,11 +63,6 @@ export class TaxonAdvancedStoreService {
           attr['attribut_name'] = 'taxhub_attribut_' + attr['id_attribut'];
           attr['required'] = attr['obligatoire'];
           attr['attribut_label'] = attr['label_attribut'];
-          if (attr['type_widget'] == 'multiselect') {
-            attr['values'] = attr['values'].map((val) => {
-              return { value: val };
-            });
-          }
           this._formGen.addNewControl(attr, this._formService.searchForm);
 
           return attr;
