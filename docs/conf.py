@@ -17,6 +17,9 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import sys, os
+
+sys.path.insert(0, os.path.abspath("../backend"))
 
 # -- General configuration ------------------------------------------------
 
@@ -37,6 +40,13 @@ extensions = [
     "sphinx.ext.githubpages",
     "myst_parser",
 ]
+
+## AUTOAPI
+extensions.append("autoapi.extension")
+autoapi_dirs = ["../backend/geonature"]
+autoapi_ignore = ["*migrations*", "*tests*"]
+autoapi_add_toctree_entry = False
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -126,9 +136,7 @@ html_sidebars = {"**": ["globaltoc.html", "relations.html", "sourcelink.html", "
 #     ]
 # }
 
-html_extra_path = [
-    "CNAME",
-]
+html_extra_path = ["CNAME", "sources/"]
 
 
 # -- Options for HTMLHelp output ------------------------------------------
@@ -186,4 +194,4 @@ texinfo_documents = [
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {"https://docs.python.org/": None}
+intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
