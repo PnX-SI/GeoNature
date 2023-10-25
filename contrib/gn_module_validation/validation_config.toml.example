@@ -1,8 +1,33 @@
 # PARAMETRES CONFIG MODULE VALIDATION
 
-# FONCTION AUTO_VALIDATION A SURCOUCHER SI LA FONCTION DE BASE N'EST PAS ADAPATEE A VOTRE CAS D'USAGE
+[[COLUMN_LIST]]
+column_label = "Taxon"
+column_name = "taxref.nom_vern_or_lb_nom"
+min_width = 250
+
+[[COLUMN_LIST]]
+column_label = "Date obs"
+column_name = "date_min"
+min_width = 100
+
+[[COLUMN_LIST]]
+column_label = "Jeu de données"
+column_name = "dataset.dataset_name"
+max_width = 100
+
+[[COLUMN_LIST]]
+column_label = "Observateur"
+column_name = "observers"
+min_width = 100
+
+# Exemple d’ajout d’une colonne supplémentaire
+#[[COLUMN_LIST]]
+#column_label = "Stade de vie"
+#column_name = "nomenclature_life_stage.label_default"
+#min_width = 50
 
 
+## FONCTION AUTO_VALIDATION A SURCOUCHER SI LA FONCTION DE BASE N'EST PAS ADAPATEE A VOTRE CAS D'USAGE
 #AUTO_VALIDATION_CRONTAB = "* 1 * * *"
 #AUTO_VALIDATION_ENABLED = true
 
