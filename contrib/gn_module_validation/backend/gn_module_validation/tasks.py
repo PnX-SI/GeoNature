@@ -30,10 +30,8 @@ def setup_periodic_tasks(sender, **kwargs):
 @celery_app.task(bind=True)
 def set_auto_validation(self):
     is_enabled = config["VALIDATION"]["AUTO_VALIDATION_ENABLED"]
-    fct_auto_validation_name  = config["VALIDATION"]['AUTO_VALIDATION_SQL_FUNCTION']
+    fct_auto_validation_name = config["VALIDATION"]["AUTO_VALIDATION_SQL_FUNCTION"]
     if is_enabled:
         logger.info("Set autovalidation...")
         TValidations.auto_validation(fct_auto_validation_name)
         logger.info("Auto validation done")
-
-
