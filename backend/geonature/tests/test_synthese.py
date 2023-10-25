@@ -349,7 +349,7 @@ class TestSynthese:
         module_label_to_filter,
         expected_length,
     ):
-        set_logged_user_cookie(self.client, users["self_user"])
+        set_logged_user(self.client, users["self_user"])
 
         id_modules_selected = []
         for module in modules:
