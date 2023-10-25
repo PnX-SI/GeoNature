@@ -5,4 +5,3 @@
 -e file:dependencies/Utils-Flask-SQLAlchemy#egg=utils-flask-sqlalchemy
 -e file:dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo
 -e file:dependencies/RefGeo#egg=pypn-ref-geo
--e file:dependencies/UsersHub#egg=usershub
