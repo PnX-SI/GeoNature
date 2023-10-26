@@ -135,7 +135,7 @@ class SyntheseQuery:
         Filter the query with the permissions of a user
         """
         subquery_observers = (
-            select([CorObserverSynthese.id_synthese])
+            select(CorObserverSynthese.id_synthese)
             .select_from(CorObserverSynthese)
             .where(CorObserverSynthese.id_role == user.id_role)
         )
@@ -192,7 +192,7 @@ class SyntheseQuery:
         if scope in (1, 2):
             # get id synthese where user is observer
             subquery_observers = (
-                select([CorObserverSynthese.id_synthese])
+                select(CorObserverSynthese.id_synthese)
                 .select_from(CorObserverSynthese)
                 .where(CorObserverSynthese.id_role == user.id_role)
             )

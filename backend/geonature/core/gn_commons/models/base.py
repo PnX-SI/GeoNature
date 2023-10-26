@@ -121,7 +121,7 @@ class TMedias(DB.Model):
     id_table_location = DB.Column(
         DB.Integer, ForeignKey("gn_commons.bib_tables_location.id_table_location")
     )
-    unique_id_media = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
+    unique_id_media = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
     uuid_attached_row = DB.Column(UUID(as_uuid=True))
     title_fr = DB.Column(DB.Unicode)
     title_en = DB.Column(DB.Unicode)
@@ -218,7 +218,7 @@ class TValidations(DB.Model):
 
 
 last_validation_query = (
-    select([TValidations])
+    select(TValidations)
     .order_by(TValidations.validation_date.desc())
     .limit(1)
     .alias("last_validation")

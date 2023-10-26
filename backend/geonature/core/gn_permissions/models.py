@@ -133,7 +133,7 @@ class PermissionAvailable(db.Model):
     id_object = db.Column(
         db.Integer,
         ForeignKey(PermObject.id_object),
-        default=select([PermObject.id_object]).where(PermObject.code_object == "ALL"),
+        default=select(PermObject.id_object).where(PermObject.code_object == "ALL"),
         primary_key=True,
     )
     id_action = db.Column(db.Integer, ForeignKey(PermAction.id_action), primary_key=True)
@@ -197,7 +197,7 @@ class Permission(db.Model):
     id_object = db.Column(
         db.Integer,
         ForeignKey(PermObject.id_object),
-        default=select([PermObject.id_object]).where(PermObject.code_object == "ALL"),
+        default=select(PermObject.id_object).where(PermObject.code_object == "ALL"),
     )
 
     role = db.relationship(User, backref="permissions")

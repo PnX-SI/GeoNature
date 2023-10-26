@@ -688,7 +688,7 @@ class SyntheseLogEntry(DB.Model):
 
 # defined here to avoid circular dependencies
 source_subquery = (
-    select([TSources.id_source, Synthese.id_dataset])
+    select(TSources.id_source, Synthese.id_dataset)
     .where(TSources.id_source == Synthese.id_source)
     .distinct()
     .alias()
@@ -701,9 +701,9 @@ TDatasets.sources = db.relationship(
     viewonly=True,
 )
 TDatasets.synthese_records_count = column_property(
-    select([func.count(Synthese.id_synthese)])
+    select(func.count(Synthese.id_synthese))
     .where(Synthese.id_dataset == TDatasets.id_dataset)
-    .as_scalar()  # deprecated, replace with scalar_subquery()
+    .scalar_subquery()
     .label("synthese_records_count"),
     deferred=True,
 )

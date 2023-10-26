@@ -654,7 +654,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
 
     # Check if pr_occhab exist
     check_schema_query = exists(
-        select([text("schema_name")])
+        select(text("schema_name"))
         .select_from(text("information_schema.schemata"))
         .where(text("schema_name = 'pr_occhab'"))
     )
@@ -892,7 +892,7 @@ def get_acquisition_framework_stats(id_acquisition_framework):
 
     # Check if pr_occhab exist
     check_schema_query = exists(
-        select([text("schema_name")])
+        select(text("schema_name"))
         .select_from(text("information_schema.schemata"))
         .where(text("schema_name = 'pr_occhab'"))
     )

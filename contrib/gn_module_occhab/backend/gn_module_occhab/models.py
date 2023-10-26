@@ -80,7 +80,7 @@ class Station(NomenclaturesMixin, db.Model):
 
     id_station = db.Column(db.Integer, primary_key=True)
     unique_id_sinp_station = db.Column(
-        UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
+        UUID(as_uuid=True), default=select(func.uuid_generate_v4())
     )
     id_dataset = db.Column(db.Integer, ForeignKey(Dataset.id_dataset), nullable=False)
     dataset = relationship(Dataset)
@@ -153,7 +153,7 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
     station = db.relationship(Station, lazy="joined", back_populates="habitats")
     unique_id_sinp_hab = db.Column(
         UUID(as_uuid=True),
-        default=select([func.uuid_generate_v4()]),
+        default=select(func.uuid_generate_v4()),
         nullable=False,
     )
     cd_hab = db.Column(db.Integer, ForeignKey("ref_habitats.habref.cd_hab"), nullable=False)

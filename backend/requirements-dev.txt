@@ -107,6 +107,10 @@ cssselect2==0.7.0
     #   weasyprint
 defusedxml==0.7.1
     # via cairosvg
+dnspython==2.4.2
+    # via email-validator
+email-validator==2.1.0.post1
+    # via wtforms-components
 fiona==1.8.22
     # via
     #   -r requirements-common.in
@@ -166,9 +170,11 @@ flask-sqlalchemy==3.0.5
     #   utils-flask-sqlalchemy
 flask-weasyprint==1.0.0
     # via -r requirements-common.in
-flask-wtf==1.1.1
-    # via -r requirements-common.in
-geoalchemy2==0.11.1
+flask-wtf==1.2.1
+    # via
+    #   -r requirements-common.in
+    #   usershub
+geoalchemy2==0.14.2
     # via utils-flask-sqlalchemy-geo
 geojson==3.0.1
     # via
@@ -245,7 +251,7 @@ packaging==23.2
     #   gunicorn
     #   marshmallow
     #   marshmallow-sqlalchemy
-pillow==10.0.1
+pillow==10.1.0
     # via
     #   -r requirements-common.in
     #   cairosvg
@@ -324,6 +330,9 @@ typing-extensions==4.8.0
     #   async-timeout
     #   importlib-metadata
     #   redis
+    #   kombu
+tzdata==2023.3
+    # via celery
 urllib3==1.26.18
     # via
     #   botocore
@@ -347,12 +356,12 @@ webencodings==0.5.1
     #   cssselect2
     #   html5lib
     #   tinycss2
-werkzeug==2.2.3
+werkzeug==2.3.7
     # via
     #   flask
     #   flask-login
     #   pypnusershub
-wtforms==3.0.1
+wtforms==3.1.0
     # via
     #   -r requirements-common.in
     #   flask-admin

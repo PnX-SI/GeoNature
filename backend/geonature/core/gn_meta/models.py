@@ -397,7 +397,7 @@ class TDatasets(db.Model):
 
     id_dataset = DB.Column(DB.Integer, primary_key=True)
     unique_dataset_id = DB.Column(
-        UUIDType(as_uuid=True), default=select([func.uuid_generate_v4()])
+        UUIDType(as_uuid=True), default=select(func.uuid_generate_v4())
     )
     id_acquisition_framework = DB.Column(
         DB.Integer,
@@ -695,7 +695,7 @@ class TAcquisitionFramework(db.Model):
 
     id_acquisition_framework = DB.Column(DB.Integer, primary_key=True)
     unique_acquisition_framework_id = DB.Column(
-        UUIDType(as_uuid=True), default=select([func.uuid_generate_v4()])
+        UUIDType(as_uuid=True), default=select(func.uuid_generate_v4())
     )
     acquisition_framework_name = DB.Column(DB.Unicode(255))
     acquisition_framework_desc = DB.Column(DB.Unicode)

@@ -176,8 +176,8 @@ def get_observations_for_web(permissions):
     observations = func.json_build_object(*columns).label("obs_as_json")
 
     obs_query = (
-        # select([VSyntheseForWebApp.id_synthese, observations])
-        select([observations])
+        # select(VSyntheseForWebApp.id_synthese, observations)
+        select(observations)
         .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
         .order_by(VSyntheseForWebApp.date_min.desc())
         .limit(result_limit)
@@ -196,7 +196,7 @@ def get_observations_for_web(permissions):
         # SQLAlchemy 1.4: replace column by add_columns
         obs_query = obs_query.column(VSyntheseForWebApp.id_synthese).cte("OBS")
         agg_areas = (
-            select([CorAreaSynthese.id_synthese, LAreas.id_area])
+            select(CorAreaSynthese.id_synthese, LAreas.id_area)
             .select_from(
                 CorAreaSynthese.__table__.join(
                     LAreas, LAreas.id_area == CorAreaSynthese.id_area
@@ -212,7 +212,7 @@ def get_observations_for_web(permissions):
             .lateral("agg_areas")
         )
         obs_query = (
-            select([LAreas.geojson_4326.label("geojson"), obs_query.c.obs_as_json])
+            select(LAreas.geojson_4326.label("geojson"), obs_query.c.obs_as_json)
             .select_from(
                 obs_query.outerjoin(
                     agg_areas, agg_areas.c.id_synthese == obs_query.c.id_synthese
@@ -227,13 +227,13 @@ def get_observations_for_web(permissions):
         )
 
     if output_format == "ungrouped_geom":
-        query = select([obs_query.c.geojson, obs_query.c.obs_as_json])
+        query = select(obs_query.c.geojson, obs_query.c.obs_as_json)
     else:
         # Group geometries with main query
         grouped_properties = func.json_build_object(
             "observations", func.json_agg(obs_query.c.obs_as_json).label("observations")
         )
-        query = select([obs_query.c.geojson, grouped_properties]).group_by(obs_query.c.geojson)
+        query = select(obs_query.c.geojson, grouped_properties).group_by(obs_query.c.geojson)
 
     results = DB.session.execute(query)
 
@@ -430,7 +430,7 @@ def export_observations_web(permissions):
     # Get the CTE for synthese filtered by user permissions
     synthese_query_class = SyntheseQuery(
         Synthese,
-        select([Synthese.id_synthese]),
+        select(Synthese.id_synthese),
         {},
     )
     synthese_query_class.filter_query_all_filters(g.current_user, permissions)
@@ -447,7 +447,7 @@ def export_observations_web(permissions):
 
     # Get the query for export
     export_query = (
-        select([export_view.tableDef])
+        select(export_view.tableDef)
         .select_from(
             export_view.tableDef.join(
                 cte_synthese_filtered,
@@ -554,7 +554,7 @@ def export_metadata(permissions):
             500,
         )
 
-    q = select([distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef])
+    q = select(distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef)
 
     synthese_query_class = SyntheseQuery(
         VSyntheseForWebApp,
@@ -609,20 +609,18 @@ def export_status(permissions):
 
     # Initalize the select object
     q = select(
-        [
-            distinct(VSyntheseForWebApp.cd_nom),
-            Taxref.cd_ref,
-            Taxref.nom_complet,
-            Taxref.nom_vern,
-            TaxrefBdcStatutTaxon.rq_statut,
-            TaxrefBdcStatutType.regroupement_type,
-            TaxrefBdcStatutType.lb_type_statut,
-            TaxrefBdcStatutText.cd_sig,
-            TaxrefBdcStatutText.full_citation,
-            TaxrefBdcStatutText.doc_url,
-            TaxrefBdcStatutValues.code_statut,
-            TaxrefBdcStatutValues.label_statut,
-        ]
+        distinct(VSyntheseForWebApp.cd_nom),
+        Taxref.cd_ref,
+        Taxref.nom_complet,
+        Taxref.nom_vern,
+        TaxrefBdcStatutTaxon.rq_statut,
+        TaxrefBdcStatutType.regroupement_type,
+        TaxrefBdcStatutType.lb_type_statut,
+        TaxrefBdcStatutText.cd_sig,
+        TaxrefBdcStatutText.full_citation,
+        TaxrefBdcStatutText.doc_url,
+        TaxrefBdcStatutValues.code_statut,
+        TaxrefBdcStatutValues.label_statut,
     )
 
     # Initialize SyntheseQuery class
@@ -735,11 +733,9 @@ def general_stats(permissions):
     """
     allowed_datasets = TDatasets.query.filter_by_readable().all()
     q = select(
-        [
-            func.count(Synthese.id_synthese),
-            func.count(func.distinct(Synthese.cd_nom)),
-            func.count(func.distinct(Synthese.observers)),
-        ]
+        func.count(Synthese.id_synthese),
+        func.count(func.distinct(Synthese.cd_nom)),
+        func.count(func.distinct(Synthese.observers)),
     )
     synthese_query_obj = SyntheseQuery(Synthese, q, {})
     synthese_query_obj.filter_query_with_cruved(g.current_user, permissions)
@@ -1291,9 +1287,7 @@ def list_synthese_log_entries() -> dict:
     create_update_entries = Synthese.query.with_entities(
         Synthese.id_synthese,
         db.case(
-            [
-                (Synthese.meta_create_date < Synthese.meta_update_date, "U"),
-            ],
+            (Synthese.meta_create_date < Synthese.meta_update_date, "U"),
             else_="I",
         ).label("last_action"),
         func.coalesce(Synthese.meta_update_date, Synthese.meta_create_date).label(
