@@ -1,19 +1,12 @@
-//Geonature connection
-before('Geonature connection', () => {
-  cy.geonatureLogout();
-  cy.geonatureLogin();
-});
+
 
 beforeEach(() => {
-  cy.restoreLocalStorage();
+  cy.geonatureLogin();
+  cy.visit('/#/occtax_ds');
 });
 
-afterEach(() => {
-  cy.saveLocalStorage();
-});
 
 it('Should click on OCCTAX_DS module and load data with module_code in url', () => {
-  cy.visit('/#/occtax_ds');
 
   cy.intercept(Cypress.env('apiEndpoint') + 'occtax/OCCTAX_DS/releves?**').as('getReleves');
   cy.wait('@getReleves').then((interception) => {
