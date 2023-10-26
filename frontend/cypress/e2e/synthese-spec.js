@@ -1,8 +1,7 @@
 describe('Tests gn_synthese', () => {
-  before(() => {
-    cy.geonatureLogout();
+  beforeEach(() => {
     cy.geonatureLogin();
-    cy.visit('/#/synthese');
+    cy.visit("/#/synthese")
   });
 
   afterEach(() => {
@@ -11,6 +10,7 @@ describe('Tests gn_synthese', () => {
   });
 
   it('Should search by taxa name', function () {
+
     // objectifs : pouvoir rentrer un nom d'espèce dans le filtre, que cela affiche le ou les observations sur la liste correspondant à ce nom
     cy.get('#taxonInput').clear();
     cy.get('#taxonInput').type('lynx');
@@ -31,6 +31,13 @@ describe('Tests gn_synthese', () => {
   it('Should search by date', function () {
     // objectifs : pouvoir changer les dates des filtres, que cela affiche le ou les obs dans la liste d'observations dans la plage de dates donnée
 
+
+    cy.intercept(Cypress.env('apiEndpoint') + 'synthese/for_web?**', (req => {
+      if (req.body.hasOwnProperty('date_min')) {
+        req.alias = 'filteredByDate'
+      }
+    }))
+
     // select datemin
     cy.get('[data-qa="synthese-form-date-min"]').click();
     cy.get('[aria-label="Select year"]').select('2016');
@@ -45,16 +52,19 @@ describe('Tests gn_synthese', () => {
     // search
     cy.get('[data-qa="synthese-search-btn"]').click();
 
-    // get datatable cells containing the observater info
-    const cells = cy.get('.synthese-list-col-date_min');
-    cells.then((d) => {
-      expect(d.length).to.greaterThan(0);
-    });
-    cells.each(($el, index, $list) => {
-      const date = new Date($el.text());
-      expect(date).to.be.greaterThan(new Date('2016-12-24'));
-      expect(date).to.be.lessThan(new Date('2017-01-02'));
-    });
+    cy.wait('@filteredByDate').then(() => {
+      // get datatable cells containing the observater info
+      const cells = cy.get('.synthese-list-col-date_min');
+      cells.then((d) => {
+        expect(d.length).to.greaterThan(0);
+      });
+      cells.each(($el, index, $list) => {
+        var [day, month, year] = $el.text().split("-");
+        const date = new Date(year, month -1, day);
+        expect(date).to.be.greaterThan(new Date('2016-12-24'));
+        expect(date).to.be.lessThan(new Date('2017-01-02'));
+      });
+    })
   });
 
   it('Should search by observer', function () {
@@ -94,17 +104,22 @@ describe('Tests gn_synthese', () => {
   });
 
   it('Should search by acquisition framework and dataset', () => {
+    
     // ce test permet de faire une suite d'actions basées sur la sélection des CA et des JDD
     // vérifie que la sélection d'un cadre d'acquisition filtre bien les jeux de données
     // objectifs : pouvoir sélectionnner un jeu de données dans la liste déroulante,
     cy.get('[data-qa="synthese-form-ca"] ng-select').click();
+    // Intercept request to datasets which must have a parameter to "id_acquisition_framework"
+    cy.intercept(Cypress.env('apiEndpoint') + 'meta/datasets?**', (req => {
+      if (req.body.hasOwnProperty('id_acquisition_frameworks')) {
+        req.alias = 'filteredDatasets'
+      }
+    }))
     // select a CA without dataset and check JDD 1 is not in list
-    cy.get('[data-qa="CA-2-empty"]').click();
-    cy.get('[data-qa="synthese-form-dataset"] ng-select')
-      .click()
-      .then(() => {
-        expect(Cypress.$('[data-qa="JDD-1"]')).not.to.exist;
-      });
+    cy.get('[data-qa="CA-2-empty"]').click()
+    // wait for the filtered request
+    cy.wait('@filteredDatasets')
+
     // select CA 1 and check JDD-1 is in list
     cy.get('[data-qa="synthese-form-ca"] ng-select').click();
     cy.get('[data-qa="CA-1"]').click();

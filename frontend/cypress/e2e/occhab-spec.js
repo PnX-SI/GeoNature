@@ -3,13 +3,13 @@ import promisify from 'cypress-promise';
 
 describe("Testing occhab", () => {
 
-  before(() => {
-    cy.geonatureLogout();
+  beforeEach(() => {
     cy.geonatureLogin();
-    cy.visit("/#/occhab")
   });
 
-  it('should create an habitation', () => {
+  it('should create an habitation', async () => {
+    cy.visit("/#/occhab")
+
     const canvas = "[data-qa='pnx-occhab-form'] > div:nth-child(1) > pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom"
     cy.get('#add-btn').click()
 
@@ -42,9 +42,6 @@ describe("Testing occhab", () => {
 
     cy.get('#validateButton').click()
 
-  })
-
-  it('should display the new habitation', async () => {
     const listHabit = await promisify(cy.get('[data-qa="pnx-occhab-map-list-datatable"] > div > datatable-body > datatable-selection > datatable-scroller'))
     expect(listHabit[0].children[0].children[0].children[1].children[4].innerText).contains('Prés salés du contact haut schorre/dune')
     listHabit[0].children[0].children[0].children[1].children[2].children[0].children[0].click()
