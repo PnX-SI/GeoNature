@@ -206,7 +206,7 @@ def get_observations_for_web(permissions):
                     BibAreasTypes.id_type == LAreas.id_type,
                 ),
             )
-            .where(CorAreaSynthese.id_synthese == VSyntheseForWebApp.id_synthese)
+            .where(CorAreaSynthese.id_synthese == obs_query.c.id_synthese)
             .where(
                 BibAreasTypes.type_code == current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"]
             )
