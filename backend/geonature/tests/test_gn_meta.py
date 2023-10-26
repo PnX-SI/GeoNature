@@ -10,7 +10,14 @@ from geoalchemy2.shape import to_shape
 
 from geojson import Point
 from sqlalchemy import func
-from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound, Unauthorized
+from werkzeug.exceptions import (
+    UnsupportedMediaType,
+    BadRequest,
+    Conflict,
+    Forbidden,
+    NotFound,
+    Unauthorized,
+)
 from werkzeug.datastructures import MultiDict, Headers
 from ref_geo.models import BibAreasTypes, LAreas
 
@@ -633,7 +640,7 @@ class TestGNMeta:
         set_logged_user(self.client, users["admin_user"])
 
         response = self.client.post(url_for("gn_meta.create_dataset"))
-        assert response.status_code == BadRequest.code
+        assert response.status_code == UnsupportedMediaType.code
 
     def test_get_dataset(self, users, datasets):
         ds = datasets["own_dataset"]

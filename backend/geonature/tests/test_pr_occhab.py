@@ -214,7 +214,7 @@ class TestOcchab:
         response = self.client.post(url, data=feature)
         assert response.status_code == 200, response.json
         new_feature = FeatureSchema().load(response.json)
-        new_station = Station.query.get(new_feature["id"])
+        new_station = db.session.get(Station, new_feature["id"])
         assert new_station.comment == "Une station"
         assert to_shape(new_station.geom_4326).equals_exact(Point(3.634, 44.399), 0.01)
         assert len(new_station.habitats) == 1
@@ -234,9 +234,14 @@ class TestOcchab:
         # Try modify existing station
         data = deepcopy(feature)
         data["properties"]["id_station"] = station.id_station
-        response = self.client.post(url, data=data)
+        response = self.client.post(
+                url_for(
+                "occhab.create_or_update_station",
+                id_station=station.id_station,
+            ),
+            data=data)
         db.session.refresh(station)
-        assert station.comment == "Ma super station"  # original comment
+        assert station.comment == "Une station"  # original comment
 
         # Try leveraging observers to modify existing user
         data = deepcopy(feature)

@@ -193,7 +193,6 @@ def users(app):
                     for module in modules:
                         for obj in [object_all] + module.objects:
                             permission = Permission(
-                                role=user,
                                 action=action,
                                 module=module,
                                 object=obj,
@@ -201,6 +200,7 @@ def users(app):
                                 sensitivity_filter=sensitivity_filter,
                             )
                             db.session.add(permission)
+                            permission.role = user
         return user
 
     users = {}

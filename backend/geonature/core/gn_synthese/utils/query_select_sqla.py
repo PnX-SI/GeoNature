@@ -537,10 +537,8 @@ class SyntheseQuery:
         #   pour les taxons répondant aux critères de selection
         bdc_status_cte = (
             select(
-                [
-                    TaxrefBdcStatutTaxon.cd_ref,
-                    func.array_agg(bdc_statut_cor_text_area.c.id_area).label("ids_area"),
-                ]
+                TaxrefBdcStatutTaxon.cd_ref,
+                func.array_agg(bdc_statut_cor_text_area.c.id_area).label("ids_area"),
             )
             .select_from(
                 TaxrefBdcStatutTaxon.__table__.join(

@@ -158,10 +158,10 @@ def get_synthese_data(scope):
     query = query.filter(dataset_alias.validable == True)
 
     # Step 2: give SyntheseQuery the Core selectable from ORM query
-    assert len(query.selectable.froms) == 1
+    assert len(query.selectable.get_final_froms()) == 1
 
     query = (
-        SyntheseQuery(Synthese, query.selectable, filters, query_joins=query.selectable.froms[0])
+        SyntheseQuery(Synthese, query.selectable, filters, query_joins=query.selectable.get_final_froms()[0])
         .filter_query_all_filters(g.current_user, scope)
         .limit(result_limit)
     )

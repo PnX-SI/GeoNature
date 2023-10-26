@@ -55,9 +55,9 @@ blinker==1.6.3
     # via
     #   flask
     #   flask-mail
-boto3==1.28.71
+boto3==1.28.69
     # via taxhub
-botocore==1.31.71
+botocore==1.31.69
     # via
     #   boto3
     #   s3transfer
@@ -109,6 +109,10 @@ cssselect2==0.7.0
     #   weasyprint
 defusedxml==0.7.1
     # via cairosvg
+dnspython==2.4.2
+    # via email-validator
+email-validator==2.1.0.post1
+    # via wtforms-components
 fiona==1.8.22
     # via
     #   -r requirements-common.in
@@ -169,7 +173,9 @@ flask-sqlalchemy==3.0.5
 flask-weasyprint==1.0.0
     # via -r requirements-common.in
 flask-wtf==1.2.1
-    # via -r requirements-common.in
+    # via
+    #   -r requirements-common.in
+    #   usershub
 geoalchemy2==0.14.2
     # via utils-flask-sqlalchemy-geo
 geojson==3.0.1

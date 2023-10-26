@@ -448,6 +448,11 @@ def create_dataset():
     Post one Dataset data
     .. :quickref: Metadata;
     """
+    print("TEEEEEEEEESSSSSST1")
+    print("user: ", g.current_user)
+    print("request : ", request)
+    print("data: ", request.get_json())
+    print("TEEEEEEEEESSSSSST2")
     return DatasetSchema().jsonify(
         datasetHandler(
             dataset=TDatasets(id_digitizer=g.current_user.id_role), data=request.get_json()
