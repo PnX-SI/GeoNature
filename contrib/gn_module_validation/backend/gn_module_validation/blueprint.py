@@ -22,7 +22,7 @@ from geonature.core.gn_commons.models.base import TValidations
 from werkzeug.exceptions import BadRequest
 from geonature.core.gn_commons.models import TValidations
 from geonature.core.notifications.utils import dispatch_notifications
-
+import gn_module_validation.tasks
 
 blueprint = Blueprint("validation", __name__)
 log = logging.getLogger()
