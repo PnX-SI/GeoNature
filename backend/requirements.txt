@@ -21,11 +21,11 @@ bcrypt==4.0.1
     # via pypnusershub
 billiard==3.6.4.0
     # via celery
-blinker==1.6.2
+blinker==1.6.3
     # via flask-mail
-boto3==1.28.57
+boto3==1.28.71
     # via taxhub
-botocore==1.31.57
+botocore==1.31.71
     # via
     #   boto3
     #   s3transfer
@@ -48,7 +48,7 @@ cffi==1.15.1
     #   cairocffi
     #   cryptography
     #   weasyprint
-charset-normalizer==3.2.0
+charset-normalizer==3.3.1
     # via requests
 click==8.1.7
     # via
@@ -71,7 +71,7 @@ click-repl==0.3.0
     # via celery
 cligj==0.7.2
     # via fiona
-cryptography==41.0.4
+cryptography==41.0.5
     # via authlib
 cssselect2==0.7.0
     # via
@@ -88,6 +88,7 @@ flask==2.2.5
     #   -r requirements-common.in
     #   flask-admin
     #   flask-cors
+    #   flask-login
     #   flask-mail
     #   flask-marshmallow
     #   flask-migrate
@@ -108,6 +109,8 @@ flask-cors==4.0.0
     # via
     #   -r requirements-common.in
     #   taxhub
+flask-login==0.6.2
+    # via pypnusershub
 flask-mail==0.9.1
     # via -r requirements-common.in
 flask-marshmallow==0.14.0
@@ -208,7 +211,7 @@ marshmallow-sqlalchemy==0.28.2
     #   utils-flask-sqlalchemy-geo
 munch==4.0.0
     # via fiona
-packaging==23.1
+packaging==23.2
     # via
     #   -r requirements-common.in
     #   geoalchemy2
@@ -223,7 +226,7 @@ pillow==9.5.0
     #   weasyprint
 prompt-toolkit==3.0.39
     # via click-repl
-psycopg2==2.9.8
+psycopg2==2.9.9
     # via
     #   -r requirements-common.in
     #   pypn-habref-api
@@ -243,7 +246,7 @@ pypn-ref-geo==1.4.0
     #   taxhub
 pypnnomenclature==1.5.4
     # via -r requirements-dependencies.in
-pypnusershub==1.6.11
+pypnusershub==2.0.0
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
@@ -295,7 +298,7 @@ sqlalchemy==1.3.24
     #   utils-flask-sqlalchemy
     #   utils-flask-sqlalchemy-geo
     #   wtforms-sqlalchemy
-taxhub==1.12.1
+taxhub==1.13.0
     # via
     #   -r requirements-dependencies.in
     #   pypnnomenclature
@@ -312,7 +315,7 @@ typing-extensions==4.7.1
     #   async-timeout
     #   importlib-metadata
     #   redis
-urllib3==1.26.16
+urllib3==1.26.18
     # via
     #   botocore
     #   requests
@@ -335,7 +338,7 @@ vine==5.0.0
     #   amqp
     #   celery
     #   kombu
-wcwidth==0.2.7
+wcwidth==0.2.8
     # via prompt-toolkit
 weasyprint==52.5
     # via
@@ -347,7 +350,10 @@ webencodings==0.5.1
     #   html5lib
     #   tinycss2
 werkzeug==2.2.3
-    # via flask
+    # via
+    #   flask
+    #   flask-login
+    #   pypnusershub
 wtforms==3.0.1
     # via
     #   -r requirements-common.in
