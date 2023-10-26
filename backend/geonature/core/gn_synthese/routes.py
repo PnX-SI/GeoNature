@@ -747,7 +747,7 @@ def general_stats(permissions):
         "nb_data": synthese_counts[0],
         "nb_species": synthese_counts[1],
         "nb_observers": synthese_counts[2],
-        "nb_dataset": len(allowed_datasets),
+        "nb_dataset": allowed_datasets,
     }
     return data
 
