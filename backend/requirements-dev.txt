@@ -52,10 +52,12 @@ bcrypt==4.0.1
 billiard==4.1.0
     # via celery
 blinker==1.6.3
-    # via flask-mail
-boto3==1.28.70
+    # via
+    #   flask
+    #   flask-mail
+boto3==1.28.71
     # via taxhub
-botocore==1.31.70
+botocore==1.31.71
     # via
     #   boto3
     #   s3transfer
@@ -107,10 +109,6 @@ cssselect2==0.7.0
     #   weasyprint
 defusedxml==0.7.1
     # via cairosvg
-dnspython==2.4.2
-    # via email-validator
-email-validator==2.1.0.post1
-    # via wtforms-components
 fiona==1.8.22
     # via
     #   -r requirements-common.in
@@ -171,16 +169,14 @@ flask-sqlalchemy==3.0.5
 flask-weasyprint==1.0.0
     # via -r requirements-common.in
 flask-wtf==1.2.1
-    # via
-    #   -r requirements-common.in
-    #   usershub
+    # via -r requirements-common.in
 geoalchemy2==0.14.2
     # via utils-flask-sqlalchemy-geo
 geojson==3.0.1
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
-greenlet==3.0.0
+greenlet==3.0.1
     # via sqlalchemy
 gunicorn==21.2.0
     # via
@@ -194,13 +190,6 @@ importlib-metadata==4.13.0 ; python_version < "3.10"
     # via
     #   -r requirements-common.in
     #   flask
-    #   gunicorn
-    #   kombu
-    #   mako
-    #   munch
-    #   redis
-importlib-resources==5.12.0
-    # via alembic
 itsdangerous==2.1.2
     # via
     #   flask
@@ -223,7 +212,7 @@ markupsafe==2.1.3
     #   mako
     #   werkzeug
     #   wtforms
-marshmallow==3.19.0
+marshmallow==3.20.1
     # via
     #   -r requirements-common.in
     #   flask-marshmallow
@@ -275,6 +264,7 @@ python-dateutil==2.8.2
     # via
     #   -r requirements-common.in
     #   botocore
+    #   celery
     #   utils-flask-sqlalchemy
 python-dotenv==1.0.0
     # via
@@ -282,9 +272,7 @@ python-dotenv==1.0.0
     #   pypn-ref-geo
     #   pypnnomenclature
     #   taxhub
-pytz==2023.3.post1
-    # via celery
-redis==5.0.1
+redis==4.6.0
     # via celery
 requests==2.31.0
     # via
@@ -302,7 +290,7 @@ six==1.16.0
     #   fiona
     #   html5lib
     #   python-dateutil
-sqlalchemy==1.3.24
+sqlalchemy==1.4.49
     # via
     #   -r requirements-common.in
     #   alembic
@@ -327,9 +315,6 @@ toml==0.10.2
 typing-extensions==4.8.0
     # via
     #   alembic
-    #   async-timeout
-    #   importlib-metadata
-    #   redis
     #   kombu
 tzdata==2023.3
     # via celery
@@ -338,8 +323,6 @@ urllib3==1.26.18
     #   botocore
     #   requests
     #   taxhub
-validators==0.22.0
-    # via wtforms-components
 vine==5.0.0
     # via
     #   amqp
