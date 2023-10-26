@@ -1,7 +1,7 @@
 describe('Testing homepage', () => {
-  before(() => {
-    cy.geonatureLogout();
+  beforeEach(() => {
     cy.geonatureLogin();
+    cy.visit('/#/');
   });
 
   it('should close and open the menu', () => {
@@ -17,18 +17,11 @@ describe('Testing homepage', () => {
       .and('match', /visible/);
   });
 
-  it('should display synthese page', () => {
+  it('should display synthese page and back to home', () => {
     cy.get('[data-qa="pnx-home-content-explore-data-button"]').click({ force: true });
     cy.url().should('include', 'synthese');
-  });
-
-  it('back to home', () => {
     cy.get('[data-qa="gn-sidenav-mat-card"]').click();
   });
-
-  // it('open documentation', () => {
-  //   cy.get('#app-toolbar > a').click()
-  // })
 
   it('disconnect', () => {
     cy.get('[data-qa="pnx-home-content-exit-button"]').click({ force: true });
