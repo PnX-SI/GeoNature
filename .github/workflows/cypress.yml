@@ -97,13 +97,9 @@ jobs:
       - name: generate frontend config
         run: |
           cp ./config/settings.ini.sample ./config/settings.ini 
-          geonature generate_frontend_config
           ./install/05_install_frontend.sh --ci
         env:
           GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
-      - name: Show generated frontend config
-        run: |
-          cat ./frontend/src/conf/app.config.ts
       - name: Install core modules
         run: |
           geonature install-gn-module contrib/occtax OCCTAX --build=false

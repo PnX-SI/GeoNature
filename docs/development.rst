@@ -252,15 +252,6 @@ Debugger avec un navigateur
 L'extension `Angular DevTools <https://angular.io/guide/devtools>`_ permettra de debugger l'application dans la console du navigateur.
 Pour utiliser l'extension vous devez l'installer et passer obligatoirement en mode ``development``.
 
-Ouvrez le fichier ``frontend/src/conf/app.config.ts`` et modifiez la valeur ``PROD_MOD`` pour avoir :
-
-.. code-block:: javascript
-  :linenos:
-
-  "PROD_MOD": false
-
-Si le mode production (PROD_MOD) est à true, alors vous n'êtes pas en mode production lors du lancement de la commande ``npm run start``.
-
 .. _dev-backend:
 
 Développement Backend
@@ -1675,10 +1666,9 @@ Release
 Pour sortir une nouvelle version de GeoNature :
 
 - Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, RefGeo, Utils-Flask-SQLAlchemy, Utils-Flask-SQLAlchemy-Geo)
-- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances et que le  `requirements-dependencies.in` a bien été MAJ.
-- Regénérer les `requirements.txt` et `requirements-dev.txt` avec les commandes suivantes dans la plus petite version de python supportée par GeoNature
-::
-    
+- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances et que le ``requirements-dependencies.in`` a bien été mis à jour.
+- Regénérer les fichiers ``requirements.txt`` et ``requirements-dev.txt`` avec les commandes suivantes dans la plus petite version de python supportée par GeoNature
+  ::
     pip-compile requirements.in > requirements.txt
     pip-compile requirements-dev.in > requirements-dev.txt
 
@@ -1688,3 +1678,4 @@ Pour sortir une nouvelle version de GeoNature :
 - Mergez la branche ``develop`` dans la branche ``master``
 - Faites la release (https://github.com/PnX-SI/GeoNature/releases) en la taguant ``X.Y.Z`` (sans ``v`` devant) et en copiant le contenu du Changelog
 - Dans la branche ``develop``, modifiez le fichier ``VERSION`` en ``X.Y.Z.dev0`` et pareil dans le fichier ``docs/CHANGELOG.md``
+- Faites la release de `GeoNature-Docker-services <https://github.com/PnX-SI/GeoNature-Docker-services>`_ avec la nouvelle version de GeoNature, et éventuellement des modules (Voir un `exemple <https://github.com/PnX-SI/GeoNature-Docker-services/pull/19/files>`_)

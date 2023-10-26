@@ -17,13 +17,10 @@
     #   -r requirements-submodules.in
     #   pypnnomenclature
     #   taxhub
-    #   usershub
 -e file:dependencies/TaxHub#egg=taxhub
     # via
     #   -r requirements-submodules.in
     #   pypnnomenclature
--e file:dependencies/UsersHub#egg=usershub
-    # via -r requirements-submodules.in
 -e file:dependencies/Utils-Flask-SQLAlchemy#egg=utils-flask-sqlalchemy
     # via
     #   -r requirements-submodules.in
@@ -55,12 +52,10 @@ bcrypt==4.0.1
 billiard==4.1.0
     # via celery
 blinker==1.6.3
-    # via
-    #   flask
-    #   flask-mail
-boto3==1.28.62
+    # via flask-mail
+boto3==1.28.70
     # via taxhub
-botocore==1.31.62
+botocore==1.31.70
     # via
     #   boto3
     #   s3transfer
@@ -81,7 +76,7 @@ cffi==1.16.0
     #   cairocffi
     #   cryptography
     #   weasyprint
-charset-normalizer==3.3.0
+charset-normalizer==3.3.1
     # via requests
 click==8.1.7
     # via
@@ -104,7 +99,7 @@ click-repl==0.3.0
     # via celery
 cligj==0.7.2
     # via fiona
-cryptography==41.0.4
+cryptography==41.0.5
     # via authlib
 cssselect2==0.7.0
     # via
@@ -112,10 +107,6 @@ cssselect2==0.7.0
     #   weasyprint
 defusedxml==0.7.1
     # via cairosvg
-dnspython==2.4.2
-    # via email-validator
-email-validator==2.0.0.post2
-    # via wtforms-components
 fiona==1.8.22
     # via
     #   -r requirements-common.in
@@ -125,6 +116,7 @@ flask==2.3.3
     #   -r requirements-common.in
     #   flask-admin
     #   flask-cors
+    #   flask-login
     #   flask-mail
     #   flask-marshmallow
     #   flask-migrate
@@ -136,7 +128,6 @@ flask==2.3.3
     #   pypnnomenclature
     #   pypnusershub
     #   taxhub
-    #   usershub
     #   utils-flask-sqlalchemy
 flask-admin==1.6.1
     # via
@@ -146,6 +137,8 @@ flask-cors==4.0.0
     # via
     #   -r requirements-common.in
     #   taxhub
+flask-login==0.6.2
+    # via pypnusershub
 flask-mail==0.9.1
     # via -r requirements-common.in
 flask-marshmallow==0.15.0
@@ -160,7 +153,6 @@ flask-migrate==4.0.5
     #   pypn-habref-api
     #   pypnnomenclature
     #   taxhub
-    #   usershub
     #   utils-flask-sqlalchemy
 flask-sqlalchemy==3.0.5
     # via
@@ -171,15 +163,12 @@ flask-sqlalchemy==3.0.5
     #   pypnnomenclature
     #   pypnusershub
     #   taxhub
-    #   usershub
     #   utils-flask-sqlalchemy
 flask-weasyprint==1.0.0
     # via -r requirements-common.in
-flask-wtf==1.2.1
-    # via
-    #   -r requirements-common.in
-    #   usershub
-geoalchemy2==0.14.1
+flask-wtf==1.1.1
+    # via -r requirements-common.in
+geoalchemy2==0.11.1
     # via utils-flask-sqlalchemy-geo
 geojson==3.0.1
     # via
@@ -191,21 +180,21 @@ gunicorn==21.2.0
     # via
     #   -r requirements-common.in
     #   taxhub
-    #   usershub
 html5lib==1.1
     # via weasyprint
 idna==3.4
-    # via
-    #   email-validator
-    #   requests
+    # via requests
 importlib-metadata==4.13.0 ; python_version < "3.10"
     # via
     #   -r requirements-common.in
     #   flask
-infinity==1.5
-    # via intervals
-intervals==0.9.2
-    # via wtforms-components
+    #   gunicorn
+    #   kombu
+    #   mako
+    #   munch
+    #   redis
+importlib-resources==5.12.0
+    # via alembic
 itsdangerous==2.1.2
     # via
     #   flask
@@ -228,8 +217,7 @@ markupsafe==2.1.3
     #   mako
     #   werkzeug
     #   wtforms
-    #   wtforms-components
-marshmallow==3.20.1
+marshmallow==3.19.0
     # via
     #   -r requirements-common.in
     #   flask-marshmallow
@@ -246,7 +234,6 @@ marshmallow-sqlalchemy==0.29.0
     #   pypnnomenclature
     #   pypnusershub
     #   taxhub
-    #   usershub
     #   utils-flask-sqlalchemy-geo
 munch==4.0.0
     # via fiona
@@ -274,7 +261,6 @@ psycopg2==2.9.9
     #   pypnnomenclature
     #   pypnusershub
     #   taxhub
-    #   usershub
 pycparser==2.21
     # via cffi
 pyphen==0.14.0
@@ -283,8 +269,6 @@ python-dateutil==2.8.2
     # via
     #   -r requirements-common.in
     #   botocore
-    #   celery
-    #   usershub
     #   utils-flask-sqlalchemy
 python-dotenv==1.0.0
     # via
@@ -292,8 +276,9 @@ python-dotenv==1.0.0
     #   pypn-ref-geo
     #   pypnnomenclature
     #   taxhub
-    #   usershub
-redis==4.6.0
+pytz==2023.3.post1
+    # via celery
+redis==5.0.1
     # via celery
 requests==2.31.0
     # via
@@ -311,8 +296,7 @@ six==1.16.0
     #   fiona
     #   html5lib
     #   python-dateutil
-    #   wtforms-components
-sqlalchemy==1.4.49
+sqlalchemy==1.3.24
     # via
     #   -r requirements-common.in
     #   alembic
@@ -337,10 +321,10 @@ toml==0.10.2
 typing-extensions==4.8.0
     # via
     #   alembic
-    #   kombu
-tzdata==2023.3
-    # via celery
-urllib3==1.26.17
+    #   async-timeout
+    #   importlib-metadata
+    #   redis
+urllib3==1.26.18
     # via
     #   botocore
     #   requests
@@ -363,18 +347,17 @@ webencodings==0.5.1
     #   cssselect2
     #   html5lib
     #   tinycss2
-werkzeug==3.0.0
-    # via flask
-wtforms==3.1.0
+werkzeug==2.2.3
+    # via
+    #   flask
+    #   flask-login
+    #   pypnusershub
+wtforms==3.0.1
     # via
     #   -r requirements-common.in
     #   flask-admin
     #   flask-wtf
-    #   usershub
-    #   wtforms-components
     #   wtforms-sqlalchemy
-wtforms-components==0.10.5
-    # via usershub
 wtforms-sqlalchemy==0.3
     # via -r requirements-common.in
 xmltodict==0.13.0
