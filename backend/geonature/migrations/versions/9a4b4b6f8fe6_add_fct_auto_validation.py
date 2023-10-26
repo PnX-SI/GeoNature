@@ -13,7 +13,7 @@ import sqlalchemy as sa
 revision = "9a4b4b6f8fe6"
 down_revision = "446e902a14e7"
 branch_labels = None
-depends_on = None
+depends_on = ("f06cc80cc8ba",)  # gn_commons
 
 schema = "gn_profiles"
 fct_name = "fct_auto_validation"
