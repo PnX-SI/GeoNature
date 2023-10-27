@@ -163,7 +163,6 @@ class TBaseVisits(DB.Model):
 
     dataset = relationship(
         TDatasets,
-        lazy="joined",
         primaryjoin=(TDatasets.id_dataset == id_dataset),
         foreign_keys=[id_dataset],
     )
