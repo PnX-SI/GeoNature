@@ -15,7 +15,7 @@ def individuals(users):
     user = users["self_user"]
     individuals = []
     for name in ["Test1", "Test2"]:
-        individuals.append(TIndividuals(individual_name=name, cd_nom=taxon.cd_nom, digitizer=user))
+        individuals.append(TIndividuals(individual_name=name, cd_nom=taxon.cd_nom, digitiser=user))
 
     with db.session.begin_nested():
         db.session.add_all(individuals)
