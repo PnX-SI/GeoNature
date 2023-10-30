@@ -4,7 +4,7 @@ import pytest
 from apptax.taxonomie.models import Taxref
 from geonature.core.gn_monitoring.models import TIndividuals
 from geonature.utils.env import db
-from .utils import set_logged_user_cookie
+from pypnusershub.tests.utils import set_logged_user_cookie
 
 CD_NOM = 212
 
