@@ -1,9 +1,18 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, g
+from geonature.core.gn_monitoring.schema import TIndividualsSchema
+from marshmallow import ValidationError, EXCLUDE
 from sqlalchemy.sql import func
 from geojson import FeatureCollection
+from werkzeug.exceptions import BadRequest
 
+from geonature.core.gn_permissions.decorators import login_required
 from geonature.utils.env import DB
-from geonature.core.gn_monitoring.models import TBaseSites, corSiteArea, corSiteModule
+from geonature.core.gn_monitoring.models import (
+    TBaseSites,
+    TIndividuals,
+    corSiteArea,
+    corSiteModule,
+)
 
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.generic import get_geojson_feature
@@ -101,3 +110,30 @@ def get_site_areas(id_site):
         feature["id"] = d[1]
         features.append(feature)
     return FeatureCollection(features)
+
+
+@routes.route("/individuals", methods=["GET"])
+@login_required
+def get_individuals():
+    query = TIndividuals.query
+
+    schema = TIndividualsSchema()
+    # In the future: paginate the query. But need infinite scroll on
+    # select frontend side
+    return schema.jsonify(query.all(), many=True)
+
+
+@routes.route("/individual", methods=["POST"])
+@login_required
+def create_one_individual():
+    # Exclude id_digitiser since it is set by the current user
+    individual_schema = TIndividualsSchema(exclude=["id_digitiser"], unknown=EXCLUDE)
+    individual_instance = TIndividuals(id_digitiser=g.current_user.id_role)
+    try:
+        individual = individual_schema.load(data=request.get_json(), instance=individual_instance)
+    except ValidationError as error:
+        raise BadRequest(error.messages)
+
+    DB.session.add(individual)
+    DB.session.commit()
+    return individual_schema.jsonify(individual)
