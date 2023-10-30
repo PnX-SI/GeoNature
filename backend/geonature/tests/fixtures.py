@@ -71,6 +71,7 @@ __all__ = [
     "celery_eager",
     "sources_modules",
     "modules",
+    "auto_validation_enabled",
 ]
 
 
@@ -675,3 +676,8 @@ def reports_data(users, synthese_data):
 @pytest.fixture()
 def notifications_enabled(monkeypatch):
     monkeypatch.setitem(current_app.config, "NOTIFICATIONS_ENABLED", True)
+
+
+@pytest.fixture()
+def auto_validation_enabled(monkeypatch):
+    monkeypatch.setitem(current_app.config["VALIDATION"], "AUTO_VALIDATION_ENABLED", True)
