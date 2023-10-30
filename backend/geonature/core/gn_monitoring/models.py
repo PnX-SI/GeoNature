@@ -12,6 +12,7 @@ from sqlalchemy.sql import select, func
 from sqlalchemy.schema import FetchedValue
 
 
+from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
 from ref_geo.models import LAreas
 from utils_flask_sqla.serializers import serializable
@@ -202,6 +203,17 @@ class TIndividuals(DB.Model):
 
     meta_create_date = DB.Column("meta_create_date", DB.DateTime(timezone=False))
     meta_update_date = DB.Column("meta_update_date", DB.DateTime(timezone=False))
+
+    digitiser = DB.relationship(
+        User,
+        lazy="joined",
+    )
+
+    nomenclature_sex = DB.relationship(
+        TNomenclatures,
+        lazy="select",
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_sex),
+    )
 
 
 @serializable
