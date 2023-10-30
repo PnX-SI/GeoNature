@@ -5,6 +5,9 @@ from flask import url_for
 from werkzeug.exceptions import Unauthorized, BadRequest
 
 from geonature.core.gn_synthese.models import Synthese
+from geonature.core.gn_commons.models import TValidations, VLatestValidations
+from geonature.core.gn_profiles.models import VConsistancyData
+from gn_module_validation.tasks import set_auto_validation
 from geonature.utils.env import db
 from geonature.utils.config import config
 
@@ -18,6 +21,33 @@ gn_module_validation = pytest.importorskip("gn_module_validation")
 pytestmark = pytest.mark.skipif(
     "VALIDATION" in config["DISABLED_MODULES"], reason="Validation is disabled"
 )
+
+
+@pytest.fixture()
+def validation_with_max_score_and_wait_validation_status():
+    id_nomenclature_attente_validation = db.session.execute(
+        """ select tn.id_nomenclature from ref_nomenclatures.t_nomenclatures tn where tn.mnemonique = 'En attente de validation' """
+    ).scalar()
+
+    validations_to_update = (
+        db.session.query(
+            TValidations.id_validation,
+            VLatestValidations.uuid_attached_row,
+            VConsistancyData.id_synthese,
+        )
+        .join(TValidations, TValidations.id_validation == VLatestValidations.id_validation)
+        .join(VConsistancyData, VConsistancyData.id_sinp == VLatestValidations.uuid_attached_row)
+        .filter(
+            TValidations.validation_auto == True,
+            VLatestValidations.id_nomenclature_valid_status == id_nomenclature_attente_validation,
+            VLatestValidations.id_validator == None,
+            VConsistancyData.valid_phenology == True,
+            VConsistancyData.valid_altitude == True,
+            VConsistancyData.valid_distribution == True,
+        )
+        .all()
+    )
+    return validations_to_update
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "app")
@@ -103,3 +133,48 @@ class TestValidation:
         assert response.status_code == 200
         assert len(response.data) > 0
         assert response.json[0]["id_status"] == str(id_nomenclature_valid_status.id_nomenclature)
+
+    def test_auto_validation(
+        self,
+        users,
+        app,
+        auto_validation_enabled,
+        validation_with_max_score_and_wait_validation_status,
+    ):
+        fct_auto_validation_name = app.config["VALIDATION"][
+            "AUTO_VALIDATION_SQL_FUNCTION"
+        ]  # config["VALIDATION"]["AUTO_VALIDATION_SQL_FUNCTION"]
+        set_logged_user(self.client, users["user"])
+
+        id_nomenclature_probable = db.session.execute(
+            """ select tn.id_nomenclature from ref_nomenclatures.t_nomenclatures tn where tn.mnemonique = 'Probable' """
+        ).scalar()
+        id_nomenclature_attente_validation = db.session.execute(
+            """ select tn.id_nomenclature from ref_nomenclatures.t_nomenclatures tn where tn.mnemonique = 'En attente de validation' """
+        ).scalar()
+
+        list_synthese_to_update = []
+        for row in validation_with_max_score_and_wait_validation_status:
+            list_synthese_to_update.append(row[2])
+
+        synthese_valid_statut_before_update = (
+            db.session.query(Synthese.id_nomenclature_valid_status)
+            .filter(Synthese.id_synthese.in_(list_synthese_to_update))
+            .all()
+        )
+        assert all(
+            synthese_valid_statut[0] == id_nomenclature_attente_validation
+            for synthese_valid_statut in synthese_valid_statut_before_update
+        )
+
+        # On applique la fonction
+        set_auto_validation()  # list_synthese_updated = TValidations.auto_validation(fct_auto_validation_name)
+        synthese_valid_statut_after_update = (
+            db.session.query(Synthese.id_nomenclature_valid_status)
+            .filter(Synthese.id_synthese.in_(list_synthese_to_update))
+            .all()
+        )
+        assert all(
+            synthese_valid_statut[0] == id_nomenclature_probable
+            for synthese_valid_statut in synthese_valid_statut_after_update
+        )
