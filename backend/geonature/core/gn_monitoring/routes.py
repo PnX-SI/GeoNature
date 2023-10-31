@@ -2,7 +2,7 @@ from flask import Blueprint, request, g
 from geonature.core.gn_monitoring.schema import TIndividualsSchema
 from marshmallow import ValidationError, EXCLUDE
 from sqlalchemy.sql import func
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import raiseload, joinedload
 from geojson import FeatureCollection
 from geonature.core.gn_monitoring.models import TBaseSites, cor_site_area, cor_site_module
 from werkzeug.exceptions import BadRequest
@@ -122,11 +122,13 @@ def get_individuals():
     id_module = params.get("id_module")
     query = TIndividuals.query
     if id_module:
-        query = query.options(joinedload(TIndividuals.modules)).filter(
-            TIndividuals.modules.any(TModules.id_module == id_module)
-        )
+        query = query.options(
+            raiseload("*"),
+            joinedload(TIndividuals.modules),
+            joinedload(TIndividuals.nomenclature_sex),
+        ).filter(TIndividuals.modules.any(TModules.id_module == id_module))
 
-    schema = TIndividualsSchema()
+    schema = TIndividualsSchema(exclude=["modules"])
     # In the future: paginate the query. But need infinite scroll on
     # select frontend side
     return schema.jsonify(query.all(), many=True)
@@ -135,6 +137,13 @@ def get_individuals():
 @routes.route("/individual", methods=["POST"])
 @login_required
 def create_one_individual():
+    # Id module is an optional parameter to associate an individual
+    # to a module
+    id_module = request.args.get("id_module")
+    module = None
+    if id_module is not None:
+        module = TModules.query.get_or_404(id_module)
+
     # Exclude id_digitiser since it is set by the current user
     individual_schema = TIndividualsSchema(exclude=["id_digitiser"], unknown=EXCLUDE)
     individual_instance = TIndividuals(id_digitiser=g.current_user.id_role)
@@ -142,6 +151,8 @@ def create_one_individual():
         individual = individual_schema.load(data=request.get_json(), instance=individual_instance)
     except ValidationError as error:
         raise BadRequest(error.messages)
+    if module is not None:
+        individual.modules = [module]
 
     DB.session.add(individual)
     DB.session.commit()
