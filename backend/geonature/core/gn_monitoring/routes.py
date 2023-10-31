@@ -2,9 +2,11 @@ from flask import Blueprint, request, g
 from geonature.core.gn_monitoring.schema import TIndividualsSchema
 from marshmallow import ValidationError, EXCLUDE
 from sqlalchemy.sql import func
+from sqlalchemy.orm import joinedload
 from geojson import FeatureCollection
 from werkzeug.exceptions import BadRequest
 
+from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.decorators import login_required
 from geonature.utils.env import DB
 from geonature.core.gn_monitoring.models import (
@@ -115,7 +117,15 @@ def get_site_areas(id_site):
 @routes.route("/individuals", methods=["GET"])
 @login_required
 def get_individuals():
+    params = request.args
+    id_module = params.get("id_module")
     query = TIndividuals.query
+    if id_module:
+        query = (
+            query.option(joinedload(TIndividuals.modules))
+            .filter(TIndividuals.modules.has(TModules.id_module == id_module))
+            .exists()
+        )
 
     schema = TIndividualsSchema()
     # In the future: paginate the query. But need infinite scroll on
