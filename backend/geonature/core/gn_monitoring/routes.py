@@ -121,10 +121,8 @@ def get_individuals():
     id_module = params.get("id_module")
     query = TIndividuals.query
     if id_module:
-        query = (
-            query.option(joinedload(TIndividuals.modules))
-            .filter(TIndividuals.modules.has(TModules.id_module == id_module))
-            .exists()
+        query = query.options(joinedload(TIndividuals.modules)).filter(
+            TIndividuals.modules.any(TModules.id_module == id_module)
         )
 
     schema = TIndividualsSchema()
