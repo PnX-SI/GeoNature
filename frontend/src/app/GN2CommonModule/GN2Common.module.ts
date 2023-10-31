@@ -103,6 +103,7 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
 import { IndividualsComponent } from './form/individuals/individuals.component';
 import { IndividualsService } from './form/individuals/individuals.service';
+import { IndividualsCreateComponent } from './form/individuals/create/individuals-create.component';
 
 @NgModule({
   imports: [
@@ -195,6 +196,7 @@ import { IndividualsService } from './form/individuals/individuals.service';
     TaxonomyComponent,
     TaxonTreeComponent,
     IndividualsComponent,
+    IndividualsCreateComponent,
   ],
   providers: [
     CommonService,
