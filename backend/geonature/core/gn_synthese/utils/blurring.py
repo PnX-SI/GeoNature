@@ -2,7 +2,7 @@ import logging
 from collections import namedtuple, defaultdict
 
 from flask import current_app
-from sqlalchemy import (case, func, and_, or_, select, column, text, union, literal, exists)
+from sqlalchemy import (case, func, and_, or_, select, column, text, union, literal)
 
 from pypnnomenclature.models import (
     TNomenclatures,
@@ -209,7 +209,7 @@ class DataBlurring:
                     nomenclature_ids.keys(),
                 )
 
-                # Build permissions NOT EXISTS clause
+                # Build permissions NOT IN clause
                 permissions_cte = (
                     select([object_cte.c.id_synthese])
                     .select_from(
@@ -223,9 +223,10 @@ class DataBlurring:
                     .cte(name=f"{object_type}_PERM")
                 )
                 blurred_obs_query = blurred_obs_query.where(
-                    ~exists([literal("X")])
-                    .select_from(permissions_cte)
-                    .where(permissions_cte.c.id_synthese == object_cte.c.id_synthese)
+                    object_cte.c.id_synthese.notin_(
+                        select([permissions_cte.c.id_synthese])
+                        .select_from(permissions_cte)
+                    )
                 )
 
             blurred_obs_queries.append(blurred_obs_query)
@@ -434,7 +435,7 @@ class DataBlurring:
                     nomenclature_ids,
                 )
 
-                # Build permissions NOT EXISTS clause
+                # Build permissions NOT IN clause
                 permissions_cte = (
                     select([object_cte.c.id_synthese])
                     .select_from(object_cte
@@ -446,9 +447,10 @@ class DataBlurring:
                     .cte(name=f"{object_type}_PERM")
                 )
                 blurred_obs_query = blurred_obs_query.where(
-                    ~exists([literal('X')])
-                    .select_from(permissions_cte)
-                    .where(permissions_cte.c.id_synthese == object_cte.c.id_synthese)
+                    object_cte.c.id_synthese.notin_(
+                        select([permissions_cte.c.id_synthese])
+                        .select_from(permissions_cte)
+                    )
                 )
 
             blurred_obs_queries.append(blurred_obs_query)
