@@ -1,14 +1,14 @@
 export interface Individual {
-  active: boolean;
+  active?: boolean;
   cd_nom: number;
-  comment?: string;
-  id_digitiser: number;
+  comment: string;
+  id_digitiser?: number;
   // missing digitizer
-  id_individual: number;
-  id_nomenclature_sex?: string;
+  id_individual?: number;
+  id_nomenclature_sex: number;
   individual_name: string;
   meta_create_date?: Date;
   meta_update_date?: Date;
   // Get Nomenclature interface nomenclature_sex?: string;
-  uuid_individual: string;
+  uuid_individual?: string;
 }
