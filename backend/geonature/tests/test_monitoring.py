@@ -6,6 +6,8 @@ from geonature.core.gn_monitoring.models import TIndividuals
 from geonature.utils.env import db
 from pypnusershub.tests.utils import set_logged_user_cookie
 
+from .fixtures import *
+
 CD_NOM = 212
 
 
@@ -40,9 +42,22 @@ class TestMonitoring:
         assert expected_individuals_uuid.issubset(individuals_uuid_from_response)
 
     def test_get_individuals_with_id_module(self, users, individuals, module):
+        set_logged_user_cookie(self.client, users["self_user"])
+
         # Add individual to module X
         with db.session.begin_nested():
-            pass
+            individuals[0].modules = [module]
+
+        response = self.client.get(
+            url_for("gn_monitoring.get_individuals"), query_string={"id_module": module.id_module}
+        )
+        resp_json = response.json
+        not_expected_individual_uuid = {individuals[1].uuid_individual}
+        expected_individual_uuid = {individuals[0].uuid_individual}
+        actual_individual_uuid = {individual["uuid_individual"] for individual in resp_json}
+
+        assert actual_individual_uuid.isdisjoint(not_expected_individual_uuid)
+        assert actual_individual_uuid.issubset(expected_individual_uuid)
 
     def test_create_one_individual(self, users):
         set_logged_user_cookie(self.client, users["self_user"])
