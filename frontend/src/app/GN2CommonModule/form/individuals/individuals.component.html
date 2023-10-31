@@ -1,18 +1,36 @@
 <small> {{ label }} </small>
-<ng-select
-  [ngClass]="null"
-  [items]="values"
-  [bindLabel]="keyLabel"
-  [bindValue]="keyValue"
-  [placeholder]="null"
-  [multiple]="false"
-  [clearable]="false"
-  [virtualScroll]="true"
-  [formControl]="parentFormControl"
->
-  <!-- <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+
+<!-- <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
     <div [matTooltip]="item[keyLabel]">
       <span class="pre-wrap">{{ item[keyLabel] }}</span>
     </div>
   </ng-template> -->
-</ng-select>
+<div class="row">
+  <div class="col-7">
+    <ng-select
+      [ngClass]="null"
+      [items]="values"
+      [bindLabel]="keyLabel"
+      [bindValue]="keyValue"
+      [placeholder]="null"
+      [multiple]="false"
+      [clearable]="false"
+      [virtualScroll]="true"
+      [formControl]="parentFormControl"
+    >
+    </ng-select>
+  </div>
+  <div class="col-5">
+    <button type="button" mat-raised-button (click)="openModal(content)">
+      Ajouter un individu
+    </button>
+  </div>
+</div>
+
+<ng-template #content let-c="close" let-d="dismiss">
+  <pnx-individuals-create
+    [idModule]="idModule"
+    (individualEvent)="individualCreated($event)"
+    (cancelEvent)="closeModal()"
+  ></pnx-individuals-create
+></ng-template>
