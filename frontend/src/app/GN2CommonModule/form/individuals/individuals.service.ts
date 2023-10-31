@@ -17,4 +17,16 @@ export class IndividualsService {
       params: params,
     });
   }
+
+  postIndividual(value: Individual, idModule?: number) {
+    let params: HttpParams = new HttpParams();
+    if (idModule) {
+      params = params.set('id_module', idModule);
+    }
+    return this._http.post<Individual>(
+      `${this.config.API_ENDPOINT}/gn_monitoring/individual`,
+      value,
+      { params: params }
+    );
+  }
 }
