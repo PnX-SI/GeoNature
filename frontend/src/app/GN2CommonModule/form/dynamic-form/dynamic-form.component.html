@@ -345,7 +345,12 @@
       [filters]="formDefComp['filters']"
       [default]="formDefComp['default']"
     ></pnx-datalist>
-
+    <pnx-individuals
+      *ngSwitchCase="'individuals'"
+      [parentFormControl]="form.get(formDefComp['attribut_name'])"
+      [label]="formDefComp['attribut_label']"
+      [idModule]="formDefComp['id_module']"
+    ></pnx-individuals>
     <small class="form-text text-muted">{{ formDefComp['help'] }}</small>
   </div>
 </div>
