@@ -1,0 +1,59 @@
+<div class="modal-header">
+  <h5 class="modal-title">Création d'un individu</h5>
+  <button type="button" class="close" aria-label="Close" (click)="cancelCreate()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<form class="modal-content">
+  <div class="modal-body" id="bodyModal" style="padding-top: 30px">
+    <small>Nom de l'individu</small>
+    <input
+      class="form-control form-control-sm"
+      type="text"
+      data-qa="pnx-individuals-create-individual-name"
+      [formControl]="form.get('individual_name')"
+    />
+    <pnx-nomenclature
+      label="Sexe"
+      [parentFormControl]="form.get('id_nomenclature_sex')"
+      codeNomenclatureType="SEXE"
+      keyValue="id_nomenclature"
+    >
+    </pnx-nomenclature>
+    <small>Commentaires</small>
+    <textarea
+      class="form-control form-control-sm"
+      [formControl]="form.get('comment')"
+      type="textarea"
+    >
+    </textarea>
+    <pnx-taxonomy
+      *ngIf="cdNom === null"
+      label="Taxon"
+      [parentFormControl]="form.get('cd_nom_temp')"
+      [idList]="idList"
+      displayedLabel="nom_valide"
+      charNumber="3"
+      listLength="20"
+      (onChange)="taxonSelected($event)"
+    >
+    </pnx-taxonomy>
+  </div>
+</form>
+<div class="modal-footer">
+  <div class="d-flex justify-content-between">
+    <button id="cancelButton" type="button" color="warn" mat-raised-button (click)="cancelCreate()">
+      Annuler
+    </button>
+    <button
+      id="createButton"
+      type="button"
+      class="button-success"
+      mat-raised-button
+      (click)="createIndividual()"
+    >
+      Créer un individu
+    </button>
+  </div>
+</div>
