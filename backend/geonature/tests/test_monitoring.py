@@ -40,6 +40,7 @@ class TestMonitoring:
         }
 
         assert expected_individuals_uuid.issubset(individuals_uuid_from_response)
+        assert all("module" not in individual for individual in json_resp)
 
     def test_get_individuals_with_id_module(self, users, individuals, module):
         set_logged_user_cookie(self.client, users["self_user"])
@@ -71,3 +72,21 @@ class TestMonitoring:
         json_resp = response.json
         assert json_resp["cd_nom"] == CD_NOM
         assert json_resp["individual_name"] == individual_name
+
+    def test_create_one_individual_id_module(self, users, module):
+        set_logged_user_cookie(self.client, users["self_user"])
+        individual_name = "Test_Post"
+        individual = {"individual_name": individual_name, "cd_nom": CD_NOM}
+
+        response = self.client.post(
+            url_for("gn_monitoring.create_one_individual"),
+            query_string={"id_module": module.id_module},
+            json=individual,
+        )
+
+        json_resp = response.json
+        assert json_resp["cd_nom"] == CD_NOM
+        assert json_resp["individual_name"] == individual_name
+        modules = json_resp["modules"]
+        assert len(modules) == 1
+        assert modules[0]["id_module"] == module.id_module
