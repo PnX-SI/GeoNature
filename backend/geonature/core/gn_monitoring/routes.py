@@ -126,6 +126,7 @@ def get_individuals():
             raiseload("*"),
             joinedload(TIndividuals.modules),
             joinedload(TIndividuals.nomenclature_sex),
+            joinedload(TIndividuals.digitiser),
         ).filter(TIndividuals.modules.any(TModules.id_module == id_module))
 
     schema = TIndividualsSchema(exclude=["modules"])
@@ -153,7 +154,6 @@ def create_one_individual():
         raise BadRequest(error.messages)
     if module is not None:
         individual.modules = [module]
-
     DB.session.add(individual)
     DB.session.commit()
     return individual_schema.jsonify(individual)
