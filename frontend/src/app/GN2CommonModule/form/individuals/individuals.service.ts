@@ -13,7 +13,7 @@ export class IndividualsService {
       params = params.set('id_module', idModule);
     }
 
-    return this._http.get<Individual[]>(`${this.config.API_ENDPOINT}/monitorings/individuals`, {
+    return this._http.get<Individual[]>(`${this.config.API_ENDPOINT}/gn_monitoring/individuals`, {
       params: params,
     });
   }
