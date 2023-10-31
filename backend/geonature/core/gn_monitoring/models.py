@@ -217,7 +217,7 @@ class TIndividuals(DB.Model):
 
     modules = DB.relationship(
         "TModules",
-        lazy="noload",
+        lazy="joined",
         secondary=corIndividualModule,
         primaryjoin=(corIndividualModule.c.id_individual == id_individual),
         secondaryjoin=(corIndividualModule.c.id_module == TModules.id_module),
