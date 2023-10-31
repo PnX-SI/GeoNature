@@ -1,0 +1,41 @@
+<form class="modal-content">
+  <div class="modal-body" id="bodyModal" style="padding-top: 30px">
+    <small>Nom de l'individu</small>
+    <input
+      class="form-control form-control-sm"
+      type="text"
+      data-qa="pnx-individuals-create-individual-name"
+      [formControl]="form.get('individual_name')"
+    />
+    <pnx-nomenclature
+      label="Sexe"
+      [parentFormControl]="form.get('id_nomenclature_sex')"
+      codeNomenclatureType="SEXE"
+      keyValue="id_nomenclature"
+    >
+    </pnx-nomenclature>
+    <pnx-taxonomy
+      label="Taxon"
+      [parentFormControl]="form.get('cd_nom_temp')"
+      displayedLabel="nom_valide"
+      charNumber="3"
+      listLength="20"
+      (onChange)="taxonSelected($event)"
+    >
+    </pnx-taxonomy>
+  </div>
+  <div class="d-flex justify-content-around">
+    <button id="cancelButton" type="button" color="warn" mat-raised-button (click)="cancelCreate()">
+      Annuler
+    </button>
+    <button
+      id="createButton"
+      type="button"
+      class="button-success"
+      mat-raised-button
+      (click)="createIndividual()"
+    >
+      Créer un individu
+    </button>
+  </div>
+</form>
