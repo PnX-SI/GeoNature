@@ -39,6 +39,11 @@ class TestMonitoring:
 
         assert expected_individuals_uuid.issubset(individuals_uuid_from_response)
 
+    def test_get_individuals_with_id_module(self, users, individuals, module):
+        # Add individual to module X
+        with db.session.begin_nested():
+            pass
+
     def test_create_one_individual(self, users):
         set_logged_user_cookie(self.client, users["self_user"])
         individual_name = "Test_Post"
