@@ -167,7 +167,7 @@ corIndividualModule = DB.Table(
     DB.Column(
         "id_individual",
         DB.Integer,
-        DB.ForeignKey("gn_monitoring.t_individual_complements.id_individual", ondelete="CASCADE"),
+        DB.ForeignKey("gn_monitoring.t_individuals.id_individual", ondelete="CASCADE"),
         primary_key=True,
     ),
     DB.Column(
@@ -213,6 +213,15 @@ class TIndividuals(DB.Model):
         TNomenclatures,
         lazy="select",
         primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_sex),
+    )
+
+    modules = DB.relationship(
+        "TModules",
+        lazy="noload",
+        secondary=corIndividualModule,
+        primaryjoin=(corIndividualModule.c.id_individual == id_individual),
+        secondaryjoin=(corIndividualModule.c.id_module == TModules.id_module),
+        foreign_keys=[corIndividualModule.c.id_individual, corIndividualModule.c.id_module],
     )
 
 
