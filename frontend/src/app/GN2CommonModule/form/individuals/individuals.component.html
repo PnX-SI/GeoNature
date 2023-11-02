@@ -6,7 +6,7 @@
     </div>
   </ng-template> -->
 <div class="row">
-  <div class="col-7">
+  <div class="col-9">
     <ng-select
       [ngClass]="null"
       [items]="values"
@@ -20,9 +20,14 @@
     >
     </ng-select>
   </div>
-  <div class="col-5">
-    <button type="button" mat-raised-button (click)="openModal(content)">
-      Ajouter un individu
+  <div class="col-3">
+    <button
+      mat-mini-fab
+      color="primary"
+      (click)="openModal(content)"
+      matTooltip="Ajouter un individu"
+    >
+      <mat-icon>add</mat-icon>
     </button>
   </div>
 </div>
