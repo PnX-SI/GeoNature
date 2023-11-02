@@ -17,7 +17,7 @@ from flask.json.provider import DefaultJSONProvider
 from flask_mail import Message
 from flask_cors import CORS
 from flask_login import current_user
-from flask_sqlalchemy import before_models_committed
+from flask_sqlalchemy.track_modifications import before_models_committed
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 from werkzeug.middleware.dispatcher import DispatcherMiddleware

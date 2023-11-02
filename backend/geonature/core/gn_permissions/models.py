@@ -1,6 +1,7 @@
 """
 Models of gn_permissions schema
 """
+from geonature.core.gn_commons.models.base import TModules
 from packaging import version
 
 import sqlalchemy as sa
@@ -202,7 +203,7 @@ class Permission(db.Model):
 
     role = db.relationship(User, backref="permissions")
     action = db.relationship(PermAction)
-    module = db.relationship("TModules")
+    module = db.relationship(TModules)
     object = db.relationship(PermObject)
 
     scope_value = db.Column(db.Integer, ForeignKey(PermScope.value), nullable=True)
@@ -217,7 +218,7 @@ class Permission(db.Model):
             foreign(id_action) == PermissionAvailable.id_action,
         ),
         backref=db.backref("permissions", overlaps="action, object, module"),
-        overlaps="action, object, module"
+        overlaps="action, object, module",
     )
 
     filters_fields = {

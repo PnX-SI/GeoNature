@@ -14,6 +14,7 @@ from flask import (
     jsonify,
     g,
 )
+from pypnusershub.db.models import User
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from werkzeug.datastructures import MultiDict
 from sqlalchemy import distinct, func, desc, asc, select, case
@@ -1216,7 +1217,8 @@ def list_reports(permissions):
     if type_name and type_name == "pin":
         req = req.filter(TReport.id_role == g.current_user.id_role)
     req = req.options(
-        joinedload("user").load_only("nom_role", "prenom_role"), joinedload("report_type")
+        joinedload(TReport.user).load_only(User.nom_role, User.prenom_role),
+        joinedload(TReport.report_type),
     )
     result = [
         report.as_dict(

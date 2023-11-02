@@ -22,7 +22,8 @@ log = logging.getLogger()
 
 def _get_user_permissions(id_role):
     return (
-        Permission.query.options(
+        db.session.query(Permission)
+        .options(
             joinedload(Permission.module),
             joinedload(Permission.object),
             joinedload(Permission.action),

@@ -28,7 +28,7 @@ def dispatch_notifications(
             for code in code_categories
         ]
     )
-    roles = [User.query.get(id_role) for id_role in id_roles]
+    roles = [db.session.query(User).filter(User.id_role == id_role).one() for id_role in id_roles]
 
     for category, role in product(categories, roles):
         dispatch_notification(category, role, title, url, content=content, context=context)
