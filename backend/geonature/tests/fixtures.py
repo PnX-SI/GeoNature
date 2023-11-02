@@ -175,11 +175,11 @@ def users(app):
             user = User(
                 groupe=False,
                 active=True,
-                organisme=organisme,
                 identifiant=username,
                 password=username,
             )
             db.session.add(user)
+            user.organisme = organisme
         # user must have been commited for user.id_role to be defined
         with db.session.begin_nested():
             # login right
@@ -303,8 +303,8 @@ def datasets(users, acquisition_frameworks, module):
                     organism=digitizer.organisme, nomenclature_actor_role=principal_actor_role
                 )
                 dataset.cor_dataset_actor.append(actor)
-            [dataset.modules.append(m) for m in modules]
             db.session.add(dataset)
+            [dataset.modules.append(m) for m in modules]
         return dataset
 
     af = acquisition_frameworks["orphan_af"]

@@ -25,6 +25,7 @@ from sqlalchemy.orm import load_only, aliased, Load
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo
+from utils_flask_sqla.utils import is_already_joined
 
 from geonature.utils import filemanager
 from geonature.utils.env import db, DB
@@ -609,7 +610,7 @@ def export_status(permissions):
 
     # Initalize the select object
     q = select(
-        distinct(VSyntheseForWebApp.cd_nom),
+        distinct(VSyntheseForWebApp.cd_nom).label("cd_nom"),
         Taxref.cd_ref,
         Taxref.nom_complet,
         Taxref.nom_vern,
@@ -622,7 +623,6 @@ def export_status(permissions):
         TaxrefBdcStatutValues.code_statut,
         TaxrefBdcStatutValues.label_statut,
     )
-
     # Initialize SyntheseQuery class
     synthese_query = SyntheseQuery(VSyntheseForWebApp, q, filters)
 
@@ -672,6 +672,7 @@ def export_status(permissions):
     protection_status = []
     data = DB.session.execute(q)
     for d in data:
+        d = d._mapping
         row = OrderedDict(
             [
                 ("cd_nom", d["cd_nom"]),
@@ -689,7 +690,6 @@ def export_status(permissions):
             ]
         )
         protection_status.append(row)
-
     export_columns = [
         "nom_complet",
         "nom_vern",
@@ -893,7 +893,7 @@ def get_color_taxon():
         q = q.filter(BibAreasTypes.type_code.in_(tuple(id_areas_type)))
     if len(id_areas) > 0:
         # check if the join already done on l_areas
-        if not LAreas in [mapper.class_ for mapper in q._join_entities]:
+        if not is_already_joined(LAreas, q):
             q = q.join(LAreas, LAreas.id_area == VColorAreaTaxon.id_area)
         q = q.filter(LAreas.id_area.in_(tuple(id_areas)))
     q = q.order_by(VColorAreaTaxon.cd_nom).order_by(VColorAreaTaxon.id_area)
