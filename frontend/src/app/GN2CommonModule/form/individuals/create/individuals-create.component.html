@@ -1,3 +1,10 @@
+<div class="modal-header">
+  <h5 class="modal-title">Création d'un individu</h5>
+  <button type="button" class="close" aria-label="Close" (click)="cancelCreate()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
 <form class="modal-content">
   <div class="modal-body" id="bodyModal" style="padding-top: 30px">
     <small>Nom de l'individu</small>
@@ -14,6 +21,13 @@
       keyValue="id_nomenclature"
     >
     </pnx-nomenclature>
+    <small>Commentaires</small>
+    <textarea
+      class="form-control form-control-sm"
+      [formControl]="form.get('comment')"
+      type="textarea"
+    >
+    </textarea>
     <pnx-taxonomy
       label="Taxon"
       [parentFormControl]="form.get('cd_nom_temp')"
@@ -24,7 +38,9 @@
     >
     </pnx-taxonomy>
   </div>
-  <div class="d-flex justify-content-around">
+</form>
+<div class="modal-footer">
+  <div class="d-flex justify-content-between">
     <button id="cancelButton" type="button" color="warn" mat-raised-button (click)="cancelCreate()">
       Annuler
     </button>
@@ -38,4 +54,4 @@
       Créer un individu
     </button>
   </div>
-</form>
+</div>
