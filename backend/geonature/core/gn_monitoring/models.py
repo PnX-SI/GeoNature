@@ -226,14 +226,11 @@ class TIndividuals(DB.Model):
 
 
 @serializable
-class TMarkingEvent(TIndividuals):
+class TMarkingEvent(DB.Model):
     __tablename__ = "t_marking_events"
     __table_args__ = {"schema": "gn_monitoring"}
-    __mapper_args__ = {
-        "polymorphic_identity": "monitoring_marking_event",
-    }
 
-    id_marking = DB.Column(DB.Integer, primary_key=True)
+    id_marking = DB.Column(DB.Integer, primary_key=True, autoincrement=True)
     id_individual = DB.Column(
         DB.ForeignKey(f"gn_monitoring.t_individuals.id_individual", ondelete="CASCADE"),
         nullable=False,
@@ -255,13 +252,4 @@ class TMarkingEvent(TIndividuals):
     marking_details = DB.Column(DB.Text)
     data = DB.Column(JSONB)
 
-    modules = DB.relationship(
-        "TModules",
-        lazy="select",
-        enable_typechecks=False,
-        secondary=corIndividualModule,
-        primaryjoin=(corIndividualModule.c.id_individual == id_individual),
-        secondaryjoin=(corIndividualModule.c.id_module == TModules.id_module),
-        foreign_keys=[corIndividualModule.c.id_individual, corIndividualModule.c.id_module],
-    )
     # meta_update_date and meta_create_date already present in TIndividuals
