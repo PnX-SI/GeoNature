@@ -330,7 +330,7 @@ class TMediaRepository:
         """
         Charge un média de la base à partir de son identifiant
         """
-        media = DB.session.query(TMedias).get(id_media)
+        media = DB.session.get(TMedias, id_media)
         return media
 
 

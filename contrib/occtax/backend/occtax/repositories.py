@@ -7,11 +7,12 @@ from werkzeug.exceptions import NotFound
 
 
 from utils_flask_sqla.generic import testDataType
+from utils_flask_sqla.utils import is_already_joined
 
 from geonature.utils.env import DB
 from geonature.core.gn_commons.models import TMedias, VLatestValidations
 from geonature.utils.errors import GeonatureApiError
-from .utils import get_nomenclature_filters, is_already_joined
+from .utils import get_nomenclature_filters
 
 from .models import (
     TRelevesOccurrence,
