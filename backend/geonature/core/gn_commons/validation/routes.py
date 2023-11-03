@@ -9,7 +9,7 @@ from utils_flask_sqla.response import json_resp
 from geonature.core.gn_commons.models import TValidations
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import test_is_uuid
+from utils_flask_sqla.utils import test_is_uuid
 
 
 from ..routes import routes
