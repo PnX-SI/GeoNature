@@ -235,11 +235,12 @@ class TestOcchab:
         data = deepcopy(feature)
         data["properties"]["id_station"] = station.id_station
         response = self.client.post(
-                url_for(
+            url_for(
                 "occhab.create_or_update_station",
                 id_station=station.id_station,
             ),
-            data=data)
+            data=data,
+        )
         db.session.refresh(station)
         assert station.comment == "Une station"  # original comment
 
@@ -291,7 +292,7 @@ class TestOcchab:
         response = self.client.post(url, data=data)
         assert response.status_code == 400, response.json
         assert "unmatching id_station" in response.json["description"].casefold(), response.json
-        db.session.refresh(station2)
+        # db.session.refresh(station2)
         assert len(station2.habitats) == 2
 
         # Try adding an occurence

@@ -59,8 +59,8 @@ def list_stations(scope):
         .order_by(Station.date_min.desc())
         .options(
             raiseload("*"),
-            joinedload("observers"),
-            joinedload("dataset"),
+            joinedload(Station.observers),
+            joinedload(Station.dataset),
         )
     )
     only = [
@@ -75,8 +75,8 @@ def list_stations(scope):
             ]
         )
         stations = stations.options(
-            joinedload("habitats").options(
-                joinedload("habref"),
+            joinedload(Station.habitats).options(
+                joinedload(OccurenceHabitat.habref),
             ),
         )
     if request.args.get("nomenclatures", default=False, type=int):
@@ -163,9 +163,11 @@ def create_or_update_station(id_station=None):
         unknown=EXCLUDE,
         as_geojson=True,
     )
-    station = station_schema.load(request.json)
-    if station.id_station != id_station:
+
+    if action == "U" and request.json["properties"]["id_station"] != id_station:
         raise BadRequest("Unmatching id_station.")
+
+    station = station_schema.load(request.json)
     if id_station and not station.has_instance_permission(scope):
         raise Forbidden("You do not have access to this station.")
     dataset = Dataset.query.filter_by(id_dataset=station.id_dataset).one_or_none()

@@ -79,9 +79,7 @@ class Station(NomenclaturesMixin, db.Model):
     query_class = StationQuery
 
     id_station = db.Column(db.Integer, primary_key=True)
-    unique_id_sinp_station = db.Column(
-        UUID(as_uuid=True), default=select(func.uuid_generate_v4())
-    )
+    unique_id_sinp_station = db.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
     id_dataset = db.Column(db.Integer, ForeignKey(Dataset.id_dataset), nullable=False)
     dataset = relationship(Dataset)
     date_min = db.Column(db.DateTime, server_default=FetchedValue())

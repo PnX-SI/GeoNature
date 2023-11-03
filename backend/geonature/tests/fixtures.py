@@ -241,10 +241,18 @@ def celery_eager(app):
 
 @pytest.fixture(scope="function")
 def acquisition_frameworks(users):
-    principal_actor_role = TNomenclatures.query.filter(
-        BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR",
-        TNomenclatures.mnemonique == "Contact principal",
-    ).one()
+    # principal_actor_role = TNomenclatures.query.filter(
+    #     BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR"
+    #     TNomenclatures.mnemonique == "Contact principal",
+    # ).one()
+    principal_actor_role = (
+        db.session.query(TNomenclatures)
+        .join(BibNomenclaturesTypes, BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR")
+        .filter(
+            TNomenclatures.mnemonique == "Contact principal",
+        )
+        .one()
+    )
 
     def create_af(name, creator):
         with db.session.begin_nested():
@@ -279,10 +287,16 @@ def acquisition_frameworks(users):
 
 @pytest.fixture(scope="function")
 def datasets(users, acquisition_frameworks, module):
-    principal_actor_role = TNomenclatures.query.filter(
-        BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR",
-        TNomenclatures.mnemonique == "Contact principal",
-    ).one()
+    principal_actor_role = (
+        db.session.query(TNomenclatures)
+        .join(BibNomenclaturesTypes, TNomenclatures.id_type == BibNomenclaturesTypes.id_type)
+        .filter(
+            TNomenclatures.mnemonique == "Contact principal",
+            BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR",
+        )
+        .one()
+    )
+
     # add module code in the list to associate them to datasets
     writable_module_code = ["OCCTAX"]
     writable_module = TModules.query.filter(TModules.module_code.in_(writable_module_code)).all()
