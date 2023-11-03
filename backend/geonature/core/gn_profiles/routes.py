@@ -36,7 +36,7 @@ def get_phenology(cd_ref):
     if "id_nomenclature_life_stage" in filters:
         active_life_stage = DB.session.execute(
             select()
-            .column(text("active_life_stage"))
+            .add_columns(text("active_life_stage"))
             .select_from(func.gn_profiles.get_parameters(cd_ref))
         ).scalar()
         if active_life_stage:
