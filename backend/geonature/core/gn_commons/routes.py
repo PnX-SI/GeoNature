@@ -27,7 +27,7 @@ from geonature.core.gn_permissions.decorators import login_required
 from geonature.core.gn_permissions.tools import get_scope
 import geonature.core.gn_commons.tasks  # noqa: F401
 
-from shapely.geometry import asShape
+from shapely.geometry import shape
 from geoalchemy2.shape import from_shape
 from geonature.utils.errors import (
     GeonatureApiError,
@@ -257,8 +257,8 @@ def add_place():
     if db.session.query(place_exists).scalar():
         raise Conflict("Nom du lieu déjà existant")
 
-    shape = asShape(data["geometry"])
-    two_dimension_geom = remove_third_dimension(shape)
+    new_shape = shape(data["geometry"])
+    two_dimension_geom = remove_third_dimension(new_shape)
     place_geom = from_shape(two_dimension_geom, srid=4326)
 
     place = TPlaces(id_role=g.current_user.id_role, place_name=place_name, place_geom=place_geom)
