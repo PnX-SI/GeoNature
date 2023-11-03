@@ -1,7 +1,7 @@
 """add id_module to v_synthese_for_web_app
 
 Revision ID: 446e902a14e7
-Revises: f1dd984bff97
+Revises: 8309591841f3
 Create Date: 2023-09-25 10:09:39.126531
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "446e902a14e7"
-down_revision = "f1dd984bff97"
+down_revision = "8309591841f3"
 branch_labels = None
 depends_on = None
 
