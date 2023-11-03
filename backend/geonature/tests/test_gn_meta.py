@@ -5,7 +5,9 @@ from unittest.mock import patch
 
 import pytest
 from flask import url_for
-from flask_sqlalchemy import BaseQuery
+
+# from flask_sqlalchemy import BaseQuery
+from flask_sqlalchemy.query import Query
 from geoalchemy2.shape import to_shape
 
 from geojson import Point
@@ -1018,7 +1020,7 @@ class TestGNMeta:
         afuser = TAcquisitionFramework.get_user_af(user=user, only_user=True)
         afdefault = TAcquisitionFramework.get_user_af(user=user)
 
-        assert isinstance(afquery, BaseQuery)
+        assert isinstance(afquery, Query)
         assert isinstance(afuser, list)
         assert len(afuser) == 1
         assert isinstance(afdefault, list)
