@@ -161,7 +161,11 @@ def get_synthese_data(scope):
     assert len(query.selectable.get_final_froms()) == 1
 
     query = (
-        SyntheseQuery(Synthese, query.selectable, filters, query_joins=query.selectable.get_final_froms()[0])
+        SyntheseQuery(
+            Synthese,
+            query.selectable,
+            filters,  # , query_joins=query.selectable.get_final_froms()[0] # DUPLICATION of OUTER JOIN
+        )
         .filter_query_all_filters(g.current_user, scope)
         .limit(result_limit)
     )
