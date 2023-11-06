@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+2.13.4 (unreleased)
+-------------------
+
+**🐛 Corrections**
+
+- [Frontend] Composant `datalist` prise en compte des filtres définis avec l'input `filters`.
+
 2.13.3 (2023-10-17)
 -------------------
 
