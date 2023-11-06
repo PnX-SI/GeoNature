@@ -137,13 +137,11 @@ def get_observations_for_web(permissions):
 
     # Build defaut CTE observations query
     count_min_max = case(
-        [
-            (
-                VSyntheseForWebApp.count_min != VSyntheseForWebApp.count_max,
-                func.concat(VSyntheseForWebApp.count_min, " - ", VSyntheseForWebApp.count_max),
-            ),
-            (VSyntheseForWebApp.count_min != None, func.concat(VSyntheseForWebApp.count_min)),
-        ],
+        (
+            VSyntheseForWebApp.count_min != VSyntheseForWebApp.count_max,
+            func.concat(VSyntheseForWebApp.count_min, " - ", VSyntheseForWebApp.count_max),
+        ),
+        (VSyntheseForWebApp.count_min != None, func.concat(VSyntheseForWebApp.count_min)),
         else_="",
     )
 
@@ -224,7 +222,7 @@ def get_observations_for_web(permissions):
         )
     else:
         # SQLAlchemy 1.4: replace column by add_columns
-        obs_query = obs_query.column(VSyntheseForWebApp.st_asgeojson.label("geojson")).cte(
+        obs_query = obs_query.add_columns(VSyntheseForWebApp.st_asgeojson.label("geojson")).cte(
             "OBSERVATIONS"
         )
 
@@ -929,7 +927,7 @@ def get_taxa_count():
 
     if "id_dataset" in params:
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
-    return query.one()
+    return query.one()[0]
 
 
 @routes.route("/observation_count", methods=["GET"])
@@ -958,7 +956,7 @@ def get_observation_count():
     if "id_dataset" in params:
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
 
-    return query.one()
+    return query.one()[0]
 
 
 @routes.route("/observations_bbox", methods=["GET"])
