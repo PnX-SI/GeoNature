@@ -103,7 +103,11 @@ class Station(NomenclaturesMixin, db.Model):
         back_populates="station",
     )
     t_habitats = synonym(habitats)
-    observers = db.relationship("User", secondary=cor_station_observer, lazy="joined")
+    observers = db.relationship(
+        "User",
+        secondary=cor_station_observer,
+        lazy="joined",
+    )
 
     id_nomenclature_exposure = db.Column(
         db.Integer,

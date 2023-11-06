@@ -118,6 +118,7 @@ def get_station(id_station, scope):
         ),
         *[joinedload(nomenc) for nomenc in Station.__nomenclatures__],
     ).get_or_404(id_station)
+
     if not station.has_instance_permission(scope):
         raise Forbidden("You do not have access to this station.")
     only = [
