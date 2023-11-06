@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import current_app, g
 from marshmallow import pre_load, post_load, pre_dump, fields, ValidationError
 from marshmallow_sqlalchemy.convert import ModelConverter as BaseModelConverter
-from shapely.geometry import asShape
+from shapely.geometry import shape as asShape
 from geoalchemy2.shape import to_shape, from_shape
 from geoalchemy2.types import Geometry as GeometryType
 from geojson import Feature, FeatureCollection

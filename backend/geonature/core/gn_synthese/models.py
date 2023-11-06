@@ -63,7 +63,7 @@ class TSources(DB.Model):
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
     id_module = DB.Column(DB.Integer, ForeignKey(TModules.id_module))
-    module = DB.relationship(TModules, backref="sources")
+    module = DB.relationship(TModules, backref=DB.backref("sources", cascade_backrefs=False))
 
     @property
     def module_url(self):

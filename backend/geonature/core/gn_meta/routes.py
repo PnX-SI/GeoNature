@@ -4,6 +4,7 @@
 import datetime as dt
 import json
 import logging
+from gn_module_occhab.models import OccurenceHabitat, Station
 from lxml import etree as ET
 
 from flask import (
@@ -135,13 +136,13 @@ def get_datasets():
 
     query = query.options(
         Load(TDatasets).raiseload("*"),
-        joinedload("cor_dataset_actor").options(
-            joinedload("role"),
-            joinedload("organism"),
+        joinedload(TDatasets.cor_dataset_actor).options(
+            joinedload(CorDatasetActor.role),
+            joinedload(CorDatasetActor.organism),
         ),
         # next relationships are joined for permission checks purpose:
-        joinedload("acquisition_framework").options(
-            joinedload("cor_af_actor"),
+        joinedload(TDatasets.acquisition_framework).options(
+            joinedload(TAcquisitionFramework.cor_af_actor),
         ),
     )
     only = [
@@ -537,16 +538,16 @@ def get_acquisition_frameworks():
     af_list = af_list.order_by(TAcquisitionFramework.acquisition_framework_name).options(
         Load(TAcquisitionFramework).raiseload("*"),
         # for permission checks:
-        joinedload("creator"),
-        joinedload("cor_af_actor").options(
-            joinedload("role"),
-            joinedload("organism"),
+        joinedload(TAcquisitionFramework.creator),
+        joinedload(TAcquisitionFramework.cor_af_actor).options(
+            joinedload(CorAcquisitionFrameworkActor.role),
+            joinedload(CorAcquisitionFrameworkActor.organism),
         ),
-        joinedload("t_datasets").options(
-            joinedload("digitizer"),
-            joinedload("cor_dataset_actor").options(
-                joinedload("role"),
-                joinedload("organism"),
+        joinedload(TAcquisitionFramework.t_datasets).options(
+            joinedload(TDatasets.digitizer),
+            joinedload(TDatasets.cor_dataset_actor).options(
+                joinedload(CorDatasetActor.role),
+                joinedload(CorDatasetActor.organism),
             ),
         ),
     )
@@ -558,7 +559,7 @@ def get_acquisition_frameworks():
         )
     if request.args.get("creator", default=False, type=int):
         only.append("creator")
-        af_list = af_list.options(joinedload("creator"))
+        af_list = af_list.options(joinedload(TAcquisitionFramework.creator))
     if request.args.get("actors", default=False, type=int):
         only.extend(
             [
@@ -569,8 +570,8 @@ def get_acquisition_frameworks():
             ]
         )
         af_list = af_list.options(
-            joinedload("cor_af_actor").options(
-                joinedload("nomenclature_actor_role"),
+            joinedload(TAcquisitionFramework.cor_af_actor).options(
+                joinedload(CorAcquisitionFrameworkActor.nomenclature_actor_role),
             ),
         )
         if request.args.get("datasets", default=False, type=int):
@@ -583,9 +584,9 @@ def get_acquisition_frameworks():
                 ]
             )
             af_list = af_list.options(
-                joinedload("t_datasets").options(
-                    joinedload("cor_dataset_actor").options(
-                        joinedload("nomenclature_actor_role"),
+                joinedload(TAcquisitionFramework.t_datasets).options(
+                    joinedload(TDatasets.cor_dataset_actor).options(
+                        joinedload(CorDatasetActor.nomenclature_actor_role),
                     ),
                 ),
             )
@@ -642,7 +643,8 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     Get a PDF export of one acquisition
     """
     # Recuperation des données
-    af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
+    # af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
+    af = DB.session.get(TAcquisitionFrameworkDetails, id_acquisition_framework)
     acquisition_framework = af.as_dict(True, depth=2)
     dataset_ids = [d.id_dataset for d in af.t_datasets]
     nb_data = len(dataset_ids)
@@ -903,14 +905,12 @@ def get_acquisition_framework_stats(id_acquisition_framework):
     )
 
     if DB.session.query(check_schema_query).scalar() and nb_dataset > 0:
-        query = (
-            "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
-        ("
-            + str(dataset_ids).strip("[]")
-            + ")"
+        nb_habitat = (
+            DB.session.query(OccurenceHabitat)
+            .join(Station)
+            .filter(Station.id_dataset.in_(dataset_ids))
+            .count()
         )
-
-        nb_habitat = DB.engine.execute(text(query)).first()[0]
 
     return {
         "nb_dataset": nb_dataset,
@@ -1042,7 +1042,7 @@ def publish_acquisition_framework(af_id):
         dataset.active = False
 
     # If the AF if closed for the first time, we set it an initial_closing_date as the actual time
-    af = DB.session.query(TAcquisitionFramework).get(af_id)
+    af = DB.session.get(TAcquisitionFramework, af_id)
     af.opened = False
     if af.initial_closing_date is None:
         af.initial_closing_date = dt.datetime.now()

@@ -337,7 +337,8 @@ def releveHandler(request, *, releve, scope):
     # if creation
     else:
         # Check if user can add a releve in the current dataset
-        if not TDatasets.query.get(releve.id_dataset).has_instance_permission(scope):
+        dataset = db.session.get(TDatasets, releve.id_dataset)
+        if not dataset.has_instance_permission(scope):
             raise Forbidden(
                 f"User {g.current_user.id_role} has no right in dataset {releve.id_dataset}"
             )

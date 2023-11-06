@@ -79,8 +79,8 @@ def update_notification(id_notification):
 @permissions.login_required
 def list_notification_rules():
     rules = NotificationRule.query.filter_by_role_with_defaults().options(
-        joinedload("method"),
-        joinedload("category"),
+        joinedload(NotificationRule.method),
+        joinedload(NotificationRule.category),
     )
     result = [
         rule.as_dict(
