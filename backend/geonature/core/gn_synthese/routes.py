@@ -194,7 +194,7 @@ def get_observations_for_web(permissions):
 
     if output_format == "grouped_geom_by_areas":
         # SQLAlchemy 1.4: replace column by add_columns
-        obs_query = obs_query.column(VSyntheseForWebApp.id_synthese).cte("OBS")
+        obs_query = obs_query.add_columns(VSyntheseForWebApp.id_synthese).cte("OBS")
         agg_areas = (
             select(CorAreaSynthese.id_synthese, LAreas.id_area)
             .select_from(
@@ -366,12 +366,10 @@ def export_taxon_web(permissions):
 
     sub_query = (
         select(
-            [
-                VSyntheseForWebApp.cd_ref,
-                func.count(distinct(VSyntheseForWebApp.id_synthese)).label("nb_obs"),
-                func.min(VSyntheseForWebApp.date_min).label("date_min"),
-                func.max(VSyntheseForWebApp.date_max).label("date_max"),
-            ]
+            VSyntheseForWebApp.cd_ref,
+            func.count(distinct(VSyntheseForWebApp.id_synthese)).label("nb_obs"),
+            func.min(VSyntheseForWebApp.date_min).label("date_min"),
+            func.max(VSyntheseForWebApp.date_max).label("date_max"),
         )
         .where(VSyntheseForWebApp.id_synthese.in_(id_list))
         .group_by(VSyntheseForWebApp.cd_ref)
@@ -478,7 +476,7 @@ def export_observations_web(permissions):
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
 
     if export_format == "csv":
-        formated_data = [export_view.as_dict(d, columns=columns_to_serialize) for d in results]
+        formated_data = [export_view.as_dict(d, fields=columns_to_serialize) for d in results]
         return to_csv_resp(file_name, formated_data, separator=";", columns=columns_to_serialize)
     elif export_format == "geojson":
         features = []
@@ -488,7 +486,7 @@ def export_observations_web(permissions):
             )
             feature = Feature(
                 geometry=geometry,
-                properties=export_view.as_dict(r, columns=columns_to_serialize),
+                properties=export_view.as_dict(r, fields=columns_to_serialize),
             )
             features.append(feature)
         results = FeatureCollection(features)
@@ -1005,7 +1003,7 @@ def observation_count_per_column(column):
         raise BadRequest(f"No column name {column} in Synthese")
     synthese_column = getattr(Synthese, column)
     stmt = (
-        DB.session.query(
+        DB.select(
             func.count(Synthese.id_synthese).label("count"),
             synthese_column.label(column),
         )

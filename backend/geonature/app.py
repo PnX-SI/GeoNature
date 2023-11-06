@@ -86,7 +86,7 @@ class MyJSONProvider(DefaultJSONProvider):
     @staticmethod
     def default(o):
         if isinstance(o, Row):
-            return dict(o)
+            return dict(o._mapping)
         return DefaultJSONProvider.default(o)
 
 
