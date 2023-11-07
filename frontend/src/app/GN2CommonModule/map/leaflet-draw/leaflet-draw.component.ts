@@ -54,7 +54,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   constructor(
     public mapservice: MapService,
     private _commonService: CommonService,
-    public config: ConfigService,
+    public config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -151,15 +151,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     });
 
     this.map.on(this._Le.Draw.Event.DRAWSTOP, (e) => {
-      // if (this._currentDraw) {
-      //   if (
-      //     !this.mapservice.leafletDrawFeatureGroup.hasLayer(this._currentDraw) &&
-      //     this._currentGeojson
-      //   ) {
-      //     this.loadDrawfromGeoJson(this._currentGeojson.geometry);
-      //   }
-      //   return;
-      // } else
       if (this._currentGeojson) {
         this.mapservice.removeAllLayers(this.map, this.mapservice.leafletDrawFeatureGroup);
         const layer: L.Layer = this.mapservice.createGeojson(this._currentGeojson.geometry, false);
@@ -167,13 +158,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
           this.loadDrawfromGeoJson(this._currentGeojson.geometry);
         }
       }
-      // } else {
-      //   this.mapservice.removeAllLayers(this.map, this.mapservice.leafletDrawFeatureGroup);
-      //   const layer: L.Layer = this.mapservice.createGeojson(this.geojson, false);
-      //   if (!this.mapservice.leafletDrawFeatureGroup.hasLayer(layer)) {
-      //     this.loadDrawfromGeoJson(this.geojson);
-      //   }
-      // }
     });
   }
 
@@ -195,7 +179,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     if (geojson.type === 'LineString' || geojson.type === 'MultiLineString') {
       const latLng = L.GeoJSON.coordsToLatLngs(
         geojson.coordinates,
-        geojson.type === 'LineString' ? 0 : 1,
+        geojson.type === 'LineString' ? 0 : 1
       );
       layer = L.polyline(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
@@ -203,7 +187,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     if (geojson.type === 'Polygon' || geojson.type === 'MultiPolygon') {
       const latLng = L.GeoJSON.coordsToLatLngs(
         geojson.coordinates,
-        geojson.type === 'Polygon' ? 1 : 2,
+        geojson.type === 'Polygon' ? 1 : 2
       );
       layer = L.polygon(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
@@ -224,7 +208,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         this.mapservice.map.setView(
           layer._latlng,
           this.zoomLevelOnPoint,
-          this.mapservice.map['_zoom'],
+          this.mapservice.map['_zoom']
         );
       } else {
         this.mapservice.map.panTo(layer._latlng);
