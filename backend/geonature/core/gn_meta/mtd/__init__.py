@@ -8,7 +8,14 @@ from geonature.core.auth.routes import insert_user_and_org
 from geonature.core.gn_meta.models import CorAcquisitionFrameworkActor, CorDatasetActor
 from geonature.utils.config import config
 from geonature.utils.env import db
-from lxml import etree
+from geonature.core.gn_meta.models import (
+    CorAcquisitionFrameworkActor,
+    CorDatasetActor, TAcquisitionFramework,
+)
+from geonature.core.auth.routes import insert_user_and_org
+
+from pypnusershub.db.models import User
+
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
 from sqlalchemy import func, select
@@ -191,29 +198,50 @@ def sync_af_and_ds():
     logger.info("MTD - SYNC GLOBAL : FINISH")
 
 
-def sync_af_and_ds_by_user(id_role):
+def sync_af_and_ds_by_user(id_role, id_af=None):
     """
-    Method to trigger MTD sync on user authent.
+    Method to trigger MTD sync on user authentication.
+    
+    Args:
+        id_role (int): The ID of the role (group or user).
+        id_af (str, optional): The ID of the AF (Acquisition Framework). Defaults to None.
     """
 
     logger.info("MTD - SYNC USER : START")
 
+   # Create an instance of MTDInstanceApi
     mtd_api = MTDInstanceApi(
         config["MTD_API_ENDPOINT"], config["MTD"]["ID_INSTANCE_FILTER"], id_role
     )
 
+    # Get the list of datasets (ds) for the user
     ds_list = mtd_api.get_ds_user_list()
-    user_af_uuids = [ds["uuid_acquisition_framework"] for ds in ds_list]
 
-    # TODO - voir avec INPN pourquoi les AF par user ne sont pas dans l'appel global des AF
-    # Ce code ne fonctionne pas pour cette raison -> AF manquants
-    # af_list = mtd_api.get_af_list()
-    # af_list = [af for af in af_list if af["unique_acquisition_framework_id"] in user_af_uuids]
+    if not id_af:
+        # Get the unique UUIDs of the acquisition frameworks for the user
+        set_user_af_uuids = {ds["uuid_acquisition_framework"] for ds in ds_list}
+        user_af_uuids = list(set_user_af_uuids)
 
-    # call INPN API for each AF to retrieve info
-    af_list = [mtd_api.get_user_af_list(af_uuid) for af_uuid in user_af_uuids]
+        # TODO - voir avec INPN pourquoi les AF par user ne sont pas dans l'appel global des AF
+        # Ce code ne fonctionne pas pour cette raison -> AF manquants
+        # af_list = mtd_api.get_af_list()
+        # af_list = [af for af in af_list if af["unique_acquisition_framework_id"] in user_af_uuids]
+         
+       # Get the list of acquisition frameworks for the user
+        # call INPN API for each AF to retrieve info
+        af_list = [mtd_api.get_user_af_list(af_uuid) for af_uuid in user_af_uuids]
+    else:
+        uuid_af = TAcquisitionFramework.query.get(id_af).unique_acquisition_framework_id
+        uuid_af = str(uuid_af)
+        # uuid_af = TAcquisitionFramework.query.filter_by_readable().filter(TAcquisitionFramework.id_acquisition_framework == id_af).unique_acquisition_framework_id
 
-    # start AF and DS lists
+        # Get the acquisition framework for the specified UUID, thus a list of one element
+        af_list = [mtd_api.get_user_af_list(uuid_af)]
+        
+        # Filter the datasets based on the specified UUID
+        ds_list = [ds for ds in ds_list if ds["uuid_acquisition_framework"] == uuid_af]
+
+    # Process the acquisition frameworks and datasets
     process_af_and_ds(af_list, ds_list, id_role)
 
     logger.info("MTD - SYNC USER : FINISH")
