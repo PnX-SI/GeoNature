@@ -59,7 +59,7 @@ def list_modules():
     """
     params = request.args
     q = TModules.query.options(joinedload(TModules.objects))
-    exclude = current_app.config["DISABLED_MODULES"]
+    exclude = current_app.config["DISABLED_MODULES"].copy()
     if "exclude" in params:
         exclude.extend(params.getlist("exclude"))
     q = q.filter(TModules.module_code.notin_(exclude))
