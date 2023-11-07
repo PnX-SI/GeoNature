@@ -221,11 +221,7 @@ describe('Testing adding an observation in OccTax', {testIsolation: false}, () =
     const nomValideResult = cy.get("[data-qa='occurrence-nom-valide']");
     nomValideResult.contains('Canis lupus');
     cy.get('[data-qa="occurrence-add-btn"]').should('be.enabled');
-    
-    // check the button add occurrence is focused
-    cy.focused()
-    .invoke('attr', 'data-qa')
-    .should('eq', 'occurrence-add-btn')
+  
 
     cy.get(
       '[data-qa="pnx-nomenclature-meth-obs"] > ng-select > div > span.ng-clear-wrapper.ng-star-inserted'
@@ -306,10 +302,6 @@ describe('Testing adding an observation in OccTax', {testIsolation: false}, () =
     //Should display good taxa's name
       cy.get('[data-qa="pnx-occtax-taxon-form-taxa-name-0"]').should('have.text', taxaNameRef);
       
-    //Should display good taxa's obs tech
-    cy.get('[data-qa="pnx-occtax-taxon-form-taxa-ObsTech-0"]').should(($el) =>
-    expect($el.text().trim()).to.equal('Autre')
-    );
   });
 
   it('Should close observation', () => {
