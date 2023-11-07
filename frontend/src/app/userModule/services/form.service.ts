@@ -18,7 +18,10 @@ export interface Role {
 export class RoleFormService {
   private roleForm: UntypedFormGroup;
 
-  constructor(private fb: UntypedFormBuilder, private dataService: DataFormService) {
+  constructor(
+    private fb: UntypedFormBuilder,
+    private dataService: DataFormService
+  ) {
     this.setForm();
   }
 

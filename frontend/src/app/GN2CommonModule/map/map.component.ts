@@ -25,7 +25,10 @@ const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
 export class NominatimService {
   PARAMS = null;
 
-  constructor(private http: HttpClient, public config: ConfigService) {
+  constructor(
+    private http: HttpClient,
+    public config: ConfigService
+  ) {
     this.PARAMS = new HttpParams({
       fromObject: {
         format: 'json',
