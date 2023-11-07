@@ -4,7 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class CommonService {
-  constructor(private toastrService: ToastrService, private translate: TranslateService) {}
+  constructor(
+    private toastrService: ToastrService,
+    private translate: TranslateService
+  ) {}
 
   /** pour ne pas afficher plusieurs fois le meme message
    * (par ex quand on ) zomme sur la carte avant la saisie */
