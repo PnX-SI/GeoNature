@@ -11,7 +11,10 @@ import { ConfigService } from '@geonature/services/config.service';
 export class AdminComponent implements OnInit {
   URL_ADMIN = null;
 
-  constructor(public _cruvedStore: CruvedStoreService, public config: ConfigService) {
+  constructor(
+    public _cruvedStore: CruvedStoreService,
+    public config: ConfigService
+  ) {
     this.URL_ADMIN = this.config.API_ENDPOINT + '/admin/';
   }
 

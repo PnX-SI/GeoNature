@@ -8,7 +8,10 @@ import * as moment from 'moment';
 export class OccHabMapListService {
   public searchForm: UntypedFormGroup;
   public mapListService: MapListService;
-  constructor(private _fb: UntypedFormBuilder, private _occHabDataService: OccHabDataService) {
+  constructor(
+    private _fb: UntypedFormBuilder,
+    private _occHabDataService: OccHabDataService
+  ) {
     this.searchForm = this._fb.group({
       id_dataset: null,
       date_low: null,
