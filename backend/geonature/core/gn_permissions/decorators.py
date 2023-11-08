@@ -10,6 +10,10 @@ from werkzeug.exceptions import Unauthorized, Forbidden
 from geonature.core.gn_permissions.tools import get_permissions, get_scopes_by_action
 
 
+# use login_required from flask_login
+from flask_login import login_required
+
+
 def _forbidden_message(action, module_code, object_code):
     message = f"User {g.current_user.id_role} has no permissions to {action}"
     if module_code:
@@ -17,16 +21,6 @@ def _forbidden_message(action, module_code, object_code):
     if object_code:
         message += f" on {object_code}"
     return message
-
-
-def login_required(view_func):
-    @wraps(view_func)
-    def decorated_view(*args, **kwargs):
-        if g.current_user is None:
-            raise Unauthorized
-        return view_func(*args, **kwargs)
-
-    return decorated_view
 
 
 def check_cruved_scope(
@@ -52,7 +46,7 @@ def check_cruved_scope(
     def _check_cruved_scope(view_func):
         @wraps(view_func)
         def decorated_view(*args, **kwargs):
-            if g.current_user is None:
+            if not g.current_user.is_authenticated:
                 raise Unauthorized
             scope = get_scopes_by_action(module_code=module_code, object_code=object_code)[action]
             if not scope:
@@ -74,7 +68,7 @@ def permissions_required(
     def _permission_required(view_func):
         @wraps(view_func)
         def decorated_view(*args, **kwargs):
-            if g.current_user is None:
+            if not g.current_user.is_authenticated:
                 raise Unauthorized
             permissions = get_permissions(action, module_code=module_code, object_code=object_code)
             if not permissions:

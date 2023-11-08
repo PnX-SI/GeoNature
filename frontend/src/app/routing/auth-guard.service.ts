@@ -13,7 +13,10 @@ import { RoutingService } from './routing.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild {
-  constructor(private _router: Router, private _injector: Injector) {}
+  constructor(
+    private _router: Router,
+    private _injector: Injector
+  ) {}
 
   async redirectAuth(route, state) {
     const authService = this._injector.get(AuthService);
@@ -21,7 +24,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     const configService = this._injector.get(ConfigService);
     const routingService = this._injector.get(RoutingService);
 
-    if (authService.getToken() === null) {
+    if (!authService.isLoggedIn()) {
       if (
         route.queryParams.access &&
         route.queryParams.access === 'public' &&

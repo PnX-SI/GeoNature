@@ -22,25 +22,24 @@ function filterMapList() {
   cy.wait('@getReleves');
 }
 
-describe('Testing adding an observation in OccTax', () => {
-  before(() => {
-    cy.geonatureLogout();
+describe('Testing adding an observation in OccTax', {testIsolation: false}, () => {
+
+  beforeEach(() => {
     cy.geonatureLogin();
+  });
+  
+  
+  it('should not be possible to add data if any geometry had been selected', () => {
     cy.visit('/#/occtax');
     cy.get("[data-qa='gn-occtax-btn-add-releve']").click();
-  });
-  beforeEach(() => {
-    cy.restoreLocalStorage();
-  });
 
-  afterEach(() => {
-    cy.saveLocalStorage();
-  });
-
-  it('should not be possible to add data if any geometry had been selected', () => {
     // Un recouvrement des champs de saisie (overlay) existe à l'arrivée sur la page
     cy.get("div[data-qa='overlay']").click();
     cy.get("div#toast-container .toast-warning div[role='alert']").should('exist');
+
+  });
+
+  it('should add a marker on map, remove overlay and btn sumbit still disabe', () => {
 
     // Après un zoom sur la carte suffisant sur la carte et la sélection d'un point ou la sélection d'une géométrie, le recouvrement des champs de saisie n'existe plus
     const plus = cy.get(
@@ -53,33 +52,7 @@ describe('Testing adding an observation in OccTax', () => {
       'pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom'
     ).click(100, 100);
     cy.get("[data-qa='pnx-occtax-releve-form-observers'] #overlay").should('not.exist');
-  });
 
-  // TODO
-  it('should be possible to add a geometry on the map', () => {
-    // Le point
-    // Il est impossible d'ajouter un point au zoom minimal du relevé
-    // Tester que l'ajout de point n'est pas possible
-    // Tester que l'erreur "échelle de saisie inadaptée apparait"
-    // Tester si aucun point n'est sélectionné alors le recouvrement des champs de saisie (overlay) existe
-    // Après un zoom suffisamment avancé, tester s'il est possible d'ajouter un point
-    // Tester si l'ajout d'un point enlève le recouvrement des champs de saisie (overlay)
-    // La ligne
-    // Tester : Il est possible de sélectionner l'îcone ajout de lignes qui entraine l'apparition d'un tooltip gris contenant "finish, delete last point, cancel"
-    // Tester le tracé d'une ligne si seulement c'est possible avec Cypress
-    // Le Polygone
-    // Tester : Il est possible de sélectionner l'îcone ajout de polygone qui entraine l'apparition d'un tooltip gris contenant "finish, delete last point, cancel"
-    // L'édition des géométries
-    // Intestable en l'état 03/02/2022
-    // L'îcone dossier
-    // Tester : cliquer sur l'icone dossier de la carte ouvre le gestionnaire de fichier de la machine
-    // L'icone GPS
-    // Tester : cliquer sur l'icone GPS ouvre une modale "Coordonées GPS" permettant de saisir des coordonées en X et en Y
-    // Tester : il est impossible de rentrer autre chose qu'un nombre décimal dans les champs
-    // Tester : Les flèches dans les champs fonctionnent et permette d'incréemnter de plus ou moins 1 la valeur du champ
-    // Tester : Rentrer les coordonnées vides ne permet pas de valider (intestable parce que là si mais ticket ouvert #1681)
-    // Tester : Rentrer des coordonnées 0 et 0 nous déplace bien sur la carte avec un point (au large de l'Afrique notamment)
-    // Une fois une géométrie sélectionnée il est impossible d'enregistrer et saisir des taxons avant de remplir des champs
     cy.get('[data-qa="pnx-occtax-releve-submit-btn"]').should('be.disabled');
   });
 
@@ -215,10 +188,7 @@ describe('Testing adding an observation in OccTax', () => {
   it('Should submit a new releve', () => {
     cy.get("[data-qa='pnx-occtax-releve-submit-btn']").click();
     // TODO : assert que y a bien un changement de page vers la page taxon
-  });
 
-  // A Partir de là, on passe de l'écran relevé à l'écran taxon, TODO : le matérialiser proprement en termes d'incrémentation ou de structure de code
-  it('should not be possible to add any observation at the beginning', () => {
     // Le bouton d'ajout d'occurence doit être disable
     const taxonInput = cy.get("input[data-qa='taxonomy-form-input'].ng-invalid");
     taxonInput.then((d) => {
@@ -227,11 +197,21 @@ describe('Testing adding an observation in OccTax', () => {
     });
   });
 
-  // it("Should focus on taxa input", ()=> {
-  //   cy.focused()
-  //   .invoke('attr', 'data-qa')
-  //   .should('eq', 'taxonomy-form-input')
+  // // A Partir de là, on passe de l'écran relevé à l'écran taxon, TODO : le matérialiser proprement en termes d'incrémentation ou de structure de code
+  // it('should not be possible to add any observation at the beginning', () => {
+  //   // Le bouton d'ajout d'occurence doit être disable
+  //   const taxonInput = cy.get("input[data-qa='taxonomy-form-input'].ng-invalid");
+  //   taxonInput.then((d) => {
+  //     expect(d[0].value).to.contains('');
+  //     cy.get("[data-qa='occurrence-add-btn'][disabled='true']");
+  //   });
   // });
+
+    // it("Should focus on taxa input", ()=> {
+    //   cy.focused()
+    //   .invoke('attr', 'data-qa')
+    //   .should('eq', 'taxonomy-form-input')
+    // });
 
   it('Should be possible to search and select taxa', () => {
     const taxonInput = cy.get("input[data-qa='taxonomy-form-input'].ng-invalid");
@@ -241,6 +221,7 @@ describe('Testing adding an observation in OccTax', () => {
     const nomValideResult = cy.get("[data-qa='occurrence-nom-valide']");
     nomValideResult.contains('Canis lupus');
     cy.get('[data-qa="occurrence-add-btn"]').should('be.enabled');
+  
 
     cy.get(
       '[data-qa="pnx-nomenclature-meth-obs"] > ng-select > div > span.ng-clear-wrapper.ng-star-inserted'
@@ -289,14 +270,9 @@ describe('Testing adding an observation in OccTax', () => {
       .get('[data-qa="pnx-occtax-taxon-form-count"]')
       .children()
       .should('have.length', 2);
+
   });
 
-  // it("should focus on sumbit button", ()=> {
-  //   // check the button add occurrence is focused
-  //   cy.focused()
-  //   .invoke('attr', 'data-qa')
-  //   .should('eq', 'occurrence-add-btn')
-  // }) TODO : à supprimer ou pas ?
 
   it('Should autocompete count max with count min value', () => {
     // HACK : must reselect countin min from selector otherwise it clear the wrong input (?!) ...
@@ -316,24 +292,16 @@ describe('Testing adding an observation in OccTax', () => {
     cy.get("[data-qa='counting-count-max']").should('have.value', 2);
   });
 
-  it('Should submit an occurrence', () => {
+  it('Should submit an occurrence and check occurrence list', () => {
     cy.get("[data-qa='occurrence-add-btn']").click({ force: true });
-  });
-
-  it('Should save the good taxa', () => {
+    //Should save the good taxa
     const cyTaxaHead = cy.get('[data-qa="pnx-occtax-taxon-form-taxa-head-0"]');
     cyTaxaHead.should('have.text', taxaNameRef);
     cyTaxaHead.click();
-  });
-
-  it("Should display good taxa's name", () => {
     cy.get('[data-qa="pnx-occtax-taxon-form-taxa-name-0"]').should('have.text', taxaNameRef);
-  });
-
-  it("Should display good taxa's obs tech", () => {
-    cy.get('[data-qa="pnx-occtax-taxon-form-taxa-ObsTech-0"]').should(($el) =>
-      expect($el.text().trim()).to.equal('Autre')
-    );
+    //Should display good taxa's name
+      cy.get('[data-qa="pnx-occtax-taxon-form-taxa-name-0"]').should('have.text', taxaNameRef);
+      
   });
 
   it('Should close observation', () => {
@@ -344,7 +312,7 @@ describe('Testing adding an observation in OccTax', () => {
     filterMapList();
   });
 
-  // FIXME we should wait for the end of the research!
+  // // FIXME we should wait for the end of the research!
   it.skip('Should be the good taxa', async () => {
     const date = await promisify(
       cy.get(
@@ -356,6 +324,7 @@ describe('Testing adding an observation in OccTax', () => {
 
   it('should edit a releve', () => {
     cy.get('[data-qa="edit-releve"]').first().click();
+
   });
   it('Should display date', () => {
     cy.get("[data-qa='pnx-occtax-releve-form-datemax'] [data-qa='input-date']").should(

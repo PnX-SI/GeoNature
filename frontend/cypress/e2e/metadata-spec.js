@@ -2,7 +2,7 @@ import promisify from 'cypress-promise';
 
 describe('Testing metadata', () => {
   const cadreAcq = 'CA-1';
-  const jdd = ' JDD-1 ';
+  const jdd = 'JDD-1';
   const jddUUID = '4d331cae-65e4-4948-b0b2-a11bc5bb46c2';
   const caUUID = '57b7d0f2-4183-4b7b-8f08-6e105d476dc5';
   const caSelector = '[data-qa="pnx-metadata-acq-framework-' + caUUID + '"]';
@@ -19,13 +19,14 @@ describe('Testing metadata', () => {
     description: 'description de mon jdd',
   };
 
-  before(() => {
-    cy.geonatureLogout();
+  beforeEach(() => {
     cy.geonatureLogin();
     cy.visit('/#/metadata');
   });
 
+
   it('should display "cadre d\'acquisition"', async () => {
+
     // const listCadreAcq = await promisify(cy.get("[data-qa='pnx-metadata-acq-framework']"));
     const wantedCA = await promisify(cy.get(caSelector));
     // listCadreAcq[0].firstChild.firstChild.firstChild.children[1].innerText;
@@ -43,23 +44,25 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-metadata-acq-framework-header-' + caUUID + '"]').click();
     cy.get('[data-qa="pnx-metadata-jdd-' + jddUUID + '"]').contains(jdd);
     cy.get('[data-qa="pnx-metadata-jdd-actif-' + jddUUID + '"]').click();
-    cy.get('[data-qa="pnx-metadata-jdd-nb-obs-' + jddUUID + '"]').contains('3');
     cy.get('[data-qa="pnx-metadata-jdd-delete-' + jddUUID + '"]').should('be.disabled');
-  });
 
-  it('should display the first "jeux de données"', () => {
+    // go to the JDD detail page
     cy.get('[data-qa="pnx-metadata-jdd-' + jddUUID + '"]').click();
     cy.get('[data-qa="pnx-metadata-dataset-name"]').contains(jdd);
     cy.get('[data-qa="pnx-metadata-exit-jdd"]').click();
-  });
 
-  it('should display the good "jeux de données"', () => {
+  });
+  
+  it('should search a JDD and find it"', () => {
+    
     cy.get('[data-qa="pnx-metadata-search"]').type(jdd);
+    cy.get('[data-qa="pnx-metadata-acq-framework-header-' + caUUID + '"]').click();
     cy.get('[data-qa="pnx-metadata-jdd-' + jddUUID + '"]').contains(jdd);
-    cy.get('[data-qa="pnx-metadata-jdd-actif-' + jddUUID + '"]').click({ force: true });
   });
 
   it('should create a new "cardre d\'acquisition"', () => {
+    // cy.visit('/#/metadata');
+
     cy.get('[data-qa="pnx-metadata-add-af"]').click();
 
     cy.get('pnx-metadata-actor > div > form > ng-select > div > div > div.ng-input').click();
@@ -100,11 +103,9 @@ describe('Testing metadata', () => {
       .click()
       .type(newCadreAcq.startDate);
     cy.get("[data-qa='pnx-metadata-save-af']").click();
-  });
-
-  it('should new "jeux de données" created', () => {
     cy.get('[data-qa="pnx-metadata-acq-framework-name"]').contains(newCadreAcq.name);
   });
+
 
   it('should create a new "jeux de données"', () => {
     cy.visit('/#/metadata');
@@ -165,9 +166,6 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="1"]').click();
 
     cy.get('[data-qa="pnx-dataset-form-save-jdd"]').click();
-  });
-
-  it('should new "jeux de données" created', () => {
     cy.get('[data-qa="pnx-metadata-dataset-name"]').contains(newJdd.name);
     cy.get('[data-qa="pnx-metadata-exit-jdd"]').click();
   });

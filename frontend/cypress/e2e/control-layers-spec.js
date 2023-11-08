@@ -2,12 +2,10 @@ describe('Testing Leaflet control layers', () => {
   const controlSelector = '.leaflet-control-layers';
   const controlExpandedSelector = `.leaflet-control-layers-expanded`;
   const overlayersTitleSelector = '[data-qa="title-overlay"]';
-  // Go to home page
-  before(() => {
-    cy.geonatureLogout();
+  beforeEach(()=> {
     cy.geonatureLogin();
     cy.visit('/#/');
-  });
+  })
   it('should display "overlayers button controler"', () => {
     cy.get(controlSelector).should('be.visible');
     cy.get(controlSelector).trigger('mouseover');
