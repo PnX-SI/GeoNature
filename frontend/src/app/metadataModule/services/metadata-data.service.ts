@@ -6,7 +6,10 @@ import { ConfigService } from '@geonature/services/config.service';
   providedIn: 'root',
 })
 export class MetadataDataService {
-  constructor(private _api: HttpClient, public config: ConfigService) {}
+  constructor(
+    private _api: HttpClient,
+    public config: ConfigService
+  ) {}
 
   createAF(value) {
     return this._api.post<any>(`${this.config.API_ENDPOINT}/meta/acquisition_framework`, value);

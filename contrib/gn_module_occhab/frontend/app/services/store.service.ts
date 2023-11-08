@@ -13,7 +13,10 @@ export class OcchabStoreService {
   public idsStation: Array<number>;
   private _defaultNomenclature$: BehaviorSubject<any> = new BehaviorSubject(null);
   public defaultNomenclature$: Observable<any> = this._defaultNomenclature$.asObservable();
-  constructor(private _gnDataService: DataFormService, public config: ConfigService) {
+  constructor(
+    private _gnDataService: DataFormService,
+    public config: ConfigService
+  ) {
     this._gnDataService
       .getNomenclatures([
         'METHOD_CALCUL_SURFACE',
