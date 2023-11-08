@@ -109,7 +109,7 @@
       <div class="statusContent">
         <span
           class="validationCircle"
-          [ngStyle]="{'background': config.VALIDATION.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
+          [ngStyle]="{'background': config.VALIDATION.STATUS_INFO[row.nomenclature_valid_status?.cd_nomenclature]?.color}"
         >
           <i
             *ngIf="row.last_validation?.validation_auto"
@@ -117,10 +117,10 @@
           >computer</i>
         </span>
         <div
-          [ngStyle]="{'background': config.VALIDATION.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
+          [ngStyle]="{'background': config.VALIDATION.STATUS_INFO[row.nomenclature_valid_status?.cd_nomenclature]?.color}"
           class="statusName"
         >
-          <span>{{row.nomenclature_valid_status.mnemonique}}</span>
+          <span>{{row.nomenclature_valid_status?.mnemonique}}</span>
           <span *ngIf="row.last_validation?.validation_auto"> (automatique)</span>
         </div>
       </div>
@@ -157,7 +157,7 @@
       <div class="statusContent">
         <span
           class="validationCircle"
-          [ngStyle]="{'background': config.VALIDATION.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
+          [ngStyle]="{'background': config.VALIDATION.STATUS_INFO[row.nomenclature_valid_status?.cd_nomenclature]?.color}"
         >
           <i
             *ngIf="row.last_validation?.validation_auto"
@@ -165,12 +165,13 @@
           >computer</i>
         </span>
         <div
-          [ngStyle]="{'background': config.VALIDATION.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
+          [ngStyle]="{'background': config.VALIDATION.STATUS_INFO[row.nomenclature_valid_status?.cd_nomenclature]?.color}"
           class="statusName"
         >
-          <span>{{row.nomenclature_valid_status.mnemonique}}</span>
+          <span>{{row?.nomenclature_valid_status?.mnemonique}}</span>
           <span *ngIf="row.last_validation?.validation_auto"> (automatique)</span>
         </div>
+
       </div>
     </ng-template>
   </ngx-datatable-column>
