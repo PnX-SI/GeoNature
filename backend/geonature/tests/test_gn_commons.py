@@ -263,13 +263,16 @@ class TestTMediaRepository:
 class TestTMediaRepositoryVideoLink:
     def test_test_video_link(self, medium, test_media_type, test_media_url, test_wrong_url):
         # Need to create a video link
-        photo_type = TNomenclatures.query.join(
-            BibNomenclaturesTypes,
-            BibNomenclaturesTypes.id_type == TNomenclatures.id_type
-        ).filter(
-            BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
-            TNomenclatures.mnemonique == test_media_type,
-        ).one()
+        photo_type = (
+            TNomenclatures.query.join(
+                BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type
+            )
+            .filter(
+                BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
+                TNomenclatures.mnemonique == test_media_type,
+            )
+            .one()
+        )
         media = TMediaRepository(id_media=medium.id_media)
         media.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
         media.data["media_url"] = test_media_url
@@ -280,13 +283,16 @@ class TestTMediaRepositoryVideoLink:
 
     def test_test_video_link_wrong(self, medium, test_media_type, test_media_url, test_wrong_url):
         # Need to create a video link
-        photo_type = TNomenclatures.query.join(
-            BibNomenclaturesTypes,
-            BibNomenclaturesTypes.id_type == TNomenclatures.id_type
-        ).filter(
-            BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
-            TNomenclatures.mnemonique == test_media_type,
-        ).one()
+        photo_type = (
+            TNomenclatures.query.join(
+                BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type
+            )
+            .filter(
+                BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
+                TNomenclatures.mnemonique == test_media_type,
+            )
+            .one()
+        )
         media = TMediaRepository(id_media=medium.id_media)
         media.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
         # WRONG URL:
@@ -309,13 +315,16 @@ class TestTMediaRepositoryVideoLink:
 )
 class TestTMediaRepositoryHeader:
     def test_header_content_type_wrong(self, medium, test_media_type, test_content_type):
-        photo_type = TNomenclatures.query.join(
-            BibNomenclaturesTypes,
-            BibNomenclaturesTypes.id_type == TNomenclatures.id_type
-        ).filter(
-            BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
-            TNomenclatures.mnemonique == test_media_type,
-        ).one()
+        photo_type = (
+            TNomenclatures.query.join(
+                BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type
+            )
+            .filter(
+                BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
+                TNomenclatures.mnemonique == test_media_type,
+            )
+            .one()
+        )
         media = TMediaRepository(id_media=medium.id_media)
         media.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
 

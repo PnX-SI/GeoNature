@@ -604,12 +604,15 @@ def synthese_sensitive_data(app, users, datasets, source):
 
 
 def create_media(media_path=""):
-    photo_type = TNomenclatures.query.join(
-            BibNomenclaturesTypes, 
-            BibNomenclaturesTypes.id_type == TNomenclatures.id_type
-        ).filter(
+    photo_type = (
+        TNomenclatures.query.join(
+            BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type
+        )
+        .filter(
             BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA", TNomenclatures.mnemonique == "Photo"
-        ).one()
+        )
+        .one()
+    )
     location = (
         BibTablesLocation.query.filter(BibTablesLocation.schema_name == "gn_commons")
         .filter(BibTablesLocation.table_name == "t_medias")

@@ -260,7 +260,9 @@ class Synthese(DB.Model):
     module = DB.relationship(TModules)
     entity_source_pk_value = DB.Column(DB.Unicode)
     id_dataset = DB.Column(DB.Integer, ForeignKey(TDatasets.id_dataset))
-    dataset = DB.relationship(TDatasets, backref=DB.backref("synthese_records", lazy="dynamic", cascade_backrefs=False))
+    dataset = DB.relationship(
+        TDatasets, backref=DB.backref("synthese_records", lazy="dynamic", cascade_backrefs=False)
+    )
     grp_method = DB.Column(DB.Unicode(length=255))
 
     id_nomenclature_geo_object_nature = db.Column(

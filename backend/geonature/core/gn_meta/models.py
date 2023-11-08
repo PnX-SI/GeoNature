@@ -396,9 +396,7 @@ class TDatasets(db.Model):
     query_class = TDatasetsQuery
 
     id_dataset = DB.Column(DB.Integer, primary_key=True)
-    unique_dataset_id = DB.Column(
-        UUIDType(as_uuid=True), default=select(func.uuid_generate_v4())
-    )
+    unique_dataset_id = DB.Column(UUIDType(as_uuid=True), default=select(func.uuid_generate_v4()))
     id_acquisition_framework = DB.Column(
         DB.Integer,
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
@@ -779,7 +777,11 @@ class TAcquisitionFramework(db.Model):
             CorAcquisitionFrameworkVoletSINP.id_acquisition_framework,
             CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp,
         ],
-        backref=DB.backref("volet_sinp_af", lazy="select", overlaps="nomenclature_voletsinp",),
+        backref=DB.backref(
+            "volet_sinp_af",
+            lazy="select",
+            overlaps="nomenclature_voletsinp",
+        ),
         overlaps="nomenclature_voletsinp",
     )
 
@@ -799,7 +801,7 @@ class TAcquisitionFramework(db.Model):
             CorAcquisitionFrameworkTerritory.id_nomenclature_territory,
         ],
         backref=DB.backref("territory_af", lazy="select", overlaps="nomenclature_territory"),
-        overlaps="nomenclature_territory"
+        overlaps="nomenclature_territory",
     )
 
     bibliographical_references = DB.relationship(
