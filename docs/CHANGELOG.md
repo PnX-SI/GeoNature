@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+2.14.0 (unreleased)
+-------------------
+
+**🐛 Corrections**
+
+- [Métadonnées] Masquage des références bibliograhpiques dans le formulaire des Cadres d'Acquisition en attendant la finalisation du développement du backend (#2562)
+- [Synthèse et validation] Ajout de la méthode de détermination dans la fenêtre modale de détail de l'occurrence
+
 2.13.3 (2023-10-17)
 -------------------
 
