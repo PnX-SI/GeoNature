@@ -234,6 +234,7 @@
     "ObsBehav": "Comportement",
     "ObsSex": "Sexe",
     "ObsLifeStep": "Stade de vie",
+    "MethDeterm": "Méthode de determination",
     "Map": {
       "AreasToggleBtn": "Mailles"
     }

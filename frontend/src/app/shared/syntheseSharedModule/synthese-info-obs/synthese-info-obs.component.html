@@ -233,7 +233,6 @@
         <td>Objet du dénombrement</td>
         <td>{{ selectedObs?.nomenclature_obj_count?.label_default }}</td>
       </tr>
-      <tr></tr>
       <tr>
         <td>Naturalité</td>
         <td>{{ selectedObs?.nomenclature_naturalness?.label_default }}</td>
@@ -249,6 +248,10 @@
       <tr>
         <td>Determinateur</td>
         <td>{{ selectedObs?.determiner }}</td>
+      </tr>
+      <tr>
+        <td>{{ 'Synthese.MethDeterm' | translate }}</td>
+        <td>{{ selectedObs?.nomenclature_determination_method?.label_default }}</td>
       </tr>
       <tr>
         <td>Preuve d'existence</td>
