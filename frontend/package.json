@@ -10,7 +10,7 @@
     "format:check": "prettier --config .prettierrc --ignore-path .prettierignore --check '**/*.ts' '../contrib/*/frontend/**/*.ts'",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "docBuild" : "npx compodoc -p tsconfig.doc.json -d ../docs/external_doc/documentation_js"
+    "docBuild": "npx compodoc -p tsconfig.doc.json -d ../docs/external_doc/documentation_js"
   },
   "private": true,
   "dependencies": {
@@ -68,6 +68,6 @@
     "cypress-promise": "^1.1.0",
     "prettier": "^3.0.0",
     "typescript": "4.9.4",
-    "@compodoc/compodoc":"^1.1.22"
+    "@compodoc/compodoc": "^1.1.22"
   }
 }
