@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+2.14.0 (unreleased)
+-------------------
+
+- [Synthèse et validation] Ajout de la méthode de détermination dans la fenêtre modale de détail de l'occurrence
+
 2.13.3 (2023-10-17)
 -------------------
 
