@@ -35,6 +35,8 @@
 <ng-template #content let-c="close" let-d="dismiss">
   <pnx-individuals-create
     [idModule]="idModule"
+    [idList]="idList"
+    [cdNom]="cdNom"
     (individualEvent)="individualCreated($event)"
     (cancelEvent)="closeModal()"
   ></pnx-individuals-create

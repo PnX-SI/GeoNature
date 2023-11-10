@@ -12,6 +12,8 @@ export class IndividualsComponent implements OnInit {
   @Input() parentFormControl: UntypedFormControl;
   @Input() idModule: number;
   @Input() label: string;
+  @Input() idList: null | string = null;
+  @Input() cdNom: null | number = null;
 
   keyLabel: string = 'individual_name';
   keyValue: string = 'id_individual';
@@ -20,6 +22,7 @@ export class IndividualsComponent implements OnInit {
 
   constructor(private modalService: NgbModal, private _individualsService: IndividualsService) {}
   ngOnInit(): void {
+    console.log(this.idList);
     this.getIndividuals().subscribe((data) => {
       this.values = data;
     });
