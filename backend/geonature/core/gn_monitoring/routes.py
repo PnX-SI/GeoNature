@@ -121,12 +121,7 @@ def get_individuals():
     id_module = params.get("id_module")
     query = TIndividuals.query
     if id_module:
-        query = query.options(
-            raiseload("*"),
-            joinedload(TIndividuals.modules),
-            joinedload(TIndividuals.nomenclature_sex),
-            joinedload(TIndividuals.digitiser),
-        ).filter(TIndividuals.modules.any(TModules.id_module == id_module))
+        query = query.filter(TIndividuals.modules.any(TModules.id_module == id_module))
 
     schema = TIndividualsSchema(exclude=["modules"])
     # In the future: paginate the query. But need infinite scroll on
