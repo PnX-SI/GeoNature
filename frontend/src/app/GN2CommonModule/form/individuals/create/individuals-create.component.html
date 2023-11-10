@@ -29,8 +29,10 @@
     >
     </textarea>
     <pnx-taxonomy
+      *ngIf="cdNom === null"
       label="Taxon"
       [parentFormControl]="form.get('cd_nom_temp')"
+      [idList]="idList"
       displayedLabel="nom_valide"
       charNumber="3"
       listLength="20"
