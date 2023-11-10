@@ -44,8 +44,8 @@ def upgrade():
             sa.ForeignKey("utilisateurs.t_roles.id_role"),
             nullable=False,
         ),
-        sa.Column("meta_create_date", sa.DateTime(timezone=False)),
-        sa.Column("meta_update_date", sa.DateTime(timezone=False)),
+        sa.Column("meta_create_date", sa.DateTime(timezone=False), server_default=sa.func.now()),
+        sa.Column("meta_update_date", sa.DateTime(timezone=False), server_default=sa.func.now()),
         schema=SCHEMA,
     )
 
