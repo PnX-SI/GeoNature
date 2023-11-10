@@ -3,6 +3,7 @@
     Correspond a la centralisation des données de base
         relatifs aux protocoles de suivis
 """
+from datetime import datetime
 
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
@@ -201,8 +202,8 @@ class TIndividuals(DB.Model):
         nullable=False,
     )
 
-    meta_create_date = DB.Column("meta_create_date", DB.DateTime(timezone=False))
-    meta_update_date = DB.Column("meta_update_date", DB.DateTime(timezone=False))
+    meta_create_date = DB.Column("meta_create_date", DB.DateTime(timezone=False), server_default=FetchedValue())
+    meta_update_date = DB.Column("meta_update_date", DB.DateTime(timezone=False), server_default=FetchedValue(), onupdate=datetime.now)
 
     digitiser = DB.relationship(
         User,
