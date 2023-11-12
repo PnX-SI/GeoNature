@@ -50,7 +50,6 @@ from geonature.core.gn_meta.models import (
     CorDatasetProtocol,
     CorDatasetTerritory,
     TAcquisitionFramework,
-    TAcquisitionFrameworkDetails,
     CorAcquisitionFrameworkActor,
     CorAcquisitionFrameworkObjectif,
     CorAcquisitionFrameworkVoletSINP,
@@ -643,8 +642,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     Get a PDF export of one acquisition
     """
     # Recuperation des données
-    # af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
-    af = DB.session.get(TAcquisitionFrameworkDetails, id_acquisition_framework)
+    af = DB.session.get(TAcquisitionFramework, id_acquisition_framework)
     acquisition_framework = af.as_dict(True, depth=2)
     dataset_ids = [d.id_dataset for d in af.t_datasets]
     nb_data = len(dataset_ids)

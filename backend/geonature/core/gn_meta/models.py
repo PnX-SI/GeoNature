@@ -508,6 +508,9 @@ class TDatasets(db.Model):
         cascade="save-update, merge, delete, delete-orphan",
         backref=DB.backref("actor_dataset", lazy="select"),
     )
+    additional_fields = DB.relationship(
+        "TAdditionalFields", secondary=cor_field_dataset, back_populates="datasets"
+    )
 
     @hybrid_property
     def user_actors(self):
@@ -726,13 +729,11 @@ class TAcquisitionFramework(db.Model):
     creator = DB.relationship(User, lazy="joined")  # = digitizer
     nomenclature_territorial_level = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_territorial_level),
+        foreign_keys=[id_nomenclature_territorial_level],
     )
     nomenclature_financing_type = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_financing_type),
+        foreign_keys=[id_nomenclature_financing_type],
     )
     cor_af_actor = relationship(
         CorAcquisitionFrameworkActor,
@@ -899,55 +900,3 @@ class TAcquisitionFramework(db.Model):
             return q
         data = q.all()
         return list(set([d.id_acquisition_framework for d in data]))
-
-
-@serializable
-class TDatasetDetails(TDatasets):
-    data_type = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[TDatasets.id_nomenclature_data_type],
-        overlaps="nomenclature_data_type",
-    )
-    dataset_objectif = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[TDatasets.id_nomenclature_dataset_objectif],
-        overlaps="nomenclature_dataset_objectif",
-    )
-    collecting_method = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[TDatasets.id_nomenclature_collecting_method],
-        overlaps="nomenclature_collecting_method",
-    )
-    data_origin = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[TDatasets.id_nomenclature_data_origin],
-        overlaps="nomenclature_data_origin",
-    )
-    source_status = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[TDatasets.id_nomenclature_source_status],
-        overlaps="nomenclature_source_status",
-    )
-    resource_type = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[TDatasets.id_nomenclature_resource_type],
-        overlaps="nomenclature_resource_type",
-    )
-    additional_fields = DB.relationship("TAdditionalFields", secondary=cor_field_dataset)
-
-
-@serializable
-class TAcquisitionFrameworkDetails(TAcquisitionFramework):
-    """
-    Class which extends TAcquisitionFramework with nomenclatures relationships
-    """
-
-    nomenclature_territorial_level = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[TAcquisitionFramework.id_nomenclature_territorial_level],
-    )
-
-    nomenclature_financing_type = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[TAcquisitionFramework.id_nomenclature_financing_type],
-    )

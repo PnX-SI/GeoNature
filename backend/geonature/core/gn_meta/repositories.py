@@ -24,7 +24,6 @@ from geonature.core.gn_meta.models import (
     CorDatasetActor,
     TAcquisitionFramework,
     CorAcquisitionFrameworkActor,
-    TDatasetDetails,
 )
 from pypnusershub.db.models import Organisme as BibOrganismes
 from werkzeug.exceptions import Unauthorized
