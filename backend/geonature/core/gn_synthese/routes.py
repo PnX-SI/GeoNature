@@ -26,7 +26,6 @@ from sqlalchemy.orm import load_only, aliased, Load
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo
-from utils_flask_sqla.utils import is_already_joined
 
 from geonature.utils import filemanager
 from geonature.utils.env import db, DB
@@ -50,6 +49,7 @@ from geonature.core.gn_synthese.models import (
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
+from geonature.core.gn_synthese.utils.orm import is_already_joined
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required, permissions_required
