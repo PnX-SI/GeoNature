@@ -4,7 +4,6 @@
 import datetime as dt
 import json
 import logging
-from gn_module_occhab.models import OccurenceHabitat, Station
 from lxml import etree as ET
 
 from flask import (
@@ -69,6 +68,10 @@ from geonature.utils.errors import GeonatureApiError
 from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
 
 from ref_geo.models import LAreas
+# FIXME: remove any reference to external modules from GeoNature core
+if "OCCHAB" in config:
+    from gn_module_occhab.models import OccurenceHabitat, Station
+
 
 routes = Blueprint("gn_meta", __name__, cli_group="metadata")
 
@@ -891,14 +894,7 @@ def get_acquisition_framework_stats(id_acquisition_framework):
     ).count()
     nb_habitat = 0
 
-    # Check if pr_occhab exist
-    check_schema_query = exists(
-        select(text("schema_name"))
-        .select_from(text("information_schema.schemata"))
-        .where(text("schema_name = 'pr_occhab'"))
-    )
-
-    if DB.session.query(check_schema_query).scalar() and nb_dataset > 0:
+    if "OCCHAB" in config and nb_dataset > 0:
         nb_habitat = (
             DB.session.query(OccurenceHabitat)
             .join(Station)
