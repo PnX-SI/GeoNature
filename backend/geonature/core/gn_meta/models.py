@@ -63,69 +63,58 @@ class MetadataFilterSchema(ma.Schema):
         return data
 
 
-class CorAcquisitionFrameworkObjectif(DB.Model):
-    __tablename__ = "cor_acquisition_framework_objectif"
-    __table_args__ = {"schema": "gn_meta"}
-    id_acquisition_framework = DB.Column(
-        DB.Integer,
+cor_acquisition_framework_objectif = db.Table(
+    "cor_acquisition_framework_objectif",
+    db.Column(
+        "id_acquisition_framework",
+        db.Integer,
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
         primary_key=True,
-    )
-    id_nomenclature_objectif = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+    ),
+    db.Column(
+        "id_nomenclature_objectif",
+        db.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
         primary_key=True,
-    )
-
-    nomenclature_objectif = DB.relationship(
-        TNomenclatures,
-        lazy="joined",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_objectif),
-    )
+    ),
+    schema="gn_meta",
+)
 
 
-class CorAcquisitionFrameworkVoletSINP(DB.Model):
-    __tablename__ = "cor_acquisition_framework_voletsinp"
-    __table_args__ = {"schema": "gn_meta"}
-    id_acquisition_framework = DB.Column(
-        DB.Integer,
+cor_acquisition_framework_voletsinp = db.Table(
+    "cor_acquisition_framework_voletsinp",
+    db.Column(
+        "id_acquisition_framework",
+        db.Integer,
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
         primary_key=True,
-    )
-    id_nomenclature_voletsinp = DB.Column(
+    ),
+    db.Column(
         "id_nomenclature_voletsinp",
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        db.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
         primary_key=True,
-    )
-
-    nomenclature_voletsinp = DB.relationship(
-        TNomenclatures,
-        lazy="joined",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_voletsinp),
-    )
+    ),
+    schema="gn_meta",
+)
 
 
-class CorAcquisitionFrameworkTerritory(DB.Model):
-    __tablename__ = "cor_acquisition_framework_territory"
-    __table_args__ = {"schema": "gn_meta"}
-    id_acquisition_framework = DB.Column(
-        DB.Integer,
+cor_acquisition_framework_territory = db.Table(
+    "cor_acquisition_framework_territory",
+    db.Column(
+        "id_acquisition_framework",
+        db.Integer,
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
         primary_key=True,
-    )
-    id_nomenclature_territory = DB.Column(
+    ),
+    db.Column(
         "id_nomenclature_territory",
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        db.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
         primary_key=True,
-    )
-
-    nomenclature_territory = DB.relationship(
-        TNomenclatures,
-        lazy="joined",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_territory),
-    )
+    ),
+    schema="gn_meta",
+)
 
 
 @serializable
@@ -203,6 +192,7 @@ class CorDatasetActor(DB.Model):
 
 @serializable
 class CorDatasetProtocol(DB.Model):
+    # TODO: replace with table used as secondary in relationships
     __tablename__ = "cor_dataset_protocol"
     __table_args__ = {"schema": "gn_meta"}
     id_cdp = DB.Column(DB.Integer, primary_key=True)
@@ -210,27 +200,22 @@ class CorDatasetProtocol(DB.Model):
     id_protocol = DB.Column(DB.Integer, ForeignKey("gn_meta.sinp_datatype_protocols.id_protocol"))
 
 
-@serializable
-class CorDatasetTerritory(DB.Model):
-    __tablename__ = "cor_dataset_territory"
-    __table_args__ = {"schema": "gn_meta"}
-    id_dataset = DB.Column(
-        DB.Integer,
+cor_dataset_territory = db.Table(
+    "cor_dataset_territory",
+    db.Column(
+        "id_dataset",
+        db.Integer,
         ForeignKey("gn_meta.t_datasets.id_dataset"),
         primary_key=True,
-    )
-    id_nomenclature_territory = DB.Column(
+    ),
+    db.Column(
         "id_nomenclature_territory",
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        db.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
         primary_key=True,
-    )
-
-    nomenclature_territory = DB.relationship(
-        TNomenclatures,
-        lazy="joined",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_territory),
-    )
+    ),
+    schema="gn_meta",
+)
 
 
 @serializable
@@ -402,7 +387,7 @@ class TDatasets(db.Model):
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
     acquisition_framework = DB.relationship(
-        "TAcquisitionFramework", lazy="joined"
+        "TAcquisitionFramework", back_populates="datasets", lazy="joined"
     )  # join AF as required for permissions checks
     dataset_name = DB.Column(DB.Unicode)
     dataset_shortname = DB.Column(DB.Unicode)
@@ -450,55 +435,39 @@ class TDatasets(db.Model):
     validable = DB.Column(DB.Boolean, server_default=FetchedValue())
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
     digitizer = DB.relationship(User, lazy="joined")  # joined for permission check
+    creator = synonym("digitizer")
     id_taxa_list = DB.Column(DB.Integer)
     modules = DB.relationship("TModules", secondary=cor_module_dataset, backref="datasets")
 
-    creator = DB.relationship(User, lazy="joined", overlaps="digitizer")  # = digitizer
     nomenclature_data_type = DB.relationship(
         TNomenclatures,
-        lazy="select",
         foreign_keys=[id_nomenclature_data_type],
     )
     nomenclature_dataset_objectif = DB.relationship(
         TNomenclatures,
-        lazy="select",
         foreign_keys=[id_nomenclature_dataset_objectif],
     )
     nomenclature_collecting_method = DB.relationship(
         TNomenclatures,
-        lazy="select",
         foreign_keys=[id_nomenclature_collecting_method],
     )
     nomenclature_data_origin = DB.relationship(
         TNomenclatures,
-        lazy="select",
         foreign_keys=[id_nomenclature_data_origin],
     )
     nomenclature_source_status = DB.relationship(
         TNomenclatures,
-        lazy="select",
         foreign_keys=[id_nomenclature_source_status],
     )
     nomenclature_resource_type = DB.relationship(
         TNomenclatures,
-        lazy="select",
         foreign_keys=[id_nomenclature_resource_type],
     )
 
     cor_territories = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        secondary=CorDatasetTerritory.__table__,
-        primaryjoin=(CorDatasetTerritory.id_dataset == id_dataset),
-        secondaryjoin=(
-            CorDatasetTerritory.id_nomenclature_territory == TNomenclatures.id_nomenclature
-        ),
-        foreign_keys=[
-            CorDatasetTerritory.id_dataset,
-            CorDatasetTerritory.id_nomenclature_territory,
-        ],
-        backref=DB.backref("territory_dataset", lazy="select", overlaps="nomenclature_territory"),
-        overlaps="nomenclature_territory",
+        secondary=cor_dataset_territory,
+        backref=DB.backref("territory_dataset"),
     )
 
     # because CorDatasetActor could be an User or an Organisme object...
@@ -506,7 +475,7 @@ class TDatasets(db.Model):
         CorDatasetActor,
         lazy="joined",
         cascade="save-update, merge, delete, delete-orphan",
-        backref=DB.backref("actor_dataset", lazy="select"),
+        backref=DB.backref("actor_dataset"),
     )
     additional_fields = DB.relationship(
         "TAdditionalFields", secondary=cor_field_dataset, back_populates="datasets"
@@ -741,86 +710,42 @@ class TAcquisitionFramework(db.Model):
         # cascade="save-update, merge, delete, delete-orphan",
         cascade="all,delete-orphan",
         uselist=True,
-        backref=DB.backref("actor_af", lazy="select"),
+        backref=DB.backref("actor_af"),
     )
 
     cor_objectifs = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        secondary=CorAcquisitionFrameworkObjectif.__table__,
-        primaryjoin=(
-            CorAcquisitionFrameworkObjectif.id_acquisition_framework == id_acquisition_framework
-        ),
-        secondaryjoin=(
-            CorAcquisitionFrameworkObjectif.id_nomenclature_objectif
-            == TNomenclatures.id_nomenclature
-        ),
-        foreign_keys=[
-            CorAcquisitionFrameworkObjectif.id_acquisition_framework,
-            CorAcquisitionFrameworkObjectif.id_nomenclature_objectif,
-        ],
-        backref=DB.backref("objectif_af", lazy="select", overlaps="nomenclature_objectif"),
-        overlaps="nomenclature_objectif",
+        secondary=cor_acquisition_framework_objectif,
+        backref=DB.backref("objectif_af"),
     )
 
     cor_volets_sinp = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        secondary=CorAcquisitionFrameworkVoletSINP.__table__,
-        primaryjoin=(
-            CorAcquisitionFrameworkVoletSINP.id_acquisition_framework == id_acquisition_framework
-        ),
-        secondaryjoin=(
-            CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp
-            == TNomenclatures.id_nomenclature
-        ),
-        foreign_keys=[
-            CorAcquisitionFrameworkVoletSINP.id_acquisition_framework,
-            CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp,
-        ],
-        backref=DB.backref(
-            "volet_sinp_af",
-            lazy="select",
-            overlaps="nomenclature_voletsinp",
-        ),
-        overlaps="nomenclature_voletsinp",
+        secondary=cor_acquisition_framework_voletsinp,
+        backref=DB.backref("volet_sinp_af"),
     )
 
     cor_territories = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        secondary=CorAcquisitionFrameworkTerritory.__table__,
-        primaryjoin=(
-            CorAcquisitionFrameworkTerritory.id_acquisition_framework == id_acquisition_framework
-        ),
-        secondaryjoin=(
-            CorAcquisitionFrameworkTerritory.id_nomenclature_territory
-            == TNomenclatures.id_nomenclature
-        ),
-        foreign_keys=[
-            CorAcquisitionFrameworkTerritory.id_acquisition_framework,
-            CorAcquisitionFrameworkTerritory.id_nomenclature_territory,
-        ],
-        backref=DB.backref("territory_af", lazy="select", overlaps="nomenclature_territory"),
-        overlaps="nomenclature_territory",
+        secondary=cor_acquisition_framework_territory,
+        backref=DB.backref("territory_af"),
     )
 
     bibliographical_references = DB.relationship(
         "TBibliographicReference",
-        lazy="select",
         cascade="all,delete-orphan",
         uselist=True,
-        backref=DB.backref("acquisition_framework", lazy="select"),
+        backref=DB.backref("acquisition_framework"),
     )
 
-    t_datasets = DB.relationship(
+    datasets = DB.relationship(
         "TDatasets",
         lazy="joined",  # DS required for permissions checks
         cascade="all,delete-orphan",
         uselist=True,
-        overlaps="acquisition_framework",
+        back_populates="acquisition_framework",
     )
-    datasets = synonym("t_datasets")
+    t_datasets = synonym("datasets")
 
     @hybrid_property
     def user_actors(self):

@@ -1,11 +1,10 @@
 """
 Models of gn_permissions schema
 """
-from geonature.core.gn_commons.models.base import TModules
 from packaging import version
 
 import sqlalchemy as sa
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, ForeignKeyConstraint
 from sqlalchemy.sql import select
 from sqlalchemy.orm import foreign, joinedload, contains_eager
 import flask_sqlalchemy
@@ -19,6 +18,7 @@ from utils_flask_sqla.serializers import serializable
 from pypnusershub.db.models import User
 
 from geonature.utils.env import db
+from geonature.core.gn_commons.models.base import TModules
 
 
 @serializable
@@ -188,7 +188,17 @@ class PermFilter:
 @serializable
 class Permission(db.Model):
     __tablename__ = "t_permissions"
-    __table_args__ = {"schema": "gn_permissions"}
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["id_module", "id_object", "id_action"],
+            [
+                "gn_permissions.t_permissions_available.id_module",
+                "gn_permissions.t_permissions_available.id_object",
+                "gn_permissions.t_permissions_available.id_action",
+            ],
+        ),
+        {"schema": "gn_permissions"},
+    )
     query_class = PermissionQuery
 
     id_permission = db.Column(db.Integer, primary_key=True)
@@ -212,13 +222,8 @@ class Permission(db.Model):
 
     availability = db.relationship(
         PermissionAvailable,
-        primaryjoin=sa.and_(
-            foreign(id_module) == PermissionAvailable.id_module,
-            foreign(id_object) == PermissionAvailable.id_object,
-            foreign(id_action) == PermissionAvailable.id_action,
-        ),
-        backref=db.backref("permissions", overlaps="action, object, module"),
-        overlaps="action, object, module",
+        backref=db.backref("permissions", overlaps="action, object, module"),  # overlaps expected
+        overlaps="action, object, module",  # overlaps expected
     )
 
     filters_fields = {

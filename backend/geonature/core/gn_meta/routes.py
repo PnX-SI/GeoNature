@@ -47,12 +47,8 @@ from pypnusershub.db.models import User
 from geonature.core.gn_meta.models import (
     TDatasets,
     CorDatasetActor,
-    CorDatasetProtocol,
-    CorDatasetTerritory,
     TAcquisitionFramework,
     CorAcquisitionFrameworkActor,
-    CorAcquisitionFrameworkObjectif,
-    CorAcquisitionFrameworkVoletSINP,
 )
 from geonature.core.gn_meta.repositories import (
     get_metadata_list,

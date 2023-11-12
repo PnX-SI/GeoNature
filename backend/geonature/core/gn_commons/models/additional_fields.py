@@ -37,10 +37,7 @@ class TAdditionalFields(DB.Model):
     exportable = DB.Column(DB.Boolean, default=True)
     field_order = DB.Column(DB.Integer)
     type_widget = DB.relationship("BibWidgets")
-    bib_nomenclature_type = DB.relationship(
-        "BibNomenclaturesTypes",
-        primaryjoin="BibNomenclaturesTypes.mnemonique == TAdditionalFields.code_nomenclature_type",
-    )
+    bib_nomenclature_type = DB.relationship("BibNomenclaturesTypes")
     additional_attributes = DB.Column(JSONB)
     multiselect = DB.Column(DB.Boolean)
     api = DB.Column(DB.String)
@@ -51,7 +48,7 @@ class TAdditionalFields(DB.Model):
     )
     objects = DB.relationship(PermObject, secondary=cor_field_object)
     datasets = DB.relationship(
-        TDatasets, secondary=cor_field_dataset, overlaps="additional_fields"
+        TDatasets, secondary=cor_field_dataset, back_populates="additional_fields"
     )
 
     def __str__(self):

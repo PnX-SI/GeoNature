@@ -68,7 +68,7 @@ class CorCountingOccurrence(DB.Model):
 
     # additional fields dans occtax MET 14/10/2020
     additional_fields = DB.Column(JSONB)
-    occurrence = db.relationship("TOccurrencesOccurrence")
+    occurrence = db.relationship("TOccurrencesOccurrence", back_populates="cor_counting_occtax")
     readonly_fields = [
         "id_counting_occtax",
         "unique_id_sinp_occtax",
@@ -92,7 +92,7 @@ class TOccurrencesOccurrence(DB.Model):
     id_releve_occtax = DB.Column(
         DB.Integer, ForeignKey("pr_occtax.t_releves_occtax.id_releve_occtax")
     )
-    releve = relationship("TRelevesOccurrence")
+    releve = relationship("TRelevesOccurrence", back_populates="t_occurrences_occtax")
     id_nomenclature_obs_technique = DB.Column(DB.Integer, server_default=FetchedValue())
     id_nomenclature_bio_condition = DB.Column(DB.Integer, server_default=FetchedValue())
     id_nomenclature_bio_status = DB.Column(DB.Integer, server_default=FetchedValue())
@@ -123,11 +123,11 @@ class TOccurrencesOccurrence(DB.Model):
         default=select(func.uuid_generate_v4()),
     )
     cor_counting_occtax = relationship(
-        "CorCountingOccurrence",
+        CorCountingOccurrence,
         lazy="joined",
         cascade="all,delete-orphan",
         uselist=True,
-        overlaps="occurrence",
+        back_populates="occurence",
     )
 
     taxref = relationship(Taxref, lazy="joined")
@@ -170,7 +170,10 @@ class TRelevesOccurrence(DB.Model):
     additional_fields = DB.Column(JSONB)
 
     t_occurrences_occtax = relationship(
-        "TOccurrencesOccurrence", lazy="joined", cascade="all, delete-orphan", overlaps="releve"
+        "TOccurrencesOccurrence",
+        lazy="joined",
+        cascade="all, delete-orphan",
+        back_populates="releve",
     )
 
     observers = DB.relationship(
