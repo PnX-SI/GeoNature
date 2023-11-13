@@ -3,6 +3,7 @@
 """
 import os
 from pathlib import Path
+from collections import defaultdict
 
 from flask import current_app
 from sqlalchemy import ForeignKey
@@ -77,10 +78,21 @@ class TModules(DB.Model):
     __tablename__ = "t_modules"
     __table_args__ = {"schema": "gn_commons"}
 
+    class base_defaultdict(defaultdict):
+        """
+        Avoid polymorphic error when polymorphic identities are declared
+        in database but absent from venv: fallback on base identity.
+        Taken from CTFd.
+        """
+
+        def __missing__(self, key):
+            return self["base"]
+
     type = DB.Column(DB.Unicode, nullable=False, server_default="base")
     __mapper_args__ = {
         "polymorphic_on": "type",
         "polymorphic_identity": "base",
+        "_polymorphic_map": base_defaultdict(),
     }
 
     id_module = DB.Column(DB.Integer, primary_key=True)
