@@ -29,7 +29,7 @@ export class DataFormService {
   constructor(
     private _http: HttpClient,
     public config: ConfigService
-  ) {}
+  ) { }
 
   getNomenclature(
     codeNomenclatureType: string,
@@ -526,8 +526,8 @@ export class DataFormService {
       application === 'GeoNature'
         ? `${this.config.API_ENDPOINT}/${api}`
         : application === 'TaxHub'
-        ? `${this.config.API_TAXHUB}/${api}`
-        : api;
+          ? `${this.config.API_TAXHUB}/${api}`
+          : api;
 
     return this._http.get<any>(url, { params: queryString });
   }
@@ -543,7 +543,7 @@ export class DataFormService {
           this._blob = event.body;
         }
       },
-      (e: HttpErrorResponse) => {},
+      (e: HttpErrorResponse) => { },
       // response OK
       () => {
         const date = new Date();
