@@ -7,7 +7,7 @@ import flask_sqlalchemy
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, or_, and_
 from sqlalchemy.sql import select, func, exists
-from sqlalchemy.orm import relationship, exc, synonym
+from sqlalchemy.orm import relationship, exc
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
@@ -435,7 +435,7 @@ class TDatasets(db.Model):
     validable = DB.Column(DB.Boolean, server_default=FetchedValue())
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
     digitizer = DB.relationship(User, lazy="joined")  # joined for permission check
-    creator = synonym("digitizer")
+    creator = DB.relationship(User, lazy="joined", overlaps="digitizer")  # overlaps as alias of digitizer
     id_taxa_list = DB.Column(DB.Integer)
     modules = DB.relationship("TModules", secondary=cor_module_dataset, backref="datasets")
 
@@ -738,14 +738,20 @@ class TAcquisitionFramework(db.Model):
         backref=DB.backref("acquisition_framework"),
     )
 
-    datasets = DB.relationship(
+    # FIXME: remove and use datasets instead
+    t_datasets = DB.relationship(
         "TDatasets",
         lazy="joined",  # DS required for permissions checks
         cascade="all,delete-orphan",
         uselist=True,
         back_populates="acquisition_framework",
     )
-    t_datasets = synonym("datasets")
+    datasets = DB.relationship(
+        "TDatasets",
+        cascade="all,delete-orphan",
+        uselist=True,
+        overlaps="t_datasets",  # overlaps expected
+    )
 
     @hybrid_property
     def user_actors(self):

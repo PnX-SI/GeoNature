@@ -6,7 +6,7 @@ from pathlib import Path
 
 from flask import current_app
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, aliased, synonym
+from sqlalchemy.orm import relationship, aliased
 from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
 from geoalchemy2 import Geometry
@@ -206,7 +206,7 @@ class TValidations(DB.Model):
     nomenclature_valid_status = relationship(
         TNomenclatures,
         foreign_keys=[id_nomenclature_valid_status],
-        lazy="joined",
+        lazy="joined",  # FIXME: remove and manually join when needed
     )
     id_validator = DB.Column(DB.Integer, ForeignKey(User.id_role))
     validator_role = DB.relationship(User)
@@ -214,7 +214,12 @@ class TValidations(DB.Model):
     validation_comment = DB.Column(DB.Unicode)
     validation_date = DB.Column(DB.TIMESTAMP)
     validation_auto = DB.Column(DB.Boolean)
-    validation_label = synonym(nomenclature_valid_status)
+    # FIXME: remove and use nomenclature_valid_status
+    validation_label = DB.relationship(
+        TNomenclatures,
+        foreign_keys=[id_nomenclature_valid_status],
+        overlaps="nomenclature_valid_status"  # overlaps expected
+    )
 
 
 last_validation_query = (
