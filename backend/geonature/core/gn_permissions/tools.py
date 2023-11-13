@@ -14,6 +14,7 @@ from geonature.core.gn_permissions.models import (
     Permission,
 )
 from geonature.utils.env import db
+from geonature.utils.config import config
 
 from pypnusershub.db.models import User
 
@@ -27,6 +28,7 @@ def _get_user_permissions(id_role):
             joinedload(Permission.object),
             joinedload(Permission.action),
         )
+        .filter(~Permission.module.has(TModules.module_code.in_(config["DISABLED_MODULES"])))
         .filter(
             sa.or_(
                 # direct permissions

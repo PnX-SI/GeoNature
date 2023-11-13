@@ -14,7 +14,6 @@ from flask_migrate import upgrade as db_upgrade
 
 from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.utils.env import db, CONFIG_FILE
-from geonature.core.gn_commons.models import TModules
 
 
 def iter_modules_dist():
@@ -86,6 +85,9 @@ def alembic_branch_in_use(branch_name, directory, x_arg):
 
 
 def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]):
+    # imported here to avoid circular dependencies
+    from geonature.core.gn_commons.models import TModules
+
     module_code = module_dist.entry_points["code"].load()
     module_blueprint = module_dist.entry_points["blueprint"].load()  # force discovery of models
     if module_dist.entry_points.select(name="migrations"):
