@@ -586,7 +586,7 @@ class GnGeneralSchemaConf(Schema):
                 "Le paramètre API_TAXHUB est déprécié, il sera automatiquement déduit API_ENDPOINT et supprimé dans la version 2.14",
                 Warning,
             )
-        data["API_TAXHUB"] = f"{data['API_ENDPOINT']}/taxhub/api"
+        data["API_TAXHUB"] = f"{data['API_ENDPOINT']}/taxhub"
         return data
 
     @post_load
