@@ -733,7 +733,7 @@ def general_stats(permissions):
         - nb of distinct observer
         - nb of datasets
     """
-    allowed_datasets = TDatasets.query.filter_by_readable().all()
+    allowed_datasets = TDatasets.query.filter_by_readable().count()
     q = select(
         [
             func.count(Synthese.id_synthese),
@@ -750,7 +750,7 @@ def general_stats(permissions):
         "nb_data": synthese_counts[0],
         "nb_species": synthese_counts[1],
         "nb_observers": synthese_counts[2],
-        "nb_dataset": len(allowed_datasets),
+        "nb_dataset": allowed_datasets,
     }
     return data
 
