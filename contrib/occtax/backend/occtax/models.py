@@ -127,7 +127,7 @@ class TOccurrencesOccurrence(DB.Model):
         lazy="joined",
         cascade="all,delete-orphan",
         uselist=True,
-        back_populates="occurence",
+        back_populates="occurrence",
     )
 
     taxref = relationship(Taxref, lazy="joined")
