@@ -176,8 +176,6 @@ export class OcctaxFormReleveService {
           this.additionalFieldsForm = [];
         }),
         switchMap((editionMode: boolean) => {
-          console.log('editionMode', editionMode);
-
           //Le switch permet, selon si édition ou creation, de récuperer les valeur par defaut ou celle de l'API
           return editionMode ? this.releveValues : this.defaultValues;
         }),

@@ -58,7 +58,8 @@ def list_modules():
 
     """
     params = request.args
-    exclude = current_app.config["DISABLED_MODULES"]
+
+    exclude = current_app.config["DISABLED_MODULES"].copy()
     if "exclude" in params:
         exclude.extend(params.getlist("exclude"))
 

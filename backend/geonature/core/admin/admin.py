@@ -33,7 +33,7 @@ from .utils import CruvedProtectedMixin
 
 class MyHomeView(AdminIndexView):
     def is_accessible(self):
-        if g.current_user is None:
+        if not g.current_user.is_authenticated:
             raise Unauthorized  # return False leads to Forbidden which is different
         return True
 

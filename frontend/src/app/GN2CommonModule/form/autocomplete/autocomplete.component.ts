@@ -62,7 +62,10 @@ export class AutoCompleteComponent implements OnInit {
   public isLoading: boolean;
   public noResult: boolean;
 
-  constructor(private _api: HttpClient, private _commonService: CommonService) {}
+  constructor(
+    private _api: HttpClient,
+    private _commonService: CommonService
+  ) {}
 
   ngOnInit() {
     this.parentFormControl.valueChanges
