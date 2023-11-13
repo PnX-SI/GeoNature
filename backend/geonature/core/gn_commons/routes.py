@@ -58,13 +58,19 @@ def list_modules():
 
     """
     params = request.args
-    q = TModules.query.options(joinedload(TModules.objects))
     exclude = current_app.config["DISABLED_MODULES"]
     if "exclude" in params:
         exclude.extend(params.getlist("exclude"))
-    q = q.filter(TModules.module_code.notin_(exclude))
-    q = q.order_by(TModules.module_order.asc()).order_by(TModules.module_label.asc())
-    modules = q.all()
+
+    query = (
+        db.select(TModules)
+        .options(joinedload(TModules.objects))
+        .where(TModules.module_code.notin_(exclude))
+        .order_by(TModules.module_order.asc())
+        .order_by(TModules.module_label.asc())
+    )
+    modules = db.session.scalars(query).unique().all()
+
     allowed_modules = []
     for module in modules:
         module_allowed = False
@@ -108,7 +114,7 @@ def list_modules():
 
 @routes.route("/module/<module_code>", methods=["GET"])
 def get_module(module_code):
-    module = TModules.query.filter_by(module_code=module_code).first_or_404()
+    module = db.one_or_404(db.select(TModules).filter_by(module_code=module_code))
     return jsonify(module.as_dict())
 
 
@@ -120,68 +126,82 @@ def get_parameters_list():
 
     .. :quickref: Commons;
     """
-    q = DB.session.query(TParameters)
-    data = q.all()
-
-    return [d.as_dict() for d in data]
+    return [d.as_dict() for d in db.session.scalars(db.select(TParameters)).all()]
 
 
 @routes.route("/parameters/<param_name>", methods=["GET"])
 @routes.route("/parameters/<param_name>/<int:id_org>", methods=["GET"])
 @json_resp
 def get_one_parameter(param_name, id_org=None):
-    q = DB.session.query(TParameters)
-    q = q.filter(TParameters.parameter_name == param_name)
-    if id_org:
-        q = q.filter(TParameters.id_organism == id_org)
-
-    data = q.all()
+    data = DB.session.scalars(
+        db.select(TParameters)
+        .filter(TParameters.parameter_name == param_name)
+        .filter(TParameters.id_organism == id_org if id_org else True)
+    ).all()  # TODO Why all ? one() instead ?
     return [d.as_dict() for d in data]
 
 
 @routes.route("/additional_fields", methods=["GET"])
 def get_additional_fields():
     params = request.args
-    q = DB.session.query(TAdditionalFields).order_by(TAdditionalFields.field_order)
-    if "id_dataset" in params:
-        if params["id_dataset"] == "null":
-            # ~ operator means NOT EXISTS
-            q = q.filter(~TAdditionalFields.datasets.any())
-        else:
-            if len(params["id_dataset"].split(",")) > 1:
-                ors = [
-                    TAdditionalFields.datasets.any(id_dataset=id_dastaset)
-                    for id_dastaset in params.split(",")
-                ]
-                q = q.filter(or_(*ors))
-            else:
-                q = q.filter(TAdditionalFields.datasets.any(id_dataset=params["id_dataset"]))
-    if "module_code" in params:
-        if len(params["module_code"].split(",")) > 1:
-            ors = [
-                TAdditionalFields.modules.any(module_code=module_code)
-                for module_code in params["module_code"].split(",")
-            ]
 
-            q = q.filter(or_(*ors))
+    query = db.select(TAdditionalFields).order_by(TAdditionalFields.field_order)
+    parse_param_value = lambda param: param.split(",") if len(param.split(",")) > 1 else param
+    params = {
+        param_key: parse_param_value(param_values) for param_key, param_values in params.items()
+    }
+
+    if "id_dataset" in params:
+        id_dataset = params["id_dataset"]
+        if id_dataset == "null":
+            # ~ operator means NOT EXISTS
+            query = query.filter(~TAdditionalFields.datasets.any())
+        elif isinstance(id_dataset, list) and len(id_dataset) > 1:
+            query = query.filter(
+                or_(
+                    *[
+                        TAdditionalFields.datasets.any(id_dataset=id_dastaset_i)
+                        for id_dastaset_i in id_dataset
+                    ]
+                )
+            )
         else:
-            q = q.filter(TAdditionalFields.modules.any(module_code=params["module_code"]))
+            query = query.filter(TAdditionalFields.datasets.any(id_dataset=id_dataset))
+
+    if "module_code" in params:
+        module_code = params["module_code"]
+        if isinstance(module_code, list) and len(module_code) > 1:
+            query = query.filter(
+                or_(
+                    *[
+                        TAdditionalFields.modules.any(module_code=module_code_i)
+                        for module_code_i in module_code
+                    ]
+                )
+            )
+        else:
+            query = query.filter(TAdditionalFields.modules.any(module_code=module_code))
 
     if "object_code" in params:
-        if len(params["object_code"].split(",")) > 1:
-            ors = [
-                TAdditionalFields.objects.any(code_object=code_object)
-                for code_object in params["object_code"].split(",")
-            ]
-            q = q.filter(or_(*ors))
+        object_code = params["object_code"]
+        if isinstance(object_code, list) and len(object_code) > 1:
+            query = query.filter(
+                or_(
+                    *[
+                        TAdditionalFields.objects.any(code_object=object_code_i)
+                        for object_code_i in object_code
+                    ]
+                )
+            )
         else:
-            q = q.filter(TAdditionalFields.objects.any(code_object=params["object_code"]))
+            query = query.filter(TAdditionalFields.objects.any(code_object=object_code))
+
     return jsonify(
         [
             d.as_dict(
                 fields=["bib_nomenclature_type", "modules", "objects", "datasets", "type_widget"]
             )
-            for d in q.all()
+            for d in db.session.scalars(query).all()
         ]
     )
 
@@ -197,18 +217,22 @@ def get_t_mobile_apps():
     :query str app_code: the app code
     :returns: Array<dict<TMobileApps>>
     """
-    params = request.args
-    q = DB.session.query(TMobileApps)
-    if "app_code" in request.args:
-        q = q.filter(TMobileApps.app_code.ilike(params["app_code"]))
+    query = db.select(TMobileApps).filter(
+        TMobileApps.app_code.ilike(request.args["app_code"])
+        if "app_code" in request.args
+        else True
+    )
+    data = db.session.scalars(query).all()
     mobile_apps = []
-    for app in q.all():
+    for app in data:
         app_dict = app.as_dict(exclude=["relative_path_apk"])
         app_dict["settings"] = {}
+
         #  if local
         if app.relative_path_apk:
             relative_apk_path = Path("mobile", app.relative_path_apk)
             app_dict["url_apk"] = url_for("media", filename=str(relative_apk_path), _external=True)
+
         relative_settings_path = Path(f"mobile/{app.app_code.lower()}/settings.json")
         app_dict["url_settings"] = url_for(
             "media", filename=relative_settings_path, _external=True
@@ -216,9 +240,9 @@ def get_t_mobile_apps():
         settings_file = Path(current_app.config["MEDIA_FOLDER"]) / relative_settings_path
         with settings_file.open() as f:
             app_dict["settings"] = json.load(f)
+
         mobile_apps.append(app_dict)
-    if len(mobile_apps) == 1:
-        return mobile_apps[0]
+
     return mobile_apps
 
 

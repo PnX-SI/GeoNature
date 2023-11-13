@@ -25,8 +25,8 @@ def get_hist(uuid_attached_row):
     if not test_is_uuid(uuid_attached_row):
         raise BadRequest("Value error uuid_attached_row is not valid")
 
-    data = (
-        DB.session.query(
+    data = DB.session.execute(
+        DB.select(
             TValidations.id_nomenclature_valid_status,
             TValidations.validation_date,
             TValidations.validation_comment,
@@ -42,8 +42,7 @@ def get_hist(uuid_attached_row):
         .join(User, User.id_role == TValidations.id_validator)
         .filter(TValidations.uuid_attached_row == uuid_attached_row)
         .order_by(TValidations.validation_date)
-        .all()
-    )
+    ).all()
 
     history = []
     for row in data:
