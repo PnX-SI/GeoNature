@@ -435,7 +435,9 @@ class TDatasets(db.Model):
     validable = DB.Column(DB.Boolean, server_default=FetchedValue())
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
     digitizer = DB.relationship(User, lazy="joined")  # joined for permission check
-    creator = DB.relationship(User, lazy="joined", overlaps="digitizer")  # overlaps as alias of digitizer
+    creator = DB.relationship(
+        User, lazy="joined", overlaps="digitizer"
+    )  # overlaps as alias of digitizer
     id_taxa_list = DB.Column(DB.Integer)
     modules = DB.relationship("TModules", secondary=cor_module_dataset, backref="datasets")
 
