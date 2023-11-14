@@ -68,6 +68,7 @@ from geonature.utils.errors import GeonatureApiError
 from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
 
 from ref_geo.models import LAreas
+
 # FIXME: remove any reference to external modules from GeoNature core
 if "OCCHAB" in config:
     from gn_module_occhab.models import OccurenceHabitat, Station
@@ -258,13 +259,12 @@ def uuid_report():
     id_import = params.get("id_import")
     id_module = params.get("id_module")
 
-    query = DB.session.query(Synthese).select_from(Synthese)
-
-    if id_module:
-        query = query.filter(Synthese.id_module == id_module)
-
-    if ds_id:
-        query = query.filter(Synthese.id_dataset == ds_id)
+    query = (
+        DB.select(Synthese)
+        .select_from(Synthese)
+        .where(Synthese.id_module == id_module if id_module else True)
+        .where(Synthese.id_dataset == ds_id if ds_id else True)
+    )
 
     if id_import:
         query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).filter(
@@ -283,7 +283,7 @@ def uuid_report():
             "jourDatefin": row.date_max,
             "observateurIdentite": row.observers,
         }
-        for row in query.all()
+        for row in db.session.scalars(query).all()
     ]
 
     return to_csv_resp(
@@ -313,12 +313,12 @@ def sensi_report():
 
     params = request.args
     ds_id = params["id_dataset"]
-    dataset = TDatasets.query.get_or_404(ds_id)
+    dataset = db.get_or_404(TDatasets, ds_id)  # TDatasets.query.get_or_404(ds_id)
     id_import = params.get("id_import")
     id_module = params.get("id_module")
 
     query = (
-        DB.session.query(
+        DB.select(
             Synthese,
             func.taxonomie.find_cdref(Synthese.cd_nom).label("cd_ref"),
             func.array_agg(LAreas.area_name).label("codeDepartementCalcule"),
@@ -337,22 +337,21 @@ def sensi_report():
         .outerjoin(
             TNomenclatures, TNomenclatures.id_nomenclature == Synthese.id_nomenclature_sensitivity
         )
-        .filter(LAreas.id_type == func.ref_geo.get_id_area_type("DEP"))
+        .where(LAreas.id_type == func.ref_geo.get_id_area_type("DEP"))
+        .where(Synthese.id_module == id_module if id_module else True)
+        .where(Synthese.id_dataset == ds_id)
     )
-
-    if id_module:
-        query = query.filter(Synthese.id_module == id_module)
-
-    query = query.filter(Synthese.id_dataset == ds_id)
 
     if id_import:
         query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).filter(
             TSources.name_source == "Import(id={})".format(id_import)
         )
 
-    data = query.group_by(
+    query = query.group_by(
         Synthese.id_synthese, TNomenclatures.cd_nomenclature, TNomenclatures.label_fr
-    ).all()
+    )
+
+    data = db.session.scalars(query).all()
 
     str_productor = ""
     header = ""
@@ -384,11 +383,13 @@ def sensi_report():
         }
         for row in data
     ]
-    sensi_version = DB.session.query(
-        func.gn_commons.get_default_parameter("ref_sensi_version")
+    sensi_version = DB.session.scalars(
+        db.select(func.gn_commons.get_default_parameter("ref_sensi_version"))
     ).one_or_none()
+
     if sensi_version:
         sensi_version = sensi_version[0]
+
     # set an header only if the rapport is on a dataset
     header = f""""Rapport de sensibilité"
         "Jeu de données";"{dataset.dataset_name}"
@@ -447,11 +448,6 @@ def create_dataset():
     Post one Dataset data
     .. :quickref: Metadata;
     """
-    print("TEEEEEEEEESSSSSST1")
-    print("user: ", g.current_user)
-    print("request : ", request)
-    print("data: ", request.get_json())
-    print("TEEEEEEEEESSSSSST2")
     return DatasetSchema().jsonify(
         datasetHandler(
             dataset=TDatasets(id_digitizer=g.current_user.id_role), data=request.get_json()
@@ -467,7 +463,7 @@ def update_dataset(id_dataset, scope):
     .. :quickref: Metadata;
     """
 
-    dataset = TDatasets.query.get_or_404(id_dataset)
+    dataset = db.get_or_404(TDatasets, id_dataset)
     if not dataset.has_instance_permission(scope):
         raise Forbidden(f"User {g.current_user} cannot update dataset {dataset.id_dataset}")
     # TODO: specify which fields may be updated
@@ -480,7 +476,7 @@ def get_export_pdf_dataset(id_dataset, scope):
     """
     Get a PDF export of one dataset
     """
-    dataset = TDatasets.query.get_or_404(id_dataset)
+    dataset = db.get_or_404(TDatasets, id_dataset)
     if not dataset.has_instance_permission(scope=scope):
         raise Forbidden("Vous n'avez pas les droits d'exporter ces informations")
     dataset_schema = DatasetSchema(
@@ -589,7 +585,7 @@ def get_acquisition_frameworks():
                 ),
             )
     af_schema = AcquisitionFrameworkSchema(only=only)
-    return af_schema.jsonify(af_list.all(), many=True)
+    return af_schema.jsonify(db.session.scalars(af_list).all(), many=True)
 
 
 @routes.route("/list/acquisition_frameworks", methods=["GET"])
@@ -628,7 +624,8 @@ def get_acquisition_frameworks_list(scope):
         only=["+cruved"], exclude=exclude_fields
     )
     return acquisitionFrameworkSchema.jsonify(
-        get_metadata_list(g.current_user, scope, params, exclude_fields).all(), many=True
+        db.session.scalars(get_metadata_list(g.current_user, scope, params, exclude_fields)).all(),
+        many=True,
     )
 
 

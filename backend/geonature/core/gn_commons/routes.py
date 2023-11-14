@@ -136,8 +136,8 @@ def get_parameters_list():
 def get_one_parameter(param_name, id_org=None):
     data = DB.session.scalars(
         db.select(TParameters)
-        .filter(TParameters.parameter_name == param_name)
-        .filter(TParameters.id_organism == id_org if id_org else True)
+        .where(TParameters.parameter_name == param_name)
+        .where(TParameters.id_organism == id_org if id_org else True)
     ).all()  # TODO Why all ? one() instead ?
     return [d.as_dict() for d in data]
 
@@ -156,9 +156,9 @@ def get_additional_fields():
         id_dataset = params["id_dataset"]
         if id_dataset == "null":
             # ~ operator means NOT EXISTS
-            query = query.filter(~TAdditionalFields.datasets.any())
+            query = query.where(~TAdditionalFields.datasets.any())
         elif isinstance(id_dataset, list) and len(id_dataset) > 1:
-            query = query.filter(
+            query = query.where(
                 or_(
                     *[
                         TAdditionalFields.datasets.any(id_dataset=id_dastaset_i)
@@ -167,12 +167,12 @@ def get_additional_fields():
                 )
             )
         else:
-            query = query.filter(TAdditionalFields.datasets.any(id_dataset=id_dataset))
+            query = query.where(TAdditionalFields.datasets.any(id_dataset=id_dataset))
 
     if "module_code" in params:
         module_code = params["module_code"]
         if isinstance(module_code, list) and len(module_code) > 1:
-            query = query.filter(
+            query = query.where(
                 or_(
                     *[
                         TAdditionalFields.modules.any(module_code=module_code_i)
@@ -181,12 +181,12 @@ def get_additional_fields():
                 )
             )
         else:
-            query = query.filter(TAdditionalFields.modules.any(module_code=module_code))
+            query = query.where(TAdditionalFields.modules.any(module_code=module_code))
 
     if "object_code" in params:
         object_code = params["object_code"]
         if isinstance(object_code, list) and len(object_code) > 1:
-            query = query.filter(
+            query = query.where(
                 or_(
                     *[
                         TAdditionalFields.objects.any(code_object=object_code_i)
@@ -195,7 +195,7 @@ def get_additional_fields():
                 )
             )
         else:
-            query = query.filter(TAdditionalFields.objects.any(code_object=object_code))
+            query = query.where(TAdditionalFields.objects.any(code_object=object_code))
 
     return jsonify(
         [
@@ -218,7 +218,7 @@ def get_t_mobile_apps():
     :query str app_code: the app code
     :returns: Array<dict<TMobileApps>>
     """
-    query = db.select(TMobileApps).filter(
+    query = db.select(TMobileApps).where(
         TMobileApps.app_code.ilike(request.args["app_code"])
         if "app_code" in request.args
         else True
@@ -276,8 +276,10 @@ def add_place():
     data = request.get_json()
     # FIXME check data validity!
     place_name = data["properties"]["place_name"]
-    place_exists = TPlaces.query.filter(
-        TPlaces.place_name == place_name, TPlaces.id_role == g.current_user.id_role
+    place_exists = (
+        db.select(TPlaces).where(
+            TPlaces.place_name == place_name, TPlaces.id_role == g.current_user.id_role
+        )
     ).exists()
     if db.session.query(place_exists).scalar():
         raise Conflict("Nom du lieu déjà existant")
@@ -299,7 +301,7 @@ def add_place():
 @routes.route("/places/<int:id_place>", methods=["DELETE"])
 @login_required
 def delete_place(id_place):
-    place = TPlaces.query.get_or_404(id_place)
+    place = db.get_or_404(TPlaces, id_place)  # TPlaces.query.get_or_404(id_place)
     if g.current_user.id_role != place.id_role:
         raise Forbidden("Vous n'êtes pas l'utilisateur propriétaire de ce lieu")
     db.session.delete(place)

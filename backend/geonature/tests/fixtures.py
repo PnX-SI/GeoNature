@@ -307,7 +307,7 @@ def datasets(users, acquisition_frameworks, module):
                 id_acquisition_framework=id_af,
                 dataset_name=name,
                 dataset_shortname=name,
-                dataset_desc=name,
+                dataset_desc="lorem ipsum" * 22,
                 marine_domain=True,
                 terrestrial_domain=True,
                 id_digitizer=digitizer.id_role if digitizer else None,

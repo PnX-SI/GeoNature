@@ -24,7 +24,10 @@ def get_hist(uuid_attached_row):
     # Test if uuid_attached_row is uuid
     if not test_is_uuid(uuid_attached_row):
         raise BadRequest("Value error uuid_attached_row is not valid")
-
+    """
+    Here we use execute() instead of scalars() because
+    we need a list of sqlalchemy.engine.Row objects
+    """
     data = DB.session.execute(
         DB.select(
             TValidations.id_nomenclature_valid_status,
@@ -40,7 +43,7 @@ def get_hist(uuid_attached_row):
             TNomenclatures.id_nomenclature == TValidations.id_nomenclature_valid_status,
         )
         .join(User, User.id_role == TValidations.id_validator)
-        .filter(TValidations.uuid_attached_row == uuid_attached_row)
+        .where(TValidations.uuid_attached_row == uuid_attached_row)
         .order_by(TValidations.validation_date)
     ).all()
 

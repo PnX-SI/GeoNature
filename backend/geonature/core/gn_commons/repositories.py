@@ -229,11 +229,11 @@ class TMediaRepository:
         return self.media_type() == "Photo"
 
     def media_type(self):
-        nomenclature = (
-            DB.session.query(TNomenclatures)
-            .filter(TNomenclatures.id_nomenclature == self.data["id_nomenclature_media_type"])
-            .one()
-        )
+        nomenclature = DB.session.execute(
+            DB.select(TNomenclatures).where(
+                TNomenclatures.id_nomenclature == self.data["id_nomenclature_media_type"]
+            )
+        ).scalar_one()
         return nomenclature.label_fr
 
     def get_image(self):
@@ -345,7 +345,9 @@ class TMediumRepository:
         Retourne la liste des médias pour un objet
         en fonction de son uuid
         """
-        medium = DB.session.query(TMedias).filter(TMedias.uuid_attached_row == entity_uuid).all()
+        medium = DB.session.scalars(
+            DB.select(TMedias).where(TMedias.uuid_attached_row == entity_uuid)
+        ).all()
         return medium
 
     @staticmethod
@@ -357,17 +359,15 @@ class TMediumRepository:
         """
 
         # delete media temp > 24h
-        res_medias_temp = (
-            DB.session.query(TMedias.id_media)
-            .filter(
+        res_medias_temp = DB.session.scalars(
+            DB.select(TMedias.id_media).filter(
                 and_(
                     TMedias.meta_update_date
                     < (datetime.datetime.now() - datetime.timedelta(hours=24)),
                     TMedias.uuid_attached_row == None,
                 )
             )
-            .all()
-        )
+        ).all()
 
         id_medias_temp = [res.id_media for res in res_medias_temp]
 
@@ -419,12 +419,11 @@ class TMediumRepository:
 
 def get_table_location_id(schema_name, table_name):
     try:
-        location = (
-            DB.session.query(BibTablesLocation)
+        location = DB.session.execute(
+            DB.select(BibTablesLocation)
             .filter(BibTablesLocation.schema_name == schema_name)
             .filter(BibTablesLocation.table_name == table_name)
-            .one()
-        )
+        ).scalar_one()
     except NoResultFound:
         return None
     except MultipleResultsFound:

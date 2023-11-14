@@ -97,7 +97,7 @@ def get_metadata_list(role, scope, args, exclude_cols):
     query = DB.session.query(TAcquisitionFramework)
 
     if is_parent is not None:
-        query = query.filter(TAcquisitionFramework.is_parent)
+        query = query.where(TAcquisitionFramework.is_parent)
 
     if selector == "af" and ("organism" in args or "person" in args):
         query = query.join(
@@ -123,57 +123,50 @@ def get_metadata_list(role, scope, args, exclude_cols):
     for rel in joined_loads_rels:
         query = query.options(joinedload(getattr(TAcquisitionFramework, rel)))
 
-    query = query.filter(
+    query = query.where(
         or_(
             cruved_af_filter(TAcquisitionFramework, role, scope),
             cruved_ds_filter(TDatasets, role, scope),
         )
     )
     if args.get("selector") == "af":
-        if num is not None:
-            query = query.filter(TAcquisitionFramework.id_acquisition_framework == num)
-        if uuid is not None:
-            query = query.filter(
+        query = (
+            query.where(TAcquisitionFramework.id_acquisition_framework == num if num else True)
+            .where(
                 cast(TAcquisitionFramework.unique_acquisition_framework_id, String).ilike(
                     f"%{uuid.strip()}%"
                 )
+                if uuid
+                else True
             )
-        if name is not None:
-            query = query.filter(
+            .where(
                 TAcquisitionFramework.acquisition_framework_name.ilike(f"%{name}%")
+                if name
+                else True
             )
-        if date is not None:
-            query = query.filter(
-                cast(TAcquisitionFramework.acquisition_framework_start_date, Date) == f"%{date}%"
-            )
-        if organisme is not None:
-            query = query.filter(CorAcquisitionFrameworkActor.id_organism == organisme)
-        if person is not None:
-            query = query.filter(CorAcquisitionFrameworkActor.id_role == person)
+            .where(CorAcquisitionFrameworkActor.id_organism == organisme if organisme else True)
+            .where(CorAcquisitionFrameworkActor.id_role == person if person else True)
+        )
 
     elif args.get("selector") == "ds":
-        if num is not None:
-            query = query.filter(TDatasets.id_dataset == num)
-        if uuid is not None:
-            query = query.filter(
+        query = (
+            query.where(TDatasets.id_dataset == num if num else True)
+            .where(
                 cast(TDatasets.unique_dataset_id, String).ilike(f"%{uuid.strip()}%")
+                if uuid
+                else True
             )
-        if name is not None:
-            # query = query.filter(TDatasets.dataset_name.ilike(f"%{name}%"))
-            query = query.filter(TAcquisitionFramework.t_datasets.any(dataset_name=name))
-        if date is not None:
-            query = query.filter(cast(TDatasets.meta_create_date, Date) == date)
-        if organisme is not None:
-            query = query.filter(CorDatasetActor.id_organism == organisme)
-        if person is not None:
-            query = query.filter(CorDatasetActor.id_role == person)
+            .where(TAcquisitionFramework.t_datasets.any(dataset_name=name) if name else True)
+            .where(cast(TDatasets.meta_create_date, Date) == date if date else True)
+            .where(CorDatasetActor.id_organism == organisme if organisme else True)
+            .where(CorDatasetActor.id_role == person if person else True)
+        )
 
     if args.get("orderby", None):
         try:
             query = query.order_by(getattr(TAcquisitionFramework, args.get("orderby")).asc())
         except:
-            try:
-                query = query.order_by(getattr(TDatasets, args.get("orderby")).asc())
-            except:
-                pass
+            query = query.order_by(getattr(TDatasets, args.get("orderby")).asc())
+        finally:
+            pass
     return query
