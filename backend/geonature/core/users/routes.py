@@ -72,14 +72,14 @@ def get_roles_by_menu_id(id_menu):
     :type id_menu: int
     :query str nom_complet: begenning of complet name of the role
     """
-    q = DB.session.query(VUserslistForallMenu).filter_by(id_menu=id_menu)
+    q = DB.select(VUserslistForallMenu).filter_by(id_menu=id_menu)
 
     parameters = request.args
-    if parameters.get("nom_complet"):
-        q = q.filter(
-            VUserslistForallMenu.nom_complet.ilike("{}%".format(parameters.get("nom_complet")))
-        )
-    data = q.order_by(VUserslistForallMenu.nom_complet.asc()).all()
+    nom_complet = parameters.get("nom_complet")
+    if nom_complet:
+        q = q.where(VUserslistForallMenu.nom_complet.ilike(f"{nom_complet}%"))
+
+    data = DB.session.scalars(q.order_by(VUserslistForallMenu.nom_complet.asc())).all()
     return [n.as_dict() for n in data]
 
 

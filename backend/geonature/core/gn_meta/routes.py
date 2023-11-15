@@ -256,8 +256,8 @@ def uuid_report():
     query = (
         DB.select(Synthese)
         .select_from(Synthese)
-        .where(Synthese.id_module == id_module if id_module else True)
-        .where(Synthese.id_dataset == ds_id if ds_id else True)
+        .where_if(id_module, Synthese.id_module == id_module)
+        .where_if(ds_id, Synthese.id_dataset == ds_id)
     )
 
     if id_import:
