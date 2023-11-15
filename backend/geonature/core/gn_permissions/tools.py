@@ -21,8 +21,8 @@ log = logging.getLogger()
 
 
 def _get_user_permissions(id_role):
-    return (
-        db.session.query(Permission)
+    return db.session.scalars(
+        sa.select(Permission)
         .options(
             joinedload(Permission.module),
             joinedload(Permission.object),
@@ -36,7 +36,6 @@ def _get_user_permissions(id_role):
                 Permission.role.has(User.members.any(User.id_role == id_role)),
             ),
         )
-        # remove duplicate permissions (defined at group and user level, or defined in several groups)
         .order_by(Permission.id_module, Permission.id_object, Permission.id_action)
         .distinct(
             Permission.id_module,
@@ -44,8 +43,7 @@ def _get_user_permissions(id_role):
             Permission.id_action,
             *Permission.filters_fields.values(),
         )
-        .all()
-    )
+    ).all()
 
 
 def get_user_permissions(id_role=None):
@@ -142,7 +140,7 @@ def has_any_permissions(action_code, id_role=None, module_code=None, object_code
     Use for frontend
     """
     permissions = get_permissions(action_code, id_role, module_code, object_code)
-    return True if len(permissions) > 0 else False
+    return len(permissions) > 0
 
 
 def has_any_permissions_by_action(id_role=None, module_code=None, object_code=None):

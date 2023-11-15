@@ -36,11 +36,16 @@ def check_cruved_scope(
     and then return the max user SCOPE permission for the action in parameter
     The decorator manages herited CRUVED from user's group and parent module (GeoNature)
 
-    Parameters:
-        action(string): the requested action of the route <'C', 'R', 'U', 'V', 'E', 'D'>
-        module_code(string): the code of the module (gn_commons.t_modules) (e.g. 'OCCTAX') for the requested permission
-        object_code(string): the code of the object (gn_permissions.t_object) for the requested permission (e.g. 'PERMISSIONS')
-        get_scope(boolean): does the decorator should add the scope to view kwargs
+    Parameters
+    ----------
+    action : str
+        the requested action of the route <'C', 'R', 'U', 'V', 'E', 'D'>
+    module_code : str, optional
+        the code of the module (gn_commons.t_modules) (e.g. 'OCCTAX') for the requested permission, by default None
+    object_code : str, optional
+        the code of the object (gn_permissions.t_object) for the requested permission (e.g. 'PERMISSIONS'), by default None
+    get_scope : bool, optional
+        does the decorator should add the scope to view kwargs, by default False
     """
 
     def _check_cruved_scope(view_func):

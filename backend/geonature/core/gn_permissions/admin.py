@@ -38,36 +38,37 @@ class RoleFilter(DynamicOptionsMixin, FilterEqual):
 class ModuleFilter(DynamicOptionsMixin, FilterEqual):
     def get_dynamic_options(self, view):
         if has_app_context():
-            yield from [
-                (m.id_module, m.module_code)
-                for m in TModules.query.order_by(TModules.module_code).all()
-            ]
+            modules = db.session.scalar(db.select(TModules).order_by(TModules.module_code)).all()
+            yield from [(module.id_module, module.module_code) for module in modules]
 
 
 class ObjectFilter(DynamicOptionsMixin, FilterEqual):
     def get_dynamic_options(self, view):
         if has_app_context():
-            yield from [(o.id_object, o.code_object) for o in PermObject.query.all()]
+            objects = db.session.scalar(db.select(PermObject)).all()
+            yield from [(object.id_object, object.code_object) for object in objects]
 
 
 class ActionFilter(DynamicOptionsMixin, FilterEqual):
     def get_dynamic_options(self, view):
         if has_app_context():
-            yield from [(a.id_action, a.code_action) for a in PermAction.query.all()]
+            actions = db.session.scalars(db.select(PermAction)).all()
+            yield from [(action.id_action, action.code_action) for action in actions]
 
 
 class ScopeFilter(DynamicOptionsMixin, FilterEqual):
     def apply(self, query, value, alias=None):
         column = self.get_column(alias)
         if value:
-            return query.filter(column == value)
+            return query.where(column == value)
         else:
-            return query.filter(column.is_(None))
+            return query.where(column.is_(None))
 
     def get_dynamic_options(self, view):
         if has_app_context():
             yield (None, "Sans restriction")
-            yield from [(a.value, a.label) for a in PermScope.query.all()]
+            scopes = db.session.scalars(db.select(PermScope)).all()
+            yield from [(scope.value, scope.label) for scope in scopes]
 
 
 ### Formatters
@@ -423,17 +424,17 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
             if "id_role" in request.args:
                 form.role.data = User.query.get(request.args.get("id_role", type=int))
             if {"module_code", "code_object", "code_action"}.issubset(request.args.keys()):
-                form.availability.data = (
-                    PermissionAvailable.query.join(PermissionAvailable.module)
+                form.availability.data = db.session.execute(
+                    db.select(PermissionAvailable)
+                    .join(PermissionAvailable.module)
                     .join(PermissionAvailable.object)
                     .join(PermissionAvailable.action)
-                    .filter(
+                    .where(
                         TModules.module_code == request.args.get("module_code"),
                         PermObject.code_object == request.args.get("code_object"),
                         PermAction.code_action == request.args.get("code_action"),
                     )
-                    .one_or_none()
-                )
+                ).scalar_one_or_none()
         return form
 
 
@@ -511,7 +512,7 @@ class GroupPermAdmin(RolePermAdmin):
         return User.query.filter_by(groupe=True).filter_by_app()
 
     def get_count_query(self):
-        return self.session.query(sa.func.count("*")).filter(User.groupe == True)
+        return self.session.query(sa.func.count("*")).where(User.groupe == True)
 
 
 class UserPermAdmin(RolePermAdmin):
@@ -540,7 +541,7 @@ class UserPermAdmin(RolePermAdmin):
 
     def get_count_query(self):
         # FIXME : must filter by app
-        return self.session.query(sa.func.count("*")).filter(User.groupe == False)
+        return self.session.query(sa.func.count("*")).where(User.groupe == False)
 
 
 admin.add_view(
