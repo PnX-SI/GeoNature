@@ -48,7 +48,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.designStyle = this.designStyle || "material";
+    this.designStyle = this.designStyle || 'material';
     this.formId = `datalist_${Math.ceil(Math.random() * 1e10)}`;
     this.getData();
   }
