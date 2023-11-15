@@ -32,25 +32,25 @@ def get_phenology(cd_ref):
 
     """
     filters = request.args
-    query = DB.session.query(VmCorTaxonPhenology).filter(VmCorTaxonPhenology.cd_ref == cd_ref)
+    query = DB.select(VmCorTaxonPhenology).where(VmCorTaxonPhenology.cd_ref == cd_ref)
     if "id_nomenclature_life_stage" in filters:
-        active_life_stage = DB.session.execute(
+        active_life_stage = DB.session.scalars(
             select()
             .add_columns(text("active_life_stage"))
             .select_from(func.gn_profiles.get_parameters(cd_ref))
-        ).scalar()
+        )
         if active_life_stage:
             if filters["id_nomenclature_life_stage"].strip() == "null":
-                query = query.filter(VmCorTaxonPhenology.id_nomenclature_life_stage == None)
+                query = query.where(VmCorTaxonPhenology.id_nomenclature_life_stage == None)
             else:
-                query = query.filter(
+                query = query.where(
                     VmCorTaxonPhenology.id_nomenclature_life_stage
                     == filters["id_nomenclature_life_stage"]
                 )
         else:
-            query = query.filter(VmCorTaxonPhenology.id_nomenclature_life_stage == None)
+            query = query.where(VmCorTaxonPhenology.id_nomenclature_life_stage == None)
 
-    data = query.all()
+    data = DB.session.scalars(query).all()
     if data:
         return [row.as_dict() for row in data]
     return None
@@ -63,11 +63,11 @@ def get_profile(cd_ref):
 
     Return the profile for a cd_ref
     """
-    data = DB.session.query(
+    data = DB.select(
         func.st_asgeojson(func.st_transform(VmValidProfiles.valid_distribution, 4326)),
         VmValidProfiles,
-    ).filter(VmValidProfiles.cd_ref == cd_ref)
-    data = data.one_or_none()
+    ).where(VmValidProfiles.cd_ref == cd_ref)
+    data = DB.session.execute(data).one_or_none()
     if data:
         return jsonify(Feature(geometry=json.loads(data[0]), properties=data[1].as_dict()))
     abort(404)
@@ -80,7 +80,7 @@ def get_consistancy_data(id_synthese):
 
     Return the validation score for a synthese data
     """
-    data = VConsistancyData.query.get_or_404(id_synthese)
+    data = DB.get_or_404(VConsistancyData, id_synthese)
     return jsonify(data.as_dict())
 
 
@@ -101,9 +101,9 @@ def get_observation_score():
 
     # Récupération du profil du cd_ref
     result = {}
-    profile = (
-        DB.session.query(VmValidProfiles).filter(VmValidProfiles.cd_ref == cd_ref).one_or_none()
-    )
+    profile = DB.session.scalars(
+        DB.select(VmValidProfiles).where(VmValidProfiles.cd_ref == cd_ref)
+    ).one_or_none()
     if not profile:
         raise NotFound("No profile for this cd_ref")
     check_life_stage = profile.active_life_stage
@@ -136,14 +136,14 @@ def get_observation_score():
         raise BadRequest("Missing altitude_min or altitude_max")
     # Check de la répartition
     if "geom" in data:
-        query = DB.session.query(
+        query = DB.select(
             func.ST_Contains(
                 func.ST_Transform(profile.valid_distribution, 4326),
                 func.ST_SetSRID(func.ST_GeomFromGeoJSON(json.dumps(data["geom"])), 4326),
             )
         )
 
-        check_geom = query.one_or_none()
+        check_geom = DB.session.execute(query).one_or_none()
         if not check_geom:
             result["valid_distribution"] = False
             result["errors"].append(
@@ -161,13 +161,13 @@ def get_observation_score():
             result["valid_distribution"] = True
 
         # check de la periode
-        q_pheno = DB.session.query(VmCorTaxonPhenology.id_nomenclature_life_stage).distinct()
-        q_pheno = q_pheno.filter(VmCorTaxonPhenology.cd_ref == cd_ref)
-        q_pheno = q_pheno.filter(VmCorTaxonPhenology.doy_min <= doy_min).filter(
+        q_pheno = DB.select(VmCorTaxonPhenology.id_nomenclature_life_stage).distinct()
+        q_pheno = q_pheno.where(VmCorTaxonPhenology.cd_ref == cd_ref)
+        q_pheno = q_pheno.where(VmCorTaxonPhenology.doy_min <= doy_min).where(
             VmCorTaxonPhenology.doy_max >= doy_max
         )
 
-        period_result = q_pheno.all()
+        period_result = DB.session.execute(q_pheno).all()
         if len(period_result) == 0:
             result["valid_phenology"] = False
             result["errors"].append(
@@ -185,13 +185,13 @@ def get_observation_score():
             )
         # check de l'altitude pour la période donnée
         if len(period_result) > 0:
-            peridod_and_altitude = q_pheno.filter(
+            peridod_and_altitude = q_pheno.where(
                 VmCorTaxonPhenology.calculated_altitude_min <= altitude_min
             )
-            peridod_and_altitude = peridod_and_altitude.filter(
+            peridod_and_altitude = peridod_and_altitude.where(
                 VmCorTaxonPhenology.calculated_altitude_max >= altitude_max
             )
-            peridod_and_altitude_r = peridod_and_altitude.all()
+            peridod_and_altitude_r = DB.session.execute(peridod_and_altitude).all()
             if len(peridod_and_altitude_r) > 0:
                 result["valid_altitude"] = True
                 result["valid_phenology"] = True
@@ -222,9 +222,9 @@ def get_observation_score():
             if type(data["life_stages"]) is not list:
                 raise BadRequest("life_stages must be a list")
             for life_stage in data["life_stages"]:
-                life_stage_value = TNomenclatures.query.get(life_stage)
-                q = q_pheno.filter(VmCorTaxonPhenology.id_nomenclature_life_stage == life_stage)
-                r_life_stage = q.all()
+                life_stage_value = DB.get(TNomenclatures, life_stage)
+                q = q_pheno.where(VmCorTaxonPhenology.id_nomenclature_life_stage == life_stage)
+                r_life_stage = DB.session.execute(q).all()
                 if len(r_life_stage) == 0:
                     result["valid_life_stage"] = False
                     result["valid_phenology"] = False
@@ -238,9 +238,9 @@ def get_observation_score():
                 # check du stade de vie pour la période et l'altitude
                 else:
                     if altitude_min and altitude_max:
-                        q = q.filter(VmCorTaxonPhenology.calculated_altitude_min <= altitude_min)
-                        q = q.filter(VmCorTaxonPhenology.calculated_altitude_max >= altitude_max)
-                        r_life_stage_altitude = q.all()
+                        q = q.where(VmCorTaxonPhenology.calculated_altitude_min <= altitude_min)
+                        q = q.where(VmCorTaxonPhenology.calculated_altitude_max >= altitude_max)
+                        r_life_stage_altitude = DB.session.execute(q).all()
                         if len(r_life_stage_altitude) == 0:
                             result["valid_life_stage"] = False
                             result["valid_altitude"] = False
