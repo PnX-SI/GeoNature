@@ -51,6 +51,9 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    // Ensure cleaning of currentModule
+    this._moduleService.currentModule$.next(null);
+
     this.getI18nLocale();
 
     this._SideNavService.sidenav.open();
