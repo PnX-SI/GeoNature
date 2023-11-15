@@ -20,6 +20,8 @@ from werkzeug.exceptions import (
     NotFound,
     Unauthorized,
 )
+
+from sqlalchemy.sql.selectable import Select
 from werkzeug.datastructures import MultiDict, Headers
 from ref_geo.models import BibAreasTypes, LAreas
 
@@ -1020,7 +1022,7 @@ class TestGNMeta:
         afuser = TAcquisitionFramework.get_user_af(user=user, only_user=True)
         afdefault = TAcquisitionFramework.get_user_af(user=user)
 
-        assert isinstance(afquery, Query)
+        assert isinstance(afquery, Select)
         assert isinstance(afuser, list)
         assert len(afuser) == 1
         assert isinstance(afdefault, list)
@@ -1034,7 +1036,7 @@ class TestGNMeta:
         organismonly = CorDatasetActor(role=None, organism=user.organisme)
         complete = CorDatasetActor(role=user, organism=user.organisme)
 
-        assert empty.actor is None
+        assert not empty.actor
         assert roleonly.actor == user
         assert organismonly.actor == user.organisme
         assert complete.actor == user

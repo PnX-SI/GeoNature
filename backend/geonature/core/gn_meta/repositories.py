@@ -37,7 +37,7 @@ def cruved_ds_filter(model, role, scope):
     elif scope == 3:
         return True
     elif scope in (1, 2):
-        sub_q = DB.session.query(TDatasets).join(
+        sub_q = DB.select(TDatasets).join(
             CorDatasetActor, TDatasets.id_dataset == CorDatasetActor.id_dataset
         )
 
@@ -61,7 +61,7 @@ def cruved_af_filter(model, role, scope):
     elif scope == 3:
         return True
     elif scope in (1, 2):
-        sub_q = DB.session.query(TAcquisitionFramework).join(
+        sub_q = DB.select(TAcquisitionFramework).join(
             CorAcquisitionFrameworkActor,
             TAcquisitionFramework.id_acquisition_framework
             == CorAcquisitionFrameworkActor.id_acquisition_framework,
@@ -94,12 +94,13 @@ def get_metadata_list(role, scope, args, exclude_cols):
     selector = args.get("selector")
     is_parent = args.get("is_parent")
 
+    # @TODO : replace by select
     query = DB.session.query(TAcquisitionFramework)
 
     if is_parent is not None:
         query = query.where(TAcquisitionFramework.is_parent)
 
-    if selector == "af" and ("organism" in args or "person" in args):
+    if selector == "af" and set(["organism", "person"]).intersection(args):
         query = query.join(
             CorAcquisitionFrameworkActor,
             TAcquisitionFramework.id_acquisition_framework
@@ -107,6 +108,7 @@ def get_metadata_list(role, scope, args, exclude_cols):
         )
         # remove cor_af_actor from joined load because already joined
         exclude_cols.append("cor_af_actor")
+
     if selector == "ds":
         query = query.join(
             TDatasets,
@@ -115,6 +117,7 @@ def get_metadata_list(role, scope, args, exclude_cols):
         if "organism" in args or "person" in args:
             query = query.join(CorDatasetActor, CorDatasetActor.id_dataset == TDatasets.id_dataset)
         exclude_cols.append("t_datasets")
+
     joined_loads_rels = [
         db_rel.key
         for db_rel in inspect(TAcquisitionFramework).relationships
@@ -156,7 +159,7 @@ def get_metadata_list(role, scope, args, exclude_cols):
                 if uuid
                 else True
             )
-            .where(TAcquisitionFramework.t_datasets.any(dataset_name=name) if name else True)
+            .where(TAcquisitionFramework.datasets.any(dataset_name=name) if name else True)
             .where(cast(TDatasets.meta_create_date, Date) == date if date else True)
             .where(CorDatasetActor.id_organism == organisme if organisme else True)
             .where(CorDatasetActor.id_role == person if person else True)

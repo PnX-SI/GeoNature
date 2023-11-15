@@ -6,13 +6,7 @@ import json
 import logging
 from lxml import etree as ET
 
-from flask import (
-    Blueprint,
-    current_app,
-    request,
-    Response,
-    g,
-)
+from flask import Blueprint, current_app, request, Response, g, render_template
 
 import click
 
@@ -537,7 +531,7 @@ def get_acquisition_frameworks():
             joinedload(CorAcquisitionFrameworkActor.role),
             joinedload(CorAcquisitionFrameworkActor.organism),
         ),
-        joinedload(TAcquisitionFramework.t_datasets).options(
+        joinedload(TAcquisitionFramework.datasets).options(
             joinedload(TDatasets.digitizer),
             joinedload(TDatasets.cor_dataset_actor).options(
                 joinedload(CorDatasetActor.role),
@@ -578,7 +572,7 @@ def get_acquisition_frameworks():
                 ]
             )
             af_list = af_list.options(
-                joinedload(TAcquisitionFramework.t_datasets).options(
+                joinedload(TAcquisitionFramework.datasets).options(
                     joinedload(TDatasets.cor_dataset_actor).options(
                         joinedload(CorDatasetActor.nomenclature_actor_role),
                     ),
@@ -642,15 +636,15 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     acquisition_framework = af.as_dict(True, depth=2)
     dataset_ids = [d.id_dataset for d in af.t_datasets]
     nb_data = len(dataset_ids)
-    nb_taxons = (
-        DB.session.query(Synthese.cd_nom)
-        .filter(Synthese.id_dataset.in_(dataset_ids))
-        .distinct()
-        .count()
+
+    query = (
+        db.select(func.count(Synthese.cd_nom))
+        .select_from(Synthese)
+        .where(Synthese.id_dataset.in_(dataset_ids))
     )
-    nb_observations = (
-        DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
-    )
+    nb_taxons = db.session.scalar(query.distinct())
+    nb_observations = db.session.scalar(query)
+
     nb_habitat = 0
 
     # Check if pr_occhab exist
@@ -783,7 +777,7 @@ def delete_acquisition_framework(scope, af_id):
     Delete an acquisition framework
     .. :quickref: Metadata;
     """
-    af = TAcquisitionFramework.query.get_or_404(af_id)
+    af = db.get_or_404(TAcquisitionFramework, af_id)
     if not af.has_instance_permission(scope):
         raise Forbidden(
             f"User {g.current_user} cannot delete acquisition framework {af.id_acquisition_framework}"
@@ -853,7 +847,7 @@ def updateAcquisitionFramework(id_acquisition_framework, scope):
     Post one AcquisitionFramework data for update acquisition_framework
     .. :quickref: Metadata;
     """
-    af = TAcquisitionFramework.query.get_or_404(id_acquisition_framework)
+    af = db.get_or_404(TAcquisitionFramework, id_acquisition_framework)
     if not af.has_instance_permission(scope=scope):
         raise Forbidden(
             f"User {g.current_user} cannot update "
@@ -874,37 +868,44 @@ def get_acquisition_framework_stats(id_acquisition_framework):
     :param id_acquisition_framework: the id_acquisition_framework
     :param type: int
     """
-    datasets = TDatasets.query.filter(
-        TDatasets.id_acquisition_framework == id_acquisition_framework
-    ).all()
-    dataset_ids = [d.id_dataset for d in datasets]
-
-    nb_dataset = len(dataset_ids)
-    nb_taxons = (
-        DB.session.query(Synthese.cd_nom)
-        .filter(Synthese.id_dataset.in_(dataset_ids))
-        .distinct()
-        .count()
-    )
-    nb_observations = Synthese.query.filter(
-        Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework)
-    ).count()
-    nb_habitat = 0
-
-    if "OCCHAB" in config and nb_dataset > 0:
-        nb_habitat = (
-            DB.session.query(OccurenceHabitat)
-            .join(Station)
-            .filter(Station.id_dataset.in_(dataset_ids))
-            .count()
+    dataset_ids = db.session.scalars(
+        db.select(TDatasets.id_dataset).where(
+            TDatasets.id_acquisition_framework == id_acquisition_framework
         )
+    ).all()
 
-    return {
-        "nb_dataset": nb_dataset,
-        "nb_taxons": nb_taxons,
-        "nb_observations": nb_observations,
-        "nb_habitats": nb_habitat,
-    }
+    nb_datasets = len(dataset_ids)
+
+    nb_taxons = db.session.execute(
+        db.select(func.count(Synthese.cd_nom))
+        .where(Synthese.id_dataset.in_(dataset_ids))
+        .distinct()
+    ).scalar_one()
+
+    nb_observations = db.session.execute(
+        db.select(func.count("*"))
+        .select_from(Synthese)
+        .where(
+            Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework)
+        )
+    ).scalar_one()
+
+    nb_habitats = 0
+
+    if "OCCHAB" in config and nb_datasets > 0:
+        nb_habitats = db.session.execute(
+            db.select(func.count("*"))
+            .select_from(OccurenceHabitat)
+            .join(Station)
+            .where(Station.id_dataset.in_(dataset_ids))
+        ).scalar_one()
+
+    return dict(
+        nb_dataset=nb_datasets,
+        nb_taxons=nb_taxons,
+        nb_observations=nb_observations,
+        nb_habitats=nb_habitats,
+    )
 
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>/bbox", methods=["GET"])
@@ -917,16 +918,25 @@ def get_acquisition_framework_bbox(id_acquisition_framework):
     :param id_acquisition_framework: the id_acquisition_framework
     :param type: int
     """
-    datasets = TDatasets.query.filter(
-        TDatasets.id_acquisition_framework == id_acquisition_framework
+
+    dataset_ids = db.session.scalars(
+        db.select(TDatasets.id_dataset).where(
+            TDatasets.id_acquisition_framework == id_acquisition_framework
+        )
     ).all()
-    dataset_ids = [d.id_dataset for d in datasets]
+
     geojsonData = (
         DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
         .filter(Synthese.id_dataset.in_(dataset_ids))
         .first()[0]
     )
-    return json.loads(geojsonData) if geojsonData else None
+    geojsonData = db.session.execute(
+        db.select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
+        .where(Synthese.id_dataset.in_(dataset_ids))
+        .limit(1)
+    ).first()
+
+    return json.loads(geojsonData[0]) if geojsonData else None
 
 
 def publish_acquisition_framework_mail(af):
@@ -1011,17 +1021,25 @@ def publish_acquisition_framework(af_id):
     """
 
     # The AF must contain DS to be published
-    datasets = TDatasets.query.filter_by(id_acquisition_framework=af_id).all()
+    datasets = (
+        db.session.scalars(db.select(TDatasets).filter_by(id_acquisition_framework=af_id))
+        .unique()
+        .all()
+    )
 
     if not datasets:
         raise Conflict("Le cadre doit contenir des jeux de données")
 
-    if not db.session.query(
-        TAcquisitionFramework.query.filter(
+    af_count = db.session.execute(
+        db.select(func.count("*"))
+        .select_from(TAcquisitionFramework)
+        .where(
             TAcquisitionFramework.id_acquisition_framework == af_id,
             TAcquisitionFramework.datasets.any(TDatasets.synthese_records.any()),
-        ).exists()
-    ).scalar():
+        )
+    ).scalar_one()
+
+    if af_count < 1:
         raise Conflict("Tous les jeux de données du cadre d’acquisition sont vides")
 
     # After publishing an AF, we set it as closed and all its DS as inactive
