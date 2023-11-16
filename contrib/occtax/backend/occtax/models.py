@@ -224,7 +224,7 @@ class TRelevesOccurrence(DB.Model):
                 )  # dataset is loaded
                 or (
                     not self.dataset
-                    and TDatasets.query.get(self.id_dataset).has_instance_permission(scope)
+                    and db.session.get(TDatasets, self.id_dataset).has_instance_permission(scope)
                 )  # dataset is not loaded
             )
         else:

@@ -52,7 +52,6 @@ def sync_ds(ds, cd_nomenclatures):
         .filter_by(unique_acquisition_framework_id=af_uuid)
         .limit(1)
     ).first()
-    # TAcquisitionFramework.query.filter_by(unique_acquisition_framework_id=af_uuid).first()
 
     if af is None:
         return
@@ -66,8 +65,13 @@ def sync_ds(ds, cd_nomenclatures):
         if v is not None
     }
 
-    ds_query = DB.select(TDatasets).filter_by(unique_dataset_id=ds["unique_dataset_id"]).limit(1)
-    ds_exists = True if DB.session.scalars(ds_query).first() else False
+    ds_exists = DB.session.scalar(
+        DB.select(
+            DB.exists().where(
+                TDatasets.unique_dataset_id == ds["unique_dataset_id"],
+            )
+        )
+    )
 
     if ds_exists:
         statement = (
@@ -134,11 +138,11 @@ def add_or_update_organism(uuid, nom, email):
     :param email: org email
     """
     # Test if actor already exists to avoid nextVal increase
-    org_count = DB.session.execute(
-        DB.select(func.count("*")).select_from(BibOrganismes).filter_by(uuid_organisme=uuid)
+    org_exist = DB.session.execute(
+        DB.select(DB.exists().select_from(BibOrganismes).filter_by(uuid_organisme=uuid))
     ).scalar_one()
 
-    if org_count > 0:
+    if org_exist:
         statement = (
             update(BibOrganismes)
             .where(BibOrganismes.uuid_organisme == uuid)

@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import current_app, g
 from marshmallow import pre_load, post_load, pre_dump, fields, ValidationError
 from marshmallow_sqlalchemy.convert import ModelConverter as BaseModelConverter
-from shapely.geometry import shape as asShape
+from shapely.geometry import shape
 from geoalchemy2.shape import to_shape, from_shape
 from geoalchemy2.types import Geometry as GeometryType
 from geojson import Feature, FeatureCollection
@@ -39,7 +39,7 @@ class GeojsonSerializationField(fields.Field):
 
     def _deserialize(self, value, attr, data, **kwargs):
         try:
-            shape = asShape(value)
+            shape = shape(value)
             two_dimension_geom = remove_third_dimension(shape)
             return from_shape(two_dimension_geom, srid=4326)
         except ValueError as error:

@@ -427,7 +427,6 @@ class TestCommons:
 
     def test_list_places(self, place, users):
         response = self.client.get(url_for("gn_commons.list_places"))
-        print(response)
         assert response.status_code == Unauthorized.code
 
         set_logged_user(self.client, users["user"])

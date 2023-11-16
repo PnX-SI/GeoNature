@@ -6,8 +6,7 @@ from unittest.mock import patch
 import pytest
 from flask import url_for
 
-# from flask_sqlalchemy import BaseQuery
-from flask_sqlalchemy.query import Query
+
 from geoalchemy2.shape import to_shape
 
 from geojson import Point

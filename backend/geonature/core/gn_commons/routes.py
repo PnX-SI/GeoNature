@@ -138,7 +138,7 @@ def get_one_parameter(param_name, id_org=None):
         db.select(TParameters)
         .where(TParameters.parameter_name == param_name)
         .where(TParameters.id_organism == id_org if id_org else True)
-    ).all()  # TODO Why all ? one() instead ?
+    ).one()
     return [d.as_dict() for d in data]
 
 
@@ -173,12 +173,10 @@ def get_additional_fields():
         module_code = params["module_code"]
         if isinstance(module_code, list) and len(module_code) > 1:
             query = query.where(
-                or_(
-                    *[
-                        TAdditionalFields.modules.any(module_code=module_code_i)
-                        for module_code_i in module_code
-                    ]
-                )
+                *[
+                    TAdditionalFields.modules.any(module_code=module_code_i)
+                    for module_code_i in module_code
+                ]
             )
         else:
             query = query.where(TAdditionalFields.modules.any(module_code=module_code))
@@ -187,12 +185,10 @@ def get_additional_fields():
         object_code = params["object_code"]
         if isinstance(object_code, list) and len(object_code) > 1:
             query = query.where(
-                or_(
-                    *[
-                        TAdditionalFields.objects.any(code_object=object_code_i)
-                        for object_code_i in object_code
-                    ]
-                )
+                *[
+                    TAdditionalFields.objects.any(code_object=object_code_i)
+                    for object_code_i in object_code
+                ]
             )
         else:
             query = query.where(TAdditionalFields.objects.any(code_object=object_code))
@@ -218,11 +214,10 @@ def get_t_mobile_apps():
     :query str app_code: the app code
     :returns: Array<dict<TMobileApps>>
     """
-    query = db.select(TMobileApps).where(
-        TMobileApps.app_code.ilike(request.args["app_code"])
-        if "app_code" in request.args
-        else True
-    )
+    query = db.select(TMobileApps)
+    if "app_code" in request.args:
+        query = query.where(TMobileApps.app_code.ilike(request.args["app_code"]))
+
     data = db.session.scalars(query).all()
     mobile_apps = []
     for app in data:
@@ -295,13 +290,11 @@ def add_place():
     return jsonify(place.as_geofeature())
 
 
-@routes.route(
-    "/place/<int:id_place>", methods=["DELETE"]
-)  # XXX best practices recommend plural nouns
+@routes.route("/place/<int:id_place>", methods=["DELETE"])
 @routes.route("/places/<int:id_place>", methods=["DELETE"])
 @login_required
 def delete_place(id_place):
-    place = db.get_or_404(TPlaces, id_place)  # TPlaces.query.get_or_404(id_place)
+    place = db.get_or_404(TPlaces, id_place)
     if g.current_user.id_role != place.id_role:
         raise Forbidden("Vous n'êtes pas l'utilisateur propriétaire de ce lieu")
     db.session.delete(place)

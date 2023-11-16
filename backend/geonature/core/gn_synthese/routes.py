@@ -193,7 +193,6 @@ def get_observations_for_web(permissions):
     obs_query = synthese_query_class.query
 
     if output_format == "grouped_geom_by_areas":
-        # SQLAlchemy 1.4: replace column by add_columns
         obs_query = obs_query.add_columns(VSyntheseForWebApp.id_synthese).cte("OBS")
         agg_areas = (
             select(CorAreaSynthese.id_synthese, LAreas.id_area)
@@ -221,7 +220,6 @@ def get_observations_for_web(permissions):
             .cte("OBSERVATIONS")
         )
     else:
-        # SQLAlchemy 1.4: replace column by add_columns
         obs_query = obs_query.add_columns(VSyntheseForWebApp.st_asgeojson.label("geojson")).cte(
             "OBSERVATIONS"
         )
@@ -949,12 +947,12 @@ def get_observation_count():
     """
     params = request.args
 
-    query = DB.session.query(func.count(Synthese.id_synthese)).select_from(Synthese)
+    query = DB.session.execute(func.count(Synthese.id_synthese)).select_from(Synthese)
 
     if "id_dataset" in params:
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
 
-    return query.one()[0]
+    return query.scalar_one()
 
 
 @routes.route("/observations_bbox", methods=["GET"])

@@ -22,7 +22,6 @@ def get_medias(uuid_attached_row):
     .. :quickref: Commons;
     """
 
-    # res = DB.session.query(TMedias).filter(TMedias.uuid_attached_row == uuid_attached_row).all()
     res = DB.session.scalars(
         DB.select(TMedias).filter(TMedias.uuid_attached_row == uuid_attached_row)
     ).all()
