@@ -193,21 +193,24 @@ def get_organismes_jdd():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-    datasets = DB.session.scalars(TDatasets.select.filter_by_readable()).all()
+    datasets = DB.session.scalars(TDatasets.select.filter_by_readable()).unique().all()
     datasets = [d.id_dataset for d in datasets]
-    q = (
-        DB.session.query(Organisme)
+    query = (
+        DB.select(Organisme)
         .join(CorDatasetActor, Organisme.id_organisme == CorDatasetActor.id_organism)
-        .filter(CorDatasetActor.id_dataset.in_(datasets))
+        .where(CorDatasetActor.id_dataset.in_(datasets))
         .distinct()
     )
     if "orderby" in params:
         try:
             order_col = getattr(Organisme.__table__.columns, params.pop("orderby"))
-            q = q.order_by(order_col)
+            query = query.order_by(order_col)
         except AttributeError:
             raise BadRequest("the attribute to order on does not exist")
-    return [organism.as_dict(fields=organism_fields) for organism in q.all()]
+    return [
+        organism.as_dict(fields=organism_fields)
+        for organism in DB.session.scalars(query).unique().all()
+    ]
 
 
 #########################

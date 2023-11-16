@@ -139,7 +139,7 @@ def get_one_parameter(param_name, id_org=None):
         .where(TParameters.parameter_name == param_name)
         .where(TParameters.id_organism == id_org if id_org else True)
     ).one()
-    return [d.as_dict() for d in data]
+    return [data.as_dict()]
 
 
 @routes.route("/additional_fields", methods=["GET"])

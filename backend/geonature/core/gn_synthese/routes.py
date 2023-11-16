@@ -947,12 +947,12 @@ def get_observation_count():
     """
     params = request.args
 
-    query = DB.session.execute(func.count(Synthese.id_synthese)).select_from(Synthese)
+    query = db.select(func.count(Synthese.id_synthese)).select_from(Synthese)
 
     if "id_dataset" in params:
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
 
-    return query.scalar_one()
+    return DB.session.execute(query).scalar_one()
 
 
 @routes.route("/observations_bbox", methods=["GET"])
