@@ -117,13 +117,13 @@ def get_station(id_station, scope):
             db.select(Station)
             .options(
                 raiseload("*"),
-                joinedload("observers"),
-                joinedload("dataset"),
-                joinedload("habitats").options(
-                    joinedload("habref"),
-                    *[joinedload(nomenc) for nomenc in OccurenceHabitat.__nomenclatures__],
+                joinedload(Station.observers),
+                joinedload(Station.dataset),
+                joinedload(Station.habitats).options(
+                    joinedload(OccurenceHabitat.habref),
+                    *[joinedload(getattr(OccurenceHabitat, nomenc)) for nomenc in OccurenceHabitat.__nomenclatures__],
                 ),
-                *[joinedload(nomenc) for nomenc in Station.__nomenclatures__],
+                *[joinedload(getattr(Station, nomenc)) for nomenc in Station.__nomenclatures__],
             )
             .where(Station.id_station == id_station)
         )
