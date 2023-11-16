@@ -1,6 +1,23 @@
 CHANGELOG
 =========
 
+
+2.14.0 (unreleased)
+-------------------
+
+**🚀 Nouveautés**
+
+- Intégration de TaxHub dans GeoNature. L'interface est dispobible dans le "backoffice"
+
+**💻 Développement**
+
+- L'API de TaxHub est désormais disponible à l'URL `<URL_GEONATURE>/api/taxhub`.
+
+Note de version:
+
+- L'intégration de TaxHub dans GeoNature entraine la suppression du service systemd et la conf apache spécifique à TaxHub. Les logs sont également centralisés dans le fichier de log de GeoNature
+- Les médias de TaxHub sont copiés dans le repertoire `<GEONATURE_DIR>/medias/taxhub` lors de l'execution du script `migrate.sh`. Vous pouvez vérifier dans ce dossier que vos médias sont bien présents. Vous pouvez par la suite supprimer complétement le dossier de l'application TaxHub
+
 2.13.3 (2023-10-17)
 -------------------
 

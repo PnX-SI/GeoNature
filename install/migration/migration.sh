@@ -25,6 +25,19 @@ if [ ! -d "${olddir}/backend" ] || [ ! -d "${olddir}/frontend" ] || [ ! -f "${ol
     exit 1
 fi
 
+# before 2.13 - Rappatriement des médias TaxHub necessite de connaitre l'emplacement de taxhub
+if [ ! -d "${newdir}/backend/media/taxhub" ];then
+    TAXHUB_DIR="${HOME}/taxhub"
+    if (($# > 1)); then
+        TAXHUB_DIR="$(realpath "$2")"
+    fi
+    if [ ! -d "${TAXHUB_DIR}/apptax" ];then
+        echo $2
+        echo "Le dossier ${TAXHUB_DIR} ne semble pas contenir une installation de TaxHub. Veuillez spécifier le chemin vers TaxHub et celui de GeoNature : ./install/migration/migration.sh [OLD_GeoNature_dir] [OLD_TaxHub_dir]"
+    fi
+fi
+
+
 echo "Nouveau dossier GeoNature : ${newdir} ($(cat "${newdir}/VERSION"))"
 echo "Ancien dossier GeoNature : ${olddir} ($(cat "${olddir}/VERSION"))"
 
@@ -95,14 +108,6 @@ if [ ! -f "${newdir}/custom/css/metadata_pdf_custom.css" ] && [ -f "${olddir}/ba
   cp "${olddir}/backend/static/css/custom.css" "${newdir}/custom/css/metadata_pdf_custom.css"
 fi
 
-# before 2.13 - Rappatriement des médias TaxHub
-
-if [ ! -d "${newdir}/media/taxhub" ];then
-mkdir "${newdir}/backend/media/taxhub"
-taxhub_dir="$(dirname -- "${newdir}")/taxhub"
-mv "${taxhub_dir}/static/medias/" "${newdir}/backend/media/taxhub"
-
-fi
 
 
 echo "Mise à jour de node si nécessaire …"
@@ -278,9 +283,21 @@ fi
 
 if [ -f "/etc/apache2/sites-available/taxhub-le-ssl.conf" ]; then
     rm /etc/apache2/sites-available/taxhub-le-ssl.conf
+    rm -r /var/log/taxhub/
 fi
 
+if [ ! -d "${newdir}/backend/medias/taxhub" ]; then
+    mkdir -p "${newdir}"/backend/medias/taxhub/
+    cp 
+fi
+
+# before 2.13 - Rappatriement des médias TaxHub
+
+if [ ! -d "${newdir}/backend/media/taxhub" ];then
+    mkdir "${newdir}/backend/media/taxhub"
+    cp "${TAXHUB_DIR}"/static/medias/taxhub/* "${newdir}"/backend/media/taxhub/
+fi
+
+
 sudo apachectl restart
-
-
 echo "Migration terminée"
