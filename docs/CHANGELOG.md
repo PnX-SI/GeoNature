@@ -16,7 +16,7 @@ CHANGELOG
 Note de version:
 
 - L'intégration de TaxHub dans GeoNature entraine la suppression du service systemd et la conf apache spécifique à TaxHub. Les logs sont également centralisés dans le fichier de log de GeoNature
-- Les médias de TaxHub sont copiés dans le repertoire `<GEONATURE_DIR>/medias/taxhub` lors de l'execution du script `migrate.sh`. Vous pouvez vérifier dans ce dossier que vos médias sont bien présents. Vous pouvez par la suite supprimer complétement le dossier de l'application TaxHub
+- Les permissions de TaxHub comme "module" de GeoNature ont été modifié. Voir la section "module TaxHub" de la doc administrateur de GeoNature. Les anciennes permissions de l'application TaxHub on été rappatriées dans ce nouveau modèle. Les utilisateurs avec un profil "6" ont tous les droits sur le modules, les personnes ayant des profils 1,3,4 ou 5 ont des droits sur les objets uniquement sur l'objet 'TAXON'.
 
 2.13.3 (2023-10-17)
 -------------------
