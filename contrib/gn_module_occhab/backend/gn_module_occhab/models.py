@@ -23,6 +23,7 @@ from pypn_habref_api.models import Habref
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 from utils_flask_sqla_geo.mixins import GeoFeatureCollectionMixin
+from utils_flask_sqla.models import CustomSelect
 
 from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets as Dataset
@@ -38,7 +39,8 @@ cor_station_observer = db.Table(
 )
 
 
-class StationQuery(GeoFeatureCollectionMixin, Query):
+class StationSelect(GeoFeatureCollectionMixin, CustomSelect):
+    inherit_cache = True
     def filter_by_params(self, params):
         qs = self
         id_dataset = params.get("id_dataset", type=int)
@@ -61,11 +63,11 @@ class StationQuery(GeoFeatureCollectionMixin, Query):
         if scope == 0:
             self = self.filter(sa.false())
         elif scope in (1, 2):
-            ds_list = Dataset.query.filter_by_scope(scope).with_entities(Dataset.id_dataset)
+            ds_list = Dataset.select.filter_by_scope(scope).with_only_columns(Dataset.id_dataset)
             self = self.filter(
                 sa.or_(
                     Station.observers.any(id_role=user.id_role),
-                    Station.id_dataset.in_([ds.id_dataset for ds in ds_list.all()]),
+                    Station.id_dataset.in_([ds.id_dataset for ds in db.session.execute(ds_list).all()]),
                 )
             )
         return self
@@ -76,7 +78,7 @@ class StationQuery(GeoFeatureCollectionMixin, Query):
 class Station(NomenclaturesMixin, db.Model):
     __tablename__ = "t_stations"
     __table_args__ = {"schema": "pr_occhab"}
-    query_class = StationQuery
+    __select_class__ = StationSelect
 
     id_station = db.Column(db.Integer, primary_key=True)
     unique_id_sinp_station = db.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))

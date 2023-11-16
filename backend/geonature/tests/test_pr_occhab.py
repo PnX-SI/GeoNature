@@ -379,7 +379,7 @@ class TestOcchab:
         response = self.client.delete(url)
         assert response.status_code == 204
         assert not db.session.query(
-            Station.query.filter_by(id_station=station.id_station).exists()
+            Station.select.filter_by(id_station=station.id_station).exists()
         ).scalar()
 
     def test_get_default_nomenclatures(self, users):

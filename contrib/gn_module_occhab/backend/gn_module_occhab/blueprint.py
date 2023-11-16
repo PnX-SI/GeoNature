@@ -13,7 +13,7 @@ from flask import (
     jsonify,
     g,
 )
-from werkzeug.exceptions import BadRequest, Forbidden
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 from geojson import FeatureCollection, Feature
 from geoalchemy2.shape import from_shape
 from pypnusershub.db.models import User
@@ -54,7 +54,7 @@ blueprint = Blueprint("occhab", __name__)
 @permissions.check_cruved_scope("R", module_code="OCCHAB", get_scope=True)
 def list_stations(scope):
     stations = (
-        Station.query.filter_by_params(request.args)
+        Station.select.filter_by_params(request.args)
         .filter_by_scope(scope)
         .order_by(Station.date_min.desc())
         .options(
@@ -86,10 +86,14 @@ def list_stations(scope):
     if fmt not in ("json", "geojson"):
         raise BadRequest("Unsupported format")
     if fmt == "json":
-        return jsonify(StationSchema(only=only).dump(stations.all(), many=True))
+        return jsonify(
+            StationSchema(only=only).dump(db.session.scalars(stations).unique().all(), many=True)
+        )
     elif fmt == "geojson":
         return geojsonify(
-            StationSchema(only=only, as_geojson=True).dump(stations.all(), many=True)
+            StationSchema(only=only, as_geojson=True).dump(
+                db.session.scalars(stations).unique().all(), many=True
+            )
         )
 
 
@@ -108,16 +112,26 @@ def get_station(id_station, scope):
     :rtype dict<TStationsOcchab>
 
     """
-    station = Station.query.options(
-        raiseload("*"),
-        joinedload("observers"),
-        joinedload("dataset"),
-        joinedload("habitats").options(
-            joinedload("habref"),
-            *[joinedload(nomenc) for nomenc in OccurenceHabitat.__nomenclatures__],
-        ),
-        *[joinedload(nomenc) for nomenc in Station.__nomenclatures__],
-    ).get_or_404(id_station)
+    station = (
+        db.session.scalars(
+            db.select(Station)
+            .options(
+                raiseload("*"),
+                joinedload("observers"),
+                joinedload("dataset"),
+                joinedload("habitats").options(
+                    joinedload("habref"),
+                    *[joinedload(nomenc) for nomenc in OccurenceHabitat.__nomenclatures__],
+                ),
+                *[joinedload(nomenc) for nomenc in Station.__nomenclatures__],
+            )
+            .where(Station.id_station == id_station)
+        )
+        .unique()
+        .one_or_none()
+    )
+    if not station:
+        raise NotFound("")
 
     if not station.has_instance_permission(scope):
         raise Forbidden("You do not have access to this station.")
@@ -171,7 +185,9 @@ def create_or_update_station(id_station=None):
     station = station_schema.load(request.json)
     if id_station and not station.has_instance_permission(scope):
         raise Forbidden("You do not have access to this station.")
-    dataset = Dataset.query.filter_by(id_dataset=station.id_dataset).one_or_none()
+    dataset = db.session.scalars(
+        db.select(Dataset).filter_by(id_dataset=station.id_dataset)
+    ).unique().one_or_none()
     if dataset is None:
         raise BadRequest("Unexisting dataset")
     if not dataset.has_instance_permission(scopes["C"]):
@@ -190,7 +206,7 @@ def delete_station(id_station, scope):
     .. :quickref: Occhab;
 
     """
-    station = Station.query.get_or_404(id_station)
+    station = db.get_or_404(Station, id_station)
     if not station.has_instance_permission(scope):
         raise Forbidden("You do not have access to this station.")
     db.session.delete(station)
@@ -231,9 +247,9 @@ def export_all_habitats(
                 db_cols_for_shape.append(db_col)
             columns_to_serialize.append(db_col.key)
     results = (
-        db.session.query(export_view.tableDef)
+        db.session.scalars(db.session.select(export_view.tableDef)
         .filter(export_view.tableDef.columns.id_station.in_(data["idsStation"]))
-        .limit(blueprint.config["NB_MAX_EXPORT"])
+        .limit(blueprint.config["NB_MAX_EXPORT"]))
     )
     if export_format == "csv":
         formated_data = [export_view.as_dict(d, fields=[]) for d in results]
@@ -278,7 +294,7 @@ def get_default_nomenclatures():
         organism = params["organism"]
     types = request.args.getlist("mnemonique")
 
-    q = db.session.query(
+    q = db.select(
         distinct(DefaultNomenclatureValue.mnemonique_type),
         func.pr_occhab.get_default_nomenclature_value(
             DefaultNomenclatureValue.mnemonique_type, organism
@@ -286,12 +302,12 @@ def get_default_nomenclatures():
     )
     if len(types) > 0:
         q = q.filter(DefaultNomenclatureValue.mnemonique_type.in_(tuple(types)))
-    data = q.all()
+    data = db.session.execute(q).all()
 
     formated_dict = {}
     for d in data:
         nomenclature_obj = None
         if d[1]:
-            nomenclature_obj = db.session.query(TNomenclatures).get(d[1]).as_dict()
+            nomenclature_obj = db.session.get(TNomenclatures, d[1]).as_dict()
         formated_dict[d[0]] = nomenclature_obj
     return formated_dict
