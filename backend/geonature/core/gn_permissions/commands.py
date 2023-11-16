@@ -51,7 +51,7 @@ def supergrant(skip_existing, dry_run, yes, **filters):
         ):
             raise click.Abort()
 
-    permission_available = db.scalars(
+    permission_available = db.session.scalars(
         db.select(PermissionAvailable)
         .outerjoin(
             Permission,

@@ -103,18 +103,20 @@ def get_datasets():
     if request.is_json:
         params.update(request.json)
     fields = params.get("fields", type=str, default=[])
+
     if fields:
         fields = fields.split(",")
+
     if "create" in params:
         create = params.pop("create").split(".")
         if len(create) > 1:
-            query = TDatasets.query.filter_by_creatable(
+            query = TDatasets.select.filter_by_creatable(
                 module_code=create[0], object_code=create[1]
             )
         else:
-            query = TDatasets.query.filter_by_creatable(module_code=create[0])
+            query = TDatasets.select.filter_by_creatable(module_code=create[0])
     else:
-        query = TDatasets.query.filter_by_readable()
+        query = TDatasets.select.filter_by_readable()
 
     if request.is_json:
         query = query.filter_by_params(request.json)
@@ -160,8 +162,8 @@ def get_datasets():
     user_agent = request.headers.get("User-Agent")
     mobile_app = user_agent and user_agent.split("/")[0].lower() == "okhttp"
     dataset_schema.context["mobile_app"] = mobile_app
-
-    return dataset_schema.jsonify(query.all(), many=True)
+    datasets = db.session.scalars(query).unique().all()
+    return dataset_schema.jsonify(datasets, many=True)
 
 
 def get_af_from_id(id_af, af_list):
@@ -185,7 +187,7 @@ def get_dataset(scope, id_dataset):
     :param type: int
     :returns: dict<TDataset>
     """
-    dataset = TDatasets.query.get_or_404(id_dataset)
+    dataset = db.get_or_404(TDatasets, id_dataset)  # TDatasets.query.get_or_404(id_dataset)
     if not dataset.has_instance_permission(scope=scope):
         raise Forbidden(f"User {g.current_user} cannot read dataset {dataset.id_dataset}")
 
@@ -226,7 +228,7 @@ def delete_dataset(scope, ds_id):
     .. :quickref: Metadata;
     """
 
-    dataset = TDatasets.query.get_or_404(ds_id)
+    dataset = db.get_or_404(TDatasets, ds_id)
     if not dataset.has_instance_permission(scope=scope):
         raise Forbidden(f"User {g.current_user} cannot delete dataset {dataset.id_dataset}")
     if not dataset.is_deletable():
@@ -519,7 +521,7 @@ def get_acquisition_frameworks():
     """
     only = ["+cruved"]
     # QUERY
-    af_list = TAcquisitionFramework.query.filter_by_readable()
+    af_list = TAcquisitionFramework.select.filter_by_readable()
     if request.is_json:
         af_list = af_list.filter_by_params(request.json)
 
@@ -542,7 +544,7 @@ def get_acquisition_frameworks():
     if request.args.get("datasets", default=False, type=int):
         only.extend(
             [
-                "t_datasets.+cruved",
+                "datasets.+cruved",
             ]
         )
     if request.args.get("creator", default=False, type=int):
@@ -565,10 +567,10 @@ def get_acquisition_frameworks():
         if request.args.get("datasets", default=False, type=int):
             only.extend(
                 [
-                    "t_datasets.cor_dataset_actor",
-                    "t_datasets.cor_dataset_actor.nomenclature_actor_role",
-                    "t_datasets.cor_dataset_actor.organism",
-                    "t_datasets.cor_dataset_actor.role",
+                    "datasets.cor_dataset_actor",
+                    "datasets.cor_dataset_actor.nomenclature_actor_role",
+                    "datasets.cor_dataset_actor.organism",
+                    "datasets.cor_dataset_actor.role",
                 ]
             )
             af_list = af_list.options(
@@ -579,7 +581,7 @@ def get_acquisition_frameworks():
                 ),
             )
     af_schema = AcquisitionFrameworkSchema(only=only)
-    return af_schema.jsonify(db.session.scalars(af_list).all(), many=True)
+    return af_schema.jsonify(db.session.scalars(af_list).unique().all(), many=True)
 
 
 @routes.route("/list/acquisition_frameworks", methods=["GET"])
@@ -733,7 +735,7 @@ def get_acquisition_framework(scope, id_acquisition_framework):
     :param type: int
     :returns: dict<TAcquisitionFramework>
     """
-    af = TAcquisitionFramework.query.get_or_404(id_acquisition_framework)
+    af = db.get_or_404(TAcquisitionFramework, id_acquisition_framework)
     if not af.has_instance_permission(scope=scope):
         raise Forbidden(
             f"User {g.current_user} cannot read acquisition "
@@ -755,13 +757,13 @@ def get_acquisition_framework(scope, id_acquisition_framework):
                 "cor_volets_sinp",
                 "cor_objectifs",
                 "cor_territories",
-                "t_datasets",
-                "t_datasets.creator",
-                "t_datasets.nomenclature_data_type",
-                "t_datasets.cor_dataset_actor",
-                "t_datasets.cor_dataset_actor.nomenclature_actor_role",
-                "t_datasets.cor_dataset_actor.organism",
-                "t_datasets.cor_dataset_actor.role",
+                "datasets",
+                "datasets.creator",
+                "datasets.nomenclature_data_type",
+                "datasets.cor_dataset_actor",
+                "datasets.cor_dataset_actor.nomenclature_actor_role",
+                "datasets.cor_dataset_actor.organism",
+                "datasets.cor_dataset_actor.role",
             ],
             exclude=exclude,
         )

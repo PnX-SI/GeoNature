@@ -4,7 +4,7 @@ from typing import List
 
 import sqlalchemy as sa
 import datetime
-from sqlalchemy import ForeignKey, Unicode, and_, DateTime
+from sqlalchemy import ForeignKey, Unicode, and_, DateTime, or_
 from sqlalchemy.orm import (
     relationship,
     column_property,
@@ -197,9 +197,9 @@ class SyntheseQuery(GeoFeatureCollectionMixin, Query):
             self = self.filter(sa.false())
         elif scope in (1, 2):
             ors = []
-            datasets = (
-                TDatasets.query.filter_by_readable(user).with_entities(TDatasets.id_dataset).all()
-            )
+            datasets = db.session.scalars(
+                TDatasets.select.filter_by_readable(user).with_entities(TDatasets.id_dataset)
+            ).all()
             self = self.filter(
                 or_(
                     Synthese.id_digitizer == user.id_role,

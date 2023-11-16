@@ -287,15 +287,14 @@ def acquisition_frameworks(users):
 
 @pytest.fixture(scope="function")
 def datasets(users, acquisition_frameworks, module):
-    principal_actor_role = (
-        db.session.query(TNomenclatures)
+    principal_actor_role = db.session.execute(
+        db.select(TNomenclatures)
         .join(BibNomenclaturesTypes, TNomenclatures.id_type == BibNomenclaturesTypes.id_type)
         .filter(
             TNomenclatures.mnemonique == "Contact principal",
             BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR",
         )
-        .one()
-    )
+    ).scalar_one()
 
     # add module code in the list to associate them to datasets
     writable_module_code = ["OCCTAX"]

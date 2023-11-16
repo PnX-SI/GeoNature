@@ -47,7 +47,7 @@ def create_synthese_record(
     if not cd_nom:
         cd_nom = Taxref.query.first().cd_nom
     if not id_dataset:
-        id_dataset = TDatasets.query.first().id_dataset
+        id_dataset = db.session.scalars(db.select(TDatasets).limit(1)).first().id_dataset
 
     geom_4326 = WKTElement(f"POINT({str(x)} {str(y)})", srid=4326)
 

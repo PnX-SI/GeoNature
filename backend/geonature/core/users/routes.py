@@ -193,8 +193,8 @@ def get_organismes_jdd():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-
-    datasets = [d.id_dataset for d in TDatasets.query.filter_by_readable()]
+    datasets = DB.session.scalars(TDatasets.select.filter_by_readable()).all()
+    datasets = [d.id_dataset for d in datasets]
     q = (
         DB.session.query(Organisme)
         .join(CorDatasetActor, Organisme.id_organisme == CorDatasetActor.id_organism)

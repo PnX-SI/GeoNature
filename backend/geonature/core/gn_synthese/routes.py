@@ -728,7 +728,7 @@ def general_stats(permissions):
         - nb of distinct observer
         - nb of datasets
     """
-    allowed_datasets = TDatasets.query.filter_by_readable().all()
+    allowed_datasets = db.session.scalars(TDatasets.select.filter_by_readable()).all()
     q = select(
         func.count(Synthese.id_synthese),
         func.count(func.distinct(Synthese.cd_nom)),

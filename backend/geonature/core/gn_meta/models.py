@@ -12,6 +12,7 @@ from sqlalchemy.dialects.postgresql import UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
 from utils_flask_sqla.generic import testDataType
+from utils_flask_sqla.sqlalchemy import CustomSelect
 from werkzeug.exceptions import BadRequest, NotFound
 import marshmallow as ma
 
@@ -231,7 +232,9 @@ class TBibliographicReference(db.Model):
     publication_reference = DB.Column(DB.Unicode)
 
 
-class TDatasetsQuery(Query):
+class TDatasetsQuery(CustomSelect):
+    inherit_cache = True
+
     def _get_read_scope(self, user=None):
         if user is None:
             user = g.current_user
@@ -338,7 +341,7 @@ class TDatasetsQuery(Query):
             if _af_search:
                 ors.append(
                     TDatasets.acquisition_framework.has(
-                        TAcquisitionFramework.query.filter_by_params(
+                        TAcquisitionFramework.select.filter_by_params(
                             {"search": search},
                             _ds_search=False,
                         ).whereclause
@@ -378,7 +381,7 @@ class TDatasetsQuery(Query):
 class TDatasets(db.Model):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
-    query_class = TDatasetsQuery
+    __select_class__ = TDatasetsQuery
 
     id_dataset = DB.Column(DB.Integer, primary_key=True)
     unique_dataset_id = DB.Column(UUIDType(as_uuid=True), default=select(func.uuid_generate_v4()))
@@ -531,7 +534,9 @@ class TDatasets(db.Model):
         )
 
 
-class TAcquisitionFrameworkQuery(Query):
+class TAcquisitionFrameworkQuery(CustomSelect):
+    inherit_cache = True
+
     def _get_read_scope(self, user=None):
         if user is None:
             user = g.current_user
@@ -575,7 +580,7 @@ class TAcquisitionFrameworkQuery(Query):
         """
         return self.where(
             TAcquisitionFramework.t_datasets.any(
-                TDatasets.query.filter_by_areas(areas).whereclause,
+                TDatasets.select.filter_by_areas(areas).whereclause,
             ),
         )
 
@@ -588,7 +593,7 @@ class TAcquisitionFrameworkQuery(Query):
                 params["search"] = ds_params.pop("search")
         ds_params = params.get("datasets")
         if ds_params:
-            ds_filter = TDatasets.query.filter_by_params(ds_params).whereclause
+            ds_filter = TDatasets.select.filter_by_params(ds_params).whereclause
             if ds_filter is not None:  # do not exclude AF without any DS
                 self = self.where(TAcquisitionFramework.datasets.any(ds_filter))
 
@@ -656,7 +661,7 @@ class TAcquisitionFrameworkQuery(Query):
             if _ds_search:
                 ors.append(
                     TAcquisitionFramework.datasets.any(
-                        TDatasets.query.filter_by_params(
+                        TDatasets.select.filter_by_params(
                             {"search": search}, _af_search=False
                         ).whereclause
                     ),
@@ -669,7 +674,7 @@ class TAcquisitionFrameworkQuery(Query):
 class TAcquisitionFramework(db.Model):
     __tablename__ = "t_acquisition_frameworks"
     __table_args__ = {"schema": "gn_meta"}
-    query_class = TAcquisitionFrameworkQuery
+    __select_class__ = TAcquisitionFrameworkQuery
 
     id_acquisition_framework = DB.Column(DB.Integer, primary_key=True)
     unique_acquisition_framework_id = DB.Column(
@@ -771,7 +776,7 @@ class TAcquisitionFramework(db.Model):
 
     def is_deletable(self):
         return not db.session.query(
-            TDatasets.query.filter_by(
+            TDatasets.select.filter_by(
                 id_acquisition_framework=self.id_acquisition_framework
             ).exists()
         ).scalar()
