@@ -51,21 +51,25 @@ def supergrant(skip_existing, dry_run, yes, **filters):
         ):
             raise click.Abort()
 
-    permission_available = db.session.scalars(
-        db.select(PermissionAvailable)
-        .outerjoin(
-            Permission,
-            sa.and_(PermissionAvailable.permissions, Permission.id_role == role.id_role),
+    permission_available = (
+        db.session.scalars(
+            db.select(PermissionAvailable)
+            .outerjoin(
+                Permission,
+                sa.and_(PermissionAvailable.permissions, Permission.id_role == role.id_role),
+            )
+            .options(
+                contains_eager(
+                    PermissionAvailable.permissions,
+                ),
+                joinedload(PermissionAvailable.module),
+                joinedload(PermissionAvailable.object),
+                joinedload(PermissionAvailable.action),
+            )
         )
-        .options(
-            contains_eager(
-                PermissionAvailable.permissions,
-            ),
-            joinedload(PermissionAvailable.module),
-            joinedload(PermissionAvailable.object),
-            joinedload(PermissionAvailable.action),
-        )
-    ).all()
+        .unique()
+        .all()
+    )
 
     for ap in permission_available:
         for perm in ap.permissions:

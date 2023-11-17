@@ -38,14 +38,14 @@ class RoleFilter(DynamicOptionsMixin, FilterEqual):
 class ModuleFilter(DynamicOptionsMixin, FilterEqual):
     def get_dynamic_options(self, view):
         if has_app_context():
-            modules = db.session.scalar(db.select(TModules).order_by(TModules.module_code)).all()
+            modules = db.session.scalars(db.select(TModules).order_by(TModules.module_code)).all()
             yield from [(module.id_module, module.module_code) for module in modules]
 
 
 class ObjectFilter(DynamicOptionsMixin, FilterEqual):
     def get_dynamic_options(self, view):
         if has_app_context():
-            objects = db.session.scalar(db.select(PermObject)).all()
+            objects = db.session.scalars(db.select(PermObject)).all()
             yield from [(object.id_object, object.code_object) for object in objects]
 
 
