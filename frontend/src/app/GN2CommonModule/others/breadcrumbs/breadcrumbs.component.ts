@@ -40,7 +40,10 @@ export class BreadcrumbsComponent implements OnInit {
   @Input() previousRoutes: Array<IBreadCrumb> = []; // Areas id_type
   public breadcrumbs: IBreadCrumb[];
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {
     this.breadcrumbs = this.buildBreadCrumb({ route: this.activatedRoute.root });
   }
 
