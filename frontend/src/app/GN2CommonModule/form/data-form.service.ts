@@ -526,8 +526,8 @@ export class DataFormService {
       application === 'GeoNature'
         ? `${this.config.API_ENDPOINT}/${api}`
         : application === 'TaxHub'
-        ? `${this.config.API_TAXHUB}/${api}`
-        : api;
+          ? `${this.config.API_TAXHUB}/${api}`
+          : api;
 
     return this._http.get<any>(url, { params: queryString });
   }
