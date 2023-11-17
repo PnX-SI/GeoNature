@@ -932,13 +932,14 @@ def get_acquisition_framework_bbox(id_acquisition_framework):
         .filter(Synthese.id_dataset.in_(dataset_ids))
         .first()[0]
     )
+    # geojsonData will never be empty, if no entries matching the query condition(s), it will contains [(None,)]
     geojsonData = db.session.execute(
         db.select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
         .where(Synthese.id_dataset.in_(dataset_ids))
         .limit(1)
-    ).first()
+    ).first()[0]
 
-    return json.loads(geojsonData[0]) if geojsonData else None
+    return json.loads(geojsonData) if geojsonData else None
 
 
 def publish_acquisition_framework_mail(af):
