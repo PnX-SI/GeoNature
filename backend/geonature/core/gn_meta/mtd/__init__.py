@@ -61,7 +61,8 @@ class MTDInstanceApi:
 
     def get_af_list(self):
         xml = self._get_af_xml()
-        root = etree.fromstring(xml)
+        _xml_parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
+        root = etree.fromstring(xml, parser=_xml_parser)
         af_iter = root.iterfind(".//{http://inpn.mnhn.fr/mtd}CadreAcquisition")
         af_list = []
         for af in af_iter:
