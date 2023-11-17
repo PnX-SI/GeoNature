@@ -12,10 +12,7 @@ export class DisplayMouseOverDirective {
   private _defaultSelector = '.btn';
   private el: HTMLElement;
 
-  constructor(
-    el: ElementRef,
-    private renderer: Renderer2
-  ) {
+  constructor(el: ElementRef, private renderer: Renderer2) {
     this.el = el.nativeElement;
   }
 

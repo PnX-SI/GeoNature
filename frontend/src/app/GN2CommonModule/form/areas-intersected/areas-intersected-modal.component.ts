@@ -8,10 +8,7 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 export class AreasIntersectedComponent implements OnInit, OnChanges {
   @Input() geojson: Array<any>;
   public areasIntersected = new Array();
-  constructor(
-    private _modalService: NgbModal,
-    private _dfs: DataFormService
-  ) {}
+  constructor(private _modalService: NgbModal, private _dfs: DataFormService) {}
 
   ngOnInit() {}
 

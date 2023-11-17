@@ -74,10 +74,7 @@ export class NomenclatureComponent
   @Input() cdNomenclatures: Array<string> = [];
   @Output() labelsLoaded = new EventEmitter<Array<any>>();
 
-  constructor(
-    private _dfService: DataFormService,
-    private _translate: TranslateService
-  ) {
+  constructor(private _dfService: DataFormService, private _translate: TranslateService) {
     super();
   }
 

@@ -54,10 +54,7 @@ export class DateComponent implements OnInit, OnDestroy {
   public changeSub: Subscription;
   public today: DateStruc;
 
-  constructor(
-    myElement: ElementRef,
-    private _dateParser: NgbDateParserFormatter
-  ) {
+  constructor(myElement: ElementRef, private _dateParser: NgbDateParserFormatter) {
     this.elementRef = myElement;
     this.initializeDates();
   }

@@ -43,10 +43,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   search = '';
   filteredValues;
 
-  constructor(
-    private _dfs: DataFormService,
-    private _commonService: CommonService
-  ) {
+  constructor(private _dfs: DataFormService, private _commonService: CommonService) {
     super();
   }
 
