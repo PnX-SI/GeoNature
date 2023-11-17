@@ -90,7 +90,10 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   @Output() onDelete = new EventEmitter<Taxon>();
   public isCollapseTaxonomy = true;
 
-  constructor(private _dfService: DataFormService, public config: ConfigService) {}
+  constructor(
+    private _dfService: DataFormService,
+    public config: ConfigService
+  ) {}
 
   ngOnInit() {
     if (!this.apiEndPoint) {

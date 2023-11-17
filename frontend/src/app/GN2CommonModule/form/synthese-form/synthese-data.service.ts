@@ -24,7 +24,10 @@ export class SyntheseDataService {
   public isDownloading: Boolean = false;
   public downloadProgress: BehaviorSubject<number>;
   private _blob: Blob;
-  constructor(private _api: HttpClient, public config: ConfigService) {
+  constructor(
+    private _api: HttpClient,
+    public config: ConfigService
+  ) {
     this.downloadProgress = <BehaviorSubject<number>>new BehaviorSubject(0.0);
   }
 

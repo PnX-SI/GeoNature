@@ -26,7 +26,10 @@ export class MunicipalitiesComponent implements OnInit {
   /**
    * @deprecated Do not use this input
    */ @Input() debounceTime: number;
-  constructor(private _dfs: DataFormService, private _commonService: CommonService) {}
+  constructor(
+    private _dfs: DataFormService,
+    private _commonService: CommonService
+  ) {}
 
   ngOnInit() {}
 }
