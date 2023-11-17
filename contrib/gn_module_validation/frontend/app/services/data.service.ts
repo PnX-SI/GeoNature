@@ -7,10 +7,7 @@ import { ConfigService } from '@geonature/services/config.service';
 export class ValidationDataService {
   public dataLoaded: Boolean = false;
 
-  constructor(
-    private _http: HttpClient,
-    public config: ConfigService
-  ) {}
+  constructor(private _http: HttpClient, public config: ConfigService) {}
 
   getSyntheseData(params) {
     return this._http.post<any>(`${this.config.API_ENDPOINT}/validation`, params);

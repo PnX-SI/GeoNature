@@ -53,11 +53,7 @@ export class MapListService {
     fill: true,
   };
 
-  constructor(
-    private _http: HttpClient,
-    private _ms: MapService,
-    public config: ConfigService
-  ) {
+  constructor(private _http: HttpClient, private _ms: MapService, public config: ConfigService) {
     this.columns = [];
     this.page.pageNumber = 0;
     this.page.size = 12;

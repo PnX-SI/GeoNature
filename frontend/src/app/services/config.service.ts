@@ -10,10 +10,7 @@ class Config {
 
 @Injectable()
 export class ConfigService extends Config {
-  constructor(
-    private _http: HttpClient,
-    private _toaster: ToastrService
-  ) {
+  constructor(private _http: HttpClient, private _toaster: ToastrService) {
     super();
   }
 

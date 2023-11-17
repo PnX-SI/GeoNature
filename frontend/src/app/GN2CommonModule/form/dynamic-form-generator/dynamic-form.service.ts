@@ -15,10 +15,7 @@ import { MediaService } from '@geonature_common/service/media.service';
 
 @Injectable()
 export class DynamicFormService {
-  constructor(
-    private _mediaService: MediaService,
-    private _formBuilder: UntypedFormBuilder
-  ) {}
+  constructor(private _mediaService: MediaService, private _formBuilder: UntypedFormBuilder) {}
 
   initFormGroup() {
     return this._formBuilder.group({});
