@@ -560,6 +560,7 @@ class TestSynthese:
             '"regne"',
             '"group1_inpn"',
             '"group2_inpn"',
+            '"group3_inpn"',
             '"classe"',
             '"ordre"',
             '"famille"',
@@ -623,7 +624,6 @@ class TestSynthese:
             '"date_creation"',
             '"date_modification"',
             '"champs_additionnels"',
-            '"group3_inpn"',
         ]
 
         def assert_export_results(user, expected_id_synthese_list):
@@ -737,13 +737,13 @@ class TestSynthese:
             '"nom_vern"',
             '"group1_inpn"',
             '"group2_inpn"',
+            '"group3_inpn"',
             '"regne"',
             '"phylum"',
             '"classe"',
             '"ordre"',
             '"famille"',
             '"id_rang"',
-            '"group3_inpn"',
             '"nb_obs"',
             '"date_min"',
             '"date_max"',
