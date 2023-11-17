@@ -40,10 +40,7 @@ export interface NotificationRule {
 
 @Injectable()
 export class NotificationDataService {
-  constructor(
-    private _api: HttpClient,
-    public config: ConfigService
-  ) {}
+  constructor(private _api: HttpClient, public config: ConfigService) {}
 
   // returns notifications content for this user
   getNotifications(): Observable<NotificationCard[]> {

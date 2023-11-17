@@ -63,10 +63,7 @@ export class TaxaComponent implements OnInit {
   @Input() disabled: boolean = false;
 
   /** @ignore */
-  constructor(
-    private dataService: DataFormService,
-    private commonService: CommonService
-  ) {}
+  constructor(private dataService: DataFormService, private commonService: CommonService) {}
 
   ngOnInit() {
     this.taxa = [];

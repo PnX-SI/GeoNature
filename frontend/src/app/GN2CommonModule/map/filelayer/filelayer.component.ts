@@ -34,10 +34,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
   @Input() style;
   @Output() onLoad = new EventEmitter<any>();
   @Output() onGeomChange = new EventEmitter<any>();
-  constructor(
-    public mapService: MapService,
-    private _toasterService: ToastrService
-  ) {}
+  constructor(public mapService: MapService, private _toasterService: ToastrService) {}
 
   ngOnInit() {
     this.style = this.style || this.mapService.searchStyle;

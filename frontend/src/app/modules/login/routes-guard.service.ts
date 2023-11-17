@@ -6,10 +6,7 @@ import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class SignUpGuard implements CanActivate {
-  constructor(
-    private _router: Router,
-    public config: ConfigService
-  ) {}
+  constructor(private _router: Router, public config: ConfigService) {}
 
   canActivate() {
     if (this.config['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false) {
@@ -23,10 +20,7 @@ export class SignUpGuard implements CanActivate {
 
 @Injectable()
 export class UserManagementGuard implements CanActivate {
-  constructor(
-    private _router: Router,
-    public config: ConfigService
-  ) {}
+  constructor(private _router: Router, public config: ConfigService) {}
 
   canActivate() {
     if (this.config['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false) {

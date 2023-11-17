@@ -7,10 +7,7 @@ import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class UserDataService {
-  constructor(
-    private _http: HttpClient,
-    public config: ConfigService
-  ) {}
+  constructor(private _http: HttpClient, public config: ConfigService) {}
 
   getRole(id: number) {
     return this._http.get<any>(`${this.config.API_ENDPOINT}/users/role/${id}`);

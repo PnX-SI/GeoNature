@@ -27,10 +27,7 @@ export class ModuleService {
     });
   }
 
-  constructor(
-    private _api: DataFormService,
-    private _router: Router
-  ) {}
+  constructor(private _api: DataFormService, private _router: Router) {}
 
   loadModules(): Observable<any[]> {
     return this._api.getModulesList([]).pipe(
