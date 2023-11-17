@@ -14,7 +14,10 @@ export class MapListGenericFiltersComponent implements OnInit {
   @Input() filterableColumns: Array<any>;
   @Input() apiEndPoint: string;
   public colSelected: any;
-  constructor(public mapListService: MapListService, private _commonService: CommonService) {}
+  constructor(
+    public mapListService: MapListService,
+    private _commonService: CommonService
+  ) {}
 
   ngOnInit() {
     this.mapListService.genericFilterInput.valueChanges

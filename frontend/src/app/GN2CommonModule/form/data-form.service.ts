@@ -26,7 +26,10 @@ export const FormatMapMime = new Map([
 @Injectable()
 export class DataFormService {
   private _blob: Blob;
-  constructor(private _http: HttpClient, public config: ConfigService) {}
+  constructor(
+    private _http: HttpClient,
+    public config: ConfigService
+  ) {}
 
   getNomenclature(
     codeNomenclatureType: string,
