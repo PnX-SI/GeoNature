@@ -39,8 +39,8 @@ class GeojsonSerializationField(fields.Field):
 
     def _deserialize(self, value, attr, data, **kwargs):
         try:
-            shape = shape(value)
-            two_dimension_geom = remove_third_dimension(shape)
+            shape_ = shape(value)
+            two_dimension_geom = remove_third_dimension(shape_)
             return from_shape(two_dimension_geom, srid=4326)
         except ValueError as error:
             raise ValidationError("Geometry error") from error

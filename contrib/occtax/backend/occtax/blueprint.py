@@ -415,7 +415,7 @@ def updateReleve(id_releve, scope):
 
 
 def occurrenceHandler(request, *, occurrence, scope):
-    releve = TRelevesOccurrence.query.get_or_404(occurrence.id_releve_occtax)
+    releve = db.get_or_404(TRelevesOccurrence, occurrence.id_releve_occtax)
     if not releve.has_instance_permission(scope):
         raise Forbidden()
 
@@ -455,7 +455,7 @@ def updateOccurrence(id_occurrence, scope):
     Post one Occurrence data (Occurrence + Counting) for add to Releve
 
     """
-    occurrence = TOccurrencesOccurrence.query.get_or_404(id_occurrence)
+    occurrence = db.get_or_404(TOccurrencesOccurrence, id_occurrence)
 
     return OccurrenceSchema().dump(
         occurrenceHandler(request=request, occurrence=occurrence, scope=scope)
@@ -473,7 +473,7 @@ def deleteOneReleve(id_releve, scope):
     :params int id_releve: ID of the releve to delete
 
     """
-    releve = TRelevesOccurrence.query.get_or_404(id_releve)
+    releve = db.get_or_404(TRelevesOccurrence, id_releve)
     if not releve.has_instance_permission(scope):
         raise Forbidden()
     db.session.delete(releve)
@@ -492,7 +492,7 @@ def deleteOneOccurence(id_occ, scope):
     :params int id_occ: ID of the occurrence to delete
 
     """
-    occ = TOccurrencesOccurrence.query.get_or_404(id_occ)
+    occ = db.get_or_404(TOccurrencesOccurrence, id_occ)
 
     if not occ.releve.has_instance_permission(scope):
         raise Forbidden()
@@ -514,7 +514,7 @@ def deleteOneOccurenceCounting(scope, id_count):
     :params int id_count: ID of the counting to delete
 
     """
-    ccc = CorCountingOccurrence.query.get_or_404(id_count)
+    ccc = db.get_or_404(CorCountingOccurrence, id_count)
     if not ccc.occurence.releve.has_instance_permission(scope):
         raise Forbidden
     DB.session.delete(ccc)
@@ -538,15 +538,15 @@ def getDefaultNomenclatures():
     group2_inpn = request.args.get("group2_inpn", "0")
     types = request.args.getlist("id_type")
 
-    q = db.session.query(
+    query = db.select(
         distinct(DefaultNomenclaturesValue.mnemonique_type),
         func.pr_occtax.get_default_nomenclature_value(
             DefaultNomenclaturesValue.mnemonique_type, organism, regne, group2_inpn
         ),
     )
     if len(types) > 0:
-        q = q.filter(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
-    data = q.all()
+        query = query.where(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
+    data = db.session.execute(query).all()
     if not data:
         raise NotFound
     return jsonify(dict(data))
