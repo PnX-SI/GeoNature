@@ -1,5 +1,6 @@
 -- Vue listant les observations pour l'export de la Synthèse
-CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
+DROP VIEW gn_synthese.v_synthese_for_export;
+CREATE VIEW gn_synthese.v_synthese_for_export AS
  SELECT 
     s.id_synthese AS id_synthese,
     s.date_min::date AS date_debut,
@@ -14,6 +15,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     t.regne AS regne,
     t.group1_inpn AS group1_inpn,
     t.group2_inpn AS group2_inpn,
+    t.group3_inpn AS group3_inpn,
     t.classe AS classe,
     t.ordre AS ordre,
     t.famille AS famille,
@@ -80,8 +82,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     s.meta_create_date AS date_creation,
     s.meta_update_date AS date_modification,
     s.additional_data as champs_additionnels,
-    COALESCE(s.meta_update_date, s.meta_create_date) AS derniere_action,
-    t.group3_inpn AS group3_inpn
+    COALESCE(s.meta_update_date, s.meta_create_date) AS derniere_action
    FROM gn_synthese.synthese s
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
@@ -120,20 +121,21 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
 
 -- Vue export des taxons de la synthèse
 -- Première version qui reste à affiner/étoffer
-CREATE OR REPLACE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
+DROP VIEW gn_synthese.v_synthese_taxon_for_export_view;
+CREATE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
  SELECT DISTINCT
     ref.nom_valide,
     ref.cd_ref,
     ref.nom_vern,
     ref.group1_inpn,
     ref.group2_inpn,
+    ref.group3_inpn,
     ref.regne,
     ref.phylum,
     ref.classe,
     ref.ordre,
     ref.famille,
-    ref.id_rang,
-    ref.group3_inpn
+    ref.id_rang
 FROM gn_synthese.synthese  s
 JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom
 JOIN taxonomie.taxref ref ON t.cd_ref = ref.cd_nom;
