@@ -47,7 +47,7 @@ export class MediaComponent implements OnInit {
     private _commonService: CommonService,
     private _dynformService: DynamicFormService,
     public config: ConfigService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.mediaFormDefinition = this._dynformService.formDefinitionsdictToArray(

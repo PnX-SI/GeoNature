@@ -29,7 +29,7 @@ export class DataFormService {
   constructor(
     private _http: HttpClient,
     public config: ConfigService
-  ) { }
+  ) {}
 
   getNomenclature(
     codeNomenclatureType: string,
@@ -543,7 +543,7 @@ export class DataFormService {
           this._blob = event.body;
         }
       },
-      (e: HttpErrorResponse) => { },
+      (e: HttpErrorResponse) => {},
       // response OK
       () => {
         const date = new Date();

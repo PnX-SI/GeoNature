@@ -90,7 +90,7 @@ export class ActorComponent implements OnInit {
     public dialog: MatDialog,
     private actorFormS: ActorFormService,
     public config: ConfigService
-  ) { }
+  ) {}
 
   ngOnInit() {
     if (!this.actorForm.get('id_organism').value && !this.actorForm.get('id_role').value) {
