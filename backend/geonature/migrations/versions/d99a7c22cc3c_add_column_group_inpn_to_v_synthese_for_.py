@@ -9,7 +9,7 @@ import importlib
 
 from alembic import op
 from sqlalchemy.sql import text
-
+from geonature.utils import alembic_utils
 
 # revision identifiers, used by Alembic.
 revision = "d99a7c22cc3c"
@@ -18,15 +18,19 @@ branch_labels = None
 depends_on = ("c4415009f164",)  # Taxref v15 db structure
 
 
+view_name = "gn_synthese.v_synthese_for_web_app"
+
+path_synthese = "geonature.migrations.data.core.gn_synthese"
+
+
+filename = "v_synthese_for_web_app_add_group_inpn_v1.0.2.sql"
+sql_text = text(importlib.resources.read_text(path_synthese, filename))
+v_synthese_for_web_app = alembic_utils.ReplaceableObject(view_name, sql_text)
+
+
 def upgrade():
-    conn = op.get_bind()
-    path = "geonature.migrations.data.core.gn_synthese"
-    filename = "v_synthese_for_web_app_add_group_inpn_v1.0.2.sql"
-    conn.execute(text(importlib.resources.read_text(path, filename)))
+    op.replace_view(v_synthese_for_web_app, replaces="446e902a14e7.v_synthese_for_web_app")
 
 
 def downgrade():
-    conn = op.get_bind()
-    path = "geonature.migrations.data.core.gn_synthese"
-    filename = "v_synthese_for_web_app_add_id_module_v1.0.1.sql"
-    conn.execute(text(importlib.resources.read_text(path, filename)))
+    op.replace_view(v_synthese_for_web_app, replace_with="446e902a14e7.v_synthese_for_web_app")
