@@ -20,5 +20,5 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v3
       - name: Frontend code formatting check (Prettier)
-        run: npm install prettier && npm run format:check
+        run: npm install prettier@~3.1.0 && npm run format:check
         working-directory: ./frontend
