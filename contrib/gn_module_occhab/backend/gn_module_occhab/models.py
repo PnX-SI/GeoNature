@@ -41,6 +41,7 @@ cor_station_observer = db.Table(
 
 class StationSelect(GeoFeatureCollectionMixin, CustomSelect):
     inherit_cache = True
+
     def filter_by_params(self, params):
         qs = self
         id_dataset = params.get("id_dataset", type=int)
@@ -67,7 +68,9 @@ class StationSelect(GeoFeatureCollectionMixin, CustomSelect):
             self = self.filter(
                 sa.or_(
                     Station.observers.any(id_role=user.id_role),
-                    Station.id_dataset.in_([ds.id_dataset for ds in db.session.execute(ds_list).all()]),
+                    Station.id_dataset.in_(
+                        [ds.id_dataset for ds in db.session.execute(ds_list).all()]
+                    ),
                 )
             )
         return self

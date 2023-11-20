@@ -47,7 +47,7 @@ export class MediaComponent implements OnInit {
     private _commonService: CommonService,
     private _dynformService: DynamicFormService,
     public config: ConfigService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.mediaFormDefinition = this._dynformService.formDefinitionsdictToArray(
@@ -117,10 +117,10 @@ export class MediaComponent implements OnInit {
     return this.media.sent
       ? ''
       : this.mediaFormReadyToSend()
-      ? 'Veuillez valider le média en appuyant sur le bouton de validation'
-      : this.media.bFile
-      ? 'Veuillez compléter le formulaire et renseigner un fichier'
-      : 'Veuillez compléter le formulaire et Renseigner une URL valide';
+        ? 'Veuillez valider le média en appuyant sur le bouton de validation'
+        : this.media.bFile
+          ? 'Veuillez compléter le formulaire et renseigner un fichier'
+          : 'Veuillez compléter le formulaire et Renseigner une URL valide';
   }
 
   /**

@@ -121,7 +121,10 @@ def get_station(id_station, scope):
                 joinedload(Station.dataset),
                 joinedload(Station.habitats).options(
                     joinedload(OccurenceHabitat.habref),
-                    *[joinedload(getattr(OccurenceHabitat, nomenc)) for nomenc in OccurenceHabitat.__nomenclatures__],
+                    *[
+                        joinedload(getattr(OccurenceHabitat, nomenc))
+                        for nomenc in OccurenceHabitat.__nomenclatures__
+                    ],
                 ),
                 *[joinedload(getattr(Station, nomenc)) for nomenc in Station.__nomenclatures__],
             )
@@ -185,9 +188,11 @@ def create_or_update_station(id_station=None):
     station = station_schema.load(request.json)
     if id_station and not station.has_instance_permission(scope):
         raise Forbidden("You do not have access to this station.")
-    dataset = db.session.scalars(
-        db.select(Dataset).filter_by(id_dataset=station.id_dataset)
-    ).unique().one_or_none()
+    dataset = (
+        db.session.scalars(db.select(Dataset).filter_by(id_dataset=station.id_dataset))
+        .unique()
+        .one_or_none()
+    )
     if dataset is None:
         raise BadRequest("Unexisting dataset")
     if not dataset.has_instance_permission(scopes["C"]):
@@ -246,10 +251,10 @@ def export_all_habitats(
             if db_col.key != "geometry":
                 db_cols_for_shape.append(db_col)
             columns_to_serialize.append(db_col.key)
-    results = (
-        db.session.scalars(db.session.select(export_view.tableDef)
+    results = db.session.scalars(
+        db.session.select(export_view.tableDef)
         .filter(export_view.tableDef.columns.id_station.in_(data["idsStation"]))
-        .limit(blueprint.config["NB_MAX_EXPORT"]))
+        .limit(blueprint.config["NB_MAX_EXPORT"])
     )
     if export_format == "csv":
         formated_data = [export_view.as_dict(d, fields=[]) for d in results]

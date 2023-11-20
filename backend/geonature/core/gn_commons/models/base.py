@@ -218,7 +218,7 @@ class TValidations(DB.Model):
     validation_label = DB.relationship(
         TNomenclatures,
         foreign_keys=[id_nomenclature_valid_status],
-        overlaps="nomenclature_valid_status"  # overlaps expected
+        overlaps="nomenclature_valid_status",  # overlaps expected
     )
 
 
