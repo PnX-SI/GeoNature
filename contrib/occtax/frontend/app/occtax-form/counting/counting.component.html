@@ -35,37 +35,37 @@
 </small>
 
 <div class="row">
-
-  <div 
-    *ngIf="config.OCCTAX.form_fields.count_min" 
-    class="col-3"
-  >
-    <small> {{ 'Counting.NumberMin' | translate }} </small>
-    <input
-      data-qa="counting-count-min"
-      class="form-control form-control-sm"
-      type="number"
-      min="0"
-      [ngClass]="{'is-invalid': form.hasError('invalidCount')}"
-      [formControl]="form.get('count_min')"
-    >
-  </div>
-
-  <div 
-    *ngIf="config.OCCTAX.form_fields.count_max" 
-    class="col-3"
-  >
-    <small> {{ 'Counting.NumberMax' | translate }} </small>
-    <input
-      data-qa="counting-count-max"
-      class="form-control form-control-sm"
-      type="number"
-      min="0"
-      [ngClass]="{'is-invalid': form.hasError('invalidCount')}"
-      [formControl]="form.get('count_max')"
-    >
+  <div class="col-6">
+    <div class="row">
+      <div 
+        *ngIf="config.OCCTAX.form_fields.count_min" 
+        class="col-6"
+      >
+        <small> {{ 'Counting.NumberMin' | translate }} </small>
+        <input
+          data-qa="counting-count-min"
+          class="form-control form-control-sm"
+          type="number"
+          min="0"
+          [formControl]="form.get('count_min')"
+        >
+      </div>
+      <div 
+        *ngIf="config.OCCTAX.form_fields.count_max" 
+        class="col-6"
+      >
+        <small> {{ 'Counting.NumberMax' | translate }} </small>
+        <input
+          data-qa="counting-count-max"
+          class="form-control form-control-sm"
+          type="number"
+          min="0"
+          [formControl]="form.get('count_max')"
+        >
+      </div>
+    </div>
     <small
-      *ngIf="form.hasError('invalidCount')"
+      *ngIf="form.hasError(ValidationErrorsId.MIN_GREATER_THAN_MAX)"
       class="error"
       style="color:red"
     >
