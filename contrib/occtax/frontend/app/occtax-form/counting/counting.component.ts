@@ -8,7 +8,7 @@ import { OcctaxFormOccurrenceService } from '../occurrence/occurrence.service';
 import { OcctaxFormCountingService } from './counting.service';
 import { ConfigService } from '@geonature/services/config.service';
 
-import { ValidationErrorsId } from '@geonature/services/validators/validation-errors-id'
+import { ValidationErrorsId } from '@geonature/services/validators/validation-errors-id';
 
 @Component({
   selector: 'pnx-occtax-form-counting',
@@ -37,7 +37,7 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
     private occtaxFormCountingService: OcctaxFormCountingService,
     public config: ConfigService
   ) {}
-  
+
   // Expose enum to html
   ValidationErrorsId = ValidationErrorsId;
 

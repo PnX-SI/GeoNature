@@ -6,22 +6,19 @@ import { ValidationErrorsId } from './validation-errors-id';
 // ////////////////////////////////////////////////////////////////////////////
 
 function buildValidationErrors(errorName: string): ValidationErrors {
-  return { [errorName]: true }
+  return { [errorName]: true };
 }
 
-function addErrorToControl(control: AbstractControl, validationErrorsId: ValidationErrorsId){
+function addErrorToControl(control: AbstractControl, validationErrorsId: ValidationErrorsId) {
   control.setErrors({
     ...control.errors,
-    ...buildValidationErrors(validationErrorsId)
+    ...buildValidationErrors(validationErrorsId),
   });
 }
 
-function removeErrorFromControl(control: AbstractControl, validationErrorsId: ValidationErrorsId){
-  if(control.errors) {
-    const {
-      [validationErrorsId]: ignored,
-      ...errors
-    } = control.errors
+function removeErrorFromControl(control: AbstractControl, validationErrorsId: ValidationErrorsId) {
+  if (control.errors) {
+    const { [validationErrorsId]: ignored, ...errors } = control.errors;
     control.setErrors(Object.keys(errors).length ? errors : null);
   }
 }
@@ -35,7 +32,9 @@ export function arrayMinLengthValidator(arrayLength: number): ValidatorFn {
     if (!control.value) {
       return buildValidationErrors(ValidationErrorsId.ARRAY_MIN_LENGTH_ERROR);
     }
-    return control.value.length >= arrayLength ? null : buildValidationErrors(ValidationErrorsId.ARRAY_MIN_LENGTH_ERROR);
+    return control.value.length >= arrayLength
+      ? null
+      : buildValidationErrors(ValidationErrorsId.ARRAY_MIN_LENGTH_ERROR);
   };
 }
 
@@ -51,7 +50,10 @@ export function isObjectValidator(): ValidatorFn {
 // Group Error
 // ////////////////////////////////////////////////////////////////////////////
 
-export function similarValidator(passControlName: string, passControlConfirmName: string): ValidatorFn {
+export function similarValidator(
+  passControlName: string,
+  passControlConfirmName: string
+): ValidatorFn {
   return (group: UntypedFormGroup): ValidationErrors | null => {
     const passControl = group.get(passControlName);
     const confirmPassControl = group.get(passControlConfirmName);
@@ -62,26 +64,30 @@ export function similarValidator(passControlName: string, passControlConfirmName
   };
 }
 
-export function minBelowMaxValidator(minControlName: string, maxControlName: string, updateControlsError: boolean = true): ValidatorFn {
+export function minBelowMaxValidator(
+  minControlName: string,
+  maxControlName: string,
+  updateControlsError: boolean = true
+): ValidatorFn {
   return (group: UntypedFormGroup): ValidationErrors | null => {
     const minControl = group.get(minControlName);
     const maxControl = group.get(maxControlName);
     // Ensure that controls are found
-    if(!minControl || !maxControl){
+    if (!minControl || !maxControl) {
       return null;
     }
 
     // Adjust max control errors - remove invalidCount
-    if( (minControl.errors && !minControl.hasError(ValidationErrorsId.MIN_GREATER_THAN_MAX)) ){
-      if(updateControlsError) {
+    if (minControl.errors && !minControl.hasError(ValidationErrorsId.MIN_GREATER_THAN_MAX)) {
+      if (updateControlsError) {
         removeErrorFromControl(maxControl, ValidationErrorsId.MIN_GREATER_THAN_MAX);
       }
       return null;
     }
 
     // Adjust min control errors - remove invalidCount
-    if( (maxControl.errors && !maxControl.hasError(ValidationErrorsId.MIN_GREATER_THAN_MAX)) ){
-      if(updateControlsError) {
+    if (maxControl.errors && !maxControl.hasError(ValidationErrorsId.MIN_GREATER_THAN_MAX)) {
+      if (updateControlsError) {
         removeErrorFromControl(minControl, ValidationErrorsId.MIN_GREATER_THAN_MAX);
       }
       return null;
@@ -89,15 +95,14 @@ export function minBelowMaxValidator(minControlName: string, maxControlName: str
 
     // Check values
     if (Number.isInteger(minControl.value) && Number.isInteger(maxControl.value)) {
-      if(minControl.value > maxControl.value){
-        if(updateControlsError){
+      if (minControl.value > maxControl.value) {
+        if (updateControlsError) {
           addErrorToControl(minControl, ValidationErrorsId.MIN_GREATER_THAN_MAX);
           addErrorToControl(maxControl, ValidationErrorsId.MIN_GREATER_THAN_MAX);
         }
         return buildValidationErrors(ValidationErrorsId.MIN_GREATER_THAN_MAX);
-      }
-      else {
-        if(updateControlsError){
+      } else {
+        if (updateControlsError) {
           removeErrorFromControl(minControl, ValidationErrorsId.MIN_GREATER_THAN_MAX);
           removeErrorFromControl(maxControl, ValidationErrorsId.MIN_GREATER_THAN_MAX);
         }
@@ -105,5 +110,5 @@ export function minBelowMaxValidator(minControlName: string, maxControlName: str
       }
     }
     return null;
-  }
+  };
 }
