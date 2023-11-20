@@ -52,7 +52,6 @@
   <!-- cellClass is use for test, the "data-qa" attr do not work because the html is generated -->
   <ngx-datatable-column
     *ngFor="let col of SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND"
-    [comparator]="dateComparator"
     [maxWidth]="col.max_width"
     [name]="col.name"
     [prop]="col.prop"
