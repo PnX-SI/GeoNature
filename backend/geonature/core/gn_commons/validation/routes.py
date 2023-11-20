@@ -9,7 +9,7 @@ from utils_flask_sqla.response import json_resp
 from geonature.core.gn_commons.models import TValidations
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.utils.env import DB
-from utils_flask_sqla.utils import test_is_uuid
+from utils_flask_sqla.utils import is_uuid
 
 
 from ..routes import routes
@@ -22,7 +22,7 @@ log = logging.getLogger()
 @json_resp
 def get_hist(uuid_attached_row):
     # Test if uuid_attached_row is uuid
-    if not test_is_uuid(uuid_attached_row):
+    if not is_uuid(uuid_attached_row):
         raise BadRequest("Value error uuid_attached_row is not valid")
 
     data = (
