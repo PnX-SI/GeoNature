@@ -45,10 +45,11 @@ jobs:
         working-directory: ./frontend
         run: npm run docBuild
 
+      - name: Install python dependencies
+        run: pip install .[docs]
+
       - name: Build and Commit
         uses: sphinx-notes/pages@v2
-        with:
-          requirements_path: docs/requirements.txt
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
 
