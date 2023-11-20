@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators, AbstractControl } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Observable, Subscription, Subject, combineLatest, of } from 'rxjs';
 import { map, filter, tap, switchMap, pairwise } from 'rxjs/operators';
 import _ from 'lodash';
@@ -10,7 +10,7 @@ import { OcctaxFormParamService } from '../form-param/form-param.service';
 import { MediaService } from '@geonature_common/service/media.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { OcctaxFormCountingsService } from './countings.service';
-
+import { minBelowMaxValidator } from '@geonature/services/validators';
 @Injectable()
 export class OcctaxFormCountingService {
   counting: Subject<any[]> = new Subject();
@@ -37,19 +37,22 @@ export class OcctaxFormCountingService {
    * Cette fonction est appelée par occurrence.service
    */
   initForm(): void {
-    this.form = this.fb.group({
-      id_counting_occtax: null,
-      id_nomenclature_life_stage: [null, Validators.required],
-      id_nomenclature_sex: [null, Validators.required],
-      id_nomenclature_obj_count: [null, Validators.required],
-      id_nomenclature_type_count: null,
-      count_min: [null, [Validators.required, Validators.pattern('[0-9]+')]],
-      count_max: [null, [Validators.required, Validators.pattern('[0-9]+')]],
-      medias: [[], this.mediaService.mediasValidator()],
-      additional_fields: this.fb.group({}),
-    });
-
-    this.form.setValidators([this.countingValidator]);
+    this.form = this.fb.group(
+      {
+        id_counting_occtax: null,
+        id_nomenclature_life_stage: [null, Validators.required],
+        id_nomenclature_sex: [null, Validators.required],
+        id_nomenclature_obj_count: [null, Validators.required],
+        id_nomenclature_type_count: null,
+        count_min: [null, [Validators.required, Validators.pattern('[0-9]+')]],
+        count_max: [null, [Validators.required, Validators.pattern('[0-9]+')]],
+        medias: [[], this.mediaService.mediasValidator()],
+        additional_fields: this.fb.group({}),
+      },
+      {
+        validators: [minBelowMaxValidator('count_min', 'count_max')],
+      }
+    );
     this.occtaxFormOccurrenceService.addCountingForm(this.form);
   }
 
@@ -103,15 +106,6 @@ export class OcctaxFormCountingService {
         map(([count_min_prev, count_min_new]) => count_min_new)
       )
       .subscribe((count_min) => this.form.get('count_max').setValue(count_min));
-  }
-
-  countingValidator(countForm: AbstractControl): { [key: string]: boolean } {
-    const countMin = countForm.get('count_min').value;
-    const countMax = countForm.get('count_max').value;
-    if (countMin && countMax) {
-      return countMin > countMax ? { invalidCount: true } : null;
-    }
-    return null;
   }
 
   private get defaultValues(): Observable<any> {
