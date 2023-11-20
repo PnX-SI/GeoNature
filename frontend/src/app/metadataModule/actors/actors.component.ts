@@ -137,8 +137,8 @@ export class ActorComponent implements OnInit {
       this.actorForm.get('id_organism').value && this.actorForm.get('id_role').value
         ? 'all'
         : this.actorForm.get('id_role').value
-        ? 'person'
-        : 'organism';
+          ? 'person'
+          : 'organism';
 
     this.toggleActorOrganismChoiceChange({ value: btn });
   }

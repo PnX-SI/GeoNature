@@ -66,8 +66,8 @@
     "@types/node": "^18.0.0",
     "cypress": "^13.4.0",
     "cypress-promise": "^1.1.0",
-    "prettier": "^3.0.0",
-    "typescript": "4.9.4",
-    "@compodoc/compodoc": "^1.1.22"
+    "@compodoc/compodoc": "^1.1.22",
+    "prettier": "~3.1.0",
+    "typescript": "4.9.4"
   }
 }
