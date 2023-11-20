@@ -37,19 +37,22 @@ export class OcctaxFormCountingService {
    * Cette fonction est appelée par occurrence.service
    */
   initForm(): void {
-    this.form = this.fb.group({
-      id_counting_occtax: null,
-      id_nomenclature_life_stage: [null, Validators.required],
-      id_nomenclature_sex: [null, Validators.required],
-      id_nomenclature_obj_count: [null, Validators.required],
-      id_nomenclature_type_count: null,
-      count_min: [null, [Validators.required, Validators.pattern('[0-9]+')]],
-      count_max: [null, [Validators.required, Validators.pattern('[0-9]+')]],
-      medias: [[], this.mediaService.mediasValidator()],
-      additional_fields: this.fb.group({}),
-    }, {
-      validators: [minBelowMaxValidator("count_min", "count_max")],
-    });
+    this.form = this.fb.group(
+      {
+        id_counting_occtax: null,
+        id_nomenclature_life_stage: [null, Validators.required],
+        id_nomenclature_sex: [null, Validators.required],
+        id_nomenclature_obj_count: [null, Validators.required],
+        id_nomenclature_type_count: null,
+        count_min: [null, [Validators.required, Validators.pattern('[0-9]+')]],
+        count_max: [null, [Validators.required, Validators.pattern('[0-9]+')]],
+        medias: [[], this.mediaService.mediasValidator()],
+        additional_fields: this.fb.group({}),
+      },
+      {
+        validators: [minBelowMaxValidator('count_min', 'count_max')],
+      }
+    );
     this.occtaxFormOccurrenceService.addCountingForm(this.form);
   }
 
