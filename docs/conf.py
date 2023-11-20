@@ -43,7 +43,7 @@ extensions = [
 
 ## AUTOAPI
 extensions.append("autoapi.extension")
-autoapi_dirs = ["../backend/geonature"]
+autoapi_dirs = ["../backend/geonature", "../backend/dependencies"]
 autoapi_ignore = ["*migrations*", "*tests*"]
 autoapi_add_toctree_entry = False
 
