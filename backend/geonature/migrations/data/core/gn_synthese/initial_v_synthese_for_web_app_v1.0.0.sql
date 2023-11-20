@@ -1,5 +1,3 @@
-DROP VIEW gn_synthese.v_synthese_for_web_app;
-CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
 SELECT s.id_synthese,
     s.unique_id_sinp,
     s.unique_id_sinp_grp,
