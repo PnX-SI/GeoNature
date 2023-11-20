@@ -713,7 +713,6 @@ class TestSynthese:
             '"nom_vern"',
             '"group1_inpn"',
             '"group2_inpn"',
-            '"group3_inpn"',
             '"regne"',
             '"phylum"',
             '"classe"',
