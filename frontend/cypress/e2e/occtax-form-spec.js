@@ -27,8 +27,8 @@ describe('Testing adding an observation in OccTax', {testIsolation: false}, () =
   beforeEach(() => {
     cy.geonatureLogin();
   });
-  
-  
+
+
   it('should not be possible to add data if any geometry had been selected', () => {
     cy.visit('/#/occtax');
     cy.get("[data-qa='gn-occtax-btn-add-releve']").click();
@@ -221,7 +221,7 @@ describe('Testing adding an observation in OccTax', {testIsolation: false}, () =
     const nomValideResult = cy.get("[data-qa='occurrence-nom-valide']");
     nomValideResult.contains('Canis lupus');
     cy.get('[data-qa="occurrence-add-btn"]').should('be.enabled');
-  
+
 
     cy.get(
       '[data-qa="pnx-nomenclature-meth-obs"] > ng-select > div > span.ng-clear-wrapper.ng-star-inserted'
@@ -274,7 +274,7 @@ describe('Testing adding an observation in OccTax', {testIsolation: false}, () =
   });
 
 
-  it('Should autocompete count max with count min value', () => {
+  it('Should autocomplete count max with count min value', () => {
     // HACK : must reselect countin min from selector otherwise it clear the wrong input (?!) ...
     cy.get("[data-qa='counting-count-min']").should('have.value', 1);
     cy.get("[data-qa='counting-count-max']").should('have.value', 1);
@@ -292,6 +292,29 @@ describe('Testing adding an observation in OccTax', {testIsolation: false}, () =
     cy.get("[data-qa='counting-count-max']").should('have.value', 2);
   });
 
+  it('Should display error when count min is greater than count max', () => {
+    // 1 <= 1: no error
+    cy.get("[data-qa='counting-count-min']").clear();
+    cy.get("[data-qa='counting-count-min']").type(1);
+    cy.get("[data-qa='counting-count-max']").clear();
+    cy.get("[data-qa='counting-count-max']").type(1);
+    cy.get("[data-qa='counting-count-min-gth-max-error']").should('not.exist');
+
+    // 1 <= 0: error
+    cy.get("[data-qa='counting-count-min']").clear();
+    cy.get("[data-qa='counting-count-min']").type(1);
+    cy.get("[data-qa='counting-count-max']").clear();
+    cy.get("[data-qa='counting-count-max']").type(0);
+    cy.get("[data-qa='counting-count-min-gth-max-error']").should('exist');
+
+    // 0 <= 0: error
+    cy.get("[data-qa='counting-count-min']").clear();
+    cy.get("[data-qa='counting-count-min']").type(0);
+    cy.get("[data-qa='counting-count-max']").clear();
+    cy.get("[data-qa='counting-count-max']").type(0);
+    cy.get("[data-qa='counting-count-min-gth-max-error']").should('not.exist');
+  });
+
   it('Should submit an occurrence and check occurrence list', () => {
     cy.get("[data-qa='occurrence-add-btn']").click({ force: true });
     //Should save the good taxa
@@ -301,7 +324,7 @@ describe('Testing adding an observation in OccTax', {testIsolation: false}, () =
     cy.get('[data-qa="pnx-occtax-taxon-form-taxa-name-0"]').should('have.text', taxaNameRef);
     //Should display good taxa's name
       cy.get('[data-qa="pnx-occtax-taxon-form-taxa-name-0"]').should('have.text', taxaNameRef);
-      
+
   });
 
   it('Should close observation', () => {
