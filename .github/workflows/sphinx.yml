@@ -1,6 +1,6 @@
 name: "Build Sphinx Documentation"
 
-on: 
+on:
   release:
     types: [published]
 
@@ -24,20 +24,37 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-    - uses: actions/setup-python@v4
-      with:
-        python-version: 3.9
-    - uses: actions/checkout@master
-      with:
-        fetch-depth: 0
-    - name: Build and Commit
-      uses: sphinx-notes/pages@v2
-      with:
-        requirements_path: docs/requirements.txt
-      env:
-        GEONATURE_CONFIG_FILE: config/test_config.toml
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: gh-pages
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 0
+          ref: update-doc
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/gallium
+
+      - name: Install JS librairies
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Build JS documentation
+        working-directory: ./frontend
+        run: npm run docBuild
+
+      - name: Install python dependencies
+        run: pip install .[docs]
+
+      - name: Build and Commit
+        uses: sphinx-notes/pages@v2
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages

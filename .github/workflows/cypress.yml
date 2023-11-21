@@ -127,7 +127,6 @@ jobs:
           working-directory: ./frontend
           start: npm run start
           wait-on: http://127.0.0.1:4200
-          headless: true
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
