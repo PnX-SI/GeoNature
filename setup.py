@@ -40,8 +40,9 @@ setuptools.setup(
         "doc": [
             "sphinx",
             "sphinx_rtd_theme",
-            "sphinxcontrib-httpdomain",
             "sphinxcontrib-websupport",
+            "myst-parser",
+            "sphinx-autoapi",
         ],
     },
     classifiers=[

@@ -11,3 +11,5 @@ Bienvenue dans la documentation de GeoNature
    FAQ
    authors
    CHANGELOG
+   api-references
+
