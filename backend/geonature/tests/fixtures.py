@@ -1,6 +1,7 @@
 import json
 import datetime
 import tempfile
+from warnings import warn
 
 from PIL import Image
 import pytest
@@ -67,11 +68,34 @@ __all__ = [
 ]
 
 
+class GeoNatureClient(JSONClient):
+    def open(self, *args, **kwargs):
+        assert not (
+            db.session.new | db.session.dirty | db.session.deleted
+        ), "Call db.session.flush() to make your db changes visible before calling any routes"
+        response = super().open(*args, **kwargs)
+        if response.status_code == 200:
+            if db.session.new | db.session.dirty | db.session.deleted:
+                warn(
+                    f"Route returned 200 with uncommited changes: new: {db.session.new} – dirty: {db.session.dirty} – deleted: {db.session.deleted}"
+                )
+        else:
+            for obj in db.session.new:
+                db.session.expunge(obj)
+            # Note: we re-add deleted objects **before** expiring dirty objects,
+            # because deleted objects may have been also modified.
+            for obj in db.session.deleted:
+                db.session.add(obj)
+            for obj in db.session.dirty:
+                db.session.expire(obj)
+        return response
+
+
 @pytest.fixture(scope="session", autouse=True)
 def app():
     app = create_app()
     app.testing = True
-    app.test_client_class = JSONClient
+    app.test_client_class = GeoNatureClient
     app.config["SERVER_NAME"] = "test.geonature.fr"  # required by url_for
 
     with app.app_context():
