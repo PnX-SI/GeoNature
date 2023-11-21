@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask import current_app, g
-from marshmallow import pre_load, post_load, pre_dump, fields, ValidationError
+from marshmallow import pre_load, post_load, pre_dump, post_dump, fields, ValidationError
 from marshmallow_sqlalchemy.convert import ModelConverter as BaseModelConverter
 from shapely.geometry import shape
 from geoalchemy2.shape import to_shape, from_shape
@@ -20,9 +20,10 @@ from pypnusershub.db.models import User
 from pypn_habref_api.schemas import HabrefSchema
 
 
-@pre_dump
+@post_dump
 def remove_additional_none_val(self, data, **kwargs):
-    data.additional_fields = data.additional_fields if data.additional_fields else {}
+    if "additional_fields" in data and data["additional_fields"] is None:
+        data["additional_fields"] = {}
     return data
 
 
@@ -128,7 +129,7 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
     @pre_load
     def make_releve(self, data, **kwargs):
         data["id_module"] = g.current_module.id_module
-        if data.get("observers") is None:
+        if "observers" in data and data["observers"] is None:
             data["observers"] = []
         if data.get("id_releve_occtax") is None:
             data.pop("id_releve_occtax", None)
