@@ -157,7 +157,7 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
 
     id_habitat = db.Column(db.Integer, primary_key=True)
     id_station = db.Column(db.Integer, ForeignKey(Station.id_station), nullable=False)
-    station = db.relationship(Station, lazy="joined", back_populates="habitats")
+    station = db.relationship(Station, lazy="joined", back_populates="habitats")  # TODO: remove joined
     unique_id_sinp_hab = db.Column(
         UUID(as_uuid=True),
         default=select(func.uuid_generate_v4()),

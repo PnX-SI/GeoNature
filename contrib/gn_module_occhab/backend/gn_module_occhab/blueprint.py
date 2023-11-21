@@ -166,37 +166,30 @@ def create_or_update_station(id_station=None):
     """
     scopes = get_scopes_by_action(module_code="OCCHAB")
     if id_station is None:
-        action = "C"
+        station = None  # Station()
+        if scopes["C"] < 1:
+            raise Forbidden(f"You do not have create permission on stations.")
     else:
-        action = "U"
-    scope = scopes[action]
-    if scope < 1:
-        raise Forbidden(f"You do not have {action} permission on stations.")
+        station = db.session.get(Station, id_station)
+        if not station.has_instance_permission(scopes["U"]):
+            raise Forbidden("You do not have update permission on this station.")
     # Allows habitats
     # Allows only observers.id_role
     # Dataset are not accepted as we expect id_dataset on station directly
     station_schema = StationSchema(
         only=["habitats", "observers.id_role"],
-        dump_only=["habitats.id_station"],
+        dump_only=["id_station", "habitats.id_station"],
         unknown=EXCLUDE,
         as_geojson=True,
     )
-
-    if action == "U" and request.json["properties"]["id_station"] != id_station:
-        raise BadRequest("Unmatching id_station.")
-
-    station = station_schema.load(request.json)
-    if id_station and not station.has_instance_permission(scope):
-        raise Forbidden("You do not have access to this station.")
-    dataset = (
-        db.session.scalars(db.select(Dataset).filter_by(id_dataset=station.id_dataset))
-        .unique()
-        .one_or_none()
-    )
-    if dataset is None:
-        raise BadRequest("Unexisting dataset")
-    if not dataset.has_instance_permission(scopes["C"]):
-        raise Forbidden("You do not have access to this dataset.")
+    station = station_schema.load(request.json, instance=station)
+    with db.session.no_autoflush:
+        # avoid flushing station.id_dataset before validating dataset!
+        dataset = db.session.get(Dataset, station.id_dataset)
+        if dataset is None:
+            raise BadRequest("Unexisting dataset")
+        if not dataset.has_instance_permission(scopes["C"]):
+            raise Forbidden("You do not have access to this dataset.")
     db.session.add(station)
     db.session.commit()
     return geojsonify(station_schema.dump(station))

@@ -157,7 +157,7 @@ class TestOcchab:
         response = self.client.get(url)
         assert response.status_code == 200
         response_station = StationSchema(
-            only=["observers", "dataset", "habitats"],
+            only=["id_station", "observers", "dataset", "habitats"],
             as_geojson=True,
         ).load(
             response.json,
@@ -231,25 +231,20 @@ class TestOcchab:
         assert response.status_code == 400, response.json
         assert "unexisting dataset" in response.json["description"].casefold(), response.json
 
-        # Try modify existing station
+        # Try leveraging create route to modify existing station: this should not works!
         data = deepcopy(feature)
         data["properties"]["id_station"] = station.id_station
-        response = self.client.post(
-            url_for(
-                "occhab.create_or_update_station",
-                id_station=station.id_station,
-            ),
-            data=data,
-        )
+        response = self.client.post(url, data=data)
+        assert response.status_code == 200, response.json
         db.session.refresh(station)
-        assert station.comment == "Une station"  # original comment
+        assert station.comment == "Ma super station"  # original comment of existing station
+        FeatureSchema().load(response.json)["id"] != station.id_station  # new id for new station
 
         # Try leveraging observers to modify existing user
         data = deepcopy(feature)
         data["properties"]["observers"][0]["nom_role"] = "nouveau nom"
         response = self.client.post(url, data=data)
         assert response.status_code == 200, response.json
-        db.session.refresh(users["user"])
         assert users["user"].nom_role != "nouveau nom"
 
         # Try associate other station habitat to this station
@@ -283,17 +278,27 @@ class TestOcchab:
         set_logged_user(self.client, users["user"])
 
         # Try modifying id_station
-        id_station = station.id_station
         data = deepcopy(feature)
+        id_station = station.id_station
         data["properties"]["id_station"] = station2.id_station
         data["properties"]["habitats"] = []
         assert len(station2.habitats) == 2
         id_habitats = [hab.id_habitat for hab in station2.habitats]
         response = self.client.post(url, data=data)
+        assert response.status_code == 200, response.json
+        FeatureSchema().load(response.json)["id"] == id_station  # not changed because read only
+        assert len(station.habitats) == 0  # station updated
+        assert len(station2.habitats) == 2  # station2 not changed
+
+        # Test modifying id dataset with unexisting id dataset
+        data = deepcopy(feature)
+        id_dataset = station.id_dataset
+        data["properties"]["id_dataset"] = -1
+        response = self.client.post(url, data=data)
         assert response.status_code == 400, response.json
-        assert "unmatching id_station" in response.json["description"].casefold(), response.json
-        # db.session.refresh(station2)
-        assert len(station2.habitats) == 2
+        assert "unexisting dataset" in response.json["description"].casefold(), response.json
+        station = db.session.get(Station, station.id_station)
+        assert station.id_dataset == id_dataset  # not changed
 
         # Try adding an occurence
         cd_hab_list = [occhab.cd_hab for occhab in OccurenceHabitat.query.all()]
@@ -333,33 +338,45 @@ class TestOcchab:
         assert habitat["nom_cite"] == "monde fantastique"
 
         # Try associate/modify other station habitat
-        habitat = feature["properties"]["habitats"][0]
-        habitat2 = station2.habitats[0]
-        habitat["id_habitat"] = habitat2.id_habitat
-        response = self.client.post(url, data=feature)
+        data = deepcopy(feature)
+        id_habitat_station2 = station2.habitats[0].id_habitat
+        data["properties"]["habitats"][0]["id_habitat"] = id_habitat_station2
+        response = self.client.post(url, data=data)
         assert response.status_code == 400, response.json
         assert (
             "habitat does not belong to this station" in response.json["description"].casefold()
         ), response.json
-        assert habitat2.id_station == station2.id_station
+        habitat_station2 = db.session.get(OccurenceHabitat, id_habitat_station2)
+        assert habitat_station2.id_station == station2.id_station
+        station = db.session.get(Station, station.id_station)
+        assert len(station.habitats) == 3
+        assert len(station2.habitats) == 2
 
-        # # Try re-create habitat
-        # data = deepcopy(feature)
-        # del data["properties"]["habitats"][1]["id_habitat"]
-        # response = self.client.post(url, data=data)
-        # assert response.status_code == 200, response.json
+        # Try re-create an habitat (remove old, add new)
+        data = deepcopy(feature)
+        keep_ids = {hab["id_habitat"] for hab in data["properties"]["habitats"][0:1]}
+        removed_id = data["properties"]["habitats"][2]["id_habitat"]
+        del data["properties"]["habitats"][2]["id_habitat"]
+        response = self.client.post(url, data=data)
+        assert response.status_code == 200, response.json
+        ids = set((hab.id_habitat for hab in station.habitats))
+        assert removed_id not in ids
+        assert keep_ids.issubset(ids)
+        assert len(station.habitats) == 3
 
-        # # Try associate other station habitat to this habitat
-        # data = deepcopy(feature)
-        # id_habitat = station2.habitats[0].id_habitat
-        # data["properties"]["habitats"][0]["id_habitat"] = id_habitat
-        # station2_habitats = {hab.id_habitat for hab in station2.habitats}
-        # response = self.client.post(url, data=data)
-        # assert response.status_code == 200, response.json
-        # feature = FeatureSchema().load(response.json)
-        # station = Station.query.get(feature["properties"]["id_station"])
-        # station_habitats = {hab.id_habitat for hab in station.habitats}
-        # assert station_habitats.isdisjoint(station2_habitats)
+        # Try associate other station habitat to this habitat
+        station_habitats = {hab.id_habitat for hab in station.habitats}
+        station2_habitats = {hab.id_habitat for hab in station2.habitats}
+        data = deepcopy(feature)
+        id_habitat = station2.habitats[0].id_habitat
+        data["properties"]["habitats"][0]["id_habitat"] = id_habitat
+        response = self.client.post(url, data=data)
+        assert response.status_code == 400, response.json
+        assert (
+            "habitat does not belong to this station" in response.json["description"].casefold()
+        ), response.json
+        assert station_habitats == {hab.id_habitat for hab in station.habitats}
+        assert station2_habitats == {hab.id_habitat for hab in station2.habitats}
 
     def test_delete_station(self, users, station):
         url = url_for("occhab.delete_station", id_station=station.id_station)
@@ -370,10 +387,16 @@ class TestOcchab:
         set_logged_user(self.client, users["noright_user"])
         response = self.client.delete(url)
         assert response.status_code == Forbidden.code
+        assert db.session.query(
+            Station.query.filter_by(id_station=station.id_station).exists()
+        ).scalar()
 
         set_logged_user(self.client, users["stranger_user"])
         response = self.client.delete(url)
         assert response.status_code == Forbidden.code
+        assert db.session.query(
+            Station.query.filter_by(id_station=station.id_station).exists()
+        ).scalar()
 
         set_logged_user(self.client, users["user"])
         response = self.client.delete(url)
