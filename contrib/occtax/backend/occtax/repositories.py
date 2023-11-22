@@ -70,7 +70,9 @@ class ReleveRepository:
         Return a prepared query filter with cruved authorization
         from a generic_table (a view)
         """
-        allowed_datasets = DB.session.scalars(TDatasets.select.filter_by_scope(scope)).all()
+        allowed_datasets = (
+            DB.session.scalars(TDatasets.select.filter_by_scope(scope)).unique().all()
+        )
         allowed_datasets = [dataset.id_dataset for dataset in allowed_datasets]
         q = DB.session.query(self.model.tableDef)
         if scope in (1, 2):

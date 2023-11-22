@@ -54,17 +54,37 @@ def insert_or_update_media(id_media=None):
 
     # gestion des parametres de route
     # @TODO utilisé quelque part ?
-    file = None
     if request.files:
         file = request.files["file"]
+    else:
+        file = None
 
-    data = request.get_json(silent=True)
+    data = {}
+    # Useful ? @jacquesfize YES ! -> used when add media when adding a taxon occurrence
     if request.form:
-        data = dict(request.form)
+        formData = dict(request.form)
+        for key in formData:
+            data[key] = formData[key]
+            if data[key] in ["null", "undefined"]:
+                data[key] = None
+            if isinstance(data[key], list):
+                data[key] = data[key][0]
+            if (
+                key in ["id_table_location", "id_nomenclature_media_type", "id_media"]
+                and data[key] is not None
+            ):
+                data[key] = int(data[key])
+            if data[key] == "true":
+                data[key] = True
+            if data[key] == "false":
+                data[key] = False
 
-    media = TMediaRepository(data=data, file=file, id_media=id_media).create_or_update_media()
+    else:
+        data = request.get_json(silent=True)
 
-    return media.as_dict()
+    m = TMediaRepository(data=data, file=file, id_media=id_media).create_or_update_media()
+
+    return m.as_dict()
 
 
 @routes.route("/media/<int:id_media>", methods=["DELETE"])
