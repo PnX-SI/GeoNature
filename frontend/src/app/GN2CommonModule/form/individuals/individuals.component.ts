@@ -22,7 +22,6 @@ export class IndividualsComponent implements OnInit {
 
   constructor(private modalService: NgbModal, private _individualsService: IndividualsService) {}
   ngOnInit(): void {
-    console.log(this.idList);
     this.getIndividuals().subscribe((data) => {
       this.values = data;
     });
