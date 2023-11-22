@@ -202,8 +202,15 @@ class TIndividuals(DB.Model):
         nullable=False,
     )
 
-    meta_create_date = DB.Column("meta_create_date", DB.DateTime(timezone=False), server_default=FetchedValue())
-    meta_update_date = DB.Column("meta_update_date", DB.DateTime(timezone=False), server_default=FetchedValue(), onupdate=datetime.now)
+    meta_create_date = DB.Column(
+        "meta_create_date", DB.DateTime(timezone=False), server_default=FetchedValue()
+    )
+    meta_update_date = DB.Column(
+        "meta_update_date",
+        DB.DateTime(timezone=False),
+        server_default=FetchedValue(),
+        onupdate=datetime.now,
+    )
 
     digitiser = DB.relationship(
         User,
