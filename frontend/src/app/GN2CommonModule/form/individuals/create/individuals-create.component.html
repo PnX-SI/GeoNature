@@ -29,7 +29,7 @@
     >
     </textarea>
     <pnx-taxonomy
-      *ngIf="cdNom === null"
+      *ngIf="cdNom === null || cdNom === undefined"
       label="Taxon"
       [parentFormControl]="form.get('cd_nom_temp')"
       [idList]="idList"
