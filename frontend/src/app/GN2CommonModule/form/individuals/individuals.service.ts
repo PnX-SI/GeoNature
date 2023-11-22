@@ -5,7 +5,10 @@ import { Individual } from './interfaces';
 
 @Injectable()
 export class IndividualsService {
-  constructor(private _http: HttpClient, public config: ConfigService) {}
+  constructor(
+    private _http: HttpClient,
+    public config: ConfigService
+  ) {}
 
   getIndividuals(idModule?: number) {
     let params: HttpParams = new HttpParams();

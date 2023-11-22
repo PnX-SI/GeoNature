@@ -20,9 +20,11 @@ export class IndividualsComponent implements OnInit {
   values: Individual[] = [];
   public modal: NgbModalRef;
 
-  constructor(private modalService: NgbModal, private _individualsService: IndividualsService) {}
+  constructor(
+    private modalService: NgbModal,
+    private _individualsService: IndividualsService
+  ) {}
   ngOnInit(): void {
-    console.log(this.idList);
     this.getIndividuals().subscribe((data) => {
       this.values = data;
     });
