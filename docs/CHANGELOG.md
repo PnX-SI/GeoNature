@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+2.14.0 (unreleased)
+-------------------
+
+**🐛 Corrections**
+
+- Tri de la liste de "Mes lieux" par ordre alphabétique (#2804, par @DonovanMaillard)
+
 2.13.3 (2023-10-17)
 -------------------
 
