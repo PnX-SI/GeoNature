@@ -267,7 +267,6 @@ def insertOrUpdateOneReleve():
         if "cor_counting_occtax" in occ:
             cor_counting_occtax = occ["cor_counting_occtax"]
             occ.pop("cor_counting_occtax")
-
         # Test et suppression
         #   des propriétés inexistantes de TOccurrencesOccurrence
         attliste = [k for k in occ]
@@ -292,7 +291,6 @@ def insertOrUpdateOneReleve():
             countingOccurrence = CorCountingOccurrence(**cnt)
             occtax.cor_counting_occtax.append(countingOccurrence)
         releve.t_occurrences_occtax.append(occtax)
-
     # if its a update
     if releve.id_releve_occtax:
         scope = get_scopes_by_action()["U"]
@@ -312,7 +310,6 @@ def insertOrUpdateOneReleve():
         releve.id_digitiser = g.current_user.id_role
         DB.session.add(releve)
     DB.session.commit()
-
     return releve.get_geofeature(depth=depth)
 
 

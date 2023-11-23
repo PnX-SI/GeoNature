@@ -29,6 +29,67 @@ from occtax.schemas import OccurrenceSchema, ReleveSchema
 def occtax_module():
     return TModules.query.filter_by(module_code="OCCTAX").one()
 
+# @pytest.fixture()
+# def releve_mobile_data(client, datasets):
+#     """
+#     Releve associated with dataset created by "user"
+#     """
+#     # mnemonique_types = 
+#     id_dataset = datasets["own_dataset"].id_dataset
+#     id_nomenclature_grp_typ = (
+#         DefaultNomenclaturesValue.query.filter_by(mnemonique_type="TYP_GRP")
+#         .with_entities(DefaultNomenclaturesValue.id_nomenclature)
+#         .scalar()
+#     )
+#     print("id_dataset")
+#     print(id_dataset)
+#     print("id_dataset")
+#     data = {
+#         "depth": 2,
+#         "geometry": {
+#             "type": "Point",
+#             "coordinates": [3.428936004638672, 44.276611357355904],
+#         },
+#         "properties": {
+#             "id_dataset": id_dataset,
+#             "id_digitiser": 1,
+#             "date_min": "2018-03-02",
+#             "date_max": "2018-03-02",
+#             "altitude_min": 1000,
+#             "altitude_max": 1200,
+#             "meta_device_entry": "web",
+#             "observers": [1],
+#             "observers_txt": "tatatato",
+#             "id_nomenclature_grp_typ": id_nomenclature_grp_typ,
+#             "t_occurrences_occtax": [
+#                     {
+#                         # "id_nomenclature_obs_technique": 41,
+#                         # "id_nomenclature_bio_condition": 155,
+#                         # "id_nomenclature_bio_status": 29,
+#                         # "id_nomenclature_naturalness": 160,
+#                         # "id_nomenclature_exist_proof": 80,
+#                         # "id_nomenclature_observation_status": 85,
+#                         # "id_nomenclature_blurring": 174,
+#                         # "id_nomenclature_source_status": 73,
+#                         # "id_nomenclature_determination_method": 451,
+#                         "cd_nom": 67111,
+#                         "nom_cite": "Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]",
+#                         "cor_counting_occtax": [
+#                             {
+#                                 "id_nomenclature_life_stage": 1,
+#                                 "id_nomenclature_sex": 168,
+#                                 "id_nomenclature_obj_count": 146,
+#                                 "id_nomenclature_type_count": 91,
+#                                 "count_min": 1,
+#                                 "count_max": 1
+#                             }
+#                         ]
+#                     }
+#                 ]
+#         },
+#     }
+
+#     return data
 
 @pytest.fixture()
 def releve_data(client, datasets):
@@ -173,6 +234,41 @@ class TestOcctax:
             int(releve_json["id"]) for releve_json in json_resp["items"]["features"]
         ]
 
+    def test_get_one_releve(self, users, releve_occtax):
+        set_logged_user(self.client, users["noright_user"])
+        response = self.client.get(
+            url_for(
+                "pr_occtax.getOneReleve",
+                id_releve=releve_occtax.id_releve_occtax
+            )
+        )
+        assert response.status_code == Forbidden.code
+        set_logged_user(self.client, users["user"])
+        response = self.client.get(
+            url_for(
+                "pr_occtax.getOneReleve",
+                id_releve=releve_occtax.id_releve_occtax
+            )
+        )
+        assert response.status_code == 200
+        
+    # def test_create_releve(self, users, releve_mobile_data):
+    #     set_logged_user(self.client, users["user"])
+    #     self.client.post(url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data)
+    #     assert response.status_code == 200
+
+    def test_update_releve(self, users, releve_occtax, releve_data):
+        set_logged_user(self.client, users["user"])
+        response = self.client.post(url_for("pr_occtax.updateReleve", id_releve=releve_occtax.id_releve_occtax), json=releve_data)
+        assert response.status_code == 200
+        response = self.client.post(url_for("pr_occtax.updateReleve", id_releve=0), json=releve_data)
+        assert response.status_code == 404
+
+    def test_delete_releve(self, users, releve_occtax):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.delete(url_for("pr_occtax.deleteOneReleve", id_releve=releve_occtax.id_releve_occtax))
+        assert response.status_code == 200
+
     def test_post_releve(self, users, releve_data):
         # post with cruved = C = 2
         set_logged_user(self.client, users["user"])
@@ -241,7 +337,14 @@ class TestOcctax:
         assert response.status_code == 200
 
     def test_get_one_counting(self, occurrence, users):
-        print(occurrence.cor_counting_occtax)
+        response = self.client.get(
+            url_for(
+                "pr_occtax.getOneCounting",
+                id_counting=occurrence.cor_counting_occtax[0].id_counting_occtax,
+            )
+        )
+        assert response.status_code == Unauthorized.code
+
         set_logged_user(self.client, users["admin_user"])
         response = self.client.get(
             url_for(
