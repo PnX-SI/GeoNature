@@ -99,7 +99,7 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
 
   fetchPlaces() {
     this._dfs.getPlaces().subscribe((res) => {
-      this.places = res.sort((a,b) => a.properties.place_name > b.properties.place_name ? 1 : -1);
+      this.places = res;
       if (this.places.length > 0) {
         this.place = this.places[0];
       } else {
