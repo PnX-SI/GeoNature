@@ -29,67 +29,61 @@ from occtax.schemas import OccurrenceSchema, ReleveSchema
 def occtax_module():
     return TModules.query.filter_by(module_code="OCCTAX").one()
 
-# @pytest.fixture()
-# def releve_mobile_data(client, datasets):
-#     """
-#     Releve associated with dataset created by "user"
-#     """
-#     # mnemonique_types = 
-#     id_dataset = datasets["own_dataset"].id_dataset
-#     id_nomenclature_grp_typ = (
-#         DefaultNomenclaturesValue.query.filter_by(mnemonique_type="TYP_GRP")
-#         .with_entities(DefaultNomenclaturesValue.id_nomenclature)
-#         .scalar()
-#     )
-#     print("id_dataset")
-#     print(id_dataset)
-#     print("id_dataset")
-#     data = {
-#         "depth": 2,
-#         "geometry": {
-#             "type": "Point",
-#             "coordinates": [3.428936004638672, 44.276611357355904],
-#         },
-#         "properties": {
-#             "id_dataset": id_dataset,
-#             "id_digitiser": 1,
-#             "date_min": "2018-03-02",
-#             "date_max": "2018-03-02",
-#             "altitude_min": 1000,
-#             "altitude_max": 1200,
-#             "meta_device_entry": "web",
-#             "observers": [1],
-#             "observers_txt": "tatatato",
-#             "id_nomenclature_grp_typ": id_nomenclature_grp_typ,
-#             "t_occurrences_occtax": [
-#                     {
-#                         # "id_nomenclature_obs_technique": 41,
-#                         # "id_nomenclature_bio_condition": 155,
-#                         # "id_nomenclature_bio_status": 29,
-#                         # "id_nomenclature_naturalness": 160,
-#                         # "id_nomenclature_exist_proof": 80,
-#                         # "id_nomenclature_observation_status": 85,
-#                         # "id_nomenclature_blurring": 174,
-#                         # "id_nomenclature_source_status": 73,
-#                         # "id_nomenclature_determination_method": 451,
-#                         "cd_nom": 67111,
-#                         "nom_cite": "Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]",
-#                         "cor_counting_occtax": [
-#                             {
-#                                 "id_nomenclature_life_stage": 1,
-#                                 "id_nomenclature_sex": 168,
-#                                 "id_nomenclature_obj_count": 146,
-#                                 "id_nomenclature_type_count": 91,
-#                                 "count_min": 1,
-#                                 "count_max": 1
-#                             }
-#                         ]
-#                     }
-#                 ]
-#         },
-#     }
+@pytest.fixture()
+def releve_mobile_data(client, datasets):
+    """
+    Releve associated with dataset created by "user"
+    """
+    # mnemonique_types = 
+    id_dataset = datasets["own_dataset"].id_dataset
+    nomenclatures = DefaultNomenclaturesValue.query.all()
+    dict_nomenclatures = {n.mnemonique_type: n.id_nomenclature for n in nomenclatures}
+    id_nomenclature_grp_typ = (
+        DefaultNomenclaturesValue.query.filter_by(mnemonique_type="TYP_GRP")
+        .with_entities(DefaultNomenclaturesValue.id_nomenclature)
+        .scalar()
+    )
+    data = {
+        "geometry": {
+            "type": "Point",
+            "coordinates": [3.428936004638672, 44.276611357355904],
+        },
+        "properties": {
+            "id_dataset": id_dataset,
+            "id_digitiser": 1,
+            "date_min": "2018-03-02",
+            "date_max": "2018-03-02",
+            "altitude_min": 1000,
+            "altitude_max": 1200,
+            "meta_device_entry": "web",
+            "observers": [1],
+            "observers_txt": "tatatato",
+            "id_nomenclature_grp_typ": dict_nomenclatures["TYP_GRP"],
+            "false_propertie": "",
+            "t_occurrences_occtax": [
+                    {
+                        "id_occurrence_occtax": None,
+                        "cd_nom": 67111,
+                        "nom_cite": "Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]",
+                        "false_propertie": "",
+                        "cor_counting_occtax": [
+                            {
+                                "id_counting_occtax": None,
+                                "id_nomenclature_life_stage": dict_nomenclatures["STADE_VIE"],
+                                "id_nomenclature_sex": dict_nomenclatures["SEXE"],
+                                "id_nomenclature_obj_count": dict_nomenclatures["OBJ_DENBR"],
+                                "id_nomenclature_type_count": dict_nomenclatures["TYP_DENBR"],
+                                "false_propertie": "",
+                                "count_min": 1,
+                                "count_max": 1
+                            }
+                        ]
+                    }
+                ]
+        },
+    }
 
-#     return data
+    return data
 
 @pytest.fixture()
 def releve_data(client, datasets):
@@ -219,9 +213,8 @@ def occurrence(app, occurrence_data):
 def unexisting_id_releve():
     return (db.session.query(func.max(TRelevesOccurrence.id_releve_occtax)).scalar() or 0) + 1
 
-
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets")
-class TestOcctax:
+class TestOcctaxReleve:
     def test_get_releve(self, users, releve_occtax):
         set_logged_user(self.client, users["user"])
 
@@ -251,11 +244,31 @@ class TestOcctax:
             )
         )
         assert response.status_code == 200
-        
-    # def test_create_releve(self, users, releve_mobile_data):
-    #     set_logged_user(self.client, users["user"])
-    #     self.client.post(url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data)
-    #     assert response.status_code == 200
+
+    def test_insertOrUpdate_releve(self, users, releve_mobile_data):
+        set_logged_user(self.client, users["noright_user"])
+        response = self.client.post(url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data)
+        assert response.status_code == Forbidden.code
+
+        set_logged_user(self.client, users["user"])
+        response = self.client.post(url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data)
+        assert response.status_code == 200
+        result = db.get_or_404(TRelevesOccurrence, response.json["id"])
+        assert result
+
+        # Passage en Update
+        releve_mobile_data["properties"]["altitude_min"] = 200
+        releve_mobile_data["properties"]["id_releve_occtax"] = response.json["id"]
+
+        set_logged_user(self.client, users["noright_user"])
+        response = self.client.post(url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data)
+        assert response.status_code == Forbidden.code
+
+        set_logged_user(self.client, users["user"])
+        response = self.client.post(url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data)
+        assert response.status_code == 200
+        result = db.get_or_404(TRelevesOccurrence, response.json["id"])
+        assert result.altitude_min == 200
 
     def test_update_releve(self, users, releve_occtax, releve_data):
         set_logged_user(self.client, users["user"])
@@ -278,7 +291,20 @@ class TestOcctax:
         set_logged_user(self.client, users["noright_user"])
         response = self.client.post(url_for("pr_occtax.createReleve"), json=releve_data)
         assert response.status_code == Forbidden.code
+    
+    def test_post_releve_in_module_bis(self, users, releve_data, module, datasets):
+        set_logged_user(self.client, users["admin_user"])
+        # change id_dataset to a dataset associated whith module_1
+        releve_data["properties"]["id_dataset"] = datasets["with_module_1"].id_dataset
+        response = self.client.post(
+            url_for("pr_occtax.createReleve", module_code=module.module_code), json=releve_data
+        )
+        assert response.status_code == 200
+        data = response.json
+        assert data["properties"]["id_module"] == module.id_module
 
+@pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets")
+class TestOcctax:
     def test_post_occurrence(self, users, occurrence_data):
         set_logged_user(self.client, users["user"])
         response = self.client.post(
@@ -438,6 +464,24 @@ class TestOcctaxGetReleveFilter:
             url_for("pr_occtax.getReleves"),
         )
         assert response.status_code == 200
+    
+    def test_export_occtax(self, users, datasets):
+        set_logged_user(self.client, users["user"])
+        response = self.client.get(
+            url_for("pr_occtax.export", format="csv", id_dataset=datasets["own_dataset"].id_dataset),
+        )
+        assert response.status_code == 200
+
+        response = self.client.get(
+            url_for("pr_occtax.export", id_dataset=datasets["own_dataset"].id_dataset),
+        )
+        assert response.status_code == 200
+
+        response = self.client.get(
+            url_for("pr_occtax.export", format="shapefile", id_dataset=datasets["own_dataset"].id_dataset),
+        )
+        assert response.status_code == 200 
+
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")

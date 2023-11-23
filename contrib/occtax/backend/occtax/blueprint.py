@@ -304,7 +304,7 @@ def insertOrUpdateOneReleve():
         scope = get_scopes_by_action()["C"]
         if not db.session.get(TDatasets, releve.id_dataset).has_instance_permission(scope):
             raise Forbidden(
-                f"User {g.current_user.id_role} is not allowed to create releve in dataset {dataset.id_dataset}"
+                f"User {g.current_user.id_role} is not allowed to create releve in dataset."
             )
         # set id_digitiser
         releve.id_digitiser = g.current_user.id_role
