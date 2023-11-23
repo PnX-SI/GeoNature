@@ -636,7 +636,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     # Recuperation des données
     af = DB.session.get(TAcquisitionFramework, id_acquisition_framework)
     acquisition_framework = af.as_dict(True, depth=2)
-    dataset_ids = [d.id_dataset for d in af.t_datasets]
+    dataset_ids = [d.id_dataset for d in af.datasets]
     nb_data = len(dataset_ids)
 
     query = (

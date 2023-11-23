@@ -552,8 +552,8 @@ class TAcquisitionFrameworkQuery(CustomSelect):
             ors = [
                 TAcquisitionFramework.id_digitizer == user.id_role,
                 TAcquisitionFramework.cor_af_actor.any(id_role=user.id_role),
-                TAcquisitionFramework.t_datasets.any(id_digitizer=user.id_role),
-                TAcquisitionFramework.t_datasets.any(
+                TAcquisitionFramework.datasets.any(id_digitizer=user.id_role),
+                TAcquisitionFramework.datasets.any(
                     TDatasets.cor_dataset_actor.any(id_role=user.id_role)
                 ),  # TODO test coverage
             ]
@@ -561,7 +561,7 @@ class TAcquisitionFrameworkQuery(CustomSelect):
             if scope == 2 and user.id_organisme is not None:
                 ors += [
                     TAcquisitionFramework.cor_af_actor.any(id_organism=user.id_organisme),
-                    TAcquisitionFramework.t_datasets.any(
+                    TAcquisitionFramework.datasets.any(
                         TDatasets.cor_dataset_actor.any(id_organism=user.id_organisme)
                     ),  # TODO test coverage
                 ]
@@ -579,7 +579,7 @@ class TAcquisitionFrameworkQuery(CustomSelect):
         Filter meta by areas
         """
         return self.where(
-            TAcquisitionFramework.t_datasets.any(
+            TAcquisitionFramework.datasets.any(
                 TDatasets.select.filter_by_areas(areas).whereclause,
             ),
         )
@@ -793,7 +793,7 @@ class TAcquisitionFramework(db.Model):
             return _through_ds and any(
                 map(
                     lambda ds: ds.has_instance_permission(scope, _through_af=False),
-                    self.t_datasets,
+                    self.datasets,
                 )
             )
         elif scope == 3:
