@@ -1,7 +1,10 @@
+from typing import List
+from geonature.core.gn_meta.models import TDatasets
 import pytest
 from copy import deepcopy
 
 from flask import url_for
+from werkzeug.datastructures import TypeConversionDict
 from werkzeug.exceptions import Unauthorized, Forbidden, BadRequest
 from shapely.geometry import Point
 import geojson
@@ -23,90 +26,150 @@ occhab = pytest.importorskip("gn_module_occhab")
 
 from gn_module_occhab.models import Station, OccurenceHabitat
 from gn_module_occhab.schemas import StationSchema
+from datetime import datetime
+
+
+def create_habitat(nom_cite, nomenc_tech_collect_NOMENC_TYPE, nomenc_tech_collect_LABEL):
+    habref = db.session.scalars(db.select(Habref).limit(1)).first()
+
+    nomenc_tech_collect = db.session.execute(
+        db.select(TNomenclatures).where(
+            sa.and_(
+                TNomenclatures.nomenclature_type.has(mnemonique=nomenc_tech_collect_NOMENC_TYPE),
+                TNomenclatures.label_fr == nomenc_tech_collect_LABEL,
+            )
+        )
+    ).scalar_one()
+    return OccurenceHabitat(
+        cd_hab=habref.cd_hab,
+        nom_cite=nom_cite,
+        id_nomenclature_collection_technique=nomenc_tech_collect.id_nomenclature,
+    )
 
 
 @pytest.fixture
-def station(datasets):
-    ds = datasets["own_dataset"]
-    p = Point(3.634, 44.399)
-    nomenc = TNomenclatures.query.filter(
-        sa.and_(
-            TNomenclatures.nomenclature_type.has(mnemonique="NAT_OBJ_GEO"),
-            TNomenclatures.mnemonique == "Stationnel",
+def stations(datasets):
+    """
+    Fixture to generate test stations
+
+    Parameters
+    ----------
+    datasets : TDatasets
+        dataset associated with the station (fixture)
+
+    Returns
+    -------
+    Dict[Station]
+        dict that contains test stations
+    """
+
+    def create_stations(
+        dataset: TDatasets,
+        coords: tuple,
+        nomenc_object_MNEM: str,
+        nomenc_object_NOMENC_TYPE: str,
+        comment: str = "Did you create a station ?",
+        date_min=datetime.now(),
+        date_max=datetime.now(),
+    ):
+        """
+        Function to generate a station
+
+        Parameters
+        ----------
+        dataset : TDatasets
+            dataset associated with it
+        coords : tuple
+            longitude and latitude coordinates (WGS84)
+        nomenc_object_MNEM : str
+            mnemonique of the nomenclature associated to the station
+        nomenc_object_NOMENC_TYPE : str
+            nomenclature type associated to the station
+        comment : str, optional
+            Just a comment, by default "Did you create a station ?"
+        """
+        nomenclature_object = db.session.execute(
+            db.select(TNomenclatures).where(
+                sa.and_(
+                    TNomenclatures.nomenclature_type.has(mnemonique=nomenc_object_NOMENC_TYPE),
+                    TNomenclatures.mnemonique == nomenc_object_MNEM,
+                )
+            )
+        ).scalar_one()
+        s = Station(
+            dataset=dataset,
+            comment=comment,
+            geom_4326=from_shape(Point(*coords), srid=4326),
+            nomenclature_geographic_object=nomenclature_object,
+            date_min=date_min,
+            date_max=date_max,
         )
-    ).one()
-    s = Station(
-        dataset=ds,
-        comment="Ma super station",
-        geom_4326=from_shape(p, srid=4326),
-        nomenclature_geographic_object=nomenc,
-    )
-    habref = Habref.query.first()
-    nomenc_tech_collect = TNomenclatures.query.filter(
-        sa.and_(
-            TNomenclatures.nomenclature_type.has(mnemonique="TECHNIQUE_COLLECT_HAB"),
-            TNomenclatures.label_fr == "Plongées",
-        )
-    ).one()
-    s.habitats.extend(
-        [
-            OccurenceHabitat(
-                cd_hab=habref.cd_hab,
-                nom_cite="forêt",
-                id_nomenclature_collection_technique=nomenc_tech_collect.id_nomenclature,
-            ),
-            OccurenceHabitat(
-                cd_hab=habref.cd_hab,
-                nom_cite="prairie",
-                id_nomenclature_collection_technique=nomenc_tech_collect.id_nomenclature,
-            ),
-        ]
-    )
+        habitats = []
+        for nom_type, nom_label in [("TECHNIQUE_COLLECT_HAB", "Plongées")]:
+            for nom_cite in ["forêt", "prairie"]:
+                habitats.append(create_habitat(nom_cite, nom_type, nom_label))
+        s.habitats.extend(habitats)
+        return s
+
+    stations = {
+        "station_1": create_stations(
+            datasets["own_dataset"],
+            (3.634, 44.399),
+            "Stationnel",
+            "NAT_OBJ_GEO",
+            comment="Station1",
+            date_min=datetime.strptime("01/02/70", "%d/%m/%y"),
+            date_max=datetime.strptime("01/02/80", "%d/%m/%y"),
+        ),
+        "station_2": create_stations(
+            datasets["own_dataset"],
+            (3.634, 44.399),
+            "Stationnel",
+            "NAT_OBJ_GEO",
+            comment="Station2",
+        ),
+    }
     with db.session.begin_nested():
-        db.session.add(s)
-    return s
+        for station_key in stations:
+            db.session.add(stations[station_key])
+        db.session.flush()
+    return stations
 
 
 @pytest.fixture
-def station2(datasets, station):
-    ds = datasets["own_dataset"]
-    p = Point(5, 46)
-    nomenc = TNomenclatures.query.filter(
-        sa.and_(
-            TNomenclatures.nomenclature_type.has(mnemonique="NAT_OBJ_GEO"),
-            TNomenclatures.mnemonique == "Stationnel",
-        )
-    ).one()
-    s = Station(
-        dataset=ds,
-        comment="Ma super station 2",
-        geom_4326=from_shape(p, srid=4326),
-        nomenclature_geographic_object=nomenc,
-    )
-    habref = Habref.query.filter(Habref.cd_hab != station.habitats[0].cd_hab).first()
-    nomenc_tech_collect = TNomenclatures.query.filter(
-        sa.and_(
-            TNomenclatures.nomenclature_type.has(mnemonique="TECHNIQUE_COLLECT_HAB"),
-            TNomenclatures.label_fr == "Plongées",
-        )
-    ).one()
-    s.habitats.extend(
-        [
-            OccurenceHabitat(
-                cd_hab=habref.cd_hab,
-                nom_cite="forêt",
-                id_nomenclature_collection_technique=nomenc_tech_collect.id_nomenclature,
-            ),
-            OccurenceHabitat(
-                cd_hab=habref.cd_hab,
-                nom_cite="prairie",
-                id_nomenclature_collection_technique=nomenc_tech_collect.id_nomenclature,
-            ),
-        ]
-    )
-    with db.session.begin_nested():
-        db.session.add(s)
-    return s
+def station(stations):
+    """
+    Add to the session and return the test station 1 (will be removed in the future)
+
+    Parameters
+    ----------
+    stations : List[Station]
+        fixture
+
+    Returns
+    -------
+    Station
+        station 1
+    """
+    return stations["station_1"]
+
+
+@pytest.fixture
+def station2(stations):
+    """
+    Add to the session and return the test station 2 (will be removed in the future)
+
+    Parameters
+    ----------
+    stations : List[Station]
+        fixture
+
+    Returns
+    -------
+    Station
+        station 2
+    """
+    return stations["station_2"]
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -237,7 +300,7 @@ class TestOcchab:
         response = self.client.post(url, data=data)
         assert response.status_code == 200, response.json
         db.session.refresh(station)
-        assert station.comment == "Ma super station"  # original comment of existing station
+        assert station.comment == "Station1"  # original comment of existing station
         FeatureSchema().load(response.json)["id"] != station.id_station  # new id for new station
 
         # Try leveraging observers to modify existing user
@@ -411,3 +474,53 @@ class TestOcchab:
         set_logged_user(self.client, users["user"])
         response = self.client.get(url_for("occhab.get_default_nomenclatures"))
         assert response.status_code == 200
+
+    def test_filter_by_params(self, datasets, stations):
+        def query_test_filter_by_params(params):
+            query = Station.select.filter_by_params(
+                TypeConversionDict(**params),
+            )
+            return db.session.scalars(query).unique().all()
+
+        # Test Filter by dataset
+        ds: TDatasets = datasets["own_dataset"]
+        stations_res = query_test_filter_by_params(dict(id_dataset=ds.id_dataset))
+        assert len(stations_res) >= 1
+
+        # Test filter by cd_hab
+        habref = db.session.scalars(db.select(Habref).limit(1)).first()
+        assert len(stations["station_1"].habitats) > 1
+        assert stations["station_1"].habitats[0].cd_hab == habref.cd_hab
+        stations_res = query_test_filter_by_params(dict(cd_hab=habref.cd_hab))
+        assert len(stations_res) >= 1
+        for station in stations_res:
+            assert len(station.habitats) > 1
+            assert any([habitat.cd_hab == habref.cd_hab for habitat in station.habitats])
+
+        # test filter by date max
+        date_format = "%d/%m/%y"
+        station_res = query_test_filter_by_params(
+            dict(date_up="1981-02-01"),
+        )
+        assert any(
+            [station.id_station == stations["station_1"].id_station for station in station_res]
+        )
+
+        # test filter by date min
+        station_res = query_test_filter_by_params(
+            dict(date_low="1969-02-01"),
+        )
+        assert all(
+            [
+                any([station.id_station == station_session.id_station for station in station_res])
+                for station_session in stations.values()
+            ]
+        )
+
+    def test_filter_by_scope(self):
+        res = Station.select.filter_by_scope(0)
+        res = db.session.scalars(res).unique().all()
+        assert not len(res)  # <=> len(res) == 0
+
+    def test_has_instance_permission(self, stations):
+        assert not stations["station_1"].has_instance_permission(scope=0)

@@ -49,23 +49,23 @@ class StationSelect(GeoFeatureCollectionMixin, CustomSelect):
             qs = qs.filter_by(id_dataset=id_dataset)
         cd_hab = params.get("cd_hab", type=int)
         if cd_hab:
-            qs = qs.filter(Station.habitats.any(OccurenceHabitat.cd_hab == cd_hab))
+            qs = qs.where(Station.habitats.any(OccurenceHabitat.cd_hab == cd_hab))
         date_low = params.get("date_low", type=lambda x: datetime.strptime(x, "%Y-%m-%d"))
         if date_low:
-            qs = qs.filter(Station.date_min >= date_low)
+            qs = qs.where(Station.date_min >= date_low)
         date_up = params.get("date_up", type=lambda x: datetime.strptime(x, "%Y-%m-%d"))
         if date_up:
-            qs = qs.filter(Station.date_max <= date_up)
+            qs = qs.where(Station.date_max <= date_up)
         return qs
 
     def filter_by_scope(self, scope, user=None):
         if user is None:
             user = g.current_user
         if scope == 0:
-            self = self.filter(sa.false())
+            self = self.where(sa.false())
         elif scope in (1, 2):
             ds_list = Dataset.select.filter_by_scope(scope).with_only_columns(Dataset.id_dataset)
-            self = self.filter(
+            self = self.where(
                 sa.or_(
                     Station.observers.any(id_role=user.id_role),
                     Station.id_dataset.in_(
@@ -157,7 +157,9 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
 
     id_habitat = db.Column(db.Integer, primary_key=True)
     id_station = db.Column(db.Integer, ForeignKey(Station.id_station), nullable=False)
-    station = db.relationship(Station, lazy="joined", back_populates="habitats")  # TODO: remove joined
+    station = db.relationship(
+        Station, lazy="joined", back_populates="habitats"
+    )  # TODO: remove joined
     unique_id_sinp_hab = db.Column(
         UUID(as_uuid=True),
         default=select(func.uuid_generate_v4()),

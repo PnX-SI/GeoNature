@@ -341,6 +341,7 @@ def datasets(users, acquisition_frameworks, module):
                 )
                 dataset.cor_dataset_actor.append(actor)
             db.session.add(dataset)
+            db.session.flush()  # Required to retrieve ids of created object
             [dataset.modules.append(m) for m in modules]
         return dataset
 

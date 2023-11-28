@@ -2,6 +2,11 @@ import csv
 import uuid
 from io import StringIO
 from unittest.mock import patch
+from geonature.core.gn_meta.repositories import (
+    cruved_af_filter,
+    cruved_ds_filter,
+    get_metadata_list,
+)
 
 import pytest
 from flask import url_for
@@ -393,6 +398,13 @@ class TestGNMeta:
         response = self.client.get(get_af_url)
         assert response.status_code == 200
 
+    def test_get_acquisition_framework_add_only(self, users):
+        set_logged_user(self.client, users["admin_user"])
+        get_af_url = url_for("gn_meta.get_acquisition_frameworks", datasets=1, creator=1, actors=1)
+
+        response = self.client.get(get_af_url)
+        assert response.status_code == 200
+
     def test_get_acquisition_frameworks_search_af_name(
         self, users, acquisition_frameworks, datasets
     ):
@@ -446,13 +458,14 @@ class TestGNMeta:
             url_for("gn_meta.get_acquisition_frameworks"),
             json={"search": af1.acquisition_framework_start_date.strftime("%d/%m/%Y")},
         )
+        assert response.status_code == 200
 
         expected = {af1.id_acquisition_framework}
         assert expected.issubset({af["id_acquisition_framework"] for af in response.json})
-        # TODO: check another AF with another start_date (and no DS at search date) is not returned
+        # TODO check another AF with another start_date (and no DS at search date) is not returned
 
     def test_get_export_pdf_acquisition_frameworks(self, users, acquisition_frameworks):
-        af_id = acquisition_frameworks["own_af"].id_acquisition_framework
+        af_id = acquisition_frameworks["orphan_af"].id_acquisition_framework
 
         set_logged_user(self.client, users["user"])
 
@@ -640,7 +653,7 @@ class TestGNMeta:
 
         assert set(response.json.keys()) == {"data"}
 
-    def test_create_dataset(self, users):
+    def test_create_dataset(self, users, datasets):
         response = self.client.post(url_for("gn_meta.create_dataset"))
         assert response.status_code == Unauthorized.code
 
@@ -648,6 +661,12 @@ class TestGNMeta:
 
         response = self.client.post(url_for("gn_meta.create_dataset"))
         assert response.status_code == UnsupportedMediaType.code
+
+        set_logged_user(self.client, users["admin_user"])
+        ds = datasets["own_dataset"].as_dict()
+        ds["id_dataset"] = "takeonme"
+        response = self.client.post(url_for("gn_meta.create_dataset"), json=ds)
+        assert response.status_code == BadRequest.code
 
     def test_get_dataset(self, users, datasets):
         ds = datasets["own_dataset"]
@@ -667,6 +686,40 @@ class TestGNMeta:
         set_logged_user(self.client, users["associate_user"])
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
         assert response.status_code == 200
+
+    def test_get_datasets_synthese_records_count(self, users):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(url_for("gn_meta.get_datasets", synthese_records_count=1))
+        assert response.status_code == 200
+
+    def test_get_datasets_fields(self, users):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(url_for("gn_meta.get_datasets", fields="id_dataset"))
+        assert response.status_code == 200
+
+        for dataset in response.json:
+            assert not "id_dataset" in dataset or len(dataset.keys()) > 1
+
+        response = self.client.get(url_for("gn_meta.get_datasets", fields="modules"))
+        assert response.status_code == 200
+
+        # Test if modules non empty
+        resp = response.json
+        assert len(resp) > 1 and "modules" in resp[0] and len(resp[0]["modules"]) > 0
+
+    def test_get_datasets_order_by(self, users):
+        # If added an orderby
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(url_for("gn_meta.get_datasets", orderby="id_dataset"))
+        assert response.status_code == 200
+        ids = [dataset["id_dataset"] for dataset in response.json]
+        assert ids == sorted(ids)
+
+        # with pytest.raises(BadRequest):
+        response = self.client.get(
+            url_for("gn_meta.get_datasets", orderby="you_create_unknown_columns?")
+        )
+        assert response.status_code == BadRequest.code
 
     def test_get_dataset_filter_active(self, users, datasets, module):
         set_logged_user(self.client, users["admin_user"])
@@ -1084,3 +1137,50 @@ class TestGNMeta:
         )
         assert response.status_code == 200, response.json
         mocked_publish_mail.assert_called_once()
+
+
+@pytest.mark.usefixtures(
+    "client_class", "temporary_transaction", "users", "datasets", "acquisition_frameworks"
+)
+class TestRepository:
+    def test_cruved_ds_filter(self, users, datasets):
+        with pytest.raises(Unauthorized):
+            cruved_ds_filter(None, None, 0)
+
+        # Has access to every dataset (scope 3 == superuser)
+        assert cruved_ds_filter(None, None, 3)
+
+        # Access to a dataset of its organism
+        assert cruved_ds_filter(datasets["associate_dataset"], users["self_user"], 2)
+        # Access to its own dataset
+        assert cruved_ds_filter(datasets["associate_dataset"], users["associate_user"], 1)
+
+        # Not access to a dataset from an other organism
+        assert not cruved_ds_filter(datasets["associate_dataset"], users["stranger_user"], 2)
+        # Not access to a dataset of its own
+        assert not cruved_ds_filter(datasets["associate_dataset"], users["stranger_user"], 1)
+
+    def test_cruved_af_filter(self, acquisition_frameworks, users):
+        with pytest.raises(Unauthorized):
+            cruved_af_filter(None, None, 0)
+        assert cruved_af_filter(None, None, 3)
+
+        # Has access to every af (scope 3 == superuser)
+        assert cruved_af_filter(None, None, 3)
+
+        # Access to a af of its organism
+        assert cruved_af_filter(acquisition_frameworks["associate_af"], users["self_user"], 2)
+        # Access to its own af
+        assert cruved_af_filter(acquisition_frameworks["own_af"], users["user"], 1)
+
+        # Not access to a af from an other organism
+        assert not cruved_af_filter(
+            acquisition_frameworks["associate_af"], users["stranger_user"], 2
+        )
+        # Not access to a af of its own
+        assert not cruved_af_filter(
+            acquisition_frameworks["associate_af"], users["stranger_user"], 1
+        )
+
+    def test_metadata_list(self):
+        get_metadata_list

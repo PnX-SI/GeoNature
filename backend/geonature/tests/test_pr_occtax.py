@@ -1,17 +1,23 @@
+from typing import Any
 from geonature.core.gn_commons.models.base import TModules
+from geonature.core.gn_meta.models import TDatasets
+from geonature.core.gn_permissions.models import PermissionAvailable
+from occtax.commands import add_submodule_permissions
 import pytest
 
 from datetime import datetime as dt
 
-from flask import url_for, current_app, g
+from flask import Flask, url_for, current_app, g
 from werkzeug.exceptions import Unauthorized, Forbidden, NotFound
 from shapely.geometry import Point
 from geoalchemy2.shape import from_shape
 from sqlalchemy import func
+from click.testing import CliRunner
 
 from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 from geonature.utils.config import config
+from .fixtures import create_module
 from .utils import set_logged_user
 from .fixtures import *
 
@@ -29,12 +35,13 @@ from occtax.schemas import OccurrenceSchema, ReleveSchema
 def occtax_module():
     return TModules.query.filter_by(module_code="OCCTAX").one()
 
+
 @pytest.fixture()
-def releve_mobile_data(client, datasets):
+def releve_mobile_data(client: Any, datasets: dict[Any, TDatasets]):
     """
     Releve associated with dataset created by "user"
     """
-    # mnemonique_types = 
+    # mnemonique_types =
     id_dataset = datasets["own_dataset"].id_dataset
     nomenclatures = DefaultNomenclaturesValue.query.all()
     dict_nomenclatures = {n.mnemonique_type: n.id_nomenclature for n in nomenclatures}
@@ -61,32 +68,33 @@ def releve_mobile_data(client, datasets):
             "id_nomenclature_grp_typ": dict_nomenclatures["TYP_GRP"],
             "false_propertie": "",
             "t_occurrences_occtax": [
-                    {
-                        "id_occurrence_occtax": None,
-                        "cd_nom": 67111,
-                        "nom_cite": "Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]",
-                        "false_propertie": "",
-                        "cor_counting_occtax": [
-                            {
-                                "id_counting_occtax": None,
-                                "id_nomenclature_life_stage": dict_nomenclatures["STADE_VIE"],
-                                "id_nomenclature_sex": dict_nomenclatures["SEXE"],
-                                "id_nomenclature_obj_count": dict_nomenclatures["OBJ_DENBR"],
-                                "id_nomenclature_type_count": dict_nomenclatures["TYP_DENBR"],
-                                "false_propertie": "",
-                                "count_min": 1,
-                                "count_max": 1
-                            }
-                        ]
-                    }
-                ]
+                {
+                    "id_occurrence_occtax": None,
+                    "cd_nom": 67111,
+                    "nom_cite": "Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]",
+                    "false_propertie": "",
+                    "cor_counting_occtax": [
+                        {
+                            "id_counting_occtax": None,
+                            "id_nomenclature_life_stage": dict_nomenclatures["STADE_VIE"],
+                            "id_nomenclature_sex": dict_nomenclatures["SEXE"],
+                            "id_nomenclature_obj_count": dict_nomenclatures["OBJ_DENBR"],
+                            "id_nomenclature_type_count": dict_nomenclatures["TYP_DENBR"],
+                            "false_propertie": "",
+                            "count_min": 1,
+                            "count_max": 1,
+                        }
+                    ],
+                }
+            ],
         },
     }
 
     return data
 
+
 @pytest.fixture()
-def releve_data(client, datasets):
+def releve_data(client: Any, datasets: dict[Any, TDatasets]):
     """
     Releve associated with dataset created by "user"
     """
@@ -123,7 +131,7 @@ def releve_data(client, datasets):
 
 
 @pytest.fixture()
-def occurrence_data(client, releve_occtax):
+def occurrence_data(client: Any, releve_occtax: Any):
     nomenclatures = DefaultNomenclaturesValue.query.all()
     dict_nomenclatures = {n.mnemonique_type: n.id_nomenclature for n in nomenclatures}
     return {
@@ -177,7 +185,7 @@ def occurrence_data(client, releve_occtax):
 
 
 @pytest.fixture(scope="function")
-def releve_occtax(app, users, releve_data, occtax_module):
+def releve_occtax(app: Flask, users: dict, releve_data: dict[str, Any], occtax_module: Any):
     g.current_module = occtax_module
     data = releve_data["properties"]
     data["geom_4326"] = releve_data["geometry"]
@@ -189,7 +197,13 @@ def releve_occtax(app, users, releve_data, occtax_module):
 
 
 @pytest.fixture(scope="function")
-def releve_module_1(app, users, releve_data, datasets, module):
+def releve_module_1(
+    app: Flask,
+    users: dict,
+    releve_data: dict[str, Any],
+    datasets: dict[Any, TDatasets],
+    module: TModules,
+):
     g.current_module = module
     data = releve_data["properties"]
     data["geom_4326"] = releve_data["geometry"]
@@ -202,7 +216,7 @@ def releve_module_1(app, users, releve_data, datasets, module):
 
 
 @pytest.fixture(scope="function")
-def occurrence(app, occurrence_data):
+def occurrence(app: Flask, occurrence_data: dict[str, Any]):
     occ = OccurrenceSchema().load(occurrence_data)
     with db.session.begin_nested():
         db.session.add(occ)
@@ -213,9 +227,10 @@ def occurrence(app, occurrence_data):
 def unexisting_id_releve():
     return (db.session.query(func.max(TRelevesOccurrence.id_releve_occtax)).scalar() or 0) + 1
 
+
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets")
 class TestOcctaxReleve:
-    def test_get_releve(self, users, releve_occtax):
+    def test_get_releve(self, users: dict, releve_occtax: Any):
         set_logged_user(self.client, users["user"])
 
         response = self.client.get(url_for("pr_occtax.getReleves"))
@@ -227,31 +242,31 @@ class TestOcctaxReleve:
             int(releve_json["id"]) for releve_json in json_resp["items"]["features"]
         ]
 
-    def test_get_one_releve(self, users, releve_occtax):
+    def test_get_one_releve(self, users: dict, releve_occtax: Any):
         set_logged_user(self.client, users["noright_user"])
         response = self.client.get(
-            url_for(
-                "pr_occtax.getOneReleve",
-                id_releve=releve_occtax.id_releve_occtax
-            )
+            url_for("pr_occtax.getOneReleve", id_releve=releve_occtax.id_releve_occtax)
         )
         assert response.status_code == Forbidden.code
         set_logged_user(self.client, users["user"])
         response = self.client.get(
-            url_for(
-                "pr_occtax.getOneReleve",
-                id_releve=releve_occtax.id_releve_occtax
-            )
+            url_for("pr_occtax.getOneReleve", id_releve=releve_occtax.id_releve_occtax)
         )
         assert response.status_code == 200
 
-    def test_insertOrUpdate_releve(self, users, releve_mobile_data):
+    def test_insertOrUpdate_releve(
+        self, users: dict, releve_mobile_data: dict[str, dict[str, Any]]
+    ):
         set_logged_user(self.client, users["noright_user"])
-        response = self.client.post(url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data)
+        response = self.client.post(
+            url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data
+        )
         assert response.status_code == Forbidden.code
 
         set_logged_user(self.client, users["user"])
-        response = self.client.post(url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data)
+        response = self.client.post(
+            url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data
+        )
         assert response.status_code == 200
         result = db.get_or_404(TRelevesOccurrence, response.json["id"])
         assert result
@@ -261,28 +276,39 @@ class TestOcctaxReleve:
         releve_mobile_data["properties"]["id_releve_occtax"] = response.json["id"]
 
         set_logged_user(self.client, users["noright_user"])
-        response = self.client.post(url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data)
+        response = self.client.post(
+            url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data
+        )
         assert response.status_code == Forbidden.code
 
         set_logged_user(self.client, users["user"])
-        response = self.client.post(url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data)
+        response = self.client.post(
+            url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data
+        )
         assert response.status_code == 200
         result = db.get_or_404(TRelevesOccurrence, response.json["id"])
         assert result.altitude_min == 200
 
-    def test_update_releve(self, users, releve_occtax, releve_data):
+    def test_update_releve(self, users: dict, releve_occtax: Any, releve_data: dict[str, Any]):
         set_logged_user(self.client, users["user"])
-        response = self.client.post(url_for("pr_occtax.updateReleve", id_releve=releve_occtax.id_releve_occtax), json=releve_data)
+        response = self.client.post(
+            url_for("pr_occtax.updateReleve", id_releve=releve_occtax.id_releve_occtax),
+            json=releve_data,
+        )
         assert response.status_code == 200
-        response = self.client.post(url_for("pr_occtax.updateReleve", id_releve=0), json=releve_data)
+        response = self.client.post(
+            url_for("pr_occtax.updateReleve", id_releve=0), json=releve_data
+        )
         assert response.status_code == 404
 
-    def test_delete_releve(self, users, releve_occtax):
+    def test_delete_releve(self, users: dict, releve_occtax: Any):
         set_logged_user(self.client, users["admin_user"])
-        response = self.client.delete(url_for("pr_occtax.deleteOneReleve", id_releve=releve_occtax.id_releve_occtax))
+        response = self.client.delete(
+            url_for("pr_occtax.deleteOneReleve", id_releve=releve_occtax.id_releve_occtax)
+        )
         assert response.status_code == 200
 
-    def test_post_releve(self, users, releve_data):
+    def test_post_releve(self, users: dict, releve_data: dict[str, Any]):
         # post with cruved = C = 2
         set_logged_user(self.client, users["user"])
         response = self.client.post(url_for("pr_occtax.createReleve"), json=releve_data)
@@ -291,8 +317,14 @@ class TestOcctaxReleve:
         set_logged_user(self.client, users["noright_user"])
         response = self.client.post(url_for("pr_occtax.createReleve"), json=releve_data)
         assert response.status_code == Forbidden.code
-    
-    def test_post_releve_in_module_bis(self, users, releve_data, module, datasets):
+
+    def test_post_releve_in_module_bis(
+        self,
+        users: dict,
+        releve_data: dict[str, Any],
+        module: TModules,
+        datasets: dict[Any, TDatasets],
+    ):
         set_logged_user(self.client, users["admin_user"])
         # change id_dataset to a dataset associated whith module_1
         releve_data["properties"]["id_dataset"] = datasets["with_module_1"].id_dataset
@@ -303,9 +335,10 @@ class TestOcctaxReleve:
         data = response.json
         assert data["properties"]["id_module"] == module.id_module
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets")
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets", "module")
 class TestOcctax:
-    def test_post_occurrence(self, users, occurrence_data):
+    def test_post_occurrence(self, users: dict, occurrence_data: dict[str, Any]):
         set_logged_user(self.client, users["user"])
         response = self.client.post(
             url_for("pr_occtax.createOccurrence", id_releve=occurrence_data["id_releve_occtax"]),
@@ -317,7 +350,7 @@ class TestOcctax:
 
         # TODO : test dans la synthese qu'il y a bien 2 ligne pour l'UUID couting
 
-    def test_update_occurrence(self, users, occurrence):
+    def test_update_occurrence(self, users: dict, occurrence: Any):
         set_logged_user(self.client, users["user"])
         occ_dict = OccurrenceSchema(exclude=("taxref",)).dump(occurrence)
         # change the cd_nom (occurrence level)
@@ -342,7 +375,13 @@ class TestOcctax:
             assert s.cd_nom == 4516
         {3, 5}.issubset([s.count_max for s in synthese_data])
 
-    def test_post_releve_in_module_bis(self, users, releve_data, module, datasets):
+    def test_post_releve_in_module_bis(
+        self,
+        users: dict,
+        releve_data: dict[str, Any],
+        module: TModules,
+        datasets: dict[Any, TDatasets],
+    ):
         set_logged_user(self.client, users["admin_user"])
         # change id_dataset to a dataset associated whith module_1
         releve_data["properties"]["id_dataset"] = datasets["with_module_1"].id_dataset
@@ -353,7 +392,7 @@ class TestOcctax:
         data = response.json
         assert data["properties"]["id_module"] == module.id_module
 
-    def test_get_defaut_nomenclatures(self, users):
+    def test_get_defaut_nomenclatures(self, users: dict):
         response = self.client.get(url_for("pr_occtax.getDefaultNomenclatures"))
         assert response.status_code == Unauthorized.code
 
@@ -362,7 +401,7 @@ class TestOcctax:
         response = self.client.get(url_for("pr_occtax.getDefaultNomenclatures"))
         assert response.status_code == 200
 
-    def test_get_one_counting(self, occurrence, users):
+    def test_get_one_counting(self, occurrence: Any, users: dict):
         response = self.client.get(
             url_for(
                 "pr_occtax.getOneCounting",
@@ -380,10 +419,25 @@ class TestOcctax:
         )
         assert response.status_code == 200
 
+    def test_command_permission_module(self, module):
+        client_command_line = CliRunner()
+        with db.session.begin_nested():
+            db.session.add(module)
+
+        client_command_line.invoke(add_submodule_permissions, [module.module_code])
+        permission_available = (
+            db.select(PermissionAvailable)
+            .join(TModules)
+            .where(TModules.module_code == module.module_code)
+        )
+        permission_available = db.session.scalars(permission_available).all()
+
+        assert len(permission_available) == 5
+
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestOcctaxGetReleveFilter:
-    def test_get_releve_filter_observers_not_present(self, users, releve_occtax):
+    def test_get_releve_filter_observers_not_present(self, users: dict, releve_occtax: Any):
         query_string = {"observers": [users["admin_user"].id_role]}
 
         set_logged_user(self.client, users["user"])
@@ -396,7 +450,7 @@ class TestOcctaxGetReleveFilter:
             int(releve_json["id"]) for releve_json in json_resp["items"]["features"]
         ]
 
-    def test_get_releve_filter_observers(self, users, releve_occtax):
+    def test_get_releve_filter_observers(self, users: dict, releve_occtax: Any):
         query_string = {"observers": [users["user"].id_role]}
 
         set_logged_user(self.client, users["user"])
@@ -409,7 +463,7 @@ class TestOcctaxGetReleveFilter:
             int(releve_json["id"]) for releve_json in json_resp["items"]["features"]
         ]
 
-    def test_get_releve_filter_altitude_min(self, users, releve_occtax):
+    def test_get_releve_filter_altitude_min(self, users: dict, releve_occtax: Any):
         query_string = {"altitude_min": releve_occtax.altitude_min - 1}
 
         set_logged_user(self.client, users["user"])
@@ -422,7 +476,7 @@ class TestOcctaxGetReleveFilter:
             int(releve_json["id"]) for releve_json in json_resp["items"]["features"]
         ]
 
-    def test_get_releve_filter_altitude_min_not_present(self, users, releve_occtax):
+    def test_get_releve_filter_altitude_min_not_present(self, users: dict, releve_occtax: Any):
         query_string = {"altitude_min": releve_occtax.altitude_min + 1}
 
         set_logged_user(self.client, users["user"])
@@ -436,7 +490,12 @@ class TestOcctaxGetReleveFilter:
         ]
 
     def test_get_releves_by_submodule(
-        self, users, module, datasets, releve_module_1, occtax_module
+        self,
+        users: dict,
+        module: TModules,
+        datasets: dict[Any, TDatasets],
+        releve_module_1: Any,
+        occtax_module: Any,
     ):
         set_logged_user(self.client, users["admin_user"])
 
@@ -458,17 +517,19 @@ class TestOcctaxGetReleveFilter:
         for feature in response.json["items"]["features"]:
             assert feature["properties"]["id_module"] == occtax_module.id_module
 
-    def test_jwt(self, users):
+    def test_jwt(self, users: dict):
         set_logged_user(self.client, users["admin_user"])
         response = self.client.get(
             url_for("pr_occtax.getReleves"),
         )
         assert response.status_code == 200
-    
-    def test_export_occtax(self, users, datasets):
+
+    def test_export_occtax(self, users: dict, datasets: dict[Any, TDatasets]):
         set_logged_user(self.client, users["user"])
         response = self.client.get(
-            url_for("pr_occtax.export", format="csv", id_dataset=datasets["own_dataset"].id_dataset),
+            url_for(
+                "pr_occtax.export", format="csv", id_dataset=datasets["own_dataset"].id_dataset
+            ),
         )
         assert response.status_code == 200
 
@@ -478,10 +539,13 @@ class TestOcctaxGetReleveFilter:
         assert response.status_code == 200
 
         response = self.client.get(
-            url_for("pr_occtax.export", format="shapefile", id_dataset=datasets["own_dataset"].id_dataset),
+            url_for(
+                "pr_occtax.export",
+                format="shapefile",
+                id_dataset=datasets["own_dataset"].id_dataset,
+            ),
         )
-        assert response.status_code == 200 
-
+        assert response.status_code == 200
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -498,7 +562,7 @@ class TestOcctaxGetReleveFilter:
     ),
 )
 class TestOcctaxGetReleveFilterWrongType:
-    def test_get_releve_filter_wrong_type(self, users, wrong_value):
+    def test_get_releve_filter_wrong_type(self, users: dict, wrong_value):
         query_string = wrong_value
         set_logged_user(self.client, users["user"])
 
