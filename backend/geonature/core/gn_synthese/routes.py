@@ -212,7 +212,7 @@ def get_observations_for_web(permissions):
             .lateral("agg_areas")
         )
         obs_query = (
-            select([LAreas.geojson_4326.label("geojson"), obs_query.c.obs_as_json])
+            select([func.ST_AsGeoJSON(LAreas.geom_4326).label("geojson"), obs_query.c.obs_as_json])
             .select_from(
                 obs_query.outerjoin(
                     agg_areas, agg_areas.c.id_synthese == obs_query.c.id_synthese
