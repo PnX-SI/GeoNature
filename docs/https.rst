@@ -60,7 +60,6 @@ Modifier les éléments suivants :
 	
   URL_APPLICATION = 'https://mondomaine.fr/geonature'
   API_ENDPOINT = 'https://mondomaine.fr/geonature/api'
-  API_TAXHUB = 'https://mondomaine.fr/taxhub/api'
 
 Pour que ces modifications soient prises en compte, exécuter les :ref:`actions à effecture après modification de la configuration <post_config_change>`.
 

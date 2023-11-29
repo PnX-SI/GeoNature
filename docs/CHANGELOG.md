@@ -1,6 +1,23 @@
 CHANGELOG
 =========
 
+
+2.14.0 (unreleased)
+-------------------
+
+**🚀 Nouveautés**
+
+- Intégration de TaxHub dans GeoNature. L'interface est dispobible dans le "backoffice"
+
+**💻 Développement**
+
+- L'API de TaxHub est désormais disponible à l'URL `<URL_GEONATURE>/api/taxhub`.
+
+Note de version:
+
+- L'intégration de TaxHub dans GeoNature entraine la suppression du service systemd et la conf apache spécifique à TaxHub. Les logs sont également centralisés dans le fichier de log de GeoNature
+- Les permissions de TaxHub comme "module" de GeoNature ont été modifié. Voir la section "module TaxHub" de la doc administrateur de GeoNature. Les anciennes permissions de l'application TaxHub on été rappatriées dans ce nouveau modèle. Les utilisateurs avec un profil "6" ont tous les droits sur le modules, les personnes ayant des profils 1,3,4 ou 5 ont des droits sur les objets uniquement sur l'objet 'TAXON'.
+
 2.13.3 (2023-10-17)
 -------------------
 

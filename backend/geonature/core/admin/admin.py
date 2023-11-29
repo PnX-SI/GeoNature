@@ -1,3 +1,5 @@
+import os
+
 from flask import g
 from werkzeug.exceptions import Unauthorized
 from flask_admin import Admin, AdminIndexView, expose
@@ -151,5 +153,6 @@ admin.add_view(
         category="Autres",
     )
 )
+
 
 flask_admin = admin  # for retro-compatibility, usefull for export module for instance
