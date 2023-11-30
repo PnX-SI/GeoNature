@@ -1,14 +1,15 @@
 from typing import Any
 from geonature.core.gn_commons.models.base import TModules
+from geonature.core.gn_commons.models.additional_fields import TAdditionalFields
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_permissions.models import PermissionAvailable
+from geonature.core.gn_permissions.models import PermissionAvailable, PermObject
 from occtax.commands import add_submodule_permissions
 import pytest
 
 from datetime import datetime as dt
 
 from flask import Flask, url_for, current_app, g
-from werkzeug.exceptions import Unauthorized, Forbidden, NotFound
+from werkzeug.exceptions import Unauthorized, Forbidden, NotFound, BadRequest
 from shapely.geometry import Point
 from geoalchemy2.shape import from_shape
 from sqlalchemy import func
@@ -26,7 +27,12 @@ pytestmark = pytest.mark.skipif(
     "OCCTAX" in config["DISABLED_MODULES"], reason="OccTax is disabled"
 )
 
-from occtax.models import DefaultNomenclaturesValue, TRelevesOccurrence
+from occtax.models import (
+    DefaultNomenclaturesValue,
+    TRelevesOccurrence,
+    TOccurrencesOccurrence,
+    CorCountingOccurrence,
+)
 from occtax.repositories import ReleveRepository
 from occtax.schemas import OccurrenceSchema, ReleveSchema
 
@@ -185,6 +191,34 @@ def occurrence_data(client: Any, releve_occtax: Any):
 
 
 @pytest.fixture(scope="function")
+def additional_field(app, datasets):
+    module = TModules.query.filter(TModules.module_code == "OCCTAX").one()
+    obj = PermObject.query.filter(PermObject.code_object == "ALL").one()
+    datasets = list(datasets.values())
+    additional_field = TAdditionalFields(
+        field_name="test",
+        field_label="Un label",
+        required=True,
+        description="une descrption",
+        quantitative=False,
+        unity="degré C",
+        field_values=["la", "li"],
+        id_widget=1,
+        modules=[module],
+        objects=[obj],
+        datasets=datasets,
+    )
+    with db.session.begin_nested():
+        db.session.add(additional_field)
+    return additional_field
+
+
+@pytest.fixture()
+def media_in_export_enabled(monkeypatch):
+    monkeypatch.setitem(current_app.config["OCCTAX"], "ADD_MEDIA_IN_EXPORT", True)
+
+
+@pytest.fixture(scope="function")
 def releve_occtax(app: Flask, users: dict, releve_data: dict[str, Any], occtax_module: Any):
     g.current_module = occtax_module
     data = releve_data["properties"]
@@ -243,7 +277,7 @@ class TestOcctaxReleve:
         ]
 
     def test_get_one_releve(self, users: dict, releve_occtax: Any):
-        set_logged_user(self.client, users["noright_user"])
+        set_logged_user(self.client, users["stranger_user"])
         response = self.client.get(
             url_for("pr_occtax.getOneReleve", id_releve=releve_occtax.id_releve_occtax)
         )
@@ -257,7 +291,7 @@ class TestOcctaxReleve:
     def test_insertOrUpdate_releve(
         self, users: dict, releve_mobile_data: dict[str, dict[str, Any]]
     ):
-        set_logged_user(self.client, users["noright_user"])
+        set_logged_user(self.client, users["stranger_user"])
         response = self.client.post(
             url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data
         )
@@ -275,7 +309,7 @@ class TestOcctaxReleve:
         releve_mobile_data["properties"]["altitude_min"] = 200
         releve_mobile_data["properties"]["id_releve_occtax"] = response.json["id"]
 
-        set_logged_user(self.client, users["noright_user"])
+        set_logged_user(self.client, users["stranger_user"])
         response = self.client.post(
             url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data
         )
@@ -290,6 +324,13 @@ class TestOcctaxReleve:
         assert result.altitude_min == 200
 
     def test_update_releve(self, users: dict, releve_occtax: Any, releve_data: dict[str, Any]):
+        set_logged_user(self.client, users["stranger_user"])
+        response = self.client.post(
+            url_for("pr_occtax.updateReleve", id_releve=releve_occtax.id_releve_occtax),
+            json=releve_data,
+        )
+        assert response.status_code == Forbidden.code
+
         set_logged_user(self.client, users["user"])
         response = self.client.post(
             url_for("pr_occtax.updateReleve", id_releve=releve_occtax.id_releve_occtax),
@@ -302,6 +343,12 @@ class TestOcctaxReleve:
         assert response.status_code == 404
 
     def test_delete_releve(self, users: dict, releve_occtax: Any):
+        set_logged_user(self.client, users["stranger_user"])
+        response = self.client.delete(
+            url_for("pr_occtax.deleteOneReleve", id_releve=releve_occtax.id_releve_occtax)
+        )
+        assert response.status_code == Forbidden.code
+
         set_logged_user(self.client, users["admin_user"])
         response = self.client.delete(
             url_for("pr_occtax.deleteOneReleve", id_releve=releve_occtax.id_releve_occtax)
@@ -311,10 +358,15 @@ class TestOcctaxReleve:
     def test_post_releve(self, users: dict, releve_data: dict[str, Any]):
         # post with cruved = C = 2
         set_logged_user(self.client, users["user"])
+
         response = self.client.post(url_for("pr_occtax.createReleve"), json=releve_data)
         assert response.status_code == 200
 
-        set_logged_user(self.client, users["noright_user"])
+        releve_data["date_min"] = "sdusbuzebushbdjuhezuiefbuziefh"
+        response = self.client.post(url_for("pr_occtax.createReleve"), json=releve_data)
+        assert response.status_code == BadRequest.code
+
+        set_logged_user(self.client, users["stranger_user"])
         response = self.client.post(url_for("pr_occtax.createReleve"), json=releve_data)
         assert response.status_code == Forbidden.code
 
@@ -337,8 +389,15 @@ class TestOcctaxReleve:
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets", "module")
-class TestOcctax:
+class TestOcctaxOccurrence:
     def test_post_occurrence(self, users: dict, occurrence_data: dict[str, Any]):
+        set_logged_user(self.client, users["stranger_user"])
+        response = self.client.post(
+            url_for("pr_occtax.createOccurrence", id_releve=occurrence_data["id_releve_occtax"]),
+            json=occurrence_data,
+        )
+        assert response.status_code == Forbidden.code
+
         set_logged_user(self.client, users["user"])
         response = self.client.post(
             url_for("pr_occtax.createOccurrence", id_releve=occurrence_data["id_releve_occtax"]),
@@ -347,6 +406,13 @@ class TestOcctax:
         assert response.status_code == 200
         json_resp = response.json
         assert len(json_resp["cor_counting_occtax"]) == 2
+
+        occurrence_data["additional_fields"] = None
+        response = self.client.post(
+            url_for("pr_occtax.createOccurrence", id_releve=occurrence_data["id_releve_occtax"]),
+            json=occurrence_data,
+        )
+        assert response.status_code == BadRequest.code
 
         # TODO : test dans la synthese qu'il y a bien 2 ligne pour l'UUID couting
 
@@ -375,6 +441,25 @@ class TestOcctax:
             assert s.cd_nom == 4516
         {3, 5}.issubset([s.count_max for s in synthese_data])
 
+    def test_delete_occurrence(self, users: dict, occurrence):
+        set_logged_user(self.client, users["stranger_user"])
+        response = self.client.delete(
+            url_for("pr_occtax.deleteOneOccurence", id_occ=occurrence.id_occurrence_occtax)
+        )
+        assert response.status_code == Forbidden.code
+        set_logged_user(self.client, users["user"])
+        occ = db.session.get(TOccurrencesOccurrence, occurrence.id_occurrence_occtax)
+        assert occ
+        response = self.client.delete(
+            url_for("pr_occtax.deleteOneOccurence", id_occ=occurrence.id_occurrence_occtax)
+        )
+        occ = db.session.get(TOccurrencesOccurrence, occurrence.id_occurrence_occtax)
+        assert response.status_code == 204
+        assert not occ
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets", "module")
+class TestOcctax:
     def test_post_releve_in_module_bis(
         self,
         users: dict,
@@ -401,14 +486,18 @@ class TestOcctax:
         response = self.client.get(url_for("pr_occtax.getDefaultNomenclatures"))
         assert response.status_code == 200
 
+        response = self.client.get(url_for("pr_occtax.getDefaultNomenclatures", id_type="test"))
+        assert response.status_code == NotFound.code
+
     def test_get_one_counting(self, occurrence: Any, users: dict):
+        set_logged_user(self.client, users["stranger_user"])
         response = self.client.get(
             url_for(
                 "pr_occtax.getOneCounting",
                 id_counting=occurrence.cor_counting_occtax[0].id_counting_occtax,
             )
         )
-        assert response.status_code == Unauthorized.code
+        assert response.status_code == Forbidden.code
 
         set_logged_user(self.client, users["admin_user"])
         response = self.client.get(
@@ -418,6 +507,33 @@ class TestOcctax:
             )
         )
         assert response.status_code == 200
+
+    def test_delete_occurrence_counting(self, users: dict, occurrence):
+        id_counting = occurrence.cor_counting_occtax[0].id_counting_occtax
+
+        set_logged_user(self.client, users["stranger_user"])
+        response = self.client.delete(
+            url_for(
+                "pr_occtax.deleteOneOccurenceCounting",
+                id_count=id_counting,
+            )
+        )
+        assert response.status_code == Forbidden.code
+
+        set_logged_user(self.client, users["user"])
+
+        count = db.session.get(CorCountingOccurrence, id_counting)
+        assert count
+
+        response = self.client.delete(
+            url_for(
+                "pr_occtax.deleteOneOccurenceCounting",
+                id_count=id_counting,
+            )
+        )
+        count = db.session.get(CorCountingOccurrence, id_counting)
+        assert response.status_code == 204
+        assert not count
 
     def test_command_permission_module(self, module):
         client_command_line = CliRunner()
@@ -524,7 +640,39 @@ class TestOcctaxGetReleveFilter:
         )
         assert response.status_code == 200
 
-    def test_export_occtax(self, users: dict, datasets: dict[Any, TDatasets]):
+    def test_export_occtax(
+        self,
+        users: dict,
+        datasets: dict[Any, TDatasets],
+        additional_field,
+        occurrence,
+        media_in_export_enabled,
+    ):
+        set_logged_user(self.client, users["user"])
+        response = self.client.get(
+            url_for(
+                "pr_occtax.export", format="csv", id_dataset=datasets["own_dataset"].id_dataset
+            ),
+        )
+        assert response.status_code == 200
+
+        response = self.client.get(
+            url_for("pr_occtax.export", id_dataset=datasets["own_dataset"].id_dataset),
+        )
+        assert response.status_code == 200
+
+        response = self.client.get(
+            url_for(
+                "pr_occtax.export",
+                format="shapefile",
+                id_dataset=datasets["own_dataset"].id_dataset,
+            ),
+        )
+        assert response.status_code == 200
+
+    def test_export_occtax_no_additional(
+        self, users: dict, datasets: dict[Any, TDatasets], occurrence
+    ):
         set_logged_user(self.client, users["user"])
         response = self.client.get(
             url_for(

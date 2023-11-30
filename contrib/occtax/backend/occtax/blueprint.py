@@ -512,7 +512,7 @@ def deleteOneOccurenceCounting(scope, id_count):
 
     """
     ccc = db.get_or_404(CorCountingOccurrence, id_count)
-    if not ccc.occurence.releve.has_instance_permission(scope):
+    if not ccc.occurrence.releve.has_instance_permission(scope):
         raise Forbidden
     DB.session.delete(ccc)
     DB.session.commit()
