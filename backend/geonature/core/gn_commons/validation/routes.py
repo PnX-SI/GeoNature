@@ -1,4 +1,5 @@
 import logging
+import uuid
 
 from werkzeug.exceptions import BadRequest
 
@@ -9,7 +10,6 @@ from utils_flask_sqla.response import json_resp
 from geonature.core.gn_commons.models import TValidations
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import test_is_uuid
 
 
 from ..routes import routes
@@ -17,12 +17,24 @@ from ..routes import routes
 log = logging.getLogger()
 
 
+def is_uuid(uuid_string):
+    try:
+        # Si uuid_string est un code hex valide mais pas un uuid valid,
+        # UUID() va quand même le convertir en uuid valide. Pour se prémunir
+        # de ce problème, on check la version original (sans les tirets) avec
+        # le code hex généré qui doivent être les mêmes.
+        uid = uuid.UUID(uuid_string)
+        return uid.hex == uuid_string.replace("-", "")
+    except ValueError:
+        return False
+
+
 @routes.route("/history/<uuid_attached_row>", methods=["GET"])
 @permissions.check_cruved_scope("R", module_code="SYNTHESE")
 @json_resp
 def get_hist(uuid_attached_row):
     # Test if uuid_attached_row is uuid
-    if not test_is_uuid(uuid_attached_row):
+    if not is_uuid(uuid_attached_row):
         raise BadRequest("Value error uuid_attached_row is not valid")
     """
     Here we use execute() instead of scalars() because
