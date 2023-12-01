@@ -25,22 +25,44 @@ from geonature.utils.command import (
 @click.option(
     "-x", "--x-arg", multiple=True, help="Additional arguments consumed by custom env.py scripts"
 )
-@click.argument("module_path", type=click.Path(exists=True, file_okay=False, path_type=Path))
+@click.argument("module_path", type=click.Path(path_type=Path))
 @click.argument("module_code", required=False)
 @click.option("--build", type=bool, required=False, default=True)
 @click.option("--upgrade-db", type=bool, required=False, default=True)
 def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
+    """
+    Command definition to install a GeoNature module
+
+    Parameters
+    ----------
+    x_arg : list
+        additional arguments
+    module_path : str
+        path of the module directory
+    module_code : str
+        code of the module, deprecated in future release
+    build : boolean
+        is the frontend rebuild
+    upgrade_db : boolean
+        migrate the revision associated with the module
+
+    Raises
+    ------
+    ClickException
+        No module found with the given module code
+    ClickException
+        No module code was detected in the code
+    """
     click.echo("Installation du backend…")
     subprocess.run(f"pip install -e '{module_path}'", shell=True, check=True)
 
     # refresh list of entry points
     importlib.reload(site)
     importlib.reload(geonature.utils.config)
-
     if module_code:
         # load python package
         module_dist = get_dist_from_code(module_code)
-        if not module_dist:
+        if not module_dist:  # FIXME : technically can't go there...
             raise ClickException(f"Aucun module ayant pour code {module_code} n’a été trouvé")
     else:
         for module_dist in iter_modules_dist():
@@ -56,7 +78,6 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
             raise ClickException(
                 f"Impossible de détecter le code du module, essayez de le spécifier."
             )
-
     # symlink module in exernal module directory
     module_frontend_path = (module_path / "frontend").resolve()
     module_symlink = ROOT_DIR / "frontend" / "external_modules" / module_code.lower()
