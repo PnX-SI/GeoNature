@@ -1,24 +1,22 @@
-import os
-import sys
-import subprocess
-import site
 import importlib
+import os
+import site
+import subprocess
+import sys
 from pathlib import Path
 
 import click
-from click import ClickException
-
-from geonature.utils.env import ROOT_DIR
-from geonature.utils.module import iter_modules_dist, get_dist_from_code, module_db_upgrade
-
-from geonature.core.command.main import main
 import geonature.utils.config
-from geonature.utils.config import config
+from click import ClickException
+from geonature.core.command.main import main
 from geonature.utils.command import (
-    install_frontend_dependencies,
-    create_frontend_module_config,
     build_frontend,
+    create_frontend_module_config,
+    install_frontend_dependencies,
 )
+from geonature.utils.config import config
+from geonature.utils.env import ROOT_DIR
+from geonature.utils.module import get_dist_from_code, iter_modules_dist, module_db_upgrade
 
 
 @main.command()
@@ -59,6 +57,7 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
     # refresh list of entry points
     importlib.reload(site)
     importlib.reload(geonature.utils.config)
+
     if module_code:
         # load python package
         module_dist = get_dist_from_code(module_code)
@@ -89,7 +88,6 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
     else:
         click.echo(f"Création du lien symbolique {module_symlink} → {module_frontend_path}")
         os.symlink(module_frontend_path, module_symlink)
-
     if (Path(module_path) / "frontend" / "package-lock.json").is_file():
         click.echo("Installation des dépendances frontend…")
         install_frontend_dependencies(module_frontend_path)
@@ -101,7 +99,6 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
         click.echo("Rebuild du frontend …")
         build_frontend()
         click.secho("Rebuild du frontend terminé.", fg="green")
-
     if upgrade_db:
         click.echo("Installation / mise à jour de la base de données…")
         if not module_db_upgrade(module_dist, x_arg=x_arg):
