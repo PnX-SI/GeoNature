@@ -3,6 +3,7 @@
 FROM python:3.11-bookworm AS build
 
 ENV PIP_ROOT_USER_ACTION=ignore
+RUN apt-get update && apt-get install --yes libgdal-dev
 RUN --mount=type=cache,target=/root/.cache \
     pip install --upgrade pip setuptools wheel
 
@@ -109,6 +110,7 @@ RUN --mount=type=cache,target=/root/.npm \
 FROM python:3.9-bullseye AS wheels-light
 
 ENV PIP_ROOT_USER_ACTION=ignore
+RUN apt-get update && apt-get install --yes libgdal-dev
 RUN --mount=type=cache,target=/root/.cache \
     pip install --upgrade pip setuptools wheel
 
@@ -152,7 +154,7 @@ CMD [ "gunicorn", "geonature:create_app()", \
     "--threads=2", \
     "--access-logfile=-", \
     "--bind=0.0.0.0:8000" \
-]
+    ]
 
 
 FROM wheels-light AS wheels
