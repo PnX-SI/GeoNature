@@ -17,8 +17,26 @@ depends_on = ("2b0b3bd0248c",)
 
 
 def upgrade():
-    pass
+    op.execute(
+        """
+        UPDATE
+            gn_commons.t_modules
+        SET
+            type = 'synthese'
+        WHERE
+            module_code = 'SYNTHESE'
+        """
+    )
 
 
 def downgrade():
-    pass
+    op.execute(
+        """
+        UPDATE
+            gn_commons.t_modules
+        SET
+            type = 'base'
+        WHERE
+            module_code = 'SYNTHESE'
+        """
+    )
