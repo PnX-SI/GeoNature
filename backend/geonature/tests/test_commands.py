@@ -8,7 +8,9 @@ import geonature.core.command.create_gn_module as install_module
 import geonature.utils.command as command_utils
 from click.testing import CliRunner
 from geonature.utils.config import config
+from geonature.utils.env import db
 from munch import Munch
+from pypnusershub.db.models import User
 
 from .fixtures import *
 

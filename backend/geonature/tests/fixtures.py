@@ -193,14 +193,11 @@ def users(app):
 
     actions = {code: PermAction.query.filter_by(code_action=code).one() for code in "CRUVED"}
 
-    def create_user(username, organisme=None, scope=None, sensitivity_filter=False):
+    def create_user(username, organisme=None, scope=None, sensitivity_filter=False, **kwargs):
         # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
         with db.session.begin_nested():
             user = User(
-                groupe=False,
-                active=True,
-                identifiant=username,
-                password=username,
+                groupe=False, active=True, identifiant=username, password=username, **kwargs
             )
             db.session.add(user)
             user.organisme = organisme
@@ -233,16 +230,16 @@ def users(app):
     db.session.add(organisme)
 
     users_to_create = [
-        ("noright_user", organisme, 0),
-        ("stranger_user", None, 2),
-        ("associate_user", organisme, 2),
-        ("self_user", organisme, 1),
-        ("user", organisme, 2),
-        ("admin_user", organisme, 3),
-        ("associate_user_2_exclude_sensitive", organisme, 2, True),
+        (("noright_user", organisme, 0), {}),
+        (("stranger_user", None, 2), {}),
+        (("associate_user", organisme, 2), {}),
+        (("self_user", organisme, 1), {}),
+        (("user", organisme, 2), {"nom_role": "Bob", "prenom_role": "Bobby"}),
+        (("admin_user", organisme, 3), {}),
+        (("associate_user_2_exclude_sensitive", organisme, 2, True), {}),
     ]
 
-    for username, *args in users_to_create:
+    for (username, *args), kwargs in users_to_create:
         users[username] = create_user(username, *args)
 
     return users
