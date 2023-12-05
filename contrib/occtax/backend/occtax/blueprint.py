@@ -267,7 +267,6 @@ def insertOrUpdateOneReleve():
         if "cor_counting_occtax" in occ:
             cor_counting_occtax = occ["cor_counting_occtax"]
             occ.pop("cor_counting_occtax")
-
         # Test et suppression
         #   des propriétés inexistantes de TOccurrencesOccurrence
         attliste = [k for k in occ]
@@ -292,7 +291,6 @@ def insertOrUpdateOneReleve():
             countingOccurrence = CorCountingOccurrence(**cnt)
             occtax.cor_counting_occtax.append(countingOccurrence)
         releve.t_occurrences_occtax.append(occtax)
-
     # if its a update
     if releve.id_releve_occtax:
         scope = get_scopes_by_action()["U"]
@@ -306,13 +304,12 @@ def insertOrUpdateOneReleve():
         scope = get_scopes_by_action()["C"]
         if not db.session.get(TDatasets, releve.id_dataset).has_instance_permission(scope):
             raise Forbidden(
-                f"User {g.current_user.id_role} is not allowed to create releve in dataset {dataset.id_dataset}"
+                f"User {g.current_user.id_role} is not allowed to create releve in dataset."
             )
         # set id_digitiser
         releve.id_digitiser = g.current_user.id_role
         DB.session.add(releve)
     DB.session.commit()
-
     return releve.get_geofeature(depth=depth)
 
 
@@ -515,7 +512,7 @@ def deleteOneOccurenceCounting(scope, id_count):
 
     """
     ccc = db.get_or_404(CorCountingOccurrence, id_count)
-    if not ccc.occurence.releve.has_instance_permission(scope):
+    if not ccc.occurrence.releve.has_instance_permission(scope):
         raise Forbidden
     DB.session.delete(ccc)
     DB.session.commit()

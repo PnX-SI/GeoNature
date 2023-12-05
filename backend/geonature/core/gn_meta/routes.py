@@ -123,8 +123,9 @@ def get_datasets():
 
     if "orderby" in params:
         table_columns = TDatasets.__table__.columns
+        order_by_column = params.pop("orderby")
         try:
-            orderCol = getattr(table_columns, params.pop("orderby"))
+            orderCol = getattr(table_columns, order_by_column)
             query = query.order_by(orderCol)
         except AttributeError as exc:
             raise BadRequest("the attribute to order on does not exist") from exc
@@ -153,7 +154,7 @@ def get_datasets():
         only.append("+synthese_records_count")
 
     if "modules" in fields:
-        query = query.options(joinedload("modules"))
+        query = query.options(joinedload(TDatasets.modules))
         only.append("modules")
 
     dataset_schema = DatasetSchema(only=only)
@@ -257,14 +258,14 @@ def uuid_report():
 
     query = (
         DB.select(Synthese)
-        .select_from(Synthese)
         .where_if(id_module is not None, Synthese.id_module == id_module)
         .where_if(ds_id is not None, Synthese.id_dataset == ds_id)
     )
 
+    # TODO test in module import ?
     if id_import:
-        query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).filter(
-            TSources.name_source == "Import(id={})".format(id_import)
+        query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).where(
+            TSources.name_source == f"Import(id={id_import})"
         )
 
     query = query.order_by(Synthese.id_synthese)
@@ -297,9 +298,10 @@ def uuid_report():
     )
 
 
-@routes.route("/sensi_report", methods=["GET"])
+@routes.route("/sensi_report", methods=["GET"])  # TODO remove later
+@routes.route("/sensi_report/<int:ds_id>", methods=["GET"])
 @permissions.check_cruved_scope("R", module_code="METADATA")
-def sensi_report():
+def sensi_report(ds_id=None):
     """
     get the UUID report of a dataset
 
@@ -308,7 +310,8 @@ def sensi_report():
     # TODO: put ds_id in /sensi_report/<int: ds_id>
 
     params = request.args
-    ds_id = params["id_dataset"]
+    if not ds_id:
+        ds_id = params["id_dataset"]
     dataset = db.get_or_404(TDatasets, ds_id)  # TDatasets.query.get_or_404(ds_id)
     id_import = params.get("id_import")
     id_module = params.get("id_module")
@@ -620,7 +623,9 @@ def get_acquisition_frameworks_list(scope):
         only=["+cruved"], exclude=exclude_fields
     )
     return acquisitionFrameworkSchema.jsonify(
-        db.session.scalars(get_metadata_list(g.current_user, scope, params, exclude_fields)).all(),
+        db.session.scalars(get_metadata_list(g.current_user, scope, params, exclude_fields))
+        .unique()
+        .all(),
         many=True,
     )
 

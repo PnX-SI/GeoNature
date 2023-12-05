@@ -18,6 +18,14 @@ from geonature.utils.env import FRONTEND_DIR
 from geonature.utils.config import config_frontend
 from geonature.utils.module import get_dist_from_code, get_module_config
 
+__all__ = [
+    "run",
+    "create_frontend_module_config",
+    "nvm_available",
+    "install_frontend_dependencies",
+    "build_frontend",
+]
+
 
 def create_frontend_module_config(module_code, output_file=None):
     """
