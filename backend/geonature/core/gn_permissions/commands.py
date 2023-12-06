@@ -50,14 +50,28 @@ def supergrant(skip_existing, dry_run, yes, **filters):
             f"Ajouter les permissions administrateur au rôle {role.id_role} ({role.nom_complet}) ?",
         ):
             raise click.Abort()
-    for ap in PermissionAvailable.query.outerjoin(
-        Permission, sa.and_(PermissionAvailable.permissions, Permission.id_role == role.id_role)
-    ).options(
-        contains_eager(PermissionAvailable.permissions),
-        joinedload(PermissionAvailable.module),
-        joinedload(PermissionAvailable.object),
-        joinedload(PermissionAvailable.action),
-    ):
+
+    permission_available = (
+        db.session.scalars(
+            db.select(PermissionAvailable)
+            .outerjoin(
+                Permission,
+                sa.and_(PermissionAvailable.permissions, Permission.id_role == role.id_role),
+            )
+            .options(
+                contains_eager(
+                    PermissionAvailable.permissions,
+                ),
+                joinedload(PermissionAvailable.module),
+                joinedload(PermissionAvailable.object),
+                joinedload(PermissionAvailable.action),
+            )
+        )
+        .unique()
+        .all()
+    )
+
+    for ap in permission_available:
         for perm in ap.permissions:
             if skip_existing or not perm.filters:
                 break

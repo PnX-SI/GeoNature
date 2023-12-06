@@ -47,8 +47,13 @@ class StationSchema(CruvedSchemaMixin, SmartRelationshipsMixin, GeoAlchemyAutoSc
         """
         Ensure this schema is not leveraged to retrieve habitats from other station
         """
-        for hab in data["habitats"]:
-            if hab.id_station is not None and data.get("id_station") != hab.id_station:
+        for hab in data.get("habitats", []):
+            # Note: unless instance is given during schema instantiation or when load is called,
+            # self.instance in created in @post_load, but @validates_schema execute before @post_load
+            # so we need to use data.get("id_station")
+            sta_id_station = self.instance.id_station if self.instance else data.get("id_station")
+            # we could have hab.id_station None with station.id_station not None when creating new habitats
+            if hab.id_station is not None and hab.id_station != sta_id_station:
                 raise ValidationError(
                     "Habitat does not belong to this station.", field_name="habitats"
                 )

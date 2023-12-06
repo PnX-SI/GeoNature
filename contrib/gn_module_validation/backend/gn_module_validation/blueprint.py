@@ -90,7 +90,8 @@ def get_synthese_data(scope):
     to use to populate relationships models.
     """
     last_validation_subquery = (
-        TValidations.query.filter(TValidations.uuid_attached_row == Synthese.unique_id_sinp)
+        db.select(TValidations)
+        .where(TValidations.uuid_attached_row == Synthese.unique_id_sinp)
         .order_by(TValidations.validation_date.desc())
         .limit(1)
         .subquery()
@@ -101,7 +102,8 @@ def get_synthese_data(scope):
 
     if enable_profile:
         profile_subquery = (
-            VConsistancyData.query.filter(VConsistancyData.id_synthese == Synthese.id_synthese)
+            db.select(VConsistancyData)
+            .where(VConsistancyData.id_synthese == Synthese.id_synthese)
             .limit(result_limit)
             .subquery()
             .lateral("profile")
@@ -133,35 +135,39 @@ def get_synthese_data(scope):
     for alias in lateral_join.keys():
         query = query.outerjoin(alias, sa.true())
 
-    query = query.filter(Synthese.the_geom_4326.isnot(None)).order_by(Synthese.date_min.desc())
+    query = query.where(Synthese.the_geom_4326.isnot(None)).order_by(Synthese.date_min.desc())
 
     # filter with profile
     if enable_profile:
         score = filters.pop("score", None)
         if score is not None:
-            query = query.filter(profile.score == score)
+            query = query.where(profile.score == score)
         valid_distribution = filters.pop("valid_distribution", None)
         if valid_distribution is not None:
-            query = query.filter(profile.valid_distribution.is_(valid_distribution))
+            query = query.where(profile.valid_distribution.is_(valid_distribution))
         valid_altitude = filters.pop("valid_altitude", None)
         if valid_altitude is not None:
-            query = query.filter(profile.valid_altitude.is_(valid_altitude))
+            query = query.where(profile.valid_altitude.is_(valid_altitude))
         valid_phenology = filters.pop("valid_phenology", None)
         if valid_phenology is not None:
-            query = query.filter(profile.valid_phenology.is_(valid_phenology))
+            query = query.where(profile.valid_phenology.is_(valid_phenology))
 
     if filters.pop("modif_since_validation", None):
-        query = query.filter(Synthese.meta_update_date > last_validation.validation_date)
+        query = query.where(Synthese.meta_update_date > last_validation.validation_date)
 
     # Filter only validable dataset
 
-    query = query.filter(dataset_alias.validable == True)
+    query = query.where(dataset_alias.validable == True)
 
     # Step 2: give SyntheseQuery the Core selectable from ORM query
-    assert len(query.selectable.froms) == 1
+    assert len(query.selectable.get_final_froms()) == 1
 
     query = (
-        SyntheseQuery(Synthese, query.selectable, filters, query_joins=query.selectable.froms[0])
+        SyntheseQuery(
+            Synthese,
+            query.selectable,
+            filters,  # , query_joins=query.selectable.get_final_froms()[0] # DUPLICATION of OUTER JOIN
+        )
         .filter_query_all_filters(g.current_user, scope)
         .limit(result_limit)
     )

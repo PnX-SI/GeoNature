@@ -72,14 +72,14 @@ def get_roles_by_menu_id(id_menu):
     :type id_menu: int
     :query str nom_complet: begenning of complet name of the role
     """
-    q = DB.session.query(VUserslistForallMenu).filter_by(id_menu=id_menu)
+    q = DB.select(VUserslistForallMenu).filter_by(id_menu=id_menu)
 
     parameters = request.args
-    if parameters.get("nom_complet"):
-        q = q.filter(
-            VUserslistForallMenu.nom_complet.ilike("{}%".format(parameters.get("nom_complet")))
-        )
-    data = q.order_by(VUserslistForallMenu.nom_complet.asc()).all()
+    nom_complet = parameters.get("nom_complet")
+    if nom_complet:
+        q = q.where(VUserslistForallMenu.nom_complet.ilike(f"{nom_complet}%"))
+
+    data = DB.session.scalars(q.order_by(VUserslistForallMenu.nom_complet.asc())).all()
     return [n.as_dict() for n in data]
 
 
@@ -194,21 +194,24 @@ def get_organismes_jdd():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-
-    datasets = [d.id_dataset for d in TDatasets.query.filter_by_readable()]
-    q = (
-        DB.session.query(Organisme)
+    datasets = DB.session.scalars(TDatasets.select.filter_by_readable()).unique().all()
+    datasets = [d.id_dataset for d in datasets]
+    query = (
+        DB.select(Organisme)
         .join(CorDatasetActor, Organisme.id_organisme == CorDatasetActor.id_organism)
-        .filter(CorDatasetActor.id_dataset.in_(datasets))
+        .where(CorDatasetActor.id_dataset.in_(datasets))
         .distinct()
     )
     if "orderby" in params:
         try:
             order_col = getattr(Organisme.__table__.columns, params.pop("orderby"))
-            q = q.order_by(order_col)
+            query = query.order_by(order_col)
         except AttributeError:
             raise BadRequest("the attribute to order on does not exist")
-    return [organism.as_dict(fields=organism_fields) for organism in q.all()]
+    return [
+        organism.as_dict(fields=organism_fields)
+        for organism in DB.session.scalars(query).unique().all()
+    ]
 
 
 #########################

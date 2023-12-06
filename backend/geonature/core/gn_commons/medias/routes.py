@@ -2,21 +2,14 @@
     Route permettant de manipuler les fichiers
     contenus dans gn_media
 """
-import json
-
-from flask import Blueprint, request, current_app, redirect, jsonify
+from flask import request, redirect, jsonify
 from werkzeug.exceptions import NotFound
 
-from geonature.core.gn_commons.repositories import TMediaRepository, TMediumRepository
+from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.models import TMedias
 from geonature.utils.env import DB
 from utils_flask_sqla.response import json_resp, json_resp_accept_empty_list
 
-
-from geonature.utils.errors import (
-    GeoNatureError,
-    GeonatureApiError,
-)
 
 from ..routes import routes
 
@@ -29,8 +22,9 @@ def get_medias(uuid_attached_row):
     .. :quickref: Commons;
     """
 
-    res = DB.session.query(TMedias).filter(TMedias.uuid_attached_row == uuid_attached_row).all()
-
+    res = DB.session.scalars(
+        DB.select(TMedias).filter(TMedias.uuid_attached_row == uuid_attached_row)
+    ).all()
     return [r.as_dict() for r in (res or [])]
 
 
@@ -41,10 +35,10 @@ def get_media(id_media):
     .. :quickref: Commons;
     """
 
-    m = TMediaRepository(id_media=id_media).media
-    if not m:
+    media = TMediaRepository(id_media=id_media).media
+    if not media:
         raise NotFound
-    return jsonify(m.as_dict())
+    return jsonify(media.as_dict())
 
 
 @routes.route("/media", methods=["POST", "PUT"])
@@ -59,14 +53,14 @@ def insert_or_update_media(id_media=None):
     """
 
     # gestion des parametres de route
-
+    # @TODO utilisé quelque part ?
     if request.files:
         file = request.files["file"]
     else:
         file = None
 
     data = {}
-    # Useful ?
+    # Useful ? @jacquesfize YES ! -> used when add media when adding a taxon occurrence
     if request.form:
         formData = dict(request.form)
         for key in formData:

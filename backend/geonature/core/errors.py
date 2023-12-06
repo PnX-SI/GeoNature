@@ -4,7 +4,7 @@ import sys
 
 from flask import current_app, request, json, redirect
 from werkzeug.exceptions import Unauthorized, InternalServerError, HTTPException, BadRequest
-from werkzeug.urls import url_encode
+from urllib.parse import urlencode
 from marshmallow.exceptions import ValidationError
 
 
@@ -32,7 +32,7 @@ def handle_unauthenticated_request(e):
             next_url = request.full_path
         else:
             next_url = request.url
-        query_string = url_encode({"next": next_url})
+        query_string = urlencode({"next": next_url})
         return redirect(f"{base_url}{login_path}?{query_string}")
 
 

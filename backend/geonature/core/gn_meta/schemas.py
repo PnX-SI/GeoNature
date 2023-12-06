@@ -145,6 +145,7 @@ class AcquisitionFrameworkSchema(
     meta_create_date = fields.DateTime(dump_only=True)
     meta_update_date = fields.DateTime(dump_only=True)
     t_datasets = MA.Nested(DatasetSchema, many=True)
+    datasets = MA.Nested(DatasetSchema, many=True)
     bibliographical_references = MA.Nested(BibliographicReferenceSchema, many=True)
     cor_af_actor = MA.Nested(AcquisitionFrameworkActorSchema, many=True, unknown=EXCLUDE)
     cor_volets_sinp = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)

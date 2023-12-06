@@ -14,6 +14,7 @@ from flask import (
     jsonify,
     g,
 )
+from pypnusershub.db.models import User
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from werkzeug.datastructures import MultiDict
 from sqlalchemy import distinct, func, desc, asc, select, case
@@ -48,6 +49,7 @@ from geonature.core.gn_synthese.models import (
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
+from geonature.core.gn_synthese.utils.orm import is_already_joined
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required, permissions_required
@@ -135,13 +137,11 @@ def get_observations_for_web(permissions):
 
     # Build defaut CTE observations query
     count_min_max = case(
-        [
-            (
-                VSyntheseForWebApp.count_min != VSyntheseForWebApp.count_max,
-                func.concat(VSyntheseForWebApp.count_min, " - ", VSyntheseForWebApp.count_max),
-            ),
-            (VSyntheseForWebApp.count_min != None, func.concat(VSyntheseForWebApp.count_min)),
-        ],
+        (
+            VSyntheseForWebApp.count_min != VSyntheseForWebApp.count_max,
+            func.concat(VSyntheseForWebApp.count_min, " - ", VSyntheseForWebApp.count_max),
+        ),
+        (VSyntheseForWebApp.count_min != None, func.concat(VSyntheseForWebApp.count_min)),
         else_="",
     )
 
@@ -176,8 +176,8 @@ def get_observations_for_web(permissions):
     observations = func.json_build_object(*columns).label("obs_as_json")
 
     obs_query = (
-        # select([VSyntheseForWebApp.id_synthese, observations])
-        select([observations])
+        # select(VSyntheseForWebApp.id_synthese, observations)
+        select(observations)
         .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
         .order_by(VSyntheseForWebApp.date_min.desc())
         .limit(result_limit)
@@ -193,10 +193,9 @@ def get_observations_for_web(permissions):
     obs_query = synthese_query_class.query
 
     if output_format == "grouped_geom_by_areas":
-        # SQLAlchemy 1.4: replace column by add_columns
-        obs_query = obs_query.column(VSyntheseForWebApp.id_synthese).cte("OBS")
+        obs_query = obs_query.add_columns(VSyntheseForWebApp.id_synthese).cte("OBS")
         agg_areas = (
-            select([CorAreaSynthese.id_synthese, LAreas.id_area])
+            select(CorAreaSynthese.id_synthese, LAreas.id_area)
             .select_from(
                 CorAreaSynthese.__table__.join(
                     LAreas, LAreas.id_area == CorAreaSynthese.id_area
@@ -212,7 +211,7 @@ def get_observations_for_web(permissions):
             .lateral("agg_areas")
         )
         obs_query = (
-            select([LAreas.geojson_4326.label("geojson"), obs_query.c.obs_as_json])
+            select(LAreas.geojson_4326.label("geojson"), obs_query.c.obs_as_json)
             .select_from(
                 obs_query.outerjoin(
                     agg_areas, agg_areas.c.id_synthese == obs_query.c.id_synthese
@@ -221,19 +220,18 @@ def get_observations_for_web(permissions):
             .cte("OBSERVATIONS")
         )
     else:
-        # SQLAlchemy 1.4: replace column by add_columns
-        obs_query = obs_query.column(VSyntheseForWebApp.st_asgeojson.label("geojson")).cte(
+        obs_query = obs_query.add_columns(VSyntheseForWebApp.st_asgeojson.label("geojson")).cte(
             "OBSERVATIONS"
         )
 
     if output_format == "ungrouped_geom":
-        query = select([obs_query.c.geojson, obs_query.c.obs_as_json])
+        query = select(obs_query.c.geojson, obs_query.c.obs_as_json)
     else:
         # Group geometries with main query
         grouped_properties = func.json_build_object(
             "observations", func.json_agg(obs_query.c.obs_as_json).label("observations")
         )
-        query = select([obs_query.c.geojson, grouped_properties]).group_by(obs_query.c.geojson)
+        query = select(obs_query.c.geojson, grouped_properties).group_by(obs_query.c.geojson)
 
     results = DB.session.execute(query)
 
@@ -366,12 +364,10 @@ def export_taxon_web(permissions):
 
     sub_query = (
         select(
-            [
-                VSyntheseForWebApp.cd_ref,
-                func.count(distinct(VSyntheseForWebApp.id_synthese)).label("nb_obs"),
-                func.min(VSyntheseForWebApp.date_min).label("date_min"),
-                func.max(VSyntheseForWebApp.date_max).label("date_max"),
-            ]
+            VSyntheseForWebApp.cd_ref,
+            func.count(distinct(VSyntheseForWebApp.id_synthese)).label("nb_obs"),
+            func.min(VSyntheseForWebApp.date_min).label("date_min"),
+            func.max(VSyntheseForWebApp.date_max).label("date_max"),
         )
         .where(VSyntheseForWebApp.id_synthese.in_(id_list))
         .group_by(VSyntheseForWebApp.cd_ref)
@@ -430,7 +426,7 @@ def export_observations_web(permissions):
     # Get the CTE for synthese filtered by user permissions
     synthese_query_class = SyntheseQuery(
         Synthese,
-        select([Synthese.id_synthese]),
+        select(Synthese.id_synthese),
         {},
     )
     synthese_query_class.filter_query_all_filters(g.current_user, permissions)
@@ -447,7 +443,7 @@ def export_observations_web(permissions):
 
     # Get the query for export
     export_query = (
-        select([export_view.tableDef])
+        select(export_view.tableDef)
         .select_from(
             export_view.tableDef.join(
                 cte_synthese_filtered,
@@ -478,7 +474,7 @@ def export_observations_web(permissions):
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
 
     if export_format == "csv":
-        formated_data = [export_view.as_dict(d, columns=columns_to_serialize) for d in results]
+        formated_data = [export_view.as_dict(d, fields=columns_to_serialize) for d in results]
         return to_csv_resp(file_name, formated_data, separator=";", columns=columns_to_serialize)
     elif export_format == "geojson":
         features = []
@@ -488,7 +484,7 @@ def export_observations_web(permissions):
             )
             feature = Feature(
                 geometry=geometry,
-                properties=export_view.as_dict(r, columns=columns_to_serialize),
+                properties=export_view.as_dict(r, fields=columns_to_serialize),
             )
             features.append(feature)
         results = FeatureCollection(features)
@@ -554,7 +550,7 @@ def export_metadata(permissions):
             500,
         )
 
-    q = select([distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef])
+    q = select(distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef)
 
     synthese_query_class = SyntheseQuery(
         VSyntheseForWebApp,
@@ -609,22 +605,19 @@ def export_status(permissions):
 
     # Initalize the select object
     q = select(
-        [
-            distinct(VSyntheseForWebApp.cd_nom),
-            Taxref.cd_ref,
-            Taxref.nom_complet,
-            Taxref.nom_vern,
-            TaxrefBdcStatutTaxon.rq_statut,
-            TaxrefBdcStatutType.regroupement_type,
-            TaxrefBdcStatutType.lb_type_statut,
-            TaxrefBdcStatutText.cd_sig,
-            TaxrefBdcStatutText.full_citation,
-            TaxrefBdcStatutText.doc_url,
-            TaxrefBdcStatutValues.code_statut,
-            TaxrefBdcStatutValues.label_statut,
-        ]
+        distinct(VSyntheseForWebApp.cd_nom).label("cd_nom"),
+        Taxref.cd_ref,
+        Taxref.nom_complet,
+        Taxref.nom_vern,
+        TaxrefBdcStatutTaxon.rq_statut,
+        TaxrefBdcStatutType.regroupement_type,
+        TaxrefBdcStatutType.lb_type_statut,
+        TaxrefBdcStatutText.cd_sig,
+        TaxrefBdcStatutText.full_citation,
+        TaxrefBdcStatutText.doc_url,
+        TaxrefBdcStatutValues.code_statut,
+        TaxrefBdcStatutValues.label_statut,
     )
-
     # Initialize SyntheseQuery class
     synthese_query = SyntheseQuery(VSyntheseForWebApp, q, filters)
 
@@ -674,6 +667,7 @@ def export_status(permissions):
     protection_status = []
     data = DB.session.execute(q)
     for d in data:
+        d = d._mapping
         row = OrderedDict(
             [
                 ("cd_nom", d["cd_nom"]),
@@ -691,7 +685,6 @@ def export_status(permissions):
             ]
         )
         protection_status.append(row)
-
     export_columns = [
         "nom_complet",
         "nom_vern",
@@ -733,13 +726,11 @@ def general_stats(permissions):
         - nb of distinct observer
         - nb of datasets
     """
-    allowed_datasets = TDatasets.query.filter_by_readable().all()
+    allowed_datasets = db.session.scalars(TDatasets.select.filter_by_readable()).unique().all()
     q = select(
-        [
-            func.count(Synthese.id_synthese),
-            func.count(func.distinct(Synthese.cd_nom)),
-            func.count(func.distinct(Synthese.observers)),
-        ]
+        func.count(Synthese.id_synthese),
+        func.count(func.distinct(Synthese.cd_nom)),
+        func.count(func.distinct(Synthese.observers)),
     )
     synthese_query_obj = SyntheseQuery(Synthese, q, {})
     synthese_query_obj.filter_query_with_cruved(g.current_user, permissions)
@@ -897,7 +888,7 @@ def get_color_taxon():
         q = q.filter(BibAreasTypes.type_code.in_(tuple(id_areas_type)))
     if len(id_areas) > 0:
         # check if the join already done on l_areas
-        if not LAreas in [mapper.class_ for mapper in q._join_entities]:
+        if not is_already_joined(LAreas, q):
             q = q.join(LAreas, LAreas.id_area == VColorAreaTaxon.id_area)
         q = q.filter(LAreas.id_area.in_(tuple(id_areas)))
     q = q.order_by(VColorAreaTaxon.cd_nom).order_by(VColorAreaTaxon.id_area)
@@ -932,7 +923,7 @@ def get_taxa_count():
 
     if "id_dataset" in params:
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
-    return query.one()
+    return query.one()[0]
 
 
 @routes.route("/observation_count", methods=["GET"])
@@ -956,12 +947,12 @@ def get_observation_count():
     """
     params = request.args
 
-    query = DB.session.query(func.count(Synthese.id_synthese)).select_from(Synthese)
+    query = db.select(func.count(Synthese.id_synthese)).select_from(Synthese)
 
     if "id_dataset" in params:
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
 
-    return query.one()
+    return DB.session.execute(query).scalar_one()
 
 
 @routes.route("/observations_bbox", methods=["GET"])
@@ -1010,7 +1001,7 @@ def observation_count_per_column(column):
         raise BadRequest(f"No column name {column} in Synthese")
     synthese_column = getattr(Synthese, column)
     stmt = (
-        DB.session.query(
+        DB.select(
             func.count(Synthese.id_synthese).label("count"),
             synthese_column.label(column),
         )
@@ -1220,7 +1211,8 @@ def list_reports(permissions):
     if type_name and type_name == "pin":
         req = req.filter(TReport.id_role == g.current_user.id_role)
     req = req.options(
-        joinedload("user").load_only("nom_role", "prenom_role"), joinedload("report_type")
+        joinedload(TReport.user).load_only(User.nom_role, User.prenom_role),
+        joinedload(TReport.report_type),
     )
     result = [
         report.as_dict(
@@ -1291,9 +1283,7 @@ def list_synthese_log_entries() -> dict:
     create_update_entries = Synthese.query.with_entities(
         Synthese.id_synthese,
         db.case(
-            [
-                (Synthese.meta_create_date < Synthese.meta_update_date, "U"),
-            ],
+            (Synthese.meta_create_date < Synthese.meta_update_date, "U"),
             else_="I",
         ).label("last_action"),
         func.coalesce(Synthese.meta_update_date, Synthese.meta_create_date).label(
