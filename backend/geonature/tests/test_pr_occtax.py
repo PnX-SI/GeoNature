@@ -362,13 +362,13 @@ class TestOcctaxReleve:
         response = self.client.post(url_for("pr_occtax.createReleve"), json=releve_data)
         assert response.status_code == 200
 
-        releve_data["date_min"] = "sdusbuzebushbdjuhezuiefbuziefh"
-        response = self.client.post(url_for("pr_occtax.createReleve"), json=releve_data)
-        assert response.status_code == BadRequest.code
-
         set_logged_user(self.client, users["stranger_user"])
         response = self.client.post(url_for("pr_occtax.createReleve"), json=releve_data)
         assert response.status_code == Forbidden.code
+
+        releve_data["properties"]["date_min"] = None
+        response = self.client.post(url_for("pr_occtax.createReleve"), json=releve_data)
+        assert response.status_code == BadRequest.code
 
     def test_post_releve_in_module_bis(
         self,
@@ -568,6 +568,21 @@ class TestOcctaxGetReleveFilter:
 
     def test_get_releve_filter_observers(self, users: dict, releve_occtax: Any):
         query_string = {"observers": [users["user"].id_role]}
+
+        set_logged_user(self.client, users["user"])
+
+        response = self.client.get(url_for("pr_occtax.getReleves"), query_string=query_string)
+
+        assert response.status_code == 200
+        json_resp = response.json
+        assert releve_occtax.id_releve_occtax in [
+            int(releve_json["id"]) for releve_json in json_resp["items"]["features"]
+        ]
+
+    def test_get_releve_filter_nomenclatures(self, users: dict, releve_occtax: Any, occurrence: Any):
+        nomenclatures = DefaultNomenclaturesValue.query.all()
+        dict_nomenclatures = {n.mnemonique_type: n.id_nomenclature for n in nomenclatures}
+        query_string = {"id_nomenclature_life_stage": [dict_nomenclatures["STADE_VIE"]], "id_nomenclature_obs_technique": [dict_nomenclatures["METH_OBS"]], "id_nomenclature_grp_typ": [dict_nomenclatures["TYP_GRP"]] }
 
         set_logged_user(self.client, users["user"])
 
