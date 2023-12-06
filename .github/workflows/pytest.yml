@@ -19,20 +19,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        debian-version: [ '10', '11', '12' ]
+        debian-version: ["11", "12"]
         include:
-          - debian-version: '10'
-            python-version: '3.7'
-            postgres-version: '11'
-            postgis-version: '2.5'
-          - debian-version: '11'
-            python-version: '3.9'
-            postgres-version: '13'
-            postgis-version: '3.2'
-          - debian-version: '12'
-            python-version: '3.11'
-            postgres-version: '15'
-            postgis-version: '3.3'
+          - debian-version: "11"
+            python-version: "3.9"
+            postgres-version: "13"
+            postgis-version: "3.2"
+          - debian-version: "12"
+            python-version: "3.11"
+            postgres-version: "15"
+            postgis-version: "3.3"
 
     name: Debian ${{ matrix.debian-version }}
 

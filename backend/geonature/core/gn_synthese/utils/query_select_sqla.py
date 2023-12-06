@@ -135,7 +135,7 @@ class SyntheseQuery:
         Filter the query with the permissions of a user
         """
         subquery_observers = (
-            select([CorObserverSynthese.id_synthese])
+            select(CorObserverSynthese.id_synthese)
             .select_from(CorObserverSynthese)
             .where(CorObserverSynthese.id_role == user.id_role)
         )
@@ -163,10 +163,12 @@ class SyntheseQuery:
                 )
             if perm.scope_value:
                 if perm.scope_value not in datasets_by_scope:
-                    datasets_by_scope[perm.scope_value] = [
-                        d.id_dataset
-                        for d in TDatasets.query.filter_by_scope(perm.scope_value).all()
-                    ]
+                    datasets_t = (
+                        DB.session.scalars(TDatasets.select.filter_by_scope(perm.scope_value))
+                        .unique()
+                        .all()
+                    )
+                    datasets_by_scope[perm.scope_value] = [d.id_dataset for d in datasets_t]
                 datasets = datasets_by_scope[perm.scope_value]
                 scope_filters = [
                     self.model_id_syn_col.in_(subquery_observers),  # user is observer
@@ -192,7 +194,7 @@ class SyntheseQuery:
         if scope in (1, 2):
             # get id synthese where user is observer
             subquery_observers = (
-                select([CorObserverSynthese.id_synthese])
+                select(CorObserverSynthese.id_synthese)
                 .select_from(CorObserverSynthese)
                 .where(CorObserverSynthese.id_role == user.id_role)
             )
@@ -200,8 +202,8 @@ class SyntheseQuery:
                 self.model_id_syn_col.in_(subquery_observers),
                 self.model_id_digitiser_column == user.id_role,
             ]
-
-            allowed_datasets = [d.id_dataset for d in TDatasets.query.filter_by_scope(scope).all()]
+            datasets = DB.session.scalars(TDatasets.select.filter_by_scope(scope)).all()
+            allowed_datasets = [dataset.id_dataset for dataset in datasets]
             ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
 
             self.query = self.query.where(or_(*ors_filters))
@@ -537,10 +539,8 @@ class SyntheseQuery:
         #   pour les taxons répondant aux critères de selection
         bdc_status_cte = (
             select(
-                [
-                    TaxrefBdcStatutTaxon.cd_ref,
-                    func.array_agg(bdc_statut_cor_text_area.c.id_area).label("ids_area"),
-                ]
+                TaxrefBdcStatutTaxon.cd_ref,
+                func.array_agg(bdc_statut_cor_text_area.c.id_area).label("ids_area"),
             )
             .select_from(
                 TaxrefBdcStatutTaxon.__table__.join(

@@ -14,6 +14,7 @@ from geonature.core.notifications.models import (
 )
 from geonature.utils.env import db
 from geonature.core.notifications.tasks import send_notification_mail
+from sqlalchemy import values, Integer, text
 
 
 def dispatch_notifications(
@@ -28,7 +29,8 @@ def dispatch_notifications(
             for code in code_categories
         ]
     )
-    roles = [User.query.get(id_role) for id_role in id_roles]
+
+    roles = db.session.scalars(db.select(User).where(User.id_role.in_(id_roles)))
 
     for category, role in product(categories, roles):
         dispatch_notification(category, role, title, url, content=content, context=context)

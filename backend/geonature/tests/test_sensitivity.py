@@ -58,7 +58,7 @@ class TestSensitivity:
             id_type=comportement_type.id_type, mnemonique="Hivernage"
         ).one()
 
-        query = sa.select([TNomenclatures.mnemonique]).where(
+        query = sa.select(TNomenclatures.mnemonique).where(
             TNomenclatures.id_nomenclature
             == func.gn_sensitivity.get_id_nomenclature_sensitivity(
                 sa.cast(date_obs, sa.types.Date),
@@ -102,7 +102,7 @@ class TestSensitivity:
             db.session.add(rule)
         with db.session.begin_nested():
             db.session.execute(
-                "REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref"
+                sa.text("REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref")
             )
 
         # Check the rule apply correctly
@@ -114,7 +114,7 @@ class TestSensitivity:
             rule.sensitivity_duration = 1
         with db.session.begin_nested():
             db.session.execute(
-                "REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref"
+                sa.text("REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref")
             )
         assert db.session.execute(query).scalar() == not_sensitive.mnemonique
         transaction.rollback()  # restore rule duration
@@ -125,7 +125,7 @@ class TestSensitivity:
             rule.nomenclature_sensitivity = no_diffusion
         with db.session.begin_nested():
             db.session.execute(
-                "REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref"
+                sa.text("REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref")
             )
         assert db.session.execute(query).scalar() == no_diffusion.mnemonique
         transaction.rollback()  # restore rule sensitivity
@@ -137,7 +137,7 @@ class TestSensitivity:
             rule.date_max = date(1900, 6, 30)
         with db.session.begin_nested():
             db.session.execute(
-                "REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref"
+                sa.text("REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref")
             )
         assert db.session.execute(query).scalar() == not_sensitive.mnemonique
         transaction.rollback()
@@ -149,7 +149,7 @@ class TestSensitivity:
             rule.date_max = date(1900, 4, 30)
         with db.session.begin_nested():
             db.session.execute(
-                "REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref"
+                sa.text("REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref")
             )
         assert db.session.execute(query).scalar() == diffusion_maille.mnemonique
         transaction.rollback()
@@ -160,7 +160,7 @@ class TestSensitivity:
             rule.active = False
         with db.session.begin_nested():
             db.session.execute(
-                "REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref"
+                sa.text("REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref")
             )
         assert db.session.execute(query).scalar() == not_sensitive.mnemonique
         transaction.rollback()
@@ -261,7 +261,7 @@ class TestSensitivity:
             db.session.add(rule2)
         with db.session.begin_nested():
             db.session.execute(
-                "REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref"
+                sa.text("REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref")
             )
         rule1 = rule
 
@@ -317,7 +317,7 @@ class TestSensitivity:
             db.session.add(rule)
         with db.session.begin_nested():
             db.session.execute(
-                "REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref"
+                sa.text("REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref")
             )
 
         date_obs = datetime.now()

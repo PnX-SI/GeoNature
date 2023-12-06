@@ -3,16 +3,17 @@ import tempfile
 
 import pytest
 import json
-from flask import url_for
+from flask import url_for, current_app
 from geoalchemy2.elements import WKTElement
 from PIL import Image
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from sqlalchemy import func
 from werkzeug.exceptions import Conflict, Forbidden, NotFound, Unauthorized
+from werkzeug.datastructures import Headers
 
 from geonature.core.gn_commons.admin import BibFieldAdmin
 from geonature.core.gn_commons.models import TAdditionalFields, TMedias, TPlaces, BibTablesLocation
-from geonature.core.gn_commons.models.base import TModules, TParameters, BibWidgets
+from geonature.core.gn_commons.models.base import TMobileApps, TModules, TParameters, BibWidgets
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.tasks import clean_attachments
 from geonature.core.gn_permissions.models import PermObject
@@ -70,6 +71,15 @@ def parameter(users):
 
 
 @pytest.fixture(scope="function")
+def mobile_app():
+    mobile_app = TMobileApps(app_code="test_code")
+
+    with db.session.begin_nested():
+        db.session.add(mobile_app)
+    return mobile_app
+
+
+@pytest.fixture(scope="function")
 def nonexistent_media():
     # media can be None
     return (db.session.query(func.max(TMedias.id_media)).scalar() or 0) + 1
@@ -99,6 +109,10 @@ class TestMedia:
         assert resp_json["title_fr"] == medium.title_fr
         assert resp_json["unique_id_media"] == str(medium.unique_id_media)
 
+        response = self.client.get(url_for("gn_commons.get_media", id_media=99999999))
+
+        assert response.status_code == 404
+
     def test_delete_media(self, app, medium):
         id_media = int(medium.id_media)
 
@@ -122,11 +136,33 @@ class TestMedia:
                 "id_nomenclature_media_type": medium.id_nomenclature_media_type,
                 "id_table_location": medium.id_table_location,
             }
-
+            # Test route with JSON Data
             response = self.client.post(url_for("gn_commons.insert_or_update_media"), json=payload)
 
-        assert response.status_code == 200
-        assert response.json["title_fr"] == title_fr
+            assert response.status_code == 200
+            assert response.json["title_fr"] == title_fr
+
+            # Test route with form data
+            response = self.client.post(
+                url_for("gn_commons.insert_or_update_media"),
+                data=payload,
+                content_type="multipart/form-data",
+            )
+
+            assert response.status_code == 200
+            assert response.json["title_fr"] == title_fr
+
+            # Test route with form data + file
+            # @TODO make test if file is given in the form data
+            # payload["file"] = f
+            # response = self.client.post(
+            #     url_for("gn_commons.insert_or_update_media"),
+            #     data=payload,
+            #     content_type="multipart/form-data",
+            # )
+
+            # assert response.status_code == 200
+            # assert response.json["title_fr"] == title_fr
 
     def test_update_media(self, medium):
         title_fr = "New title"
@@ -263,10 +299,16 @@ class TestTMediaRepository:
 class TestTMediaRepositoryVideoLink:
     def test_test_video_link(self, medium, test_media_type, test_media_url, test_wrong_url):
         # Need to create a video link
-        photo_type = TNomenclatures.query.filter(
-            BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
-            TNomenclatures.mnemonique == test_media_type,
-        ).one()
+        photo_type = (
+            TNomenclatures.query.join(
+                BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type
+            )
+            .filter(
+                BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
+                TNomenclatures.mnemonique == test_media_type,
+            )
+            .one()
+        )
         media = TMediaRepository(id_media=medium.id_media)
         media.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
         media.data["media_url"] = test_media_url
@@ -277,10 +319,16 @@ class TestTMediaRepositoryVideoLink:
 
     def test_test_video_link_wrong(self, medium, test_media_type, test_media_url, test_wrong_url):
         # Need to create a video link
-        photo_type = TNomenclatures.query.filter(
-            BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
-            TNomenclatures.mnemonique == test_media_type,
-        ).one()
+        photo_type = (
+            TNomenclatures.query.join(
+                BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type
+            )
+            .filter(
+                BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
+                TNomenclatures.mnemonique == test_media_type,
+            )
+            .one()
+        )
         media = TMediaRepository(id_media=medium.id_media)
         media.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
         # WRONG URL:
@@ -303,10 +351,16 @@ class TestTMediaRepositoryVideoLink:
 )
 class TestTMediaRepositoryHeader:
     def test_header_content_type_wrong(self, medium, test_media_type, test_content_type):
-        photo_type = TNomenclatures.query.filter(
-            BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
-            TNomenclatures.mnemonique == test_media_type,
-        ).one()
+        photo_type = (
+            TNomenclatures.query.join(
+                BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type
+            )
+            .filter(
+                BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
+                TNomenclatures.mnemonique == test_media_type,
+            )
+            .one()
+        )
         media = TMediaRepository(id_media=medium.id_media)
         media.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
 
@@ -328,6 +382,11 @@ class TestCommons:
 
         set_logged_user(self.client, users["admin_user"])
         response = self.client.get(url_for("gn_commons.list_modules", exclude="GEONATURE"))
+        assert response.status_code == 200
+        assert len(response.json) > 0
+
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(url_for("gn_commons.list_modules"))
         assert response.status_code == 200
         assert len(response.json) > 0
 
@@ -502,21 +561,48 @@ class TestCommons:
             db.session.query(TAdditionalFields).filter_by(field_name="pytest_invvalid").exists()
         ).scalar()
 
-    def test_get_t_mobile_apps(self):
-        response = self.client.get(url_for("gn_commons.get_t_mobile_apps"))
+    def test_get_t_mobile_apps(self, mobile_app):
+        import os, shutil, time
+        from pathlib import Path
 
-        assert response.status_code == 200
-        assert type(response.json) == list
+        app_code = mobile_app.app_code
+        path_app_in_geonature = Path(current_app.config["MEDIA_FOLDER"], "mobile", app_code)
+        settingsPath = path_app_in_geonature / "settings.json"
+        try:
+            # Create temporary mobile data settings (required by the route)
+            if not path_app_in_geonature.exists():
+                os.makedirs(path_app_in_geonature.absolute())
+
+            with open(settingsPath.absolute(), "w") as f:
+                f.write("{}")
+                f.close()
+
+            response = self.client.get(url_for("gn_commons.get_t_mobile_apps"))
+
+            assert response.status_code == 200
+            assert type(response.json) == list
+
+            response = self.client.get(
+                url_for("gn_commons.get_t_mobile_apps"), data=dict(app_code=app_code)
+            )
+            assert response.status_code == 200
+            assert type(response.json) == list
+
+        except Exception as e:
+            raise Exception()
+
+        finally:
+            if path_app_in_geonature.exists():
+                shutil.rmtree(path_app_in_geonature.absolute())
 
     def test_api_get_id_table_location(self):
         schema = "gn_commons"
         table = "t_medias"
-        location = (
-            db.session.query(BibTablesLocation)
+        location = db.session.execute(
+            db.select(BibTablesLocation)
             .filter(BibTablesLocation.schema_name == schema)
             .filter(BibTablesLocation.table_name == table)
-            .one()
-        )
+        ).scalar_one()
 
         response = self.client.get(
             url_for("gn_commons.api_get_id_table_location", schema_dot_table=f"{schema}.{table}")

@@ -22,6 +22,7 @@ routes = Blueprint(
 routes.cli.add_command(supergrant)
 
 
+# @TODO delete
 @routes.route("/logout_cruved", methods=["GET"])
 def logout():
     """

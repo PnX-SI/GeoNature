@@ -4,7 +4,7 @@ from typing import List
 
 import sqlalchemy as sa
 import datetime
-from sqlalchemy import ForeignKey, Unicode, and_, DateTime
+from sqlalchemy import ForeignKey, Unicode, and_, DateTime, or_
 from sqlalchemy.orm import (
     relationship,
     column_property,
@@ -63,7 +63,7 @@ class TSources(DB.Model):
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
     id_module = DB.Column(DB.Integer, ForeignKey(TModules.id_module))
-    module = DB.relationship(TModules, backref="sources")
+    module = DB.relationship(TModules, backref=DB.backref("sources", cascade_backrefs=False))
 
     @property
     def module_url(self):
@@ -197,9 +197,9 @@ class SyntheseQuery(GeoFeatureCollectionMixin, Query):
             self = self.filter(sa.false())
         elif scope in (1, 2):
             ors = []
-            datasets = (
-                TDatasets.query.filter_by_readable(user).with_entities(TDatasets.id_dataset).all()
-            )
+            datasets = db.session.scalars(
+                TDatasets.select.filter_by_readable(user).with_entities(TDatasets.id_dataset)
+            ).all()
             self = self.filter(
                 or_(
                     Synthese.id_digitizer == user.id_role,
@@ -260,7 +260,9 @@ class Synthese(DB.Model):
     module = DB.relationship(TModules)
     entity_source_pk_value = DB.Column(DB.Unicode)
     id_dataset = DB.Column(DB.Integer, ForeignKey(TDatasets.id_dataset))
-    dataset = DB.relationship(TDatasets, backref=DB.backref("synthese_records", lazy="dynamic"))
+    dataset = DB.relationship(
+        TDatasets, backref=DB.backref("synthese_records", lazy="dynamic", cascade_backrefs=False)
+    )
     grp_method = DB.Column(DB.Unicode(length=255))
 
     id_nomenclature_geo_object_nature = db.Column(
@@ -688,7 +690,7 @@ class SyntheseLogEntry(DB.Model):
 
 # defined here to avoid circular dependencies
 source_subquery = (
-    select([TSources.id_source, Synthese.id_dataset])
+    select(TSources.id_source, Synthese.id_dataset)
     .where(TSources.id_source == Synthese.id_source)
     .distinct()
     .alias()
@@ -701,9 +703,9 @@ TDatasets.sources = db.relationship(
     viewonly=True,
 )
 TDatasets.synthese_records_count = column_property(
-    select([func.count(Synthese.id_synthese)])
+    select(func.count(Synthese.id_synthese))
     .where(Synthese.id_dataset == TDatasets.id_dataset)
-    .as_scalar()  # deprecated, replace with scalar_subquery()
+    .scalar_subquery()
     .label("synthese_records_count"),
     deferred=True,
 )
