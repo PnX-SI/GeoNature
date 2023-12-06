@@ -475,7 +475,7 @@ def deleteOneReleve(id_releve, scope):
         raise Forbidden()
     db.session.delete(releve)
     db.session.commit()
-    return jsonify({"message": "delete with success"})
+    return jsonify({"message": "deleted with success"})
 
 
 @blueprint.route("/<module_code>/occurrence/<int:id_occ>", methods=["DELETE"])

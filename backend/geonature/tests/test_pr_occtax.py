@@ -276,7 +276,8 @@ class TestOcctaxReleve:
             int(releve_json["id"]) for releve_json in json_resp["items"]["features"]
         ]
 
-    def test_get_one_releve(self, users: dict, releve_occtax: Any):
+    def test_get_one_releve(self, users: dict, releve_occtax: TRelevesOccurrence):
+        # FIX ME: CHECK CONTENT
         set_logged_user(self.client, users["stranger_user"])
         response = self.client.get(
             url_for("pr_occtax.getOneReleve", id_releve=releve_occtax.id_releve_occtax)
@@ -324,6 +325,7 @@ class TestOcctaxReleve:
         assert result.altitude_min == 200
 
     def test_update_releve(self, users: dict, releve_occtax: Any, releve_data: dict[str, Any]):
+        # FIX ME: CHECK CONTENT
         set_logged_user(self.client, users["stranger_user"])
         response = self.client.post(
             url_for("pr_occtax.updateReleve", id_releve=releve_occtax.id_releve_occtax),
@@ -354,6 +356,7 @@ class TestOcctaxReleve:
             url_for("pr_occtax.deleteOneReleve", id_releve=releve_occtax.id_releve_occtax)
         )
         assert response.status_code == 200
+        assert response.json["message"] == "deleted with success"
 
     def test_post_releve(self, users: dict, releve_data: dict[str, Any]):
         # post with cruved = C = 2
@@ -663,6 +666,7 @@ class TestOcctaxGetReleveFilter:
         occurrence,
         media_in_export_enabled,
     ):
+        # FIX ME: CHECK CONTENT
         set_logged_user(self.client, users["user"])
         response = self.client.get(
             url_for(
