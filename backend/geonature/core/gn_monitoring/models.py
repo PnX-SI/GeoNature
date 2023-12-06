@@ -91,7 +91,7 @@ class TBaseVisits(DB.Model):
     id_nomenclature_tech_collect_campanule = DB.Column(DB.Integer)
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
     comments = DB.Column(DB.Unicode)
-    uuid_base_visit = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
+    uuid_base_visit = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
 
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
@@ -134,7 +134,7 @@ class TBaseSites(DB.Model):
     base_site_code = DB.Column(DB.Unicode)
     first_use_date = DB.Column(DB.DateTime)
     geom = DB.Column(Geometry("GEOMETRY", 4326))
-    uuid_base_site = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
+    uuid_base_site = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
 
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)

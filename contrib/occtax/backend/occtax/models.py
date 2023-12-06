@@ -25,7 +25,7 @@ class corRoleRelevesOccurrence(DB.Model):
     unique_id_cor_role_releve = DB.Column(
         "unique_id_cor_role_releve",
         UUID(as_uuid=True),
-        default=select([func.uuid_generate_v4()]),
+        default=select(func.uuid_generate_v4()),
         primary_key=True,
     )
     id_releve_occtax = DB.Column(
@@ -48,7 +48,7 @@ class CorCountingOccurrence(DB.Model):
     __table_args__ = {"schema": "pr_occtax"}
     id_counting_occtax = DB.Column(DB.Integer, primary_key=True)
     unique_id_sinp_occtax = DB.Column(
-        UUID(as_uuid=True), default=select([func.uuid_generate_v4()]), nullable=False
+        UUID(as_uuid=True), default=select(func.uuid_generate_v4()), nullable=False
     )
     id_occurrence_occtax = DB.Column(
         DB.Integer,
@@ -68,7 +68,7 @@ class CorCountingOccurrence(DB.Model):
 
     # additional fields dans occtax MET 14/10/2020
     additional_fields = DB.Column(JSONB)
-    occurrence = db.relationship("TOccurrencesOccurrence")
+    occurrence = db.relationship("TOccurrencesOccurrence", back_populates="cor_counting_occtax")
     readonly_fields = [
         "id_counting_occtax",
         "unique_id_sinp_occtax",
@@ -92,7 +92,7 @@ class TOccurrencesOccurrence(DB.Model):
     id_releve_occtax = DB.Column(
         DB.Integer, ForeignKey("pr_occtax.t_releves_occtax.id_releve_occtax")
     )
-    releve = relationship("TRelevesOccurrence")
+    releve = relationship("TRelevesOccurrence", back_populates="t_occurrences_occtax")
     id_nomenclature_obs_technique = DB.Column(DB.Integer, server_default=FetchedValue())
     id_nomenclature_bio_condition = DB.Column(DB.Integer, server_default=FetchedValue())
     id_nomenclature_bio_status = DB.Column(DB.Integer, server_default=FetchedValue())
@@ -108,7 +108,7 @@ class TOccurrencesOccurrence(DB.Model):
     nom_cite = DB.Column(DB.Unicode)
     meta_v_taxref = DB.Column(
         DB.Unicode,
-        default=select([func.gn_commons.get_default_parameter("taxref_version")]),
+        default=select(func.gn_commons.get_default_parameter("taxref_version")),
     )
     sample_number_proof = DB.Column(DB.Unicode)
     digital_proof = DB.Column(DB.Unicode)
@@ -120,13 +120,14 @@ class TOccurrencesOccurrence(DB.Model):
 
     unique_id_occurence_occtax = DB.Column(
         UUID(as_uuid=True),
-        default=select([func.uuid_generate_v4()]),
+        default=select(func.uuid_generate_v4()),
     )
     cor_counting_occtax = relationship(
-        "CorCountingOccurrence",
+        CorCountingOccurrence,
         lazy="joined",
         cascade="all,delete-orphan",
         uselist=True,
+        back_populates="occurrence",
     )
 
     taxref = relationship(Taxref, lazy="joined")
@@ -140,7 +141,7 @@ class TRelevesOccurrence(DB.Model):
     __tablename__ = "t_releves_occtax"
     __table_args__ = {"schema": "pr_occtax"}
     id_releve_occtax = DB.Column(DB.Integer, primary_key=True)
-    unique_id_sinp_grp = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
+    unique_id_sinp_grp = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
     id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
     id_digitiser = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     id_nomenclature_grp_typ = DB.Column(DB.Integer, server_default=FetchedValue())
@@ -169,7 +170,10 @@ class TRelevesOccurrence(DB.Model):
     additional_fields = DB.Column(JSONB)
 
     t_occurrences_occtax = relationship(
-        "TOccurrencesOccurrence", lazy="joined", cascade="all, delete-orphan"
+        "TOccurrencesOccurrence",
+        lazy="joined",
+        cascade="all, delete-orphan",
+        back_populates="releve",
     )
 
     observers = DB.relationship(
@@ -220,7 +224,7 @@ class TRelevesOccurrence(DB.Model):
                 )  # dataset is loaded
                 or (
                     not self.dataset
-                    and TDatasets.query.get(self.id_dataset).has_instance_permission(scope)
+                    and db.session.get(TDatasets, self.id_dataset).has_instance_permission(scope)
                 )  # dataset is not loaded
             )
         else:

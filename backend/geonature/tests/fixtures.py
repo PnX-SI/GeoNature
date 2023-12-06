@@ -1,6 +1,7 @@
 import json
 import datetime
 import tempfile
+from warnings import warn
 
 from PIL import Image
 import pytest
@@ -67,11 +68,34 @@ __all__ = [
 ]
 
 
+class GeoNatureClient(JSONClient):
+    def open(self, *args, **kwargs):
+        assert not (
+            db.session.new | db.session.dirty | db.session.deleted
+        ), "Call db.session.flush() to make your db changes visible before calling any routes"
+        response = super().open(*args, **kwargs)
+        if response.status_code == 200:
+            if db.session.new | db.session.dirty | db.session.deleted:
+                warn(
+                    f"Route returned 200 with uncommited changes: new: {db.session.new} – dirty: {db.session.dirty} – deleted: {db.session.deleted}"
+                )
+        else:
+            for obj in db.session.new:
+                db.session.expunge(obj)
+            # Note: we re-add deleted objects **before** expiring dirty objects,
+            # because deleted objects may have been also modified.
+            for obj in db.session.deleted:
+                db.session.add(obj)
+            for obj in db.session.dirty:
+                db.session.expire(obj)
+        return response
+
+
 @pytest.fixture(scope="session", autouse=True)
 def app():
     app = create_app()
     app.testing = True
-    app.test_client_class = JSONClient
+    app.test_client_class = GeoNatureClient
     app.config["SERVER_NAME"] = "test.geonature.fr"  # required by url_for
 
     with app.app_context():
@@ -169,17 +193,14 @@ def users(app):
 
     actions = {code: PermAction.query.filter_by(code_action=code).one() for code in "CRUVED"}
 
-    def create_user(username, organisme=None, scope=None, sensitivity_filter=False):
+    def create_user(username, organisme=None, scope=None, sensitivity_filter=False, **kwargs):
         # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
         with db.session.begin_nested():
             user = User(
-                groupe=False,
-                active=True,
-                organisme=organisme,
-                identifiant=username,
-                password=username,
+                groupe=False, active=True, identifiant=username, password=username, **kwargs
             )
             db.session.add(user)
+            user.organisme = organisme
         # user must have been commited for user.id_role to be defined
         with db.session.begin_nested():
             # login right
@@ -193,7 +214,6 @@ def users(app):
                     for module in modules:
                         for obj in [object_all] + module.objects:
                             permission = Permission(
-                                role=user,
                                 action=action,
                                 module=module,
                                 object=obj,
@@ -201,6 +221,7 @@ def users(app):
                                 sensitivity_filter=sensitivity_filter,
                             )
                             db.session.add(permission)
+                            permission.role = user
         return user
 
     users = {}
@@ -209,16 +230,16 @@ def users(app):
     db.session.add(organisme)
 
     users_to_create = [
-        ("noright_user", organisme, 0),
-        ("stranger_user", None, 2),
-        ("associate_user", organisme, 2),
-        ("self_user", organisme, 1),
-        ("user", organisme, 2),
-        ("admin_user", organisme, 3),
-        ("associate_user_2_exclude_sensitive", organisme, 2, True),
+        (("noright_user", organisme, 0), {}),
+        (("stranger_user", None, 2), {}),
+        (("associate_user", organisme, 2), {}),
+        (("self_user", organisme, 1), {}),
+        (("user", organisme, 2), {"nom_role": "Bob", "prenom_role": "Bobby"}),
+        (("admin_user", organisme, 3), {}),
+        (("associate_user_2_exclude_sensitive", organisme, 2, True), {}),
     ]
 
-    for username, *args in users_to_create:
+    for (username, *args), kwargs in users_to_create:
         users[username] = create_user(username, *args)
 
     return users
@@ -241,10 +262,18 @@ def celery_eager(app):
 
 @pytest.fixture(scope="function")
 def acquisition_frameworks(users):
-    principal_actor_role = TNomenclatures.query.filter(
-        BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR",
-        TNomenclatures.mnemonique == "Contact principal",
-    ).one()
+    # principal_actor_role = TNomenclatures.query.filter(
+    #     BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR"
+    #     TNomenclatures.mnemonique == "Contact principal",
+    # ).one()
+    principal_actor_role = (
+        db.session.query(TNomenclatures)
+        .join(BibNomenclaturesTypes, BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR")
+        .filter(
+            TNomenclatures.mnemonique == "Contact principal",
+        )
+        .one()
+    )
 
     def create_af(name, creator):
         with db.session.begin_nested():
@@ -279,10 +308,15 @@ def acquisition_frameworks(users):
 
 @pytest.fixture(scope="function")
 def datasets(users, acquisition_frameworks, module):
-    principal_actor_role = TNomenclatures.query.filter(
-        BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR",
-        TNomenclatures.mnemonique == "Contact principal",
-    ).one()
+    principal_actor_role = db.session.execute(
+        db.select(TNomenclatures)
+        .join(BibNomenclaturesTypes, TNomenclatures.id_type == BibNomenclaturesTypes.id_type)
+        .filter(
+            TNomenclatures.mnemonique == "Contact principal",
+            BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR",
+        )
+    ).scalar_one()
+
     # add module code in the list to associate them to datasets
     writable_module_code = ["OCCTAX"]
     writable_module = TModules.query.filter(TModules.module_code.in_(writable_module_code)).all()
@@ -293,7 +327,7 @@ def datasets(users, acquisition_frameworks, module):
                 id_acquisition_framework=id_af,
                 dataset_name=name,
                 dataset_shortname=name,
-                dataset_desc=name,
+                dataset_desc="lorem ipsum" * 22,
                 marine_domain=True,
                 terrestrial_domain=True,
                 id_digitizer=digitizer.id_role if digitizer else None,
@@ -303,8 +337,10 @@ def datasets(users, acquisition_frameworks, module):
                     organism=digitizer.organisme, nomenclature_actor_role=principal_actor_role
                 )
                 dataset.cor_dataset_actor.append(actor)
-            [dataset.modules.append(m) for m in modules]
+
             db.session.add(dataset)
+            db.session.flush()  # Required to retrieve ids of created object
+            [dataset.modules.append(m) for m in modules]
         return dataset
 
     af = acquisition_frameworks["orphan_af"]
@@ -590,9 +626,15 @@ def synthese_sensitive_data(app, users, datasets, source):
 
 
 def create_media(media_path=""):
-    photo_type = TNomenclatures.query.filter(
-        BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA", TNomenclatures.mnemonique == "Photo"
-    ).one()
+    photo_type = (
+        TNomenclatures.query.join(
+            BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type
+        )
+        .filter(
+            BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA", TNomenclatures.mnemonique == "Photo"
+        )
+        .one()
+    )
     location = (
         BibTablesLocation.query.filter(BibTablesLocation.schema_name == "gn_commons")
         .filter(BibTablesLocation.table_name == "t_medias")

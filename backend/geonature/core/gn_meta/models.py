@@ -7,11 +7,12 @@ import flask_sqlalchemy
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, or_, and_
 from sqlalchemy.sql import select, func, exists
-from sqlalchemy.orm import relationship, exc, synonym
+from sqlalchemy.orm import relationship, exc
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
 from utils_flask_sqla.generic import testDataType
+from utils_flask_sqla.sqlalchemy import CustomSelect
 from werkzeug.exceptions import BadRequest, NotFound
 import marshmallow as ma
 
@@ -63,69 +64,58 @@ class MetadataFilterSchema(ma.Schema):
         return data
 
 
-class CorAcquisitionFrameworkObjectif(DB.Model):
-    __tablename__ = "cor_acquisition_framework_objectif"
-    __table_args__ = {"schema": "gn_meta"}
-    id_acquisition_framework = DB.Column(
-        DB.Integer,
+cor_acquisition_framework_objectif = db.Table(
+    "cor_acquisition_framework_objectif",
+    db.Column(
+        "id_acquisition_framework",
+        db.Integer,
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
         primary_key=True,
-    )
-    id_nomenclature_objectif = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+    ),
+    db.Column(
+        "id_nomenclature_objectif",
+        db.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
         primary_key=True,
-    )
-
-    nomenclature_objectif = DB.relationship(
-        TNomenclatures,
-        lazy="joined",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_objectif),
-    )
+    ),
+    schema="gn_meta",
+)
 
 
-class CorAcquisitionFrameworkVoletSINP(DB.Model):
-    __tablename__ = "cor_acquisition_framework_voletsinp"
-    __table_args__ = {"schema": "gn_meta"}
-    id_acquisition_framework = DB.Column(
-        DB.Integer,
+cor_acquisition_framework_voletsinp = db.Table(
+    "cor_acquisition_framework_voletsinp",
+    db.Column(
+        "id_acquisition_framework",
+        db.Integer,
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
         primary_key=True,
-    )
-    id_nomenclature_voletsinp = DB.Column(
+    ),
+    db.Column(
         "id_nomenclature_voletsinp",
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        db.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
         primary_key=True,
-    )
-
-    nomenclature_voletsinp = DB.relationship(
-        TNomenclatures,
-        lazy="joined",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_voletsinp),
-    )
+    ),
+    schema="gn_meta",
+)
 
 
-class CorAcquisitionFrameworkTerritory(DB.Model):
-    __tablename__ = "cor_acquisition_framework_territory"
-    __table_args__ = {"schema": "gn_meta"}
-    id_acquisition_framework = DB.Column(
-        DB.Integer,
+cor_acquisition_framework_territory = db.Table(
+    "cor_acquisition_framework_territory",
+    db.Column(
+        "id_acquisition_framework",
+        db.Integer,
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
         primary_key=True,
-    )
-    id_nomenclature_territory = DB.Column(
+    ),
+    db.Column(
         "id_nomenclature_territory",
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        db.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
         primary_key=True,
-    )
-
-    nomenclature_territory = DB.relationship(
-        TNomenclatures,
-        lazy="joined",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_territory),
-    )
+    ),
+    schema="gn_meta",
+)
 
 
 @serializable
@@ -203,6 +193,7 @@ class CorDatasetActor(DB.Model):
 
 @serializable
 class CorDatasetProtocol(DB.Model):
+    # TODO: replace with table used as secondary in relationships
     __tablename__ = "cor_dataset_protocol"
     __table_args__ = {"schema": "gn_meta"}
     id_cdp = DB.Column(DB.Integer, primary_key=True)
@@ -210,27 +201,22 @@ class CorDatasetProtocol(DB.Model):
     id_protocol = DB.Column(DB.Integer, ForeignKey("gn_meta.sinp_datatype_protocols.id_protocol"))
 
 
-@serializable
-class CorDatasetTerritory(DB.Model):
-    __tablename__ = "cor_dataset_territory"
-    __table_args__ = {"schema": "gn_meta"}
-    id_dataset = DB.Column(
-        DB.Integer,
+cor_dataset_territory = db.Table(
+    "cor_dataset_territory",
+    db.Column(
+        "id_dataset",
+        db.Integer,
         ForeignKey("gn_meta.t_datasets.id_dataset"),
         primary_key=True,
-    )
-    id_nomenclature_territory = DB.Column(
+    ),
+    db.Column(
         "id_nomenclature_territory",
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        db.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
         primary_key=True,
-    )
-
-    nomenclature_territory = DB.relationship(
-        TNomenclatures,
-        lazy="joined",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_territory),
-    )
+    ),
+    schema="gn_meta",
+)
 
 
 @serializable
@@ -246,7 +232,9 @@ class TBibliographicReference(db.Model):
     publication_reference = DB.Column(DB.Unicode)
 
 
-class TDatasetsQuery(Query):
+class TDatasetsQuery(CustomSelect):
+    inherit_cache = True
+
     def _get_read_scope(self, user=None):
         if user is None:
             user = g.current_user
@@ -265,7 +253,7 @@ class TDatasetsQuery(Query):
         if user is None:
             user = g.current_user
         if scope == 0:
-            self = self.filter(sa.false())
+            self = self.where(sa.false())
         elif scope in (1, 2):
             ors = [
                 TDatasets.id_digitizer == user.id_role,
@@ -283,7 +271,7 @@ class TDatasetsQuery(Query):
                         TAcquisitionFramework.cor_af_actor.any(id_organism=user.id_organisme),
                     ),
                 ]
-            self = self.filter(or_(*ors))
+            self = self.where(or_(*ors))
         return self
 
     def filter_by_params(self, params={}, _af_search=True):
@@ -297,29 +285,29 @@ class TDatasetsQuery(Query):
 
         active = params.get("active")
         if active is not None:
-            self = self.filter(TDatasets.active == active)
+            self = self.where(TDatasets.active == active)
 
         module_code = params.get("module_code")
         if module_code:
-            self = self.filter(TDatasets.modules.any(module_code=module_code))
+            self = self.where(TDatasets.modules.any(module_code=module_code))
 
         af_ids = params.get("id_acquisition_frameworks")
         if af_ids:
-            self = self.filter(
+            self = self.where(
                 sa.or_(*[TDatasets.id_acquisition_framework == af_id for af_id in af_ids])
             )
 
         uuid = params.get("uuid")
         if uuid:
-            self = self.filter(TDatasets.unique_dataset_id == uuid)
+            self = self.where(TDatasets.unique_dataset_id == uuid)
 
         name = params.get("name")
         if name:
-            self = self.filter(TDatasets.dataset_name.ilike(f"%{name}%"))
+            self = self.where(TDatasets.dataset_name.ilike(f"%{name}%"))
 
         date = params.get("date")
         if date:
-            self = self.filter(sa.cast(TDatasets.meta_create_date, sa.DATE) == date)
+            self = self.where(sa.cast(TDatasets.meta_create_date, sa.DATE) == date)
 
         actors = []
         person = params.get("person")
@@ -329,11 +317,11 @@ class TDatasetsQuery(Query):
         if organism:
             actors.append(TDatasets.cor_dataset_actor.any(CorDatasetActor.id_organism == organism))
         if actors:
-            self = self.filter(sa.or_(*actors))
+            self = self.where(sa.or_(*actors))
 
         areas = params.get("areas")
         if areas:
-            self = self.filter_by_areas(areas)
+            self = self.where_by_areas(areas)
 
         search = params.get("search")
         if search:
@@ -353,13 +341,13 @@ class TDatasetsQuery(Query):
             if _af_search:
                 ors.append(
                     TDatasets.acquisition_framework.has(
-                        TAcquisitionFramework.query.filter_by_params(
+                        TAcquisitionFramework.select.filter_by_params(
                             {"search": search},
                             _ds_search=False,
                         ).whereclause
                     )
                 )
-            self = self.filter(or_(*ors))
+            self = self.where(or_(*ors))
         return self
 
     def filter_by_readable(self, user=None):
@@ -373,7 +361,7 @@ class TDatasetsQuery(Query):
         Return all dataset where user have read rights minus those who user to not have
         create rigth
         """
-        query = self.filter(TDatasets.modules.any(module_code=module_code))
+        query = self.where(TDatasets.modules.any(module_code=module_code))
         scope = self._get_read_scope(user)
         create_scope = self._get_create_scope(module_code, user=user, object_code=object_code)
         if create_scope < scope:
@@ -386,25 +374,23 @@ class TDatasetsQuery(Query):
         areaFilter = []
         for id_area in areas:
             areaFilter.append(LAreas.id_area == id_area)
-        return self.filter(TDatasets.synthese_records.any(Synthese.areas.any(sa.or_(*areaFilter))))
+        return self.where(TDatasets.synthese_records.any(Synthese.areas.any(sa.or_(*areaFilter))))
 
 
 @serializable(exclude=["user_actors", "organism_actors"])
 class TDatasets(db.Model):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
-    query_class = TDatasetsQuery
+    __select_class__ = TDatasetsQuery
 
     id_dataset = DB.Column(DB.Integer, primary_key=True)
-    unique_dataset_id = DB.Column(
-        UUIDType(as_uuid=True), default=select([func.uuid_generate_v4()])
-    )
+    unique_dataset_id = DB.Column(UUIDType(as_uuid=True), default=select(func.uuid_generate_v4()))
     id_acquisition_framework = DB.Column(
         DB.Integer,
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
     acquisition_framework = DB.relationship(
-        "TAcquisitionFramework", lazy="joined"
+        "TAcquisitionFramework", back_populates="datasets", lazy="joined"
     )  # join AF as required for permissions checks
     dataset_name = DB.Column(DB.Unicode)
     dataset_shortname = DB.Column(DB.Unicode)
@@ -452,54 +438,41 @@ class TDatasets(db.Model):
     validable = DB.Column(DB.Boolean, server_default=FetchedValue())
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
     digitizer = DB.relationship(User, lazy="joined")  # joined for permission check
+    creator = DB.relationship(
+        User, lazy="joined", overlaps="digitizer"
+    )  # overlaps as alias of digitizer
     id_taxa_list = DB.Column(DB.Integer)
     modules = DB.relationship("TModules", secondary=cor_module_dataset, backref="datasets")
 
-    creator = DB.relationship(User, lazy="joined")  # = digitizer
     nomenclature_data_type = DB.relationship(
         TNomenclatures,
-        lazy="select",
         foreign_keys=[id_nomenclature_data_type],
     )
     nomenclature_dataset_objectif = DB.relationship(
         TNomenclatures,
-        lazy="select",
         foreign_keys=[id_nomenclature_dataset_objectif],
     )
     nomenclature_collecting_method = DB.relationship(
         TNomenclatures,
-        lazy="select",
         foreign_keys=[id_nomenclature_collecting_method],
     )
     nomenclature_data_origin = DB.relationship(
         TNomenclatures,
-        lazy="select",
         foreign_keys=[id_nomenclature_data_origin],
     )
     nomenclature_source_status = DB.relationship(
         TNomenclatures,
-        lazy="select",
         foreign_keys=[id_nomenclature_source_status],
     )
     nomenclature_resource_type = DB.relationship(
         TNomenclatures,
-        lazy="select",
         foreign_keys=[id_nomenclature_resource_type],
     )
 
     cor_territories = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        secondary=CorDatasetTerritory.__table__,
-        primaryjoin=(CorDatasetTerritory.id_dataset == id_dataset),
-        secondaryjoin=(
-            CorDatasetTerritory.id_nomenclature_territory == TNomenclatures.id_nomenclature
-        ),
-        foreign_keys=[
-            CorDatasetTerritory.id_dataset,
-            CorDatasetTerritory.id_nomenclature_territory,
-        ],
-        backref=DB.backref("territory_dataset", lazy="select"),
+        secondary=cor_dataset_territory,
+        backref=DB.backref("territory_dataset"),
     )
 
     # because CorDatasetActor could be an User or an Organisme object...
@@ -507,7 +480,10 @@ class TDatasets(db.Model):
         CorDatasetActor,
         lazy="joined",
         cascade="save-update, merge, delete, delete-orphan",
-        backref=DB.backref("actor_dataset", lazy="select"),
+        backref=DB.backref("actor_dataset"),
+    )
+    additional_fields = DB.relationship(
+        "TAdditionalFields", secondary=cor_field_dataset, back_populates="datasets"
     )
 
     @hybrid_property
@@ -558,7 +534,9 @@ class TDatasets(db.Model):
         )
 
 
-class TAcquisitionFrameworkQuery(Query):
+class TAcquisitionFrameworkQuery(CustomSelect):
+    inherit_cache = True
+
     def _get_read_scope(self, user=None):
         if user is None:
             user = g.current_user
@@ -569,13 +547,13 @@ class TAcquisitionFrameworkQuery(Query):
         if user is None:
             user = g.current_user
         if scope == 0:
-            self = self.filter(sa.false())
+            self = self.where(sa.false())
         elif scope in (1, 2):
             ors = [
                 TAcquisitionFramework.id_digitizer == user.id_role,
                 TAcquisitionFramework.cor_af_actor.any(id_role=user.id_role),
-                TAcquisitionFramework.t_datasets.any(id_digitizer=user.id_role),
-                TAcquisitionFramework.t_datasets.any(
+                TAcquisitionFramework.datasets.any(id_digitizer=user.id_role),
+                TAcquisitionFramework.datasets.any(
                     TDatasets.cor_dataset_actor.any(id_role=user.id_role)
                 ),  # TODO test coverage
             ]
@@ -583,11 +561,11 @@ class TAcquisitionFrameworkQuery(Query):
             if scope == 2 and user.id_organisme is not None:
                 ors += [
                     TAcquisitionFramework.cor_af_actor.any(id_organism=user.id_organisme),
-                    TAcquisitionFramework.t_datasets.any(
+                    TAcquisitionFramework.datasets.any(
                         TDatasets.cor_dataset_actor.any(id_organism=user.id_organisme)
                     ),  # TODO test coverage
                 ]
-            self = self.filter(or_(*ors))
+            self = self.where(or_(*ors))
         return self
 
     def filter_by_readable(self):
@@ -600,9 +578,9 @@ class TAcquisitionFrameworkQuery(Query):
         """
         Filter meta by areas
         """
-        return self.filter(
-            TAcquisitionFramework.t_datasets.any(
-                TDatasets.query.filter_by_areas(areas).whereclause,
+        return self.where(
+            TAcquisitionFramework.datasets.any(
+                TDatasets.select.filter_by_areas(areas).whereclause,
             ),
         )
 
@@ -615,33 +593,39 @@ class TAcquisitionFrameworkQuery(Query):
                 params["search"] = ds_params.pop("search")
         ds_params = params.get("datasets")
         if ds_params:
-            ds_filter = TDatasets.query.filter_by_params(ds_params).whereclause
+            ds_filter = TDatasets.select.filter_by_params(ds_params).whereclause
             if ds_filter is not None:  # do not exclude AF without any DS
-                self = self.filter(TAcquisitionFramework.datasets.any(ds_filter))
+                self = self.where(TAcquisitionFramework.datasets.any(ds_filter))
 
         params = MetadataFilterSchema().load(params)
 
         uuid = params.get("uuid")
-        if uuid:
-            self = self.filter(TAcquisitionFramework.unique_acquisition_framework_id == uuid)
-
         name = params.get("name")
-        if name:
-            self = self.filter(TAcquisitionFramework.acquisition_framework_name.ilike(f"%{name}%"))
-
         date = params.get("date")
-        if date:
-            self = self.filter(TAcquisitionFramework.acquisition_framework_start_date == date)
+        self = (
+            self.where(
+                TAcquisitionFramework.unique_acquisition_framework_id == uuid if uuid else True
+            )
+            .where(
+                TAcquisitionFramework.acquisition_framework_name.ilike(f"%{name}%")
+                if name
+                else True
+            )
+            .where(
+                TAcquisitionFramework.acquisition_framework_start_date == date if date else True
+            )
+        )
 
         actors = []
         person = params.get("person")
+        organism = params.get("organism")
         if person:
             actors.append(
                 TAcquisitionFramework.cor_af_actor.any(
                     CorAcquisitionFrameworkActor.id_role == person
                 )
             )
-        organism = params.get("organism")
+
         if organism:
             actors.append(
                 TAcquisitionFramework.cor_af_actor.any(
@@ -649,7 +633,7 @@ class TAcquisitionFrameworkQuery(Query):
                 )
             )
         if actors:
-            self = self.filter(sa.or_(*actors))
+            self = self.where(sa.or_(*actors))
 
         areas = params.get("areas")
         if areas:
@@ -670,19 +654,19 @@ class TAcquisitionFrameworkQuery(Query):
                 )
             try:
                 date = datetime.datetime.strptime(search, "%d/%m/%Y").date()
+                ors.append(TAcquisitionFramework.acquisition_framework_start_date == date)
             except ValueError:
                 pass
-            else:
-                ors.append(TAcquisitionFramework.acquisition_framework_start_date == date)
+
             if _ds_search:
                 ors.append(
                     TAcquisitionFramework.datasets.any(
-                        TDatasets.query.filter_by_params(
+                        TDatasets.select.filter_by_params(
                             {"search": search}, _af_search=False
                         ).whereclause
                     ),
                 )
-            self = self.filter(sa.or_(*ors))
+            self = self.where(sa.or_(*ors))
         return self
 
 
@@ -690,11 +674,11 @@ class TAcquisitionFrameworkQuery(Query):
 class TAcquisitionFramework(db.Model):
     __tablename__ = "t_acquisition_frameworks"
     __table_args__ = {"schema": "gn_meta"}
-    query_class = TAcquisitionFrameworkQuery
+    __select_class__ = TAcquisitionFrameworkQuery
 
     id_acquisition_framework = DB.Column(DB.Integer, primary_key=True)
     unique_acquisition_framework_id = DB.Column(
-        UUIDType(as_uuid=True), default=select([func.uuid_generate_v4()])
+        UUIDType(as_uuid=True), default=select(func.uuid_generate_v4())
     )
     acquisition_framework_name = DB.Column(DB.Unicode(255))
     acquisition_framework_desc = DB.Column(DB.Unicode)
@@ -727,13 +711,11 @@ class TAcquisitionFramework(db.Model):
     creator = DB.relationship(User, lazy="joined")  # = digitizer
     nomenclature_territorial_level = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_territorial_level),
+        foreign_keys=[id_nomenclature_territorial_level],
     )
     nomenclature_financing_type = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_financing_type),
+        foreign_keys=[id_nomenclature_financing_type],
     )
     cor_af_actor = relationship(
         CorAcquisitionFrameworkActor,
@@ -741,90 +723,60 @@ class TAcquisitionFramework(db.Model):
         # cascade="save-update, merge, delete, delete-orphan",
         cascade="all,delete-orphan",
         uselist=True,
-        backref=DB.backref("actor_af", lazy="select"),
+        backref=DB.backref("actor_af"),
     )
 
     cor_objectifs = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        secondary=CorAcquisitionFrameworkObjectif.__table__,
-        primaryjoin=(
-            CorAcquisitionFrameworkObjectif.id_acquisition_framework == id_acquisition_framework
-        ),
-        secondaryjoin=(
-            CorAcquisitionFrameworkObjectif.id_nomenclature_objectif
-            == TNomenclatures.id_nomenclature
-        ),
-        foreign_keys=[
-            CorAcquisitionFrameworkObjectif.id_acquisition_framework,
-            CorAcquisitionFrameworkObjectif.id_nomenclature_objectif,
-        ],
-        backref=DB.backref("objectif_af", lazy="select"),
+        secondary=cor_acquisition_framework_objectif,
+        backref=DB.backref("objectif_af"),
     )
 
     cor_volets_sinp = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        secondary=CorAcquisitionFrameworkVoletSINP.__table__,
-        primaryjoin=(
-            CorAcquisitionFrameworkVoletSINP.id_acquisition_framework == id_acquisition_framework
-        ),
-        secondaryjoin=(
-            CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp
-            == TNomenclatures.id_nomenclature
-        ),
-        foreign_keys=[
-            CorAcquisitionFrameworkVoletSINP.id_acquisition_framework,
-            CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp,
-        ],
-        backref=DB.backref("volet_sinp_af", lazy="select"),
+        secondary=cor_acquisition_framework_voletsinp,
+        backref=DB.backref("volet_sinp_af"),
     )
 
     cor_territories = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        secondary=CorAcquisitionFrameworkTerritory.__table__,
-        primaryjoin=(
-            CorAcquisitionFrameworkTerritory.id_acquisition_framework == id_acquisition_framework
-        ),
-        secondaryjoin=(
-            CorAcquisitionFrameworkTerritory.id_nomenclature_territory
-            == TNomenclatures.id_nomenclature
-        ),
-        foreign_keys=[
-            CorAcquisitionFrameworkTerritory.id_acquisition_framework,
-            CorAcquisitionFrameworkTerritory.id_nomenclature_territory,
-        ],
-        backref=DB.backref("territory_af", lazy="select"),
+        secondary=cor_acquisition_framework_territory,
+        backref=DB.backref("territory_af"),
     )
 
     bibliographical_references = DB.relationship(
         "TBibliographicReference",
-        lazy="select",
         cascade="all,delete-orphan",
         uselist=True,
-        backref=DB.backref("acquisition_framework", lazy="select"),
+        backref=DB.backref("acquisition_framework"),
     )
 
+    # FIXME: remove and use datasets instead
     t_datasets = DB.relationship(
         "TDatasets",
         lazy="joined",  # DS required for permissions checks
         cascade="all,delete-orphan",
         uselist=True,
+        back_populates="acquisition_framework",
     )
-    datasets = synonym("t_datasets")
+    datasets = DB.relationship(
+        "TDatasets",
+        cascade="all,delete-orphan",
+        uselist=True,
+        overlaps="t_datasets",  # overlaps expected
+    )
 
     @hybrid_property
     def user_actors(self):
-        return [actor.role for actor in self.cor_af_actor if actor.role is not None]
+        return [actor.role for actor in self.cor_af_actor if actor.role]
 
     @hybrid_property
     def organism_actors(self):
-        return [actor.organism for actor in self.cor_af_actor if actor.organism is not None]
+        return [actor.organism for actor in self.cor_af_actor if actor.organism]
 
     def is_deletable(self):
         return not db.session.query(
-            TDatasets.query.filter_by(
+            TDatasets.select.filter_by(
                 id_acquisition_framework=self.id_acquisition_framework
             ).exists()
         ).scalar()
@@ -841,7 +793,7 @@ class TAcquisitionFramework(db.Model):
             return _through_ds and any(
                 map(
                     lambda ds: ds.has_instance_permission(scope, _through_af=False),
-                    self.t_datasets,
+                    self.datasets,
                 )
             )
         elif scope == 3:
@@ -853,11 +805,11 @@ class TAcquisitionFramework(db.Model):
         return the acquisition framework's id
         from its UUID if exist or None
         """
-        return (
-            DB.session.query(TAcquisitionFramework.id_acquisition_framework)
+        return DB.session.scalars(
+            db.select(TAcquisitionFramework.id_acquisition_framework)
             .filter(TAcquisitionFramework.unique_acquisition_framework_id == uuid_af)
-            .scalar()
-        )
+            .limit(1)
+        ).first()
 
     @staticmethod
     def get_user_af(user, only_query=False, only_user=False):
@@ -868,20 +820,20 @@ class TAcquisitionFramework(db.Model):
           - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
 
         return: a list of id_dataset or a query"""
-        q = DB.session.query(TAcquisitionFramework.id_acquisition_framework).outerjoin(
+        query = DB.select(TAcquisitionFramework.id_acquisition_framework).outerjoin(
             CorAcquisitionFrameworkActor,
             CorAcquisitionFrameworkActor.id_acquisition_framework
             == TAcquisitionFramework.id_acquisition_framework,
         )
         if user.id_organisme is None or only_user:
-            q = q.filter(
+            query = query.where(
                 or_(
                     CorAcquisitionFrameworkActor.id_role == user.id_role,
                     TAcquisitionFramework.id_digitizer == user.id_role,
                 )
             )
         else:
-            q = q.filter(
+            query = query.where(
                 or_(
                     CorAcquisitionFrameworkActor.id_organism == user.id_organisme,
                     CorAcquisitionFrameworkActor.id_role == user.id_role,
@@ -889,52 +841,8 @@ class TAcquisitionFramework(db.Model):
                 )
             )
         if only_query:
-            return q
-        data = q.all()
-        return list(set([d.id_acquisition_framework for d in data]))
+            return query
 
-
-@serializable
-class TDatasetDetails(TDatasets):
-    data_type = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[TDatasets.id_nomenclature_data_type],
-    )
-    dataset_objectif = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[TDatasets.id_nomenclature_dataset_objectif],
-    )
-    collecting_method = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[TDatasets.id_nomenclature_collecting_method],
-    )
-    data_origin = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[TDatasets.id_nomenclature_data_origin],
-    )
-    source_status = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[TDatasets.id_nomenclature_source_status],
-    )
-    resource_type = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[TDatasets.id_nomenclature_resource_type],
-    )
-    additional_fields = DB.relationship("TAdditionalFields", secondary=cor_field_dataset)
-
-
-@serializable
-class TAcquisitionFrameworkDetails(TAcquisitionFramework):
-    """
-    Class which extends TAcquisitionFramework with nomenclatures relationships
-    """
-
-    nomenclature_territorial_level = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[TAcquisitionFramework.id_nomenclature_territorial_level],
-    )
-
-    nomenclature_financing_type = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[TAcquisitionFramework.id_nomenclature_financing_type],
-    )
+        query = query.distinct()
+        data = db.session.scalars(query).all()
+        return data

@@ -47,7 +47,7 @@ def create_synthese_record(
     if not cd_nom:
         cd_nom = Taxref.query.first().cd_nom
     if not id_dataset:
-        id_dataset = TDatasets.query.first().id_dataset
+        id_dataset = db.session.scalars(db.select(TDatasets).limit(1)).first().id_dataset
 
     geom_4326 = WKTElement(f"POINT({str(x)} {str(y)})", srid=4326)
 
@@ -110,8 +110,8 @@ def sample_synthese_records_for_profile(
         db.session.add(taxon_param)
 
     with db.session.begin_nested():
-        db.session.execute("REFRESH MATERIALIZED VIEW gn_profiles.vm_valid_profiles")
-        db.session.execute("REFRESH MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology")
+        db.session.execute(sa.text("REFRESH MATERIALIZED VIEW gn_profiles.vm_valid_profiles"))
+        db.session.execute(sa.text("REFRESH MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology"))
 
     return synthese_record_for_profile
 
@@ -137,8 +137,8 @@ def wrong_sample_synthese_records_for_profile(
         db.session.add(wrong_new_obs)
 
     with db.session.begin_nested():
-        db.session.execute("REFRESH MATERIALIZED VIEW gn_profiles.vm_valid_profiles")
-        db.session.execute("REFRESH MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology")
+        db.session.execute(sa.text("REFRESH MATERIALIZED VIEW gn_profiles.vm_valid_profiles"))
+        db.session.execute(sa.text("REFRESH MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology"))
 
     return wrong_new_obs
 
@@ -158,7 +158,7 @@ class TestGnProfiles:
         """
         valid_new_obs = sample_synthese_records_for_profile
 
-        assert VSyntheseForProfiles.query.get(valid_new_obs.id_synthese) is not None
+        assert db.session.get(VSyntheseForProfiles, valid_new_obs.id_synthese)
 
         profile = VmValidProfiles.query.filter_by(
             cd_ref=func.taxonomie.find_cdref(valid_new_obs.cd_nom)
@@ -182,7 +182,7 @@ class TestGnProfiles:
         # set the profile correctly
         wrong_new_obs = wrong_sample_synthese_records_for_profile
 
-        assert VSyntheseForProfiles.query.get(wrong_new_obs.id_synthese) is None
+        assert not db.session.get(VSyntheseForProfiles, wrong_new_obs.id_synthese)
 
         profile = VmValidProfiles.query.filter_by(
             cd_ref=func.taxonomie.find_cdref(wrong_new_obs.cd_nom)

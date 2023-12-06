@@ -72,8 +72,30 @@ class TestValidation:
         set_logged_user(self.client, users["user"])
         response = self.client.get(url_for("gn_commons.get_hist", uuid_attached_row="invalid"))
         assert response.status_code == BadRequest.code
-        s = next(filter(lambda s: s.unique_id_sinp, synthese_data.values()))
+
+        # Test the entirety of the route (including the history return)
+        synthese = synthese_data["obs1"]
+
+        id_nomenclature_valid_status = TNomenclatures.query.filter(
+            sa.and_(
+                TNomenclatures.cd_nomenclature == "1",
+                TNomenclatures.nomenclature_type.has(mnemonique="STATUT_VALID"),
+            )
+        ).one()
+        # add a validation item to fill the history variable in the get_hist() route
+        response = self.client.post(
+            url_for("validation.post_status", id_synthese=synthese_data["obs1"].id_synthese),
+            data={
+                "statut": id_nomenclature_valid_status.id_nomenclature,
+                "comment": "lala",
+            },
+        )
+        # check the insert status
+        assert response.status_code == 200
+
         response = self.client.get(
-            url_for("gn_commons.get_hist", uuid_attached_row=s.unique_id_sinp)
+            url_for("gn_commons.get_hist", uuid_attached_row=synthese.unique_id_sinp)
         )
         assert response.status_code == 200
+        assert len(response.data) > 0
+        assert response.json[0]["id_status"] == str(id_nomenclature_valid_status.id_nomenclature)

@@ -79,16 +79,20 @@ class BibFieldAdmin(CruvedProtectedMixin, ModelView):
         "field_order": {"label": "Ordre"},
         "additional_attributes": {"label": "Attribut additionnels"},
         "modules": {
-            "query_factory": lambda: DB.session.query(TModules).filter(
-                TModules.module_code.in_(
-                    current_app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_MODULES"]
+            "query_factory": lambda: DB.session.scalars(
+                DB.select(TModules).where(
+                    TModules.module_code.in_(
+                        current_app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_MODULES"]
+                    )
                 )
             )
         },
         "objects": {
-            "query_factory": lambda: DB.session.query(PermObject).filter(
-                PermObject.code_object.in_(
-                    current_app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_OBJECTS"]
+            "query_factory": lambda: DB.session.scalars(
+                DB.select(PermObject).where(
+                    PermObject.code_object.in_(
+                        current_app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_OBJECTS"]
+                    )
                 )
             )
         },

@@ -6,13 +6,7 @@ import json
 import logging
 from lxml import etree as ET
 
-from flask import (
-    Blueprint,
-    current_app,
-    request,
-    Response,
-    g,
-)
+from flask import Blueprint, current_app, request, Response, g, render_template
 
 import click
 
@@ -46,13 +40,8 @@ from pypnusershub.db.models import User
 from geonature.core.gn_meta.models import (
     TDatasets,
     CorDatasetActor,
-    CorDatasetProtocol,
-    CorDatasetTerritory,
     TAcquisitionFramework,
-    TAcquisitionFrameworkDetails,
     CorAcquisitionFrameworkActor,
-    CorAcquisitionFrameworkObjectif,
-    CorAcquisitionFrameworkVoletSINP,
 )
 from geonature.core.gn_meta.repositories import (
     get_metadata_list,
@@ -73,6 +62,11 @@ from geonature.utils.errors import GeonatureApiError
 from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
 
 from ref_geo.models import LAreas
+
+# FIXME: remove any reference to external modules from GeoNature core
+if "OCCHAB" in config:
+    from gn_module_occhab.models import OccurenceHabitat, Station
+
 
 routes = Blueprint("gn_meta", __name__, cli_group="metadata")
 
@@ -109,39 +103,42 @@ def get_datasets():
     if request.is_json:
         params.update(request.json)
     fields = params.get("fields", type=str, default=[])
+
     if fields:
         fields = fields.split(",")
+
     if "create" in params:
         create = params.pop("create").split(".")
         if len(create) > 1:
-            query = TDatasets.query.filter_by_creatable(
+            query = TDatasets.select.filter_by_creatable(
                 module_code=create[0], object_code=create[1]
             )
         else:
-            query = TDatasets.query.filter_by_creatable(module_code=create[0])
+            query = TDatasets.select.filter_by_creatable(module_code=create[0])
     else:
-        query = TDatasets.query.filter_by_readable()
+        query = TDatasets.select.filter_by_readable()
 
     if request.is_json:
         query = query.filter_by_params(request.json)
 
     if "orderby" in params:
         table_columns = TDatasets.__table__.columns
+        order_by_column = params.pop("orderby")
         try:
-            orderCol = getattr(table_columns, params.pop("orderby"))
+            orderCol = getattr(table_columns, order_by_column)
             query = query.order_by(orderCol)
         except AttributeError as exc:
             raise BadRequest("the attribute to order on does not exist") from exc
 
     query = query.options(
         Load(TDatasets).raiseload("*"),
-        joinedload("cor_dataset_actor").options(
-            joinedload("role"),
-            joinedload("organism"),
+        joinedload(TDatasets.cor_dataset_actor).options(
+            joinedload(CorDatasetActor.role),
+            joinedload(CorDatasetActor.organism),
         ),
         # next relationships are joined for permission checks purpose:
-        joinedload("acquisition_framework").options(
-            joinedload("cor_af_actor"),
+        joinedload(TDatasets.acquisition_framework).options(
+            joinedload(TAcquisitionFramework.cor_af_actor),
         ),
     )
     only = [
@@ -157,7 +154,7 @@ def get_datasets():
         only.append("+synthese_records_count")
 
     if "modules" in fields:
-        query = query.options(joinedload("modules"))
+        query = query.options(joinedload(TDatasets.modules))
         only.append("modules")
 
     dataset_schema = DatasetSchema(only=only)
@@ -166,8 +163,8 @@ def get_datasets():
     user_agent = request.headers.get("User-Agent")
     mobile_app = user_agent and user_agent.split("/")[0].lower() == "okhttp"
     dataset_schema.context["mobile_app"] = mobile_app
-
-    return dataset_schema.jsonify(query.all(), many=True)
+    datasets = db.session.scalars(query).unique().all()
+    return dataset_schema.jsonify(datasets, many=True)
 
 
 def get_af_from_id(id_af, af_list):
@@ -191,7 +188,7 @@ def get_dataset(scope, id_dataset):
     :param type: int
     :returns: dict<TDataset>
     """
-    dataset = TDatasets.query.get_or_404(id_dataset)
+    dataset = db.get_or_404(TDatasets, id_dataset)  # TDatasets.query.get_or_404(id_dataset)
     if not dataset.has_instance_permission(scope=scope):
         raise Forbidden(f"User {g.current_user} cannot read dataset {dataset.id_dataset}")
 
@@ -232,7 +229,7 @@ def delete_dataset(scope, ds_id):
     .. :quickref: Metadata;
     """
 
-    dataset = TDatasets.query.get_or_404(ds_id)
+    dataset = db.get_or_404(TDatasets, ds_id)
     if not dataset.has_instance_permission(scope=scope):
         raise Forbidden(f"User {g.current_user} cannot delete dataset {dataset.id_dataset}")
     if not dataset.is_deletable():
@@ -259,17 +256,16 @@ def uuid_report():
     id_import = params.get("id_import")
     id_module = params.get("id_module")
 
-    query = DB.session.query(Synthese).select_from(Synthese)
+    query = (
+        DB.select(Synthese)
+        .where_if(id_module is not None, Synthese.id_module == id_module)
+        .where_if(ds_id is not None, Synthese.id_dataset == ds_id)
+    )
 
-    if id_module:
-        query = query.filter(Synthese.id_module == id_module)
-
-    if ds_id:
-        query = query.filter(Synthese.id_dataset == ds_id)
-
+    # TODO test in module import ?
     if id_import:
-        query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).filter(
-            TSources.name_source == "Import(id={})".format(id_import)
+        query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).where(
+            TSources.name_source == f"Import(id={id_import})"
         )
 
     query = query.order_by(Synthese.id_synthese)
@@ -284,7 +280,7 @@ def uuid_report():
             "jourDatefin": row.date_max,
             "observateurIdentite": row.observers,
         }
-        for row in query.all()
+        for row in db.session.scalars(query).all()
     ]
 
     return to_csv_resp(
@@ -302,9 +298,10 @@ def uuid_report():
     )
 
 
-@routes.route("/sensi_report", methods=["GET"])
+@routes.route("/sensi_report", methods=["GET"])  # TODO remove later
+@routes.route("/sensi_report/<int:ds_id>", methods=["GET"])
 @permissions.check_cruved_scope("R", module_code="METADATA")
-def sensi_report():
+def sensi_report(ds_id=None):
     """
     get the UUID report of a dataset
 
@@ -313,13 +310,14 @@ def sensi_report():
     # TODO: put ds_id in /sensi_report/<int: ds_id>
 
     params = request.args
-    ds_id = params["id_dataset"]
-    dataset = TDatasets.query.get_or_404(ds_id)
+    if not ds_id:
+        ds_id = params["id_dataset"]
+    dataset = db.get_or_404(TDatasets, ds_id)  # TDatasets.query.get_or_404(ds_id)
     id_import = params.get("id_import")
     id_module = params.get("id_module")
 
     query = (
-        DB.session.query(
+        DB.select(
             Synthese,
             func.taxonomie.find_cdref(Synthese.cd_nom).label("cd_ref"),
             func.array_agg(LAreas.area_name).label("codeDepartementCalcule"),
@@ -338,22 +336,21 @@ def sensi_report():
         .outerjoin(
             TNomenclatures, TNomenclatures.id_nomenclature == Synthese.id_nomenclature_sensitivity
         )
-        .filter(LAreas.id_type == func.ref_geo.get_id_area_type("DEP"))
+        .where(LAreas.id_type == func.ref_geo.get_id_area_type("DEP"))
+        .where(Synthese.id_module == id_module if id_module else True)
+        .where(Synthese.id_dataset == ds_id)
     )
-
-    if id_module:
-        query = query.filter(Synthese.id_module == id_module)
-
-    query = query.filter(Synthese.id_dataset == ds_id)
 
     if id_import:
         query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).filter(
             TSources.name_source == "Import(id={})".format(id_import)
         )
 
-    data = query.group_by(
+    query = query.group_by(
         Synthese.id_synthese, TNomenclatures.cd_nomenclature, TNomenclatures.label_fr
-    ).all()
+    )
+
+    data = db.session.scalars(query).all()
 
     str_productor = ""
     header = ""
@@ -385,11 +382,13 @@ def sensi_report():
         }
         for row in data
     ]
-    sensi_version = DB.session.query(
-        func.gn_commons.get_default_parameter("ref_sensi_version")
+    sensi_version = DB.session.scalars(
+        db.select(func.gn_commons.get_default_parameter("ref_sensi_version"))
     ).one_or_none()
+
     if sensi_version:
         sensi_version = sensi_version[0]
+
     # set an header only if the rapport is on a dataset
     header = f""""Rapport de sensibilité"
         "Jeu de données";"{dataset.dataset_name}"
@@ -463,7 +462,7 @@ def update_dataset(id_dataset, scope):
     .. :quickref: Metadata;
     """
 
-    dataset = TDatasets.query.get_or_404(id_dataset)
+    dataset = db.get_or_404(TDatasets, id_dataset)
     if not dataset.has_instance_permission(scope):
         raise Forbidden(f"User {g.current_user} cannot update dataset {dataset.id_dataset}")
     # TODO: specify which fields may be updated
@@ -476,7 +475,7 @@ def get_export_pdf_dataset(id_dataset, scope):
     """
     Get a PDF export of one dataset
     """
-    dataset = TDatasets.query.get_or_404(id_dataset)
+    dataset = db.get_or_404(TDatasets, id_dataset)
     if not dataset.has_instance_permission(scope=scope):
         raise Forbidden("Vous n'avez pas les droits d'exporter ces informations")
     dataset_schema = DatasetSchema(
@@ -525,35 +524,35 @@ def get_acquisition_frameworks():
     """
     only = ["+cruved"]
     # QUERY
-    af_list = TAcquisitionFramework.query.filter_by_readable()
+    af_list = TAcquisitionFramework.select.filter_by_readable()
     if request.is_json:
         af_list = af_list.filter_by_params(request.json)
 
     af_list = af_list.order_by(TAcquisitionFramework.acquisition_framework_name).options(
         Load(TAcquisitionFramework).raiseload("*"),
         # for permission checks:
-        joinedload("creator"),
-        joinedload("cor_af_actor").options(
-            joinedload("role"),
-            joinedload("organism"),
+        joinedload(TAcquisitionFramework.creator),
+        joinedload(TAcquisitionFramework.cor_af_actor).options(
+            joinedload(CorAcquisitionFrameworkActor.role),
+            joinedload(CorAcquisitionFrameworkActor.organism),
         ),
-        joinedload("t_datasets").options(
-            joinedload("digitizer"),
-            joinedload("cor_dataset_actor").options(
-                joinedload("role"),
-                joinedload("organism"),
+        joinedload(TAcquisitionFramework.datasets).options(
+            joinedload(TDatasets.digitizer),
+            joinedload(TDatasets.cor_dataset_actor).options(
+                joinedload(CorDatasetActor.role),
+                joinedload(CorDatasetActor.organism),
             ),
         ),
     )
     if request.args.get("datasets", default=False, type=int):
         only.extend(
             [
-                "t_datasets.+cruved",
+                "datasets.+cruved",
             ]
         )
     if request.args.get("creator", default=False, type=int):
         only.append("creator")
-        af_list = af_list.options(joinedload("creator"))
+        af_list = af_list.options(joinedload(TAcquisitionFramework.creator))
     if request.args.get("actors", default=False, type=int):
         only.extend(
             [
@@ -564,28 +563,28 @@ def get_acquisition_frameworks():
             ]
         )
         af_list = af_list.options(
-            joinedload("cor_af_actor").options(
-                joinedload("nomenclature_actor_role"),
+            joinedload(TAcquisitionFramework.cor_af_actor).options(
+                joinedload(CorAcquisitionFrameworkActor.nomenclature_actor_role),
             ),
         )
         if request.args.get("datasets", default=False, type=int):
             only.extend(
                 [
-                    "t_datasets.cor_dataset_actor",
-                    "t_datasets.cor_dataset_actor.nomenclature_actor_role",
-                    "t_datasets.cor_dataset_actor.organism",
-                    "t_datasets.cor_dataset_actor.role",
+                    "datasets.cor_dataset_actor",
+                    "datasets.cor_dataset_actor.nomenclature_actor_role",
+                    "datasets.cor_dataset_actor.organism",
+                    "datasets.cor_dataset_actor.role",
                 ]
             )
             af_list = af_list.options(
-                joinedload("t_datasets").options(
-                    joinedload("cor_dataset_actor").options(
-                        joinedload("nomenclature_actor_role"),
+                joinedload(TAcquisitionFramework.datasets).options(
+                    joinedload(TDatasets.cor_dataset_actor).options(
+                        joinedload(CorDatasetActor.nomenclature_actor_role),
                     ),
                 ),
             )
     af_schema = AcquisitionFrameworkSchema(only=only)
-    return af_schema.jsonify(af_list.all(), many=True)
+    return af_schema.jsonify(db.session.scalars(af_list).unique().all(), many=True)
 
 
 @routes.route("/list/acquisition_frameworks", methods=["GET"])
@@ -624,7 +623,10 @@ def get_acquisition_frameworks_list(scope):
         only=["+cruved"], exclude=exclude_fields
     )
     return acquisitionFrameworkSchema.jsonify(
-        get_metadata_list(g.current_user, scope, params, exclude_fields).all(), many=True
+        db.session.scalars(get_metadata_list(g.current_user, scope, params, exclude_fields))
+        .unique()
+        .all(),
+        many=True,
     )
 
 
@@ -637,24 +639,24 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     Get a PDF export of one acquisition
     """
     # Recuperation des données
-    af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
+    af = DB.session.get(TAcquisitionFramework, id_acquisition_framework)
     acquisition_framework = af.as_dict(True, depth=2)
-    dataset_ids = [d.id_dataset for d in af.t_datasets]
+    dataset_ids = [d.id_dataset for d in af.datasets]
     nb_data = len(dataset_ids)
-    nb_taxons = (
-        DB.session.query(Synthese.cd_nom)
-        .filter(Synthese.id_dataset.in_(dataset_ids))
-        .distinct()
-        .count()
+
+    query = (
+        db.select(func.count(Synthese.cd_nom))
+        .select_from(Synthese)
+        .where(Synthese.id_dataset.in_(dataset_ids))
     )
-    nb_observations = (
-        DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
-    )
+    nb_taxons = db.session.scalar(query.distinct())
+    nb_observations = db.session.scalar(query)
+
     nb_habitat = 0
 
     # Check if pr_occhab exist
     check_schema_query = exists(
-        select([text("schema_name")])
+        select(text("schema_name"))
         .select_from(text("information_schema.schemata"))
         .where(text("schema_name = 'pr_occhab'"))
     )
@@ -738,7 +740,7 @@ def get_acquisition_framework(scope, id_acquisition_framework):
     :param type: int
     :returns: dict<TAcquisitionFramework>
     """
-    af = TAcquisitionFramework.query.get_or_404(id_acquisition_framework)
+    af = db.get_or_404(TAcquisitionFramework, id_acquisition_framework)
     if not af.has_instance_permission(scope=scope):
         raise Forbidden(
             f"User {g.current_user} cannot read acquisition "
@@ -760,13 +762,13 @@ def get_acquisition_framework(scope, id_acquisition_framework):
                 "cor_volets_sinp",
                 "cor_objectifs",
                 "cor_territories",
-                "t_datasets",
-                "t_datasets.creator",
-                "t_datasets.nomenclature_data_type",
-                "t_datasets.cor_dataset_actor",
-                "t_datasets.cor_dataset_actor.nomenclature_actor_role",
-                "t_datasets.cor_dataset_actor.organism",
-                "t_datasets.cor_dataset_actor.role",
+                "datasets",
+                "datasets.creator",
+                "datasets.nomenclature_data_type",
+                "datasets.cor_dataset_actor",
+                "datasets.cor_dataset_actor.nomenclature_actor_role",
+                "datasets.cor_dataset_actor.organism",
+                "datasets.cor_dataset_actor.role",
             ],
             exclude=exclude,
         )
@@ -782,7 +784,7 @@ def delete_acquisition_framework(scope, af_id):
     Delete an acquisition framework
     .. :quickref: Metadata;
     """
-    af = TAcquisitionFramework.query.get_or_404(af_id)
+    af = db.get_or_404(TAcquisitionFramework, af_id)
     if not af.has_instance_permission(scope):
         raise Forbidden(
             f"User {g.current_user} cannot delete acquisition framework {af.id_acquisition_framework}"
@@ -852,7 +854,7 @@ def updateAcquisitionFramework(id_acquisition_framework, scope):
     Post one AcquisitionFramework data for update acquisition_framework
     .. :quickref: Metadata;
     """
-    af = TAcquisitionFramework.query.get_or_404(id_acquisition_framework)
+    af = db.get_or_404(TAcquisitionFramework, id_acquisition_framework)
     if not af.has_instance_permission(scope=scope):
         raise Forbidden(
             f"User {g.current_user} cannot update "
@@ -873,46 +875,44 @@ def get_acquisition_framework_stats(id_acquisition_framework):
     :param id_acquisition_framework: the id_acquisition_framework
     :param type: int
     """
-    datasets = TDatasets.query.filter(
-        TDatasets.id_acquisition_framework == id_acquisition_framework
-    ).all()
-    dataset_ids = [d.id_dataset for d in datasets]
-
-    nb_dataset = len(dataset_ids)
-    nb_taxons = (
-        DB.session.query(Synthese.cd_nom)
-        .filter(Synthese.id_dataset.in_(dataset_ids))
-        .distinct()
-        .count()
-    )
-    nb_observations = Synthese.query.filter(
-        Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework)
-    ).count()
-    nb_habitat = 0
-
-    # Check if pr_occhab exist
-    check_schema_query = exists(
-        select([text("schema_name")])
-        .select_from(text("information_schema.schemata"))
-        .where(text("schema_name = 'pr_occhab'"))
-    )
-
-    if DB.session.query(check_schema_query).scalar() and nb_dataset > 0:
-        query = (
-            "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
-        ("
-            + str(dataset_ids).strip("[]")
-            + ")"
+    dataset_ids = db.session.scalars(
+        db.select(TDatasets.id_dataset).where(
+            TDatasets.id_acquisition_framework == id_acquisition_framework
         )
+    ).all()
 
-        nb_habitat = DB.engine.execute(text(query)).first()[0]
+    nb_datasets = len(dataset_ids)
 
-    return {
-        "nb_dataset": nb_dataset,
-        "nb_taxons": nb_taxons,
-        "nb_observations": nb_observations,
-        "nb_habitats": nb_habitat,
-    }
+    nb_taxons = db.session.execute(
+        db.select(func.count(Synthese.cd_nom))
+        .where(Synthese.id_dataset.in_(dataset_ids))
+        .distinct()
+    ).scalar_one()
+
+    nb_observations = db.session.execute(
+        db.select(func.count("*"))
+        .select_from(Synthese)
+        .where(
+            Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework)
+        )
+    ).scalar_one()
+
+    nb_habitats = 0
+
+    if "OCCHAB" in config and nb_datasets > 0:
+        nb_habitats = db.session.execute(
+            db.select(func.count("*"))
+            .select_from(OccurenceHabitat)
+            .join(Station)
+            .where(Station.id_dataset.in_(dataset_ids))
+        ).scalar_one()
+
+    return dict(
+        nb_dataset=nb_datasets,
+        nb_taxons=nb_taxons,
+        nb_observations=nb_observations,
+        nb_habitats=nb_habitats,
+    )
 
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>/bbox", methods=["GET"])
@@ -925,15 +925,25 @@ def get_acquisition_framework_bbox(id_acquisition_framework):
     :param id_acquisition_framework: the id_acquisition_framework
     :param type: int
     """
-    datasets = TDatasets.query.filter(
-        TDatasets.id_acquisition_framework == id_acquisition_framework
+
+    dataset_ids = db.session.scalars(
+        db.select(TDatasets.id_dataset).where(
+            TDatasets.id_acquisition_framework == id_acquisition_framework
+        )
     ).all()
-    dataset_ids = [d.id_dataset for d in datasets]
+
     geojsonData = (
         DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
         .filter(Synthese.id_dataset.in_(dataset_ids))
         .first()[0]
     )
+    # geojsonData will never be empty, if no entries matching the query condition(s), it will contains [(None,)]
+    geojsonData = db.session.execute(
+        db.select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
+        .where(Synthese.id_dataset.in_(dataset_ids))
+        .limit(1)
+    ).first()[0]
+
     return json.loads(geojsonData) if geojsonData else None
 
 
@@ -1019,17 +1029,25 @@ def publish_acquisition_framework(af_id):
     """
 
     # The AF must contain DS to be published
-    datasets = TDatasets.query.filter_by(id_acquisition_framework=af_id).all()
+    datasets = (
+        db.session.scalars(db.select(TDatasets).filter_by(id_acquisition_framework=af_id))
+        .unique()
+        .all()
+    )
 
     if not datasets:
         raise Conflict("Le cadre doit contenir des jeux de données")
 
-    if not db.session.query(
-        TAcquisitionFramework.query.filter(
+    af_count = db.session.execute(
+        db.select(func.count("*"))
+        .select_from(TAcquisitionFramework)
+        .where(
             TAcquisitionFramework.id_acquisition_framework == af_id,
             TAcquisitionFramework.datasets.any(TDatasets.synthese_records.any()),
-        ).exists()
-    ).scalar():
+        )
+    ).scalar_one()
+
+    if af_count < 1:
         raise Conflict("Tous les jeux de données du cadre d’acquisition sont vides")
 
     # After publishing an AF, we set it as closed and all its DS as inactive
@@ -1037,7 +1055,7 @@ def publish_acquisition_framework(af_id):
         dataset.active = False
 
     # If the AF if closed for the first time, we set it an initial_closing_date as the actual time
-    af = DB.session.query(TAcquisitionFramework).get(af_id)
+    af = DB.session.get(TAcquisitionFramework, af_id)
     af.opened = False
     if af.initial_closing_date is None:
         af.initial_closing_date = dt.datetime.now()

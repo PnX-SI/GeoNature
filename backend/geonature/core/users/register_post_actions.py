@@ -4,7 +4,8 @@ Action triggered after register action (create temp user, change password etc...
 import datetime
 from warnings import warn
 
-from flask import Markup, render_template, current_app, url_for
+from flask import render_template, current_app, url_for
+from markupsafe import Markup
 from pypnusershub.db.models import Application, User
 from pypnusershub.db.models_register import TempUser
 from sqlalchemy.sql import func
@@ -39,8 +40,10 @@ def validate_temp_user(data):
     """
     token = data.get("token", None)
 
-    user = DB.session.query(TempUser).filter(TempUser.token_role == token).first()
-
+    # user = DB.session.query(TempUser).filter(TempUser.token_role == token).first()
+    user = DB.session.scalars(
+        db.select(TempUser).where(TempUser.token_role == token).limit(1)
+    ).first()
     if not user:
         return {
             "msg": "{token}: ce token n'est pas associé à un compte temporaire".format(token=token)
@@ -132,7 +135,10 @@ def create_dataset_user(user):
     db.session.add(new_dataset)
 
     for module_code in current_app.config["ACCOUNT_MANAGEMENT"]["DATASET_MODULES_ASSOCIATION"]:
-        module = TModules.query.filter_by(module_code=module_code).one_or_none()
+        # module = TModules.query.filter_by(module_code=module_code).one_or_none()
+        module = db.session.execute(
+            db.select(TModules).filter_by(module_code=module_code)
+        ).scalar_one_or_none()
         if module is None:
             warn("Module code '{}' does not exist, can not associate dataset.".format(module_code))
             continue
