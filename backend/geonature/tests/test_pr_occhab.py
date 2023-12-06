@@ -1,7 +1,10 @@
+from typing import List
+from geonature.core.gn_meta.models import TDatasets
 import pytest
 from copy import deepcopy
 
 from flask import url_for
+from werkzeug.datastructures import TypeConversionDict
 from werkzeug.exceptions import Unauthorized, Forbidden, BadRequest
 from shapely.geometry import Point
 import geojson
@@ -23,90 +26,150 @@ occhab = pytest.importorskip("gn_module_occhab")
 
 from gn_module_occhab.models import Station, OccurenceHabitat
 from gn_module_occhab.schemas import StationSchema
+from datetime import datetime
+
+
+def create_habitat(nom_cite, nomenc_tech_collect_NOMENC_TYPE, nomenc_tech_collect_LABEL):
+    habref = db.session.scalars(db.select(Habref).limit(1)).first()
+
+    nomenc_tech_collect = db.session.execute(
+        db.select(TNomenclatures).where(
+            sa.and_(
+                TNomenclatures.nomenclature_type.has(mnemonique=nomenc_tech_collect_NOMENC_TYPE),
+                TNomenclatures.label_fr == nomenc_tech_collect_LABEL,
+            )
+        )
+    ).scalar_one()
+    return OccurenceHabitat(
+        cd_hab=habref.cd_hab,
+        nom_cite=nom_cite,
+        id_nomenclature_collection_technique=nomenc_tech_collect.id_nomenclature,
+    )
 
 
 @pytest.fixture
-def station(datasets):
-    ds = datasets["own_dataset"]
-    p = Point(3.634, 44.399)
-    nomenc = TNomenclatures.query.filter(
-        sa.and_(
-            TNomenclatures.nomenclature_type.has(mnemonique="NAT_OBJ_GEO"),
-            TNomenclatures.mnemonique == "Stationnel",
+def stations(datasets):
+    """
+    Fixture to generate test stations
+
+    Parameters
+    ----------
+    datasets : TDatasets
+        dataset associated with the station (fixture)
+
+    Returns
+    -------
+    Dict[Station]
+        dict that contains test stations
+    """
+
+    def create_stations(
+        dataset: TDatasets,
+        coords: tuple,
+        nomenc_object_MNEM: str,
+        nomenc_object_NOMENC_TYPE: str,
+        comment: str = "Did you create a station ?",
+        date_min=datetime.now(),
+        date_max=datetime.now(),
+    ):
+        """
+        Function to generate a station
+
+        Parameters
+        ----------
+        dataset : TDatasets
+            dataset associated with it
+        coords : tuple
+            longitude and latitude coordinates (WGS84)
+        nomenc_object_MNEM : str
+            mnemonique of the nomenclature associated to the station
+        nomenc_object_NOMENC_TYPE : str
+            nomenclature type associated to the station
+        comment : str, optional
+            Just a comment, by default "Did you create a station ?"
+        """
+        nomenclature_object = db.session.execute(
+            db.select(TNomenclatures).where(
+                sa.and_(
+                    TNomenclatures.nomenclature_type.has(mnemonique=nomenc_object_NOMENC_TYPE),
+                    TNomenclatures.mnemonique == nomenc_object_MNEM,
+                )
+            )
+        ).scalar_one()
+        s = Station(
+            dataset=dataset,
+            comment=comment,
+            geom_4326=from_shape(Point(*coords), srid=4326),
+            nomenclature_geographic_object=nomenclature_object,
+            date_min=date_min,
+            date_max=date_max,
         )
-    ).one()
-    s = Station(
-        dataset=ds,
-        comment="Ma super station",
-        geom_4326=from_shape(p, srid=4326),
-        nomenclature_geographic_object=nomenc,
-    )
-    habref = Habref.query.first()
-    nomenc_tech_collect = TNomenclatures.query.filter(
-        sa.and_(
-            TNomenclatures.nomenclature_type.has(mnemonique="TECHNIQUE_COLLECT_HAB"),
-            TNomenclatures.label_fr == "Plongées",
-        )
-    ).one()
-    s.habitats.extend(
-        [
-            OccurenceHabitat(
-                cd_hab=habref.cd_hab,
-                nom_cite="forêt",
-                id_nomenclature_collection_technique=nomenc_tech_collect.id_nomenclature,
-            ),
-            OccurenceHabitat(
-                cd_hab=habref.cd_hab,
-                nom_cite="prairie",
-                id_nomenclature_collection_technique=nomenc_tech_collect.id_nomenclature,
-            ),
-        ]
-    )
+        habitats = []
+        for nom_type, nom_label in [("TECHNIQUE_COLLECT_HAB", "Plongées")]:
+            for nom_cite in ["forêt", "prairie"]:
+                habitats.append(create_habitat(nom_cite, nom_type, nom_label))
+        s.habitats.extend(habitats)
+        return s
+
+    stations = {
+        "station_1": create_stations(
+            datasets["own_dataset"],
+            (3.634, 44.399),
+            "Stationnel",
+            "NAT_OBJ_GEO",
+            comment="Station1",
+            date_min=datetime.strptime("01/02/70", "%d/%m/%y"),
+            date_max=datetime.strptime("01/02/80", "%d/%m/%y"),
+        ),
+        "station_2": create_stations(
+            datasets["own_dataset"],
+            (3.634, 44.399),
+            "Stationnel",
+            "NAT_OBJ_GEO",
+            comment="Station2",
+        ),
+    }
     with db.session.begin_nested():
-        db.session.add(s)
-    return s
+        for station_key in stations:
+            db.session.add(stations[station_key])
+        db.session.flush()
+    return stations
 
 
 @pytest.fixture
-def station2(datasets, station):
-    ds = datasets["own_dataset"]
-    p = Point(5, 46)
-    nomenc = TNomenclatures.query.filter(
-        sa.and_(
-            TNomenclatures.nomenclature_type.has(mnemonique="NAT_OBJ_GEO"),
-            TNomenclatures.mnemonique == "Stationnel",
-        )
-    ).one()
-    s = Station(
-        dataset=ds,
-        comment="Ma super station 2",
-        geom_4326=from_shape(p, srid=4326),
-        nomenclature_geographic_object=nomenc,
-    )
-    habref = Habref.query.filter(Habref.cd_hab != station.habitats[0].cd_hab).first()
-    nomenc_tech_collect = TNomenclatures.query.filter(
-        sa.and_(
-            TNomenclatures.nomenclature_type.has(mnemonique="TECHNIQUE_COLLECT_HAB"),
-            TNomenclatures.label_fr == "Plongées",
-        )
-    ).one()
-    s.habitats.extend(
-        [
-            OccurenceHabitat(
-                cd_hab=habref.cd_hab,
-                nom_cite="forêt",
-                id_nomenclature_collection_technique=nomenc_tech_collect.id_nomenclature,
-            ),
-            OccurenceHabitat(
-                cd_hab=habref.cd_hab,
-                nom_cite="prairie",
-                id_nomenclature_collection_technique=nomenc_tech_collect.id_nomenclature,
-            ),
-        ]
-    )
-    with db.session.begin_nested():
-        db.session.add(s)
-    return s
+def station(stations):
+    """
+    Add to the session and return the test station 1 (will be removed in the future)
+
+    Parameters
+    ----------
+    stations : List[Station]
+        fixture
+
+    Returns
+    -------
+    Station
+        station 1
+    """
+    return stations["station_1"]
+
+
+@pytest.fixture
+def station2(stations):
+    """
+    Add to the session and return the test station 2 (will be removed in the future)
+
+    Parameters
+    ----------
+    stations : List[Station]
+        fixture
+
+    Returns
+    -------
+    Station
+        station 2
+    """
+    return stations["station_2"]
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -157,7 +220,7 @@ class TestOcchab:
         response = self.client.get(url)
         assert response.status_code == 200
         response_station = StationSchema(
-            only=["observers", "dataset", "habitats"],
+            only=["id_station", "observers", "dataset", "habitats"],
             as_geojson=True,
         ).load(
             response.json,
@@ -214,7 +277,7 @@ class TestOcchab:
         response = self.client.post(url, data=feature)
         assert response.status_code == 200, response.json
         new_feature = FeatureSchema().load(response.json)
-        new_station = Station.query.get(new_feature["id"])
+        new_station = db.session.get(Station, new_feature["id"])
         assert new_station.comment == "Une station"
         assert to_shape(new_station.geom_4326).equals_exact(Point(3.634, 44.399), 0.01)
         assert len(new_station.habitats) == 1
@@ -231,19 +294,20 @@ class TestOcchab:
         assert response.status_code == 400, response.json
         assert "unexisting dataset" in response.json["description"].casefold(), response.json
 
-        # Try modify existing station
+        # Try leveraging create route to modify existing station: this should not works!
         data = deepcopy(feature)
         data["properties"]["id_station"] = station.id_station
         response = self.client.post(url, data=data)
+        assert response.status_code == 200, response.json
         db.session.refresh(station)
-        assert station.comment == "Ma super station"  # original comment
+        assert station.comment == "Station1"  # original comment of existing station
+        FeatureSchema().load(response.json)["id"] != station.id_station  # new id for new station
 
         # Try leveraging observers to modify existing user
         data = deepcopy(feature)
         data["properties"]["observers"][0]["nom_role"] = "nouveau nom"
         response = self.client.post(url, data=data)
         assert response.status_code == 200, response.json
-        db.session.refresh(users["user"])
         assert users["user"].nom_role != "nouveau nom"
 
         # Try associate other station habitat to this station
@@ -277,17 +341,27 @@ class TestOcchab:
         set_logged_user(self.client, users["user"])
 
         # Try modifying id_station
-        id_station = station.id_station
         data = deepcopy(feature)
+        id_station = station.id_station
         data["properties"]["id_station"] = station2.id_station
         data["properties"]["habitats"] = []
         assert len(station2.habitats) == 2
         id_habitats = [hab.id_habitat for hab in station2.habitats]
         response = self.client.post(url, data=data)
+        assert response.status_code == 200, response.json
+        FeatureSchema().load(response.json)["id"] == id_station  # not changed because read only
+        assert len(station.habitats) == 0  # station updated
+        assert len(station2.habitats) == 2  # station2 not changed
+
+        # Test modifying id dataset with unexisting id dataset
+        data = deepcopy(feature)
+        id_dataset = station.id_dataset
+        data["properties"]["id_dataset"] = -1
+        response = self.client.post(url, data=data)
         assert response.status_code == 400, response.json
-        assert "unmatching id_station" in response.json["description"].casefold(), response.json
-        db.session.refresh(station2)
-        assert len(station2.habitats) == 2
+        assert "unexisting dataset" in response.json["description"].casefold(), response.json
+        station = db.session.get(Station, station.id_station)
+        assert station.id_dataset == id_dataset  # not changed
 
         # Try adding an occurence
         cd_hab_list = [occhab.cd_hab for occhab in OccurenceHabitat.query.all()]
@@ -327,33 +401,45 @@ class TestOcchab:
         assert habitat["nom_cite"] == "monde fantastique"
 
         # Try associate/modify other station habitat
-        habitat = feature["properties"]["habitats"][0]
-        habitat2 = station2.habitats[0]
-        habitat["id_habitat"] = habitat2.id_habitat
-        response = self.client.post(url, data=feature)
+        data = deepcopy(feature)
+        id_habitat_station2 = station2.habitats[0].id_habitat
+        data["properties"]["habitats"][0]["id_habitat"] = id_habitat_station2
+        response = self.client.post(url, data=data)
         assert response.status_code == 400, response.json
         assert (
             "habitat does not belong to this station" in response.json["description"].casefold()
         ), response.json
-        assert habitat2.id_station == station2.id_station
+        habitat_station2 = db.session.get(OccurenceHabitat, id_habitat_station2)
+        assert habitat_station2.id_station == station2.id_station
+        station = db.session.get(Station, station.id_station)
+        assert len(station.habitats) == 3
+        assert len(station2.habitats) == 2
 
-        # # Try re-create habitat
-        # data = deepcopy(feature)
-        # del data["properties"]["habitats"][1]["id_habitat"]
-        # response = self.client.post(url, data=data)
-        # assert response.status_code == 200, response.json
+        # Try re-create an habitat (remove old, add new)
+        data = deepcopy(feature)
+        keep_ids = {hab["id_habitat"] for hab in data["properties"]["habitats"][0:1]}
+        removed_id = data["properties"]["habitats"][2]["id_habitat"]
+        del data["properties"]["habitats"][2]["id_habitat"]
+        response = self.client.post(url, data=data)
+        assert response.status_code == 200, response.json
+        ids = set((hab.id_habitat for hab in station.habitats))
+        assert removed_id not in ids
+        assert keep_ids.issubset(ids)
+        assert len(station.habitats) == 3
 
-        # # Try associate other station habitat to this habitat
-        # data = deepcopy(feature)
-        # id_habitat = station2.habitats[0].id_habitat
-        # data["properties"]["habitats"][0]["id_habitat"] = id_habitat
-        # station2_habitats = {hab.id_habitat for hab in station2.habitats}
-        # response = self.client.post(url, data=data)
-        # assert response.status_code == 200, response.json
-        # feature = FeatureSchema().load(response.json)
-        # station = Station.query.get(feature["properties"]["id_station"])
-        # station_habitats = {hab.id_habitat for hab in station.habitats}
-        # assert station_habitats.isdisjoint(station2_habitats)
+        # Try associate other station habitat to this habitat
+        station_habitats = {hab.id_habitat for hab in station.habitats}
+        station2_habitats = {hab.id_habitat for hab in station2.habitats}
+        data = deepcopy(feature)
+        id_habitat = station2.habitats[0].id_habitat
+        data["properties"]["habitats"][0]["id_habitat"] = id_habitat
+        response = self.client.post(url, data=data)
+        assert response.status_code == 400, response.json
+        assert (
+            "habitat does not belong to this station" in response.json["description"].casefold()
+        ), response.json
+        assert station_habitats == {hab.id_habitat for hab in station.habitats}
+        assert station2_habitats == {hab.id_habitat for hab in station2.habitats}
 
     def test_delete_station(self, users, station):
         url = url_for("occhab.delete_station", id_station=station.id_station)
@@ -364,16 +450,22 @@ class TestOcchab:
         set_logged_user(self.client, users["noright_user"])
         response = self.client.delete(url)
         assert response.status_code == Forbidden.code
+        assert db.session.query(
+            Station.query.filter_by(id_station=station.id_station).exists()
+        ).scalar()
 
         set_logged_user(self.client, users["stranger_user"])
         response = self.client.delete(url)
         assert response.status_code == Forbidden.code
+        assert db.session.query(
+            Station.query.filter_by(id_station=station.id_station).exists()
+        ).scalar()
 
         set_logged_user(self.client, users["user"])
         response = self.client.delete(url)
         assert response.status_code == 204
         assert not db.session.query(
-            Station.query.filter_by(id_station=station.id_station).exists()
+            Station.select.filter_by(id_station=station.id_station).exists()
         ).scalar()
 
     def test_get_default_nomenclatures(self, users):
@@ -382,3 +474,53 @@ class TestOcchab:
         set_logged_user(self.client, users["user"])
         response = self.client.get(url_for("occhab.get_default_nomenclatures"))
         assert response.status_code == 200
+
+    def test_filter_by_params(self, datasets, stations):
+        def query_test_filter_by_params(params):
+            query = Station.select.filter_by_params(
+                TypeConversionDict(**params),
+            )
+            return db.session.scalars(query).unique().all()
+
+        # Test Filter by dataset
+        ds: TDatasets = datasets["own_dataset"]
+        stations_res = query_test_filter_by_params(dict(id_dataset=ds.id_dataset))
+        assert len(stations_res) >= 1
+
+        # Test filter by cd_hab
+        habref = db.session.scalars(db.select(Habref).limit(1)).first()
+        assert len(stations["station_1"].habitats) > 1
+        assert stations["station_1"].habitats[0].cd_hab == habref.cd_hab
+        stations_res = query_test_filter_by_params(dict(cd_hab=habref.cd_hab))
+        assert len(stations_res) >= 1
+        for station in stations_res:
+            assert len(station.habitats) > 1
+            assert any([habitat.cd_hab == habref.cd_hab for habitat in station.habitats])
+
+        # test filter by date max
+        date_format = "%d/%m/%y"
+        station_res = query_test_filter_by_params(
+            dict(date_up="1981-02-01"),
+        )
+        assert any(
+            [station.id_station == stations["station_1"].id_station for station in station_res]
+        )
+
+        # test filter by date min
+        station_res = query_test_filter_by_params(
+            dict(date_low="1969-02-01"),
+        )
+        assert all(
+            [
+                any([station.id_station == station_session.id_station for station in station_res])
+                for station_session in stations.values()
+            ]
+        )
+
+    def test_filter_by_scope(self):
+        res = Station.select.filter_by_scope(0)
+        res = db.session.scalars(res).unique().all()
+        assert not len(res)  # <=> len(res) == 0
+
+    def test_has_instance_permission(self, stations):
+        assert not stations["station_1"].has_instance_permission(scope=0)

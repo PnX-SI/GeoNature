@@ -65,6 +65,11 @@ class TestApiUsersMenu:
                 assert attr in user.keys()
         assert resp.status_code == 200
 
+    def test_menu_by_id_with_nomcomplet(self):
+        # (upper(a.nom_role::text) || ' '::text) || a.prenom_role::text AS nom_complet,
+        resp = self.client.get(url_for("users.get_roles_by_menu_id", id_menu=1))
+        print(resp.json)
+
     def test_menu_notexists(self, unavailable_menu_id):
         resp = self.client.get(url_for("users.get_roles_by_menu_id", id_menu=unavailable_menu_id))
 

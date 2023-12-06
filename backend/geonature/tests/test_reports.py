@@ -53,10 +53,11 @@ class TestReports:
         data = {"item": id_synthese, "content": "comment 4", "type": "discussion"}
         # TEST - NO AUTHENT
         response = self.client.post(url_for(url), data=data)
+
         assert response.status_code == 401
         # TEST NO DATA
         set_logged_user(self.client, users["admin_user"])
-        response = self.client.post(url_for(url))
+        response = self.client.post(url_for(url), data=None)
         assert response.status_code == BadRequest.code
         # TEST VALID - ADD DISCUSSION
         response = self.client.post(url_for(url), data=data)

@@ -121,7 +121,7 @@ class TMedias(DB.Model):
     id_table_location = DB.Column(
         DB.Integer, ForeignKey("gn_commons.bib_tables_location.id_table_location")
     )
-    unique_id_media = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
+    unique_id_media = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
     uuid_attached_row = DB.Column(UUID(as_uuid=True))
     title_fr = DB.Column(DB.Unicode)
     title_en = DB.Column(DB.Unicode)
@@ -206,7 +206,7 @@ class TValidations(DB.Model):
     nomenclature_valid_status = relationship(
         TNomenclatures,
         foreign_keys=[id_nomenclature_valid_status],
-        lazy="joined",
+        lazy="joined",  # FIXME: remove and manually join when needed
     )
     id_validator = DB.Column(DB.Integer, ForeignKey(User.id_role))
     validator_role = DB.relationship(User)
@@ -214,11 +214,16 @@ class TValidations(DB.Model):
     validation_comment = DB.Column(DB.Unicode)
     validation_date = DB.Column(DB.TIMESTAMP)
     validation_auto = DB.Column(DB.Boolean)
-    validation_label = DB.relationship(TNomenclatures)
+    # FIXME: remove and use nomenclature_valid_status
+    validation_label = DB.relationship(
+        TNomenclatures,
+        foreign_keys=[id_nomenclature_valid_status],
+        overlaps="nomenclature_valid_status",  # overlaps expected
+    )
 
 
 last_validation_query = (
-    select([TValidations])
+    select(TValidations)
     .order_by(TValidations.validation_date.desc())
     .limit(1)
     .alias("last_validation")

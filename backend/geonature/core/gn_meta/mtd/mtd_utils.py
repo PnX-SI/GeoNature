@@ -47,7 +47,11 @@ def sync_ds(ds, cd_nomenclatures):
 
     # CONTROL AF
     af_uuid = ds.pop("uuid_acquisition_framework")
-    af = TAcquisitionFramework.query.filter_by(unique_acquisition_framework_id=af_uuid).first()
+    af = DB.session.scalar(
+        DB.select(TAcquisitionFramework)
+        .filter_by(unique_acquisition_framework_id=af_uuid)
+        .limit(1)
+    ).first()
 
     if af is None:
         return
@@ -61,8 +65,12 @@ def sync_ds(ds, cd_nomenclatures):
         if v is not None
     }
 
-    ds_exists = (
-        TDatasets.query.filter_by(unique_dataset_id=ds["unique_dataset_id"]).first() is not None
+    ds_exists = DB.session.scalar(
+        DB.select(
+            DB.exists().where(
+                TDatasets.unique_dataset_id == ds["unique_dataset_id"],
+            )
+        )
     )
 
     if ds_exists:
@@ -78,7 +86,7 @@ def sync_ds(ds, cd_nomenclatures):
             .on_conflict_do_nothing(index_elements=["unique_dataset_id"])
         )
     DB.session.execute(statement)
-    dataset = TDatasets.query.filter_by(unique_dataset_id=ds["unique_dataset_id"]).first()
+    dataset = DB.session.scalars(ds_query).first()
 
     # Associate dataset to the modules if new dataset
     if not ds_exists:
@@ -94,11 +102,13 @@ def sync_af(af):
     :param af: dict AF infos
     """
     af_uuid = af["unique_acquisition_framework_id"]
-    af_exists = (
-        TAcquisitionFramework.query.filter_by(unique_acquisition_framework_id=af_uuid).first()
-        is not None
-    )
-    if af_exists:
+    count_af = DB.session.execute(
+        DB.select(func.count("*"))
+        .select_from(TAcquisitionFramework)
+        .filter_by(unique_acquisition_framework_id=af_uuid)
+    ).scalar_one()
+
+    if count_af > 0:
         # this avoid useless nextval sequence
         statement = (
             update(TAcquisitionFramework)
@@ -113,8 +123,9 @@ def sync_af(af):
             .on_conflict_do_nothing(index_elements=["unique_acquisition_framework_id"])
             .returning(TAcquisitionFramework.id_acquisition_framework)
         )
+
     af_id = DB.session.execute(statement).scalar()
-    af = TAcquisitionFramework.query.get(af_id)
+    af = DB.session.get(TAcquisitionFramework, af_id)
     return af
 
 
@@ -127,8 +138,11 @@ def add_or_update_organism(uuid, nom, email):
     :param email: org email
     """
     # Test if actor already exists to avoid nextVal increase
-    org = BibOrganismes.query.filter_by(uuid_organisme=uuid).first() is not None
-    if org:
+    org_exist = DB.session.execute(
+        DB.select(DB.exists().select_from(BibOrganismes).filter_by(uuid_organisme=uuid))
+    ).scalar_one()
+
+    if org_exist:
         statement = (
             update(BibOrganismes)
             .where(BibOrganismes.uuid_organisme == uuid)
@@ -158,10 +172,16 @@ def associate_actors(actors, CorActor, pk_name, pk_value):
     """
     Associate actor and DS or AF according to CorActor value.
 
-    :param actors: list of actors
-    :param CorActor: table model
-    :param pk_name: pk attribute name
-    :param pk_value: pk value
+    Parameters
+    ----------
+    actors : list
+        list of actors
+    CorActor : db.Model
+        table model
+    pk_name : str
+        pk attribute name
+    pk_value : str
+        pk value
     """
     for actor in actors:
         if not actor["uuid_organism"]:
@@ -198,7 +218,9 @@ def associate_dataset_modules(dataset):
     :param dataset: <geonature.core.gn_meta.models.TDatasets> dataset (SQLAlchemy model object)
     """
     dataset.modules.extend(
-        DB.session.query(TModules)
-        .filter(TModules.module_code.in_(current_app.config["MTD"]["JDD_MODULE_CODE_ASSOCIATION"]))
-        .all()
+        DB.session.scalars(
+            DB.select(TModules).filter(
+                TModules.module_code.in_(current_app.config["MTD"]["JDD_MODULE_CODE_ASSOCIATION"])
+            )
+        ).all()
     )

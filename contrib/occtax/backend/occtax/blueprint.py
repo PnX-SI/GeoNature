@@ -267,7 +267,6 @@ def insertOrUpdateOneReleve():
         if "cor_counting_occtax" in occ:
             cor_counting_occtax = occ["cor_counting_occtax"]
             occ.pop("cor_counting_occtax")
-
         # Test et suppression
         #   des propriétés inexistantes de TOccurrencesOccurrence
         attliste = [k for k in occ]
@@ -292,7 +291,6 @@ def insertOrUpdateOneReleve():
             countingOccurrence = CorCountingOccurrence(**cnt)
             occtax.cor_counting_occtax.append(countingOccurrence)
         releve.t_occurrences_occtax.append(occtax)
-
     # if its a update
     if releve.id_releve_occtax:
         scope = get_scopes_by_action()["U"]
@@ -304,15 +302,14 @@ def insertOrUpdateOneReleve():
     # if its a simple post
     else:
         scope = get_scopes_by_action()["C"]
-        if not TDatasets.query.get(releve.id_dataset).has_instance_permission(scope):
+        if not db.session.get(TDatasets, releve.id_dataset).has_instance_permission(scope):
             raise Forbidden(
-                f"User {g.current_user.id_role} is not allowed to create releve in dataset {dataset.id_dataset}"
+                f"User {g.current_user.id_role} is not allowed to create releve in dataset."
             )
         # set id_digitiser
         releve.id_digitiser = g.current_user.id_role
         DB.session.add(releve)
     DB.session.commit()
-
     return releve.get_geofeature(depth=depth)
 
 
@@ -337,7 +334,8 @@ def releveHandler(request, *, releve, scope):
     # if creation
     else:
         # Check if user can add a releve in the current dataset
-        if not TDatasets.query.get(releve.id_dataset).has_instance_permission(scope):
+        dataset = db.session.get(TDatasets, releve.id_dataset)
+        if not dataset.has_instance_permission(scope):
             raise Forbidden(
                 f"User {g.current_user.id_role} has no right in dataset {releve.id_dataset}"
             )
@@ -414,7 +412,7 @@ def updateReleve(id_releve, scope):
 
 
 def occurrenceHandler(request, *, occurrence, scope):
-    releve = TRelevesOccurrence.query.get_or_404(occurrence.id_releve_occtax)
+    releve = db.get_or_404(TRelevesOccurrence, occurrence.id_releve_occtax)
     if not releve.has_instance_permission(scope):
         raise Forbidden()
 
@@ -454,7 +452,7 @@ def updateOccurrence(id_occurrence, scope):
     Post one Occurrence data (Occurrence + Counting) for add to Releve
 
     """
-    occurrence = TOccurrencesOccurrence.query.get_or_404(id_occurrence)
+    occurrence = db.get_or_404(TOccurrencesOccurrence, id_occurrence)
 
     return OccurrenceSchema().dump(
         occurrenceHandler(request=request, occurrence=occurrence, scope=scope)
@@ -472,12 +470,12 @@ def deleteOneReleve(id_releve, scope):
     :params int id_releve: ID of the releve to delete
 
     """
-    releve = TRelevesOccurrence.query.get_or_404(id_releve)
+    releve = db.get_or_404(TRelevesOccurrence, id_releve)
     if not releve.has_instance_permission(scope):
         raise Forbidden()
     db.session.delete(releve)
     db.session.commit()
-    return jsonify({"message": "delete with success"})
+    return jsonify({"message": "deleted with success"})
 
 
 @blueprint.route("/<module_code>/occurrence/<int:id_occ>", methods=["DELETE"])
@@ -491,7 +489,7 @@ def deleteOneOccurence(id_occ, scope):
     :params int id_occ: ID of the occurrence to delete
 
     """
-    occ = TOccurrencesOccurrence.query.get_or_404(id_occ)
+    occ = db.get_or_404(TOccurrencesOccurrence, id_occ)
 
     if not occ.releve.has_instance_permission(scope):
         raise Forbidden()
@@ -513,8 +511,8 @@ def deleteOneOccurenceCounting(scope, id_count):
     :params int id_count: ID of the counting to delete
 
     """
-    ccc = CorCountingOccurrence.query.get_or_404(id_count)
-    if not ccc.occurence.releve.has_instance_permission(scope):
+    ccc = db.get_or_404(CorCountingOccurrence, id_count)
+    if not ccc.occurrence.releve.has_instance_permission(scope):
         raise Forbidden
     DB.session.delete(ccc)
     DB.session.commit()
@@ -537,15 +535,15 @@ def getDefaultNomenclatures():
     group2_inpn = request.args.get("group2_inpn", "0")
     types = request.args.getlist("id_type")
 
-    q = db.session.query(
+    query = db.select(
         distinct(DefaultNomenclaturesValue.mnemonique_type),
         func.pr_occtax.get_default_nomenclature_value(
             DefaultNomenclaturesValue.mnemonique_type, organism, regne, group2_inpn
         ),
     )
     if len(types) > 0:
-        q = q.filter(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
-    data = q.all()
+        query = query.where(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
+    data = db.session.execute(query).all()
     if not data:
         raise NotFound
     return jsonify(dict(data))
