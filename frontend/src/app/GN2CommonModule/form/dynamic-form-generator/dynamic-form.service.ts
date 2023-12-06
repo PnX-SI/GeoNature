@@ -130,9 +130,11 @@ export class DynamicFormService {
 
   createControl(formDef): AbstractControl {
     const formControl = new UntypedFormControl();
-    const value = formDef.value || null;
+    const value = formDef.value == undefined ? null : formDef.value;
     const defaultValue = parseFloat(value) ? parseFloat(value) : value;
+
     this.setControl(formControl, formDef, defaultValue);
+
     return formControl;
   }
   addNewControl(formDef, formGroup: UntypedFormGroup) {

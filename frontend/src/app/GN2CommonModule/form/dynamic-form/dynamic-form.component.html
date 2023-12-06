@@ -162,6 +162,7 @@
       <input
         class="bool-checkbox"
         type="checkbox"
+        [value]="formDefComp['value']"
         id="{{ formDefComp['attribut_name'] }}"
         [name]="formDefComp['attribut_name']"
         [formControl]="form.get(formDefComp['attribut_name'])"
