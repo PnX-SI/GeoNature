@@ -5,6 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pathlib  # For testing purposes
 import click
 import geonature.utils.config
 from click import ClickException
@@ -23,7 +24,7 @@ from geonature.utils.module import get_dist_from_code, iter_modules_dist, module
 @click.option(
     "-x", "--x-arg", multiple=True, help="Additional arguments consumed by custom env.py scripts"
 )
-@click.argument("module_path", type=click.Path(path_type=Path))
+@click.argument("module_path", type=click.Path(exists=True, file_okay=False, path_type=Path))
 @click.argument("module_code", required=False)
 @click.option("--build", type=bool, required=False, default=True)
 @click.option("--upgrade-db", type=bool, required=False, default=True)

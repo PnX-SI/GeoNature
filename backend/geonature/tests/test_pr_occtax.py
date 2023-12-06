@@ -582,10 +582,16 @@ class TestOcctaxGetReleveFilter:
             int(releve_json["id"]) for releve_json in json_resp["items"]["features"]
         ]
 
-    def test_get_releve_filter_nomenclatures(self, users: dict, releve_occtax: Any, occurrence: Any):
+    def test_get_releve_filter_nomenclatures(
+        self, users: dict, releve_occtax: Any, occurrence: Any
+    ):
         nomenclatures = DefaultNomenclaturesValue.query.all()
         dict_nomenclatures = {n.mnemonique_type: n.id_nomenclature for n in nomenclatures}
-        query_string = {"id_nomenclature_life_stage": [dict_nomenclatures["STADE_VIE"]], "id_nomenclature_obs_technique": [dict_nomenclatures["METH_OBS"]], "id_nomenclature_grp_typ": [dict_nomenclatures["TYP_GRP"]] }
+        query_string = {
+            "id_nomenclature_life_stage": [dict_nomenclatures["STADE_VIE"]],
+            "id_nomenclature_obs_technique": [dict_nomenclatures["METH_OBS"]],
+            "id_nomenclature_grp_typ": [dict_nomenclatures["TYP_GRP"]],
+        }
 
         set_logged_user(self.client, users["user"])
 

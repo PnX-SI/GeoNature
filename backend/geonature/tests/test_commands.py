@@ -84,11 +84,15 @@ class PathMock(Path):
     def parents(self):
         return SequenceMock()
 
+    def resolve(self):
+        return True
+
 
 def patch_monkeypatch(monkeypatch):
     monkeypatch.setattr(command_utils, "run", run_success_mock)
     monkeypatch.setattr(install_module.subprocess, "run", run_success_mock)
     monkeypatch.setattr(install_module, "Path", PathMock)
+    monkeypatch.setattr(install_module.pathlib, "PosixPath", PathMock)
 
     for (
         method
