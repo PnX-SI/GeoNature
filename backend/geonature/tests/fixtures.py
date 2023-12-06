@@ -337,6 +337,7 @@ def datasets(users, acquisition_frameworks, module):
                     organism=digitizer.organisme, nomenclature_actor_role=principal_actor_role
                 )
                 dataset.cor_dataset_actor.append(actor)
+
             db.session.add(dataset)
             db.session.flush()  # Required to retrieve ids of created object
             [dataset.modules.append(m) for m in modules]

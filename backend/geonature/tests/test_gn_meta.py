@@ -2,42 +2,35 @@ import csv
 import uuid
 from io import StringIO
 from unittest.mock import patch
+
+import pytest
+from flask import url_for
+from geoalchemy2.shape import to_shape
+from geojson import Point
+from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
 from geonature.core.gn_meta.repositories import (
     cruved_af_filter,
     cruved_ds_filter,
     get_metadata_list,
 )
-
-import pytest
-from flask import url_for
-
-
-from geoalchemy2.shape import to_shape
-
-from geojson import Point
+from geonature.core.gn_meta.routes import get_af_from_id
+from geonature.core.gn_meta.schemas import DatasetSchema
+from geonature.core.gn_synthese.models import Synthese
+from geonature.utils.env import db
+from pypnusershub.schemas import UserSchema
+from ref_geo.models import BibAreasTypes, LAreas
 from sqlalchemy import func
+from sqlalchemy.sql.selectable import Select
+from werkzeug.datastructures import Headers, MultiDict
 from werkzeug.exceptions import (
-    UnsupportedMediaType,
     BadRequest,
     Conflict,
     Forbidden,
     NotFound,
     Unauthorized,
+    UnsupportedMediaType,
 )
-
-from sqlalchemy.sql.selectable import Select
-from werkzeug.datastructures import MultiDict, Headers
-from ref_geo.models import BibAreasTypes, LAreas
-
-from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_meta.models import (
-    CorDatasetActor,
-    TAcquisitionFramework,
-    TDatasets,
-)
-from geonature.core.gn_meta.routes import get_af_from_id
-from geonature.core.gn_synthese.models import Synthese
-from geonature.utils.env import db
 
 from .fixtures import *
 from .utils import logged_user_headers, set_logged_user
@@ -404,6 +397,11 @@ class TestGNMeta:
 
         response = self.client.get(get_af_url)
         assert response.status_code == 200
+        assert len(response.json) > 1
+        data = response.json
+        assert DatasetSchema(many=True).validate(data)
+        assert UserSchema().validate(data[0]["creator"])
+        assert all(["cor_af_actor" in af for af in data])
 
     def test_get_acquisition_frameworks_search_af_name(
         self, users, acquisition_frameworks, datasets
@@ -687,9 +685,14 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
         assert response.status_code == 200
 
+        assert DatasetSchema().validate(response.json)
+        assert response.json["id_dataset"] == ds.id_dataset
+
     def test_get_datasets_synthese_records_count(self, users):
+        # FIXME : verify content
         set_logged_user(self.client, users["admin_user"])
         response = self.client.get(url_for("gn_meta.get_datasets", synthese_records_count=1))
+
         assert response.status_code == 200
 
     @pytest.mark.skip(reason="Works localy but not on GH actions ! ")
