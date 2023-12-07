@@ -17,7 +17,7 @@ setuptools.setup(
     maintainer="Parcs nationaux des Écrins et des Cévennes",
     maintainer_email="geonature@ecrins-parcnational.fr",
     url="https://github.com/PnX-SI/GeoNature/",
-    python_requires=">=3.7",
+    python_requires=">=3.9",
     version=version,
     packages=setuptools.find_packages(where="backend", include=["geonature*"]),
     package_dir={
