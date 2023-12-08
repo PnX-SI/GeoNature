@@ -4,11 +4,18 @@ from flask import g
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func
+<<<<<<< HEAD
 from sqlalchemy.orm import relationship, mapped_column, Mapped
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
 from typing import Optional, List
+=======
+from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import UUID as UUIDType
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.schema import FetchedValue
+>>>>>>> 2b2788d7f (split files of gn_meta models + update utils-flask-sqla)
 from utils_flask_sqla.models import qfilter
 import marshmallow as ma
 

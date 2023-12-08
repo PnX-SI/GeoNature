@@ -29,7 +29,7 @@ class TAcquisitionFramework(db.Model):
         UUIDType(as_uuid=True), default=select(func.uuid_generate_v4())
     )
     acquisition_framework_name: Mapped[Optional[str]] = mapped_column(DB.Unicode(255))
-    acquisition_framework_desc: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    acquisition_framework_desc: Mapped[Optional[str]]
     id_nomenclature_territorial_level: Mapped[Optional[int]] = mapped_column(
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("NIVEAU_TERRITORIAL"),
