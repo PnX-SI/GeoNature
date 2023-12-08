@@ -110,16 +110,14 @@ def get_datasets():
     if "create" in params:
         create = params.pop("create").split(".")
         if len(create) > 1:
-            query = TDatasets.select.filter_by_creatable(
-                module_code=create[0], object_code=create[1]
-            )
+            query = TDatasets.filter_by_creatable(module_code=create[0], object_code=create[1])
         else:
-            query = TDatasets.select.filter_by_creatable(module_code=create[0])
+            query = TDatasets.filter_by_creatable(module_code=create[0])
     else:
-        query = TDatasets.select.filter_by_readable()
+        query = TDatasets.filter_by_readable()
 
     if request.is_json:
-        query = query.filter_by_params(request.json)
+        query = TDatasets.filter_by_params(request.json, query=query)
 
     if "orderby" in params:
         table_columns = TDatasets.__table__.columns
@@ -258,8 +256,8 @@ def uuid_report():
 
     query = (
         DB.select(Synthese)
-        .where_if(id_module is not None, Synthese.id_module == id_module)
-        .where_if(ds_id is not None, Synthese.id_dataset == ds_id)
+        .where(Synthese.id_module == id_module if id_module is not None else True)
+        .where(Synthese.id_dataset == ds_id if ds_id is not None else True)
     )
 
     # TODO test in module import ?
@@ -524,9 +522,9 @@ def get_acquisition_frameworks():
     """
     only = ["+cruved"]
     # QUERY
-    af_list = TAcquisitionFramework.select.filter_by_readable()
+    af_list = TAcquisitionFramework.filter_by_readable()
     if request.is_json:
-        af_list = af_list.filter_by_params(request.json)
+        af_list = TAcquisitionFramework.filter_by_params(request.json, query=af_list)
 
     af_list = af_list.order_by(TAcquisitionFramework.acquisition_framework_name).options(
         Load(TAcquisitionFramework).raiseload("*"),

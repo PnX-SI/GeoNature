@@ -148,25 +148,26 @@ class TestGNMeta:
         with app.test_request_context(headers=logged_user_headers(users["user"])):
             app.preprocess_request()
             af_ids = [af.id_acquisition_framework for af in acquisition_frameworks.values()]
-            qs = TAcquisitionFramework.select.filter(
+            qs = db.select(TAcquisitionFramework).where(
                 TAcquisitionFramework.id_acquisition_framework.in_(af_ids)
             )
+            ta = TAcquisitionFramework
             sc = db.session.scalars
-            assert set(sc(qs.filter_by_scope(0)).unique().all()) == set([])
-            assert set(sc(qs.filter_by_scope(1)).unique().all()) == set(
+            assert set(sc(ta.filter_by_scope(0, query=qs)).unique().all()) == set([])
+            assert set(sc(ta.filter_by_scope(1, query=qs)).unique().all()) == set(
                 [
                     acquisition_frameworks["own_af"],
                     acquisition_frameworks["orphan_af"],  # through DS
                 ]
             )
-            assert set(sc(qs.filter_by_scope(2)).unique().all()) == set(
+            assert set(sc(ta.filter_by_scope(2, query=qs)).unique().all()) == set(
                 [
                     acquisition_frameworks["own_af"],
                     acquisition_frameworks["associate_af"],
                     acquisition_frameworks["orphan_af"],  # through DS
                 ]
             )
-            assert set(sc(qs.filter_by_scope(3)).unique().all()) == set(
+            assert set(sc(ta.filter_by_scope(3, query=qs)).unique().all()) == set(
                 acquisition_frameworks.values()
             )
 
@@ -557,21 +558,24 @@ class TestGNMeta:
             app.preprocess_request()
             ds_ids = [ds.id_dataset for ds in datasets.values()]
             sc = db.session.scalars
-            qs = TDatasets.select.filter(TDatasets.id_dataset.in_(ds_ids))
-            assert set(sc(qs.filter_by_scope(0)).unique().all()) == set([])
-            assert set(sc(qs.filter_by_scope(1)).unique().all()) == set(
+            dsc = TDatasets
+            qs = db.select(TDatasets).where(TDatasets.id_dataset.in_(ds_ids))
+            assert set(sc(dsc.filter_by_scope(0, query=qs)).unique().all()) == set([])
+            assert set(sc(dsc.filter_by_scope(1, query=qs)).unique().all()) == set(
                 [
                     datasets["own_dataset"],
                 ]
             )
-            assert set(sc(qs.filter_by_scope(2)).unique().all()) == set(
+            assert set(sc(dsc.filter_by_scope(2, query=qs)).unique().all()) == set(
                 [
                     datasets["own_dataset"],
                     datasets["associate_dataset"],
                     datasets["associate_2_dataset_sensitive"],
                 ]
             )
-            assert set(sc(qs.filter_by_scope(3)).unique().all()) == set(datasets.values())
+            assert set(sc(dsc.filter_by_scope(3, query=qs)).unique().all()) == set(
+                datasets.values()
+            )
 
     def test_dataset_is_deletable(self, app, synthese_data, datasets):
         assert (
@@ -1026,18 +1030,16 @@ class TestGNMeta:
 
         with app.test_request_context(headers=logged_user_headers(users["user"])):
             app.preprocess_request()
-            create = TDatasets.select._get_create_scope(module_code=modcode)
+            create = TDatasets._get_create_scope(module_code=modcode)
 
-        usercreate = TDatasets.select._get_create_scope(module_code=modcode, user=users["user"])
-        norightcreate = TDatasets.select._get_create_scope(
+        usercreate = TDatasets._get_create_scope(module_code=modcode, user=users["user"])
+        norightcreate = TDatasets._get_create_scope(
             module_code=modcode, user=users["noright_user"]
         )
-        associatecreate = TDatasets.select._get_create_scope(
+        associatecreate = TDatasets._get_create_scope(
             module_code=modcode, user=users["associate_user"]
         )
-        admincreate = TDatasets.select._get_create_scope(
-            module_code=modcode, user=users["admin_user"]
-        )
+        admincreate = TDatasets._get_create_scope(module_code=modcode, user=users["admin_user"])
 
         assert create == 2
         assert usercreate == 2

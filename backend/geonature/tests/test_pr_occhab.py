@@ -465,7 +465,7 @@ class TestOcchab:
         response = self.client.delete(url)
         assert response.status_code == 204
         assert not db.session.query(
-            Station.select.filter_by(id_station=station.id_station).exists()
+            db.select(Station).filter_by(id_station=station.id_station).exists()
         ).scalar()
 
     def test_get_default_nomenclatures(self, users):
@@ -477,7 +477,7 @@ class TestOcchab:
 
     def test_filter_by_params(self, datasets, stations):
         def query_test_filter_by_params(params):
-            query = Station.select.filter_by_params(
+            query = Station.filter_by_params(
                 TypeConversionDict(**params),
             )
             return db.session.scalars(query).unique().all()
@@ -518,9 +518,15 @@ class TestOcchab:
         )
 
     def test_filter_by_scope(self):
-        res = Station.select.filter_by_scope(0)
+        res = Station.filter_by_scope(0)
         res = db.session.scalars(res).unique().all()
         assert not len(res)  # <=> len(res) == 0
 
     def test_has_instance_permission(self, stations):
         assert not stations["station_1"].has_instance_permission(scope=0)
+
+    # def test_classmethod(self, datasets):
+    #     ds: TDatasets = datasets["own_dataset"]
+    #     params = TypeConversionDict(**dict(id_dataset=ds.id_dataset))
+    #     query1 = db.select(Station).where(Station.filter_by_params(params))
+    #     db.session.scalars(query1).unique().all()

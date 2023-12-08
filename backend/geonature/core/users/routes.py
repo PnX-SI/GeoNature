@@ -193,7 +193,7 @@ def get_organismes_jdd():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-    datasets = DB.session.scalars(TDatasets.select.filter_by_readable()).unique().all()
+    datasets = DB.session.scalars(TDatasets.filter_by_readable()).unique().all()
     datasets = [d.id_dataset for d in datasets]
     query = (
         DB.select(Organisme)
