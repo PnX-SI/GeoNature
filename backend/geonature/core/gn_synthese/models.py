@@ -198,7 +198,7 @@ class SyntheseQuery(GeoFeatureCollectionMixin, Query):
         elif scope in (1, 2):
             ors = []
             datasets = db.session.scalars(
-                TDatasets.select.filter_by_readable(user).with_entities(TDatasets.id_dataset)
+                TDatasets.filter_by_readable(user).with_entities(TDatasets.id_dataset)
             ).all()
             self = self.filter(
                 or_(

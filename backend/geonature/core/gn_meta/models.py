@@ -12,7 +12,7 @@ from sqlalchemy.dialects.postgresql import UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
 from utils_flask_sqla.generic import testDataType
-from utils_flask_sqla.sqlalchemy import CustomSelect
+from utils_flask_sqla.models import qfilter
 from werkzeug.exceptions import BadRequest, NotFound
 import marshmallow as ma
 
@@ -232,156 +232,10 @@ class TBibliographicReference(db.Model):
     publication_reference = DB.Column(DB.Unicode)
 
 
-class TDatasetsQuery(CustomSelect):
-    inherit_cache = True
-
-    def _get_read_scope(self, user=None):
-        if user is None:
-            user = g.current_user
-        cruved = get_scopes_by_action(id_role=user.id_role, module_code="METADATA")
-        return cruved["R"]
-
-    def _get_create_scope(self, module_code, user=None, object_code=None):
-        if user is None:
-            user = g.current_user
-        cruved = get_scopes_by_action(
-            id_role=user.id_role, module_code=module_code, object_code=object_code
-        )
-        return cruved["C"]
-
-    def filter_by_scope(self, scope, user=None):
-        if user is None:
-            user = g.current_user
-        if scope == 0:
-            self = self.where(sa.false())
-        elif scope in (1, 2):
-            ors = [
-                TDatasets.id_digitizer == user.id_role,
-                TDatasets.cor_dataset_actor.any(id_role=user.id_role),
-                TDatasets.acquisition_framework.has(id_digitizer=user.id_role),
-                TDatasets.acquisition_framework.has(
-                    TAcquisitionFramework.cor_af_actor.any(id_role=user.id_role),
-                ),
-            ]
-            # if organism is None => do not filter on id_organism even if level = 2
-            if scope == 2 and user.id_organisme is not None:
-                ors += [
-                    TDatasets.cor_dataset_actor.any(id_organism=user.id_organisme),
-                    TDatasets.acquisition_framework.has(
-                        TAcquisitionFramework.cor_af_actor.any(id_organism=user.id_organisme),
-                    ),
-                ]
-            self = self.where(or_(*ors))
-        return self
-
-    def filter_by_params(self, params={}, _af_search=True):
-        class DatasetFilterSchema(MetadataFilterSchema):
-            active = ma.fields.Boolean()
-            orderby = ma.fields.String()
-            module_code = ma.fields.String()
-            id_acquisition_frameworks = ma.fields.List(ma.fields.Integer(), allow_none=True)
-
-        params = DatasetFilterSchema().load(params)
-
-        active = params.get("active")
-        if active is not None:
-            self = self.where(TDatasets.active == active)
-
-        module_code = params.get("module_code")
-        if module_code:
-            self = self.where(TDatasets.modules.any(module_code=module_code))
-
-        af_ids = params.get("id_acquisition_frameworks")
-        if af_ids:
-            self = self.where(
-                sa.or_(*[TDatasets.id_acquisition_framework == af_id for af_id in af_ids])
-            )
-
-        uuid = params.get("uuid")
-        if uuid:
-            self = self.where(TDatasets.unique_dataset_id == uuid)
-
-        name = params.get("name")
-        if name:
-            self = self.where(TDatasets.dataset_name.ilike(f"%{name}%"))
-
-        date = params.get("date")
-        if date:
-            self = self.where(sa.cast(TDatasets.meta_create_date, sa.DATE) == date)
-
-        actors = []
-        person = params.get("person")
-        if person:
-            actors.append(TDatasets.cor_dataset_actor.any(CorDatasetActor.id_role == person))
-        organism = params.get("organism")
-        if organism:
-            actors.append(TDatasets.cor_dataset_actor.any(CorDatasetActor.id_organism == organism))
-        if actors:
-            self = self.where(sa.or_(*actors))
-
-        areas = params.get("areas")
-        if areas:
-            self = self.where_by_areas(areas)
-
-        search = params.get("search")
-        if search:
-            ors = [
-                TDatasets.dataset_name.ilike(f"%{search}%"),
-                sa.cast(TDatasets.id_dataset, sa.String) == search,
-            ]
-            # enable uuid search only with at least 5 characters
-            if len(search) >= 5:
-                ors.append(sa.cast(TDatasets.unique_dataset_id, sa.String).like(f"{search}%"))
-            try:
-                date = datetime.datetime.strptime(search, "%d/%m/%Y").date()
-            except ValueError:
-                pass
-            else:
-                ors.append(sa.cast(TDatasets.meta_create_date, sa.DATE) == date)
-            if _af_search:
-                ors.append(
-                    TDatasets.acquisition_framework.has(
-                        TAcquisitionFramework.select.filter_by_params(
-                            {"search": search},
-                            _ds_search=False,
-                        ).whereclause
-                    )
-                )
-            self = self.where(or_(*ors))
-        return self
-
-    def filter_by_readable(self, user=None):
-        """
-        Return the datasets where the user has autorization via its CRUVED
-        """
-        return self.filter_by_scope(self._get_read_scope(user))
-
-    def filter_by_creatable(self, module_code, user=None, object_code=None):
-        """
-        Return all dataset where user have read rights minus those who user to not have
-        create rigth
-        """
-        query = self.where(TDatasets.modules.any(module_code=module_code))
-        scope = self._get_read_scope(user)
-        create_scope = self._get_create_scope(module_code, user=user, object_code=object_code)
-        if create_scope < scope:
-            scope = create_scope
-        return query.filter_by_scope(scope)
-
-    def filter_by_areas(self, areas):
-        from geonature.core.gn_synthese.models import Synthese
-
-        areaFilter = []
-        for id_area in areas:
-            areaFilter.append(LAreas.id_area == id_area)
-        return self.where(TDatasets.synthese_records.any(Synthese.areas.any(sa.or_(*areaFilter))))
-
-
 @serializable(exclude=["user_actors", "organism_actors"])
 class TDatasets(db.Model):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
-    __select_class__ = TDatasetsQuery
 
     id_dataset = DB.Column(DB.Integer, primary_key=True)
     unique_dataset_id = DB.Column(UUIDType(as_uuid=True), default=select(func.uuid_generate_v4()))
@@ -533,148 +387,167 @@ class TDatasets(db.Model):
             .scalar()
         )
 
-
-class TAcquisitionFrameworkQuery(CustomSelect):
-    inherit_cache = True
-
-    def _get_read_scope(self, user=None):
+    @classmethod
+    def _get_read_scope(cls, user=None):
         if user is None:
             user = g.current_user
         cruved = get_scopes_by_action(id_role=user.id_role, module_code="METADATA")
         return cruved["R"]
 
-    def filter_by_scope(self, scope, user=None):
+    @classmethod
+    def _get_create_scope(cls, module_code, user=None, object_code=None):
+        if user is None:
+            user = g.current_user
+        cruved = get_scopes_by_action(
+            id_role=user.id_role, module_code=module_code, object_code=object_code
+        )
+        return cruved["C"]
+
+    @qfilter(return_query=True)
+    def filter_by_scope(cls, scope, user=None, **kwargs):
+        query = kwargs["query"]
+        whereclause = sa.true()
         if user is None:
             user = g.current_user
         if scope == 0:
-            self = self.where(sa.false())
+            whereclause = sa.false()
         elif scope in (1, 2):
             ors = [
-                TAcquisitionFramework.id_digitizer == user.id_role,
-                TAcquisitionFramework.cor_af_actor.any(id_role=user.id_role),
-                TAcquisitionFramework.datasets.any(id_digitizer=user.id_role),
-                TAcquisitionFramework.datasets.any(
-                    TDatasets.cor_dataset_actor.any(id_role=user.id_role)
-                ),  # TODO test coverage
+                cls.id_digitizer == user.id_role,
+                cls.cor_dataset_actor.any(id_role=user.id_role),
+                cls.acquisition_framework.has(id_digitizer=user.id_role),
+                cls.acquisition_framework.has(
+                    TAcquisitionFramework.cor_af_actor.any(id_role=user.id_role),
+                ),
             ]
             # if organism is None => do not filter on id_organism even if level = 2
             if scope == 2 and user.id_organisme is not None:
                 ors += [
-                    TAcquisitionFramework.cor_af_actor.any(id_organism=user.id_organisme),
-                    TAcquisitionFramework.datasets.any(
-                        TDatasets.cor_dataset_actor.any(id_organism=user.id_organisme)
-                    ),  # TODO test coverage
+                    cls.cor_dataset_actor.any(id_organism=user.id_organisme),
+                    cls.acquisition_framework.has(
+                        TAcquisitionFramework.cor_af_actor.any(id_organism=user.id_organisme),
+                    ),
                 ]
-            self = self.where(or_(*ors))
-        return self
+            whereclause = or_(*ors)
+        return query.where(whereclause)
 
-    def filter_by_readable(self):
-        """
-        Return the afs where the user has autorization via its CRUVED
-        """
-        return self.filter_by_scope(self._get_read_scope())
+    @qfilter(return_query=True)
+    def filter_by_params(cls, params={}, _af_search=True, **kwargs):
+        query = kwargs.get("query")
 
-    def filter_by_areas(self, areas):
-        """
-        Filter meta by areas
-        """
-        return self.where(
-            TAcquisitionFramework.datasets.any(
-                TDatasets.select.filter_by_areas(areas).whereclause,
-            ),
-        )
+        class DatasetFilterSchema(MetadataFilterSchema):
+            active = ma.fields.Boolean()
+            orderby = ma.fields.String()
+            module_code = ma.fields.String()
+            id_acquisition_frameworks = ma.fields.List(ma.fields.Integer(), allow_none=True)
 
-    def filter_by_params(self, params={}, _ds_search=True):
-        # XXX frontend retro-compatibility
-        if params.get("selector") == "ds":
-            ds_params = params
-            params = {"datasets": ds_params}
-            if "search" in ds_params:
-                params["search"] = ds_params.pop("search")
-        ds_params = params.get("datasets")
-        if ds_params:
-            ds_filter = TDatasets.select.filter_by_params(ds_params).whereclause
-            if ds_filter is not None:  # do not exclude AF without any DS
-                self = self.where(TAcquisitionFramework.datasets.any(ds_filter))
+        params = DatasetFilterSchema().load(params)
 
-        params = MetadataFilterSchema().load(params)
+        active = params.get("active")
+        if active is not None:
+            query = query.where(cls.active == active)
+
+        module_code = params.get("module_code")
+        if module_code:
+            query = query.where(cls.modules.any(module_code=module_code))
+
+        af_ids = params.get("id_acquisition_frameworks")
+        if af_ids:
+            query = query.where(
+                sa.or_(*[cls.id_acquisition_framework == af_id for af_id in af_ids])
+            )
 
         uuid = params.get("uuid")
+        if uuid:
+            query = query.where(cls.unique_dataset_id == uuid)
+
         name = params.get("name")
+        if name:
+            query = query.where(cls.dataset_name.ilike(f"%{name}%"))
+
         date = params.get("date")
-        self = (
-            self.where(
-                TAcquisitionFramework.unique_acquisition_framework_id == uuid if uuid else True
-            )
-            .where(
-                TAcquisitionFramework.acquisition_framework_name.ilike(f"%{name}%")
-                if name
-                else True
-            )
-            .where(
-                TAcquisitionFramework.acquisition_framework_start_date == date if date else True
-            )
-        )
+        if date:
+            query = query.where(sa.cast(cls.meta_create_date, sa.DATE) == date)
 
         actors = []
         person = params.get("person")
-        organism = params.get("organism")
         if person:
-            actors.append(
-                TAcquisitionFramework.cor_af_actor.any(
-                    CorAcquisitionFrameworkActor.id_role == person
-                )
-            )
-
+            actors.append(cls.cor_dataset_actor.any(CorDatasetActor.id_role == person))
+        organism = params.get("organism")
         if organism:
-            actors.append(
-                TAcquisitionFramework.cor_af_actor.any(
-                    CorAcquisitionFrameworkActor.id_organism == organism
-                )
-            )
+            actors.append(cls.cor_dataset_actor.any(CorDatasetActor.id_organism == organism))
         if actors:
-            self = self.where(sa.or_(*actors))
+            query = query.where(sa.or_(*actors))
 
         areas = params.get("areas")
         if areas:
-            self = self.filter_by_areas(areas)
+            query = query.where_by_areas(areas)
 
         search = params.get("search")
         if search:
             ors = [
-                TAcquisitionFramework.acquisition_framework_name.ilike(f"%{search}%"),
-                sa.cast(TAcquisitionFramework.id_acquisition_framework, sa.String) == search,
+                cls.dataset_name.ilike(f"%{search}%"),
+                sa.cast(cls.id_dataset, sa.String) == search,
             ]
             # enable uuid search only with at least 5 characters
             if len(search) >= 5:
-                ors.append(
-                    sa.cast(TAcquisitionFramework.unique_acquisition_framework_id, sa.String).like(
-                        f"{search}%"
-                    )
-                )
+                ors.append(sa.cast(cls.unique_dataset_id, sa.String).like(f"{search}%"))
             try:
                 date = datetime.datetime.strptime(search, "%d/%m/%Y").date()
-                ors.append(TAcquisitionFramework.acquisition_framework_start_date == date)
             except ValueError:
                 pass
-
-            if _ds_search:
+            else:
+                ors.append(sa.cast(cls.meta_create_date, sa.DATE) == date)
+            if _af_search:
                 ors.append(
-                    TAcquisitionFramework.datasets.any(
-                        TDatasets.select.filter_by_params(
-                            {"search": search}, _af_search=False
+                    cls.acquisition_framework.has(
+                        TAcquisitionFramework.filter_by_params(
+                            {"search": search},
+                            _ds_search=False,
                         ).whereclause
-                    ),
+                    )
                 )
-            self = self.where(sa.or_(*ors))
-        return self
+            query = query.where(or_(*ors))
+        return query
+
+    @qfilter(return_query=True)
+    def filter_by_readable(cls, user=None, **kwargs):
+        """
+        Return the datasets where the user has autorization via its CRUVED
+        """
+        query = kwargs.get("query")
+        whereclause = cls.filter_by_scope(cls._get_read_scope(user)).whereclause
+        return query.where(whereclause)
+
+    @qfilter(return_query=True)
+    def filter_by_creatable(cls, module_code, user=None, object_code=None, **kwargs):
+        """
+        Return all dataset where user have read rights minus those who user to not have
+        create rigth
+        """
+        query = kwargs["query"]
+        query = query.where(cls.modules.any(module_code=module_code))
+        scope = cls._get_read_scope(user)
+        create_scope = cls._get_create_scope(module_code, user=user, object_code=object_code)
+        if create_scope < scope:
+            scope = create_scope
+        return cls.filter_by_scope(scope)
+
+    @qfilter(return_query=True)
+    def filter_by_areas(cls, areas, **kwargs):
+        from geonature.core.gn_synthese.models import Synthese
+
+        query = kwargs["query"]
+        areaFilter = []
+        for id_area in areas:
+            areaFilter.append(LAreas.id_area == id_area)
+        return query.where(cls.synthese_records.any(Synthese.areas.any(sa.or_(*areaFilter))))
 
 
 @serializable(exclude=["user_actors", "organism_actors"])
 class TAcquisitionFramework(db.Model):
     __tablename__ = "t_acquisition_frameworks"
     __table_args__ = {"schema": "gn_meta"}
-    __select_class__ = TAcquisitionFrameworkQuery
 
     id_acquisition_framework = DB.Column(DB.Integer, primary_key=True)
     unique_acquisition_framework_id = DB.Column(
@@ -776,9 +649,9 @@ class TAcquisitionFramework(db.Model):
 
     def is_deletable(self):
         return not db.session.query(
-            TDatasets.select.filter_by(
-                id_acquisition_framework=self.id_acquisition_framework
-            ).exists()
+            db.select(TDatasets)
+            .filter_by(id_acquisition_framework=self.id_acquisition_framework)
+            .exists()
         ).scalar()
 
     def has_instance_permission(self, scope, _through_ds=True):
@@ -846,3 +719,143 @@ class TAcquisitionFramework(db.Model):
         query = query.distinct()
         data = db.session.scalars(query).all()
         return data
+
+    @classmethod
+    def _get_read_scope(cls, user=None):
+        if user is None:
+            user = g.current_user
+        cruved = get_scopes_by_action(id_role=user.id_role, module_code="METADATA")
+        return cruved["R"]
+
+    @qfilter(return_query=True)
+    def filter_by_scope(cls, scope, user=None, **kwargs):
+        query = kwargs["query"]
+        if user is None:
+            user = g.current_user
+        if scope == 0:
+            query = query.where(sa.false())
+        elif scope in (1, 2):
+            ors = [
+                TAcquisitionFramework.id_digitizer == user.id_role,
+                TAcquisitionFramework.cor_af_actor.any(id_role=user.id_role),
+                TAcquisitionFramework.datasets.any(id_digitizer=user.id_role),
+                TAcquisitionFramework.datasets.any(
+                    TDatasets.cor_dataset_actor.any(id_role=user.id_role)
+                ),  # TODO test coverage
+            ]
+            # if organism is None => do not filter on id_organism even if level = 2
+            if scope == 2 and user.id_organisme is not None:
+                ors += [
+                    TAcquisitionFramework.cor_af_actor.any(id_organism=user.id_organisme),
+                    TAcquisitionFramework.datasets.any(
+                        TDatasets.cor_dataset_actor.any(id_organism=user.id_organisme)
+                    ),  # TODO test coverage
+                ]
+            query = query.where(or_(*ors))
+        return query
+
+    @qfilter(return_query=True)
+    def filter_by_readable(cls, **kwargs):
+        """
+        Return the afs where the user has autorization via its CRUVED
+        """
+        return cls.filter_by_scope(TDatasets._get_read_scope())
+
+    @qfilter(return_query=True)
+    def filter_by_areas(cls, areas, **kwargs):
+        """
+        Filter meta by areas
+        """
+        query = kwargs["query"]
+        return query.where(
+            TAcquisitionFramework.datasets.any(
+                TDatasets.filter_by_areas(areas).whereclause,
+            ),
+        )
+
+    @qfilter(return_query=True)
+    def filter_by_params(cls, params={}, _ds_search=True, **kwargs):
+        query = kwargs["query"]
+        # XXX frontend retro-compatibility
+        if params.get("selector") == "ds":
+            ds_params = params
+            params = {"datasets": ds_params}
+            if "search" in ds_params:
+                params["search"] = ds_params.pop("search")
+        ds_params = params.get("datasets")
+        if ds_params:
+            ds_filter = TDatasets.filter_by_params(ds_params).whereclause
+            if ds_filter is not None:  # do not exclude AF without any DS
+                query = query.where(TAcquisitionFramework.datasets.any(ds_filter))
+
+        params = MetadataFilterSchema().load(params)
+
+        uuid = params.get("uuid")
+        name = params.get("name")
+        date = params.get("date")
+        query = (
+            query.where(
+                TAcquisitionFramework.unique_acquisition_framework_id == uuid if uuid else True
+            )
+            .where(
+                TAcquisitionFramework.acquisition_framework_name.ilike(f"%{name}%")
+                if name
+                else True
+            )
+            .where(
+                TAcquisitionFramework.acquisition_framework_start_date == date if date else True
+            )
+        )
+
+        actors = []
+        person = params.get("person")
+        organism = params.get("organism")
+        if person:
+            actors.append(
+                TAcquisitionFramework.cor_af_actor.any(
+                    CorAcquisitionFrameworkActor.id_role == person
+                )
+            )
+
+        if organism:
+            actors.append(
+                TAcquisitionFramework.cor_af_actor.any(
+                    CorAcquisitionFrameworkActor.id_organism == organism
+                )
+            )
+        if actors:
+            query = query.where(sa.or_(*actors))
+
+        areas = params.get("areas")
+        if areas:
+            query = TAcquisitionFramework.filter_by_areas(areas, query=query)
+
+        search = params.get("search")
+        if search:
+            ors = [
+                TAcquisitionFramework.acquisition_framework_name.ilike(f"%{search}%"),
+                sa.cast(TAcquisitionFramework.id_acquisition_framework, sa.String) == search,
+            ]
+            # enable uuid search only with at least 5 characters
+            if len(search) >= 5:
+                ors.append(
+                    sa.cast(TAcquisitionFramework.unique_acquisition_framework_id, sa.String).like(
+                        f"{search}%"
+                    )
+                )
+            try:
+                date = datetime.datetime.strptime(search, "%d/%m/%Y").date()
+                ors.append(TAcquisitionFramework.acquisition_framework_start_date == date)
+            except ValueError:
+                pass
+
+            if _ds_search:
+                ors.append(
+                    TAcquisitionFramework.datasets.any(
+                        TDatasets.filter_by_params(
+                            {"search": search}, _af_search=False
+                        ).whereclause
+                    ),
+                )
+            query = query.where(sa.or_(*ors))
+        return query
