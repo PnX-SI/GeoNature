@@ -164,7 +164,7 @@ class SyntheseQuery:
             if perm.scope_value:
                 if perm.scope_value not in datasets_by_scope:
                     datasets_t = (
-                        DB.session.scalars(TDatasets.select.filter_by_scope(perm.scope_value))
+                        DB.session.scalars(TDatasets.filter_by_scope(perm.scope_value))
                         .unique()
                         .all()
                     )
@@ -202,7 +202,7 @@ class SyntheseQuery:
                 self.model_id_syn_col.in_(subquery_observers),
                 self.model_id_digitiser_column == user.id_role,
             ]
-            datasets = DB.session.scalars(TDatasets.select.filter_by_scope(scope)).all()
+            datasets = DB.session.scalars(TDatasets.filter_by_scope(scope)).all()
             allowed_datasets = [dataset.id_dataset for dataset in datasets]
             ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
 
