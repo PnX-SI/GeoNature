@@ -1,31 +1,22 @@
 from datetime import datetime
 
-import flask_sqlalchemy
 import sqlalchemy as sa
-from flask import current_app, g
+from flask import g
 from geoalchemy2 import Geometry
-from packaging import version
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, synonym
 from sqlalchemy.schema import FetchedValue, UniqueConstraint
-from sqlalchemy.sql import and_, func, select
+from sqlalchemy.sql import func, select
 
-if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
-    from flask_sqlalchemy.query import Query
-else:
-    from flask_sqlalchemy import BaseQuery as Query
 
 from geonature.core.gn_meta.models import TDatasets as Dataset
 from geonature.utils.env import db
-from pypn_habref_api.models import Habref
 from pypnnomenclature.models import TNomenclatures as Nomenclature
 from pypnnomenclature.utils import NomenclaturesMixin
 from pypnusershub.db.models import User
 from utils_flask_sqla.models import qfilter
 from utils_flask_sqla.serializers import serializable
-from utils_flask_sqla_geo.mixins import GeoFeatureCollectionMixin
-from utils_flask_sqla_geo.serializers import geoserializable
 from werkzeug.datastructures import TypeConversionDict
 
 cor_station_observer = db.Table(
@@ -109,7 +100,7 @@ class Station(NomenclaturesMixin, db.Model):
         elif scope == 3:
             return True
 
-    @qfilter(return_query=True)
+    @qfilter(query=True)
     def filter_by_params(cls, params, **kwargs):
         qs = kwargs.get("query")
         params = TypeConversionDict(**params)
@@ -129,7 +120,7 @@ class Station(NomenclaturesMixin, db.Model):
             qs = qs.where(Station.date_max <= date_up)
         return qs
 
-    @qfilter(return_query=True)
+    @qfilter(query=True)
     def filter_by_scope(cls, scope, user=None, **kwargs):
         query = kwargs.get("query")
         if user is None:
