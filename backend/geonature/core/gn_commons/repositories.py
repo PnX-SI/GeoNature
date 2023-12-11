@@ -7,7 +7,7 @@ from PIL import Image, ImageOps
 from io import BytesIO
 from flask import current_app, url_for
 from werkzeug.utils import secure_filename
-from sqlalchemy import and_
+from sqlalchemy import and_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from pypnnomenclature.models import TNomenclatures
@@ -397,10 +397,10 @@ class TMediumRepository:
         ids_media_file = list(dict.fromkeys(ids_media_file))
 
         # suppression des fichiers dont le media n'existe plpus en base
-        ids_media_base = (
-            DB.session.query(TMedias.id_media).filter(TMedias.id_media.in_(ids_media_file)).all()
-        )
-        ids_media_base = [x[0] for x in ids_media_base]
+        ids_media_base = DB.session.scalars(
+            select(TMedias.id_media).where(TMedias.id_media.in_(ids_media_file))
+        ).all()
+        ids_media_base = [x for x in ids_media_base]
 
         ids_media_to_delete = [x for x in ids_media_file if x not in ids_media_base]
 

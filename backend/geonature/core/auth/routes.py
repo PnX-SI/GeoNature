@@ -19,6 +19,7 @@ from flask import (
     session,
     Response,
 )
+from sqlalchemy import select
 from utils_flask_sqla.response import json_resp
 
 from pypnusershub.db.models import User, Organisme, Application
@@ -84,10 +85,12 @@ def loginCas():
             expiration = current_app.config["COOKIE_EXPIRATION"]
             cookie_exp += datetime.timedelta(seconds=expiration)
             data["id_application"] = (
-                Application.query.filter_by(
-                    code_application=current_app.config["CODE_APPLICATION"]
+                db.session.execute(
+                    select(Application).filter_by(
+                        code_application=current_app.config["CODE_APPLICATION"]
+                    )
                 )
-                .one()
+                .scalar_one()
                 .id_application
             )
             token = encode_token(data)
@@ -96,7 +99,13 @@ def loginCas():
             # User cookie
             organism_id = info_user["codeOrganisme"]
             if not organism_id:
-                organism_id = Organisme.query.filter_by(nom_organisme="Autre").one().id_organisme
+                organism_id = (
+                    db.session.execute(
+                        select(Organisme).filter_by(nom_organisme="Autre"),
+                    )
+                    .scalar_one()
+                    .id_organisme,
+                )
             current_user = {
                 "user_login": data["identifiant"],
                 "id_role": data["id_role"],
@@ -176,7 +185,7 @@ def insert_user_and_org(info_user):
         "active": True,
     }
     user_info = insert_or_update_role(user_info)
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
     if not user.groups:
         if not current_app.config["CAS"]["USERS_CAN_SEE_ORGANISM_DATA"] or organism_id is None:
             # group socle 1
@@ -184,6 +193,6 @@ def insert_user_and_org(info_user):
         else:
             # group socle 2
             group_id = current_app.config["BDD"]["ID_USER_SOCLE_2"]
-        group = User.query.get(group_id)
+        group = db.session.get(User, group_id)
         user.groups.append(group)
     return user_info
