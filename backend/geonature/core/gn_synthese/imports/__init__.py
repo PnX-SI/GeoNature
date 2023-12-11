@@ -9,40 +9,55 @@ from geonature.utils.sentry import start_sentry_child
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_synthese.models import Synthese, TSources
 
-from gn_module_import.models import BibFields
+from gn_module_import.models import Entity, EntityField, BibFields
 from gn_module_import.utils import (
-    mark_all_rows_as_invalid,
     load_transient_data_in_dataframe,
     update_transient_data_from_dataframe,
 )
-from gn_module_import.checks.dataframe import run_all_checks
-from gn_module_import.checks.dataframe.geography import set_the_geom_column
+from gn_module_import.checks.dataframe import (
+    concat_dates,
+    check_required_values,
+    check_types,
+    check_geography,
+    check_counts,
+)
+from gn_module_import.checks.sql import (
+    do_nomenclatures_mapping,
+    check_nomenclature_exist_proof,
+    check_nomenclature_blurring,
+    check_nomenclature_source_status,
+    convert_geom_columns,
+    check_cd_nom,
+    check_cd_hab,
+    generate_altitudes,
+    check_duplicate_uuid,
+    generate_missing_uuid,
+    check_duplicates_source_pk,
+    check_dates,
+    check_altitudes,
+    check_depths,
+    check_digital_proof_urls,
+    check_geography_outside,
+    check_is_valid_geography,
+)
 
 
 def check_transient_data(task, logger, imprt):
-    task.update_state(state="PROGRESS", meta={"progress": 0})
-
-    selected_fields_names = [
-        field_name
-        for field_name, source_field in imprt.fieldmapping.items()
-        if source_field in imprt.columns
-    ]
-    selected_fields = BibFields.query.filter(
-        BibFields.destination == imprt.destination,  # FIXME by entities?
-        BibFields.name_field.in_(selected_fields_names),
-    ).all()
+    entity = Entity.query.filter_by(destination=imprt.destination).one()  # Observation
 
     fields = {
         field.name_field: field
-        for field in selected_fields
-        if (  # handled in SQL, exclude from dataframe
-            field.source_field is not None and field.mnemonique is None
-        )
+        for field in BibFields.query.filter(BibFields.destination == imprt.destination)
+        .options(sa.orm.selectinload(BibFields.entities).joinedload(EntityField.entity))
+        .all()
     }
-
-    with start_sentry_child(op="check.df", description="mark_all"):
-        mark_all_rows_as_invalid(imprt)
-    task.update_state(state="PROGRESS", meta={"progress": 0.1})
+    # Note: multi fields are not selected here, and therefore, will be not loaded in dataframe or checked in SQL.
+    # Fix this code (see import function) if you want to operate on multi fields data.
+    selected_fields = {
+        field_name: fields[field_name]
+        for field_name, source_field in imprt.fieldmapping.items()
+        if source_field in imprt.columns
+    }
 
     batch_size = current_app.config["IMPORT"]["DATAFRAME_BATCH_SIZE"]
     batch_count = ceil(imprt.source_count / batch_size)
@@ -50,75 +65,168 @@ def check_transient_data(task, logger, imprt):
     def update_batch_progress(batch, step):
         start = 0.1
         end = 0.4
-        step_count = 4
+        step_count = 7
         progress = start + ((batch + 1) / batch_count) * (step / step_count) * (end - start)
         task.update_state(state="PROGRESS", meta={"progress": progress})
 
+    source_cols = [
+        field.source_column
+        for field in selected_fields.values()
+        if field.source_field is not None and field.mnemonique is None
+    ]
+
     for batch in range(batch_count):
         offset = batch * batch_size
-        batch_fields = fields.copy()
-        # Checks on dataframe
+        updated_cols = set()
+
         logger.info(f"[{batch+1}/{batch_count}] Loading import data in dataframe…")
         with start_sentry_child(op="check.df", description="load dataframe"):
-            df = load_transient_data_in_dataframe(imprt, batch_fields, offset, batch_size)
+            df = load_transient_data_in_dataframe(
+                imprt, entity, source_cols, offset=offset, limit=batch_size
+            )
         update_batch_progress(batch, 1)
-        logger.info(f"[{batch+1}/{batch_count}] Running dataframe checks…")
-        with start_sentry_child(op="check.df", description="run all checks"):
-            run_all_checks(imprt, batch_fields, df)
+
+        logger.info(f"[{batch+1}/{batch_count}] Concat dates…")
+        with start_sentry_child(op="check.df", description="concat dates"):
+            updated_cols |= concat_dates(
+                df,
+                fields["datetime_min"],
+                fields["datetime_max"],
+                fields["date_min"],
+                fields["date_max"],
+                fields["hour_min"],
+                fields["hour_max"],
+            )
         update_batch_progress(batch, 2)
-        logger.info(f"[{batch+1}/{batch_count}] Completing geometric columns…")
-        with start_sentry_child(op="check.df", description="set geom column"):
-            set_the_geom_column(imprt, batch_fields, df)
+
+        logger.info(f"[{batch+1}/{batch_count}] Check required values…")
+        with start_sentry_child(op="check.df", description="check required values"):
+            updated_cols |= check_required_values(imprt, entity, df, fields)
         update_batch_progress(batch, 3)
-        logger.info(f"[{batch+1}/{batch_count}] Updating import data from dataframe…")
-        with start_sentry_child(op="check.df", description="save dataframe"):
-            update_transient_data_from_dataframe(imprt, batch_fields, df)
+
+        logger.info(f"[{batch+1}/{batch_count}] Check types…")
+        with start_sentry_child(op="check.df", description="check types"):
+            updated_cols |= check_types(imprt, entity, df, fields)
         update_batch_progress(batch, 4)
 
-    fields = batch_fields  # retrive fields added during dataframe checks
-    fields.update({field.name_field: field for field in selected_fields})
+        logger.info(f"[{batch+1}/{batch_count}] Check geography…")
+        with start_sentry_child(op="check.df", description="set geography"):
+            updated_cols |= check_geography(
+                imprt,
+                entity,
+                df,
+                file_srid=imprt.srid,
+                geom_4326_field=fields["the_geom_4326"],
+                geom_local_field=fields["the_geom_local"],
+                wkt_field=fields["WKT"],
+                latitude_field=fields["latitude"],
+                longitude_field=fields["longitude"],
+                codecommune_field=fields["codecommune"],
+                codemaille_field=fields["codemaille"],
+                codedepartement_field=fields["codedepartement"],
+            )
+        update_batch_progress(batch, 5)
 
-    from gn_module_import.checks.sql import (
-        do_nomenclatures_mapping,
-        check_nomenclatures,
-        complete_others_geom_columns,
-        check_cd_nom,
-        check_cd_hab,
-        set_altitudes,
-        set_uuid,
-        check_duplicates_source_pk,
-        check_dates,
-        check_altitudes,
-        check_depths,
-        check_digital_proof_urls,
-        check_geography_outside,
-        check_is_valid_geography,
-    )
+        logger.info(f"[{batch+1}/{batch_count}] Check counts…")
+        with start_sentry_child(op="check.df", description="check count"):
+            updated_cols |= check_counts(
+                imprt,
+                entity,
+                df,
+                fields["count_min"],
+                fields["count_max"],
+                default_count=current_app.config["IMPORT"]["DEFAULT_COUNT_VALUE"],
+            )
+        update_batch_progress(batch, 6)
+
+        logger.info(f"[{batch+1}/{batch_count}] Updating import data from dataframe…")
+        with start_sentry_child(op="check.df", description="save dataframe"):
+            update_transient_data_from_dataframe(imprt, entity, updated_cols, df)
+        update_batch_progress(batch, 7)
 
     # Checks in SQL
-    sql_checks = [
-        complete_others_geom_columns,
-        do_nomenclatures_mapping,
-        check_nomenclatures,
-        check_cd_nom,
-        check_cd_hab,
-        check_duplicates_source_pk,
-        set_altitudes,
-        check_altitudes,
-        set_uuid,
-        check_dates,
-        check_depths,
-        check_digital_proof_urls,
-        check_is_valid_geography,
-        check_geography_outside,
-    ]
-    with start_sentry_child(op="check.sql", description="run all checks"):
-        for i, check in enumerate(sql_checks):
-            logger.info(f"Running SQL check '{check.__name__}'…")
-            with start_sentry_child(op="check.sql", description=check.__name__):
-                check(imprt, fields)
-            progress = 0.4 + ((i + 1) / len(sql_checks)) * 0.6
-            task.update_state(state="PROGRESS", meta={"progress": progress})
+    convert_geom_columns(
+        imprt,
+        entity,
+        geom_4326_field=fields["the_geom_4326"],
+        geom_local_field=fields["the_geom_local"],
+        geom_point_field=fields["the_geom_point"],
+        codecommune_field=fields["codecommune"],
+        codemaille_field=fields["codemaille"],
+        codedepartement_field=fields["codedepartement"],
+    )
+
+    do_nomenclatures_mapping(
+        imprt,
+        entity,
+        selected_fields,
+        fill_with_defaults=current_app.config["IMPORT"][
+            "FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE"
+        ],
+    )
+
+    if current_app.config["IMPORT"]["CHECK_EXIST_PROOF"]:
+        check_nomenclature_exist_proof(
+            imprt,
+            entity,
+            fields["id_nomenclature_exist_proof"],
+            selected_fields.get("digital_proof"),
+            selected_fields.get("non_digital_proof"),
+        )
+    if (
+        current_app.config["IMPORT"]["CHECK_PRIVATE_JDD_BLURING"]
+        # and not current_app.config["IMPORT"]["FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE"]  # XXX
+        and imprt.dataset.nomenclature_data_origin.mnemonique == "Privée"
+    ):
+        check_nomenclature_blurring(imprt, entity, fields["id_nomenclature_blurring"])
+    if current_app.config["IMPORT"]["CHECK_REF_BIBLIO_LITTERATURE"]:
+        check_nomenclature_source_status(
+            imprt, entity, fields["id_nomenclature_source_status"], fields["reference_biblio"]
+        )
+
+    if "cd_nom" in selected_fields:
+        check_cd_nom(
+            imprt,
+            entity,
+            selected_fields["cd_nom"],
+            list_id=current_app.config["IMPORT"].get("ID_LIST_TAXA_RESTRICTION", None),
+        )
+    if "cd_hab" in selected_fields:
+        check_cd_hab(imprt, entity, selected_fields["cd_hab"])
+    if "entity_source_pk_value" in selected_fields:
+        check_duplicates_source_pk(imprt, entity, selected_fields["entity_source_pk_value"])
+
+    if imprt.fieldmapping.get("altitudes_generate", False):
+        generate_altitudes(
+            imprt, fields["the_geom_local"], fields["altitude_min"], fields["altitude_max"]
+        )
+    check_altitudes(
+        imprt, entity, selected_fields.get("altitude_min"), selected_fields.get("altitude_max")
+    )
+
+    if "unique_id_sinp" in selected_fields:
+        check_duplicate_uuid(imprt, entity, selected_fields["unique_id_sinp"])
+    if imprt.fieldmapping.get(
+        "unique_id_sinp_generate", current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"]
+    ):
+        generate_missing_uuid(imprt, entity, fields["unique_id_sinp"])
+    check_dates(imprt, entity, fields["datetime_min"], fields["datetime_max"])
+    check_depths(imprt, entity, selected_fields.get("depth_min"), selected_fields.get("depth_max"))
+    if "digital_proof" in selected_fields:
+        check_digital_proof_urls(imprt, entity, selected_fields["digital_proof"])
+
+    if "WKT" in selected_fields:
+        check_is_valid_geography(imprt, entity, selected_fields["WKT"], fields["the_geom_4326"])
+    if current_app.config["IMPORT"]["ID_AREA_RESTRICTION"]:
+        check_geography_outside(
+            imprt,
+            entity,
+            fields["the_geom_local"],
+            id_area=current_app.config["IMPORT"]["ID_AREA_RESTRICTION"],
+        )
+
+    #        progress = 0.4 + ((i + 1) / len(sql_checks)) * 0.6
+    #        task.update_state(state="PROGRESS", meta={"progress": progress})
 
 
 def import_data_to_synthese(imprt):
@@ -127,7 +235,8 @@ def import_data_to_synthese(imprt):
     source = TSources.query.filter_by(module=module, name_source=name_source).one_or_none()
     if source is None:
         entity_source_pk_field = BibFields.query.filter_by(
-            name_field="entity_source_pk_value"
+            destination=imprt.destination,
+            name_field="entity_source_pk_value",
         ).one()
         source = TSources(
             module=module,
@@ -138,38 +247,54 @@ def import_data_to_synthese(imprt):
         db.session.add(source)
         db.session.flush()  # force id_source definition
     transient_table = imprt.destination.get_transient_table()
-    generated_fields = {
-        "datetime_min",
-        "datetime_max",
-        "the_geom_4326",
-        "the_geom_local",
-        "the_geom_point",
-        "id_area_attachment",
+
+    fields = {
+        field.name_field: field
+        for field in BibFields.query.filter(
+            BibFields.destination == imprt.destination, BibFields.dest_field != None
+        ).all()
+    }
+
+    # Construct the exact list of required fields to copy from transient table to synthese
+    # This list contains generated fields, and selected fields (including multi fields).
+    insert_fields = {
+        fields["datetime_min"],
+        fields["datetime_max"],
+        fields["the_geom_4326"],
+        fields["the_geom_local"],
+        fields["the_geom_point"],
+        fields["id_area_attachment"],  # XXX sure?
     }
     if imprt.fieldmapping.get(
         "unique_id_sinp_generate", current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"]
     ):
-        generated_fields |= {"unique_id_sinp"}
+        insert_fields |= {fields["unique_id_sinp"]}
     if imprt.fieldmapping.get("altitudes_generate", False):
-        generated_fields |= {"altitude_min", "altitude_max"}
-    fields = BibFields.query.filter(
-        BibFields.dest_field != None,
-        BibFields.name_field.in_(imprt.fieldmapping.keys() | generated_fields),
-    ).all()
+        insert_fields |= {fields["altitude_min"], fields["altitude_max"]}
+
+    for field_name, source_field in imprt.fieldmapping.items():
+        if field_name not in fields:  # not a destination field
+            continue
+        field = fields[field_name]
+        if field.multi:
+            if not set(source_field).isdisjoint(imprt.columns):
+                insert_fields |= {field}
+        else:
+            if source_field in imprt.columns:
+                insert_fields |= {field}
+
     select_stmt = (
         sa.select(
-            [transient_table.c[field.dest_field] for field in fields]
-            + [
-                sa.literal(source.id_source),
-                sa.literal(source.module.id_module),
-                sa.literal(imprt.id_dataset),
-                sa.literal("I"),
-            ]
+            *[transient_table.c[field.dest_field] for field in insert_fields],
+            sa.literal(source.id_source),
+            sa.literal(source.module.id_module),
+            sa.literal(imprt.id_dataset),
+            sa.literal("I"),
         )
         .where(transient_table.c.id_import == imprt.id_import)
         .where(transient_table.c.valid == True)
     )
-    names = [field.dest_field for field in fields] + [
+    names = [field.dest_field for field in insert_fields] + [
         "id_source",
         "id_module",
         "id_dataset",
