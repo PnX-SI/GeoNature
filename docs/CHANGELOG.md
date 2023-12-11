@@ -13,6 +13,8 @@ CHANGELOG
 - [Accueil] Optimisation du chargement des statistiques générales (#2771, par @mvergez)
 - [Synthèse] Correction et enrichissement de la configuration des colonnes affichées dans la liste des observations (#2749, par @mvergez)
 - [Synthèse] Correction de la recherche par attribut TaxHub de type "multiselect" (#2767, par @mvergez)
+- [Occtax] Tri alphabétique de la liste des "Mes lieux" (#2805, par @DonovanMaillard)
+- [Documentation] Corrections et compléments de la documentation d'administrateur (#2812, par @marie-laure-cen)
 
 2.13.3 (2023-10-17)
 -------------------
