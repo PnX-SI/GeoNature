@@ -41,6 +41,7 @@ from geonature.utils.errors import GeonatureApiError
 from geonature.utils import filemanager
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
+from .module import OcchabModule
 from .models import (
     Station,
     OccurenceHabitat,

@@ -31,6 +31,7 @@ from gn_module_import.checks.sql import (
     check_cd_hab,
     generate_altitudes,
     check_duplicate_uuid,
+    check_existing_uuid,
     generate_missing_uuid,
     check_duplicates_source_pk,
     check_dates,
@@ -206,6 +207,13 @@ def check_transient_data(task, logger, imprt):
 
     if "unique_id_sinp" in selected_fields:
         check_duplicate_uuid(imprt, entity, selected_fields["unique_id_sinp"])
+        check_existing_uuid(
+            imprt,
+            entity,
+            selected_fields["unique_id_sinp"],
+            # TODO: add parameter, see https://github.com/PnX-SI/gn_module_import/issues/459
+            whereclause=Synthese.id_dataset == imprt.id_dataset,
+        )
     if imprt.fieldmapping.get(
         "unique_id_sinp_generate", current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"]
     ):
