@@ -140,6 +140,7 @@ class TDatasets(db.Model):
         return [actor.organism for actor in self.cor_dataset_actor if actor.organism is not None]
 
     def is_deletable(self):
+        # FIXME: replace for sqlalchemy2 
         return not DB.session.query(self.synthese_records.exists()).scalar()
 
     def has_instance_permission(self, scope, _through_af=True):
@@ -164,19 +165,15 @@ class TDatasets(db.Model):
 
     @staticmethod
     def get_id(uuid_dataset):
-        return (
-            DB.session.query(TDatasets.id_dataset)
-            .filter(TDatasets.unique_dataset_id == uuid_dataset)
-            .scalar()
-        )
+        return DB.session.execute(
+            select(TDatasets.id_dataset).filter(TDatasets.unique_dataset_id == uuid_dataset)
+        ).scalar_one_or_none()
 
     @staticmethod
     def get_uuid(id_dataset):
-        return (
-            DB.session.query(TDatasets.unique_dataset_id)
-            .filter(TDatasets.id_dataset == id_dataset)
-            .scalar()
-        )
+        return DB.session.execute(
+            select(TDatasets.unique_dataset_id).filter(TDatasets.id_dataset == id_dataset)
+        ).scalar_one_or_none()
 
     @classmethod
     def _get_read_scope(cls, user=None):

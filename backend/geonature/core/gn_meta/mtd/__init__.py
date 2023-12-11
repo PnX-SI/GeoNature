@@ -1,28 +1,20 @@
+import logging
+import time
+from datetime import *
 from urllib.parse import urljoin
 
-import logging
-
 import requests
-from lxml import etree
-
-from datetime import *
-
-import time
-
+from geonature.core.auth.routes import insert_user_and_org
+from geonature.core.gn_meta.models import CorAcquisitionFrameworkActor, CorDatasetActor
 from geonature.utils.config import config
 from geonature.utils.env import db
-from geonature.core.gn_meta.models import (
-    CorAcquisitionFrameworkActor,
-    CorDatasetActor,
-)
-from geonature.core.auth.routes import insert_user_and_org
-
-from pypnusershub.db.models import User
-
+from lxml import etree
 from pypnnomenclature.models import TNomenclatures
+from pypnusershub.db.models import User
+from sqlalchemy import func, select
 
-from .xml_parser import parse_acquisition_framework, parse_jdd_xml, parse_acquisition_framwork_xml
-from .mtd_utils import sync_af, sync_ds, associate_actors
+from .mtd_utils import associate_actors, sync_af, sync_ds
+from .xml_parser import parse_acquisition_framework, parse_acquisition_framwork_xml, parse_jdd_xml
 
 # create logger
 logger = logging.getLogger("MTD_SYNC")
@@ -115,7 +107,12 @@ def add_unexisting_digitizer(id_digitizer):
 
     :param id_digitizer: as id role from meta info
     """
-    if not db.session.query(User.query.filter_by(id_role=id_digitizer).exists()).scalar():
+    if (
+        not db.session.scalars(
+            db.select(func.count("*").select_from(User).filter_by(id_role=id_digitizer).limit(1))
+        ).scalar_one()
+        > 0
+    ):
         # not fast - need perf optimization on user call
         user = INPNCAS.get_user(id_digitizer)
         # to avoid to create org
@@ -136,7 +133,10 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
     cas_api = INPNCAS()
     # read nomenclatures from DB to avoid errors if GN nomenclature is not the same
     list_cd_nomenclature = [
-        record[0] for record in db.session.query(TNomenclatures.cd_nomenclature).distinct()
+        record[0]
+        for record in db.session.scalars(
+            db.select(TNomenclatures.cd_nomenclature).distinct()
+        ).all()
     ]
     user_add_total_time = 0
     logger.debug("MTD - PROCESS AF LIST")
