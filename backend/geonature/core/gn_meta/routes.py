@@ -186,7 +186,7 @@ def get_dataset(scope, id_dataset):
     :param type: int
     :returns: dict<TDataset>
     """
-    dataset = db.get_or_404(TDatasets, id_dataset)  # TDatasets.query.get_or_404(id_dataset)
+    dataset = db.get_or_404(TDatasets, id_dataset)
     if not dataset.has_instance_permission(scope=scope):
         raise Forbidden(f"User {g.current_user} cannot read dataset {dataset.id_dataset}")
 
@@ -310,7 +310,7 @@ def sensi_report(ds_id=None):
     params = request.args
     if not ds_id:
         ds_id = params["id_dataset"]
-    dataset = db.get_or_404(TDatasets, ds_id)  # TDatasets.query.get_or_404(ds_id)
+    dataset = db.get_or_404(TDatasets, ds_id)
     id_import = params.get("id_import")
     id_module = params.get("id_module")
 
@@ -653,13 +653,12 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     nb_habitat = 0
 
     # Check if pr_occhab exist
-    check_schema_query = exists(
-        select(text("schema_name"))
+    check_schema_query = (
+        select(func.count(text("schema_name")))
         .select_from(text("information_schema.schemata"))
         .where(text("schema_name = 'pr_occhab'"))
     )
-
-    if DB.session.query(check_schema_query).scalar() and nb_data > 0:
+    if DB.session.execute(check_schema_query).scalar_one() > 0 and nb_data > 0:
         query = (
             "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
         ("
@@ -930,11 +929,11 @@ def get_acquisition_framework_bbox(id_acquisition_framework):
         )
     ).all()
 
-    geojsonData = (
-        DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
-        .filter(Synthese.id_dataset.in_(dataset_ids))
-        .first()[0]
-    )
+    geojsonData = DB.session.scalars(
+        db.select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
+        .where(Synthese.id_dataset.in_(dataset_ids))
+        .limit(1)
+    ).first()
     # geojsonData will never be empty, if no entries matching the query condition(s), it will contains [(None,)]
     geojsonData = db.session.execute(
         db.select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
@@ -1009,7 +1008,7 @@ def publish_acquisition_framework_mail(af):
         mail_recipients.add(cur_user.email)
 
     if af.id_digitizer:
-        digitizer = DB.session.query(User).get(af.id_digitizer)
+        digitizer = DB.session.get(User, af.id_digitizer)
         if digitizer and digitizer.email:
             mail_recipients.add(digitizer.email)
     # Mail sent
