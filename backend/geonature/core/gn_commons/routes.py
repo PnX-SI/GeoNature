@@ -7,6 +7,7 @@ from flask.json import jsonify
 from werkzeug.exceptions import Forbidden, Conflict
 import requests
 from sqlalchemy.orm import joinedload
+from sqlalchemy import select, func
 
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
@@ -115,7 +116,7 @@ def list_modules():
 
 @routes.route("/module/<module_code>", methods=["GET"])
 def get_module(module_code):
-    module = db.one_or_404(db.select(TModules).filter_by(module_code=module_code))
+    module = db.one_or_404(select(TModules).filter_by(module_code=module_code))
     return jsonify(module.as_dict())
 
 
@@ -127,7 +128,7 @@ def get_parameters_list():
 
     .. :quickref: Commons;
     """
-    return [d.as_dict() for d in db.session.scalars(db.select(TParameters)).all()]
+    return [d.as_dict() for d in db.session.scalars(select(TParameters)).all()]
 
 
 @routes.route("/parameters/<param_name>", methods=["GET"])
@@ -135,7 +136,7 @@ def get_parameters_list():
 @json_resp
 def get_one_parameter(param_name, id_org=None):
     data = DB.session.scalars(
-        db.select(TParameters)
+        select(TParameters)
         .where(TParameters.parameter_name == param_name)
         .where(TParameters.id_organism == id_org if id_org else True)
     ).one()
@@ -146,7 +147,7 @@ def get_one_parameter(param_name, id_org=None):
 def get_additional_fields():
     params = request.args
 
-    query = db.select(TAdditionalFields).order_by(TAdditionalFields.field_order)
+    query = select(TAdditionalFields).order_by(TAdditionalFields.field_order)
     parse_param_value = lambda param: param.split(",") if len(param.split(",")) > 1 else param
     params = {
         param_key: parse_param_value(param_values) for param_key, param_values in params.items()
@@ -214,7 +215,7 @@ def get_t_mobile_apps():
     :query str app_code: the app code
     :returns: Array<dict<TMobileApps>>
     """
-    query = db.select(TMobileApps)
+    query = select(TMobileApps)
     if "app_code" in request.args:
         query = query.where(TMobileApps.app_code.ilike(request.args["app_code"]))
 
@@ -260,7 +261,7 @@ def api_get_id_table_location(schema_dot_table):
 @routes.route("/places", methods=["GET"])
 @login_required
 def list_places():
-    places = TPlaces.query.filter_by(id_role=g.current_user.id_role).all()
+    places = db.session.scalars(select(TPlaces).filter_by(id_role=g.current_user.id_role)).all()
     return jsonify([p.as_geofeature() for p in places])
 
 
@@ -272,11 +273,12 @@ def add_place():
     # FIXME check data validity!
     place_name = data["properties"]["place_name"]
     place_exists = (
-        db.select(TPlaces).where(
-            TPlaces.place_name == place_name, TPlaces.id_role == g.current_user.id_role
-        )
-    ).exists()
-    if db.session.query(place_exists).scalar():
+        select(func.count("*"))
+        .select_from(TPlaces)
+        .where(TPlaces.place_name == place_name, TPlaces.id_role == g.current_user.id_role)
+    )
+
+    if db.session.execute(place_exists).scalar_one() > 0:
         raise Conflict("Nom du lieu déjà existant")
 
     new_shape = shape(data["geometry"])
