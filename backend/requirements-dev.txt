@@ -34,7 +34,7 @@
     # via
     #   -r requirements-submodules.in
     #   pypn-ref-geo
-alembic==1.12.1
+alembic==1.13.0
     # via
     #   flask-migrate
     #   pypn-ref-geo
@@ -47,7 +47,7 @@ attrs==23.1.0
     # via fiona
 authlib==1.2.1
     # via pypnusershub
-bcrypt==4.0.1
+bcrypt==4.1.1
     # via pypnusershub
 billiard==4.2.0
     # via celery
@@ -55,9 +55,9 @@ blinker==1.7.0
     # via
     #   flask
     #   flask-mail
-boto3==1.29.1
+boto3==1.33.9
     # via taxhub
-botocore==1.32.1
+botocore==1.33.9
     # via
     #   boto3
     #   s3transfer
@@ -67,9 +67,9 @@ cairocffi==1.6.1
     #   weasyprint
 cairosvg==2.7.1
     # via weasyprint
-celery[redis]==5.3.5
+celery[redis]==5.3.6
     # via -r requirements-common.in
-certifi==2023.7.22
+certifi==2023.11.17
     # via
     #   fiona
     #   requests
@@ -101,7 +101,7 @@ click-repl==0.3.0
     # via celery
 cligj==0.7.2
     # via fiona
-cryptography==41.0.5
+cryptography==41.0.7
     # via authlib
 cssselect2==0.7.0
     # via
@@ -156,7 +156,7 @@ flask-migrate==4.0.5
     #   pypnnomenclature
     #   taxhub
     #   utils-flask-sqlalchemy
-flask-sqlalchemy==3.0.5
+flask-sqlalchemy==3.1.1
     # via
     #   -r requirements-common.in
     #   flask-migrate
@@ -184,7 +184,7 @@ gunicorn==21.2.0
     #   taxhub
 html5lib==1.1
     # via weasyprint
-idna==3.4
+idna==3.6
     # via requests
 importlib-metadata==4.13.0 ; python_version < "3.10"
     # via
@@ -200,7 +200,7 @@ jmespath==1.0.1
     # via
     #   boto3
     #   botocore
-kombu==5.3.3
+kombu==5.3.4
     # via celery
 lxml==4.9.3
     # via -r requirements-common.in
@@ -278,7 +278,7 @@ requests==2.31.0
     # via
     #   pypn-habref-api
     #   pypnusershub
-s3transfer==0.7.0
+s3transfer==0.8.2
     # via boto3
 shapely==1.8.5.post1
     # via
@@ -290,7 +290,7 @@ six==1.16.0
     #   fiona
     #   html5lib
     #   python-dateutil
-sqlalchemy==1.4.50
+sqlalchemy==2.0.23
     # via
     #   -r requirements-common.in
     #   alembic
@@ -316,6 +316,7 @@ typing-extensions==4.8.0
     # via
     #   alembic
     #   kombu
+    #   sqlalchemy
 tzdata==2023.3
     # via celery
 urllib3==1.26.18
@@ -328,7 +329,7 @@ vine==5.1.0
     #   amqp
     #   celery
     #   kombu
-wcwidth==0.2.10
+wcwidth==0.2.12
     # via prompt-toolkit
 weasyprint==52.5
     # via
