@@ -8,11 +8,7 @@ from sqlalchemy import ForeignKey, ForeignKeyConstraint
 from sqlalchemy.sql import select
 from sqlalchemy.orm import foreign, joinedload, contains_eager
 import flask_sqlalchemy
-
-if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
-    from flask_sqlalchemy.query import Query
-else:
-    from flask_sqlalchemy import BaseQuery as Query
+from utils_flask_sqla.models import qfilter
 
 from utils_flask_sqla.serializers import serializable
 from pypnusershub.db.models import User
@@ -113,20 +109,9 @@ def _nice_order(model, qs):
     )
 
 
-class PermissionAvailableQuery(Query):
-    def nice_order(self):
-        return _nice_order(PermissionAvailable, self)
-
-
-class PermissionQuery(Query):
-    def nice_order(self):
-        return _nice_order(Permission, self)
-
-
 class PermissionAvailable(db.Model):
     __tablename__ = "t_permissions_available"
     __table_args__ = {"schema": "gn_permissions"}
-    query_class = PermissionAvailableQuery
 
     id_module = db.Column(
         db.Integer, ForeignKey("gn_commons.t_modules.id_module"), primary_key=True
@@ -164,6 +149,10 @@ class PermissionAvailable(db.Model):
         s += f" | {self.label}"
         return s
 
+    @qfilter(query=True)
+    def nice_order(cls, **kwargs):
+        return _nice_order(PermissionAvailable, kwargs["query"])
+
 
 class PermFilter:
     def __init__(self, name, value):
@@ -199,7 +188,6 @@ class Permission(db.Model):
         ),
         {"schema": "gn_permissions"},
     )
-    query_class = PermissionQuery
 
     id_permission = db.Column(db.Integer, primary_key=True)
     id_role = db.Column(db.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
@@ -276,3 +264,7 @@ class Permission(db.Model):
             if flt.name not in expected_filters:
                 return True
         return False
+
+    @qfilter(query=True)
+    def nice_order(cls, **kwargs):
+        return _nice_order(cls, kwargs["query"])

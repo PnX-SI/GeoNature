@@ -122,11 +122,15 @@ class TAcquisitionFramework(db.Model):
         return [actor.organism for actor in self.cor_af_actor if actor.organism]
 
     def is_deletable(self):
-        return not db.session.query(
-            db.select(TDatasets)
-            .filter_by(id_acquisition_framework=self.id_acquisition_framework)
-            .exists()
-        ).scalar()
+        return not (
+            db.session.execute(
+                db.select(func.count("*"))
+                .select_from(TDatasets)
+                .filter_by(id_acquisition_framework=self.id_acquisition_framework)
+                .limit(1)
+            ).scalar_one()
+            > 0
+        )
 
     def has_instance_permission(self, scope, _through_ds=True):
         if scope == 0:
