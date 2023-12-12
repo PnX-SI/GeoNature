@@ -32,4 +32,4 @@ min_width = 100
 #AUTO_VALIDATION_ENABLED = true
 
 ## CUSTOM NAME FUNCTION AUTO VALIDATION
-#AUTO_VALIDATION_SQL_FUNCTION = "fct_auto_validation"
+#AUTO_VALIDATION_SQL_FUNCTION = "fct_auto_validation_custom"
