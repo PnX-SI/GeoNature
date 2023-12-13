@@ -13,7 +13,6 @@ from geonature.utils.env import MA
 from geonature.utils.schema import CruvedSchemaMixin
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_commons.schemas import ModuleSchema
-from geonature.core.gn_synthese.schemas import SourceSchema
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 
 from utils_flask_sqla.schema import SmartRelationshipsMixin
@@ -62,7 +61,7 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     nomenclature_resource_type = MA.Nested(NomenclatureSchema, dump_only=True)
     cor_territories = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
-    sources = MA.Nested(SourceSchema, many=True, dump_only=True)
+    sources = MA.Nested("SourceSchema", many=True, dump_only=True)
 
     @post_dump(pass_many=False, pass_original=True)
     def module_input(self, item, original, many, **kwargs):
