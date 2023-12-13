@@ -7,17 +7,21 @@ import itertools
 from collections import Counter
 
 from flask import url_for, current_app
+import sqlalchemy as sa
 from sqlalchemy import func
 from werkzeug.exceptions import Forbidden, BadRequest, Unauthorized
 from jsonschema import validate as validate_json
 from geoalchemy2.shape import to_shape, from_shape
+from shapely.testing import assert_geometries_equal
 from geojson import Feature
 from shapely.geometry import Point
+from marshmallow import EXCLUDE
 
-from geonature.utils.env import db
+from geonature.utils.env import db, ma
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_synthese.models import Synthese, TSources
 from geonature.core.gn_synthese.routes import split_blurring_precise_permissions
+from geonature.core.gn_synthese.schemas import SyntheseSchema
 from geonature.core.gn_commons.models.base import TModules
 from geonature.core.gn_permissions.models import PermAction, Permission
 from geonature.core.gn_permissions.tools import get_permissions
@@ -1293,29 +1297,38 @@ def get_one_synthese_reponse_from_id(response: dict, id_synthese: int):
     ][0]
 
 
-def assert_unsensitive_synthese(json_synthese, synthese_from_db):
-    # Need to pass through a Feature because rounding of coordinates is done
-    assert (
-        Feature(geometry=json.loads(synthese_from_db.the_geom_4326_geojson)).geometry
-        == json_synthese["geometry"]
+def assert_unsensitive_synthese(geojson, obs):
+    synthese = SyntheseSchema(
+        as_geojson=True, only=["id_synthese"], instance=Synthese(), unknown=EXCLUDE
+    ).load(geojson)
+
+    assert_geometries_equal(
+        to_shape(synthese.the_geom_4326), to_shape(obs.the_geom_4326), tolerance=1e-5
     )
 
 
-def assert_sensitive_synthese(json_synthese, synthese_from_db):
-    id_type_area = (
-        db.session.query(cor_sensitivity_area_type.c.id_area_type)
-        .filter(
-            cor_sensitivity_area_type.c.id_nomenclature_sensitivity
-            == synthese_from_db.id_nomenclature_sensitivity
+def assert_sensitive_synthese(geojson, obs):
+    synthese = SyntheseSchema(
+        as_geojson=True, only=["id_synthese"], instance=Synthese(), unknown=EXCLUDE
+    ).load(geojson)
+
+    sensitive_area = db.session.execute(
+        sa.select(LAreas)
+        .join(LAreas.synthese_obs)
+        .join(LAreas.area_type)
+        .join(
+            cor_sensitivity_area_type,
+            sa.and_(
+                cor_sensitivity_area_type.c.id_area_type == BibAreasTypes.id_type,
+                cor_sensitivity_area_type.c.id_nomenclature_sensitivity
+                == Synthese.id_nomenclature_sensitivity,
+            ),
         )
-        .one()
-    )[0]
+        .where(Synthese.id_synthese == obs.id_synthese)
+    ).scalar_one()
 
-    sensitive_area = [area for area in synthese_from_db.areas if area.id_type == id_type_area][0]
-
-    assert (
-        Feature(geometry=json.loads(sensitive_area.geojson_4326)).geometry
-        == json_synthese["geometry"]
+    assert_geometries_equal(
+        to_shape(synthese.the_geom_4326), to_shape(sensitive_area.geom_4326), tolerance=1e-5
     )
 
 
@@ -1368,7 +1381,7 @@ class TestSyntheseBlurring:
 
         # Need to pass through a Feature because rounding of coordinates is done
         assert_unsensitive_synthese(
-            json_synthese=unsensitive_synthese_from_response, synthese_from_db=unsensitive_synthese
+            geojson=unsensitive_synthese_from_response, obs=unsensitive_synthese
         )
 
         # Check sensitive synthese obs geometry
@@ -1377,9 +1390,7 @@ class TestSyntheseBlurring:
             response_json, sensitive_synthese.id_synthese
         )
 
-        assert_sensitive_synthese(
-            json_synthese=sensitive_synthese_from_response, synthese_from_db=sensitive_synthese
-        )
+        assert_sensitive_synthese(geojson=sensitive_synthese_from_response, obs=sensitive_synthese)
 
     def test_get_observations_for_web_blurring_excluded(
         self, users, synthese_sensitive_data, source, synthese_read_permissions
@@ -1474,7 +1485,7 @@ class TestSyntheseBlurring:
 
         sensitive_synthese = synthese_sensitive_data["obs_sensitive_protected"]
 
-        assert_sensitive_synthese(json_synthese=response_json, synthese_from_db=sensitive_synthese)
+        assert_sensitive_synthese(geojson=response_json, obs=sensitive_synthese)
 
     def test_get_one_synthese_unsensitive(
         self, users, synthese_sensitive_data, synthese_read_permissions
@@ -1490,9 +1501,7 @@ class TestSyntheseBlurring:
 
         response_json = self.client.get(url).json
 
-        assert_unsensitive_synthese(
-            json_synthese=response_json, synthese_from_db=unsensitive_synthese
-        )
+        assert_unsensitive_synthese(geojson=response_json, obs=unsensitive_synthese)
 
     def test_get_one_synthese_sensitive_excluded(
         self, users, synthese_sensitive_data, synthese_read_permissions
@@ -1575,9 +1584,7 @@ class TestSyntheseBlurring:
             for feature in response.json["features"]
             if feature["properties"]["id_synthese"] == sensitive_synthese.id_synthese
         ][0]
-        assert_sensitive_synthese(
-            json_synthese=json_feature_synthese, synthese_from_db=sensitive_synthese
-        )
+        assert_sensitive_synthese(geojson=json_feature_synthese, obs=sensitive_synthese)
 
     def test_export_observations_sensitive_excluded(
         self, users, synthese_export_permissions, synthese_sensitive_data
