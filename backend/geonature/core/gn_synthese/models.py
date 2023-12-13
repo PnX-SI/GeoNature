@@ -12,6 +12,7 @@ from sqlalchemy.orm import (
     joinedload,
     contains_eager,
     deferred,
+    query_expression,
 )
 from sqlalchemy.sql import select, func, exists
 from sqlalchemy.schema import FetchedValue
@@ -20,7 +21,7 @@ from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 
 from geojson import Feature
-from flask import g
+from flask import g, current_app
 import flask_sqlalchemy
 
 if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
@@ -408,6 +409,7 @@ class Synthese(DB.Model):
     the_geom_4326_geojson = column_property(func.ST_AsGeoJSON(the_geom_4326), deferred=True)
     the_geom_point = deferred(DB.Column(Geometry("GEOMETRY", 4326)))
     the_geom_local = deferred(DB.Column(Geometry("GEOMETRY")))
+    the_geom_authorized = query_expression()
     precision = DB.Column(DB.Integer)
     id_area_attachment = DB.Column(DB.Integer, ForeignKey(LAreas.id_area))
     date_min = DB.Column(DB.DateTime, nullable=False)
@@ -448,14 +450,14 @@ class Synthese(DB.Model):
         elif scope == 3:
             return True
 
-    def _has_permissions_grant(self, permissions, blur_sensitive_observations=False):
+    def _has_permissions_grant(self, permissions):
+        blur_sensitive_observations = current_app.config["SYNTHESE"]["BLUR_SENSITIVE_OBSERVATIONS"]
         if not permissions:
             return False
-        unloaded_objs = sa.inspect(self).unloaded
         for perm in permissions:
             if perm.has_other_filters_than("SCOPE", "SENSITIVITY"):
                 continue  # unsupported filters
-            if perm.sensitivity_filter and "nomenclature_sensitivity" not in unloaded_objs:
+            if perm.sensitivity_filter:
                 if (
                     blur_sensitive_observations
                     and self.nomenclature_sensitivity.cd_nomenclature == "4"
@@ -477,13 +479,11 @@ class Synthese(DB.Model):
             return True  # no filter exclude this permission
         return False
 
-    def has_instance_permission(self, permissions, blur_sensitive_observations=False):
+    def has_instance_permission(self, permissions):
         if type(permissions) == int:
             return self._has_scope_grant(permissions)
         else:
-            return self._has_permissions_grant(
-                permissions, blur_sensitive_observations=blur_sensitive_observations
-            )
+            return self._has_permissions_grant(permissions)
 
 
 @serializable

@@ -2,7 +2,8 @@ from geonature.utils.env import db, ma
 
 from geonature.core.gn_commons.schemas import ModuleSchema, MediaSchema, TValidationSchema
 from geonature.core.gn_meta.schemas import DatasetSchema
-from geonature.core.gn_synthese.models import TSources, Synthese
+from geonature.core.gn_synthese.models import BibReportsTypes, TReport, TSources, Synthese
+from marshmallow_geojson import MultiPolygonSchema
 
 from pypn_habref_api.schemas import HabrefSchema
 from pypnusershub.schemas import UserSchema
@@ -11,6 +12,16 @@ from ref_geo.schemas import AreaSchema
 from utils_flask_sqla.schema import SmartRelationshipsMixin
 from utils_flask_sqla_geo.schema import GeoAlchemyAutoSchema, GeoModelConverter
 
+class ReportTypeSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = BibReportsTypes
+
+class ReportSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TReport
+    
+    report_type = ma.Nested(ReportTypeSchema, dump_only=True)
+    user = ma.Nested(UserSchema, dump_only=True)
 
 class SourceSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -35,6 +46,8 @@ class SyntheseSchema(SmartRelationshipsMixin, GeoAlchemyAutoSchema):
         feature_geometry = "the_geom_4326"
         model_converter = SyntheseConverter
 
+    the_geom_4326 = ma.auto_field(metadata={"exclude": True})
+    the_geom_authorized = ma.Nested(MultiPolygonSchema, metadata={"exclude": True}, dump_only=True)
     source = ma.Nested(SourceSchema, dump_only=True)
     module = ma.Nested(ModuleSchema, dump_only=True)
     dataset = ma.Nested(DatasetSchema, dump_only=True)
@@ -46,5 +59,5 @@ class SyntheseSchema(SmartRelationshipsMixin, GeoAlchemyAutoSchema):
     area_attachment = ma.Nested(AreaSchema, dump_only=True)
     validations = ma.Nested(TValidationSchema, many=True, dump_only=True)
     last_validation = ma.Nested(TValidationSchema, dump_only=True)
-
+    reports = ma.Nested(ReportSchema, many=True)
     # Missing nested schemas: taxref

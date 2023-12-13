@@ -14,6 +14,7 @@ from flask import (
     jsonify,
     g,
 )
+from geonature.core.gn_synthese.schemas import SyntheseSchema
 from pypnusershub.db.models import User
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
@@ -22,7 +23,7 @@ from sqlalchemy import distinct, func, desc, asc, select, case
 from sqlalchemy.orm import joinedload, lazyload, selectinload, contains_eager
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
-from sqlalchemy.orm import load_only, aliased, Load
+from sqlalchemy.orm import load_only, aliased, Load, with_expression
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
@@ -301,7 +302,7 @@ def get_observations_for_web(permissions):
 @permissions_required("R", module_code="SYNTHESE")
 def get_one_synthese(permissions, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature"""
-    synthese = Synthese.query.join_nomenclatures().options(
+    synthese_query = Synthese.query.join_nomenclatures().options(
         joinedload("dataset").options(
             selectinload("acquisition_framework").options(
                 joinedload("creator"),
@@ -311,9 +312,6 @@ def get_one_synthese(permissions, id_synthese):
         ),
         # Used to check the sensitivity after
         joinedload("nomenclature_sensitivity"),
-        lazyload("areas").options(
-            joinedload("area_type"),
-        ),
     )
     ##################
 
@@ -355,17 +353,15 @@ def get_one_synthese(permissions, id_synthese):
     # get reports info only if activated by admin config
     if "SYNTHESE" in current_app.config["SYNTHESE"]["ALERT_MODULES"]:
         fields.append("reports.report_type.type")
-        synthese = synthese.options(lazyload(Synthese.reports).joinedload(TReport.report_type))
-
-    synthese = synthese.get_or_404(id_synthese)
-
-    if not synthese.has_instance_permission(
-        permissions=permissions,
-        blur_sensitive_observations=current_app.config["SYNTHESE"]["BLUR_SENSITIVE_OBSERVATIONS"],
-    ):
-        raise Forbidden()
+        synthese_query = synthese_query.options(
+            lazyload(Synthese.reports).joinedload(TReport.report_type)
+        )
 
     blurring_permissions, precise_permissions = split_blurring_precise_permissions(permissions)
+
+    synthese = synthese_query.get_or_404(id_synthese)
+    if not synthese.has_instance_permission(permissions=permissions):
+        raise Forbidden()
 
     # If blurring permissions and obs sensitive.
     if (
@@ -410,28 +406,31 @@ def get_one_synthese(permissions, id_synthese):
             ),
         )
 
-        query = (
-            DB.session.query(
-                Synthese,
-                func.coalesce(BlurredObsArea.geom.st_transform(4326), Synthese.the_geom_4326),
-            )
-            .outerjoin(*outer)
+        synthese_query = (
+            synthese_query.outerjoin(*outer)
             # contains_eager: to populate Synthese.areas directly
             .options(contains_eager(Synthese.areas.of_type(BlurredAreas)))
-            .filter(Synthese.id_synthese == id_synthese)
+            .options(
+                with_expression(
+                    Synthese.the_geom_authorized,
+                    func.coalesce(BlurredObsArea.geom_4326, Synthese.the_geom_4326),
+                )
+            )
             .order_by(BlurredAreaTypes.size_hierarchy)
         )
+    else:
+        synthese_query = synthese_query.options(
+            lazyload("areas").options(
+                joinedload("area_type"),
+            ),
+            with_expression(Synthese.the_geom_authorized, Synthese.the_geom_4326),
+        )
 
-        # Use one here not first
-        synthese_for_areas, the_geom = query.one()
-        # Careful: do not db.session.commit after these lines !!!
-        # Because we set manually the synthese attributes
-        synthese.the_geom_4326 = the_geom
-        synthese.areas = synthese_for_areas.areas
+    synthese = synthese_query.filter(Synthese.id_synthese == id_synthese).one()
 
-    # Careful: do not db.session.commit before and after these lines
-    geofeature = synthese.as_geofeature(fields=Synthese.nomenclature_fields + fields)
-    return jsonify(geofeature)
+    synthese_schema = SyntheseSchema(only=Synthese.nomenclature_fields + fields,
+                                     as_geojson=True, feature_geometry="the_geom_authorized")
+    return synthese_schema.dump(synthese)
 
 
 ################################
