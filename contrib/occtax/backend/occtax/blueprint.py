@@ -16,7 +16,7 @@ from sqlalchemy import or_, func, distinct, case, select
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import joinedload
 from geojson import Feature, FeatureCollection
-from shapely.geometry import asShape
+from shapely.geometry import shape
 from geoalchemy2.shape import from_shape, to_shape
 from marshmallow import ValidationError
 
@@ -255,8 +255,7 @@ def insertOrUpdateOneReleve():
             data["properties"].pop(att)
 
     releve = TRelevesOccurrence(**data["properties"])
-    shape = asShape(data["geometry"])
-    two_dimension_geom = remove_third_dimension(shape)
+    two_dimension_geom = remove_third_dimension(shape(data["geometry"]))
     releve.geom_4326 = from_shape(two_dimension_geom, srid=4326)
 
     if observersList is not None:

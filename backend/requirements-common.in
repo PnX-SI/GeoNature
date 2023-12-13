@@ -21,7 +21,7 @@ pillow
 packaging
 psycopg2
 python-dateutil
-shapely
+shapely>=1.8.5.post1
 sqlalchemy<2.0
 toml
 weasyprint<53
