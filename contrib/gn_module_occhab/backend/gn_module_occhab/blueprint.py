@@ -17,7 +17,6 @@ from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 from geojson import FeatureCollection, Feature
 from geoalchemy2.shape import from_shape
 from pypnusershub.db.models import User
-from shapely.geometry import asShape
 from sqlalchemy import func, distinct
 from sqlalchemy.sql import text
 from sqlalchemy.orm import raiseload, joinedload
