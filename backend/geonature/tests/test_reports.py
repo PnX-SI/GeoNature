@@ -296,7 +296,7 @@ class TestReportsNotifications:
         assert (
             db.session.scalars(
                 select(Notification)
-                .filter(Notification.id_role == users["associate_user"].id_role)
+                .where(Notification.id_role == users["associate_user"].id_role)
                 .limit(1)
             ).first()
             is None

@@ -157,7 +157,7 @@ class TAcquisitionFramework(db.Model):
         """
         return DB.session.scalars(
             db.select(TAcquisitionFramework.id_acquisition_framework)
-            .filter(TAcquisitionFramework.unique_acquisition_framework_id == uuid_af)
+            .where(TAcquisitionFramework.unique_acquisition_framework_id == uuid_af)
             .limit(1)
         ).first()
 

@@ -93,7 +93,7 @@ class NotificationRuleQuery(db.Query):
         if id_role is None:
             id_role = g.current_user.id_role
         cte = (
-            NotificationRule.query.filter(
+            NotificationRule.query.where(
                 sa.or_(
                     NotificationRule.id_role.is_(None),
                     NotificationRule.id_role == id_role,
@@ -107,7 +107,7 @@ class NotificationRuleQuery(db.Query):
             )
             .cte("cte")
         )
-        return self.filter(NotificationRule.id == cte.c.id)
+        return self.where(NotificationRule.id == cte.c.id)
 
 
 @serializable
@@ -151,7 +151,7 @@ class NotificationRule(db.Model):
             id_role = g.current_user.id_role
         cte = (
             sa.select(NotificationRule)
-            .filter(
+            .where(
                 sa.or_(
                     NotificationRule.id_role.is_(None),
                     NotificationRule.id_role == id_role,

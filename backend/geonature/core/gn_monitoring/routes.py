@@ -60,7 +60,7 @@ def get_onelist_site(id_site):
     """
     query = select(
         TBaseSites.id_base_site, TBaseSites.base_site_name, TBaseSites.base_site_code
-    ).filter(TBaseSites.id_base_site == id_site)
+    ).where(TBaseSites.id_base_site == id_site)
 
     data = DB.session.execute(query).scalar_one()
     return {"id_base_site": data.id_base_site, "base_site_name": data.base_site_name}
@@ -90,7 +90,7 @@ def get_site_areas(id_site):
     if "id_area_type" in params:
         query = query.where(LAreas.id_type == params["id_area_type"])
     if "id_module" in params:
-        query = query.join(corSiteModule, corSiteModule.c.id_base_site == id_site).filter(
+        query = query.join(corSiteModule, corSiteModule.c.id_base_site == id_site).where(
             corSiteModule.c.id_module == params["id_module"]
         )
 

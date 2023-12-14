@@ -121,9 +121,9 @@ class SyntheseLogEntryQuery(Query):
                 if isinstance(column.type, DateTime):
                     self = self.filter_by_datetime(column, value)
                 elif isinstance(column.type, Unicode):
-                    self = self.filter(column.ilike(f"%{value}%"))
+                    self = self.where(column.ilike(f"%{value}%"))
                 else:
-                    self = self.filter(column == value)
+                    self = self.where(column == value)
         return self
 
     def filter_by_datetime(self, col, dt: str = None):
@@ -158,7 +158,7 @@ class SyntheseLogEntryQuery(Query):
             f = col == dt
         else:
             raise ValueError(f"Invalid comparison operator: {operator}")
-        return self.filter(f)
+        return self.where(f)
 
     def sort(self, columns: List[str]):
         if not columns:
@@ -200,13 +200,13 @@ class SyntheseQuery(GeoFeatureCollectionMixin, Query):
         if user is None:
             user = g.current_user
         if scope == 0:
-            self = self.filter(sa.false())
+            self = self.where(sa.false())
         elif scope in (1, 2):
             ors = []
             datasets = db.session.scalars(
                 TDatasets.filter_by_readable(user).with_entities(TDatasets.id_dataset)
             ).all()
-            self = self.filter(
+            self = self.where(
                 or_(
                     Synthese.id_digitizer == user.id_role,
                     Synthese.cor_observers.any(id_role=user.id_role),
@@ -504,13 +504,13 @@ class Synthese(DB.Model):
         if user is None:
             user = g.current_user
         if scope == 0:
-            query = query.filter(sa.false())
+            query = query.where(sa.false())
         elif scope in (1, 2):
             ors = []
             datasets = db.session.scalars(
                 TDatasets.filter_by_readable(user).with_entities(TDatasets.id_dataset)
             ).all()
-            query = query.filter(
+            query = query.where(
                 or_(
                     Synthese.id_digitizer == user.id_role,
                     Synthese.cor_observers.any(id_role=user.id_role),
@@ -744,9 +744,9 @@ class SyntheseLogEntry(DB.Model):
                 if isinstance(column.type, DateTime):
                     query = cls.filter_by_datetime(column, value)
                 elif isinstance(column.type, Unicode):
-                    query = query.filter(column.ilike(f"%{value}%"))
+                    query = query.where(column.ilike(f"%{value}%"))
                 else:
-                    query = query.filter(column == value)
+                    query = query.where(column == value)
         return query
 
     @qfilter(query=True)
