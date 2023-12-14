@@ -231,19 +231,23 @@ class TestOcchab:
     def test_create_station(self, users, datasets, station):
         url = url_for("occhab.create_or_update_station")
         point = Point(3.634, 44.399)
-        nomenc_nat_obj_geo = TNomenclatures.query.filter(
-            sa.and_(
-                TNomenclatures.nomenclature_type.has(mnemonique="NAT_OBJ_GEO"),
-                TNomenclatures.mnemonique == "Stationnel",
+        nomenc_nat_obj_geo = db.session.execute(
+            sa.select(TNomenclatures).where(
+                sa.and_(
+                    TNomenclatures.nomenclature_type.has(mnemonique="NAT_OBJ_GEO"),
+                    TNomenclatures.mnemonique == "Stationnel",
+                )
             )
-        ).one()
-        nomenc_tech_collect = TNomenclatures.query.filter(
-            sa.and_(
-                TNomenclatures.nomenclature_type.has(mnemonique="TECHNIQUE_COLLECT_HAB"),
-                TNomenclatures.label_fr == "Lidar",
+        ).scalar_one()
+        nomenc_tech_collect = db.session.execute(
+            sa.select(TNomenclatures).where(
+                sa.and_(
+                    TNomenclatures.nomenclature_type.has(mnemonique="TECHNIQUE_COLLECT_HAB"),
+                    TNomenclatures.label_fr == "Lidar",
+                )
             )
-        ).one()
-        habref = Habref.query.first()
+        ).scalar_one()
+        habref = db.session.scalars(sa.select(Habref).limit(1)).first()
         feature = Feature(
             geometry=point,
             properties={
@@ -364,8 +368,13 @@ class TestOcchab:
         assert station.id_dataset == id_dataset  # not changed
 
         # Try adding an occurence
-        cd_hab_list = [occhab.cd_hab for occhab in OccurenceHabitat.query.all()]
-        other_habref = Habref.query.filter(~Habref.cd_hab.in_(cd_hab_list)).first()
+        cd_hab_list = [
+            occhab.cd_hab
+            for occhab in db.session.scalars(sa.select(OccurenceHabitat)).unique().all()
+        ]
+        other_habref = db.session.scalars(
+            sa.select(Habref).where(~Habref.cd_hab.in_(cd_hab_list)).limit(1)
+        ).first()
         feature["properties"]["habitats"].append(
             {
                 "cd_hab": other_habref.cd_hab,
@@ -450,22 +459,22 @@ class TestOcchab:
         set_logged_user(self.client, users["noright_user"])
         response = self.client.delete(url)
         assert response.status_code == Forbidden.code
-        assert db.session.query(
-            Station.query.filter_by(id_station=station.id_station).exists()
-        ).scalar()
+        assert db.session.scalar(
+            sa.exists().where(Station.id_station == station.id_station).select()
+        )
 
         set_logged_user(self.client, users["stranger_user"])
         response = self.client.delete(url)
         assert response.status_code == Forbidden.code
-        assert db.session.query(
-            Station.query.filter_by(id_station=station.id_station).exists()
-        ).scalar()
+        assert db.session.scalar(
+            sa.exists().where(Station.id_station == station.id_station).select()
+        )
 
         set_logged_user(self.client, users["user"])
         response = self.client.delete(url)
         assert response.status_code == 204
-        assert not db.session.query(
-            db.select(Station).filter_by(id_station=station.id_station).exists()
+        assert not db.session.execute(
+            sa.exists().where(Station.id_station == station.id_station).select()
         ).scalar()
 
     def test_get_default_nomenclatures(self, users):

@@ -18,6 +18,8 @@ from geonature.core.notifications.models import (
 from geonature.core.notifications import utils
 from geonature.tests.fixtures import celery_eager, notifications_enabled
 
+
+from sqlalchemy import select, exists, delete
 from .utils import set_logged_user
 
 log = logging.getLogger()
@@ -25,7 +27,9 @@ log = logging.getLogger()
 
 @pytest.fixture(scope="class")
 def clear_default_notification_rules():
-    NotificationRule.query.filter(NotificationRule.id_role.is_(None)).delete()
+    db.session.execute(
+        delete(NotificationRule).where(NotificationRule.id_role.is_(None))
+    )  # select(NotificationRule).where(NotificationRule.id_role.is_(None)).delete()
 
 
 @pytest.fixture()
@@ -203,11 +207,11 @@ class TestNotification:
         assert response.status_code == 200
         data = response.get_json()
         assert data == 0
-        assert db.session.query(
-            Notification.query.filter_by(
-                id_notification=notification_data.id_notification
-            ).exists()
-        ).scalar()
+        assert db.session.scalar(
+            exists()
+            .where(Notification.id_notification == notification_data.id_notification)
+            .select()
+        )
 
         # TEST CONNECTED USER WITH NOTIFICATION
         set_logged_user(self.client, users["admin_user"])
@@ -215,11 +219,11 @@ class TestNotification:
         assert response.status_code == 200
         data = response.get_json()
         assert data == 1
-        assert not db.session.query(
-            Notification.query.filter_by(
-                id_notification=notification_data.id_notification
-            ).exists()
-        ).scalar()
+        assert not db.session.scalar(
+            exists()
+            .where(Notification.id_notification == notification_data.id_notification)
+            .select()
+        )
 
     def test_list_notification_rules(self, users, notification_rule):
         # Init data for test
@@ -258,13 +262,15 @@ class TestNotification:
             subscribe=False,
         )
 
-        assert not db.session.query(
-            NotificationRule.query.filter_by(
-                id_role=role.id_role,
-                method=rule_method,
-                category=rule_category,
-            ).exists()
-        ).scalar()
+        assert not db.session.scalar(
+            exists()
+            .where(
+                NotificationRule.id_role == role.id_role,
+                NotificationRule.method == rule_method,
+                NotificationRule.category == rule_category,
+            )
+            .select()
+        )
 
         response = self.client.post(subscribe_url)
         assert response.status_code == Unauthorized.code, response.data
@@ -274,21 +280,25 @@ class TestNotification:
         response = self.client.post(subscribe_url)
         assert response.status_code == 200, response.data
 
-        rule = NotificationRule.query.filter_by(
-            id_role=role.id_role,
-            method=rule_method,
-            category=rule_category,
-        ).one()
+        rule = db.session.execute(
+            select(NotificationRule).filter_by(
+                id_role=role.id_role,
+                method=rule_method,
+                category=rule_category,
+            )
+        ).scalar_one()
         assert rule.subscribed
 
         response = self.client.post(unsubscribe_url)
         assert response.status_code == 200, response.data
 
-        rule = NotificationRule.query.filter_by(
-            id_role=role.id_role,
-            method=rule_method,
-            category=rule_category,
-        ).one()
+        rule = db.session.execute(
+            select(NotificationRule).filter_by(
+                id_role=role.id_role,
+                method=rule_method,
+                category=rule_category,
+            )
+        ).scalar_one()
         assert not rule.subscribed
 
     def test_delete_all_rules(self, users, notification_rule):
@@ -306,11 +316,13 @@ class TestNotification:
         assert response.status_code == 200
         data = response.get_json()
         assert data == 0
-        assert db.session.query(
-            NotificationRule.query.filter_by(
-                id=notification_rule.id,
-            ).exists()
-        ).scalar()
+        assert db.session.scalar(
+            exists()
+            .where(
+                NotificationRule.id == notification_rule.id,
+            )
+            .select()
+        )
 
         # TEST CONNECTED USER WITH RULE
         set_logged_user(self.client, users["admin_user"])
@@ -318,11 +330,13 @@ class TestNotification:
         assert response.status_code == 200
         data = response.get_json()
         assert data == 1
-        assert not db.session.query(
-            NotificationRule.query.filter_by(
-                id=notification_rule.id,
-            ).exists()
-        ).scalar()
+        assert not db.session.scalar(
+            exists()
+            .where(
+                NotificationRule.id == notification_rule.id,
+            )
+            .select()
+        )
 
     def test_list_methods(self, users, rule_method):
         # Init data for test
@@ -386,11 +400,13 @@ class TestNotification:
         url = "https://geonature.fr"
         context = {}
 
-        assert not db.session.query(
-            Notification.query.filter_by(
-                id_role=role.id_role,
-            ).exists()
-        ).scalar()
+        assert not db.session.scalar(
+            exists()
+            .where(
+                Notification.id_role == role.id_role,
+            )
+            .select()
+        )
 
         # test create database notification
         utils.dispatch_notifications(
@@ -402,7 +418,9 @@ class TestNotification:
             context=context,
         )
 
-        notif = Notification.query.filter_by(id_role=role.id_role).one()
+        notif = db.session.execute(
+            select(Notification).filter_by(id_role=role.id_role)
+        ).scalar_one()
         assert notif.title == title
         assert notif.content == content
         assert notif.url == url
@@ -428,11 +446,13 @@ class TestNotification:
         url = "https://geonature.fr"
         context = {}
 
-        assert not db.session.query(
-            Notification.query.filter_by(
-                id_role=role.id_role,
-            ).exists()
-        ).scalar()
+        assert not db.session.scalar(
+            exists()
+            .where(
+                Notification.id_role == role.id_role,
+            )
+            .select()
+        )
 
         # test create database notification
         utils.dispatch_notifications(
@@ -444,7 +464,9 @@ class TestNotification:
             context=context,
         )
 
-        notif = Notification.query.filter_by(id_role=role.id_role).one()
+        notif = db.session.execute(
+            select(Notification).filter_by(id_role=role.id_role)
+        ).scalar_one()
         assert notif.title == title
         assert notif.content == content
         assert notif.url == url

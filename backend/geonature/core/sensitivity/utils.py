@@ -18,29 +18,31 @@ def get_nomenclature(type_mnemonique, code):
     # Retro-compatibility with freezed nomenclatures
     if type_mnemonique == "STATUT_BIO" and code in ["6", "7", "8", "10", "11", "12"]:
         type_mnemonique = "OCC_COMPORTEMENT"
-    return Nomenclature.query.filter(
-        Nomenclature.active == True,  # noqa: E712
-        Nomenclature.nomenclature_type.has(NomenclatureType.mnemonique == type_mnemonique),
-        Nomenclature.cd_nomenclature == code,
-    ).one()
+    return db.session.execute(
+        sa.select(Nomenclature).where(
+            Nomenclature.active == True,  # noqa: E712
+            Nomenclature.nomenclature_type.has(NomenclatureType.mnemonique == type_mnemonique),
+            Nomenclature.cd_nomenclature == code,
+        )
+    ).scalar_one()
 
 
 def insert_sensitivity_referential(source, csvfile):
-    statut_biologique_nomenclature_type = NomenclatureType.query.filter_by(
-        mnemonique="STATUT_BIO"
-    ).one()
-    behaviour_nomenclature_type = NomenclatureType.query.filter_by(
-        mnemonique="OCC_COMPORTEMENT"
-    ).one()
+    statut_biologique_nomenclature_type = db.session.execute(
+        sa.select(NomenclatureType).filter_by(mnemonique="STATUT_BIO")
+    ).scalar_one()
+    behaviour_nomenclature_type = db.session.execute(
+        sa.select(NomenclatureType).filter_by(mnemonique="OCC_COMPORTEMENT")
+    ).scalar_one()
     defaults_nomenclatures = {
         statut_biologique_nomenclature_type: set(
-            Nomenclature.query.filter(
+            sa.select(Nomenclature).where(
                 Nomenclature.nomenclature_type == statut_biologique_nomenclature_type,
                 Nomenclature.mnemonique.in_(["Inconnu", "Non renseigné", "Non Déterminé"]),
             )
         ),
         behaviour_nomenclature_type: set(
-            Nomenclature.query.filter(
+            sa.select(Nomenclature).where(
                 Nomenclature.nomenclature_type == behaviour_nomenclature_type,
                 Nomenclature.mnemonique.in_(["NSP", "1"]),
             )
@@ -125,4 +127,4 @@ def insert_sensitivity_referential(source, csvfile):
 
 
 def remove_sensitivity_referential(source):
-    return SensitivityRule.query.filter_by(source=source).delete()
+    return db.session.execute(sa.delete(SensitivityRule).where(SensitivityRule.source == source))
