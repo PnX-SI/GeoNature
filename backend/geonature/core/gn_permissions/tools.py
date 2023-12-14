@@ -33,6 +33,7 @@ def _get_user_permissions(id_role):
                 # direct permissions
                 Permission.id_role == id_role,
                 # permissions through group
+                # FIXME : provoke a cartesian product warning (but )
                 Permission.role.has(User.members.any(User.id_role == id_role)),
             ),
         )

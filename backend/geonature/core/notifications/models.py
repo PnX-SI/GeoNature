@@ -8,6 +8,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select
 from sqlalchemy.orm import relationship
 from flask import g
+from utils_flask_sqla.models import qfilter
 
 from utils_flask_sqla.serializers import serializable
 from pypnusershub.db.models import User
@@ -127,7 +128,7 @@ class NotificationRule(db.Model):
         ),
         {"schema": "gn_notifications"},
     )
-    query_class = NotificationRuleQuery
+    # query_class = NotificationRuleQuery
 
     id = db.Column(db.Integer, primary_key=True)
     id_role = db.Column(db.Integer, ForeignKey(User.id_role), nullable=True)
@@ -142,3 +143,26 @@ class NotificationRule(db.Model):
     method = relationship(NotificationMethod)
     category = relationship(NotificationCategory)
     user = db.relationship(User)
+
+    @qfilter(query=True)
+    def filter_by_role_with_defaults(cls, id_role=None, **kwargs):
+        query = kwargs["query"]
+        if id_role is None:
+            id_role = g.current_user.id_role
+        cte = (
+            sa.select(NotificationRule)
+            .filter(
+                sa.or_(
+                    NotificationRule.id_role.is_(None),
+                    NotificationRule.id_role == id_role,
+                )
+            )
+            .distinct(NotificationRule.code_category, NotificationRule.code_method)
+            .order_by(
+                NotificationRule.code_category.desc(),
+                NotificationRule.code_method.desc(),
+                NotificationRule.id_role.asc(),
+            )
+            .cte("cte")
+        )
+        return query.where(NotificationRule.id == cte.c.id)

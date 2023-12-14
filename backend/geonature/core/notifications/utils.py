@@ -43,18 +43,20 @@ def dispatch_notification(category, role, title=None, url=None, *, content=None,
     # add role, title and url to rendering context
     context = {"role": role, "title": title, "url": url, **context}
 
-    rules = NotificationRule.query.filter_by_role_with_defaults(role.id_role).filter(
+    rules = NotificationRule.filter_by_role_with_defaults(role.id_role).filter(
         NotificationRule.code_category == category.code,
         NotificationRule.subscribed.is_(sa.true()),
     )
-    for rule in rules.all():
+    for rule in db.session.scalars(rules).all():
         if content:
             notification_content = content
         else:
             # get template for this method and category
-            notification_template = NotificationTemplate.query.filter_by(
-                category=category,
-                method=rule.method,
+            notification_template = db.session.scalars(
+                sa.select(NotificationTemplate).filter_by(
+                    category=category,
+                    method=rule.method,
+                )
             ).one_or_none()
             if not notification_template:
                 continue

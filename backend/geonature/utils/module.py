@@ -95,7 +95,9 @@ def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]
             alembic_branch = module_code.lower()
     else:
         alembic_branch = None
-    module = TModules.query.filter_by(module_code=module_code).one_or_none()
+    module = db.session.execute(
+        db.select(TModules).filter_by(module_code=module_code)
+    ).scalar_one_or_none()
     if module is None:
         # add module to database
         try:

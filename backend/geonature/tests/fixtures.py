@@ -7,7 +7,7 @@ from PIL import Image
 import pytest
 from flask import testing, url_for, current_app
 from werkzeug.datastructures import Headers
-from sqlalchemy import func
+from sqlalchemy import func, select
 from shapely.geometry import Point
 from geoalchemy2.shape import from_shape
 
@@ -588,21 +588,26 @@ def synthese_sensitive_data(app, users, datasets, source):
             db.session.add(s)
             data[name] = s
 
-    # Assert that obs_sensitive_protected is a sensitive observation
+        # Assert that obs_sensitive_protected is a sensitive observation
     id_nomenclature_not_sensitive = (
-        TNomenclatures.query.filter(
-            TNomenclatures.nomenclature_type.has(BibNomenclaturesTypes.mnemonique == "SENSIBILITE")
-        )
-        .filter(TNomenclatures.cd_nomenclature == "4")
-        .one()
+        db.session.execute(
+            select(TNomenclatures)
+            .where(
+                TNomenclatures.nomenclature_type.has(
+                    BibNomenclaturesTypes.mnemonique == "SENSIBILITE"
+                )
+            )
+            .where(TNomenclatures.cd_nomenclature == "4")
+        ).scalar_one()
     ).id_nomenclature
-    Synthese.query.filter(
-        Synthese.cd_nom == sensitive_protected_cd_nom
+
+    db.session.scalars(
+        select(Synthese).where(Synthese.cd_nom == sensitive_protected_cd_nom)
     ).first().id_nomenclature_sensitivity != id_nomenclature_not_sensitive
 
     # Assert that obs_protected_not_sensitive is not a sensitive observation
-    Synthese.query.filter(
-        Synthese.cd_nom == protected_not_sensitive_cd_nom
+    db.session.scalars(
+        select(Synthese).where(Synthese.cd_nom == protected_not_sensitive_cd_nom)
     ).first().id_nomenclature_sensitivity == id_nomenclature_not_sensitive
 
     ## Assert that obs_sensitive_protected and obs_protected_not_sensitive are protected observation
