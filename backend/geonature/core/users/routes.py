@@ -5,6 +5,7 @@ import json
 
 from flask import Blueprint, request, current_app, Response, redirect, g, render_template
 from sqlalchemy.sql import distinct, and_
+from sqlalchemy import distinct, and_, select, exists
 from werkzeug.exceptions import NotFound, BadRequest, Forbidden
 
 from geonature.utils.env import DB
@@ -72,14 +73,14 @@ def get_roles_by_menu_id(id_menu):
     :type id_menu: int
     :query str nom_complet: begenning of complet name of the role
     """
-    q = DB.select(VUserslistForallMenu).filter_by(id_menu=id_menu)
+    query = select(VUserslistForallMenu).filter_by(id_menu=id_menu)
 
     parameters = request.args
     nom_complet = parameters.get("nom_complet")
     if nom_complet:
-        q = q.where(VUserslistForallMenu.nom_complet.ilike(f"{nom_complet}%"))
+        query = query.where(VUserslistForallMenu.nom_complet.ilike(f"{nom_complet}%"))
 
-    data = DB.session.scalars(q.order_by(VUserslistForallMenu.nom_complet.asc())).all()
+    data = DB.session.scalars(query.order_by(VUserslistForallMenu.nom_complet.asc())).all()
     return [n.as_dict() for n in data]
 
 
@@ -96,7 +97,7 @@ def get_roles_by_menu_code(code_liste):
     :query str nom_complet: begenning of complet name of the role
     """
 
-    q = DB.session.query(VUserslistForallMenu).join(
+    query = select(VUserslistForallMenu).join(
         UserList,
         and_(
             UserList.id_liste == VUserslistForallMenu.id_menu,
@@ -106,18 +107,18 @@ def get_roles_by_menu_code(code_liste):
 
     parameters = request.args
     if parameters.get("nom_complet"):
-        q = q.filter(
+        query = query.where(
             VUserslistForallMenu.nom_complet.ilike("{}%".format(parameters.get("nom_complet")))
         )
-    data = q.order_by(VUserslistForallMenu.nom_complet.asc()).all()
+    data = DB.session.scalars(query.order_by(VUserslistForallMenu.nom_complet.asc())).all()
     return [n.as_dict() for n in data]
 
 
 @routes.route("/listes", methods=["GET"])
 @json_resp
 def get_listes():
-    q = DB.session.query(UserList)
-    lists = q.all()
+    query = select(UserList)
+    lists = DB.session.scalars(query).all()
     return [l.as_dict() for l in lists]
 
 
@@ -133,7 +134,7 @@ def get_role(id_role):
     :param id_role: the id user
     :type id_role: int
     """
-    user = User.query.get_or_404(id_role)
+    user = DB.get_or_404(User, id_role)
     fields = user_fields.copy()
     if g.current_user == user:
         fields.add("email")
@@ -151,16 +152,16 @@ def get_roles():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-    q = User.query
+    q = select(User)
     if "group" in params:
-        q = q.filter(User.groupe == params["group"])
+        q = q.where(User.groupe == params["group"])
     if "orderby" in params:
         try:
             order_col = getattr(User.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
             raise BadRequest("the attribute to order on does not exist")
-    return [user.as_dict(fields=user_fields) for user in q.all()]
+    return [user.as_dict(fields=user_fields) for user in DB.session.scalars(q).all()]
 
 
 @routes.route("/organisms", methods=["GET"])
@@ -173,14 +174,14 @@ def get_organismes():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-    q = Organisme.query
+    q = select(Organisme)
     if "orderby" in params:
         try:
             order_col = getattr(Organisme.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
             raise BadRequest("the attribute to order on does not exist")
-    return [organism.as_dict(fields=organism_fields) for organism in q.all()]
+    return [organism.as_dict(fields=organism_fields) for organism in DB.session.scalars(q).all()]
 
 
 @routes.route("/organisms_dataset_actor", methods=["GET"])
@@ -234,8 +235,10 @@ def inscription():
     data = request.get_json()
     # ajout des valeurs non présentes dans le form
     data["id_application"] = (
-        Application.query.filter_by(code_application=current_app.config["CODE_APPLICATION"])
-        .one()
+        DB.session.execute(
+            select(Application).filter_by(code_application=current_app.config["CODE_APPLICATION"])
+        )
+        .scalar_one()
         .id_application
     )
     data["groupe"] = False
@@ -288,10 +291,10 @@ def confirmation():
 
     data = {
         "token": token,
-        "id_application": Application.query.filter_by(
-            code_application=current_app.config["CODE_APPLICATION"]
+        "id_application": DB.session.execute(
+            select(Application).filter_by(code_application=current_app.config["CODE_APPLICATION"])
         )
-        .one()
+        .scalar_one()
         .id_application,
     }
 

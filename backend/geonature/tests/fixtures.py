@@ -158,13 +158,17 @@ def modules():
 
 @pytest.fixture(scope="function")
 def module(users):
-    other_module = TModules.query.filter_by(module_code="GEONATURE").one()
+    other_module = db.session.execute(
+        select(TModules).filter_by(module_code="GEONATURE")
+    ).scalar_one()
     with db.session.begin_nested():
         new_module = create_module("MODULE_1", "module_1", "module_1", True, False)
         db.session.add(new_module)
     # Copy perission from another module
     with db.session.begin_nested():
-        for perm in Permission.query.filter_by(id_module=other_module.id_module):
+        for perm in db.session.scalars(
+            select(Permission).filter_by(id_module=other_module.id_module)
+        ).all():
             new_perm = Permission(
                 id_role=perm.id_role,
                 id_action=perm.id_action,
@@ -186,12 +190,17 @@ def perm_object():
 
 @pytest.fixture(scope="session")
 def users(app):
-    app = Application.query.filter(Application.code_application == "GN").one()
-    profil = Profil.query.filter(Profil.nom_profil == "Lecteur").one()
+    app = db.session.execute(
+        select(Application).where(Application.code_application == "GN")
+    ).scalar_one()
+    profil = db.session.execute(select(Profil).where(Profil.nom_profil == "Lecteur")).scalar_one()
 
-    modules = TModules.query.all()
+    modules = db.session.scalars(select(TModules)).all()
 
-    actions = {code: PermAction.query.filter_by(code_action=code).one() for code in "CRUVED"}
+    actions = {
+        code: db.session.execute(select(PermAction).filter_by(code_action=code)).scalar_one()
+        for code in "CRUVED"
+    }
 
     def create_user(username, organisme=None, scope=None, sensitivity_filter=False, **kwargs):
         # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
@@ -209,7 +218,9 @@ def users(app):
             )
             db.session.add(right)
             if scope > 0:
-                object_all = PermObject.query.filter_by(code_object="ALL").one()
+                object_all = db.session.execute(
+                    select(PermObject).filter_by(code_object="ALL")
+                ).scalar_one()
                 for action in actions.values():
                     for module in modules:
                         for obj in [object_all] + module.objects:
@@ -262,18 +273,13 @@ def celery_eager(app):
 
 @pytest.fixture(scope="function")
 def acquisition_frameworks(users):
-    # principal_actor_role = TNomenclatures.query.filter(
-    #     BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR"
-    #     TNomenclatures.mnemonique == "Contact principal",
-    # ).one()
-    principal_actor_role = (
-        db.session.query(TNomenclatures)
+    principal_actor_role = db.session.execute(
+        select(TNomenclatures)
         .join(BibNomenclaturesTypes, BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR")
-        .filter(
+        .where(
             TNomenclatures.mnemonique == "Contact principal",
         )
-        .one()
-    )
+    ).scalar_one()
 
     def create_af(name, creator):
         with db.session.begin_nested():
@@ -319,7 +325,9 @@ def datasets(users, acquisition_frameworks, module):
 
     # add module code in the list to associate them to datasets
     writable_module_code = ["OCCTAX"]
-    writable_module = TModules.query.filter(TModules.module_code.in_(writable_module_code)).all()
+    writable_module = db.session.scalars(
+        select(TModules).where(TModules.module_code.in_(writable_module_code))
+    ).all()
 
     def create_dataset(name, id_af, digitizer=None, modules=writable_module):
         with db.session.begin_nested():
@@ -435,7 +443,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 "f4428222-d038-40bc-bc5c-6e977bbbc92b" if not data else func.uuid_generate_v4()
             )
             geom = from_shape(point, srid=4326)
-            taxon = Taxref.query.filter_by(cd_nom=cd_nom).one()
+            taxon = db.session.execute(select(Taxref).filter_by(cd_nom=cd_nom)).scalar_one()
             kwargs = {}
             kwargs["comment_description"] = comment_description
             s = create_synthese(
@@ -459,7 +467,7 @@ def synthese_sensitive_data(app, users, datasets, source):
 
     # Retrieve all the taxa with a protection status, and the corresponding areas
     cte_taxa_area_with_status = (
-        db.session.query(TaxrefBdcStatutTaxon.cd_nom, LAreas.id_area)
+        select(TaxrefBdcStatutTaxon.cd_nom, LAreas.id_area)
         .select_from(TaxrefBdcStatutTaxon, LAreas)
         .join(
             TaxrefBdcStatutCorTextValues,
@@ -472,21 +480,21 @@ def synthese_sensitive_data(app, users, datasets, source):
         .join(
             TaxrefBdcStatutText, bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutText.id_text
         )
-        .filter(bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutCorTextValues.id_text)
-        .filter(TaxrefBdcStatutText.enable == True)
+        .where(bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutCorTextValues.id_text)
+        .where(TaxrefBdcStatutText.enable == True)
     ).cte("taxa_with_status")
 
     # Retrieve all the taxa with a sensitivity rule, and the corresponding areas
     cte_taxa_area_with_sensitivity = (
-        db.session.query(SensitivityRule.cd_nom, cor_sensitivity_area.c.id_area)
+        select(SensitivityRule.cd_nom, cor_sensitivity_area.c.id_area)
         .select_from(SensitivityRule)
         .join(cor_sensitivity_area, SensitivityRule.id == cor_sensitivity_area.c.id_sensitivity)
-        .filter(SensitivityRule.active == True)
+        .where(SensitivityRule.active == True)
     ).cte("taxa_with_sensitivity")
 
     # Retrieve a cd_nom and point that fit both a sensitivity rule and a protection status
-    sensitive_protected_cd_nom, sensitive_protected_id_area = (
-        db.session.query(
+    sensitive_protected_cd_nom, sensitive_protected_id_area = db.session.execute(
+        select(
             cte_taxa_area_with_status.c.cd_nom,
             cte_taxa_area_with_status.c.id_area,
         )
@@ -497,30 +505,40 @@ def synthese_sensitive_data(app, users, datasets, source):
                 cte_taxa_area_with_status.c.id_area == cte_taxa_area_with_sensitivity.c.id_area,
             ),
         )
-        .first()
-    )
-    sensitivity_rule = SensitivityRule.query.filter(
-        SensitivityRule.cd_nom == sensitive_protected_cd_nom,
-        SensitivityRule.areas.any(LAreas.id_area == sensitive_protected_id_area),
+        .limit(1)
     ).first()
-    sensitive_protected_area = LAreas.query.filter(
-        LAreas.id_area == sensitive_protected_id_area
+    sensitivity_rule = db.session.scalars(
+        select(SensitivityRule)
+        .where(
+            SensitivityRule.cd_nom == sensitive_protected_cd_nom,
+            SensitivityRule.areas.any(LAreas.id_area == sensitive_protected_id_area),
+        )
+        .limit(1)
+    ).first()
+    sensitive_protected_area = db.session.scalars(
+        select(LAreas).where(LAreas.id_area == sensitive_protected_id_area).limit(1)
     ).first()
     # Get one point inside the area : the centroid (assuming the area is convex)
-    sensitive_protected_point = db.session.query(
-        func.ST_Centroid(func.ST_Transform(sensitive_protected_area.geom, 4326))
-    ).first()[0]
+    sensitive_protected_point = db.session.scalars(
+        select(func.ST_Centroid(func.ST_Transform(sensitive_protected_area.geom, 4326)))
+    ).first()
     # Add a criteria to the sensitivity rule if needed
     id_nomenclature_bio_status = None
     id_type_nomenclature_bio_status = (
-        BibNomenclaturesTypes.query.filter(BibNomenclaturesTypes.mnemonique == "STATUT_BIO")
-        .one()
+        db.session.execute(
+            select(BibNomenclaturesTypes).where(BibNomenclaturesTypes.mnemonique == "STATUT_BIO")
+        )
+        .scalar_one()
         .id_type
     )
     id_nomenclature_behaviour = None
     id_type_nomenclature_behaviour = (
-        BibNomenclaturesTypes.query.filter(BibNomenclaturesTypes.mnemonique == "OCC_COMPORTEMENT")
-        .one()
+        db.session.execute(
+            select(BibNomenclaturesTypes).where(
+                BibNomenclaturesTypes.mnemonique == "OCC_COMPORTEMENT"
+            )
+        )
+        .scalar_one()
         .id_type
     )
     # Get one criteria for the sensitivity rule if needed
@@ -534,20 +552,20 @@ def synthese_sensitive_data(app, users, datasets, source):
             id_nomenclature_behaviour = one_criteria_for_sensitive_rule.id_nomenclature
 
     # Retrieve a cd_nom and point that fit a protection status but no sensitivity rule
-    protected_not_sensitive_cd_nom, protected_not_sensitive_id_area = (
-        db.session.query(cte_taxa_area_with_status.c.cd_nom, cte_taxa_area_with_status.c.id_area)
-        .filter(
+    protected_not_sensitive_cd_nom, protected_not_sensitive_id_area = db.session.execute(
+        select(cte_taxa_area_with_status.c.cd_nom, cte_taxa_area_with_status.c.id_area)
+        .where(
             cte_taxa_area_with_status.c.cd_nom.notin_([cte_taxa_area_with_sensitivity.c.cd_nom])
         )
-        .first()
-    )
-    protected_not_sensitive_area = LAreas.query.filter(
-        LAreas.id_area == protected_not_sensitive_id_area
+        .limit(1)
+    ).first()
+    protected_not_sensitive_area = db.session.scalars(
+        select(LAreas).where(LAreas.id_area == protected_not_sensitive_id_area).limit(1)
     ).first()
     # Get one point inside the area : the centroid (assuming the area is convex)
-    protected_not_sensitive_point = db.session.query(
-        func.ST_Centroid(func.ST_Transform(protected_not_sensitive_area.geom, 4326))
-    ).first()[0]
+    protected_not_sensitive_point = db.session.scalars(
+        select(func.ST_Centroid(func.ST_Transform(protected_not_sensitive_area.geom, 4326)))
+    ).first()
 
     with db.session.begin_nested():
         for name, cd_nom, point, ds, comment_description in [
@@ -575,7 +593,7 @@ def synthese_sensitive_data(app, users, datasets, source):
         ]:
             unique_id_sinp = func.uuid_generate_v4()
             geom = point
-            taxon = Taxref.query.filter_by(cd_nom=cd_nom).one()
+            taxon = db.session.execute(select(Taxref).filter_by(cd_nom=cd_nom)).scalar_one()
             kwargs = {}
             if id_nomenclature_bio_status:
                 kwargs["id_nomenclature_bio_status"] = id_nomenclature_bio_status
@@ -616,10 +634,12 @@ def synthese_sensitive_data(app, users, datasets, source):
         list_areas_observation = [area.id_area for area in observation_synthese.areas]
         cd_nom = observation_synthese.cd_nom
         list_id_areas_with_status_for_cd_nom = [
-            tuple_id_area[0]
-            for tuple_id_area in db.session.query(cte_taxa_area_with_status.c.id_area)
-            .filter(cte_taxa_area_with_status.c.cd_nom == cd_nom)
-            .all()
+            tuple_id_area
+            for tuple_id_area in db.session.scalars(
+                select(cte_taxa_area_with_status.c.id_area).where(
+                    cte_taxa_area_with_status.c.cd_nom == cd_nom
+                )
+            ).all()
         ]
         # assert that intersection of the two lists is not empty
         assert set(list_areas_observation).intersection(set(list_id_areas_with_status_for_cd_nom))
@@ -631,20 +651,18 @@ def synthese_sensitive_data(app, users, datasets, source):
 
 
 def create_media(media_path=""):
-    photo_type = (
-        TNomenclatures.query.join(
-            BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type
-        )
-        .filter(
+    photo_type = db.session.execute(
+        select(TNomenclatures)
+        .join(BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type)
+        .where(
             BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA", TNomenclatures.mnemonique == "Photo"
         )
-        .one()
-    )
-    location = (
-        BibTablesLocation.query.filter(BibTablesLocation.schema_name == "gn_commons")
+    ).scalar_one()
+    location = db.session.execute(
+        select(BibTablesLocation)
+        .where(BibTablesLocation.schema_name == "gn_commons")
         .filter(BibTablesLocation.table_name == "t_medias")
-        .one()
-    )
+    ).scalar_one()
 
     new_media = TMedias(
         id_nomenclature_media_type=photo_type.id_nomenclature,
@@ -663,7 +681,7 @@ def create_media(media_path=""):
 @pytest.fixture
 def medium(app):
     # FIXME: find a better way to get the id_media that will be created
-    new_id_media = (db.session.query(func.max(TMedias.id_media)).scalar() or 0) + 1
+    new_id_media = (db.session.scalar(select(func.max(TMedias.id_media))) or 0) + 1
     image = Image.new("RGBA", size=(1, 1), color=(155, 0, 0))
     # Delete = false since it will be done automatically
     with tempfile.NamedTemporaryFile(
@@ -693,9 +711,15 @@ def reports_data(users, synthese_data):
     ids = [s.id_synthese for s in synthese_data.values()]
     # get id by type
     discussionId = (
-        BibReportsTypes.query.filter(BibReportsTypes.type == "discussion").first().id_type
+        db.session.scalars(select(BibReportsTypes).where(BibReportsTypes.type == "discussion"))
+        .first()
+        .id_type
     )
-    alertId = BibReportsTypes.query.filter(BibReportsTypes.type == "alert").first().id_type
+    alertId = (
+        db.session.scalars(select(BibReportsTypes).where(BibReportsTypes.type == "alert"))
+        .first()
+        .id_type
+    )
     with db.session.begin_nested():
         reports = [
             (ids[0], users["admin_user"].id_role, "comment1", discussionId, False),

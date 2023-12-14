@@ -14,7 +14,7 @@ from geonature.core.notifications.models import (
 )
 from geonature.utils.env import db
 from geonature.core.notifications.tasks import send_notification_mail
-from sqlalchemy import values, Integer, text
+from sqlalchemy import values, Integer, text, select
 
 
 def dispatch_notifications(
@@ -25,7 +25,9 @@ def dispatch_notifications(
 
     categories = chain.from_iterable(
         [
-            NotificationCategory.query.filter(NotificationCategory.code.like(code)).all()
+            db.session.scalars(
+                select(NotificationCategory).where(NotificationCategory.code.like(code))
+            ).all()
             for code in code_categories
         ]
     )
