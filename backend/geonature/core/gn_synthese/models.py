@@ -22,6 +22,7 @@ from geoalchemy2.shape import to_shape
 from geojson import Feature
 from flask import g
 import flask_sqlalchemy
+from utils_flask_sqla.models import qfilter
 
 if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
     from flask_sqlalchemy.query import Query
@@ -49,6 +50,10 @@ from geonature.core.gn_commons.models import (
     TModules,
 )
 from geonature.utils.env import DB, db
+
+
+sortable_columns = ["meta_last_action_date"]
+filterable_columns = ["id_synthese", "last_action", "meta_last_action_date"]
 
 
 @serializable(exclude=["module_url"])
@@ -181,7 +186,8 @@ class SyntheseQuery(GeoFeatureCollectionMixin, Query):
 
     def lateraljoin_last_validation(self):
         subquery = (
-            TValidations.query.filter(TValidations.uuid_attached_row == Synthese.unique_id_sinp)
+            select(TValidations)
+            .where(TValidations.uuid_attached_row == Synthese.unique_id_sinp)
             .limit(1)
             .subquery()
             .lateral("last_validation")
@@ -473,6 +479,46 @@ class Synthese(DB.Model):
         else:
             return self._has_permissions_grant(permissions)
 
+    @qfilter(query=True)
+    def join_nomenclatures(cls, **kwargs):
+        return kwargs["query"].options(*[joinedload(n) for n in Synthese.nomenclature_fields])
+
+    @qfilter(query=True)
+    def lateraljoin_last_validation(cls, **kwargs):
+        subquery = (
+            select(TValidations)
+            .where(TValidations.uuid_attached_row == Synthese.unique_id_sinp)
+            .limit(1)
+            .subquery()
+            .lateral("last_validation")
+        )
+        return (
+            kwargs["query"]
+            .outerjoin(subquery, sa.true())
+            .options(contains_eager(Synthese.last_validation, alias=subquery))
+        )
+
+    @qfilter(query=True)
+    def filter_by_scope(cls, scope, user=None, **kwargs):
+        query = kwargs["query"]
+        if user is None:
+            user = g.current_user
+        if scope == 0:
+            query = query.filter(sa.false())
+        elif scope in (1, 2):
+            ors = []
+            datasets = db.session.scalars(
+                TDatasets.filter_by_readable(user).with_entities(TDatasets.id_dataset)
+            ).all()
+            query = query.filter(
+                or_(
+                    Synthese.id_digitizer == user.id_role,
+                    Synthese.cor_observers.any(id_role=user.id_role),
+                    Synthese.id_dataset.in_([ds.id_dataset for ds in datasets]),
+                )
+            )
+        return query
+
 
 @serializable
 class DefaultsNomenclaturesValue(DB.Model):
@@ -686,6 +732,80 @@ class SyntheseLogEntry(DB.Model):
     id_synthese = DB.Column(DB.Integer(), primary_key=True)
     last_action = DB.Column(DB.String(length=1))
     meta_last_action_date = DB.Column(DB.DateTime)
+
+    @qfilter(query=True)
+    def filter_by_params(cls, params, **kwargs):
+        query = kwargs["query"]
+        for col in filterable_columns:
+            if col not in params:
+                continue
+            column = getattr(cls, col)
+            for value in params.getlist(col):
+                if isinstance(column.type, DateTime):
+                    query = cls.filter_by_datetime(column, value)
+                elif isinstance(column.type, Unicode):
+                    query = query.filter(column.ilike(f"%{value}%"))
+                else:
+                    query = query.filter(column == value)
+        return query
+
+    @qfilter(query=True)
+    def filter_by_datetime(cls, col, dt: str = None, **kwargs):
+        """Filter on date only with operator among "<,>,=<,>="
+
+        Parameters
+        ----------
+        filters_with_operator : dict
+            params filters from url only
+
+        Returns
+        -------
+        Query
+
+        """
+        query = kwargs["query"]
+
+        if ":" in dt:
+            operator, dt = dt.split(":", 1)
+        else:
+            operator = "eq"
+        dt = datetime.datetime.fromisoformat(dt)
+        if operator == "gt":
+            f = col > dt
+        elif operator == "gte":
+            f = col >= dt
+        elif operator == "lt":
+            f = col < dt
+        elif operator == "lte":
+            f = col <= dt
+        elif operator == "eq":
+            # FIXME: if datetime is at midnight (looks like date), allows all the day?
+            f = col == dt
+        else:
+            raise ValueError(f"Invalid comparison operator: {operator}")
+        return query.where(f)
+
+    @qfilter(query=True)
+    def sort(cls, columns: List[str], **kwargs):
+        query = kwargs["query"]
+
+        if not columns:
+            columns = ["meta_last_action_date"]
+        for col in columns:
+            if ":" in col:
+                col, direction = col.rsplit(":")
+                if direction == "asc":
+                    direction = sa.asc
+                elif direction == "desc":
+                    direction = sa.desc
+                else:
+                    raise ValueError(f"Invalid sort direction: {direction}")
+            else:
+                direction = sa.asc
+            if col not in sortable_columns:
+                raise ValueError(f"Invalid sort column: {col}")
+            query = query.order_by(direction(getattr(cls, col)))
+        return query
 
 
 # defined here to avoid circular dependencies

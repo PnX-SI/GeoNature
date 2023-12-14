@@ -2,6 +2,7 @@ import uuid
 
 import pytest
 from flask import url_for, current_app
+from sqlalchemy import select
 from pypnusershub.db.models import Organisme
 
 # Apparently: need to import both?
@@ -15,7 +16,7 @@ def organisms():
     """
     Returns all organismes
     """
-    return db.session.query(Organisme).order_by(Organisme.id_organisme).all()
+    return db.session.scalars(select(Organisme).order_by(Organisme.id_organisme)).all()
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")

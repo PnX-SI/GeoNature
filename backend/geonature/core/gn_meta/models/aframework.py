@@ -10,7 +10,7 @@ from sqlalchemy import ForeignKey, or_
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func, select
+from sqlalchemy import func, select, exists
 from utils_flask_sqla.models import qfilter
 from utils_flask_sqla.serializers import serializable
 
@@ -123,13 +123,12 @@ class TAcquisitionFramework(db.Model):
 
     def is_deletable(self):
         return not (
-            db.session.execute(
-                db.select(func.count("*"))
-                .select_from(TDatasets)
-                .filter_by(id_acquisition_framework=self.id_acquisition_framework)
-                .limit(1)
-            ).scalar_one()
-            > 0
+            db.session.scalar(
+                exists()
+                .select_from()
+                .where(TDatasets.id_acquisition_framework == self.id_acquisition_framework)
+                .select()
+            )
         )
 
     def has_instance_permission(self, scope, _through_ds=True):

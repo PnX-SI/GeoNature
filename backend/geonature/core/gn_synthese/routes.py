@@ -6,6 +6,7 @@ from warnings import warn
 
 from flask import (
     Blueprint,
+    abort,
     request,
     Response,
     current_app,
@@ -22,6 +23,7 @@ from sqlalchemy.orm import joinedload, lazyload, selectinload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 from sqlalchemy.orm import load_only, aliased, Load
+from sqlalchemy.exc import NoResultFound
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
@@ -251,7 +253,7 @@ def get_observations_for_web(permissions):
 @permissions_required("R", module_code="SYNTHESE")
 def get_one_synthese(permissions, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature"""
-    synthese = Synthese.query.join_nomenclatures().options(
+    synthese = Synthese.join_nomenclatures().options(
         joinedload("dataset").options(
             selectinload("acquisition_framework").options(
                 joinedload("creator"),
@@ -306,8 +308,12 @@ def get_one_synthese(permissions, id_synthese):
         fields.append("reports.report_type.type")
         synthese = synthese.options(lazyload(Synthese.reports).joinedload(TReport.report_type))
 
-    synthese = synthese.get_or_404(id_synthese)
-
+    try:
+        synthese = (
+            db.session.execute(synthese.filter_by(id_synthese=id_synthese)).unique().scalar_one()
+        )
+    except NoResultFound:
+        raise NotFound()
     if not synthese.has_instance_permission(permissions=permissions):
         raise Forbidden()
 
@@ -1087,13 +1093,22 @@ def create_report(permissions):
     if not type_exists:
         raise BadRequest("This report type does not exist")
 
-    synthese = Synthese.query.options(
-        Load(Synthese).raiseload("*"),
-        joinedload("nomenclature_sensitivity"),
-        joinedload("cor_observers"),
-        joinedload("digitiser"),
-        joinedload("dataset"),
-    ).get_or_404(id_synthese)
+    synthese = db.session.scalars(
+        db.select(Synthese)
+        .options(
+            Load(Synthese).raiseload("*"),
+            joinedload("nomenclature_sensitivity"),
+            joinedload("cor_observers"),
+            joinedload("digitiser"),
+            joinedload("dataset"),
+        )
+        .filter_by(id_synthese=id_synthese)
+        .limit(1),
+    ).first()
+
+    if not synthese:
+        abort(404)
+
     if not synthese.has_instance_permission(permissions):
         raise Forbidden
 
@@ -1190,7 +1205,7 @@ def list_reports(permissions):
     id_synthese = request.args.get("idSynthese")
     sort = request.args.get("sort")
     # VERIFY ID SYNTHESE
-    synthese = Synthese.query.get_or_404(id_synthese)
+    synthese = db.get_or_404(Synthese, id_synthese)
     if not synthese.has_instance_permission(permissions):
         raise Forbidden
     # START REQUEST
@@ -1272,7 +1287,7 @@ def list_synthese_log_entries() -> dict:
     dict
         log action list
     """
-
+    # FIXME SQLA 2
     deletion_entries = SyntheseLogEntry.query.options(
         load_only(
             SyntheseLogEntry.id_synthese,
