@@ -1289,6 +1289,14 @@ def synthese_export_permissions(synthese_module):
     return _synthese_export_permissions
 
 
+@pytest.fixture()
+def blur_sensitive_observations(monkeypatch):
+    def _set_value(value):
+        monkeypatch.setitem(current_app.config["SYNTHESE"], "BLUR_SENSITIVE_OBSERVATIONS", value)
+
+    return _set_value
+
+
 def get_one_synthese_reponse_from_id(response: dict, id_synthese: int):
     return [
         synthese
@@ -1358,11 +1366,14 @@ class TestSyntheseBlurring:
         assert precise_perm in precise_perms
 
     def test_get_observations_for_web_blurring(
-        self, users, synthese_sensitive_data, source, synthese_read_permissions, monkeypatch
+        self,
+        users,
+        synthese_sensitive_data,
+        source,
+        synthese_read_permissions,
+        blur_sensitive_observations,
     ):
-        # So that all burred geoms will not appear on the aggregated areas
-        monkeypatch.setitem(current_app.config["SYNTHESE"], "BLUR_SENSITIVE_OBSERVATIONS", True)
-
+        blur_sensitive_observations(True)
         current_user = users["stranger_user"]
         # None is 3
         synthese_read_permissions(current_user, None, sensitivity_filter=True)
@@ -1393,8 +1404,14 @@ class TestSyntheseBlurring:
         assert_sensitive_synthese(geojson=sensitive_synthese_from_response, obs=sensitive_synthese)
 
     def test_get_observations_for_web_blurring_excluded(
-        self, users, synthese_sensitive_data, source, synthese_read_permissions
+        self,
+        users,
+        synthese_sensitive_data,
+        source,
+        synthese_read_permissions,
+        blur_sensitive_observations,
     ):
+        blur_sensitive_observations(False)
         current_user = users["stranger_user"]
         # None is 3
         synthese_read_permissions(current_user, None, sensitivity_filter=True)
@@ -1467,10 +1484,14 @@ class TestSyntheseBlurring:
         )
 
     def test_get_one_synthese_sensitive(
-        self, users, synthese_sensitive_data, synthese_read_permissions, monkeypatch
+        self,
+        users,
+        synthese_sensitive_data,
+        synthese_read_permissions,
+        blur_sensitive_observations,
     ):
         # So that all burred geoms will not appear on the aggregated areas
-        monkeypatch.setitem(current_app.config["SYNTHESE"], "BLUR_SENSITIVE_OBSERVATIONS", True)
+        blur_sensitive_observations(True)
 
         current_user = users["stranger_user"]
         sensitive_synthese = synthese_sensitive_data["obs_sensitive_protected"]
@@ -1504,8 +1525,13 @@ class TestSyntheseBlurring:
         assert_unsensitive_synthese(geojson=response_json, obs=unsensitive_synthese)
 
     def test_get_one_synthese_sensitive_excluded(
-        self, users, synthese_sensitive_data, synthese_read_permissions
+        self,
+        users,
+        synthese_sensitive_data,
+        synthese_read_permissions,
+        blur_sensitive_observations,
     ):
+        blur_sensitive_observations(False)
         current_user = users["stranger_user"]
         sensitive_synthese = synthese_sensitive_data["obs_sensitive_protected"]
         # None is 3
@@ -1557,10 +1583,14 @@ class TestSyntheseBlurring:
         )
 
     def test_export_observations_sensitive(
-        self, users, synthese_export_permissions, synthese_sensitive_data, monkeypatch
+        self,
+        users,
+        synthese_export_permissions,
+        synthese_sensitive_data,
+        blur_sensitive_observations,
     ):
         # So that all burred geoms will not appear on the aggregated areas
-        monkeypatch.setitem(current_app.config["SYNTHESE"], "BLUR_SENSITIVE_OBSERVATIONS", True)
+        blur_sensitive_observations(True)
 
         current_user = users["stranger_user"]
         # None is 3
@@ -1587,8 +1617,13 @@ class TestSyntheseBlurring:
         assert_sensitive_synthese(geojson=json_feature_synthese, obs=sensitive_synthese)
 
     def test_export_observations_sensitive_excluded(
-        self, users, synthese_export_permissions, synthese_sensitive_data
+        self,
+        users,
+        synthese_export_permissions,
+        synthese_sensitive_data,
+        blur_sensitive_observations,
     ):
+        blur_sensitive_observations(False)
         current_user = users["stranger_user"]
         # None is 3
         synthese_export_permissions(current_user, None, sensitivity_filter=True)
