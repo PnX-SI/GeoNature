@@ -3,14 +3,13 @@ from geonature.utils.env import db, ma
 from geonature.core.gn_commons.schemas import ModuleSchema, MediaSchema, TValidationSchema
 from geonature.core.gn_meta.schemas import DatasetSchema
 from geonature.core.gn_synthese.models import BibReportsTypes, TReport, TSources, Synthese
-from marshmallow_geojson import MultiPolygonSchema
 
 from pypn_habref_api.schemas import HabrefSchema
 from pypnusershub.schemas import UserSchema
 from pypnnomenclature.utils import NomenclaturesConverter
 from ref_geo.schemas import AreaSchema
 from utils_flask_sqla.schema import SmartRelationshipsMixin
-from utils_flask_sqla_geo.schema import GeoAlchemyAutoSchema, GeoModelConverter
+from utils_flask_sqla_geo.schema import GeoAlchemyAutoSchema, GeoModelConverter, GeometryField
 
 
 class ReportTypeSchema(ma.SQLAlchemyAutoSchema):
@@ -50,7 +49,7 @@ class SyntheseSchema(SmartRelationshipsMixin, GeoAlchemyAutoSchema):
         model_converter = SyntheseConverter
 
     the_geom_4326 = ma.auto_field(metadata={"exclude": True})
-    the_geom_authorized = ma.Nested(MultiPolygonSchema, metadata={"exclude": True}, dump_only=True)
+    the_geom_authorized = GeometryField(metadata={"exclude": True}, dump_only=True)
     source = ma.Nested(SourceSchema, dump_only=True)
     module = ma.Nested(ModuleSchema, dump_only=True)
     dataset = ma.Nested(DatasetSchema, dump_only=True)
