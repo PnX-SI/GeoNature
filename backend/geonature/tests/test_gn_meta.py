@@ -20,7 +20,7 @@ from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 from pypnusershub.schemas import UserSchema
 from ref_geo.models import BibAreasTypes, LAreas
-from sqlalchemy import func
+from sqlalchemy import func, select, exists
 from sqlalchemy.sql.selectable import Select
 from werkzeug.datastructures import Headers, MultiDict
 from werkzeug.exceptions import (
@@ -38,11 +38,15 @@ from .utils import logged_user_headers, set_logged_user
 
 @pytest.fixture(scope="function")
 def commune_without_obs():
-    return LAreas.query.filter(
-        LAreas.area_type.has(
-            BibAreasTypes.type_code == "COM",
-        ),
-        ~LAreas.synthese_obs.any(),
+    return db.session.scalars(
+        select(LAreas)
+        .where(
+            LAreas.area_type.has(
+                BibAreasTypes.type_code == "COM",
+            ),
+            ~LAreas.synthese_obs.any(),
+        )
+        .limit(1)
     ).first()
 
 
@@ -50,20 +54,24 @@ def getCommBySynthese(obs):
     """
     Return area by synthese
     """
-    return LAreas.query.filter(
-        LAreas.area_type.has(
-            BibAreasTypes.type_code == "COM",
-        ),
-        LAreas.synthese_obs.any(
-            Synthese.id_synthese == obs.id_synthese,
-        ),
+    return db.session.scalars(
+        select(LAreas)
+        .where(
+            LAreas.area_type.has(
+                BibAreasTypes.type_code == "COM",
+            ),
+            LAreas.synthese_obs.any(
+                Synthese.id_synthese == obs.id_synthese,
+            ),
+        )
+        .limit(1)
     ).first()
 
 
 # TODO: maybe move it to global fixture
 @pytest.fixture()
 def unexisted_id():
-    return db.session.query(func.max(TDatasets.id_dataset)).scalar() + 1
+    return db.session.scalar(select(func.max(TDatasets.id_dataset)).select_from(TDatasets)) + 1
 
 
 @pytest.fixture
@@ -918,7 +926,9 @@ class TestGNMeta:
         assert response.status_code == Forbidden.code
 
     def test_dataset_pdf_export(self, users, datasets):
-        unexisting_id = db.session.query(func.max(TDatasets.id_dataset)).scalar() + 1
+        unexisting_id = (
+            db.session.scalar(select(func.max(TDatasets.id_dataset)).select_from(TDatasets)) + 1
+        )
         ds = datasets["own_dataset"]
 
         response = self.client.post(

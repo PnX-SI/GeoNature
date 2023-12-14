@@ -175,7 +175,9 @@ def delete_all_rules():
 @routes.route("/methods", methods=["GET"])
 @permissions.login_required
 def list_notification_methods():
-    notificationMethods = NotificationMethod.query.order_by(NotificationMethod.code.asc()).all()
+    notificationMethods = db.session.scalars(
+        select(NotificationMethod).order_by(NotificationMethod.code.asc())
+    ).all()
     result = [
         notificationsMethod.as_dict(
             fields=[
@@ -193,8 +195,8 @@ def list_notification_methods():
 @routes.route("/categories", methods=["GET"])
 @permissions.login_required
 def list_notification_categories():
-    notificationCategories = NotificationCategory.query.order_by(
-        NotificationCategory.code.asc()
+    notificationCategories = db.session.scalars(
+        select(NotificationCategory).order_by(NotificationCategory.code.asc())
     ).all()
     result = [
         notificationsCategory.as_dict(

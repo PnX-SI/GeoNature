@@ -45,7 +45,7 @@ def create_synthese_record(
     id_nomenclature_life_stage=None,
 ):
     if not cd_nom:
-        cd_nom = Taxref.query.first().cd_nom
+        cd_nom = db.session.scalars(sa.select(Taxref).limit(1)).first().cd_nom
     if not id_dataset:
         id_dataset = db.session.scalars(db.select(TDatasets).limit(1)).first().id_dataset
 
@@ -69,15 +69,19 @@ def create_synthese_record(
 
 @pytest.fixture
 def valid_status_for_profiles():
-    param = TParameters.query.filter_by(name="id_valid_status_for_profiles").one()
+    param = db.session.execute(
+        sa.select(TParameters).filter_by(name="id_valid_status_for_profiles")
+    ).scalar_one()
     return param.value.split(",")[0]
 
 
 @pytest.fixture
 def cd_nom_for_profiles():
-    param = TParameters.query.filter_by(name="id_rang_for_profiles").one()
+    param = db.session.execute(
+        sa.select(TParameters).filter_by(name="id_rang_for_profiles")
+    ).scalar_one()
     id_rang = param.value.split(",")[0]
-    taxref = Taxref.query.filter_by(id_rang=id_rang).first()
+    taxref = db.session.scalars(sa.select(Taxref).filter_by(id_rang=id_rang).limit(1)).first()
     return taxref.cd_nom
 
 
@@ -160,19 +164,23 @@ class TestGnProfiles:
 
         assert db.session.get(VSyntheseForProfiles, valid_new_obs.id_synthese)
 
-        profile = VmValidProfiles.query.filter_by(
-            cd_ref=func.taxonomie.find_cdref(valid_new_obs.cd_nom)
+        profile = db.session.scalars(
+            sa.select(VmValidProfiles)
+            .filter_by(cd_ref=func.taxonomie.find_cdref(valid_new_obs.cd_nom))
+            .limit(1)
         ).first()
         assert profile is not None
 
-        consistancy_data = VConsistancyData.query.filter_by(
-            id_synthese=valid_new_obs.id_synthese
-        ).one()
+        consistancy_data = db.session.execute(
+            sa.select(VConsistancyData).filter_by(id_synthese=valid_new_obs.id_synthese)
+        ).scalar_one()
         assert consistancy_data.valid_distribution is True
         assert consistancy_data.valid_altitude is True
         assert consistancy_data.valid_phenology is True
 
-        cor = VmCorTaxonPhenology.query.filter_by(cd_ref=consistancy_data.cd_ref).first()
+        cor = db.session.scalars(
+            sa.select(VmCorTaxonPhenology).filter_by(cd_ref=consistancy_data.cd_ref).limit(1)
+        ).first()
         assert cor is not None
 
     def test_checks_all_false(
@@ -184,20 +192,26 @@ class TestGnProfiles:
 
         assert not db.session.get(VSyntheseForProfiles, wrong_new_obs.id_synthese)
 
-        profile = VmValidProfiles.query.filter_by(
-            cd_ref=func.taxonomie.find_cdref(wrong_new_obs.cd_nom)
+        profile = db.session.scalars(
+            sa.select(VmValidProfiles)
+            .filter_by(cd_ref=func.taxonomie.find_cdref(wrong_new_obs.cd_nom))
+            .limit(1)
         ).first()
         assert profile is not None
 
-        consistancy_data = VConsistancyData.query.filter(
-            VConsistancyData.id_synthese == wrong_new_obs.id_synthese
-        ).one()
+        consistancy_data = db.session.execute(
+            sa.select(VConsistancyData).where(
+                VConsistancyData.id_synthese == wrong_new_obs.id_synthese
+            )
+        ).scalar_one()
 
         assert consistancy_data.valid_distribution is False
         assert consistancy_data.valid_altitude is False
         assert consistancy_data.valid_phenology is False
 
-        cor = VmCorTaxonPhenology.query.filter_by(cd_ref=consistancy_data.cd_ref).first()
+        cor = db.session.scalars(
+            sa.select(VmCorTaxonPhenology).filter_by(cd_ref=consistancy_data.cd_ref).limit(1)
+        ).first()
         assert cor is not None
 
     def test_get_phenology(self, sample_synthese_records_for_profile):
@@ -206,9 +220,9 @@ class TestGnProfiles:
                 "gn_profiles.get_phenology", cd_ref=sample_synthese_records_for_profile.cd_nom
             ),
             query_string={
-                "id_nomenclature_life_stage": db.session.query(
-                    func.ref_nomenclatures.get_id_nomenclature("STADE_VIE", "10")
-                ).first()[0]
+                "id_nomenclature_life_stage": db.session.scalar(
+                    sa.select(func.ref_nomenclatures.get_id_nomenclature("STADE_VIE", "10"))
+                )
             },
         )
 

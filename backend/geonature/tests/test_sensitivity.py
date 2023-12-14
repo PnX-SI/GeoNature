@@ -37,27 +37,40 @@ class TestSensitivity:
         local_geom = func.ST_Transform(geom, func.Find_SRID("ref_geo", "l_areas", "geom"))
         date_obs = datetime.now() - timedelta(days=365 * 10)
         date_obs = date_obs.replace(month=3)
-        statut_bio_type = BibNomenclaturesTypes.query.filter_by(mnemonique="STATUT_BIO").one()
-        statut_bio_hibernation = TNomenclatures.query.filter_by(
-            id_type=statut_bio_type.id_type, mnemonique="Hibernation"
-        ).one()
-        statut_bio_reproduction = TNomenclatures.query.filter_by(
-            id_type=statut_bio_type.id_type, mnemonique="Reproduction"
-        ).one()
-        life_stage_type = BibNomenclaturesTypes.query.filter_by(mnemonique="STADE_VIE").one()
+        statut_bio_type = db.session.execute(
+            sa.select(BibNomenclaturesTypes).filter_by(mnemonique="STATUT_BIO")
+        ).scalar_one()
+        statut_bio_hibernation = db.session.execute(
+            sa.select(TNomenclatures).filter_by(
+                id_type=statut_bio_type.id_type, mnemonique="Hibernation"
+            )
+        ).scalar_one()
+        statut_bio_reproduction = db.session.execute(
+            sa.select(TNomenclatures).filter_by(
+                id_type=statut_bio_type.id_type, mnemonique="Reproduction"
+            )
+        ).scalar_one()
+        life_stage_type = db.session.execute(
+            sa.select(BibNomenclaturesTypes).filter_by(mnemonique="STADE_VIE")
+        ).scalar_one()
         # We choose a life stage with the same cd_nomenclature than tested status bio
-        life_stage_conflict = TNomenclatures.query.filter_by(
-            id_type=life_stage_type.id_type, cd_nomenclature=statut_bio_hibernation.cd_nomenclature
-        ).one()
-        comportement_type = BibNomenclaturesTypes.query.filter_by(
-            mnemonique="OCC_COMPORTEMENT"
-        ).one()
-        comportement_halte = TNomenclatures.query.filter_by(
-            id_type=comportement_type.id_type, mnemonique="6"
-        ).one()
-        comportement_hivernage = TNomenclatures.query.filter_by(
-            id_type=comportement_type.id_type, mnemonique="Hivernage"
-        ).one()
+        life_stage_conflict = db.session.execute(
+            sa.select(TNomenclatures).filter_by(
+                id_type=life_stage_type.id_type,
+                cd_nomenclature=statut_bio_hibernation.cd_nomenclature,
+            )
+        ).scalar_one()
+        comportement_type = db.session.execute(
+            sa.select(BibNomenclaturesTypes).filter_by(mnemonique="OCC_COMPORTEMENT")
+        ).scalar_one()
+        comportement_halte = db.session.execute(
+            sa.select(TNomenclatures).filter_by(id_type=comportement_type.id_type, mnemonique="6")
+        ).scalar_one()
+        comportement_hivernage = db.session.execute(
+            sa.select(TNomenclatures).filter_by(
+                id_type=comportement_type.id_type, mnemonique="Hivernage"
+            )
+        ).scalar_one()
 
         query = sa.select(TNomenclatures.mnemonique).where(
             TNomenclatures.id_nomenclature
@@ -76,23 +89,29 @@ class TestSensitivity:
         )
         assert db.session.execute(query).scalar() == "0"
 
-        sensitivity_nomenc_type = BibNomenclaturesTypes.query.filter_by(
-            mnemonique="SENSIBILITE"
-        ).one()
-        not_sensitive = TNomenclatures.query.filter_by(
-            id_type=sensitivity_nomenc_type.id_type, mnemonique="0"
-        ).one()
-        diffusion_maille = TNomenclatures.query.filter_by(
-            id_type=sensitivity_nomenc_type.id_type, mnemonique="2"
-        ).one()
-        no_diffusion = TNomenclatures.query.filter_by(
-            id_type=sensitivity_nomenc_type.id_type, mnemonique="4"
-        ).one()
+        sensitivity_nomenc_type = db.session.execute(
+            sa.select(BibNomenclaturesTypes).filter_by(mnemonique="SENSIBILITE")
+        ).scalar_one()
+        not_sensitive = db.session.execute(
+            sa.select(TNomenclatures).filter_by(
+                id_type=sensitivity_nomenc_type.id_type, mnemonique="0"
+            )
+        ).scalar_one()
+        diffusion_maille = db.session.execute(
+            sa.select(TNomenclatures).filter_by(
+                id_type=sensitivity_nomenc_type.id_type, mnemonique="2"
+            )
+        ).scalar_one()
+        no_diffusion = db.session.execute(
+            sa.select(TNomenclatures).filter_by(
+                id_type=sensitivity_nomenc_type.id_type, mnemonique="4"
+            )
+        ).scalar_one()
 
         st_intersects = func.ST_Intersects(LAreas.geom, local_geom)
-        deps = LAreas.query.join(BibAreasTypes).filter(BibAreasTypes.type_code == "DEP")
-        area_in = deps.filter(st_intersects).first()
-        area_out = deps.filter(sa.not_(st_intersects)).first()
+        deps = sa.select(LAreas).join(BibAreasTypes).where(BibAreasTypes.type_code == "DEP")
+        area_in = db.session.scalars(deps.where(st_intersects).limit(1)).first()
+        area_out = db.session.scalars(deps.where(sa.not_(st_intersects)).limit(1)).first()
 
         with db.session.begin_nested():
             rule = SensitivityRule(
@@ -299,16 +318,21 @@ class TestSensitivity:
         transaction.rollback()
 
     def test_synthese_sensitivity(self, app, source):
-        taxon = Taxref.query.first()
-        sensitivity_nomenc_type = BibNomenclaturesTypes.query.filter_by(
-            mnemonique="SENSIBILITE"
-        ).one()
-        nomenc_not_sensitive = TNomenclatures.query.filter_by(
-            id_type=sensitivity_nomenc_type.id_type, mnemonique="0"
-        ).one()
-        nomenc_no_diff = TNomenclatures.query.filter_by(
-            id_type=sensitivity_nomenc_type.id_type, mnemonique="4"
-        ).one()
+        taxon = db.session.scalars(sa.select(Taxref).limit(1)).first()
+        sensitivity_nomenc_type = db.session.execute(
+            sa.select(BibNomenclaturesTypes).filter_by(mnemonique="SENSIBILITE")
+        ).scalar_one()
+        nomenc_not_sensitive = db.session.execute(
+            sa.select(TNomenclatures).filter_by(
+                id_type=sensitivity_nomenc_type.id_type, mnemonique="0"
+            )
+        ).scalar_one()
+        nomenc_no_diff = db.session.execute(
+            sa.select(TNomenclatures).filter_by(
+                id_type=sensitivity_nomenc_type.id_type, mnemonique="4"
+            )
+        ).scalar_one()
+
         with db.session.begin_nested():
             rule = SensitivityRule(
                 cd_nom=taxon.cd_nom,
