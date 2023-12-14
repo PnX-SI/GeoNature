@@ -359,11 +359,11 @@ def get_one_synthese(permissions, id_synthese):
             lazyload(Synthese.reports).joinedload(TReport.report_type)
         )
 
-    blurring_permissions, precise_permissions = split_blurring_precise_permissions(permissions)
-
     synthese = synthese_query.get_or_404(id_synthese)
     if not synthese.has_instance_permission(permissions=permissions):
         raise Forbidden()
+
+    _, precise_permissions = split_blurring_precise_permissions(permissions)
 
     # If blurring permissions and obs sensitive.
     if (
@@ -432,6 +432,7 @@ def get_one_synthese(permissions, id_synthese):
 
     synthese_schema = SyntheseSchema(
         only=Synthese.nomenclature_fields + fields,
+        exclude=["areas.geom"],
         as_geojson=True,
         feature_geometry="the_geom_authorized",
     )
