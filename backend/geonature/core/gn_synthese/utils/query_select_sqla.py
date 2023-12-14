@@ -149,12 +149,12 @@ class SyntheseQuery:
             if perm.sensitivity_filter:
                 if nomenclature_non_sensible is None:
                     nomenclature_non_sensible = (
-                        TNomenclatures.query.filter(
+                        TNomenclatures.query.where(
                             TNomenclatures.nomenclature_type.has(
                                 BibNomenclaturesTypes.mnemonique == "SENSIBILITE"
                             )
                         )
-                        .filter(TNomenclatures.cd_nomenclature == "0")
+                        .where(TNomenclatures.cd_nomenclature == "0")
                         .one()
                     )
                 perm_filters.append(
@@ -369,7 +369,7 @@ class SyntheseQuery:
         if "id_organism" in self.filters:
             datasets = (
                 DB.session.query(CorDatasetActor.id_dataset)
-                .filter(CorDatasetActor.id_organism.in_(self.filters.pop("id_organism")))
+                .where(CorDatasetActor.id_organism.in_(self.filters.pop("id_organism")))
                 .all()
             )
             formated_datasets = [d[0] for d in datasets]

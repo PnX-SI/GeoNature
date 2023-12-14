@@ -80,7 +80,7 @@ def cruved_af_filter(model, role, scope):
         # if organism is None => do not filter on id_organism even if level = 2
         if scope == 2 and role.id_organisme is not None:
             or_filter.append(CorAcquisitionFrameworkActor.id_organism == role.id_organisme)
-        sub_q = sub_q.filter(
+        sub_q = sub_q.where(
             and_(
                 or_(*or_filter),
                 model.id_acquisition_framework == TAcquisitionFramework.id_acquisition_framework,

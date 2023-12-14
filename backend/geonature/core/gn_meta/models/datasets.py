@@ -165,13 +165,13 @@ class TDatasets(db.Model):
     @staticmethod
     def get_id(uuid_dataset):
         return DB.session.execute(
-            select(TDatasets.id_dataset).filter(TDatasets.unique_dataset_id == uuid_dataset)
+            select(TDatasets.id_dataset).where(TDatasets.unique_dataset_id == uuid_dataset)
         ).scalar_one_or_none()
 
     @staticmethod
     def get_uuid(id_dataset):
         return DB.session.execute(
-            select(TDatasets.unique_dataset_id).filter(TDatasets.id_dataset == id_dataset)
+            select(TDatasets.unique_dataset_id).where(TDatasets.id_dataset == id_dataset)
         ).scalar_one_or_none()
 
     @classmethod
