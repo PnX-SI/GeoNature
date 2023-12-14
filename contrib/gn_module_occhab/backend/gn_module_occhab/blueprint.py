@@ -243,7 +243,7 @@ def export_all_habitats(
             columns_to_serialize.append(db_col.key)
     results = (
         db.session.query(export_view.tableDef)
-        .filter(export_view.tableDef.columns.id_station.in_(data["idsStation"]))
+        .where(export_view.tableDef.columns.id_station.in_(data["idsStation"]))
         .limit(blueprint.config["NB_MAX_EXPORT"])
     )
     if export_format == "csv":
@@ -289,15 +289,15 @@ def get_default_nomenclatures():
         organism = params["organism"]
     types = request.args.getlist("mnemonique")
 
-    q = db.select(
+    query = db.select(
         distinct(DefaultNomenclatureValue.mnemonique_type),
         func.pr_occhab.get_default_nomenclature_value(
             DefaultNomenclatureValue.mnemonique_type, organism
         ),
     )
     if len(types) > 0:
-        q = q.filter(DefaultNomenclatureValue.mnemonique_type.in_(tuple(types)))
-    data = db.session.execute(q).all()
+        query = query.where(DefaultNomenclatureValue.mnemonique_type.in_(tuple(types)))
+    data = db.session.execute(query).all()
 
     formated_dict = {}
     for d in data:

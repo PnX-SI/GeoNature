@@ -610,7 +610,7 @@ def export(scope):
         .where(TAdditionalFields.exportable == True)
     )
     global_add_fields = db.session.scalars(
-        query_add_fields.filter(~TAdditionalFields.datasets.any())
+        query_add_fields.where(~TAdditionalFields.datasets.any())
     ).all()
     if "id_dataset" in request.args:
         dataset_add_fields = db.session.scalars(

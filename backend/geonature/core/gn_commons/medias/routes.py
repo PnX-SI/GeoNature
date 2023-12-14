@@ -23,7 +23,7 @@ def get_medias(uuid_attached_row):
     """
 
     res = DB.session.scalars(
-        DB.select(TMedias).filter(TMedias.uuid_attached_row == uuid_attached_row)
+        DB.select(TMedias).where(TMedias.uuid_attached_row == uuid_attached_row)
     ).all()
     return [r.as_dict() for r in (res or [])]
 

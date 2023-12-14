@@ -45,7 +45,7 @@ class ReleveRepository:
         allowed_datasets = DB.session.scalars(TDatasets.filter_by_scope(scope)).unique().all()
         allowed_datasets = [dataset.id_dataset for dataset in allowed_datasets]
         if scope == 2:
-            q = q.filter(
+            q = q.where(
                 or_(
                     self.model.id_dataset.in_(tuple(allowed_datasets)),
                     self.model.observers.any(id_role=user.id_role),
@@ -138,7 +138,7 @@ def get_query_occtax_filters(
         q = q.join(
             TOccurrencesOccurrence,
             TOccurrencesOccurrence.id_releve_occtax == mappedView.id_releve_occtax,
-        ).filter(TOccurrencesOccurrence.cd_nom == int(params.pop("cd_nom")))
+        ).where(TOccurrencesOccurrence.cd_nom == int(params.pop("cd_nom")))
     if "observers" in params:
         if not is_already_joined(corRoleRelevesOccurrence, q):
             q = q.join(
@@ -146,7 +146,7 @@ def get_query_occtax_filters(
                 corRoleRelevesOccurrence.id_releve_occtax == mappedView.id_releve_occtax,
             )
 
-        q = q.filter(corRoleRelevesOccurrence.id_role.in_(args.getlist("observers")))
+        q = q.where(corRoleRelevesOccurrence.id_role.in_(args.getlist("observers")))
         params.pop("observers")
 
     if "date_up" in params:
@@ -177,7 +177,7 @@ def get_query_occtax_filters(
         q = q.where(mappedView.altitude_min >= params.pop("altitude_min"))
 
     if "organism" in params:
-        q = q.join(CorDatasetActor, CorDatasetActor.id_dataset == mappedView.id_dataset).filter(
+        q = q.join(CorDatasetActor, CorDatasetActor.id_dataset == mappedView.id_dataset).where(
             CorDatasetActor.id_organism == int(params.pop("organism"))
         )
 
@@ -196,14 +196,14 @@ def get_query_occtax_filters(
                 TOccurrencesOccurrence,
                 mappedView.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
             )
-        q = q.filter(TOccurrencesOccurrence.non_digital_proof == params.pop("non_digital_proof"))
+        q = q.where(TOccurrencesOccurrence.non_digital_proof == params.pop("non_digital_proof"))
     if "digital_proof" in params:
         if not is_already_joined(TOccurrencesOccurrence, q):
             q = q.join(
                 TOccurrencesOccurrence,
                 mappedView.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
             )
-        q = q.filter(TOccurrencesOccurrence.digital_proof == params.pop("digital_proof"))
+        q = q.where(TOccurrencesOccurrence.digital_proof == params.pop("digital_proof"))
     # Generic Filters
     for param in params:
         if param in table_columns:
@@ -222,7 +222,7 @@ def get_query_occtax_filters(
             )
         for nomenclature in releve_filters:
             col = getattr(TRelevesOccurrence.__table__.columns, nomenclature)
-            q = q.filter(col == params.pop(nomenclature))
+            q = q.where(col == params.pop(nomenclature))
 
     if len(occurrence_filters) > 0:
         if not is_already_joined(TOccurrencesOccurrence, q):

@@ -53,7 +53,7 @@ def info():
             select(
                 SensitivityRule.source,
                 func.count(SensitivityRule.id)
-                .filter(SensitivityRule.active == True)
+                .where(SensitivityRule.active == True)
                 .label("active_count"),
                 func.count(SensitivityRule.id).label("total_count"),
             )

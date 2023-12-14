@@ -793,18 +793,18 @@ def get_autocomplete_taxons_synthese():
         .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
     )
     search_name = search_name.replace(" ", "%")
-    q = q.filter(
+    q = q.where(
         VMTaxrefListForautocomplete.unaccent_search_name.ilike(
             func.unaccent("%" + search_name + "%")
         )
     )
     regne = request.args.get("regne")
     if regne:
-        q = q.filter(VMTaxrefListForautocomplete.regne == regne)
+        q = q.where(VMTaxrefListForautocomplete.regne == regne)
 
     group2_inpn = request.args.get("group2_inpn")
     if group2_inpn:
-        q = q.filter(VMTaxrefListForautocomplete.group2_inpn == group2_inpn)
+        q = q.where(VMTaxrefListForautocomplete.group2_inpn == group2_inpn)
     q = q.order_by(desc(VMTaxrefListForautocomplete.cd_nom == VMTaxrefListForautocomplete.cd_ref))
     limit = request.args.get("limit", 20)
     data = q.order_by(desc("idx_trgm")).limit(20).all()
@@ -854,7 +854,7 @@ def getDefaultsNomenclatures():
         ),
     )
     if len(types) > 0:
-        q = q.filter(DefaultsNomenclaturesValue.mnemonique_type.in_(tuple(types)))
+        q = q.where(DefaultsNomenclaturesValue.mnemonique_type.in_(tuple(types)))
     data = q.all()
     if not data:
         raise NotFound
@@ -891,15 +891,15 @@ def get_color_taxon():
         q = q.join(LAreas, LAreas.id_area == VColorAreaTaxon.id_area).join(
             BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type
         )
-        q = q.filter(BibAreasTypes.type_code.in_(tuple(id_areas_type)))
+        q = q.where(BibAreasTypes.type_code.in_(tuple(id_areas_type)))
     if len(id_areas) > 0:
         # check if the join already done on l_areas
         if not is_already_joined(LAreas, q):
             q = q.join(LAreas, LAreas.id_area == VColorAreaTaxon.id_area)
-        q = q.filter(LAreas.id_area.in_(tuple(id_areas)))
+        q = q.where(LAreas.id_area.in_(tuple(id_areas)))
     q = q.order_by(VColorAreaTaxon.cd_nom).order_by(VColorAreaTaxon.id_area)
     if len(cd_noms) > 0:
-        q = q.filter(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
+        q = q.where(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
     results = q.paginate(page=page, per_page=limit, error_out=False)
 
     return jsonify([d.as_dict() for d in results.items])
@@ -928,7 +928,7 @@ def get_taxa_count():
     query = DB.session.query(func.count(distinct(Synthese.cd_nom))).select_from(Synthese)
 
     if "id_dataset" in params:
-        query = query.filter(Synthese.id_dataset == params["id_dataset"])
+        query = query.where(Synthese.id_dataset == params["id_dataset"])
     return query.one()[0]
 
 
@@ -956,7 +956,7 @@ def get_observation_count():
     query = db.select(func.count(Synthese.id_synthese)).select_from(Synthese)
 
     if "id_dataset" in params:
-        query = query.filter(Synthese.id_dataset == params["id_dataset"])
+        query = query.where(Synthese.id_dataset == params["id_dataset"])
 
     return DB.session.execute(query).scalar_one()
 
@@ -983,9 +983,9 @@ def get_bbox():
     query = DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
 
     if "id_dataset" in params:
-        query = query.filter(Synthese.id_dataset == params["id_dataset"])
+        query = query.where(Synthese.id_dataset == params["id_dataset"])
     if "id_source" in params:
-        query = query.filter(Synthese.id_source == params["id_source"])
+        query = query.where(Synthese.id_source == params["id_source"])
     data = query.one()
     if data and data[0]:
         return Response(data[0], mimetype="application/json")
@@ -1047,15 +1047,15 @@ def get_taxa_distribution():
     )
 
     if id_dataset:
-        query = query.filter(Synthese.id_dataset == id_dataset)
+        query = query.where(Synthese.id_dataset == id_dataset)
 
     elif id_af:
-        query = query.outerjoin(TDatasets, TDatasets.id_dataset == Synthese.id_dataset).filter(
+        query = query.outerjoin(TDatasets, TDatasets.id_dataset == Synthese.id_dataset).where(
             TDatasets.id_acquisition_framework == id_af
         )
     # User can add id_source filter along with id_dataset or id_af
     if id_source is not None:
-        query = query.filter(Synthese.id_source == id_source)
+        query = query.where(Synthese.id_source == id_source)
 
     data = query.group_by(rank).all()
     return jsonify([{"count": d[0], "group": d[1]} for d in data])
@@ -1112,12 +1112,12 @@ def create_report(permissions):
     if not synthese.has_instance_permission(permissions):
         raise Forbidden
 
-    report_query = TReport.query.filter(
+    report_query = TReport.query.where(
         TReport.id_synthese == id_synthese,
         TReport.report_type.has(BibReportsTypes.type == type_name),
     )
 
-    user_pin = TReport.query.filter(
+    user_pin = TReport.query.where(
         TReport.id_synthese == id_synthese,
         TReport.report_type.has(BibReportsTypes.type == "pin"),
         TReport.id_role == g.current_user.id_role,
@@ -1146,7 +1146,7 @@ def create_report(permissions):
         # Get the users that commented the observation
         commenters = {
             report.id_role
-            for report in report_query.filter(
+            for report in report_query.where(
                 TReport.id_role.notin_({synthese.id_digitiser} | observers)
             ).distinct(TReport.id_role)
         }
@@ -1209,7 +1209,7 @@ def list_reports(permissions):
     if not synthese.has_instance_permission(permissions):
         raise Forbidden
     # START REQUEST
-    req = TReport.query.filter(TReport.id_synthese == id_synthese)
+    req = TReport.query.where(TReport.id_synthese == id_synthese)
     # SORT
     if sort == "asc":
         req = req.order_by(asc(TReport.creation_date))
@@ -1221,10 +1221,10 @@ def list_reports(permissions):
     if type_name and not type_exists:
         raise BadRequest("This report type does not exist")
     if type_name:
-        req = req.filter(TReport.report_type.has(BibReportsTypes.type == type_name))
+        req = req.where(TReport.report_type.has(BibReportsTypes.type == type_name))
     # filter by id_role for pin type only
     if type_name and type_name == "pin":
-        req = req.filter(TReport.id_role == g.current_user.id_role)
+        req = req.where(TReport.id_role == g.current_user.id_role)
     req = req.options(
         joinedload(TReport.user).load_only(User.nom_role, User.prenom_role),
         joinedload(TReport.report_type),
