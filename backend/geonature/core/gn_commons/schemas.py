@@ -52,7 +52,7 @@ class TValidationSchema(MA.SQLAlchemyAutoSchema):
         model = TValidations
         load_instance = True
         include_fk = True
-    
+
     validation_label = fields.Nested(NomenclatureSchema, dump_only=True)
     validator_role = MA.Nested(UserSchema, dump_only=True)
 

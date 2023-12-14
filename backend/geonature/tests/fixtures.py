@@ -26,7 +26,13 @@ from geonature.core.gn_meta.models import (
     CorDatasetActor,
     CorAcquisitionFrameworkActor,
 )
-from geonature.core.gn_synthese.models import TSources, Synthese, TReport, BibReportsTypes, corAreaSynthese
+from geonature.core.gn_synthese.models import (
+    TSources,
+    Synthese,
+    TReport,
+    BibReportsTypes,
+    corAreaSynthese,
+)
 from geonature.core.sensitivity.models import SensitivityRule, cor_sensitivity_area
 
 from pypnusershub.db.models import (

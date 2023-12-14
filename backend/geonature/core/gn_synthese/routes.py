@@ -238,7 +238,9 @@ def get_observations_for_web(permissions):
         obs_query = obs_query.add_columns(VSyntheseForWebApp.id_synthese)
         # Need to select the size_hierarchy to use is after (only if blurring permissions are found)
         if blurring_permissions:
-            obs_query = obs_query.add_columns(allowed_geom_cte.c.size_hierarchy.label("size_hierarchy"))
+            obs_query = obs_query.add_columns(
+                allowed_geom_cte.c.size_hierarchy.label("size_hierarchy")
+            )
         obs_query = obs_query.cte("OBS")
 
         agg_areas = (
@@ -428,8 +430,11 @@ def get_one_synthese(permissions, id_synthese):
 
     synthese = synthese_query.filter(Synthese.id_synthese == id_synthese).one()
 
-    synthese_schema = SyntheseSchema(only=Synthese.nomenclature_fields + fields,
-                                     as_geojson=True, feature_geometry="the_geom_authorized")
+    synthese_schema = SyntheseSchema(
+        only=Synthese.nomenclature_fields + fields,
+        as_geojson=True,
+        feature_geometry="the_geom_authorized",
+    )
     return synthese_schema.dump(synthese)
 
 

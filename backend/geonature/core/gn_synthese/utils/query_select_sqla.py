@@ -156,9 +156,13 @@ class SyntheseQuery:
                         )
                     )
                     if not blur_sensitive_observations:
-                        excluded_sensitivity = excluded_sensitivity.filter(TNomenclatures.cd_nomenclature > "0")
+                        excluded_sensitivity = excluded_sensitivity.filter(
+                            TNomenclatures.cd_nomenclature > "0"
+                        )
                     else:
-                        excluded_sensitivity = excluded_sensitivity.filter(TNomenclatures.cd_nomenclature == "4")
+                        excluded_sensitivity = excluded_sensitivity.filter(
+                            TNomenclatures.cd_nomenclature == "4"
+                        )
                     excluded_sensitivity = excluded_sensitivity.all()
                 perm_filters.append(
                     self.model.id_nomenclature_sensitivity.notin_(

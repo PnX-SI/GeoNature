@@ -12,16 +12,19 @@ from ref_geo.schemas import AreaSchema
 from utils_flask_sqla.schema import SmartRelationshipsMixin
 from utils_flask_sqla_geo.schema import GeoAlchemyAutoSchema, GeoModelConverter
 
+
 class ReportTypeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = BibReportsTypes
 
+
 class ReportSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
     class Meta:
         model = TReport
-    
+
     report_type = ma.Nested(ReportTypeSchema, dump_only=True)
     user = ma.Nested(UserSchema, dump_only=True)
+
 
 class SourceSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
