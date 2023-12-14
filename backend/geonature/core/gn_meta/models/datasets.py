@@ -140,8 +140,7 @@ class TDatasets(db.Model):
         return [actor.organism for actor in self.cor_dataset_actor if actor.organism is not None]
 
     def is_deletable(self):
-        # FIXME: replace for sqlalchemy2 
-        return not DB.session.query(self.synthese_records.exists()).scalar()
+        return not DB.session.execute(self.synthese_records.exists().select()).scalar()
 
     def has_instance_permission(self, scope, _through_af=True):
         """

@@ -5,6 +5,7 @@ from flask import g, url_for
 from geonature.utils.env import db
 
 from pypnusershub.db.models import User, Application, AppUser, UserApplicationRight, Profils
+from sqlalchemy import select
 
 from . import *
 from .utils import logged_user_headers
@@ -17,10 +18,12 @@ class TestUsersLogin:
         with db.session.begin_nested():
             user = User(groupe=False, active=True, identifiant="user", password="password")
             db.session.add(user)
-            application = Application.query.filter_by(
-                code_application=app.config["CODE_APPLICATION"]
+            application = db.session.scalars(
+                select(Application).filter_by(code_application=app.config["CODE_APPLICATION"])
             ).one()
-            profil = Profils.query.filter(Profils.applications.contains(application)).first()
+            profil = db.session.scalars(
+                select(Profils).where(Profils.applications.contains(application)).limit(1)
+            ).first()
             right = UserApplicationRight(
                 role=user, id_profil=profil.id_profil, id_application=application.id_application
             )

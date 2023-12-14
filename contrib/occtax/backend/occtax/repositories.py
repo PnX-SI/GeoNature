@@ -1,6 +1,5 @@
 from flask import g
-from sqlalchemy import or_, case, func
-from sqlalchemy.sql import func, and_
+from sqlalchemy import or_, case, func, select, and_
 from sqlalchemy.orm.exc import NoResultFound
 from urllib.parse import urljoin
 from werkzeug.exceptions import NotFound
@@ -38,7 +37,7 @@ class ReleveRepository:
         Filter with autorized data via cruved
         and via the current_module (only datasets of this module)
         """
-        q = DB.session.query(self.model).filter(
+        q = select(self.model).where(
             self.model.id_dataset.in_(
                 tuple(map(lambda x: x.id_dataset, g.current_module.datasets))
             )
@@ -54,7 +53,7 @@ class ReleveRepository:
                 )
             )
         elif scope == 1:
-            q = q.filter(
+            q = q.where(
                 or_(
                     self.model.id_dataset.in_(tuple(allowed_datasets)),
                     self.model.observers.any(id_role=user.id_role),
@@ -70,7 +69,7 @@ class ReleveRepository:
         """
         allowed_datasets = DB.session.scalars(TDatasets.filter_by_scope(scope)).unique().all()
         allowed_datasets = [dataset.id_dataset for dataset in allowed_datasets]
-        q = DB.session.query(self.model.tableDef)
+        q = select(self.model.tableDef)
         if scope in (1, 2):
             q = q.outerjoin(
                 corRoleRelevesOccurrence,
@@ -78,7 +77,7 @@ class ReleveRepository:
                 == corRoleRelevesOccurrence.id_releve_occtax,
             )
             if scope == 2:
-                q = q.filter(
+                q = q.where(
                     or_(
                         self.model.tableDef.columns.id_dataset.in_(tuple(allowed_datasets)),
                         corRoleRelevesOccurrence.id_role == user.id_role,
@@ -86,14 +85,14 @@ class ReleveRepository:
                     )
                 )
             elif scope == 1:
-                q = q.filter(
+                q = q.where(
                     or_(
                         self.model.tableDef.columns.id_dataset.in_(tuple(allowed_datasets)),
                         corRoleRelevesOccurrence.id_role == user.id_role,
                         self.model.tableDef.columns.id_digitiser == user.id_role,
                     )
                 )
-        return q.filter(
+        return q.where(
             self.model.tableDef.columns.id_dataset.in_(
                 tuple(map(lambda x: x.id_dataset, g.current_module.datasets))
             )
@@ -154,28 +153,28 @@ def get_query_occtax_filters(
         testT = testDataType(params.get("date_up"), DB.DateTime, "date_up")
         if testT:
             raise GeonatureApiError(message=testT)
-        q = q.filter(mappedView.date_max <= params.pop("date_up"))
+        q = q.where(mappedView.date_max <= params.pop("date_up"))
     if "date_low" in params:
         testT = testDataType(params.get("date_low"), DB.DateTime, "date_low")
         if testT:
             raise GeonatureApiError(message=testT)
-        q = q.filter(mappedView.date_min >= params.pop("date_low"))
+        q = q.where(mappedView.date_min >= params.pop("date_low"))
     if "date_eq" in params:
         testT = testDataType(params.get("date_eq"), DB.DateTime, "date_eq")
         if testT:
             raise GeonatureApiError(message=testT)
-        q = q.filter(mappedView.date_min == params.pop("date_eq"))
+        q = q.where(mappedView.date_min == params.pop("date_eq"))
     if "altitude_max" in params:
         testT = testDataType(params.get("altitude_max"), DB.Integer, "altitude_max")
         if testT:
             raise GeonatureApiError(message=testT)
-        q = q.filter(mappedView.altitude_max <= params.pop("altitude_max"))
+        q = q.where(mappedView.altitude_max <= params.pop("altitude_max"))
 
     if "altitude_min" in params:
         testT = testDataType(params.get("altitude_min"), DB.Integer, "altitude_min")
         if testT:
             raise GeonatureApiError(message=testT)
-        q = q.filter(mappedView.altitude_min >= params.pop("altitude_min"))
+        q = q.where(mappedView.altitude_min >= params.pop("altitude_min"))
 
     if "organism" in params:
         q = q.join(CorDatasetActor, CorDatasetActor.id_dataset == mappedView.id_dataset).filter(
@@ -184,7 +183,7 @@ def get_query_occtax_filters(
 
     if "observers_txt" in params:
         observers_query = "%{}%".format(params.pop("observers_txt"))
-        q = q.filter(getattr(mappedView, obs_txt_column).ilike(observers_query))
+        q = q.where(getattr(mappedView, obs_txt_column).ilike(observers_query))
 
     if from_generic_table:
         table_columns = mappedView
@@ -212,7 +211,7 @@ def get_query_occtax_filters(
             testT = testDataType(params[param], col.type, param)
             if testT:
                 raise GeonatureApiError(message=testT)
-            q = q.filter(col == params[param])
+            q = q.where(col == params[param])
     releve_filters, occurrence_filters, counting_filters = get_nomenclature_filters(params)
     if len(releve_filters) > 0:
         # if not from generic table, the FROM clause is already from TRelevesOccurrences
@@ -234,7 +233,7 @@ def get_query_occtax_filters(
 
         for nomenclature in occurrence_filters:
             col = getattr(TOccurrencesOccurrence.__table__.columns, nomenclature)
-            q = q.filter(col == params.pop(nomenclature))
+            q = q.where(col == params.pop(nomenclature))
 
     if len(counting_filters) > 0:
         if len(occurrence_filters) > 0:
@@ -254,7 +253,7 @@ def get_query_occtax_filters(
             )
         for nomenclature in counting_filters:
             col = getattr(CorCountingOccurrence.__table__.columns, nomenclature)
-            q = q.filter(col == params.pop(nomenclature))
+            q = q.where(col == params.pop(nomenclature))
     return q
 
 
@@ -275,10 +274,11 @@ def get_query_occtax_order(orderby, mappedView, q, from_generic_table=False):
                 orderCol = getattr(mappedView, "date_min")
         elif orderby.get("orderby") == "nb_taxons" or orderby.get("orderby") == "taxons":
             sub_query = (
-                DB.session.query(
+                select(
                     TRelevesOccurrence.id_releve_occtax,
                     DB.func.count().label("nb_taxons"),
                 )
+                .select_from(TRelevesOccurrence)
                 .join(
                     TOccurrencesOccurrence,
                     TOccurrencesOccurrence.id_releve_occtax == TRelevesOccurrence.id_releve_occtax,

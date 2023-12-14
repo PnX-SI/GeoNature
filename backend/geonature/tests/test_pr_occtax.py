@@ -439,7 +439,9 @@ class TestOcctaxOccurrence:
         uuid_counting = [
             counting["unique_id_sinp_occtax"] for counting in occ["cor_counting_occtax"]
         ]
-        synthese_data = Synthese.query.filter(Synthese.unique_id_sinp.in_(uuid_counting))
+        synthese_data = db.session.scalars(
+            db.select(Synthese).where(Synthese.unique_id_sinp.in_(uuid_counting))
+        ).all()
         for s in synthese_data:
             assert s.cd_nom == 4516
         {3, 5}.issubset([s.count_max for s in synthese_data])
