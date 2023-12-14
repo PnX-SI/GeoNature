@@ -18,7 +18,7 @@ from geojson import FeatureCollection, Feature
 from geoalchemy2.shape import from_shape
 from pypnusershub.db.models import User
 from shapely.geometry import asShape
-from sqlalchemy import func, distinct
+from sqlalchemy import func, distinct, select
 from sqlalchemy.sql import text
 from sqlalchemy.orm import raiseload, joinedload
 
@@ -241,11 +241,11 @@ def export_all_habitats(
             if db_col.key != "geometry":
                 db_cols_for_shape.append(db_col)
             columns_to_serialize.append(db_col.key)
-    results = (
-        db.session.query(export_view.tableDef)
+    results = db.session.scalars(
+        select(export_view.tableDef)
         .where(export_view.tableDef.columns.id_station.in_(data["idsStation"]))
         .limit(blueprint.config["NB_MAX_EXPORT"])
-    )
+    ).all()
     if export_format == "csv":
         formated_data = [export_view.as_dict(d, fields=[]) for d in results]
         return to_csv_resp(file_name, formated_data, separator=";", columns=columns_to_serialize)
