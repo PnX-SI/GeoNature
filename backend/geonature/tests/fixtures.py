@@ -317,7 +317,7 @@ def datasets(users, acquisition_frameworks, module):
     principal_actor_role = db.session.execute(
         db.select(TNomenclatures)
         .join(BibNomenclaturesTypes, TNomenclatures.id_type == BibNomenclaturesTypes.id_type)
-        .filter(
+        .where(
             TNomenclatures.mnemonique == "Contact principal",
             BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR",
         )
@@ -661,7 +661,7 @@ def create_media(media_path=""):
     location = db.session.execute(
         select(BibTablesLocation)
         .where(BibTablesLocation.schema_name == "gn_commons")
-        .filter(BibTablesLocation.table_name == "t_medias")
+        .where(BibTablesLocation.table_name == "t_medias")
     ).scalar_one()
 
     new_media = TMedias(

@@ -360,7 +360,7 @@ class TMediumRepository:
 
         # delete media temp > 24h
         res_medias_temp = DB.session.scalars(
-            DB.select(TMedias.id_media).filter(
+            DB.select(TMedias.id_media).where(
                 and_(
                     TMedias.meta_update_date
                     < (datetime.datetime.now() - datetime.timedelta(hours=24)),
@@ -421,8 +421,8 @@ def get_table_location_id(schema_name, table_name):
     try:
         location = DB.session.execute(
             DB.select(BibTablesLocation)
-            .filter(BibTablesLocation.schema_name == schema_name)
-            .filter(BibTablesLocation.table_name == table_name)
+            .where(BibTablesLocation.schema_name == schema_name)
+            .where(BibTablesLocation.table_name == table_name)
         ).scalar_one()
     except NoResultFound:
         return None

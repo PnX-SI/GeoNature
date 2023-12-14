@@ -340,7 +340,7 @@ def sensi_report(ds_id=None):
     )
 
     if id_import:
-        query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).filter(
+        query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).where(
             TSources.name_source == "Import(id={})".format(id_import)
         )
 
