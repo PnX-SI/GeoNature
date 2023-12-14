@@ -40,7 +40,6 @@ def validate_temp_user(data):
     """
     token = data.get("token", None)
 
-    # user = DB.session.query(TempUser).where(TempUser.token_role == token).first()
     user = DB.session.scalars(
         db.select(TempUser).where(TempUser.token_role == token).limit(1)
     ).first()
