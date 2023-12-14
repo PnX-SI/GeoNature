@@ -389,13 +389,13 @@ def export_taxon_web(permissions):
 
     subq = synthese_query_class.query.alias("subq")
 
-    q = DB.session.query(*columns, subq.c.nb_obs, subq.c.date_min, subq.c.date_max).join(
+    query = select(*columns, subq.c.nb_obs, subq.c.date_min, subq.c.date_max).join(
         subq, subq.c.cd_ref == columns.cd_ref
     )
 
     return to_csv_resp(
         datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
-        data=serializeQuery(q.all(), q.column_descriptions),
+        data=serializeQuery(db.session.execute(query).all(), query.column_descriptions),
         separator=";",
         columns=[db_col.key for db_col in columns] + ["nb_obs", "date_min", "date_max"],
     )
@@ -763,7 +763,7 @@ def get_taxon_tree():
     taxon_tree_table = GenericTable(
         tableName="v_tree_taxons_synthese", schemaName="gn_synthese", engine=DB.engine
     )
-    data = DB.session.query(taxon_tree_table.tableDef).all()
+    data = db.session.scalars(select(taxon_tree_table.tableDef)).all()
     return [taxon_tree_table.as_dict(d) for d in data]
 
 
@@ -782,8 +782,8 @@ def get_autocomplete_taxons_synthese():
     :query str group2_inpn : filter with INPN group 2
     """
     search_name = request.args.get("search_name", "")
-    q = (
-        DB.session.query(
+    query = (
+        select(
             VMTaxrefListForautocomplete,
             func.similarity(VMTaxrefListForautocomplete.unaccent_search_name, search_name).label(
                 "idx_trgm"
@@ -793,21 +793,29 @@ def get_autocomplete_taxons_synthese():
         .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
     )
     search_name = search_name.replace(" ", "%")
-    q = q.where(
+    query = query.where(
         VMTaxrefListForautocomplete.unaccent_search_name.ilike(
             func.unaccent("%" + search_name + "%")
         )
     )
     regne = request.args.get("regne")
     if regne:
-        q = q.where(VMTaxrefListForautocomplete.regne == regne)
+        query = query.where(VMTaxrefListForautocomplete.regne == regne)
 
     group2_inpn = request.args.get("group2_inpn")
     if group2_inpn:
-        q = q.where(VMTaxrefListForautocomplete.group2_inpn == group2_inpn)
-    q = q.order_by(desc(VMTaxrefListForautocomplete.cd_nom == VMTaxrefListForautocomplete.cd_ref))
+        query = query.where(VMTaxrefListForautocomplete.group2_inpn == group2_inpn)
+
+    # FIXME : won't work now
+    # query = query.order_by(
+    #     desc(VMTaxrefListForautocomplete.cd_nom == VMTaxrefListForautocomplete.cd_ref)
+    # )
     limit = request.args.get("limit", 20)
-    data = q.order_by(desc("idx_trgm")).limit(20).all()
+    data = db.session.execute(
+        query.order_by(
+            desc("idx_trgm"),
+        ).limit(limit)
+    ).all()
     return [d[0].as_dict() for d in data]
 
 
@@ -819,8 +827,8 @@ def get_sources():
 
     .. :quickref: Synthese;
     """
-    q = DB.session.query(TSources)
-    data = q.all()
+    q = select(TSources)
+    data = db.session.scalars(q).all()
     return [n.as_dict() for n in data]
 
 
@@ -847,15 +855,15 @@ def getDefaultsNomenclatures():
         organism = params["organism"]
     types = request.args.getlist("mnemonique_type")
 
-    q = DB.session.query(
+    query = select(
         distinct(DefaultsNomenclaturesValue.mnemonique_type),
         func.gn_synthese.get_default_nomenclature_value(
             DefaultsNomenclaturesValue.mnemonique_type, organism, regne, group2_inpn
         ),
     )
     if len(types) > 0:
-        q = q.where(DefaultsNomenclaturesValue.mnemonique_type.in_(tuple(types)))
-    data = q.all()
+        query = query.where(DefaultsNomenclaturesValue.mnemonique_type.in_(tuple(types)))
+    data = db.session.execute(query).all()
     if not data:
         raise NotFound
     return jsonify(dict(data))
@@ -886,21 +894,21 @@ def get_color_taxon():
     id_areas_type = params.getlist("code_area_type")
     cd_noms = params.getlist("cd_nom")
     id_areas = params.getlist("id_area")
-    q = DB.session.query(VColorAreaTaxon)
+    query = select(VColorAreaTaxon)
     if len(id_areas_type) > 0:
-        q = q.join(LAreas, LAreas.id_area == VColorAreaTaxon.id_area).join(
+        query = query.join(LAreas, LAreas.id_area == VColorAreaTaxon.id_area).join(
             BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type
         )
-        q = q.where(BibAreasTypes.type_code.in_(tuple(id_areas_type)))
+        query = query.where(BibAreasTypes.type_code.in_(tuple(id_areas_type)))
     if len(id_areas) > 0:
         # check if the join already done on l_areas
-        if not is_already_joined(LAreas, q):
-            q = q.join(LAreas, LAreas.id_area == VColorAreaTaxon.id_area)
-        q = q.where(LAreas.id_area.in_(tuple(id_areas)))
-    q = q.order_by(VColorAreaTaxon.cd_nom).order_by(VColorAreaTaxon.id_area)
+        if not is_already_joined(LAreas, query):
+            query = query.join(LAreas, LAreas.id_area == VColorAreaTaxon.id_area)
+        query = query.where(LAreas.id_area.in_(tuple(id_areas)))
+    query = query.order_by(VColorAreaTaxon.cd_nom).order_by(VColorAreaTaxon.id_area)
     if len(cd_noms) > 0:
-        q = q.where(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
-    results = q.paginate(page=page, per_page=limit, error_out=False)
+        query = query.where(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
+    results = db.paginate(query, page=page, per_page=limit, error_out=False)
 
     return jsonify([d.as_dict() for d in results.items])
 
@@ -925,11 +933,12 @@ def get_taxa_count():
     """
     params = request.args
 
-    query = DB.session.query(func.count(distinct(Synthese.cd_nom))).select_from(Synthese)
-
-    if "id_dataset" in params:
-        query = query.where(Synthese.id_dataset == params["id_dataset"])
-    return query.one()[0]
+    query = (
+        select(func.count(distinct(Synthese.cd_nom)))
+        .select_from(Synthese)
+        .where(Synthese.id_dataset == params["id_dataset"] if "id_dataset" in params else True)
+    )
+    return db.session.scalar(query)
 
 
 @routes.route("/observation_count", methods=["GET"])
@@ -980,13 +989,13 @@ def get_bbox():
     """
     params = request.args
 
-    query = DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
+    query = select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
 
     if "id_dataset" in params:
         query = query.where(Synthese.id_dataset == params["id_dataset"])
     if "id_source" in params:
         query = query.where(Synthese.id_source == params["id_source"])
-    data = query.one()
+    data = db.session.execute(query).one()
     if data and data[0]:
         return Response(data[0], mimetype="application/json")
     return "", 204
@@ -1041,7 +1050,7 @@ def get_taxa_distribution():
     Taxref.group2_inpn
 
     query = (
-        DB.session.query(func.count(distinct(Synthese.cd_nom)), rank)
+        select(func.count(distinct(Synthese.cd_nom)), rank)
         .select_from(Synthese)
         .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
     )
@@ -1057,7 +1066,7 @@ def get_taxa_distribution():
     if id_source is not None:
         query = query.where(Synthese.id_source == id_source)
 
-    data = query.group_by(rank).all()
+    data = db.session.execute(query.group_by(rank)).all()
     return jsonify([{"count": d[0], "group": d[1]} for d in data])
 
 
