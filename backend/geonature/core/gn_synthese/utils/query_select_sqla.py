@@ -367,12 +367,12 @@ class SyntheseQuery:
             )
 
         if "id_organism" in self.filters:
-            datasets = (
-                DB.session.query(CorDatasetActor.id_dataset)
-                .where(CorDatasetActor.id_organism.in_(self.filters.pop("id_organism")))
-                .all()
-            )
-            formated_datasets = [d[0] for d in datasets]
+            datasets = DB.session.scalars(
+                select(CorDatasetActor.id_dataset).where(
+                    CorDatasetActor.id_organism.in_(self.filters.pop("id_organism"))
+                )
+            ).all()
+            formated_datasets = [d for d in datasets]
             self.query = self.query.where(self.model.id_dataset.in_(formated_datasets))
         if "date_min" in self.filters:
             self.query = self.query.where(self.model.date_min >= self.filters.pop("date_min"))
