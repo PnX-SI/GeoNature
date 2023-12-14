@@ -7,7 +7,7 @@ from flask import url_for, current_app
 from geoalchemy2.elements import WKTElement
 from PIL import Image
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
-from sqlalchemy import func
+from sqlalchemy import func, select, exists
 from werkzeug.exceptions import Conflict, Forbidden, NotFound, Unauthorized
 from werkzeug.datastructures import Headers
 
@@ -34,8 +34,12 @@ def place(users):
 
 @pytest.fixture(scope="function")
 def additional_field(app, datasets):
-    module = TModules.query.filter(TModules.module_code == "SYNTHESE").one()
-    obj = PermObject.query.filter(PermObject.code_object == "ALL").one()
+    module = db.session.execute(
+        select(TModules).where(TModules.module_code == "SYNTHESE")
+    ).scalar_one()
+    obj = db.session.execute(
+        select(PermObject).where(PermObject.code_object == "ALL")
+    ).scalar_one()
     datasets = list(datasets.values())
     additional_field = TAdditionalFields(
         field_name="test",
@@ -82,7 +86,7 @@ def mobile_app():
 @pytest.fixture(scope="function")
 def nonexistent_media():
     # media can be None
-    return (db.session.query(func.max(TMedias.id_media)).scalar() or 0) + 1
+    return (db.session.scalar(select(func.max(TMedias.id_media)).select_from(TMedias)) or 0) + 1
 
 
 @pytest.fixture(scope="function")
@@ -276,10 +280,12 @@ class TestTMediaRepository:
     @pytest.mark.skip(reason="TODO: mock external request")
     def test_test_url_wrong_video(self, media_repository):
         media_repository.data["media_url"] = "https://www.google.com/"
-        photo_type = TNomenclatures.query.filter(
-            BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
-            TNomenclatures.mnemonique == "Vidéo Youtube",
-        ).one()
+        photo_type = db.session.execute(
+            select(TNomenclatures).where(
+                BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
+                TNomenclatures.mnemonique == "Vidéo Youtube",
+            )
+        ).scalar_one()
         media_repository.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
 
         with pytest.raises(GeoNatureError) as e:
@@ -299,16 +305,14 @@ class TestTMediaRepository:
 class TestTMediaRepositoryVideoLink:
     def test_test_video_link(self, medium, test_media_type, test_media_url, test_wrong_url):
         # Need to create a video link
-        photo_type = (
-            TNomenclatures.query.join(
-                BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type
-            )
-            .filter(
+        photo_type = db.session.execute(
+            select(TNomenclatures)
+            .join(BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type)
+            .where(
                 BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
                 TNomenclatures.mnemonique == test_media_type,
             )
-            .one()
-        )
+        ).scalar_one()
         media = TMediaRepository(id_media=medium.id_media)
         media.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
         media.data["media_url"] = test_media_url
@@ -319,16 +323,14 @@ class TestTMediaRepositoryVideoLink:
 
     def test_test_video_link_wrong(self, medium, test_media_type, test_media_url, test_wrong_url):
         # Need to create a video link
-        photo_type = (
-            TNomenclatures.query.join(
-                BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type
-            )
-            .filter(
+        photo_type = db.session.execute(
+            select(TNomenclatures)
+            .join(BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type)
+            .where(
                 BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
                 TNomenclatures.mnemonique == test_media_type,
             )
-            .one()
-        )
+        ).scalar_one()
         media = TMediaRepository(id_media=medium.id_media)
         media.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
         # WRONG URL:
@@ -351,16 +353,14 @@ class TestTMediaRepositoryVideoLink:
 )
 class TestTMediaRepositoryHeader:
     def test_header_content_type_wrong(self, medium, test_media_type, test_content_type):
-        photo_type = (
-            TNomenclatures.query.join(
-                BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type
-            )
-            .filter(
+        photo_type = db.session.execute(
+            select(TNomenclatures)
+            .join(BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type)
+            .where(
                 BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
                 TNomenclatures.mnemonique == test_media_type,
             )
-            .one()
-        )
+        ).scalar_one()
         media = TMediaRepository(id_media=medium.id_media)
         media.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
 
@@ -452,18 +452,22 @@ class TestCommons:
         set_logged_user(self.client, users["user"])
         response = self.client.post(url_for("gn_commons.add_place"), data=geofeature)
         assert response.status_code == 200
-        assert db.session.query(
-            TPlaces.query.filter_by(
-                place_name=place.place_name, id_role=users["user"].id_role
-            ).exists()
-        ).scalar()
+        assert db.session.scalar(
+            exists()
+            .where(
+                TPlaces.place_name == place.place_name, TPlaces.id_role == users["user"].id_role
+            )
+            .select()
+        )
 
         set_logged_user(self.client, users["user"])
         response = self.client.post(url_for("gn_commons.add_place"), data=geofeature)
         assert response.status_code == Conflict.code
 
     def test_delete_place(self, place, users):
-        unexisting_id = db.session.query(func.max(TPlaces.id_place)).scalar() + 1
+        unexisting_id = (
+            db.session.scalar(select(func.max(TPlaces.id_place)).select_from(TPlaces)) + 1
+        )
         response = self.client.delete(url_for("gn_commons.delete_place", id_place=unexisting_id))
         assert response.status_code == Unauthorized.code
 
@@ -477,9 +481,7 @@ class TestCommons:
         set_logged_user(self.client, users["user"])
         response = self.client.delete(url_for("gn_commons.delete_place", id_place=place.id_place))
         assert response.status_code == 204
-        assert not db.session.query(
-            TPlaces.query.filter_by(id_place=place.id_place).exists()
-        ).scalar()
+        assert not db.session.scalar(exists().where(TPlaces.id_place == place.id_place).select())
 
     def test_get_additional_fields(self, datasets, additional_field):
         query_string = {"module_code": "SYNTHESE", "object_code": "ALL"}
@@ -530,7 +532,9 @@ class TestCommons:
             "field_name": "pytest_valid",
             "module": module.id_module,
             "objects": [perm_object.id_object],
-            "type_widget": BibWidgets.query.filter_by(widget_name="select").one().id_widget,
+            "type_widget": db.session.execute(select(BibWidgets).filter_by(widget_name="select"))
+            .scalar_one()
+            .id_widget,
             "field_values": json.dumps([{"label": "un", "value": 1}]),
         }
 
@@ -540,9 +544,9 @@ class TestCommons:
             content_type="multipart/form-data",
         )
         assert req.status_code == 302
-        assert db.session.query(
-            db.session.query(TAdditionalFields).filter_by(field_name="pytest_valid").exists()
-        ).scalar()
+        assert db.session.scalar(
+            exists().where(TAdditionalFields.field_name == "pytest_valid").select()
+        )
 
         form_values.update(
             {
@@ -557,9 +561,9 @@ class TestCommons:
             content_type="multipart/form-data",
         )
         assert req.status_code != 302
-        assert not db.session.query(
-            db.session.query(TAdditionalFields).filter_by(field_name="pytest_invvalid").exists()
-        ).scalar()
+        assert not db.session.scalar(
+            exists().where(TAdditionalFields.field_name == "pytest_invvalid").select()
+        )
 
     def test_get_t_mobile_apps(self, mobile_app):
         import os, shutil, time

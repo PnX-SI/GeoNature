@@ -196,6 +196,7 @@ def get_synthese_data(scope):
         )
 
     query = syntheseModelQuery.from_statement(query)
+    # FIXME : SQLA1.4
     res = db.session.scalars(query).one()
     print(res)
     # The raise option ensure that we have correctly retrived relationships data at step 3
