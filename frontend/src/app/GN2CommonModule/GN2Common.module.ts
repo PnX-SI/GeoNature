@@ -28,7 +28,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 // Required modules
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 
@@ -130,7 +129,6 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     MatTooltipModule,
     NgbModule,
     NgxDatatableModule,
-    NgxMatSelectSearchModule,
     ReactiveFormsModule,
     NgxDatatableModule,
     NgSelectModule,
@@ -270,7 +268,6 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     MunicipalitiesComponent,
     NgbModule,
     NgxDatatableModule,
-    NgxMatSelectSearchModule,
     NomenclatureComponent,
     ObserversComponent,
     ObserversTextComponent,
