@@ -1,8 +1,12 @@
 CHANGELOG
 =========
 
-2.13.4 (unreleased)
+2.13.4 (2023-12-15)
 -------------------
+
+**🚀 Nouveautés**
+
+- [Synthèse] Ajout des colonnes `group[1,2,3]_inpn` à la vue `gn_synthese.v_synthese_for_web_app` (#2798, par @andriacap)
 
 **🐛 Corrections**
 
