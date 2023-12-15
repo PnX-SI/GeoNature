@@ -10,6 +10,9 @@ GeoNature 2 est une refonte initiée en 2017 par les parcs nationaux français e
 
 Mainteneurs actuels :
 
+- Jacques FIZE (PnEcrins)
+- Pierre NARCISI (Patrinat)
+- Vincent CAUCHOIS (Patrinat)
 - Élie BOUTTIER (PnEcrins)
 - Théo LECHEMIA (PnEcrins)
 - Amandine SAHL (PnCevennes)
@@ -1672,7 +1675,7 @@ Pour sortir une nouvelle version de GeoNature :
     pip-compile requirements.in > requirements.txt
     pip-compile requirements-dev.in > requirements-dev.txt
 
-- Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``, ``backend/requirements-dependencies.in`` (puis regénérer ``backend/requirements.txt`` avec ``pip compile``)
+- Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``
 - Complétez le fichier ``docs/CHANGELOG.md`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
 - Mettez à jour le fichier ``VERSION``
 - Mergez la branche ``develop`` dans la branche ``master``
