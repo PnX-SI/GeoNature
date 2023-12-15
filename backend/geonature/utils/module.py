@@ -16,6 +16,8 @@ from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.utils.env import db, CONFIG_FILE
 from geonature.core.gn_commons.models import TModules
 
+from sqlalchemy import select
+
 
 def iter_modules_dist():
     for module_code_entry in set(entry_points(group="gn_module", name="code")):
@@ -96,7 +98,7 @@ def module_db_upgrade(module_dist, directory=None, sql=False, tag=None, x_arg=[]
     else:
         alembic_branch = None
     module = db.session.execute(
-        db.select(TModules).filter_by(module_code=module_code)
+        select(TModules).filter_by(module_code=module_code)
     ).scalar_one_or_none()
     if module is None:
         # add module to database

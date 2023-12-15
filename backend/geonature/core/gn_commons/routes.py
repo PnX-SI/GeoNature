@@ -65,7 +65,7 @@ def list_modules():
         exclude.extend(params.getlist("exclude"))
 
     query = (
-        db.select(TModules)
+        select(TModules)
         .options(joinedload(TModules.objects))
         .where(TModules.module_code.notin_(exclude))
         .order_by(TModules.module_order.asc())

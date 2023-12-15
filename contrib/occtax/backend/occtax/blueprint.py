@@ -537,7 +537,7 @@ def getDefaultNomenclatures():
     group2_inpn = request.args.get("group2_inpn", "0")
     types = request.args.getlist("id_type")
 
-    query = db.select(
+    query = select(
         distinct(DefaultNomenclaturesValue.mnemonique_type),
         func.pr_occtax.get_default_nomenclature_value(
             DefaultNomenclaturesValue.mnemonique_type, organism, regne, group2_inpn

@@ -603,9 +603,9 @@ class TestCommons:
         schema = "gn_commons"
         table = "t_medias"
         location = db.session.execute(
-            db.select(BibTablesLocation)
-            .filter(BibTablesLocation.schema_name == schema)
-            .filter(BibTablesLocation.table_name == table)
+            select(BibTablesLocation)
+            .where(BibTablesLocation.schema_name == schema)
+            .where(BibTablesLocation.table_name == table)
         ).scalar_one()
 
         response = self.client.get(
