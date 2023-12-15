@@ -106,6 +106,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#integrer-des-donnees">Intégrer des données</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#referentiel-geographique">Référentiel géographique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#affichage-des-referentiels-geographiques-dans-geonature">Affichage des référentiels géographiques dans GeoNature</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#donnees-externes">Données externes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#import-niveau-1">IMPORT NIVEAU 1</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#importer-la-donnee-source-dans-la-bdd-avec-qgis">Importer la donnée source dans la BDD avec QGIS</a></li>
@@ -142,7 +143,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#gestion-de-la-sensibilite">Gestion de la sensibilité</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Introduction</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#criteres-de-sensibilite">Critères de sensibilité</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#niveaux-de-sensibilite">Niveaux de sensibilité</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pour-plus-d-informations">Pour plus d’informations</a></li>
@@ -163,10 +164,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#configuration-du-module">Configuration du module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#afficher-masquer-des-champs-du-formulaire">Afficher/masquer des champs du formulaire</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#modifier-le-champ-observateurs">Modifier le champ Observateurs</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#personnaliser-la-liste-des-taxons-saisissables-dans-le-module">Personnaliser la liste des taxons saisissables dans le module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#personnaliser-la-liste-des-taxons-et-habitats-saisissables-dans-le-module">Personnaliser la liste des taxons et habitats saisissables dans le module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#gerer-les-valeurs-par-defaut-des-nomenclatures">Gérer les valeurs par défaut des nomenclatures</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#personnaliser-l-interface-map-list">Personnaliser l’interface Map-list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ajouter-une-contrainte-d-echelle-de-saisie-sur-la-carte">Ajouter une contrainte d’échelle de saisie sur la carte</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#supprimer-le-remplissage-automatique-de-la-date">Supprimer le remplissage automatique de la date</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#gestion-des-exports">Gestion des exports</a></li>
@@ -186,20 +188,20 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-occhab">Module OCCHAB</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">Installer le module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3">Base de données</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4">Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Installer le module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Base de données</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Configuration</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#formulaire">Formulaire</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-synthese">Module SYNTHESE</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id5">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Configuration</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-validation">Module VALIDATION</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id6">Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Configuration</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#liste-des-champs-visibles">Liste des champs visibles</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#e-mail">E-mail</a></li>
 </ul>
@@ -573,7 +575,7 @@ Certaines opérations complexes telles que la création de trigger ne sont pas p
 <h3>Gestion des droits<a class="headerlink" href="#gestion-des-droits" title="Lien permanent vers cette rubrique"></a></h3>
 <section id="acces-a-geonature-et-cruved">
 <h4>Accès à GeoNature et CRUVED<a class="headerlink" href="#acces-a-geonature-et-cruved" title="Lien permanent vers cette rubrique"></a></h4>
-<p>Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l’application GeoNature sont gérés de manière centralisée dans l’application UsersHub. Pour qu’un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de « Lecteur » dans l’application GeoNature, grâce à l’application UsersHub.</p>
+<p>Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l’application GeoNature sont gérés de manière centralisée dans l’application UsersHub. Pour qu’un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de « Lecteur » dans l’application GeoNature, grâce à l’application UsersHub qui va modifier la table <code class="docutils literal notranslate"><span class="pre">utilisateurs.cor_role_app_profil</span></code>.</p>
 <p>La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (<code class="docutils literal notranslate"><span class="pre">gn_permissions</span></code>) depuis le module ADMIN de GeoNature. Voir <a class="reference external" href="https://docs.geonature.fr/user-manual.html#gestion-des-permissions">https://docs.geonature.fr/user-manual.html#gestion-des-permissions</a>.</p>
 <p>La gestion des permissions dans GeoNature, comme dans beaucoup d’applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins métier de l’application, nous avons rajouté deux actions : « Exporter » et « Valider » (non utilisée), ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.</p>
 <p>Chaque module peut utiliser toutes ou certaines de ces actions.</p>
@@ -636,25 +638,27 @@ geonature permissions supergrant --group --nom <span class="s2">&quot;Grp_admin&
 <ul class="simple">
 <li><p>Toutes les valeurs des listes déroulantes sont gérées dans une table générique <code class="docutils literal notranslate"><span class="pre">ref_nomenclatures.t_nomenclatures</span></code></p></li>
 <li><p>Elles s’appuient sur les nomenclatures du SINP (<a class="reference external" href="http://standards-sinp.mnhn.fr/nomenclature/">http://standards-sinp.mnhn.fr/nomenclature/</a>) qui peuvent être désactivées ou completées</p></li>
-<li><p>Chaque nomenclature est associée à un type, et une vue par type de nomenclature a été ajoutée pour simplifier leur usage</p></li>
+<li><p>Chaque nomenclature est associée à un type (<code class="docutils literal notranslate"><span class="pre">ref_nomenclatures.bib_nomenclatures_types</span></code>), et une vue par type de nomenclature a été ajoutée pour simplifier leur usage</p></li>
 <li><p>Ces nomenclatures sont gérées dans un sous-module pour pouvoir les réutiliser (ainsi que leur mécanisme) dans d’autres applications : <a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/">https://github.com/PnX-SI/Nomenclature-api-module/</a></p></li>
 <li><p>Les identifiants des nomenclatures et des types de nomenclature sont des serials (entiers auto-incrémentés) et ne sont pas prédéfinis lors de l’installation, ni utilisées en dur dans le code des applications. En effet, les nomenclatures peuvent varier en fonction des structures. On utilise le <code class="docutils literal notranslate"><span class="pre">cd_nomenclature</span></code> et le <code class="docutils literal notranslate"><span class="pre">mnémonique</span></code> du type de nomenclature pour retrouver dynamiquement l”<code class="docutils literal notranslate"><span class="pre">id_nomenclature</span></code> d’une nomenclature. C’est cependant cet identifiant qu’on stocke au niveau des données pour garantir l’intégrité référentielle</p></li>
 <li><p>Chaque nomenclature peut être associée à un règne ou un group2inpn (<code class="docutils literal notranslate"><span class="pre">ref_nomenclatures.cor_taxref_nomenclature</span></code>) pour proposer des nomenclatures correspondants à un taxon</p></li>
+<li><p>Il est possible de désactiver des nomenclatures en passant la valeur de la colonne <code class="docutils literal notranslate"><span class="pre">active</span></code> en <cite>false</cite>.</p></li>
 <li><p>Les valeurs par défaut sont définies dans chaque module</p></li>
 <li><p>Pour Occtax c’est dans <code class="docutils literal notranslate"><span class="pre">pr_occtax.defaults_nomenclatures_value</span></code>. Elles peuvent être définies pour chaque type de nomenclature ainsi que par organisme, règne et/ou group2inpn</p></li>
 <li><p>Si organisme = 0 alors la valeur par défaut s’applique à tous les organismes. Idem pour les règnes et group2inpn</p></li>
 <li><p>La fonction <code class="docutils literal notranslate"><span class="pre">pr_occtax.get_default_nomenclature_value</span></code> permet de renvoyer l’id de la nomenclature par défaut</p></li>
 <li><p>Ces valeurs par défaut sont aussi utilisées pour certains champs qui sont cachés (statut_observation, floutage, statut_validation…) mais ne sont donc pas modifiables par l’utilisateur</p></li>
 <li><p>Il existe aussi une table pour définir des valeurs par défaut générales de nomenclature (<code class="docutils literal notranslate"><span class="pre">ref_nomenclatures.defaults_nomenclatures_value</span></code>)</p></li>
-<li><p>Elles peuvent être administrées dans le module Admin de GeoNature</p></li>
+<li><p>Elles peuvent être administrées dans le module Admin de GeoNature.</p></li>
 </ul>
 </section>
 <section id="metadonnees">
 <h3>Métadonnées<a class="headerlink" href="#metadonnees" title="Lien permanent vers cette rubrique"></a></h3>
 <ul class="simple">
-<li><p>Elles sont gérées dans le schéma <code class="docutils literal notranslate"><span class="pre">gn_meta</span></code> basé sur le standard Métadonnées du SINP (<a class="reference external" href="http://standards-sinp.mnhn.fr/category/standards/metadonnees/">http://standards-sinp.mnhn.fr/category/standards/metadonnees/</a>)</p></li>
-<li><p>Elles permettent de gérer des jeux de données, des cadres d’acquisition, des acteurs (propriétaire, financeur, producteur…) et des protocoles</p></li>
-<li><p>Elles peuvent être administrées dans le module Métadonnées de GeoNature</p></li>
+<li><p>Elles sont gérées dans le schéma <code class="docutils literal notranslate"><span class="pre">gn_meta</span></code> basé sur le standard Métadonnées du SINP (<a class="reference external" href="http://standards-sinp.mnhn.fr/category/standards/metadonnees/">http://standards-sinp.mnhn.fr/category/standards/metadonnees/</a>).</p></li>
+<li><p>Elles permettent de gérer des jeux de données, des cadres d’acquisition, des acteurs (propriétaire, financeur, producteur…) et des protocoles.</p></li>
+<li><p>Elles peuvent être administrées dans le module Métadonnées de GeoNature.</p></li>
+<li><p>Les acteurs sont quant à eux gérés dans la table <code class="docutils literal notranslate"><span class="pre">utilisateurs.bib_organismes</span></code> et donc paramétrables dans UsersHub.</p></li>
 </ul>
 </section>
 <section id="donnees-sig">
@@ -1341,6 +1345,7 @@ ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
 </section>
 <section id="customiser-l-aspect-esthetique">
 <h3>Customiser l’aspect esthétique<a class="headerlink" href="#customiser-l-aspect-esthetique" title="Lien permanent vers cette rubrique"></a></h3>
+<p>Le rendu esthétique de GeoNature repose principalement sur l’utilisation de Boostrap.</p>
 <p>Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant un fichier <code class="docutils literal notranslate"><span class="pre">custom/css/frontend.css</span></code> contenant votre surcouche des classes CSS de l’application.</p>
 <p>Par exemple, pour remplacer la couleur de fond du bandeau de navigation par une image, on peut apporter la modification suivante :</p>
 <div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="nt">html</span><span class="w"> </span><span class="nt">body</span><span class="w"> </span><span class="nt">pnx-root</span><span class="w"> </span><span class="nt">pnx-nav-home</span><span class="w"> </span><span class="nt">mat-sidenav-container</span><span class="p">.</span><span class="nc">sidenav-container</span><span class="p">.</span><span class="nc">mat-drawer-container</span><span class="p">.</span><span class="nc">mat-sidenav-container</span><span class="w"> </span><span class="nt">mat-sidenav-content</span><span class="p">.</span><span class="nc">mat-drawer-content</span><span class="p">.</span><span class="nc">mat-sidenav-content</span><span class="w"> </span><span class="nt">mat-toolbar</span><span class="p">#</span><span class="nn">app-toolbar</span><span class="p">.</span><span class="nc">row</span><span class="p">.</span><span class="nc">mat-toolbar</span><span class="w"></span>
@@ -1351,6 +1356,47 @@ ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
 </pre></div>
 </div>
 <p>Dans ce cas, l’image <code class="docutils literal notranslate"><span class="pre">bandeau_test.jpg</span></code> doit se trouver dans le répertoire <code class="docutils literal notranslate"><span class="pre">custom/images</span></code>.</p>
+<p>Autre exemple, il est possible personnaliser les polices ou les couleurs :</p>
+<div class="highlight-css notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<dl>
+<dt>/* IMPORT POLICE BEBAS NEUE</dt><dd><ul class="simple">
+<li><p>! Bebas Neue by &#64;Ryoichi Tsunekawa</p></li>
+<li><p>License - Open Font License</p></li>
+</ul>
+<p><a href="#id1"><span class="problematic" id="id2">*</span></a>/</p>
+</dd>
+</dl>
+<p>&#64;import url(”<a class="reference external" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;display=swap">https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;display=swap</a>”);
+/* Couleurs principales de l’application <a href="#id3"><span class="problematic" id="id4">*</span></a>/
+.color-blue {</p>
+<blockquote>
+<div><p>color:#678BC5!important;</p>
+</div></blockquote>
+<p>}
+.color-orange {</p>
+<blockquote>
+<div><p>color:#DEC70D!important;</p>
+</div></blockquote>
+<p>}
+.color-teal {</p>
+<blockquote>
+<div><p>color:#A8DE0D!important;</p>
+</div></blockquote>
+<p>}
+.color-red {</p>
+<blockquote>
+<div><p>color:#DE280D!important</p>
+</div></blockquote>
+<p>}
+#appName h3{</p>
+<blockquote>
+<div><p>font-family:Bebas Neue,Arial,sans-serif!important;
+font-size: xx-large</p>
+</div></blockquote>
+<p>}</p>
+<p>Certains paramètres demandent l’ajout de la mention <code class="docutils literal notranslate"><span class="pre">!important</span></code> pour être pris en compte (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/issues/2632">https://github.com/PnX-SI/GeoNature/issues/2632</a>).</p>
 </section>
 <section id="customiser-les-noms-et-pictos-des-modules">
 <h3>Customiser les noms et pictos des modules<a class="headerlink" href="#customiser-les-noms-et-pictos-des-modules" title="Lien permanent vers cette rubrique"></a></h3>
@@ -1434,8 +1480,33 @@ fichiers par *.asc :</p>
 <ul class="simple">
 <li><p>Vérifiez que leur type existe dans la table <code class="docutils literal notranslate"><span class="pre">ref_geo.bib_areas_types</span></code>, sinon ajoutez-les</p></li>
 <li><p>Ajoutez vos zonages dans la table <code class="docutils literal notranslate"><span class="pre">ref_geo.l_areas</span></code> en faisant bien référence à un <code class="docutils literal notranslate"><span class="pre">id_type</span></code> de <code class="docutils literal notranslate"><span class="pre">ref_geo.bib_areas_types</span></code>. Vous pouvez faire cela en SQL ou en faisant des copier/coller de vos zonages directement dans QGIS</p></li>
-<li><p>Pour les grilles et les communes, vous pouvez ensuite compléter leurs tables d’extension <code class="docutils literal notranslate"><span class="pre">ref_geo.li_grids</span></code> et <code class="docutils literal notranslate"><span class="pre">ref_geo.li_municipalities</span></code></p></li>
+<li><p>Pour les grilles et les communes, vous pouvez ensuite compléter leurs tables d’extension <code class="docutils literal notranslate"><span class="pre">ref_geo.li_grids</span></code> et <code class="docutils literal notranslate"><span class="pre">ref_geo.li_municipalities</span></code>.</p></li>
 </ul>
+<p>Il est également possible de désactiver des éléments des référentiels géographiques sans les supprimer de la base, en passant la valeur de la colonne <code class="docutils literal notranslate"><span class="pre">enable</span></code> en <cite>false</cite> dans la table <code class="docutils literal notranslate"><span class="pre">ref_geo.l_areas</span></code>.</p>
+</section>
+<section id="affichage-des-referentiels-geographiques-dans-geonature">
+<h3>Affichage des référentiels géographiques dans GeoNature<a class="headerlink" href="#affichage-des-referentiels-geographiques-dans-geonature" title="Lien permanent vers cette rubrique"></a></h3>
+<p>Il est possible de choisir les éléments des référentiels géographiques pouvant s’afficher sur les cartes. Par exemple si on souhaite modifier l’affichage des communes :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configuration par défaut :</span>
+<span class="p">[[</span><span class="n">MAPCONFIG</span><span class="o">.</span><span class="n">REF_LAYERS</span><span class="p">]]</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="s2">&quot;COM&quot;</span> <span class="c1"># correspond à type_code de la couche ref_geo.bib_areas_types</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Communes&quot;</span> <span class="c1"># nom s&#39;affichant dans leafmap</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;area&quot;</span>
+    <span class="n">activate</span> <span class="o">=</span> <span class="n">false</span> <span class="c1"># ne s&#39;affiche pas par défaut sur la carte</span>
+    <span class="n">style</span> <span class="o">=</span> <span class="p">{</span> <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;grey&quot;</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="n">false</span><span class="p">,</span> <span class="n">fillOpacity</span> <span class="o">=</span> <span class="s2">&quot;0.0&quot;</span><span class="p">,</span> <span class="n">weight</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">}</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="n">limit</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">}</span> <span class="c1"># nombre d&#39;éléments maximum pouvant être affichés</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configuration modifiée</span>
+<span class="p">[[</span><span class="n">MAPCONFIG</span><span class="o">.</span><span class="n">REF_LAYERS</span><span class="p">]]</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;COM&#39;</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Limite de commune&#39;</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;area&#39;</span>
+    <span class="n">activate</span> <span class="o">=</span> <span class="n">true</span>
+    <span class="n">style</span> <span class="o">=</span> <span class="p">{</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;SlateGray&#39;</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="n">true</span><span class="p">,</span> <span class="n">fillOpacity</span> <span class="o">=</span> <span class="s1">&#39;0.2&#39;</span><span class="p">,</span> <span class="n">weight</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">}</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="n">limit</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">}</span>
+</pre></div>
+</div>
 </section>
 <section id="donnees-externes">
 <h3>Données externes<a class="headerlink" href="#donnees-externes" title="Lien permanent vers cette rubrique"></a></h3>
@@ -2160,8 +2231,8 @@ Il s’agit maintenant de gérer ses permissions dans GeoNature.</p>
 </section>
 <section id="gestion-de-la-sensibilite">
 <h2>Gestion de la sensibilité<a class="headerlink" href="#gestion-de-la-sensibilite" title="Lien permanent vers cette rubrique"></a></h2>
-<section id="id1">
-<h3>Introduction<a class="headerlink" href="#id1" title="Lien permanent vers cette rubrique"></a></h3>
+<section id="id5">
+<h3>Introduction<a class="headerlink" href="#id5" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Les régles de sensibilité définies par défaut sont issues des règles du SINP.
 Elles dépendent de l’espèce et de l’observation. C’est-à-dire que pour une espèce donnée,
 plusieurs niveaux de sensibilité sont possibles selon l’observation.</p>
@@ -2388,8 +2459,8 @@ Il est possible de passer ce champ en texte libre en mettant à <code class="doc
 <p>Le paramètre <code class="docutils literal notranslate"><span class="pre">id_observers_list</span></code> permet de changer la liste d’observateurs proposée dans le formulaire. Vous pouvez modifier le numéro de liste du module ou modifier le contenu de la liste dans UsersHub (<code class="docutils literal notranslate"><span class="pre">utilisateurs.t_listes</span></code> et <code class="docutils literal notranslate"><span class="pre">utilisateurs.cor_role_liste</span></code>)</p>
 <p>Par défaut, l’ensemble des observateurs de la liste 9 (observateurs faune/flore) sont affichés.</p>
 </section>
-<section id="personnaliser-la-liste-des-taxons-saisissables-dans-le-module">
-<h4>Personnaliser la liste des taxons saisissables dans le module<a class="headerlink" href="#personnaliser-la-liste-des-taxons-saisissables-dans-le-module" title="Lien permanent vers cette rubrique"></a></h4>
+<section id="personnaliser-la-liste-des-taxons-et-habitats-saisissables-dans-le-module">
+<h4>Personnaliser la liste des taxons et habitats saisissables dans le module<a class="headerlink" href="#personnaliser-la-liste-des-taxons-et-habitats-saisissables-dans-le-module" title="Lien permanent vers cette rubrique"></a></h4>
 <p>Le module est fourni avec une liste restreinte de taxons (8 seulement). C’est à l’administrateur de changer ou de remplir cette liste.</p>
 <p>Le paramètre <code class="docutils literal notranslate"><span class="pre">id_taxon_list</span> <span class="pre">=</span> <span class="pre">100</span></code> correspond à un ID de liste de la table <code class="docutils literal notranslate"><span class="pre">taxonomie.bib_listes</span></code> (L’ID 100 correspond à la liste « Saisie Occtax »). Vous pouvez changer ce paramètre avec l’ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.</p>
 <p>Voici les requêtes SQL pour remplir la liste 100 avec tous les taxons de Taxref à partir du rang <code class="docutils literal notranslate"><span class="pre">genre</span></code> :</p>
@@ -2408,6 +2479,25 @@ Il est possible de passer ce champ en texte libre en mettant à <code class="doc
 </pre></div>
 </div>
 <p>Il est également possible d’éditer des listes à partir de l’application TaxHub.</p>
+<p>Il est de même possible de restreindre la liste d’habitats proposés dans le module :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ID_LIST_HABITAT</span> <span class="o">=</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>Avec <code class="docutils literal notranslate"><span class="pre">ID_LIST_HABITAT</span></code> faisant référence aux listes définies dans <code class="docutils literal notranslate"><span class="pre">ref_habitats.bib_list_habitat</span></code>. La liste est peuplée d’habitats grâce à la table <code class="docutils literal notranslate"><span class="pre">ref_habitats.cor_list_habitat</span></code>. Par exemple :</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Création d&#39;une liste restreinte d&#39;habitats pour OccTax</span>
+<span class="c1">-- (typologie EUNIS de niveau 2)</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">ref_habitats</span><span class="p">.</span><span class="n">cor_list_habitat</span><span class="w"> </span><span class="n">clh</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="n">cd_hab</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">id_list</span><span class="w"></span>
+<span class="p">)</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"></span>
+<span class="w">        </span><span class="n">hr</span><span class="p">.</span><span class="n">cd_hab</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="mi">2</span><span class="w"></span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">ref_habitats</span><span class="p">.</span><span class="n">habref</span><span class="w"> </span><span class="n">hr</span><span class="w"></span>
+<span class="k">WHERE</span><span class="w"> </span><span class="p">(</span><span class="n">hr</span><span class="p">.</span><span class="n">cd_typo</span><span class="p">,</span><span class="n">hr</span><span class="p">.</span><span class="n">niveau</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">7</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+<span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
 </section>
 <section id="gerer-les-valeurs-par-defaut-des-nomenclatures">
 <h4>Gérer les valeurs par défaut des nomenclatures<a class="headerlink" href="#gerer-les-valeurs-par-defaut-des-nomenclatures" title="Lien permanent vers cette rubrique"></a></h4>
@@ -2449,6 +2539,13 @@ La valeur 0 pour ses champs revient à mettre la valeur par défaut pour tous le
 <p>Il suffit de modifier la valeur qui correspond au niveau de zoom sur la carte.
 Par exemple, pour contraindre la saisie à l’affichage de la carte IGN au 1/25000e :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">releve_map_zoom_level</span> <span class="o">=</span> <span class="mi">15</span>
+</pre></div>
+</div>
+</section>
+<section id="supprimer-le-remplissage-automatique-de-la-date">
+<h4>Supprimer le remplissage automatique de la date<a class="headerlink" href="#supprimer-le-remplissage-automatique-de-la-date" title="Lien permanent vers cette rubrique"></a></h4>
+<p>Pour éviter les erreurs de saisie lorsque des données sont rentrées longtemps après le retour du terrain, il est possible de supprimer l’ajout automatique de la date du jour au relevé :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DATE_FORM_WITH_TODAY</span> <span class="o">=</span> <span class="n">false</span>
 </pre></div>
 </div>
 </section>
@@ -2574,10 +2671,13 @@ Un champ additionnel est définit par:</p>
 <li><p>le (ou les) JDD auquel il est rattaché. Si aucun JDD n’est renseigné le champ sera proposé dans tout le module pour tous les JDD. S’il est rattaché à un JDD, le champs sera chargé dynamiquement à la selection du JDD dans le formulaire</p></li>
 <li><p>une série d’autres options pour paramétrer le comportement du champs (obligatoire, ordre, description, exportable etc…)</p></li>
 </ul>
+<p>Les champs additionnels sont stockés dans la table <code class="docutils literal notranslate"><span class="pre">gn_commons.t_additional_fields</span></code>.</p>
 <p>Exemples de configuration :</p>
-<p>Pour les champs de type « select », « multiselect », « checkbox » et « radio », le champs « valeur » doit être rempli par un JSON représentant une liste de dictionnaire « label » (représentant la valeur affiché), et « valeur » (représentant la valeur écrite en base de données).
-Exemple : <cite>[{« label »: « Trois », « value »: 3}, {« label »: « Quatre », « value »: 4}]</cite></p>
+<p>Pour les champs de type « select », « multiselect », « checkbox » et « radio », le champs « valeur » doit être rempli par un JSON représentant une liste de dictionnaire « label » (représentant la valeur affiché), et « valeur » (représentant la valeur écrite en base de données).</p>
+<p>Exemples :</p>
 <ul class="simple">
+<li><p><cite>[{« label »: « Trois », « value »: 3}, {« label »: « Quatre », « value »: 4}]</cite></p></li>
+<li><p><cite>[{« label »: « 1 », « value »: « Étude générale »}, {« label »: « Gestion de site », « value »: « 2 »}, {« label »: « Partenariat », « value »: « 3 »}]</cite></p></li>
 <li><p>Un champs type « multiselect »:</p></li>
 </ul>
 <img alt="_images/label_value_multiselect.png" src="_images/label_value_multiselect.png" />
@@ -2593,17 +2693,19 @@ Exemple : <cite>[{« label »: « Trois », « value »: 3}, {« label �
 </div>
 <section id="configuration-avancee-des-champs">
 <h4>Configuration avancée des champs<a class="headerlink" href="#configuration-avancee-des-champs" title="Lien permanent vers cette rubrique"></a></h4>
-<p>Le champs « Attribut additionnels » permet d’ajouter des éléments de configuration sur les formulaires sour forme de JSON:
-- Ajouter une icone « ? » et un tooltip au survol du formulaire : <cite>{« description » : « mon toolitp »}</cite>
-- Ajouter un sous-titre descriptif : <cite>{« help » : « mon sous titre »}</cite>
-- Ajouter des valeurs min/max pour un input <cite>number</cite> : <cite>{« min »: 1, « max »: 10}</cite></p>
+<p>Le champs « Attribut additionnels » permet d’ajouter des éléments de configuration sur les formulaires sour forme de JSON:</p>
+<ul class="simple">
+<li><p>Ajouter une icone « ? » et un tooltip au survol du formulaire : <cite>{« description » : « mon toolitp »}</cite></p></li>
+<li><p>Ajouter un sous-titre descriptif : <cite>{« help » : « mon sous titre »}</cite></p></li>
+<li><p>Ajouter des valeurs min/max pour un input <cite>number</cite> : <cite>{« min »: 1, « max »: 10}</cite></p></li>
+</ul>
 </section>
 </section>
 </section>
 <section id="module-occhab">
 <h2>Module OCCHAB<a class="headerlink" href="#module-occhab" title="Lien permanent vers cette rubrique"></a></h2>
-<section id="id2">
-<h3>Installer le module<a class="headerlink" href="#id2" title="Lien permanent vers cette rubrique"></a></h3>
+<section id="id6">
+<h3>Installer le module<a class="headerlink" href="#id6" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Le module OCCHAB fait parti du coeur de GeoNature. Son installation est au choix de l’administrateur.</p>
 <p>Pour l’installer, lancer les commande suivante:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd backend</span>
@@ -2612,16 +2714,18 @@ Exemple : <cite>[{« label »: « Trois », « value »: 3}, {« label �
 </pre></div>
 </div>
 </section>
-<section id="id3">
-<h3>Base de données<a class="headerlink" href="#id3" title="Lien permanent vers cette rubrique"></a></h3>
-<p>Le module s’appuie sur deux schémas.:
-<code class="docutils literal notranslate"><span class="pre">ref_habitats</span></code>:  Le référentiel habitat du MNHN
-<code class="docutils literal notranslate"><span class="pre">pr_occhab</span></code>: le schéma qui contient les données d’occurrence d’habitat, basé sur standard du MNHN</p>
+<section id="id7">
+<h3>Base de données<a class="headerlink" href="#id7" title="Lien permanent vers cette rubrique"></a></h3>
+<p>Le module s’appuie sur deux schémas :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ref_habitats</span></code> correspond au référentiel habitat du MNHN,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pr_occhab</span></code> correspond au schéma qui contient les données d’occurrence d’habitat, basé sur standard du MNHN.</p></li>
+</ul>
 </section>
-<section id="id4">
-<h3>Configuration<a class="headerlink" href="#id4" title="Lien permanent vers cette rubrique"></a></h3>
-<p>Le paramétrage du module OCCHAB se fait en créant le fichier <code class="docutils literal notranslate"><span class="pre">config/occhab_config.toml</span></code>, en s’inspirant du fichier d’exemple <code class="docutils literal notranslate"><span class="pre">contrib/gn_module_occhab/occhab_config.toml.example</span></code>
-Reportez vous à la section <a class="reference internal" href="#configuration-d-un-gn-module">Configuration d’un gn_module</a> pour effectuer les opérations supplémentaires nécessaires pour la prise en compte des modifications.</p>
+<section id="id8">
+<h3>Configuration<a class="headerlink" href="#id8" title="Lien permanent vers cette rubrique"></a></h3>
+<p>Le paramétrage du module OCCHAB se fait en créant le fichier <code class="docutils literal notranslate"><span class="pre">config/occhab_config.toml</span></code>, en s’inspirant du fichier d’exemple <code class="docutils literal notranslate"><span class="pre">contrib/gn_module_occhab/occhab_config.toml.example</span></code>.</p>
+<p>Reportez vous à la section <a class="reference internal" href="#configuration-d-un-gn-module">Configuration d’un gn_module</a> pour effectuer les opérations supplémentaires nécessaires pour la prise en compte des modifications.</p>
 <section id="formulaire">
 <h4>Formulaire<a class="headerlink" href="#formulaire" title="Lien permanent vers cette rubrique"></a></h4>
 <ul class="simple">
@@ -2629,7 +2733,7 @@ Reportez vous à la section <a class="reference internal" href="#configuration-d
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">ID_LIST_HABITAT</span> <span class="pre">=</span> <span class="pre">1</span></code></p>
 <ul class="simple">
-<li><p>Le formulaire permet de saisir des observateurs basés sur le referentiel utilisateurs (<code class="docutils literal notranslate"><span class="pre">false</span></code>) ou de les saisir en texte libre (<code class="docutils literal notranslate"><span class="pre">true</span></code>).</p></li>
+<li><p>Le formulaire permet de saisir des observateurs basés sur le référentiel utilisateurs (<code class="docutils literal notranslate"><span class="pre">false</span></code>) ou de les saisir en texte libre (<code class="docutils literal notranslate"><span class="pre">true</span></code>).</p></li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">OBSERVER_AS_TXT</span> <span class="pre">=</span> <span class="pre">false</span></code></p>
 <ul class="simple">
@@ -2663,8 +2767,8 @@ Reportez vous à la section <a class="reference internal" href="#configuration-d
 <section id="module-synthese">
 <h2>Module SYNTHESE<a class="headerlink" href="#module-synthese" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Le module Synthèse est un module du coeur de GeoNature, fourni par défaut lors de l’installation.</p>
-<section id="id5">
-<h3>Configuration<a class="headerlink" href="#id5" title="Lien permanent vers cette rubrique"></a></h3>
+<section id="id9">
+<h3>Configuration<a class="headerlink" href="#id9" title="Lien permanent vers cette rubrique"></a></h3>
 <p>L’ensemble des paramètres de configuration du module se trouve dans le fichier général de configuration de GeoNature <code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code> puisqu’il s’agit d’un module du coeur.</p>
 <p><strong>1.</strong> Modifier les filtres géographiques disponibles par défaut dans l’interface de recherche.</p>
 <p>Editer la variable <code class="docutils literal notranslate"><span class="pre">AREA_FILTERS</span></code> en y ajoutant le label et le code du type d’entité géographique que vous souhaitez rajouter. Voir table <code class="docutils literal notranslate"><span class="pre">ref_geo.bib_areas_types</span></code>. Dans l’exemple on ajoute le type ZNIEFF1 (<code class="docutils literal notranslate"><span class="pre">code_type</span> <span class="pre">=</span> <span class="pre">&quot;ZNIEFF1&quot;</span></code>). Attention, dans ce cas les entités géographiques correspondantes au type <cite>ZNIEFF1</cite>, doivent également être présentes dans la table <code class="docutils literal notranslate"><span class="pre">ref_geo.l_areas</span></code>.
@@ -2885,8 +2989,8 @@ Il faut fournir le code des nomenclature par défaut (liste de chaîne de caract
 <p>La vue <code class="docutils literal notranslate"><span class="pre">gn_commons.v_latest_validation</span></code> permet de récupérer le dernier statut de validation d’une occurrence.</p>
 <p>NB : une donnée non présente dans la SYNTHESE, ne remontera pas dans l’interface du module VALIDATION. Cependant rien n’empêche un administrateur avancé d’utiliser la table de validation et son mécanisme pour des données qui ne seraient pas en SYNTHESE (du moment que les données disposent d’un UUID).</p>
 <p>Au niveau de l’interface, le formulaire de recherche est commun avec le module SYNTHESE. Les paramètres de configuration du formulaire sont donc également partagés et administrables depuis le fichier <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code>, rubrique SYNTHESE.</p>
-<section id="id6">
-<h3>Configuration<a class="headerlink" href="#id6" title="Lien permanent vers cette rubrique"></a></h3>
+<section id="id10">
+<h3>Configuration<a class="headerlink" href="#id10" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Le paramétrage du module VALIDATION se fait en créant le fichier <code class="docutils literal notranslate"><span class="pre">config/validation_config.toml</span></code>, en s’inspirant du fichier d’exemple <code class="docutils literal notranslate"><span class="pre">contrib/gn_module_validation/validation_config.toml.example</span></code>
 Reportez vous à la section <a class="reference internal" href="#configuration-d-un-gn-module">Configuration d’un gn_module</a> pour effectuer les opérations supplémentaires nécessaires pour la prise en compte des modifications.</p>
 <section id="liste-des-champs-visibles">
