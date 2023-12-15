@@ -171,7 +171,7 @@ def create_app(with_external_mods=True):
         def set_sentry_context():
             if "FLASK_REQUEST_ID" in request.environ:
                 set_tag("request.id", request.environ["FLASK_REQUEST_ID"])
-            if g.current_user:
+            if hasattr(g, "current_user") and g.current_user.is_authenticated:
                 set_user(
                     {
                         "id": g.current_user.id_role,
