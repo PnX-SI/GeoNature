@@ -33,29 +33,27 @@ from pypnusershub.db.models import User
 class RoleFilter(DynamicOptionsMixin, FilterEqual):
     def get_dynamic_options(self, view):
         if has_app_context():
-            yield from [
-                (u.id_role, u.nom_complet) for u in db.session.scalars(db.select(User)).all()
-            ]
+            yield from [(u.id_role, u.nom_complet) for u in db.session.scalars(select(User)).all()]
 
 
 class ModuleFilter(DynamicOptionsMixin, FilterEqual):
     def get_dynamic_options(self, view):
         if has_app_context():
-            modules = db.session.scalars(db.select(TModules).order_by(TModules.module_code)).all()
+            modules = db.session.scalars(select(TModules).order_by(TModules.module_code)).all()
             yield from [(module.id_module, module.module_code) for module in modules]
 
 
 class ObjectFilter(DynamicOptionsMixin, FilterEqual):
     def get_dynamic_options(self, view):
         if has_app_context():
-            objects = db.session.scalars(db.select(PermObject)).all()
+            objects = db.session.scalars(select(PermObject)).all()
             yield from [(object.id_object, object.code_object) for object in objects]
 
 
 class ActionFilter(DynamicOptionsMixin, FilterEqual):
     def get_dynamic_options(self, view):
         if has_app_context():
-            actions = db.session.scalars(db.select(PermAction)).all()
+            actions = db.session.scalars(select(PermAction)).all()
             yield from [(action.id_action, action.code_action) for action in actions]
 
 
@@ -70,7 +68,7 @@ class ScopeFilter(DynamicOptionsMixin, FilterEqual):
     def get_dynamic_options(self, view):
         if has_app_context():
             yield (None, "Sans restriction")
-            scopes = db.session.scalars(db.select(PermScope)).all()
+            scopes = db.session.scalars(select(PermScope)).all()
             yield from [(scope.value, scope.label) for scope in scopes]
 
 
@@ -540,7 +538,7 @@ class UserPermAdmin(RolePermAdmin):
     )
 
     def get_query(self):
-        return db.select(User).filter_by(groupe=False).where(User.filter_by_app())
+        return select(User).filter_by(groupe=False).where(User.filter_by_app())
 
     def get_count_query(self):
         # FIXME : must filter by app

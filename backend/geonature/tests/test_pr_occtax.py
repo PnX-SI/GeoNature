@@ -442,7 +442,7 @@ class TestOcctaxOccurrence:
             counting["unique_id_sinp_occtax"] for counting in occ["cor_counting_occtax"]
         ]
         synthese_data = db.session.scalars(
-            db.select(Synthese).where(Synthese.unique_id_sinp.in_(uuid_counting))
+            select(Synthese).where(Synthese.unique_id_sinp.in_(uuid_counting))
         ).all()
         for s in synthese_data:
             assert s.cd_nom == 4516
@@ -549,7 +549,7 @@ class TestOcctax:
 
         client_command_line.invoke(add_submodule_permissions, [module.module_code])
         permission_available = (
-            db.select(PermissionAvailable)
+            select(PermissionAvailable)
             .join(TModules)
             .where(TModules.module_code == module.module_code)
         )

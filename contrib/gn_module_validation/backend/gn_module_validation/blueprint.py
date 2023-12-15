@@ -90,7 +90,7 @@ def get_synthese_data(scope):
     to use to populate relationships models.
     """
     last_validation_subquery = (
-        db.select(TValidations)
+        sa.select(TValidations)
         .where(TValidations.uuid_attached_row == Synthese.unique_id_sinp)
         .order_by(TValidations.validation_date.desc())
         .limit(1)
@@ -127,7 +127,7 @@ def get_synthese_data(scope):
     aliases = [aliased(rel.property.mapper.class_) for rel in relationships]
     dataset_alias = aliases[dataset_index]
 
-    query = sa.select(Synthese, *aliases, *lateral_join.keys())
+    query = db.session.query(Synthese, *aliases, *lateral_join.keys())
 
     for rel, alias in zip(relationships, aliases):
         query = query.outerjoin(rel.of_type(alias))
@@ -173,11 +173,9 @@ def get_synthese_data(scope):
     )
 
     # Step 3: Construct Synthese model from query result
-    syntheseModelQuery = (
-        sa.select(Synthese)
-        .options(*[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)])
-        .options(*[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()])
-    )
+    syntheseModelQuery = Synthese.query.options(
+        *[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)]
+    ).options(*[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()])
 
     # to pass alert reports infos with synthese to validation list
     # only if tools are activate for validation
@@ -196,11 +194,9 @@ def get_synthese_data(scope):
         )
 
     query = syntheseModelQuery.from_statement(query)
-    # FIXME : SQLA1.4
-    res = db.session.scalars(query).one()
-    print(res)
+
     # The raise option ensure that we have correctly retrived relationships data at step 3
-    return jsonify(res.as_geofeaturecollection(fields=fields))
+    return jsonify(query.as_geofeaturecollection(fields=fields))
 
 
 @blueprint.route("/statusNames", methods=["GET"])

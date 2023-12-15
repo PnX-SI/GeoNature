@@ -54,7 +54,7 @@ def supergrant(skip_existing, dry_run, yes, **filters):
 
     permission_available = (
         db.session.scalars(
-            db.select(PermissionAvailable)
+            select(PermissionAvailable)
             .outerjoin(
                 Permission,
                 sa.and_(PermissionAvailable.permissions, Permission.id_role == role.id_role),

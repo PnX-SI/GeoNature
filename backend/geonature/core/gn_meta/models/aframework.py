@@ -156,7 +156,7 @@ class TAcquisitionFramework(db.Model):
         from its UUID if exist or None
         """
         return DB.session.scalars(
-            db.select(TAcquisitionFramework.id_acquisition_framework)
+            select(TAcquisitionFramework.id_acquisition_framework)
             .where(TAcquisitionFramework.unique_acquisition_framework_id == uuid_af)
             .limit(1)
         ).first()

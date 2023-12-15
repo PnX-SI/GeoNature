@@ -109,7 +109,7 @@ def add_unexisting_digitizer(id_digitizer):
     """
     if (
         not db.session.scalars(
-            db.select(func.count("*").select_from(User).filter_by(id_role=id_digitizer).limit(1))
+            select(func.count("*").select_from(User).filter_by(id_role=id_digitizer).limit(1))
         ).scalar_one()
         > 0
     ):
@@ -134,9 +134,7 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
     # read nomenclatures from DB to avoid errors if GN nomenclature is not the same
     list_cd_nomenclature = [
         record[0]
-        for record in db.session.scalars(
-            db.select(TNomenclatures.cd_nomenclature).distinct()
-        ).all()
+        for record in db.session.scalars(select(TNomenclatures.cd_nomenclature).distinct()).all()
     ]
     user_add_total_time = 0
     logger.debug("MTD - PROCESS AF LIST")
