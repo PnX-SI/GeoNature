@@ -32,7 +32,7 @@ def dispatch_notifications(
         ]
     )
 
-    roles = db.session.scalars(db.select(User).where(User.id_role.in_(id_roles)))
+    roles = db.session.scalars(select(User).where(User.id_role.in_(id_roles)))
 
     for category, role in product(categories, roles):
         dispatch_notification(category, role, title, url, content=content, context=context)

@@ -30,10 +30,10 @@ from datetime import datetime
 
 
 def create_habitat(nom_cite, nomenc_tech_collect_NOMENC_TYPE, nomenc_tech_collect_LABEL):
-    habref = db.session.scalars(db.select(Habref).limit(1)).first()
+    habref = db.session.scalars(sa.select(Habref).limit(1)).first()
 
     nomenc_tech_collect = db.session.execute(
-        db.select(TNomenclatures).where(
+        sa.select(TNomenclatures).where(
             sa.and_(
                 TNomenclatures.nomenclature_type.has(mnemonique=nomenc_tech_collect_NOMENC_TYPE),
                 TNomenclatures.label_fr == nomenc_tech_collect_LABEL,
@@ -89,7 +89,7 @@ def stations(datasets):
             Just a comment, by default "Did you create a station ?"
         """
         nomenclature_object = db.session.execute(
-            db.select(TNomenclatures).where(
+            sa.select(TNomenclatures).where(
                 sa.and_(
                     TNomenclatures.nomenclature_type.has(mnemonique=nomenc_object_NOMENC_TYPE),
                     TNomenclatures.mnemonique == nomenc_object_MNEM,
@@ -497,7 +497,7 @@ class TestOcchab:
         assert len(stations_res) >= 1
 
         # Test filter by cd_hab
-        habref = db.session.scalars(db.select(Habref).limit(1)).first()
+        habref = db.session.scalars(sa.select(Habref).limit(1)).first()
         assert len(stations["station_1"].habitats) > 1
         assert stations["station_1"].habitats[0].cd_hab == habref.cd_hab
         stations_res = query_test_filter_by_params(dict(cd_hab=habref.cd_hab))
@@ -533,9 +533,3 @@ class TestOcchab:
 
     def test_has_instance_permission(self, stations):
         assert not stations["station_1"].has_instance_permission(scope=0)
-
-    # def test_classmethod(self, datasets):
-    #     ds: TDatasets = datasets["own_dataset"]
-    #     params = TypeConversionDict(**dict(id_dataset=ds.id_dataset))
-    #     query1 = db.select(Station).where(Station.filter_by_params(params))
-    #     db.session.scalars(query1).unique().all()

@@ -962,7 +962,7 @@ def get_observation_count():
     """
     params = request.args
 
-    query = db.select(func.count(Synthese.id_synthese)).select_from(Synthese)
+    query = select(func.count(Synthese.id_synthese)).select_from(Synthese)
 
     if "id_dataset" in params:
         query = query.where(Synthese.id_dataset == params["id_dataset"])
@@ -1103,7 +1103,7 @@ def create_report(permissions):
         raise BadRequest("This report type does not exist")
 
     synthese = db.session.scalars(
-        db.select(Synthese)
+        select(Synthese)
         .options(
             Load(Synthese).raiseload("*"),
             joinedload("nomenclature_sensitivity"),

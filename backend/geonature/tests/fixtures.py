@@ -315,7 +315,7 @@ def acquisition_frameworks(users):
 @pytest.fixture(scope="function")
 def datasets(users, acquisition_frameworks, module):
     principal_actor_role = db.session.execute(
-        db.select(TNomenclatures)
+        select(TNomenclatures)
         .join(BibNomenclaturesTypes, TNomenclatures.id_type == BibNomenclaturesTypes.id_type)
         .where(
             TNomenclatures.mnemonique == "Contact principal",
