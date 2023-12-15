@@ -133,46 +133,43 @@ def get_observations_for_web(permissions):
     if output_format not in ["ungrouped_geom", "grouped_geom", "grouped_geom_by_areas"]:
         raise BadRequest(f"Bad format '{output_format}'")
 
-    # Build defaut CTE observations query
-    count_min_max = case(
-        [
-            (
-                VSyntheseForWebApp.count_min != VSyntheseForWebApp.count_max,
-                func.concat(VSyntheseForWebApp.count_min, " - ", VSyntheseForWebApp.count_max),
-            ),
-            (VSyntheseForWebApp.count_min != None, func.concat(VSyntheseForWebApp.count_min)),
-        ],
-        else_="",
-    )
-
-    nom_vern_or_lb_nom = func.coalesce(
-        func.nullif(VSyntheseForWebApp.nom_vern, ""), VSyntheseForWebApp.lb_nom
-    )
-
+    # Get Column Frontend parameter to return only the needed columns
+    param_column_list = {
+        col["prop"] for col in current_app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"]
+    }
+    # Init with compulsory columns
     columns = [
         "id",
         VSyntheseForWebApp.id_synthese,
-        "date_min",
-        VSyntheseForWebApp.date_min,
-        "lb_nom",
-        VSyntheseForWebApp.lb_nom,
-        "cd_nom",
-        VSyntheseForWebApp.cd_nom,
-        "observers",
-        VSyntheseForWebApp.observers,
-        "dataset_name",
-        VSyntheseForWebApp.dataset_name,
         "url_source",
         VSyntheseForWebApp.url_source,
-        "unique_id_sinp",
-        VSyntheseForWebApp.unique_id_sinp,
-        "nom_vern_or_lb_nom",
-        nom_vern_or_lb_nom,
-        "count_min_max",
-        count_min_max,
-        "entity_source_pk_value",
-        VSyntheseForWebApp.entity_source_pk_value,
     ]
+
+    if "count_min_max" in param_column_list:
+        # Build defaut CTE observations query
+        count_min_max = case(
+            [
+                (
+                    VSyntheseForWebApp.count_min != VSyntheseForWebApp.count_max,
+                    func.concat(VSyntheseForWebApp.count_min, " - ", VSyntheseForWebApp.count_max),
+                ),
+                (VSyntheseForWebApp.count_min != None, func.concat(VSyntheseForWebApp.count_min)),
+            ],
+            else_="",
+        )
+        columns += ["count_min_max", count_min_max]
+        param_column_list.remove("count_min_max")
+
+    if "nom_vern_or_lb_nom" in param_column_list:
+        nom_vern_or_lb_nom = func.coalesce(
+            func.nullif(VSyntheseForWebApp.nom_vern, ""), VSyntheseForWebApp.lb_nom
+        )
+        columns += ["nom_vern_or_lb_nom", nom_vern_or_lb_nom]
+        param_column_list.remove("nom_vern_or_lb_nom")
+
+    for column in param_column_list:
+        columns += [column, getattr(VSyntheseForWebApp, column)]
+
     observations = func.json_build_object(*columns).label("obs_as_json")
 
     obs_query = (
@@ -205,7 +202,7 @@ def get_observations_for_web(permissions):
                     BibAreasTypes.id_type == LAreas.id_type,
                 ),
             )
-            .where(CorAreaSynthese.id_synthese == VSyntheseForWebApp.id_synthese)
+            .where(CorAreaSynthese.id_synthese == obs_query.c.id_synthese)
             .where(
                 BibAreasTypes.type_code == current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"]
             )
@@ -733,7 +730,7 @@ def general_stats(permissions):
         - nb of distinct observer
         - nb of datasets
     """
-    allowed_datasets = TDatasets.query.filter_by_readable().all()
+    allowed_datasets = TDatasets.query.filter_by_readable().count()
     q = select(
         [
             func.count(Synthese.id_synthese),
@@ -750,7 +747,7 @@ def general_stats(permissions):
         "nb_data": synthese_counts[0],
         "nb_species": synthese_counts[1],
         "nb_observers": synthese_counts[2],
-        "nb_dataset": len(allowed_datasets),
+        "nb_dataset": allowed_datasets,
     }
     return data
 

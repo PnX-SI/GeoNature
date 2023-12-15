@@ -1,6 +1,25 @@
 CHANGELOG
 =========
 
+2.13.4 (2023-12-15)
+-------------------
+
+**🚀 Nouveautés**
+
+- [Synthèse] Ajout des colonnes `group[1,2,3]_inpn` à la vue `gn_synthese.v_synthese_for_web_app` (#2798, par @andriacap)
+
+**🐛 Corrections**
+
+- [Métadonnées] Masquage des références bibliograhpiques dans le formulaire des cadres d'acquisition en attendant la finalisation du développement du backend (#2562, par @DonovanMaillard)
+- [Synthèse et validation] Ajout de la méthode de détermination dans la fiche détail d'une observation (#2785, par @DonovanMaillard)
+- [Frontend] Correction de la prise en compte des filtres dans le composant `datalist` (#2777, par @joelclems)
+- [Synthèse] Optimisation du chargement de l'affichage des observations groupées par maille (#2766, par @mvergez)
+- [Accueil] Optimisation du chargement des statistiques générales (#2771, par @mvergez)
+- [Synthèse] Correction et enrichissement de la configuration des colonnes affichées dans la liste des observations (#2749, par @mvergez)
+- [Synthèse] Correction de la recherche par attribut TaxHub de type "multiselect" (#2767, par @mvergez)
+- [Occtax] Tri alphabétique de la liste des "Mes lieux" (#2805, par @DonovanMaillard)
+- [Documentation] Corrections et compléments de la documentation d'administrateur (#2812, par @marie-laure-cen)
+
 2.13.3 (2023-10-17)
 -------------------
 
