@@ -111,7 +111,7 @@ def get_station(id_station, scope):
     """
     station = (
         db.session.scalars(
-            db.select(Station)
+            select(Station)
             .options(
                 raiseload("*"),
                 joinedload(Station.observers),
@@ -289,7 +289,7 @@ def get_default_nomenclatures():
         organism = params["organism"]
     types = request.args.getlist("mnemonique")
 
-    query = db.select(
+    query = select(
         distinct(DefaultNomenclatureValue.mnemonique_type),
         func.pr_occhab.get_default_nomenclature_value(
             DefaultNomenclatureValue.mnemonique_type, organism

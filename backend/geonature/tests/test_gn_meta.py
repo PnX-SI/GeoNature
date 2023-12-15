@@ -156,7 +156,7 @@ class TestGNMeta:
         with app.test_request_context(headers=logged_user_headers(users["user"])):
             app.preprocess_request()
             af_ids = [af.id_acquisition_framework for af in acquisition_frameworks.values()]
-            qs = db.select(TAcquisitionFramework).where(
+            qs = select(TAcquisitionFramework).where(
                 TAcquisitionFramework.id_acquisition_framework.in_(af_ids)
             )
             ta = TAcquisitionFramework
@@ -567,7 +567,7 @@ class TestGNMeta:
             ds_ids = [ds.id_dataset for ds in datasets.values()]
             sc = db.session.scalars
             dsc = TDatasets
-            qs = db.select(TDatasets).where(TDatasets.id_dataset.in_(ds_ids))
+            qs = select(TDatasets).where(TDatasets.id_dataset.in_(ds_ids))
             assert set(sc(dsc.filter_by_scope(0, query=qs)).unique().all()) == set([])
             assert set(sc(dsc.filter_by_scope(1, query=qs)).unique().all()) == set(
                 [
@@ -956,7 +956,7 @@ class TestGNMeta:
 
     def test_uuid_report(self, users, synthese_data):
         observations_nbr = db.session.scalar(
-            db.select(func.count(Synthese.id_synthese)).select_from(Synthese)
+            select(func.count(Synthese.id_synthese)).select_from(Synthese)
         )
         if observations_nbr > 1000000:
             pytest.skip("Too much observations in gn_synthese.synthese")

@@ -381,7 +381,7 @@ def sensi_report(ds_id=None):
         for row in data
     ]
     sensi_version = DB.session.scalars(
-        db.select(func.gn_commons.get_default_parameter("ref_sensi_version"))
+        select(func.gn_commons.get_default_parameter("ref_sensi_version"))
     ).one_or_none()
 
     if sensi_version:
@@ -643,7 +643,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     nb_data = len(dataset_ids)
 
     query = (
-        db.select(func.count(Synthese.cd_nom))
+        select(func.count(Synthese.cd_nom))
         .select_from(Synthese)
         .where(Synthese.id_dataset.in_(dataset_ids))
     )
@@ -873,7 +873,7 @@ def get_acquisition_framework_stats(id_acquisition_framework):
     :param type: int
     """
     dataset_ids = db.session.scalars(
-        db.select(TDatasets.id_dataset).where(
+        select(TDatasets.id_dataset).where(
             TDatasets.id_acquisition_framework == id_acquisition_framework
         )
     ).all()
@@ -881,13 +881,11 @@ def get_acquisition_framework_stats(id_acquisition_framework):
     nb_datasets = len(dataset_ids)
 
     nb_taxons = db.session.execute(
-        db.select(func.count(Synthese.cd_nom))
-        .where(Synthese.id_dataset.in_(dataset_ids))
-        .distinct()
+        select(func.count(Synthese.cd_nom)).where(Synthese.id_dataset.in_(dataset_ids)).distinct()
     ).scalar_one()
 
     nb_observations = db.session.execute(
-        db.select(func.count("*"))
+        select(func.count("*"))
         .select_from(Synthese)
         .where(
             Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework)
@@ -898,7 +896,7 @@ def get_acquisition_framework_stats(id_acquisition_framework):
 
     if "OCCHAB" in config and nb_datasets > 0:
         nb_habitats = db.session.execute(
-            db.select(func.count("*"))
+            select(func.count("*"))
             .select_from(OccurenceHabitat)
             .join(Station)
             .where(Station.id_dataset.in_(dataset_ids))
@@ -924,19 +922,19 @@ def get_acquisition_framework_bbox(id_acquisition_framework):
     """
 
     dataset_ids = db.session.scalars(
-        db.select(TDatasets.id_dataset).where(
+        select(TDatasets.id_dataset).where(
             TDatasets.id_acquisition_framework == id_acquisition_framework
         )
     ).all()
 
     geojsonData = DB.session.scalars(
-        db.select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
+        select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
         .where(Synthese.id_dataset.in_(dataset_ids))
         .limit(1)
     ).first()
     # geojsonData will never be empty, if no entries matching the query condition(s), it will contains [(None,)]
     geojsonData = db.session.execute(
-        db.select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
+        select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
         .where(Synthese.id_dataset.in_(dataset_ids))
         .limit(1)
     ).first()[0]
@@ -1027,7 +1025,7 @@ def publish_acquisition_framework(af_id):
 
     # The AF must contain DS to be published
     datasets = (
-        db.session.scalars(db.select(TDatasets).filter_by(id_acquisition_framework=af_id))
+        db.session.scalars(select(TDatasets).filter_by(id_acquisition_framework=af_id))
         .unique()
         .all()
     )
@@ -1036,7 +1034,7 @@ def publish_acquisition_framework(af_id):
         raise Conflict("Le cadre doit contenir des jeux de données")
 
     af_count = db.session.execute(
-        db.select(func.count("*"))
+        select(func.count("*"))
         .select_from(TAcquisitionFramework)
         .where(
             TAcquisitionFramework.id_acquisition_framework == af_id,
