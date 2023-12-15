@@ -11,6 +11,7 @@ CHANGELOG
 **🐛 Corrections**
 
 - [Métadonnées] Masquage des références bibliograhpiques dans le formulaire des cadres d'acquisition en attendant la finalisation du développement du backend (#2562, par @DonovanMaillard)
+- [Occtax] Correction du problème de chargement de la liste de JDD lors de la création d'un relevé (#2815, par @andriacap)
 - [Synthèse et validation] Ajout de la méthode de détermination dans la fiche détail d'une observation (#2785, par @DonovanMaillard)
 - [Frontend] Correction de la prise en compte des filtres dans le composant `datalist` (#2777, par @joelclems)
 - [Synthèse] Optimisation du chargement de l'affichage des observations groupées par maille (#2766, par @mvergez)
