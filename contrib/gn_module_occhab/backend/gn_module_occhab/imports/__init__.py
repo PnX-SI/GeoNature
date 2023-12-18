@@ -23,6 +23,7 @@ from gn_module_import.checks.sql import (
     check_cd_hab,
     generate_altitudes,
     check_duplicate_uuid,
+    check_existing_uuid,
     generate_missing_uuid,
     check_duplicates_source_pk,
     check_dates,
@@ -50,6 +51,8 @@ def check_transient_data(task, logger, imprt):
             if field.source_field is not None and field.mnemonique is None
         ]
         updated_cols = set()
+
+        ### Dataframe checks
 
         df = load_transient_data_in_dataframe(imprt, entity, source_cols)
 
@@ -91,6 +94,8 @@ def check_transient_data(task, logger, imprt):
 
         update_transient_data_from_dataframe(imprt, entity, updated_cols, df)
 
+        ### SQL checks
+
         if entity.code == "station":
             convert_geom_columns(
                 imprt,
@@ -98,6 +103,16 @@ def check_transient_data(task, logger, imprt):
                 geom_4326_field=fields["geom_4326"],
                 geom_local_field=fields["geom_local"],
             )
+
+        if "entity_source_pk_value" in selected_fields:  # FIXME FIXME
+            check_duplicates_source_pk(imprt, entity, selected_fields["entity_source_pk_value"])
+
+        if entity.code == "station" and "unique_id_sinp_station" in selected_fields:
+            check_duplicate_uuid(imprt, entity, selected_fields["unique_id_sinp_station"])
+            check_existing_uuid(imprt, entity, selected_fields["unique_id_sinp_station"])
+        if entity.code == "habitat" and "unique_id_sinp_habitat" in selected_fields:
+            check_duplicate_uuid(imprt, entity, selected_fields["unique_id_sinp_habitat"])
+            check_existing_uuid(imprt, entity, selected_fields["unique_id_sinp_habitat"])
 
         do_nomenclatures_mapping(
             imprt,
@@ -123,8 +138,6 @@ def check_transient_data(task, logger, imprt):
                 selected_fields.get("altitude_min"),
                 selected_fields.get("altitude_max"),
             )
-
-        # TODO: uuid
 
         check_dates(
             imprt, entity, selected_fields.get("date_min"), selected_fields.get("date_max")
