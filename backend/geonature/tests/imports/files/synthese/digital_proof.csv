@@ -1,0 +1,17 @@
+date_min;date_max;hour_min;hour_max;nom_cite;observateurs;WKT;cd_nom;id_nomenclature_exist_proof;digital_proof;Erreur(s) attendue(s)
+2017-01-01;2017-01-01;;;Ablette;Toto;POINT(6.5 44.85);67111;Oui;https://test.fr;Valide
+2017-01-01;2017-01-01;20:00;;Ablette;Toto;POINT(6.5 44.85);67111;Oui;http:/ik.fr;INVALID_URL_PROOF
+2017-01-01;2017-01-01;;20:00;Ablette;Toto;POINT(6.5 44.85);67111;Oui;http://178.32.193.151;Valide
+2017-01-01;2017-01-01;20:00;20:00;Ablette;Toto;POINT(6.5 44.85);67111;Oui;htt://ik.fr;INVALID_URL_PROOF
+2017-01-01;2017-01-01;20:00;21:00;Ablette;Toto;POINT(6.5 44.85);67111;Oui;http://ik;INVALID_URL_PROOF
+2017-01-01;2017-01-01;20:00;21:00;Ablette;Toto;POINT(6.5 44.85);67111;Oui;geonature.fr;Valide
+2017-01-01;2017-01-01;;;Ablette;Toto;POINT(6.5 44.85);67111;Oui;ftp://test.com;Valide
+2017-01-01;2017-01-01;;;Ablette;Toto;POINT(6.5 44.85);67111;Oui;;INVALID_EXISTING_PROOF_VALUE
+2017-01-01;2017-01-01;;;Ablette;Toto;POINT(6.5 44.85);67111;Non;geonature.fr;INVALID_EXISTING_PROOF_VALUE
+2017-01-01;2017-01-01;;;Ablette;Toto;POINT(6.5 44.85);67111;Non;;Valide
+2017-01-01;2017-01-01;;;Ablette;Toto;POINT(6.5 44.85);67111;Non acquise;geonature.fr;INVALID_EXISTING_PROOF_VALUE
+2017-01-01;2017-01-01;;;Ablette;Toto;POINT(6.5 44.85);67111;Non acquise;;Valide
+2017-01-01;2017-01-01;;;Ablette;Toto;POINT(6.5 44.85);67111;Inconnu;geonature.fr;INVALID_EXISTING_PROOF_VALUE
+2017-01-01;2017-01-01;;;Ablette;Toto;POINT(6.5 44.85);67111;Inconnu;;Valide
+2017-01-01;2017-01-01;;;Ablette;Toto;POINT(6.5 44.85);67111;;geonature.fr;INVALID_EXISTING_PROOF_VALUE
+2017-01-01;2017-01-01;;;Ablette;Toto;POINT(6.5 44.85);67111;;;Valide
