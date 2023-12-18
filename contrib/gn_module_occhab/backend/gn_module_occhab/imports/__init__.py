@@ -161,7 +161,48 @@ def check_transient_data(task, logger, imprt):
 
 
 def import_data_to_occhab(imprt):
-    pass
+    transient_table = imprt.destination.get_transient_table()
+    entities = (
+        Entity.query.filter_by(destination=imprt.destination)
+        .options(joinedload(Entity.fields))
+        .order_by(Entity.order)
+        .all()
+    )
+    for entity in entities:
+        fields = {
+            ef.field.name_field: ef.field for ef in entity.fields if ef.field.dest_field != None
+        }
+        insert_fields = set()
+        for field_name, source_field in imprt.fieldmapping.items():
+            if field_name not in fields:  # not a destination field
+                continue
+            field = fields[field_name]
+            if field.multi:
+                if not set(source_field).isdisjoint(imprt.columns):
+                    insert_fields |= {field}
+            else:
+                if source_field in imprt.columns:
+                    insert_fields |= {field}
+        if entity.code == "station":
+            insert_fields -= {fields["unique_dataset_id"]}
+            insert_fields |= {fields["id_dataset"]}
+            insert_fields |= {fields["geom_4326"]}  # , fields["geom_local"]}
+            if imprt.fieldmapping.get("altitudes_generate", False):
+                insert_fields |= {fields["altitude_min"], fields["altitude_max"]}
+        names = [field.dest_field for field in insert_fields]
+        select_stmt = (
+            sa.select(*[transient_table.c[name] for name in names])
+            .where(transient_table.c.id_import == imprt.id_import)
+            .where(transient_table.c[entity.validity_column] == True)
+        )
+        destination_table = entity.get_destination_table()
+        print(names)
+        print(destination_table.c.keys())
+        insert_stmt = sa.insert(destination_table).from_select(
+            names=names,
+            select=select_stmt,
+        )
+        db.session.execute(insert_stmt)
 
 
 def remove_data_from_occhab(imprt):
