@@ -22,7 +22,7 @@ packaging
 psycopg2
 python-dateutil
 shapely
-sqlalchemy<2.0
+sqlalchemy
 toml
 weasyprint<53
 wtforms

@@ -13,8 +13,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_mail import Mail
 from flask_migrate import Migrate
-from utils_flask_sqla.sqlalchemy import CustomSQLAlchemy
-from utils_flask_sqla.models import SelectModel
 
 
 # Must be at top of this file. I don't know why (?)
@@ -36,7 +34,7 @@ DEFAULT_CONFIG_FILE = ROOT_DIR / "config/geonature_config.toml"
 CONFIG_FILE = os.environ.get("GEONATURE_CONFIG_FILE", DEFAULT_CONFIG_FILE)
 
 os.environ["FLASK_SQLALCHEMY_DB"] = "geonature.utils.env.db"
-DB = db = CustomSQLAlchemy(model_class=SelectModel)
+DB = db = SQLAlchemy()
 os.environ["FLASK_MARSHMALLOW"] = "geonature.utils.env.ma"
 MA = ma = Marshmallow()
 ma.SQLAlchemySchema.OPTIONS_CLASS.session = db.session

@@ -7,7 +7,7 @@ Create Date: 2022-04-05 16:22:57.078076
 """
 from alembic import op
 import sqlalchemy as sa
-
+from sqlalchemy.sql import text
 
 # revision identifiers, used by Alembic.
 revision = "42040535a20e"
@@ -28,13 +28,15 @@ def upgrade():
     monitoring_present = (
         op.get_bind()
         .execute(
-            """
+            text(
+                """
     SELECT EXISTS (
         SELECT FROM pg_tables
         WHERE  schemaname = 'gn_monitoring'
         AND    tablename  = 't_module_complements'
     )
     """
+            )
         )
         .scalar()
     )

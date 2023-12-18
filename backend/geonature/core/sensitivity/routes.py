@@ -7,6 +7,7 @@ import click
 from flask import Blueprint, current_app
 from sqlalchemy import func
 from sqlalchemy.schema import Table
+from sqlalchemy.sql import text
 
 from geonature.utils.env import db
 
@@ -123,7 +124,7 @@ def refresh_rules_cache():
     """
     Rafraichie la vue matérialisée extrapolant les règles aux taxons enfants.
     """
-    db.session.execute("REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref")
+    db.session.execute(text("REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref"))
     db.session.commit()
 
 

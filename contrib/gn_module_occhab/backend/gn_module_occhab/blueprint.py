@@ -53,15 +53,12 @@ blueprint = Blueprint("occhab", __name__)
 @blueprint.route("/stations/", methods=["GET"])
 @permissions.check_cruved_scope("R", module_code="OCCHAB", get_scope=True)
 def list_stations(scope):
-    stations = (
-        Station.select.filter_by_params(request.args)
-        .filter_by_scope(scope)
-        .order_by(Station.date_min.desc())
-        .options(
-            raiseload("*"),
-            joinedload(Station.observers),
-            joinedload(Station.dataset),
-        )
+    stations = Station.filter_by_params(request.args)
+    stations = Station.filter_by_scope(scope=scope, query=stations)
+    stations = stations.order_by(Station.date_min.desc()).options(
+        raiseload("*"),
+        joinedload(Station.observers),
+        joinedload(Station.dataset),
     )
     only = [
         "observers",

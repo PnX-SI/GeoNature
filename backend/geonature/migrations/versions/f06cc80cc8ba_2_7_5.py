@@ -30,7 +30,7 @@ depends_on = (
 
 def upgrade():
     conn = op.get_bind()
-    local_srid = conn.execute("SELECT Find_SRID('ref_geo', 'l_areas', 'geom')").scalar()
+    local_srid = conn.execute(text("SELECT Find_SRID('ref_geo', 'l_areas', 'geom')")).scalar()
     bindparams = {"local_srid": local_srid}
     for path, filename in [
         ("geonature.migrations.data.utilisateurs", "adds_for_usershub.sql"),

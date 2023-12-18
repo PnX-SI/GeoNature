@@ -9,6 +9,7 @@ from distutils.util import strtobool
 
 from alembic import op, context
 import sqlalchemy as sa
+from sqlalchemy.sql import text
 
 from utils_flask_sqla.migrations.utils import logger
 
@@ -161,7 +162,8 @@ def upgrade():
         count = (
             op.get_bind()
             .execute(
-                """
+                text(
+                    """
             WITH cleared_rows AS (
                 UPDATE
                     gn_synthese.synthese s
@@ -181,6 +183,7 @@ def upgrade():
             FROM
                 cleared_rows;
         """
+                )
             )
             .scalar()
         )
@@ -201,7 +204,8 @@ def downgrade():
         count = (
             op.get_bind()
             .execute(
-                """
+                text(
+                    """
             WITH restored_rows AS (
                 UPDATE 
                     gn_synthese.synthese s
@@ -225,6 +229,7 @@ def downgrade():
             FROM
                 restored_rows
         """
+                )
             )
             .scalar()
         )

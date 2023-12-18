@@ -118,7 +118,7 @@ def insert_sensitivity_referential(source, csvfile):
         WHERE s.source = :source
     """
         ),
-        source=source,
+        parameters={"source": source}
     )
 
     return len(rules)

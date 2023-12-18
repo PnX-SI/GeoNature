@@ -100,8 +100,8 @@ def get_metadata_list(role, scope, args, exclude_cols):
     is_parent = args.get("is_parent")
     order_by = args.get("orderby", None)
 
-    query = DB.select(TAcquisitionFramework).where_if(
-        is_parent is not None, TAcquisitionFramework.is_parent
+    query = DB.select(TAcquisitionFramework).where(
+        TAcquisitionFramework.is_parent if is_parent is not None else True
     )
 
     if selector == "ds":
