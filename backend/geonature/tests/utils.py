@@ -3,6 +3,7 @@ from flask import url_for
 from pypnusershub.tests.utils import (
     set_logged_user,
     unset_logged_user,
+    logged_user,
     logged_user_headers,
 )
 
