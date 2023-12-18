@@ -171,7 +171,7 @@ def insert_import_data_in_transient_table(imprt):
         if extra_columns and "extra_fields" in transient_table.c:
             data.update(
                 {
-                    "extra_fields": chunk[extra_columns].apply(
+                    "extra_fields": chunk[list(extra_columns)].apply(
                         lambda cols: {k: v for k, v in cols.items()}, axis=1
                     ),
                 }
