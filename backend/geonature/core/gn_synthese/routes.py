@@ -731,7 +731,11 @@ def general_stats(permissions):
         - nb of distinct observer
         - nb of datasets
     """
-    allowed_datasets = db.session.scalars(TDatasets.filter_by_readable()).unique().all()
+    nb_allowed_datasets = db.session.scalar(
+        select(func.count("*"))
+        .select_from(TDatasets)
+        .where(TDatasets.filter_by_readable().whereclause)
+    )
     q = select(
         func.count(Synthese.id_synthese),
         func.count(func.distinct(Synthese.cd_nom)),
@@ -746,7 +750,7 @@ def general_stats(permissions):
         "nb_data": synthese_counts[0],
         "nb_species": synthese_counts[1],
         "nb_observers": synthese_counts[2],
-        "nb_dataset": allowed_datasets,
+        "nb_dataset": nb_allowed_datasets,
     }
     return data
 
@@ -762,8 +766,8 @@ def get_taxon_tree():
     taxon_tree_table = GenericTable(
         tableName="v_tree_taxons_synthese", schemaName="gn_synthese", engine=DB.engine
     )
-    data = db.session.scalars(select(taxon_tree_table.tableDef)).all()
-    return [taxon_tree_table.as_dict(d) for d in data]
+    data = db.session.execute(select(taxon_tree_table.tableDef)).all()
+    return [taxon_tree_table.as_dict(datum) for datum in data]
 
 
 @routes.route("/taxons_autocomplete", methods=["GET"])
