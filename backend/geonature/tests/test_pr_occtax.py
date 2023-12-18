@@ -3,7 +3,6 @@ from geonature.core.gn_commons.models.base import TModules
 from geonature.core.gn_commons.models.additional_fields import TAdditionalFields
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_permissions.models import PermissionAvailable, PermObject
-from occtax.commands import add_submodule_permissions
 import pytest
 
 from datetime import datetime as dt
@@ -35,6 +34,7 @@ from occtax.models import (
 )
 from occtax.repositories import ReleveRepository
 from occtax.schemas import OccurrenceSchema, ReleveSchema
+from occtax.commands import add_submodule_permissions
 
 
 @pytest.fixture(scope="session")
