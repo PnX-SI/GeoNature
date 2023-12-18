@@ -18,6 +18,7 @@ from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_LIST_COLUMN,
     DEFAULT_COLUMNS_API_SYNTHESE,
 )
+from geonature.core.imports.config_schema import ImportConfigSchema
 from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
 from geonature.utils.module import iter_modules_dist, get_module_config
 from geonature.utils.utilsmails import clean_recipients
@@ -540,6 +541,7 @@ class GnGeneralSchemaConf(Schema):
     RIGHTS = fields.Nested(RightsSchemaConf, load_default=RightsSchemaConf().load({}))
     FRONTEND = fields.Nested(GnFrontEndConf, load_default=GnFrontEndConf().load({}))
     SYNTHESE = fields.Nested(Synthese, load_default=Synthese().load({}))
+    IMPORT = fields.Nested(ImportConfigSchema, load_default=ImportConfigSchema().load({}))
     MAPCONFIG = fields.Nested(MapConfig, load_default=MapConfig().load({}))
     # Ajoute la surchouche 'taxonomique' sur l'API nomenclature
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(load_default=True)
