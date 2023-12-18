@@ -80,7 +80,6 @@ def get_import_list(scope, destination=None):
     sort = request.args.get("sort", default="date_create_import", type=str)
     sort_dir = request.args.get("sort_dir", default="desc", type=str)
     filters = []
-
     if search:
         filters.append(TImports.full_file_name.ilike(f"%{search}%"))
         filters.append(
