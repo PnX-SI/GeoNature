@@ -36,15 +36,23 @@ def insert_sensitivity_referential(source, csvfile):
     ).scalar_one()
     defaults_nomenclatures = {
         statut_biologique_nomenclature_type: set(
-            sa.select(Nomenclature).where(
-                Nomenclature.nomenclature_type == statut_biologique_nomenclature_type,
-                Nomenclature.mnemonique.in_(["Inconnu", "Non renseigné", "Non Déterminé"]),
+            db.session.scalars(
+                sa.select(Nomenclature)
+                .where(
+                    Nomenclature.nomenclature_type == statut_biologique_nomenclature_type,
+                    Nomenclature.mnemonique.in_(["Inconnu", "Non renseigné", "Non Déterminé"]),
+                )
+                .all()
             )
         ),
         behaviour_nomenclature_type: set(
-            sa.select(Nomenclature).where(
-                Nomenclature.nomenclature_type == behaviour_nomenclature_type,
-                Nomenclature.mnemonique.in_(["NSP", "1"]),
+            db.session.scalars(
+                sa.select(Nomenclature)
+                .where(
+                    Nomenclature.nomenclature_type == behaviour_nomenclature_type,
+                    Nomenclature.mnemonique.in_(["NSP", "1"]),
+                )
+                .all()
             )
         ),
     }
