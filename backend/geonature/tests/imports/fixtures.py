@@ -19,7 +19,6 @@ def default_destination(app):
         if (
             app.url_map.is_endpoint_expecting(endpoint, "destination")
             and "destination" not in values
-            and hasattr(g, "default_destination")
         ):
             values["destination"] = g.default_destination.code
 
