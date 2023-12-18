@@ -1,0 +1,10 @@
+id_station;unique_id_sinp_station;unique_dataset_id;date_min;date_max;observers_txt;id_nomenclature_area_surface_calculation;WKT;id_nomenclature_geographic_object;unique_id_sinp_habitat;nom_cite;cd_hab;technical_precision
+;74394855-de7f-4e9d-8f6b-fda41b335441;2ed4663e-5423-4c09-91c0-954b4248dbf4;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;02f1d8c6-4a6f-4d58-9426-0128b867c903;forêt;24;
+;74394855-de7f-4e9d-8f6b-fda41b335441;2ed4663e-5423-4c09-91c0-954b4248dbf4;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;d5056088-5b9e-4bc6-b353-9ab4e553f55c;prairie;24;
+;e7a2ba67-f099-4e82-b15c-8d7e7b6db9ee;2ed4663e-5423-4c09-91c0-954b4248dbf4;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;d1a7e45d-ea40-42a4-bb3d-585f7d985e40;prairie;24;
+;94bf7252-4837-42c8-8880-995435b6a8b6;2ed4663e-5423-4c09-91c0-954b4248dbf4;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;fef26cd9-847d-4bf2-858b-dcd4062b6d66;prairie;24;
+;016f62db-fa78-4fc7-b780-c14ce2aab2bf;2ed4663e-5423-4c09-91c0-954b4248dbf3;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;6d824a66-5293-469f-8330-fc5e0a2b2166;prairie;24;
+;;lalilou;;;;;POINT(3.634 44.399);;;;;
+;;;;;Toto;;;;;;;
+;;;;;;;;;;prairie;24;
+1;;;;;;;;;;;;

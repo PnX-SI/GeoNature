@@ -204,6 +204,7 @@ def create_app(with_external_mods=True):
         ("geonature.core.gn_profiles.routes:routes", "/gn_profiles"),
         ("geonature.core.sensitivity.routes:routes", None),
         ("geonature.core.notifications.routes:routes", "/notifications"),
+        ("geonature.core.imports.blueprint:blueprint", "/import"),
     ]:
         module_name, blueprint_name = blueprint_path.split(":")
         blueprint = getattr(import_module(module_name), blueprint_name)

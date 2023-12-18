@@ -9,19 +9,19 @@ from geonature.utils.sentry import start_sentry_child
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_synthese.models import Synthese, TSources
 
-from gn_module_import.models import Entity, EntityField, BibFields
-from gn_module_import.utils import (
+from geonature.core.imports.models import Entity, EntityField, BibFields
+from geonature.core.imports.utils import (
     load_transient_data_in_dataframe,
     update_transient_data_from_dataframe,
 )
-from gn_module_import.checks.dataframe import (
+from geonature.core.imports.checks.dataframe import (
     concat_dates,
     check_required_values,
     check_types,
     check_geography,
     check_counts,
 )
-from gn_module_import.checks.sql import (
+from geonature.core.imports.checks.sql import (
     do_nomenclatures_mapping,
     check_nomenclature_exist_proof,
     check_nomenclature_blurring,
