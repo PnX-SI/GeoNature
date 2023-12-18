@@ -185,7 +185,6 @@ class TestSynthese:
 
         r = self.client.get(url)
         assert r.status_code == 200
-        print(r.json)
         validate_json(instance=r.json, schema=schema)
 
         # test on synonymy and taxref attrs
@@ -390,8 +389,6 @@ class TestSynthese:
 
         filters = {"observers": observer_input}
         r = self.client.get(url_for("gn_synthese.get_observations_for_web"), json=filters)
-        for s in r.json["features"]:
-            print(s)
         assert len(r.json["features"]) == expected_length_synthese
 
     def test_get_synthese_data_cruved(self, app, users, synthese_data, datasets):
