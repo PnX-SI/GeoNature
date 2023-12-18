@@ -1,0 +1,4 @@
+entity_source_pk_value;date_min;date_max;cd_nom;nom_cite;WKT;id_nomenclature_geo_object_nature;id_nomenclature_naturalness;id_nomenclature_life_stage
+1;2017-01-01;2017-01-01;60612;Lynx;POINT(6.5 44.85);Inventoriel;Sauvage;Adulte
+2;2017-01-01;2017-01-01;60612;Lynx;POINT(6.5 44.85);Inventoriel;;Adulte
+3;2017-01-01;2017-01-01;60612;Lynx;POINT(6.5 44.85);Inventoriel;Sauvage;
