@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <title>Export rapport d'import</title>
+  </head>
+
+  <body>
+    <div class="header">
+      <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{url_for('static', filename='css/metadata_pdf.css')}}"
+    >
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{url_for('static', filename='css/metadata_pdf_custom.css')}}"
+    >
+    <img
+      class="bandeau"
+      src="{{url_for('static', filename='images/Bandeau_pdf.png')}}"
+      alt="Bandeau"
+    >
+    <img
+      class="logo"
+      src="{{url_for('static', filename='images/logo_structure.jpg')}}"
+      alt="Logo"
+    >
+    </div>
+    <div class="titre">
+      <h5> Import ID : {{ data.id_import }} </h5>
+      <h5> Date d'import : {{ data.date_end_import }} </h5>
+      <h5> Nom du fichier d'import : {{ data.full_file_name }} </h5>
+      <div class="ligne-titre ligne main-color"></div>
+    </div>
+    <div class="etiquettes">
+      <div id="taxons" class="etiquette">
+        <div class="etiquette-haut">
+          <img
+            class="logo-etiquette"
+            src="{{url_for('static', filename='images/Taxon_icon.svg')}}"
+            alt="taxon-icon"
+          >
+          <div class="etiquette-bas">
+            <small>Taxons</small>
+            </br>
+            {% if data.taxa_count: %}
+            {{ data.taxa_count }}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      
+      <div id="data" class="etiquette">
+        <div class="etiquette-haut">
+          <img
+            class="logo-etiquette"
+            src="{{url_for('static', filename='images/Donnee_icon.svg')}}"
+            alt="donnee-icon"
+          >
+          <div class="etiquette-bas">
+            <small>Données importées/totales</small>
+            </br>
+            {% if data.import_count: %}
+            {{ data.import_count }} / {{ data.source_count }}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% if data.map is not none %}
+      <div class="zone">
+        <!-- <p class="zone-geographique">Périmètre géographique</p> -->
+        <h5 class="zone-geographique">Zone géographique</h5>
+        <img id="map" src="{{ data.map }}">
+      </div>
+      {% endif %}
+    </div>
+    </div>
+    <div class="description">
+      <div class="left-block">
+        <p class="fiche-descriptive">Fiche descriptive</p>
+        <div class="information">
+          <p class="info-titre">Identification</p>
+          <p class="info-contenu">
+            <br>
+            Auteur :
+            {% if data.authors_name: %}
+            {{ data.authors_name }}
+            {% endif %}
+            <br>
+            SRID :
+            {% if data.srid: %}
+            {{ data.srid }}
+            {% endif %}
+            <br>
+            Encodage :
+            {% if data.encoding: %}
+            {{ data.encoding }}
+            {% endif %}
+            <br>
+            Format :
+            {% if data.format_source_file: %}
+            {{ data.format_source_file }}
+            {% endif %}
+            <br>
+            Jeux de données :
+            {% if data.dataset: %}
+              {{ data.dataset.dataset_name }}
+            {% endif %}
+          </p>
+        </div>
+
+        {% if data.keywords: %}
+        <div class="information">
+          <p class="info-titre">Mots-clés</p>
+          <p class="info-contenu">
+            {{ data.keywords }}
+          </p>
+        </div>
+        {% endif %}
+      </div>
+      {% if data.chart is not none %}
+      <div id="chart" class="zone">
+        <p class="zone-geographique">Répartition taxonomique</p>
+        <img src="{{ data.chart }}">
+      </div>
+      {% endif %}
+    </div>
+    <div id="Error-block" class="information">
+      <p class="info-titre">Erreurs</p>
+      <p class="info-contenu">
+      <div id="errors">
+        <table id="error-table">
+          <thead>
+            <tr>
+                <th class="main-color">Type d'erreur</th>
+                <th class="main-color">Champ</th>
+                <th class="main-color">Nombre d'erreur(s)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for error in data.errors %}
+            <tr>
+                <td>{{ error.type.description }}</td>
+                <td>{{ error.column }}</td>
+                <td>{{ error.rows | length }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      </p>
+    </div>
+    <div class="footer">
+      <a href="{{data.url}}">Voir le rapport dans le module d'import</a>
+      <span>{{data.date_end_import}}</span>
+    </div>
+  </body>
+<style>
+  /* Puts style here since I cannot make blueprint static files work...*/
+.zone img {
+    max-width: 200px;
+    max-height: 100px;
+  }
+
+.zone {
+  max-width: 400px;
+  max-height: 100px;
+  margin-left: 0px;
+  margin-top: 5px;
+}
+
+#chart {
+  margin-left: 30px;
+}
+
+h5 {
+  text-align: center;
+}
+
+#Error-block {
+  margin-top: 20px;
+  margin-left: 5px;
+}
+
+#errors {
+  margin-right: 10px;
+}
+
+#error-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#error-table td, #error-table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#error-table tr:nth-child(even){background-color: #f2f2f2;}
+
+#error-table td {
+  font-size: 10px;
+}
+
+#error-table th {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  text-align: left;
+  color: white;
+  font-size: 12px;
+  
+}
+
+#taxons {
+  width: 150px;
+  margin-top: 50px;
+}
+
+#data {
+  width: 350px;
+  margin-top: 50px;
+}
+
+.etiquettes {
+  display: contents;
+  margin: 0px 0px 0px 0px;
+}
+
+.left-block {
+  width: 700px;
+  margin-left: 5px;
+}
+.description {
+  margin-left: 0px;
+  width: 720px;
+}
+</style>
+</html>

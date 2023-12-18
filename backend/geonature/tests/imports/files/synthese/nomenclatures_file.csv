@@ -1,0 +1,13 @@
+date_min;nom_cite;observateurs;WKT;cd_nom;id_nomenclature_exist_proof;digital_proof;non_digital_proof;id_nomenclature_blurring;id_nomenclature_source_status;reference_biblio;Erreur(s) attendue(s)
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;;;;NSP;;;-
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;?;;;NSP;;;INVALID_NOMENCLATURE
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;Non;;;NSP;;;-
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;Non;http://A.fr;;NSP;;;INVALID_EXISTING_PROOF_VALUE
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;Non;;B;NSP;;;INVALID_EXISTING_PROOF_VALUE
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;Non;http://A.fr;B;NSP;;;INVALID_EXISTING_PROOF_VALUE
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;Oui;;;NSP;;;INVALID_EXISTING_PROOF_VALUE
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;Oui;http://A.fr;;NSP;;;-
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;Oui;;B;NSP;;;-
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;Oui;http://A.fr;B;NSP;;;-
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;;;;NSP;Littérature;Petit ours brun;-
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;;;;NSP;Littérature;;CONDITIONAL_MANDATORY_FIELD_ERROR
