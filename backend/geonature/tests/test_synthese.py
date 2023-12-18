@@ -165,7 +165,7 @@ class TestSynthese:
         response = self.client.get(url_for("gn_synthese.getDefaultsNomenclatures"))
         assert response.status_code == 200
 
-    def test_get_observations_for_web(self, users, synthese_data, taxon_attribut):
+    def test_get_observations_for_web(self, app, users, synthese_data, taxon_attribut):
         url = url_for("gn_synthese.get_observations_for_web")
         schema = {
             "definitions": jsonschema_definitions,
@@ -182,6 +182,13 @@ class TestSynthese:
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
 
+        # Add cd_nom column
+        app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"] += [
+            {
+                "prop": "cd_nom",
+                "name": "Cdnom",
+            }
+        ]
         # test on synonymy and taxref attrs
         filters = {
             "cd_ref": [taxon_attribut.bib_nom.cd_ref],
@@ -393,8 +400,8 @@ class TestSynthese:
         assert len(features) > 0
 
         for feat in features:
-            assert feat["properties"]["lb_nom"] in [
-                synt.nom_cite for synt in synthese_data.values()
+            assert feat["properties"]["id"] in [
+                synt.id_synthese for synt in synthese_data.values()
             ]
         assert response.status_code == 200
 
@@ -449,6 +456,35 @@ class TestSynthese:
         assert len(data["features"]) != 0
         # le requete doit etre OK marlgré la geom NULL
         assert response.status_code == 200
+
+    @pytest.mark.parametrize(
+        "additionnal_column",
+        [("altitude_min"), ("count_min_max"), ("nom_vern_or_lb_nom")],
+    )
+    def test_get_observations_for_web_param_column_frontend(
+        self, app, users, synthese_data, additionnal_column
+    ):
+        """
+        Test de renseigner le paramètre LIST_COLUMNS_FRONTEND pour renvoyer uniquement
+        les colonnes souhaitées
+        """
+        app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"] = [
+            {
+                "prop": additionnal_column,
+                "name": "My label",
+            }
+        ]
+
+        set_logged_user_cookie(self.client, users["self_user"])
+
+        response = self.client.get(url_for("gn_synthese.get_observations_for_web"))
+        data = response.get_json()
+
+        expected_columns = {"id", "url_source", additionnal_column}
+
+        assert all(
+            set(feature["properties"].keys()) == expected_columns for feature in data["features"]
+        )
 
     def test_export(self, users):
         set_logged_user(self.client, users["self_user"])

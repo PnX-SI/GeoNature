@@ -260,7 +260,11 @@ def api_get_id_table_location(schema_dot_table):
 @routes.route("/places", methods=["GET"])
 @login_required
 def list_places():
-    places = TPlaces.query.filter_by(id_role=g.current_user.id_role).all()
+    places = (
+        TPlaces.query.filter_by(id_role=g.current_user.id_role)
+        .order_by(TPlaces.place_name.asc())
+        .all()
+    )
     return jsonify([p.as_geofeature() for p in places])
 
 
