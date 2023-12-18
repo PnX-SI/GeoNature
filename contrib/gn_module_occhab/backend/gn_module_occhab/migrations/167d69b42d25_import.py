@@ -1,4 +1,4 @@
-"""import
+"""declare occhab as import destination
 
 Revision ID: 167d69b42d25
 Revises: 85efc9bb5a47
@@ -7,7 +7,7 @@ Create Date: 2023-11-07 16:09:58.406426
 """
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.schema import Table, MetaData
+from sqlalchemy.schema import Table, MetaData, ForeignKeyConstraint
 from sqlalchemy.dialects.postgresql import HSTORE, JSONB, UUID
 from geoalchemy2 import Geometry
 
@@ -81,7 +81,9 @@ def upgrade():
         sa.Column(
             "id_import",
             sa.Integer,
-            sa.ForeignKey("gn_imports.t_imports.id_import"),
+            sa.ForeignKey(
+                "gn_imports.t_imports.id_import", onupdate="CASCADE", ondelete="CASCADE"
+            ),
             primary_key=True,
         ),
         sa.Column("line_no", sa.Integer, primary_key=True),
@@ -144,6 +146,9 @@ def upgrade():
             sa.ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         ),
         # Habitat fields
+        sa.Column(
+            "station_line_no", sa.Integer
+        ),  # Note: there is a ForeignKeyConstraint declared below
         sa.Column("src_id_habitat", sa.String),
         sa.Column("id_habitat", sa.Integer),
         # already declared: id_station
@@ -189,6 +194,10 @@ def upgrade():
             "id_nomenclature_community_interest",
             sa.Integer,
             sa.ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        ),
+        ForeignKeyConstraint(
+            ["id_import", "station_line_no"],
+            ["gn_imports.t_imports_occhab.id_import", "gn_imports.t_imports_occhab.line_no"],
         ),
         schema="gn_imports",
     )
@@ -1073,9 +1082,45 @@ def upgrade():
                 FUNCTION gn_commons.fct_trg_log_changes()
             """
         )
+    op.alter_column(
+        schema="pr_occhab",
+        table_name="t_habitats",
+        column_name="id_nomenclature_collection_technique",
+        server_default=sa.func.pr_occhab.get_default_nomenclature_value("TECHNIQUE_COLLECT_HAB"),
+    )
+    op.alter_column(
+        schema="pr_occhab",
+        table_name="t_stations",
+        column_name="unique_id_sinp_station",
+        nullable=True,
+    )
+    op.alter_column(
+        schema="pr_occhab",
+        table_name="t_habitats",
+        column_name="unique_id_sinp_hab",
+        nullable=True,
+    )
 
 
 def downgrade():
+    op.alter_column(
+        schema="pr_occhab",
+        table_name="t_habitats",
+        column_name="unique_id_sinp_hab",
+        nullable=False,
+    )
+    op.alter_column(
+        schema="pr_occhab",
+        table_name="t_stations",
+        column_name="unique_id_sinp_station",
+        nullable=False,
+    )
+    op.alter_column(
+        schema="pr_occhab",
+        table_name="t_habitats",
+        column_name="id_nomenclature_collection_technique",
+        server_default=None,
+    )
     for table_name in ("t_stations", "t_habitats"):
         op.execute(
             f"DROP TRIGGER tri_log_changes_insert_{table_name}_occhab ON pr_occhab.{table_name}"
