@@ -1,4 +1,5 @@
 celery[redis]
+chardet  # imports
 click>=7.0
 fiona>=1.8.22,<1.9
 flask>=3.0
@@ -17,9 +18,12 @@ importlib_metadata;python_version>"3.10"
 lxml
 marshmallow
 marshmallow-sqlalchemy
+pandas<1.4  # imports
 pillow
 packaging
 psycopg2
+pyproj<3.1;python_version<"3.10"  # imports
+pyproj;python_version>="3.10"  # imports
 python-dateutil
 shapely
 sqlalchemy<2.0
