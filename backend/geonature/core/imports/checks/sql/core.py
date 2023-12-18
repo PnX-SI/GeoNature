@@ -33,12 +33,11 @@ def init_rows_validity(imprt):
     # TODO handle multi columns
     # Currently if only a multi-fields is mapped, it will be ignored without raising any error.
     # This is not a very big issue as it is unlikely to map **only** a multi-field.
-    selected_fields_names = []
-    for field_name, source_field in imprt.fieldmapping.items():
-        if type(source_field) == list:
-            selected_fields_names.extend(set(source_field) & set(imprt.columns))
-        elif source_field in imprt.columns:
-            selected_fields_names.append(field_name)
+    selected_fields_names = [
+        field_name
+        for field_name, source_field in imprt.fieldmapping.items()
+        if source_field in imprt.columns
+    ]
     for entity in entities:
         # Select fields associated to this entity *and only to this entity*
         fields = (
@@ -65,12 +64,11 @@ def check_orphan_rows(imprt):
     transient_table = imprt.destination.get_transient_table()
     # TODO: handle multi-source fields
     # This is actually not a big issue as multi-source fields are unlikely to also be multi-entity fields.
-    selected_fields_names = []
-    for field_name, source_field in imprt.fieldmapping.items():
-        if type(source_field) == list:
-            selected_fields_names.extend(set(source_field) & set(imprt.columns))
-        elif source_field in imprt.columns:
-            selected_fields_names.append(field_name)
+    selected_fields_names = [
+        field_name
+        for field_name, source_field in imprt.fieldmapping.items()
+        if source_field in imprt.columns
+    ]
     # Select fields associated to multiple entities
     AllEntityField = sa.orm.aliased(EntityField)
     fields = (
@@ -91,7 +89,6 @@ def check_orphan_rows(imprt):
             error_type="ORPHAN_ROW",
             error_column=field.name_field,
             whereclause=sa.and_(
-                transient_table.c[field.source_field].isnot(None),
                 *[transient_table.c[col].is_(None) for col in imprt.destination.validity_columns]
             ),
         )
