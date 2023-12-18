@@ -5,19 +5,19 @@ from sqlalchemy.orm import joinedload
 from geonature.utils.env import db
 from geonature.utils.sentry import start_sentry_child
 
-from gn_module_import.models import Entity, EntityField, BibFields
-from gn_module_import.utils import (
+from geonature.core.imports.models import Entity, EntityField, BibFields
+from geonature.core.imports.utils import (
     load_transient_data_in_dataframe,
     update_transient_data_from_dataframe,
 )
-from gn_module_import.checks.dataframe import (
+from geonature.core.imports.checks.dataframe import (
     concat_dates,
     check_required_values,
     check_types,
     check_geography,
     check_datasets,
 )
-from gn_module_import.checks.sql import (
+from geonature.core.imports.checks.sql import (
     do_nomenclatures_mapping,
     convert_geom_columns,
     check_cd_hab,
