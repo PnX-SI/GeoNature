@@ -5,9 +5,6 @@ from geonature.core.gn_commons.models import TModules
 
 from geonature.core.imports.models import Destination
 
-from sqlalchemy import select
-from geonature.utils.env import db
-
 
 @pytest.fixture(scope="session")
 def default_destination(app):
@@ -20,7 +17,6 @@ def default_destination(app):
         if (
             app.url_map.is_endpoint_expecting(endpoint, "destination")
             and "destination" not in values
-            and hasattr(g, "default_destination")
         ):
             values["destination"] = g.default_destination.code
 
