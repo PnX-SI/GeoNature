@@ -18,7 +18,7 @@ importlib_metadata;python_version>"3.10"
 lxml
 marshmallow
 marshmallow-sqlalchemy
-pandas<1.4  # imports
+pandas  # imports
 pillow
 packaging
 psycopg2
