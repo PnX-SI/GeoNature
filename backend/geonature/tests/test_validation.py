@@ -40,12 +40,14 @@ class TestValidation:
     def test_add_validation_status(self, users, synthese_data):
         set_logged_user(self.client, users["user"])
         synthese = synthese_data["obs1"]
-        id_nomenclature_valid_status = TNomenclatures.query.filter(
-            sa.and_(
-                TNomenclatures.cd_nomenclature == "1",
-                TNomenclatures.nomenclature_type.has(mnemonique="STATUT_VALID"),
+        id_nomenclature_valid_status = db.session.execute(
+            sa.select(TNomenclatures).where(
+                sa.and_(
+                    TNomenclatures.cd_nomenclature == "1",
+                    TNomenclatures.nomenclature_type.has(mnemonique="STATUT_VALID"),
+                )
             )
-        ).one()
+        ).scalar_one()
         validation_date = datetime.now()
 
         response = self.client.get(
@@ -76,12 +78,14 @@ class TestValidation:
         # Test the entirety of the route (including the history return)
         synthese = synthese_data["obs1"]
 
-        id_nomenclature_valid_status = TNomenclatures.query.filter(
-            sa.and_(
-                TNomenclatures.cd_nomenclature == "1",
-                TNomenclatures.nomenclature_type.has(mnemonique="STATUT_VALID"),
+        id_nomenclature_valid_status = db.session.execute(
+            sa.select(TNomenclatures).where(
+                sa.and_(
+                    TNomenclatures.cd_nomenclature == "1",
+                    TNomenclatures.nomenclature_type.has(mnemonique="STATUT_VALID"),
+                )
             )
-        ).one()
+        ).scalar_one()
         # add a validation item to fill the history variable in the get_hist() route
         response = self.client.post(
             url_for("validation.post_status", id_synthese=synthese_data["obs1"].id_synthese),

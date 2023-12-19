@@ -1,39 +1,36 @@
-import pytest
-import json
 import datetime
 import itertools
+import json
 from collections import Counter
 
-from flask import url_for, current_app
-from sqlalchemy import func
-from werkzeug.exceptions import Forbidden, BadRequest, Unauthorized
-from jsonschema import validate as validate_json
-from geoalchemy2.shape import to_shape, from_shape
-from shapely.geometry import Point
-
-from geonature.utils.env import db
+import pytest
+from apptax.taxonomie.models import Taxref
+from apptax.tests.fixtures import attribut_example, noms_example
+from flask import url_for
+from geoalchemy2.shape import from_shape
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_synthese.models import Synthese, TSources, VSyntheseForWebApp
-
+from geonature.core.gn_synthese.models import Synthese, TSources
+from geonature.utils.env import db
+from jsonschema import validate as validate_json
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user
 from ref_geo.models import BibAreasTypes, LAreas
-from apptax.tests.fixtures import noms_example, attribut_example
-from apptax.taxonomie.models import Taxref
 
-
-from pypnusershub.db.models import User
-from pypnusershub.tests.utils import set_logged_user_cookie
-from apptax.taxonomie.models import Taxref
-from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
+from shapely.geometry import Point
+from sqlalchemy import func, select
+from werkzeug.exceptions import BadRequest, Forbidden, Unauthorized
 
 from .fixtures import *
-from .fixtures import create_synthese, create_module
 from .utils import jsonschema_definitions
+
+from pypnusershub.tests.utils import set_logged_user_cookie
 
 
 @pytest.fixture()
 def unexisted_id():
-    return db.session.query(func.max(TDatasets.id_dataset)).scalar() + 1
+    return (
+        db.session.execute(select(func.max(TDatasets.id_dataset)).select_from(TDatasets)).scalar()
+        + 1
+    )
 
 
 @pytest.fixture()
@@ -46,7 +43,10 @@ def source():
 
 @pytest.fixture()
 def unexisted_id_source():
-    return db.session.query(func.max(TSources.id_source)).scalar() + 1
+    return (
+        db.session.execute(select(func.max(TSources.id_source)).select_from(TSources)).scalar_one()
+        + 1
+    )
 
 
 @pytest.fixture()
@@ -56,8 +56,10 @@ def taxon_attribut(noms_example, attribut_example, synthese_data):
     """
     from apptax.taxonomie.models import BibAttributs, BibNoms, CorTaxonAttribut
 
-    nom = BibNoms.query.filter_by(cd_ref=209902).one()
-    attribut = BibAttributs.query.filter_by(nom_attribut=attribut_example.nom_attribut).one()
+    nom = db.session.scalars(select(BibNoms).filter_by(cd_ref=209902)).one()
+    attribut = db.session.scalars(
+        select(BibAttributs).filter_by(nom_attribut=attribut_example.nom_attribut)
+    ).one()
     with db.session.begin_nested():
         c = CorTaxonAttribut(bib_nom=nom, bib_attribut=attribut, valeur_attribut="eau")
         db.session.add(c)
@@ -71,7 +73,7 @@ def synthese_for_observers(source, datasets):
     insert in cor_observers_synthese and run a trigger which override the observers_txt field
     """
     now = datetime.datetime.now()
-    taxon = Taxref.query.first()
+    taxon = db.session.scalars(select(Taxref)).first()
     point = Point(5.486786, 42.832182)
     geom = from_shape(point, srid=4326)
     with db.session.begin_nested():
@@ -147,12 +149,14 @@ synthese_properties = {
 class TestSynthese:
     def test_synthese_scope_filtering(self, app, users, synthese_data):
         all_ids = {s.id_synthese for s in synthese_data.values()}
-        sq = Synthese.query.with_entities(Synthese.id_synthese).filter(
-            Synthese.id_synthese.in_(all_ids)
+        sq = (
+            select(Synthese)
+            .with_only_columns(Synthese.id_synthese)
+            .where(Synthese.id_synthese.in_(all_ids))
         )
         with app.test_request_context(headers=logged_user_headers(users["user"])):
             app.preprocess_request()
-            assert sq.filter_by_scope(0).all() == []
+            assert db.session.scalars(Synthese.filter_by_scope(0, query=sq)).all() == []
 
     def test_list_sources(self, source, users):
         set_logged_user(self.client, users["self_user"])
@@ -257,8 +261,12 @@ class TestSynthese:
         )
 
         # test ref geo area filter
-        com_type = BibAreasTypes.query.filter_by(type_code="COM").one()
-        chambery = LAreas.query.filter_by(area_type=com_type, area_name="Chambéry").one()
+        com_type = db.session.execute(
+            select(BibAreasTypes).filter_by(type_code="COM")
+        ).scalar_one()
+        chambery = db.session.execute(
+            select(LAreas).filter_by(area_type=com_type, area_name="Chambéry")
+        ).scalar_one()
         filters = {f"area_{com_type.id_type}": [chambery.id_area]}
         r = self.client.post(url, json=filters)
         assert r.status_code == 200
@@ -754,7 +762,11 @@ class TestSynthese:
         ## "self_user" : scope 1 and include sensitive data
         user = users["self_user"]
         set_expected_cd_ref = set(
-            Taxref.query.filter(Taxref.cd_nom == synthese_data[name_obs].cd_nom).one().cd_ref
+            db.session.scalars(
+                select(Taxref).where(Taxref.cd_nom == synthese_data[name_obs].cd_nom)
+            )
+            .one()
+            .cd_ref
             for name_obs in [
                 "obs1",
                 "obs2",
@@ -769,7 +781,9 @@ class TestSynthese:
         )
         set_expected_cd_ref.update(
             set(
-                Taxref.query.filter(Taxref.cd_nom == synthese_sensitive_data[name_obs].cd_nom)
+                db.session.scalars(
+                    select(Taxref).where(Taxref.cd_nom == synthese_sensitive_data[name_obs].cd_nom)
+                )
                 .one()
                 .cd_ref
                 for name_obs in [
@@ -784,12 +798,18 @@ class TestSynthese:
         ## "associate_user_2_exclude_sensitive" : scope 2 and exclude sensitive data
         user = users["associate_user_2_exclude_sensitive"]
         set_expected_cd_ref = set(
-            Taxref.query.filter(Taxref.cd_nom == synthese_data[name_obs].cd_nom).one().cd_ref
+            db.session.scalars(
+                select(Taxref).where(Taxref.cd_nom == synthese_data[name_obs].cd_nom)
+            )
+            .one()
+            .cd_ref
             for name_obs in ["obs1"]
         )
         set_expected_cd_ref.add(
-            Taxref.query.filter(
-                Taxref.cd_nom == synthese_sensitive_data["obs_protected_not_sensitive"].cd_nom
+            db.session.scalars(
+                select(Taxref).where(
+                    Taxref.cd_nom == synthese_sensitive_data["obs_protected_not_sensitive"].cd_nom
+                )
             )
             .one()
             .cd_ref
@@ -843,7 +863,9 @@ class TestSynthese:
         ## "self_user" : scope 1 and include sensitive data
         user = users["self_user"]
         set_expected_cd_ref = set(
-            Taxref.query.filter(Taxref.cd_nom == synthese_sensitive_data[name_obs].cd_nom)
+            db.session.scalars(
+                select(Taxref).where(Taxref.cd_nom == synthese_sensitive_data[name_obs].cd_nom)
+            )
             .one()
             .cd_ref
             for name_obs in [
@@ -857,7 +879,9 @@ class TestSynthese:
         ## "associate_user_2_exclude_sensitive" : scope 2 and exclude sensitive data
         user = users["associate_user_2_exclude_sensitive"]
         set_expected_cd_ref = set(
-            Taxref.query.filter(Taxref.cd_nom == synthese_sensitive_data[name_obs].cd_nom)
+            db.session.scalars(
+                select(Taxref).where(Taxref.cd_nom == synthese_sensitive_data[name_obs].cd_nom)
+            )
             .one()
             .cd_ref
             for name_obs in ["obs_protected_not_sensitive"]
@@ -1017,7 +1041,12 @@ class TestSynthese:
         assert response.status_code == 403
 
         set_logged_user(self.client, users["admin_user"])
-        not_existing = db.session.query(func.max(Synthese.id_synthese)).scalar() + 1
+        not_existing = (
+            db.session.execute(
+                select(func.max(Synthese.id_synthese)).select_from(Synthese)
+            ).scalar_one()
+            + 1
+        )
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=not_existing)
         )

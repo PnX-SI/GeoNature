@@ -3,6 +3,7 @@ from click import UsageError
 import sqlalchemy as sa
 from sqlalchemy.orm import contains_eager, joinedload
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
+from sqlalchemy import select
 
 from pypnusershub.db.models import User
 
@@ -40,7 +41,7 @@ def supergrant(skip_existing, dry_run, yes, **filters):
     if not filters:
         raise UsageError("Veuillez sélectionner le rôle à promouvoir.")
     try:
-        role = User.query.filter_by(**filters).one()
+        role = db.session.execute(select(User).filter_by(**filters)).scalar_one()
     except MultipleResultsFound:
         raise UsageError("Plusieurs rôles correspondent à vos filtres, veuillez les affiner.")
     except NoResultFound:
@@ -53,7 +54,7 @@ def supergrant(skip_existing, dry_run, yes, **filters):
 
     permission_available = (
         db.session.scalars(
-            db.select(PermissionAvailable)
+            select(PermissionAvailable)
             .outerjoin(
                 Permission,
                 sa.and_(PermissionAvailable.permissions, Permission.id_role == role.id_role),

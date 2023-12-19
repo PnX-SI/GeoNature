@@ -3,6 +3,7 @@ import json
 from copy import copy
 from flask import current_app
 
+from sqlalchemy import select, exists
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import func, update
 
@@ -48,9 +49,7 @@ def sync_ds(ds, cd_nomenclatures):
     # CONTROL AF
     af_uuid = ds.pop("uuid_acquisition_framework")
     af = DB.session.scalar(
-        DB.select(TAcquisitionFramework)
-        .filter_by(unique_acquisition_framework_id=af_uuid)
-        .limit(1)
+        select(TAcquisitionFramework).filter_by(unique_acquisition_framework_id=af_uuid).limit(1)
     ).first()
 
     if af is None:
@@ -66,8 +65,8 @@ def sync_ds(ds, cd_nomenclatures):
     }
 
     ds_exists = DB.session.scalar(
-        DB.select(
-            DB.exists().where(
+        select(
+            exists().where(
                 TDatasets.unique_dataset_id == ds["unique_dataset_id"],
             )
         )
@@ -103,7 +102,7 @@ def sync_af(af):
     """
     af_uuid = af["unique_acquisition_framework_id"]
     count_af = DB.session.execute(
-        DB.select(func.count("*"))
+        select(func.count("*"))
         .select_from(TAcquisitionFramework)
         .filter_by(unique_acquisition_framework_id=af_uuid)
     ).scalar_one()
@@ -139,7 +138,7 @@ def add_or_update_organism(uuid, nom, email):
     """
     # Test if actor already exists to avoid nextVal increase
     org_exist = DB.session.execute(
-        DB.select(DB.exists().select_from(BibOrganismes).filter_by(uuid_organisme=uuid))
+        select(exists().select_from(BibOrganismes).filter_by(uuid_organisme=uuid))
     ).scalar_one()
 
     if org_exist:
@@ -219,7 +218,7 @@ def associate_dataset_modules(dataset):
     """
     dataset.modules.extend(
         DB.session.scalars(
-            DB.select(TModules).filter(
+            select(TModules).where(
                 TModules.module_code.in_(current_app.config["MTD"]["JDD_MODULE_CODE_ASSOCIATION"])
             )
         ).all()

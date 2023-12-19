@@ -70,20 +70,24 @@ def downgrade():
     bind = op.get_bind()
     session = sa.orm.Session(bind=bind)
     # Do not use NotificationCategory.query as it is not the same session!
-    category = (
-        session.query(NotificationCategory)
-        .filter(NotificationCategory.code == CATEGORY_CODE)
-        .one_or_none()
-    )
+    category = session.scalars(
+        sa.select(NotificationCategory).where(NotificationCategory.code == CATEGORY_CODE)
+    ).one_or_none()
 
     if category is not None:
-        session.query(NotificationRule).filter(
-            NotificationRule.code_category == category.code
-        ).delete()
+        session.delete(
+            session.scalars(
+                sa.select(NotificationRule).where(NotificationRule.code_category == category.code)
+            ).all()
+        )
         # Since there is no cascade, need to delete template manually
-        session.query(NotificationTemplate).filter(
-            NotificationTemplate.code_category == category.code
-        ).delete()
+        session.delete(
+            session.scalars(
+                sa.select(NotificationTemplate).where(
+                    NotificationTemplate.code_category == category.code
+                )
+            ).all()
+        )
 
         session.delete(category)
         session.commit()

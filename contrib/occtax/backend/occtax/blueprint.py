@@ -12,7 +12,7 @@ from flask import (
     g,
 )
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Unauthorized
-from sqlalchemy import or_, func, distinct, case
+from sqlalchemy import or_, func, distinct, case, select
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import joinedload
 from geojson import Feature, FeatureCollection
@@ -62,8 +62,9 @@ log = logging.getLogger(__name__)
 @blueprint.url_value_preprocessor
 def set_current_module(endpoint, values):
     requested_module = values.pop("module_code", "OCCTAX")
-    g.current_module = TModules.query.filter_by(module_code=requested_module).first_or_404(
-        f"No module name {requested_module}"
+    g.current_module = db.first_or_404(
+        select(TModules).filter_by(module_code=requested_module),
+        description=f"No module name {requested_module}",
     )
 
 
@@ -98,10 +99,12 @@ def getReleves(scope):
     query_without_limit = q
     # Order by
     q = get_query_occtax_order(orderby, TRelevesOccurrence, q)
-    data = q.limit(limit).offset(page * limit).all()
+    data = db.session.scalars(q.limit(limit).offset(page * limit)).unique().all()
 
     # Pour obtenir le nombre de résultat de la requete sans le LIMIT
-    nb_results_without_limit = query_without_limit.count()
+    nb_results_without_limit = db.session.execute(
+        select(func.count()).select_from(query_without_limit.subquery())
+    ).scalar_one()
 
     featureCollection = []
     for n in data:
@@ -143,13 +146,13 @@ def getOneCounting(scope, id_counting):
     :returns: a dict representing a counting record
     :rtype: dict<CorCountingOccurrence>
     """
-    ccc = CorCountingOccurrence.query.get_or_404(id_counting)
+    ccc = db.get_or_404(CorCountingOccurrence, id_counting)
     if not ccc.occurrence.releve.has_instance_permission(scope):
         raise Forbidden
 
     try:
-        data = (
-            DB.session.query(CorCountingOccurrence, TRelevesOccurrence.id_releve_occtax)
+        data = DB.session.execute(
+            select(CorCountingOccurrence, TRelevesOccurrence.id_releve_occtax)
             .join(
                 TOccurrencesOccurrence,
                 TOccurrencesOccurrence.id_occurrence_occtax
@@ -159,9 +162,8 @@ def getOneCounting(scope, id_counting):
                 TRelevesOccurrence,
                 TRelevesOccurrence.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
             )
-            .filter(CorCountingOccurrence.id_counting_occtax == id_counting)
-            .one()
-        )
+            .where(CorCountingOccurrence.id_counting_occtax == id_counting)
+        ).one_or_none()
     except NoResultFound:
         return None
     counting = data[0].as_dict()
@@ -184,7 +186,7 @@ def getOneReleve(id_releve, scope):
     :rtype: `dict{'releve':<TRelevesOccurrence>, 'cruved': Cruved}`
     """
     releveCruvedSchema = ReleveCruvedSchema()
-    releve = TRelevesOccurrence.query.get_or_404(id_releve)
+    releve = db.get_or_404(TRelevesOccurrence, id_releve)
     if not releve.has_instance_permission(scope):
         raise Forbidden()
 
@@ -258,7 +260,7 @@ def insertOrUpdateOneReleve():
     releve.geom_4326 = from_shape(two_dimension_geom, srid=4326)
 
     if observersList is not None:
-        observers = User.query.filter(User.id_role.in_(observersList)).all()
+        observers = db.session.scalars(select(User).where(User.id_role.in_(observersList))).all()
         for o in observers:
             releve.observers.append(o)
 
@@ -397,7 +399,7 @@ def updateReleve(id_releve, scope):
 
     """
     # get releve by id_releve
-    releve = DB.session.query(TRelevesOccurrence).get(id_releve)
+    releve = DB.session.get(TRelevesOccurrence, id_releve)
 
     if not releve:
         return {"message": "not found"}, 404
@@ -535,7 +537,7 @@ def getDefaultNomenclatures():
     group2_inpn = request.args.get("group2_inpn", "0")
     types = request.args.getlist("id_type")
 
-    query = db.select(
+    query = select(
         distinct(DefaultNomenclaturesValue.mnemonique_type),
         func.pr_occtax.get_default_nomenclature_value(
             DefaultNomenclaturesValue.mnemonique_type, organism, regne, group2_inpn
@@ -592,7 +594,10 @@ def export(scope):
 
     if current_app.config["OCCTAX"]["ADD_MEDIA_IN_EXPORT"]:
         q, columns = releve_repository.add_media_in_export(q, columns)
-    data = q.all()
+
+    data = db.session.execute(q)
+
+    print(data)
 
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
@@ -600,14 +605,18 @@ def export(scope):
     # Ajout des colonnes additionnels
     additional_col_names = []
     query_add_fields = (
-        DB.session.query(TAdditionalFields)
-        .filter(TAdditionalFields.modules.any(module_code=g.current_module.module_code))
-        .filter(TAdditionalFields.exportable == True)
+        select(TAdditionalFields)
+        .where(TAdditionalFields.modules.any(module_code=g.current_module.module_code))
+        .where(TAdditionalFields.exportable == True)
     )
-    global_add_fields = query_add_fields.filter(~TAdditionalFields.datasets.any()).all()
+    global_add_fields = db.session.scalars(
+        query_add_fields.where(~TAdditionalFields.datasets.any())
+    ).all()
     if "id_dataset" in request.args:
-        dataset_add_fields = query_add_fields.filter(
-            TAdditionalFields.datasets.any(id_dataset=request.args["id_dataset"])
+        dataset_add_fields = db.session.scalars(
+            query_add_fields.where(
+                TAdditionalFields.datasets.any(id_dataset=request.args["id_dataset"])
+            )
         ).all()
         global_add_fields = [*global_add_fields, *dataset_add_fields]
 

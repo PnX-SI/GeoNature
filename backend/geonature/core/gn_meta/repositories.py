@@ -1,6 +1,6 @@
 import logging
 
-from sqlalchemy import or_, String, Date, and_, func
+from sqlalchemy import or_, String, Date, and_, func, select
 from sqlalchemy.inspection import inspect
 from sqlalchemy.orm import joinedload, contains_eager, aliased
 from sqlalchemy.orm.exc import NoResultFound
@@ -39,7 +39,7 @@ def cruved_ds_filter(model, role, scope):
         return True
     elif scope in (1, 2):
         sub_q = (
-            DB.select(func.count("*"))
+            select(func.count("*"))
             .select_from(TDatasets)
             .join(CorDatasetActor, TDatasets.id_dataset == CorDatasetActor.id_dataset)
         )
@@ -63,7 +63,7 @@ def cruved_af_filter(model, role, scope):
         return True
     elif scope in (1, 2):
         sub_q = (
-            DB.select(func.count("*"))
+            select(func.count("*"))
             .select_from(TAcquisitionFramework)
             .join(
                 CorAcquisitionFrameworkActor,
@@ -80,7 +80,7 @@ def cruved_af_filter(model, role, scope):
         # if organism is None => do not filter on id_organism even if level = 2
         if scope == 2 and role.id_organisme is not None:
             or_filter.append(CorAcquisitionFrameworkActor.id_organism == role.id_organisme)
-        sub_q = sub_q.filter(
+        sub_q = sub_q.where(
             and_(
                 or_(*or_filter),
                 model.id_acquisition_framework == TAcquisitionFramework.id_acquisition_framework,
@@ -100,8 +100,8 @@ def get_metadata_list(role, scope, args, exclude_cols):
     is_parent = args.get("is_parent")
     order_by = args.get("orderby", None)
 
-    query = DB.select(TAcquisitionFramework).where_if(
-        is_parent is not None, TAcquisitionFramework.is_parent
+    query = select(TAcquisitionFramework).where(
+        TAcquisitionFramework.is_parent if is_parent is not None else True
     )
 
     if selector == "ds":

@@ -149,12 +149,12 @@ class SyntheseQuery:
             if perm.sensitivity_filter:
                 if nomenclature_non_sensible is None:
                     nomenclature_non_sensible = (
-                        TNomenclatures.query.filter(
+                        TNomenclatures.query.where(
                             TNomenclatures.nomenclature_type.has(
                                 BibNomenclaturesTypes.mnemonique == "SENSIBILITE"
                             )
                         )
-                        .filter(TNomenclatures.cd_nomenclature == "0")
+                        .where(TNomenclatures.cd_nomenclature == "0")
                         .one()
                     )
                 perm_filters.append(
@@ -164,7 +164,7 @@ class SyntheseQuery:
             if perm.scope_value:
                 if perm.scope_value not in datasets_by_scope:
                     datasets_t = (
-                        DB.session.scalars(TDatasets.select.filter_by_scope(perm.scope_value))
+                        DB.session.scalars(TDatasets.filter_by_scope(perm.scope_value))
                         .unique()
                         .all()
                     )
@@ -202,7 +202,7 @@ class SyntheseQuery:
                 self.model_id_syn_col.in_(subquery_observers),
                 self.model_id_digitiser_column == user.id_role,
             ]
-            datasets = DB.session.scalars(TDatasets.select.filter_by_scope(scope)).all()
+            datasets = DB.session.scalars(TDatasets.filter_by_scope(scope)).all()
             allowed_datasets = [dataset.id_dataset for dataset in datasets]
             ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
 
@@ -367,12 +367,12 @@ class SyntheseQuery:
             )
 
         if "id_organism" in self.filters:
-            datasets = (
-                DB.session.query(CorDatasetActor.id_dataset)
-                .filter(CorDatasetActor.id_organism.in_(self.filters.pop("id_organism")))
-                .all()
-            )
-            formated_datasets = [d[0] for d in datasets]
+            datasets = DB.session.scalars(
+                select(CorDatasetActor.id_dataset).where(
+                    CorDatasetActor.id_organism.in_(self.filters.pop("id_organism"))
+                )
+            ).all()
+            formated_datasets = [d for d in datasets]
             self.query = self.query.where(self.model.id_dataset.in_(formated_datasets))
         if "date_min" in self.filters:
             self.query = self.query.where(self.model.date_min >= self.filters.pop("date_min"))

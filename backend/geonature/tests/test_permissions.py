@@ -18,10 +18,12 @@ from geonature.utils.env import db
 
 from pypnusershub.db.models import User
 
+from sqlalchemy import select
+
 
 @pytest.fixture(scope="class")
 def actions():
-    return {action.code_action: action for action in PermAction.query.all()}
+    return {action.code_action: action for action in db.session.scalars(select(PermAction)).all()}
 
 
 def create_module(label):
@@ -36,12 +38,12 @@ def create_module(label):
 
 @pytest.fixture(scope="class")
 def module_gn():
-    return TModules.query.filter_by(module_code="GEONATURE").one()
+    return db.session.execute(select(TModules).filter_by(module_code="GEONATURE")).scalar_one()
 
 
 @pytest.fixture(scope="class")
 def object_all():
-    return PermObject.query.filter_by(code_object="ALL").one()
+    return db.session.execute(select(PermObject).filter_by(code_object="ALL")).scalar_one()
 
 
 @pytest.fixture(scope="class")
@@ -124,7 +126,9 @@ def permissions(roles, groups, actions, module_gn):
 
     def _permissions(role, cruved, *, module=module_gn, **kwargs):
         role = roles[role]
-        scope_type = PermFilterType.query.filter_by(code_filter_type="SCOPE").one()
+        scope_type = db.session.execute(
+            select(PermFilterType).filter_by(code_filter_type="SCOPE")
+        ).scalar_one()
         with db.session.begin_nested():
             for a, s in zip("CRUVED", cruved):
                 if s == "-":

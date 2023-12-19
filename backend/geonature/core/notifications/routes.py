@@ -11,6 +11,7 @@ from flask import (
 from werkzeug.exceptions import Forbidden, BadRequest
 import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
+from sqlalchemy import select, func, delete, exists
 
 from geonature.utils.env import db
 
@@ -31,7 +32,7 @@ log = logging.getLogger()
 @routes.route("/notifications", methods=["GET"])
 @permissions.login_required
 def list_database_notification():
-    notifications = Notification.query.filter(Notification.id_role == g.current_user.id_role)
+    notifications = select(Notification).where(Notification.id_role == g.current_user.id_role)
     notifications = notifications.order_by(
         Notification.code_status.desc(), Notification.creation_date.desc()
     )
@@ -47,7 +48,7 @@ def list_database_notification():
                 "creation_date",
             ]
         )
-        for notificationsResult in notifications.all()
+        for notificationsResult in db.session.scalars(notifications).all()
     ]
     return jsonify(result)
 
@@ -56,9 +57,13 @@ def list_database_notification():
 @routes.route("/count", methods=["GET"])
 @permissions.login_required
 def count_notification():
-    notificationNumber = Notification.query.filter(
-        Notification.id_role == g.current_user.id_role, Notification.code_status == "UNREAD"
-    ).count()
+    notificationNumber = db.session.execute(
+        select(func.count("*"))
+        .select_from(Notification)
+        .where(
+            Notification.id_role == g.current_user.id_role, Notification.code_status == "UNREAD"
+        )
+    ).scalar_one()
     return jsonify(notificationNumber)
 
 
@@ -66,7 +71,7 @@ def count_notification():
 @routes.route("/notifications/<int:id_notification>", methods=["POST"])
 @permissions.login_required
 def update_notification(id_notification):
-    notification = Notification.query.get_or_404(id_notification)
+    notification = db.get_or_404(Notification, id_notification)
     if notification.id_role != g.current_user.id_role:
         raise Forbidden
     notification.code_status = "READ"
@@ -78,7 +83,7 @@ def update_notification(id_notification):
 @routes.route("/rules", methods=["GET"])
 @permissions.login_required
 def list_notification_rules():
-    rules = NotificationRule.query.filter_by_role_with_defaults().options(
+    rules = NotificationRule.filter_by_role_with_defaults().options(
         joinedload(NotificationRule.method),
         joinedload(NotificationRule.category),
     )
@@ -94,7 +99,7 @@ def list_notification_rules():
                 "subscribed",
             ]
         )
-        for rule in rules.all()
+        for rule in db.session.scalars(rules).all()
     ]
     return jsonify(result)
 
@@ -103,9 +108,10 @@ def list_notification_rules():
 @routes.route("/notifications", methods=["DELETE"])
 @permissions.login_required
 def delete_all_notifications():
-    nbNotificationsDeleted = Notification.query.filter(
+    nbNotificationsDeleted = delete(Notification).where(
         Notification.id_role == g.current_user.id_role
-    ).delete()
+    )
+    nbNotificationsDeleted = db.session.execute(nbNotificationsDeleted).rowcount
     db.session.commit()
     return jsonify(nbNotificationsDeleted)
 
@@ -123,20 +129,21 @@ def delete_all_notifications():
 )
 @permissions.login_required
 def update_rule(code_category, code_method, subscribe):
-    if not db.session.query(
-        NotificationCategory.query.filter_by(code=str(code_category)).exists()
-    ).scalar():
+    if not db.session.scalar(
+        exists().where(NotificationCategory.code == str(code_category)).select()
+    ):
         raise BadRequest("Invalid category")
-    if not db.session.query(
-        NotificationMethod.query.filter_by(code=str(code_method)).exists()
-    ).scalar():
+
+    if not db.session.scalar(exists().where(NotificationMethod.code == str(code_method)).select()):
         raise BadRequest("Invalid method")
 
     # Create new rule for current user
-    rule = NotificationRule.query.filter_by(
-        id_role=g.current_user.id_role,
-        code_method=code_method,
-        code_category=code_category,
+    rule = db.session.scalars(
+        select(NotificationRule).filter_by(
+            id_role=g.current_user.id_role,
+            code_method=code_method,
+            code_category=code_category,
+        )
     ).one_or_none()
     if rule:
         rule.subscribed = subscribe
@@ -156,18 +163,21 @@ def update_rule(code_category, code_method, subscribe):
 @routes.route("/rules", methods=["DELETE"])
 @permissions.login_required
 def delete_all_rules():
-    nbRulesDeleted = NotificationRule.query.filter(
+    nb_rules_deleted = delete(NotificationRule).where(
         NotificationRule.id_role == g.current_user.id_role
-    ).delete()
+    )
+    nb_rules_deleted = db.session.execute(nb_rules_deleted).rowcount
     db.session.commit()
-    return jsonify(nbRulesDeleted)
+    return jsonify(nb_rules_deleted)
 
 
 # Get all availabe method for notification
 @routes.route("/methods", methods=["GET"])
 @permissions.login_required
 def list_notification_methods():
-    notificationMethods = NotificationMethod.query.order_by(NotificationMethod.code.asc()).all()
+    notificationMethods = db.session.scalars(
+        select(NotificationMethod).order_by(NotificationMethod.code.asc())
+    ).all()
     result = [
         notificationsMethod.as_dict(
             fields=[
@@ -185,8 +195,8 @@ def list_notification_methods():
 @routes.route("/categories", methods=["GET"])
 @permissions.login_required
 def list_notification_categories():
-    notificationCategories = NotificationCategory.query.order_by(
-        NotificationCategory.code.asc()
+    notificationCategories = db.session.scalars(
+        select(NotificationCategory).order_by(NotificationCategory.code.asc())
     ).all()
     result = [
         notificationsCategory.as_dict(

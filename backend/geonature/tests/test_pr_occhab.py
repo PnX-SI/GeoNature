@@ -30,10 +30,10 @@ from datetime import datetime
 
 
 def create_habitat(nom_cite, nomenc_tech_collect_NOMENC_TYPE, nomenc_tech_collect_LABEL):
-    habref = db.session.scalars(db.select(Habref).limit(1)).first()
+    habref = db.session.scalars(sa.select(Habref).limit(1)).first()
 
     nomenc_tech_collect = db.session.execute(
-        db.select(TNomenclatures).where(
+        sa.select(TNomenclatures).where(
             sa.and_(
                 TNomenclatures.nomenclature_type.has(mnemonique=nomenc_tech_collect_NOMENC_TYPE),
                 TNomenclatures.label_fr == nomenc_tech_collect_LABEL,
@@ -89,7 +89,7 @@ def stations(datasets):
             Just a comment, by default "Did you create a station ?"
         """
         nomenclature_object = db.session.execute(
-            db.select(TNomenclatures).where(
+            sa.select(TNomenclatures).where(
                 sa.and_(
                     TNomenclatures.nomenclature_type.has(mnemonique=nomenc_object_NOMENC_TYPE),
                     TNomenclatures.mnemonique == nomenc_object_MNEM,
@@ -231,19 +231,23 @@ class TestOcchab:
     def test_create_station(self, users, datasets, station):
         url = url_for("occhab.create_or_update_station")
         point = Point(3.634, 44.399)
-        nomenc_nat_obj_geo = TNomenclatures.query.filter(
-            sa.and_(
-                TNomenclatures.nomenclature_type.has(mnemonique="NAT_OBJ_GEO"),
-                TNomenclatures.mnemonique == "Stationnel",
+        nomenc_nat_obj_geo = db.session.execute(
+            sa.select(TNomenclatures).where(
+                sa.and_(
+                    TNomenclatures.nomenclature_type.has(mnemonique="NAT_OBJ_GEO"),
+                    TNomenclatures.mnemonique == "Stationnel",
+                )
             )
-        ).one()
-        nomenc_tech_collect = TNomenclatures.query.filter(
-            sa.and_(
-                TNomenclatures.nomenclature_type.has(mnemonique="TECHNIQUE_COLLECT_HAB"),
-                TNomenclatures.label_fr == "Lidar",
+        ).scalar_one()
+        nomenc_tech_collect = db.session.execute(
+            sa.select(TNomenclatures).where(
+                sa.and_(
+                    TNomenclatures.nomenclature_type.has(mnemonique="TECHNIQUE_COLLECT_HAB"),
+                    TNomenclatures.label_fr == "Lidar",
+                )
             )
-        ).one()
-        habref = Habref.query.first()
+        ).scalar_one()
+        habref = db.session.scalars(sa.select(Habref).limit(1)).first()
         feature = Feature(
             geometry=point,
             properties={
@@ -364,8 +368,13 @@ class TestOcchab:
         assert station.id_dataset == id_dataset  # not changed
 
         # Try adding an occurence
-        cd_hab_list = [occhab.cd_hab for occhab in OccurenceHabitat.query.all()]
-        other_habref = Habref.query.filter(~Habref.cd_hab.in_(cd_hab_list)).first()
+        cd_hab_list = [
+            occhab.cd_hab
+            for occhab in db.session.scalars(sa.select(OccurenceHabitat)).unique().all()
+        ]
+        other_habref = db.session.scalars(
+            sa.select(Habref).where(~Habref.cd_hab.in_(cd_hab_list)).limit(1)
+        ).first()
         feature["properties"]["habitats"].append(
             {
                 "cd_hab": other_habref.cd_hab,
@@ -450,22 +459,22 @@ class TestOcchab:
         set_logged_user(self.client, users["noright_user"])
         response = self.client.delete(url)
         assert response.status_code == Forbidden.code
-        assert db.session.query(
-            Station.query.filter_by(id_station=station.id_station).exists()
-        ).scalar()
+        assert db.session.scalar(
+            sa.exists().where(Station.id_station == station.id_station).select()
+        )
 
         set_logged_user(self.client, users["stranger_user"])
         response = self.client.delete(url)
         assert response.status_code == Forbidden.code
-        assert db.session.query(
-            Station.query.filter_by(id_station=station.id_station).exists()
-        ).scalar()
+        assert db.session.scalar(
+            sa.exists().where(Station.id_station == station.id_station).select()
+        )
 
         set_logged_user(self.client, users["user"])
         response = self.client.delete(url)
         assert response.status_code == 204
-        assert not db.session.query(
-            Station.select.filter_by(id_station=station.id_station).exists()
+        assert not db.session.execute(
+            sa.exists().where(Station.id_station == station.id_station).select()
         ).scalar()
 
     def test_get_default_nomenclatures(self, users):
@@ -477,7 +486,7 @@ class TestOcchab:
 
     def test_filter_by_params(self, datasets, stations):
         def query_test_filter_by_params(params):
-            query = Station.select.filter_by_params(
+            query = Station.filter_by_params(
                 TypeConversionDict(**params),
             )
             return db.session.scalars(query).unique().all()
@@ -488,7 +497,7 @@ class TestOcchab:
         assert len(stations_res) >= 1
 
         # Test filter by cd_hab
-        habref = db.session.scalars(db.select(Habref).limit(1)).first()
+        habref = db.session.scalars(sa.select(Habref).limit(1)).first()
         assert len(stations["station_1"].habitats) > 1
         assert stations["station_1"].habitats[0].cd_hab == habref.cd_hab
         stations_res = query_test_filter_by_params(dict(cd_hab=habref.cd_hab))
@@ -518,7 +527,7 @@ class TestOcchab:
         )
 
     def test_filter_by_scope(self):
-        res = Station.select.filter_by_scope(0)
+        res = Station.filter_by_scope(0)
         res = db.session.scalars(res).unique().all()
         assert not len(res)  # <=> len(res) == 0
 

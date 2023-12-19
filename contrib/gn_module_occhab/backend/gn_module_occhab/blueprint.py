@@ -18,7 +18,7 @@ from geojson import FeatureCollection, Feature
 from geoalchemy2.shape import from_shape
 from pypnusershub.db.models import User
 from shapely.geometry import asShape
-from sqlalchemy import func, distinct
+from sqlalchemy import func, distinct, select
 from sqlalchemy.sql import text
 from sqlalchemy.orm import raiseload, joinedload
 
@@ -53,15 +53,12 @@ blueprint = Blueprint("occhab", __name__)
 @blueprint.route("/stations/", methods=["GET"])
 @permissions.check_cruved_scope("R", module_code="OCCHAB", get_scope=True)
 def list_stations(scope):
-    stations = (
-        Station.select.filter_by_params(request.args)
-        .filter_by_scope(scope)
-        .order_by(Station.date_min.desc())
-        .options(
-            raiseload("*"),
-            joinedload(Station.observers),
-            joinedload(Station.dataset),
-        )
+    stations = Station.filter_by_params(request.args)
+    stations = Station.filter_by_scope(scope=scope, query=stations)
+    stations = stations.order_by(Station.date_min.desc()).options(
+        raiseload("*"),
+        joinedload(Station.observers),
+        joinedload(Station.dataset),
     )
     only = [
         "observers",
@@ -114,7 +111,7 @@ def get_station(id_station, scope):
     """
     station = (
         db.session.scalars(
-            db.select(Station)
+            select(Station)
             .options(
                 raiseload("*"),
                 joinedload(Station.observers),
@@ -244,11 +241,11 @@ def export_all_habitats(
             if db_col.key != "geometry":
                 db_cols_for_shape.append(db_col)
             columns_to_serialize.append(db_col.key)
-    results = (
-        db.session.query(export_view.tableDef)
-        .filter(export_view.tableDef.columns.id_station.in_(data["idsStation"]))
+    results = db.session.scalars(
+        select(export_view.tableDef)
+        .where(export_view.tableDef.columns.id_station.in_(data["idsStation"]))
         .limit(blueprint.config["NB_MAX_EXPORT"])
-    )
+    ).all()
     if export_format == "csv":
         formated_data = [export_view.as_dict(d, fields=[]) for d in results]
         return to_csv_resp(file_name, formated_data, separator=";", columns=columns_to_serialize)
@@ -292,15 +289,15 @@ def get_default_nomenclatures():
         organism = params["organism"]
     types = request.args.getlist("mnemonique")
 
-    q = db.select(
+    query = select(
         distinct(DefaultNomenclatureValue.mnemonique_type),
         func.pr_occhab.get_default_nomenclature_value(
             DefaultNomenclatureValue.mnemonique_type, organism
         ),
     )
     if len(types) > 0:
-        q = q.filter(DefaultNomenclatureValue.mnemonique_type.in_(tuple(types)))
-    data = db.session.execute(q).all()
+        query = query.where(DefaultNomenclatureValue.mnemonique_type.in_(tuple(types)))
+    data = db.session.execute(query).all()
 
     formated_dict = {}
     for d in data:

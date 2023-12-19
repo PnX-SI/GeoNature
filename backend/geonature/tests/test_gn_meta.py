@@ -20,7 +20,7 @@ from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 from pypnusershub.schemas import UserSchema
 from ref_geo.models import BibAreasTypes, LAreas
-from sqlalchemy import func
+from sqlalchemy import func, select, exists
 from sqlalchemy.sql.selectable import Select
 from werkzeug.datastructures import Headers, MultiDict
 from werkzeug.exceptions import (
@@ -38,11 +38,15 @@ from .utils import logged_user_headers, set_logged_user
 
 @pytest.fixture(scope="function")
 def commune_without_obs():
-    return LAreas.query.filter(
-        LAreas.area_type.has(
-            BibAreasTypes.type_code == "COM",
-        ),
-        ~LAreas.synthese_obs.any(),
+    return db.session.scalars(
+        select(LAreas)
+        .where(
+            LAreas.area_type.has(
+                BibAreasTypes.type_code == "COM",
+            ),
+            ~LAreas.synthese_obs.any(),
+        )
+        .limit(1)
     ).first()
 
 
@@ -50,20 +54,24 @@ def getCommBySynthese(obs):
     """
     Return area by synthese
     """
-    return LAreas.query.filter(
-        LAreas.area_type.has(
-            BibAreasTypes.type_code == "COM",
-        ),
-        LAreas.synthese_obs.any(
-            Synthese.id_synthese == obs.id_synthese,
-        ),
+    return db.session.scalars(
+        select(LAreas)
+        .where(
+            LAreas.area_type.has(
+                BibAreasTypes.type_code == "COM",
+            ),
+            LAreas.synthese_obs.any(
+                Synthese.id_synthese == obs.id_synthese,
+            ),
+        )
+        .limit(1)
     ).first()
 
 
 # TODO: maybe move it to global fixture
 @pytest.fixture()
 def unexisted_id():
-    return db.session.query(func.max(TDatasets.id_dataset)).scalar() + 1
+    return db.session.scalar(select(func.max(TDatasets.id_dataset)).select_from(TDatasets)) + 1
 
 
 @pytest.fixture
@@ -148,25 +156,26 @@ class TestGNMeta:
         with app.test_request_context(headers=logged_user_headers(users["user"])):
             app.preprocess_request()
             af_ids = [af.id_acquisition_framework for af in acquisition_frameworks.values()]
-            qs = TAcquisitionFramework.select.filter(
+            qs = select(TAcquisitionFramework).where(
                 TAcquisitionFramework.id_acquisition_framework.in_(af_ids)
             )
+            ta = TAcquisitionFramework
             sc = db.session.scalars
-            assert set(sc(qs.filter_by_scope(0)).unique().all()) == set([])
-            assert set(sc(qs.filter_by_scope(1)).unique().all()) == set(
+            assert set(sc(ta.filter_by_scope(0, query=qs)).unique().all()) == set([])
+            assert set(sc(ta.filter_by_scope(1, query=qs)).unique().all()) == set(
                 [
                     acquisition_frameworks["own_af"],
                     acquisition_frameworks["orphan_af"],  # through DS
                 ]
             )
-            assert set(sc(qs.filter_by_scope(2)).unique().all()) == set(
+            assert set(sc(ta.filter_by_scope(2, query=qs)).unique().all()) == set(
                 [
                     acquisition_frameworks["own_af"],
                     acquisition_frameworks["associate_af"],
                     acquisition_frameworks["orphan_af"],  # through DS
                 ]
             )
-            assert set(sc(qs.filter_by_scope(3)).unique().all()) == set(
+            assert set(sc(ta.filter_by_scope(3, query=qs)).unique().all()) == set(
                 acquisition_frameworks.values()
             )
 
@@ -557,21 +566,24 @@ class TestGNMeta:
             app.preprocess_request()
             ds_ids = [ds.id_dataset for ds in datasets.values()]
             sc = db.session.scalars
-            qs = TDatasets.select.filter(TDatasets.id_dataset.in_(ds_ids))
-            assert set(sc(qs.filter_by_scope(0)).unique().all()) == set([])
-            assert set(sc(qs.filter_by_scope(1)).unique().all()) == set(
+            dsc = TDatasets
+            qs = select(TDatasets).where(TDatasets.id_dataset.in_(ds_ids))
+            assert set(sc(dsc.filter_by_scope(0, query=qs)).unique().all()) == set([])
+            assert set(sc(dsc.filter_by_scope(1, query=qs)).unique().all()) == set(
                 [
                     datasets["own_dataset"],
                 ]
             )
-            assert set(sc(qs.filter_by_scope(2)).unique().all()) == set(
+            assert set(sc(dsc.filter_by_scope(2, query=qs)).unique().all()) == set(
                 [
                     datasets["own_dataset"],
                     datasets["associate_dataset"],
                     datasets["associate_2_dataset_sensitive"],
                 ]
             )
-            assert set(sc(qs.filter_by_scope(3)).unique().all()) == set(datasets.values())
+            assert set(sc(dsc.filter_by_scope(3, query=qs)).unique().all()) == set(
+                datasets.values()
+            )
 
     def test_dataset_is_deletable(self, app, synthese_data, datasets):
         assert (
@@ -914,7 +926,9 @@ class TestGNMeta:
         assert response.status_code == Forbidden.code
 
     def test_dataset_pdf_export(self, users, datasets):
-        unexisting_id = db.session.query(func.max(TDatasets.id_dataset)).scalar() + 1
+        unexisting_id = (
+            db.session.scalar(select(func.max(TDatasets.id_dataset)).select_from(TDatasets)) + 1
+        )
         ds = datasets["own_dataset"]
 
         response = self.client.post(
@@ -942,7 +956,7 @@ class TestGNMeta:
 
     def test_uuid_report(self, users, synthese_data):
         observations_nbr = db.session.scalar(
-            db.select(func.count(Synthese.id_synthese)).select_from(Synthese)
+            select(func.count(Synthese.id_synthese)).select_from(Synthese)
         )
         if observations_nbr > 1000000:
             pytest.skip("Too much observations in gn_synthese.synthese")
@@ -1026,18 +1040,16 @@ class TestGNMeta:
 
         with app.test_request_context(headers=logged_user_headers(users["user"])):
             app.preprocess_request()
-            create = TDatasets.select._get_create_scope(module_code=modcode)
+            create = TDatasets._get_create_scope(module_code=modcode)
 
-        usercreate = TDatasets.select._get_create_scope(module_code=modcode, user=users["user"])
-        norightcreate = TDatasets.select._get_create_scope(
+        usercreate = TDatasets._get_create_scope(module_code=modcode, user=users["user"])
+        norightcreate = TDatasets._get_create_scope(
             module_code=modcode, user=users["noright_user"]
         )
-        associatecreate = TDatasets.select._get_create_scope(
+        associatecreate = TDatasets._get_create_scope(
             module_code=modcode, user=users["associate_user"]
         )
-        admincreate = TDatasets.select._get_create_scope(
-            module_code=modcode, user=users["admin_user"]
-        )
+        admincreate = TDatasets._get_create_scope(module_code=modcode, user=users["admin_user"])
 
         assert create == 2
         assert usercreate == 2
