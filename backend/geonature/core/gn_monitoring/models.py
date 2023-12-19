@@ -6,7 +6,7 @@
 from datetime import datetime
 
 from geoalchemy2 import Geometry
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, or_, false
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.sql import select, func
@@ -232,6 +232,20 @@ class TIndividuals(DB.Model):
         foreign_keys=[corIndividualModule.c.id_individual, corIndividualModule.c.id_module],
     )
 
+    @classmethod
+    def filter_by_scope(cls, query, scope, user):
+        if scope == 0:
+            query = query.where(false())
+        elif scope in (1, 2):
+            ors = [
+                cls.id_digitiser == user.id_role,
+            ]
+            # if organism is None => do not filter on id_organism even if level = 2
+            if scope == 2 and user.id_organisme is not None:
+                ors.append(cls.digitiser.has(id_organisme=user.id_organism))
+            query = query.where(or_(*ors))
+        return query
+
 
 @serializable
 class TMarkingEvent(DB.Model):
@@ -260,4 +274,7 @@ class TMarkingEvent(DB.Model):
     marking_details = DB.Column(DB.Text)
     data = DB.Column(JSONB)
 
-    # meta_update_date and meta_create_date already present in TIndividuals
+    operator = DB.relationship(
+        User,
+        lazy="joined",
+    )
