@@ -118,7 +118,7 @@ dnspython==2.3.0
     # via email-validator
 email-validator==2.0.0.post2
     # via wtforms-components
-fiona==1.8.22
+fiona==1.9.5
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo

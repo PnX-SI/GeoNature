@@ -79,7 +79,7 @@ cssselect2==0.7.0
     #   weasyprint
 defusedxml==0.7.1
     # via cairosvg
-fiona==1.8.22
+fiona==1.9.5
     # via
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
