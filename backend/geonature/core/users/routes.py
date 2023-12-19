@@ -197,7 +197,7 @@ def get_organismes_jdd():
     datasets = DB.session.scalars(TDatasets.filter_by_readable()).unique().all()
     datasets = [d.id_dataset for d in datasets]
     query = (
-        DB.select(Organisme)
+        select(Organisme)
         .join(CorDatasetActor, Organisme.id_organisme == CorDatasetActor.id_organism)
         .where(CorDatasetActor.id_dataset.in_(datasets))
         .distinct()

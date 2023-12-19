@@ -9,7 +9,7 @@ from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.models import TMedias
 from geonature.utils.env import DB
 from utils_flask_sqla.response import json_resp, json_resp_accept_empty_list
-
+from sqlalchemy import select
 
 from ..routes import routes
 
@@ -23,7 +23,7 @@ def get_medias(uuid_attached_row):
     """
 
     res = DB.session.scalars(
-        DB.select(TMedias).where(TMedias.uuid_attached_row == uuid_attached_row)
+        select(TMedias).where(TMedias.uuid_attached_row == uuid_attached_row)
     ).all()
     return [r.as_dict() for r in (res or [])]
 

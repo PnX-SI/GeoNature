@@ -1019,7 +1019,7 @@ def observation_count_per_column(column):
         raise BadRequest(f"No column name {column} in Synthese")
     synthese_column = getattr(Synthese, column)
     stmt = (
-        DB.select(
+        select(
             func.count(Synthese.id_synthese).label("count"),
             synthese_column.label(column),
         )
