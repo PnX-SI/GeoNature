@@ -1,13 +1,14 @@
 from flask import Blueprint, request, g
 from geonature.core.gn_monitoring.schema import TIndividualsSchema
+from geonature.core.gn_permissions.tools import get_scope
 from marshmallow import ValidationError, EXCLUDE
-from sqlalchemy.sql import func
+from sqlalchemy.sql import func, select
 from sqlalchemy.orm import raiseload, joinedload
 from geojson import FeatureCollection
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_permissions.decorators import login_required
+from geonature.core.gn_permissions.decorators import _forbidden_message, login_required
 from geonature.utils.env import DB
 from geonature.core.gn_monitoring.models import (
     TBaseSites,
@@ -114,30 +115,56 @@ def get_site_areas(id_site):
     return FeatureCollection(features)
 
 
-@routes.route("/individuals", methods=["GET"])
+@routes.route("/individuals/<int:id_module>", methods=["GET"])
 @login_required
-def get_individuals():
-    params = request.args
-    id_module = params.get("id_module")
-    query = TIndividuals.query
-    if id_module:
-        query = query.filter(TIndividuals.modules.any(TModules.id_module == id_module))
+def get_individuals(id_module):
+    action = "R"
+    object_code = "MONITORINGS_INDIVIDUALS"
+    module = DB.session.get(TModules, id_module)
+    if module is None:
+        raise NotFound("Module not found")
+    module_code = module.module_code
+    current_user = g.current_user
+    max_scope = get_scope(
+        action, id_role=current_user.id_role, module_code=module_code, object_code=object_code
+    )
+
+    if not max_scope:
+        raise Forbidden(description=_forbidden_message(action, module_code, object_code))
+
+    # FIXME: when all sqlalchemy 2.0 PR are merged, update it to fit the good practices
+    # like @qfilter etc...
+    query = select(TIndividuals).where(TIndividuals.modules.any(TModules.id_module == id_module))
+    results = (
+        DB.session.scalars(TIndividuals.filter_by_scope(query, max_scope, current_user))
+        .unique()
+        .all()
+    )
 
     schema = TIndividualsSchema(exclude=["modules"])
     # In the future: paginate the query. But need infinite scroll on
     # select frontend side
-    return schema.jsonify(query.all(), many=True)
+    return schema.jsonify(results, many=True)
 
 
-@routes.route("/individual", methods=["POST"])
+@routes.route("/individual/<int:id_module>", methods=["POST"])
 @login_required
-def create_one_individual():
+def create_one_individual(id_module: int):
     # Id module is an optional parameter to associate an individual
     # to a module
-    id_module = request.args.get("id_module")
-    module = None
-    if id_module is not None:
-        module = TModules.query.get_or_404(id_module)
+    action = "C"
+    object_code = "MONITORINGS_INDIVIDUALS"
+    module = DB.session.get(TModules, id_module)
+    if module is None:
+        raise NotFound("Module not found")
+    module_code = module.module_code
+    current_user = g.current_user
+    max_scope = get_scope(
+        action, id_role=current_user.id_role, module_code=module_code, object_code=object_code
+    )
+
+    if not max_scope:
+        raise Forbidden(description=_forbidden_message(action, module_code, object_code))
 
     # Exclude id_digitiser since it is set by the current user
     individual_schema = TIndividualsSchema(exclude=["id_digitiser"], unknown=EXCLUDE)
@@ -146,8 +173,8 @@ def create_one_individual():
         individual = individual_schema.load(data=request.get_json(), instance=individual_instance)
     except ValidationError as error:
         raise BadRequest(error.messages)
-    if module is not None:
-        individual.modules = [module]
+
+    individual.modules = [module]
     DB.session.add(individual)
     DB.session.commit()
     return individual_schema.jsonify(individual)
