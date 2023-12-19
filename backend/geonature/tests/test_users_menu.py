@@ -78,7 +78,6 @@ class TestApiUsersMenu:
         assert len(resp.json) == 0
 
     def test_get_roles_by_menu_code(self, user_tlist):
-        print("UUUUUUUUUUUU", user_tlist)
         resp = self.client.get(
             url_for("users.get_roles_by_menu_code", code_liste=user_tlist.code_liste)
         )
