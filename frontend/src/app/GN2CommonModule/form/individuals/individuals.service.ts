@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ConfigService } from '@geonature/services/config.service';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Individual } from './interfaces';
 
 @Injectable()
@@ -10,26 +10,16 @@ export class IndividualsService {
     public config: ConfigService
   ) {}
 
-  getIndividuals(idModule?: number) {
-    let params: HttpParams = new HttpParams();
-    if (idModule) {
-      params = params.set('id_module', idModule);
-    }
-
-    return this._http.get<Individual[]>(`${this.config.API_ENDPOINT}/gn_monitoring/individuals`, {
-      params: params,
-    });
+  getIndividuals(idModule: number) {
+    return this._http.get<Individual[]>(
+      `${this.config.API_ENDPOINT}/gn_monitoring/individuals/${idModule}`
+    );
   }
 
-  postIndividual(value: Individual, idModule?: number) {
-    let params: HttpParams = new HttpParams();
-    if (idModule) {
-      params = params.set('id_module', idModule);
-    }
+  postIndividual(value: Individual, idModule: number) {
     return this._http.post<Individual>(
-      `${this.config.API_ENDPOINT}/gn_monitoring/individual`,
-      value,
-      { params: params }
+      `${this.config.API_ENDPOINT}/gn_monitoring/individual/${idModule}`,
+      value
     );
   }
 }
