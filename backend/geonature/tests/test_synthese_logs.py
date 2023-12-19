@@ -30,7 +30,6 @@ class TestSyntheseLogs:
         """
         Test delete synthese trigger insert into t_log_synthese
         """
-        # af_exists = db.session.scalar(exists().where(TAcquisitionFramework.unique_acquisition_framework_id == af_uuid).select())
         obs = synthese_data["obs1"]
         assert not (
             db.session.execute(
