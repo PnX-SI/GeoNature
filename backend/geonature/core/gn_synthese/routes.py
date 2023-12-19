@@ -212,7 +212,7 @@ def get_observations_for_web(permissions):
             .lateral("agg_areas")
         )
         obs_query = (
-            select(LAreas.geojson_4326.label("geojson"), obs_query.c.obs_as_json)
+            select(func.ST_AsGeoJSON(LAreas.geom_4326).label("geojson"), obs_query.c.obs_as_json)
             .select_from(
                 obs_query.outerjoin(
                     agg_areas, agg_areas.c.id_synthese == obs_query.c.id_synthese
@@ -609,7 +609,7 @@ def export_status(permissions):
     filters = request.json if request.is_json else {}
 
     # Initalize the select object
-    q = select(
+    query = select(
         distinct(VSyntheseForWebApp.cd_nom).label("cd_nom"),
         Taxref.cd_ref,
         Taxref.nom_complet,
@@ -624,7 +624,7 @@ def export_status(permissions):
         TaxrefBdcStatutValues.label_statut,
     )
     # Initialize SyntheseQuery class
-    synthese_query = SyntheseQuery(VSyntheseForWebApp, q, filters)
+    synthese_query = SyntheseQuery(VSyntheseForWebApp, query, filters)
 
     # Filter query with permissions
     synthese_query.filter_query_all_filters(g.current_user, permissions)
@@ -664,13 +664,13 @@ def export_status(permissions):
     )
 
     # Build query
-    q = synthese_query.build_query()
+    query = synthese_query.build_query()
 
     # Set enable status texts filter
-    q = q.where(TaxrefBdcStatutText.enable == True)
+    query = query.where(TaxrefBdcStatutText.enable == True)
 
     protection_status = []
-    data = DB.session.execute(q)
+    data = DB.session.execute(query)
     for d in data:
         d = d._mapping
         row = OrderedDict(
@@ -736,12 +736,12 @@ def general_stats(permissions):
         .select_from(TDatasets)
         .where(TDatasets.filter_by_readable().whereclause)
     )
-    q = select(
+    query = select(
         func.count(Synthese.id_synthese),
         func.count(func.distinct(Synthese.cd_nom)),
         func.count(func.distinct(Synthese.observers)),
     )
-    synthese_query_obj = SyntheseQuery(Synthese, q, {})
+    synthese_query_obj = SyntheseQuery(Synthese, query, {})
     synthese_query_obj.filter_query_with_cruved(g.current_user, permissions)
     result = DB.session.execute(synthese_query_obj.query)
     synthese_counts = result.fetchone()

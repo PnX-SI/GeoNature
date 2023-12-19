@@ -6,24 +6,20 @@ from collections import Counter
 import pytest
 from apptax.taxonomie.models import Taxref
 from apptax.tests.fixtures import attribut_example, noms_example
-from flask import current_app, url_for
-from geoalchemy2.shape import from_shape, to_shape
+from flask import url_for
+from geoalchemy2.shape import from_shape
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_synthese.models import Synthese, TSources, VSyntheseForWebApp
+from geonature.core.gn_synthese.models import Synthese, TSources
 from geonature.utils.env import db
 from jsonschema import validate as validate_json
-from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
-from pypnusershub.db.models import User
-from pypnusershub.tests.utils import logged_user_headers, set_logged_user,set_logged_user_cookie
+from pypnusershub.tests.utils import logged_user_headers, set_logged_user
 from ref_geo.models import BibAreasTypes, LAreas
 
 from shapely.geometry import Point
 from sqlalchemy import func, select
 from werkzeug.exceptions import BadRequest, Forbidden, Unauthorized
 
-
 from .fixtures import *
-from .fixtures import create_module, create_synthese
 from .utils import jsonschema_definitions
 
 from pypnusershub.tests.utils import set_logged_user_cookie
