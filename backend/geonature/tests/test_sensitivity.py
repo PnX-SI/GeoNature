@@ -26,7 +26,6 @@ def clean_all_sensitivity_rules():
     db.session.execute(sa.delete(CorSensitivityCriteria))
     db.session.execute(sa.delete(cor_sensitivity_area))
     db.session.execute(sa.delete(SensitivityRule))
-    # SensitivityRule.query.delete()  # clear all sensitivity rules
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "clean_all_sensitivity_rules")
