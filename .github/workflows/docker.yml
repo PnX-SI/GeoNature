@@ -3,7 +3,7 @@ name: Docker
 on:
   push:
     branches:
-      - develop
+      - feat/custom-develop
   release:
     types: [published]
 
