@@ -4,6 +4,7 @@ from flask import current_app, flash
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import BaseForm
 from wtforms import validators, Form
+from sqlalchemy import select
 
 from geonature.core.admin.utils import CruvedProtectedMixin
 from geonature.core.gn_commons.models import TModules
@@ -80,7 +81,7 @@ class BibFieldAdmin(CruvedProtectedMixin, ModelView):
         "additional_attributes": {"label": "Attribut additionnels"},
         "modules": {
             "query_factory": lambda: DB.session.scalars(
-                DB.select(TModules).where(
+                select(TModules).where(
                     TModules.module_code.in_(
                         current_app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_MODULES"]
                     )
@@ -89,7 +90,7 @@ class BibFieldAdmin(CruvedProtectedMixin, ModelView):
         },
         "objects": {
             "query_factory": lambda: DB.session.scalars(
-                DB.select(PermObject).where(
+                select(PermObject).where(
                     PermObject.code_object.in_(
                         current_app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_OBJECTS"]
                     )

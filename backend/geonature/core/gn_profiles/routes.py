@@ -32,7 +32,7 @@ def get_phenology(cd_ref):
 
     """
     filters = request.args
-    query = DB.select(VmCorTaxonPhenology).where(VmCorTaxonPhenology.cd_ref == cd_ref)
+    query = select(VmCorTaxonPhenology).where(VmCorTaxonPhenology.cd_ref == cd_ref)
     if "id_nomenclature_life_stage" in filters:
         active_life_stage = DB.session.scalars(
             select()
@@ -63,7 +63,7 @@ def get_profile(cd_ref):
 
     Return the profile for a cd_ref
     """
-    data = DB.select(
+    data = select(
         func.st_asgeojson(func.st_transform(VmValidProfiles.valid_distribution, 4326)),
         VmValidProfiles,
     ).where(VmValidProfiles.cd_ref == cd_ref)
@@ -102,7 +102,7 @@ def get_observation_score():
     # Récupération du profil du cd_ref
     result = {}
     profile = DB.session.scalars(
-        DB.select(VmValidProfiles).where(VmValidProfiles.cd_ref == cd_ref)
+        select(VmValidProfiles).where(VmValidProfiles.cd_ref == cd_ref)
     ).one_or_none()
     if not profile:
         raise NotFound("No profile for this cd_ref")
@@ -136,7 +136,7 @@ def get_observation_score():
         raise BadRequest("Missing altitude_min or altitude_max")
     # Check de la répartition
     if "geom" in data:
-        query = DB.select(
+        query = select(
             func.ST_Contains(
                 func.ST_Transform(profile.valid_distribution, 4326),
                 func.ST_SetSRID(func.ST_GeomFromGeoJSON(json.dumps(data["geom"])), 4326),
@@ -161,7 +161,7 @@ def get_observation_score():
             result["valid_distribution"] = True
 
         # check de la periode
-        q_pheno = DB.select(VmCorTaxonPhenology.id_nomenclature_life_stage).distinct()
+        q_pheno = select(VmCorTaxonPhenology.id_nomenclature_life_stage).distinct()
         q_pheno = q_pheno.where(VmCorTaxonPhenology.cd_ref == cd_ref)
         q_pheno = q_pheno.where(VmCorTaxonPhenology.doy_min <= doy_min).where(
             VmCorTaxonPhenology.doy_max >= doy_max

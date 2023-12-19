@@ -230,7 +230,7 @@ class TMediaRepository:
 
     def media_type(self):
         nomenclature = DB.session.execute(
-            DB.select(TNomenclatures).where(
+            select(TNomenclatures).where(
                 TNomenclatures.id_nomenclature == self.data["id_nomenclature_media_type"]
             )
         ).scalar_one()
@@ -346,7 +346,7 @@ class TMediumRepository:
         en fonction de son uuid
         """
         medium = DB.session.scalars(
-            DB.select(TMedias).where(TMedias.uuid_attached_row == entity_uuid)
+            select(TMedias).where(TMedias.uuid_attached_row == entity_uuid)
         ).all()
         return medium
 
@@ -360,7 +360,7 @@ class TMediumRepository:
 
         # delete media temp > 24h
         res_medias_temp = DB.session.scalars(
-            DB.select(TMedias.id_media).where(
+            select(TMedias.id_media).where(
                 and_(
                     TMedias.meta_update_date
                     < (datetime.datetime.now() - datetime.timedelta(hours=24)),
@@ -420,7 +420,7 @@ class TMediumRepository:
 def get_table_location_id(schema_name, table_name):
     try:
         location = DB.session.execute(
-            DB.select(BibTablesLocation)
+            select(BibTablesLocation)
             .where(BibTablesLocation.schema_name == schema_name)
             .where(BibTablesLocation.table_name == table_name)
         ).scalar_one()

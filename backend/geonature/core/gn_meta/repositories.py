@@ -1,6 +1,6 @@
 import logging
 
-from sqlalchemy import or_, String, Date, and_, func
+from sqlalchemy import or_, String, Date, and_, func, select
 from sqlalchemy.inspection import inspect
 from sqlalchemy.orm import joinedload, contains_eager, aliased
 from sqlalchemy.orm.exc import NoResultFound
@@ -39,7 +39,7 @@ def cruved_ds_filter(model, role, scope):
         return True
     elif scope in (1, 2):
         sub_q = (
-            DB.select(func.count("*"))
+            select(func.count("*"))
             .select_from(TDatasets)
             .join(CorDatasetActor, TDatasets.id_dataset == CorDatasetActor.id_dataset)
         )
@@ -63,7 +63,7 @@ def cruved_af_filter(model, role, scope):
         return True
     elif scope in (1, 2):
         sub_q = (
-            DB.select(func.count("*"))
+            select(func.count("*"))
             .select_from(TAcquisitionFramework)
             .join(
                 CorAcquisitionFrameworkActor,
@@ -100,7 +100,7 @@ def get_metadata_list(role, scope, args, exclude_cols):
     is_parent = args.get("is_parent")
     order_by = args.get("orderby", None)
 
-    query = DB.select(TAcquisitionFramework).where(
+    query = select(TAcquisitionFramework).where(
         TAcquisitionFramework.is_parent if is_parent is not None else True
     )
 
