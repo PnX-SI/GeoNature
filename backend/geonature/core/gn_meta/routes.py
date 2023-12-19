@@ -255,7 +255,7 @@ def uuid_report():
     id_module = params.get("id_module")
 
     query = (
-        DB.select(Synthese)
+        select(Synthese)
         .where(Synthese.id_module == id_module if id_module is not None else True)
         .where(Synthese.id_dataset == ds_id if ds_id is not None else True)
     )
@@ -315,7 +315,7 @@ def sensi_report(ds_id=None):
     id_module = params.get("id_module")
 
     query = (
-        DB.select(
+        select(
             Synthese,
             func.taxonomie.find_cdref(Synthese.cd_nom).label("cd_ref"),
             func.array_agg(LAreas.area_name).label("codeDepartementCalcule"),

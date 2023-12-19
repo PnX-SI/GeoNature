@@ -2,6 +2,7 @@ import logging
 import uuid
 
 from werkzeug.exceptions import BadRequest
+from sqlalchemy import select
 
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 from pypnusershub.db.models import User
@@ -41,7 +42,7 @@ def get_hist(uuid_attached_row):
     we need a list of sqlalchemy.engine.Row objects
     """
     data = DB.session.execute(
-        DB.select(
+        select(
             TValidations.id_nomenclature_valid_status,
             TValidations.validation_date,
             TValidations.validation_comment,
