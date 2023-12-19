@@ -14,11 +14,13 @@ from geonature.utils.env import db
 from jsonschema import validate as validate_json
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from pypnusershub.db.models import User
-from pypnusershub.tests.utils import logged_user_headers, set_logged_user
+from pypnusershub.tests.utils import logged_user_headers, set_logged_user,set_logged_user_cookie
 from ref_geo.models import BibAreasTypes, LAreas
+
 from shapely.geometry import Point
 from sqlalchemy import func, select
 from werkzeug.exceptions import BadRequest, Forbidden, Unauthorized
+
 
 from .fixtures import *
 from .fixtures import create_module, create_synthese
