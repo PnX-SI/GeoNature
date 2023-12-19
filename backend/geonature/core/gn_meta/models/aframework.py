@@ -170,7 +170,7 @@ class TAcquisitionFramework(db.Model):
           - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
 
         return: a list of id_dataset or a query"""
-        query = DB.select(TAcquisitionFramework.id_acquisition_framework).outerjoin(
+        query = select(TAcquisitionFramework.id_acquisition_framework).outerjoin(
             CorAcquisitionFrameworkActor,
             CorAcquisitionFrameworkActor.id_acquisition_framework
             == TAcquisitionFramework.id_acquisition_framework,
