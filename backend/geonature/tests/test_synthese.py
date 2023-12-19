@@ -22,6 +22,7 @@ from apptax.taxonomie.models import Taxref
 
 
 from pypnusershub.db.models import User
+from pypnusershub.tests.utils import set_logged_user_cookie
 from apptax.taxonomie.models import Taxref
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
