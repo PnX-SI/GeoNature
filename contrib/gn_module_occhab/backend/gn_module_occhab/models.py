@@ -101,28 +101,26 @@ class Station(NomenclaturesMixin, db.Model):
             return True
 
     @qfilter(query=True)
-    def filter_by_params(cls, params, **kwargs):
-        qs = kwargs.get("query")
+    def filter_by_params(cls, params, *, query):
         params = TypeConversionDict(**params)
         id_dataset = params.get("id_dataset", type=int)
         if id_dataset:
-            qs = qs.filter_by(id_dataset=id_dataset)
+            query = query.filter_by(id_dataset=id_dataset)
 
         cd_hab = params.get("cd_hab", type=int)
         if cd_hab:
-            qs = qs.where(Station.habitats.any(OccurenceHabitat.cd_hab == cd_hab))
+            query = query.where(Station.habitats.any(OccurenceHabitat.cd_hab == cd_hab))
 
         date_low = params.get("date_low", type=lambda x: datetime.strptime(x, "%Y-%m-%d"))
         if date_low:
-            qs = qs.where(Station.date_min >= date_low)
+            query = query.where(Station.date_min >= date_low)
         date_up = params.get("date_up", type=lambda x: datetime.strptime(x, "%Y-%m-%d"))
         if date_up:
-            qs = qs.where(Station.date_max <= date_up)
-        return qs
+            query = query.where(Station.date_max <= date_up)
+        return query
 
     @qfilter(query=True)
-    def filter_by_scope(cls, scope, user=None, **kwargs):
-        query = kwargs.get("query")
+    def filter_by_scope(cls, scope, user=None, *, query):
         if user is None:
             user = g.current_user
         if scope == 0:
