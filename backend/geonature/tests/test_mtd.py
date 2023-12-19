@@ -27,7 +27,7 @@ def instances():
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "instances")
 class TestMTD:
-    @pytest.mark.skip(reason="must fix CI on http request")
+    @pytest.mark.skip(reason="FIX with monkeypatch")
     def test_get_xml(self, instances):
         xml = instances["af"]._get_xml(MTDInstanceApi.af_path)
         xml = instances["dataset"]._get_xml(MTDInstanceApi.ds_path)
