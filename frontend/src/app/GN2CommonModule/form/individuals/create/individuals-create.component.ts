@@ -12,7 +12,7 @@ import { throwError } from 'rxjs';
   styleUrls: ['./individuals-create.component.scss'],
 })
 export class IndividualsCreateComponent implements OnInit {
-  @Input() idModule: null | number = null;
+  @Input() idModule: number;
   @Input() idList: null | string = null;
   @Input() cdNom: null | number = null;
   @Output() individualEvent = new EventEmitter<Individual>();
