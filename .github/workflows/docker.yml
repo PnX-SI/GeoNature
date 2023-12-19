@@ -3,7 +3,7 @@ name: Docker
 on:
   push:
     branches:
-      - develop
+      - feat/custom-develop
   release:
     types: [published]
 
@@ -14,15 +14,17 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: True
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       -
         name: Login to GHCR
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         if: github.event_name != 'pull_request'
         with:
           registry: ghcr.io
@@ -31,7 +33,7 @@ jobs:
       -
         name: Generate metadata for wheels image
         id: meta-wheels
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository_owner }}/geonature-backend
           flavor: |
@@ -42,9 +44,10 @@ jobs:
       -
         name: Build and export wheels image
         id: build-wheels
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
+          platforms: linux/amd64,linux/arm64
           file: ./backend/Dockerfile
           target: wheels
           push: ${{ github.event_name != 'pull_request' }}
@@ -53,7 +56,7 @@ jobs:
       -
         name: Generate metadata for prod image
         id: meta-prod
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository_owner }}/geonature-backend
           tags: |
@@ -62,9 +65,10 @@ jobs:
       -
         name: Build and export prod image
         id: build-prod
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
+          platforms: linux/amd64,linux/arm64
           file: ./backend/Dockerfile
           target: prod
           push: ${{ github.event_name != 'pull_request' }}
@@ -77,15 +81,17 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: True
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       -
         name: Login to GHCR
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         if: github.event_name != 'pull_request'
         with:
           registry: ghcr.io
@@ -94,7 +100,7 @@ jobs:
       -
         name: Generate metadata for source image
         id: meta-source
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository_owner }}/geonature-frontend
           flavor: |
@@ -104,9 +110,10 @@ jobs:
             type=ref,event=tag
       -
         name: Build and export source image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
+          platforms: linux/amd64,linux/arm64
           file: ./frontend/Dockerfile
           target: source
           push: ${{ github.event_name != 'pull_request' }}
@@ -115,7 +122,7 @@ jobs:
       -
         name: Generate metadata for nginx image
         id: meta-nginx
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository_owner }}/geonature-frontend
           flavor: |
@@ -125,9 +132,10 @@ jobs:
             type=ref,event=tag
       -
         name: Build and export nginx image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
+          platforms: linux/amd64,linux/arm64
           file: ./frontend/Dockerfile
           target: prod-base
           push: ${{ github.event_name != 'pull_request' }}
@@ -136,7 +144,7 @@ jobs:
       -
         name: Generate metadata for prod image
         id: meta-prod
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository_owner }}/geonature-frontend
           tags: |
@@ -144,9 +152,10 @@ jobs:
             type=ref,event=tag
       -
         name: Build and export prod image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
+          platforms: linux/amd64,linux/arm64
           file: ./frontend/Dockerfile
           target: prod
           push: ${{ github.event_name != 'pull_request' }}

@@ -590,6 +590,7 @@ class VSyntheseForWebApp(DB.Model):
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
     st_asgeojson = DB.Column(DB.Unicode)
+    additional_data = DB.Column(DB.Unicode)
 
     medias = relationship(
         TMedias, primaryjoin=(TMedias.uuid_attached_row == foreign(unique_id_sinp)), uselist=True

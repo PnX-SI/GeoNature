@@ -3,17 +3,21 @@ import requests
 import json
 
 
-from flask import Blueprint, request, current_app, Response, redirect, g, render_template
-from sqlalchemy.sql import distinct, and_
-from werkzeug.exceptions import NotFound, BadRequest, Forbidden
+from flask import (
+    Blueprint,
+    request,
+    current_app,
+    Response,
+    g,
+    render_template,
+)
+from sqlalchemy.sql import and_
+from werkzeug.exceptions import BadRequest, Forbidden
 
 from geonature.utils.env import DB
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
-from geonature.core.users.models import (
-    VUserslistForallMenu,
-    CorRole,
-)
+from geonature.core.users.models import VUserslistForallMenu
 from geonature.utils.config import config
 from pypnusershub.db.models import Organisme, User, UserList
 from geonature.core.users.register_post_actions import (
@@ -24,9 +28,6 @@ from geonature.core.users.register_post_actions import (
 
 from pypnusershub.env import REGISTER_POST_ACTION_FCT
 from pypnusershub.db.models import User, Application
-from pypnusershub.db.models_register import TempUser
-from pypnusershub.routes_register import bp as user_api
-from pypnusershub.routes import check_auth
 from utils_flask_sqla.response import json_resp
 
 
@@ -44,6 +45,7 @@ user_fields = {
     "id_organisme",
     "groupe",
     "active",
+    "champs_addi",
 }
 organism_fields = {
     "id_organisme",
