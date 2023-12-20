@@ -210,6 +210,15 @@
 
           <br />
 
+          <div class="b">Type de financement :</div>
+
+          <div class="a">
+            <b> Financement :</b>
+            {{ dataset?.nomenclature_data_origin?.label_default }}
+          </div>
+
+          <br />
+
           <div *ngIf="dataset.keywords">
             <div class="b">Mots-clés :</div>
             <div class="a">{{ dataset.keywords }}</div>

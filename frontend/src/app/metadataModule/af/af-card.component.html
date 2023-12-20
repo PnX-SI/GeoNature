@@ -230,6 +230,15 @@
 
           <br />
 
+          <div class="b">Type de financement :</div>
+
+          <div class="a">
+            <b> Financement :</b>
+            {{ af?.nomenclature_financing_type?.label_default }}
+          </div>
+
+          <br />
+
           <div *ngIf="af?.keywords">
             <div class="b">Mots-clés</div>
             <div class="a">{{ af?.keywords }}</div>
