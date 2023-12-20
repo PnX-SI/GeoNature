@@ -1,0 +1,84 @@
+form.ng-invalid {
+  border: none !important;
+}
+
+#errorList {
+  color: red;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  color: black;
+  background-color: rgb(241, 241, 241);
+}
+
+th.Code {
+  width: 15%;
+}
+
+th.Message {
+  width: 40%;
+}
+
+td,
+th {
+  border-bottom: 0.1em solid black;
+  border-top: 1px solid black;
+  border-collapse: collapse;
+  text-align: left;
+  padding: 5px;
+}
+
+tr:nth-child(even) {
+  background: #e0e0e0dd !important;
+}
+
+.spinner {
+  position: fixed;
+  z-index: 999;
+  height: 2em;
+  width: 2em;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.spinner:before {
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.custom-file-input {
+  cursor: pointer;
+}
+
+ 
+
+.error-file {
+  border-left: 5px solid #ff0000 !important;
+  border-color:  #ff0000 !important;
+}
+
+.navigate-btn {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.card-body {
+  padding: 30px 40px
+}
+
+.file-validation {
+  margin-top: 40px
+}
