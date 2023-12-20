@@ -1,0 +1,157 @@
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Liste des imports</h5>
+        </div>
+        <div class="card-body">
+            <div *ngIf="!empty">
+                <input
+                    [formControl]="search"
+                    id="search"
+                    type="text"
+                    class="form-control"
+                    placeholder="Search"
+                    aria-label="Search"
+                    aria-describedby="basic-addon1"
+                />
+                <ngx-datatable
+                    #table
+                    class="material striped"
+                    [rows]="filteredHistory"
+                    [columnMode]="'force'"
+                    [headerHeight]="35"
+                    [footerHeight]="30"
+                    [rowHeight]="40"
+                    [externalPaging]="true"
+                    [count]="total"
+                    [offset]="offset"
+                    [limit]="limit"
+                    (page)="setPage($event)"
+                    (sort)="onSort($event)"
+                >
+                    <ngx-datatable-column
+                        *ngFor="let col of config.IMPORT.LIST_COLUMNS_FRONTEND"
+                        name="{{col.name}}"
+                        [prop]="col.prop"
+                        [maxWidth]="col.max_width"
+                        [sortable]="col.filter"
+                    >
+                        <ng-template
+                            let-row="row"
+                            ngx-datatable-cell-template
+                        >
+                            <ng-container [ngSwitch]="col.prop">
+                                <ng-container *ngSwitchCase="'dataset.dataset_name'">
+                                    <a
+                                        routerLink="/metadata/dataset_detail/{{row.id_dataset}}"
+                                        matTooltip="{{col.name}}"
+                                    >
+                                        {{row.dataset ? row.dataset.dataset_name : ''}}
+                                    </a>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'date_create_import'">
+                                    {{row.date_create_import |date:'dd-MM-yyyy'}}
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'full_file_name'">
+                                    <a href="javascript:void(0)" (click)="downloadSourceFile(row)">{{row[col.prop]}}</a>
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    {{row[col.prop]}}
+                                </ng-container>
+                            </ng-container>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column
+                        maxWidth="200"
+                        name="Fin import"
+                        [sortable]="true"
+                        prop="date_end_import"
+                        class="date-col"
+                    >
+                        <ng-template
+                            let-row="row"
+                            ngx-datatable-cell-template
+                        >
+                            <p *ngIf="row.date_end_import">{{row.date_end_import |date:'dd-MM-yyyy'}}</p>
+                            <p *ngIf="inErrorImport.includes(row.id_import)" class="import-status">import en erreur</p>
+                            <p *ngIf="runningImport.includes(row.id_import)" class="import-status">import en cours</p>
+                            <p *ngIf="checkingImport.includes(row.id_import)" class="import-status">vérifications en cours</p>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column
+                        name="Actions"
+                        [sortable]="false"
+                    >
+                        <ng-template
+                            let-row="row"
+                            ngx-datatable-cell-template
+                        >
+                            <button
+                                [disabled]="!row?.cruved?.U || !row?.dataset?.active"
+                                [matTooltip]="getTooltip(row,'edit')"
+                                mat-icon-button
+                                color="primary"
+                                class="import-button"
+                                *ngIf="!row.processing"
+                                style="margin-top: -10px;"
+                                (click)="onFinishImport(row)"
+                            >
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button
+                                matTooltip="Rapport"
+                                mat-icon-button
+                                class="import-button"
+                                color="primary"
+                                style="margin-top: -10px;"
+                                [routerLink]="[row.id_import, 'report']"
+                            >
+                                <mat-icon>info</mat-icon>
+                            </button>
+                            <button
+                                *ngIf="row.errors_count"
+                                mat-icon-button
+                                class="import-button"
+                                color="primary"
+                                style="margin-top: -10px;"
+                                (click)="_csvExport.onCSV(row.id_import)"
+                                matTooltip='Téléchargement des données invalides'
+                            >
+                                <mat-icon>download</mat-icon>
+                            </button>
+                            <button
+                                [disabled]="!row?.cruved?.D || !row?.dataset?.active"
+                                mat-icon-button
+                                color=warn
+                                style="margin-top: -10px;"
+                                (click)="openDeleteModal(row, deleteModal)"
+                                [matTooltip]="getTooltip(row,'delete')"
+                            >
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </ng-template>
+                    </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+            <div *ngIf="empty">
+                Vous n'avez effectué aucun import
+            </div>
+            <import-modal-dataset class="pull-right mt-3"></import-modal-dataset>
+
+            <ng-template
+                #deleteModal
+                let-c="close "
+                let-d="dismiss"
+            >
+
+                <import-delete
+                    [row]="deleteOne"
+                    [c]="c"
+                    (onDelete)="onImportList(offset, search_string)"
+                >
+                </import-delete>
+
+            </ng-template>
+        </div>
+    </div>
+</div>

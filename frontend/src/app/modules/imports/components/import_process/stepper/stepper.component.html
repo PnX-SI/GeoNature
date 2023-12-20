@@ -1,0 +1,9 @@
+<div class="step">
+    <ul> 
+        <li [ngClass]="{'done': step > Step.Upload, 'current': step == Step.Upload}" (click)= "importProcessService.navigateToStep(Step.Upload)">Téléversement du fichier</li>
+        <li [ngClass]="{'done': step > Step.Decode, 'current': step == Step.Decode}" (click)= "importProcessService.navigateToStep(Step.Decode)">Configuration du fichier</li>
+        <li [ngClass]="{'done': step > Step.FieldMapping, 'current': step == Step.FieldMapping}" (click)= "importProcessService.navigateToStep(Step.FieldMapping)">Correspondance des champs</li>
+        <li *ngIf="config.IMPORT.ALLOW_VALUE_MAPPING" [ngClass]="{'done': step > Step.ContentMapping, 'current': step == Step.ContentMapping}" (click)= "importProcessService.navigateToStep(Step.ContentMapping)">Correspondance des nomenclatures</li>
+        <li [ngClass]="{'done': step > Step.Import, 'current': step == Step.Import}" (click)= "importProcessService.navigateToStep(Step.Import)">Import des données</li>
+    </ul>
+</div>

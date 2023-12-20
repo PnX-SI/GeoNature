@@ -1,0 +1,78 @@
+<div class="container">
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white text-center">
+            <b>Rapport d'erreur(s) </b> 
+        </div>
+        <div class="card-body">
+            <h3 class="underlined">
+                Description de l'import
+            </h3>
+            <div class="row">
+                <div class="col-6">
+                        <p> <b> Nom du fichier : </b> {{importData.full_file_name}} </p>
+                        <p> <b> Jeu de données : </b> {{importData.dataset.dataset_name}} </p>
+                        <p> <b>Date de soumission de l'import :  </b> {{importData.date_create_import | date:'dd/MM/yyyy'}}  </p>
+                        <p> <b>Auteur(s) :  </b> {{importData.authors_name}} </p>
+                        <p> <b>Nombre de lignes :  </b> {{importData.source_count}} </p>
+                </div>
+                <div class="col-6">
+                    <p> <b> SRID : </b>  {{importData.srid}} </p>
+                    <p><b> Encodage :</b>  {{importData.encoding}} </p>
+                    <p><b>  Format : </b>{{importData.format_source_file}} </p>
+                </div>
+            </div>
+
+        
+            <h3 class="underlined" *ngIf="importErrors"> Erreurs</h3>
+            <div *ngIf="importErrors; then errors"></div>
+            <ng-template #errors>
+                <p> La soumission comporte <b> {{importErrors.length}}</b>  erreur(s) </p>
+                <table class="table table-striped table-bordered">
+                   <thead>
+                       <tr>
+                           <th>Type d'erreur </th>
+                           <th>Champ </th>
+                           <th>Description erreur</th>
+                           <th>Nombre d'erreur(s)</th>
+                           <th>Numéro des lignes en erreur </th>
+                       </tr>
+                   </thead>
+                   <tbody>
+                       <tr *ngFor="let error of importErrors">
+                           <td> {{error.type.name}} </td>
+                           <td> {{error.column}} </td>
+                           <td> {{error.type.description}} <i *ngIf="error.comment"> <br> {{error.comment}} </i> </td>
+                           <td> {{error.rows.length || ''}} </td>
+                           <td> {{error.rows.join(', ')}} </td>
+                       </tr>
+                   </tbody>
+                </table>        
+            </ng-template>
+            <h3 class="underlined" *ngIf="importWarnings"> Alertes </h3>
+            <div *ngIf="importWarnings; then warnings"></div>
+            <ng-template #warnings>
+                <p> La soumission comporte <b> {{importWarnings.length}}</b>  alertes(s) </p>
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Type d'alert </th>
+                        <th>Champ </th>
+                        <th>Description alert</th>
+                        <th>Nombre d'erreur(s)</th>
+                        <th>Numéro des lignes en erreur </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let warning of importWarnings">
+                        <td> {{warning.type.name}} </td>
+                        <td> {{warning.column}} </td>
+                        <td> {{warning.type.description}} <i *ngIf="warning.comment"> <br> {{warning.comment}} </i> </td>
+                        <td> {{warning.rows.length || ''}} </td>
+                        <td> {{warning.rows.join(', ')}} </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </ng-template>
+        </div><!-- end card-body -->
+    </div><!-- end card -->
+</div><!-- end container -->
