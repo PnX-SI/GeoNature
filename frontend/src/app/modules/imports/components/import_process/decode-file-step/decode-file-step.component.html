@@ -1,0 +1,123 @@
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0"> Configuration du fichier </h5>
+        </div>
+        <div class="card-body">
+            <form
+                [formGroup]="paramsForm"
+            >
+                <!-- Encoding field -->
+                <div class="form-group">
+                    <label> Encodage : </label>
+                    <select
+                        class="custom-select mr-sm-2"
+                        id="encoding"
+                        formControlName="encoding"
+                        required
+                    >
+                        <option
+                            *ngFor="let encoding of importData.available_encodings"
+                            [value]="encoding"
+                        >
+                            {{ encoding }}
+                            <p *ngIf="encoding == importData.detected_encoding">(auto-détecté)</p>
+                        </option>
+                    </select>
+                    <div class="invalid-feedback">Sélectionnez un encodage</div>
+                </div>
+                <!-- Format field -->
+                <div class="form-group">
+                    <label> Format :</label>
+                    <select
+                        class="custom-select mr-sm-2"
+                        id="format"
+                        formControlName="format"
+                        required
+                    >
+                        <option
+                            *ngFor="let format of importData.available_formats"
+                            [value]="format"
+                        >
+                            {{ format }}
+                            <p *ngIf="format== importData.detected_format">(auto-détecté)</p>
+                        </option>
+                    </select>
+                    <div class="invalid-feedback">Sélectionnez un format</div>
+                </div>
+                <!-- SRID field -->
+                <div class="form-group">
+                    <label> Séparateur :</label>
+                    <select
+                        class="custom-select mr-sm-2"
+                        id="separator"
+                        formControlName="separator"
+                        required
+                    >
+                    <option
+                            *ngFor="let separator of importData.available_separators"
+                            [value]="separator"
+                        >
+                            {{ separator }}
+                            <p *ngIf="separator== importData.detected_separator">(auto-détecté)</p>
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>SRID des données géographiques :</label>
+                    <select
+                        class="custom-select mr-sm-2"
+                        id="srid"
+                        formControlName="srid"
+                        required
+                    >
+                        <option
+                            *ngFor="let srid of this.config.IMPORT.SRID"
+                            [value]="srid.code"
+                        >
+                            {{srid.name}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback">Sélectionnez un SRID</div>
+                </div>
+            </form>
+            <!-- Navigation buttons -->
+            <div class="d-flex flex-row justify-content-between">
+                <button
+                    type="submit"
+                    class="btn btn-secondary box-shadow d-flex justify-content-center align-content-between"
+                    mat-raised-button
+                    color=primary
+                    (click)="onPreviousStep()"
+                    id="validate"
+                >
+                    <i class="material-icons"> navigate_before </i>
+                    Précédent
+                </button>
+                <button
+                    type="submit"
+                    class="btn btn-success box-shadow d-flex justify-content-center align-content-between"
+                    mat-raised-button
+                    color=primary
+                    (click)="onSubmit()"
+                    [disabled]="!isNextStepAvailable()"
+                    id="validate"
+                >
+                    Suivant
+                    <i class="material-icons"> navigate_next </i>
+                </button>
+            </div>
+        </div>
+    </div>
+<!-- Spinner -->
+<div
+    *ngIf="isRequestPending"
+    class="spinner"
+>
+    <mat-spinner
+        class="upload-spinner"
+        [color]="color"
+        [diameter]="150"
+        [strokeWidth]="12"
+    >
+    </mat-spinner>
+</div>
