@@ -31,8 +31,7 @@ def upgrade():
                 module_path,
                 module_target,
                 active_frontend,
-                active_backend,
-                ng_module  -- FIXME
+                active_backend
             )
         VALUES (
             'IMPORT',
@@ -41,8 +40,7 @@ def upgrade():
             'import',
             '_self',
             TRUE,
-            TRUE,
-            'import' -- FIXME
+            TRUE
         )
         """
     )
