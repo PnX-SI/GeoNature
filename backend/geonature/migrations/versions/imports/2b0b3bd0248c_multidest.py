@@ -301,6 +301,17 @@ def upgrade():
             ]
         )
     )
+    # Remove ng_module from import
+    op.execute(
+        """
+        UPDATE
+            gn_commons.t_modules
+        SET
+            ng_module = NULL
+        WHERE
+            module_code = 'IMPORT'
+        """
+    )
 
 
 def downgrade():
