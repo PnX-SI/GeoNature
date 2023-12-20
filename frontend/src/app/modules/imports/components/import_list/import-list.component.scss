@@ -1,0 +1,19 @@
+.font-size-medium {
+  font-size: 12px;
+}
+
+ngx-datatable{
+  box-shadow: none !important
+}
+
+.sortable .sort-btn:not([class*="datatable-icon-"]):before {
+   font-family: data-table; content: "c"; 
+}
+
+:host ::ng-deep datatable-body-cell {
+  padding: 10px 5px !important;
+}
+
+.import-status{
+  font-style: italic;
+}
