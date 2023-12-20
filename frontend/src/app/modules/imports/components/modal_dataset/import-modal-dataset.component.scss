@@ -1,0 +1,22 @@
+#warningDataset {
+  color: red;
+}
+
+::ng-deep ngb-modal-window {
+  display: flex !important;
+  justify-content: space-around;
+  flex-direction: column;
+}
+
+::ng-deep .modal-content {
+  min-width: 500px;
+}
+
+.modal-header {
+  background-color: #dce3e7;
+  padding: 10px 16px;
+}
+
+form.ng-invalid {
+  border: none !important;
+}

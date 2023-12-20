@@ -1,0 +1,101 @@
+fieldset {
+  padding: 0.35em 0.625em 0.75em !important;
+  border: 1px solid silver !important;
+  border-radius: 3px;
+  margin-bottom: 30px; // background-color: #f7f7f7;
+}
+
+legend {
+  width: auto;
+  font-size: inherit;
+  color: black !important;
+}
+
+form.ng-invalid {
+  border: none !important;
+}
+
+#errorList {
+  color: red;
+}
+
+.custom-tooltip {
+  font-size: 20px;
+  background: black !important;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  color: black;
+  background-color: rgb(241, 241, 241);
+}
+
+th.Code {
+  width: 15%;
+}
+
+th.Message {
+  width: 40%;
+}
+
+td,
+th {
+  border-bottom: 0.1em solid black;
+  border-top: 1px solid black;
+  border-collapse: collapse;
+  text-align: left;
+  padding: 5px;
+}
+
+tr:nth-child(even) {
+  background: #e0e0e0dd !important;
+}
+
+.spinner {
+  position: fixed;
+  z-index: 999;
+  height: 2em;
+  width: 2em;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+/* Transparent Overlay */
+.spinner:before {
+  content: "";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.navigate-btn {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.card-body {
+  padding: 30px 40px;
+}
+
+.field-header {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.field-card {
+  margin-bottom: 30px;
+}

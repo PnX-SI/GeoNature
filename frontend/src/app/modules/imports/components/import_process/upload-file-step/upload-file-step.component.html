@@ -1,0 +1,72 @@
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0"> Téléversement du fichier </h5>
+        </div>
+        <div class="card-body">
+            <form
+                [formGroup]="uploadForm"
+            >
+                <div class="form-group">
+                    <label>Importer un fichier :</label>
+                    <div
+                        class="custom-file"
+                        id="upload_files"
+                    >
+                        <input
+                            class="custom-file-input"
+                            type=file
+                            (change)="onFileSelected($event.target.files[0])"
+                            id="selectedFile"
+                            name="file"
+                            [accept]="acceptedExtensions"
+                        >
+                        <label
+                            class="custom-file-label"
+                            [class.error-file]="!isNextStepAvailable() && uploadForm.get('file').errors"
+                            for="selectedFile"
+                        >{{fileName ? fileName : 'Choisissez votre fichier' }}</label>
+                    </div>
+                </div>
+            </form>
+            <div class="text-danger" *ngIf="file && maxFileSize * 1024 * 1024 < file.size">
+                Le fichier sélectionné est trop volumineux. La taille maximale est de {{maxFileSize}}Mo
+            </div>
+            <div class="text-danger" *ngIf="emptyError || file && !file.size">
+                Le fichier sélectionné est vide
+            </div>
+            <div class="text-danger" *ngIf="columnFirstError">
+                La première ligne du fichier doit correspondre au nom des colonnes
+            </div>
+            <div class="text-danger" *ngIf="fileName && fileName.length > maxFileNameLength">
+                Le nom du fichier est trop long. Il doit faire moins de {{maxFileNameLength}} caractères.
+            </div>
+            <!-- Navigation buttons -->
+            <div class="navigate-btn">
+                <button
+                    type="submit"
+                    class="d-flex justify-content-center align-content-between"
+                    mat-raised-button
+                    color=primary
+                    [disabled]="!isNextStepAvailable()"
+                    (click)="onNextStep()"
+                    id="validate"
+                >
+                    Suivant
+                    <i class="material-icons"> navigate_next </i>
+                </button>
+            </div>
+        </div>
+    </div>
+<!-- Spinner -->
+<div
+    *ngIf="isUploadRunning"
+    class="spinner"
+>
+    <mat-spinner
+        class="upload-spinner"
+        [color]="color"
+        [diameter]="150"
+        [strokeWidth]="12"
+    >
+    </mat-spinner>
+</div>
