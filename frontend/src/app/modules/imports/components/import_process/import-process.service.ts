@@ -6,15 +6,15 @@ import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class ImportProcessService {
-    private importData: Import | null = null;
+  private importData: Import | null = null;
 
-constructor(
+  constructor(
     private router: Router,
     public config: ConfigService
-) {}
+  ) {}
 
   setImportData(importData: Import) {
-    this.importData  = importData;
+    this.importData = importData;
   }
 
   getImportData(): Import | null {
@@ -82,7 +82,7 @@ constructor(
 
   beginProcess(datasetId: number) {
     const link = [this.config.IMPORT.MODULE_URL, 'process', Step[Step.Upload].toLowerCase()];
-	   this.router.navigate(link, { queryParams: { datasetId: datasetId } });
+    this.router.navigate(link, { queryParams: { datasetId: datasetId } });
   }
 
   continueProcess(importData: Import) {

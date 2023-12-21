@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { DataService } from "../data.service";
+import { Injectable } from '@angular/core';
+import { DataService } from '../data.service';
 import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
@@ -18,18 +18,15 @@ export class ContentMappingService {
 
   getMappingNamesList(newContentId?, formControl?) {
     // get list of existing content mapping in the select
-    this._ds.getContentMappings().subscribe(
-      result => {
-        this.userContentMappings = result
-        if (newContentId) {
-          const newMapping = result.find(el => {
-            return el.id == newContentId
-          })
-          formControl.setValue(newMapping)
-        }
-
+    this._ds.getContentMappings().subscribe((result) => {
+      this.userContentMappings = result;
+      if (newContentId) {
+        const newMapping = result.find((el) => {
+          return el.id == newContentId;
+        });
+        formControl.setValue(newMapping);
       }
-    );
+    });
   }
 
   createMapping(mappingForm) {
@@ -40,7 +37,6 @@ export class ContentMappingService {
 
   cancelMapping(mappingForm) {
     this.newMapping = false;
-    mappingForm.controls["mappingName"].setValue("");
+    mappingForm.controls['mappingName'].setValue('');
   }
-
 }
