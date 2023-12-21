@@ -26,8 +26,8 @@ export class DataService {
     private _http: HttpClient,
     public config: ConfigService
   ) {
-    //this.urlApi = `${this.config.API_ENDPOINT}/import/synthese`;
-    this.urlApi = `${this.config.API_ENDPOINT}/import/occhab`;
+    this.urlApi = `${this.config.API_ENDPOINT}/import/synthese`;
+    // this.urlApi = `${this.config.API_ENDPOINT}/import/occhab`;
   }
 
   getNomenclatures(): Observable<any> {
