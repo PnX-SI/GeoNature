@@ -235,6 +235,40 @@ corIndividualModule = DB.Table(
 
 
 @serializable
+class TMarkingEvent(DB.Model):
+    __tablename__ = "t_marking_events"
+    __table_args__ = {"schema": "gn_monitoring"}
+
+    id_marking = DB.Column(DB.Integer, primary_key=True, autoincrement=True)
+    id_individual = DB.Column(
+        DB.ForeignKey(f"gn_monitoring.t_individuals.id_individual", ondelete="CASCADE"),
+        nullable=False,
+    )
+    id_module = DB.Column(
+        DB.ForeignKey("gn_commons.t_modules.id_module"),
+        primary_key=True,
+        nullable=False,
+        unique=True,
+    )
+    id_digitiser = DB.Column(
+        DB.ForeignKey("utilisateurs.t_roles.id_role"),
+        nullable=False,
+    )
+    marking_date = DB.Column(DB.DateTime(timezone=False), nullable=False)
+    id_operator = DB.Column(DB.ForeignKey("utilisateurs.t_roles.id_role"), nullable=False)
+    id_base_marking_site = DB.Column(DB.ForeignKey("gn_monitoring.t_base_sites.id_base_site"))
+    id_nomenclature_marking_type = DB.Column(
+        DB.ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"), nullable=False
+    )
+    marking_location = DB.Column(DB.Unicode(255))
+    marking_code = DB.Column(DB.Unicode(255))
+    marking_details = DB.Column(DB.Text)
+    data = DB.Column(JSONB)
+
+    operator = DB.relationship(User, lazy="joined", foreign_keys=[id_operator])
+
+
+@serializable
 class TObservations(DB.Model):
     __tablename__ = "t_observations"
     __table_args__ = {"schema": "gn_monitoring"}
@@ -300,6 +334,11 @@ class TIndividuals(DB.Model):
         foreign_keys=[corIndividualModule.c.id_individual, corIndividualModule.c.id_module],
     )
 
+    markings = DB.relationship(
+        TMarkingEvent,
+        primaryjoin=(id_individual == TMarkingEvent.id_individual),
+    )
+
     @classmethod
     def filter_by_scope(cls, query, scope, user):
         if scope == 0:
@@ -310,39 +349,6 @@ class TIndividuals(DB.Model):
             ]
             # if organism is None => do not filter on id_organism even if level = 2
             if scope == 2 and user.id_organisme is not None:
-                ors.append(cls.digitiser.has(id_organisme=user.id_organism))
+                ors.append(cls.digitiser.has(id_organisme=user.id_organisme))
             query = query.where(or_(*ors))
         return query
-
-
-@serializable
-class TMarkingEvent(DB.Model):
-    __tablename__ = "t_marking_events"
-    __table_args__ = {"schema": "gn_monitoring"}
-
-    id_marking = DB.Column(DB.Integer, primary_key=True, autoincrement=True)
-    id_individual = DB.Column(
-        DB.ForeignKey(f"gn_monitoring.t_individuals.id_individual", ondelete="CASCADE"),
-        nullable=False,
-    )
-    id_module = DB.Column(
-        DB.ForeignKey("gn_commons.t_modules.id_module"),
-        primary_key=True,
-        nullable=False,
-        unique=True,
-    )
-    marking_date = DB.Column(DB.DateTime(timezone=False), nullable=False)
-    id_operator = DB.Column(DB.ForeignKey("utilisateurs.t_roles.id_role"), nullable=False)
-    id_base_marking_site = DB.Column(DB.ForeignKey("gn_monitoring.t_base_sites.id_base_site"))
-    id_nomenclature_marking_type = DB.Column(
-        DB.ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"), nullable=False
-    )
-    marking_location = DB.Column(DB.Unicode(255))
-    marking_code = DB.Column(DB.Unicode(255))
-    marking_details = DB.Column(DB.Text)
-    data = DB.Column(JSONB)
-
-    operator = DB.relationship(
-        User,
-        lazy="joined",
-    )
