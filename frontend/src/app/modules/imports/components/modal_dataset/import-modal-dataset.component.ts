@@ -1,14 +1,14 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { FormControl, Validators } from "@angular/forms";
-import { DataService } from "../../services/data.service";
-import { ImportProcessService } from "../import_process/import-process.service";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { FormControl, Validators } from '@angular/forms';
+import { DataService } from '../../services/data.service';
+import { ImportProcessService } from '../import_process/import-process.service';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 
 @Component({
-  selector: "import-modal-dataset",
-  templateUrl: "import-modal-dataset.component.html",
-  styleUrls: ["./import-modal-dataset.component.scss"]
+  selector: 'import-modal-dataset',
+  templateUrl: 'import-modal-dataset.component.html',
+  styleUrls: ['./import-modal-dataset.component.scss'],
 })
 export class ImportModalDatasetComponent implements OnInit, OnDestroy {
   public selectDatasetForm: FormControl;
@@ -31,7 +31,7 @@ export class ImportModalDatasetComponent implements OnInit, OnDestroy {
 
   onOpenModal(content) {
     this.modalRef = this.modalService.open(content, {
-      size: "lg"
+      size: 'lg',
     });
   }
 

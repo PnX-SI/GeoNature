@@ -1,18 +1,18 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { DataService } from "../../../services/data.service";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { ImportProcessService } from "../import-process.service";
-import { Step } from "../../../models/enums.model";
-import { Import } from "../../../models/import.model";
-import { Observable } from "rxjs";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { DataService } from '../../../services/data.service';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ImportProcessService } from '../import-process.service';
+import { Step } from '../../../models/enums.model';
+import { Import } from '../../../models/import.model';
+import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
-  selector: "decode-file-step",
-  styleUrls: ["decode-file-step.component.scss"],
-  templateUrl: "decode-file-step.component.html"
+  selector: 'decode-file-step',
+  styleUrls: ['decode-file-step.component.scss'],
+  templateUrl: 'decode-file-step.component.html',
 })
 export class DecodeFileStepComponent implements OnInit {
   public step: Step;
@@ -52,7 +52,7 @@ export class DecodeFileStepComponent implements OnInit {
       this.paramsForm.patchValue({ srid: this.importData.srid });
     }
     if (this.importData.separator) {
-        this.paramsForm.patchValue({separator: this.importData.separator})
+      this.paramsForm.patchValue({ separator: this.importData.separator });
     } else if (this.importData.detected_separator) {
       this.paramsForm.patchValue({ separator: this.importData.detected_separator });
     }
@@ -65,25 +65,24 @@ export class DecodeFileStepComponent implements OnInit {
   isNextStepAvailable() {
     return this.paramsForm.valid;
   }
-  onSaveData(decode=0) :Observable<Import> {
-      return  this.ds.decodeFile( this.importData.id_import,
-          this.paramsForm.value, decode)
+  onSaveData(decode = 0): Observable<Import> {
+    return this.ds.decodeFile(this.importData.id_import, this.paramsForm.value, decode);
   }
   onSubmit() {
     if (this.paramsForm.pristine && this.importData.step > Step.Decode) {
-        this.importProcessService.navigateToNextStep(this.step);
-        return;
+      this.importProcessService.navigateToNextStep(this.step);
+      return;
     }
     this.isRequestPending = true;
-    this.onSaveData(1).pipe(
+    this.onSaveData(1)
+      .pipe(
         finalize(() => {
-            this.isRequestPending = false;
-        }),
-    ).subscribe(
-        res => {
-            this.importProcessService.setImportData(res);
-            this.importProcessService.navigateToLastStep();
-        },
-    );
+          this.isRequestPending = false;
+        })
+      )
+      .subscribe((res) => {
+        this.importProcessService.setImportData(res);
+        this.importProcessService.navigateToLastStep();
+      });
   }
 }
