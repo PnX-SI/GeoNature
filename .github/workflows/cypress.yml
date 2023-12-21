@@ -5,12 +5,12 @@ on:
       - master
       - hotfixes
       - develop
-      - fixtestfront
   pull_request:
     branches:
       - master
       - hotfixes
       - develop
+      - feat/import
 
 jobs:
   mount_app_and_run_cypress:
