@@ -11,6 +11,7 @@ on:
       - master
       - hotfixes
       - develop
+      - feat/import
 
 jobs:
   build:
