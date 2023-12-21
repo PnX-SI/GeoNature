@@ -30,7 +30,7 @@ export class IndividualsCreateComponent implements OnInit {
 
   ngOnInit() {
     this.form = new FormGroup({
-      individual_name: new FormControl<string>('', {
+      individual_name: new FormControl<string | null>(null, {
         validators: [Validators.required],
       }),
       id_nomenclature_sex: new FormControl<number | null>(null),

@@ -52,6 +52,7 @@
       class="button-success"
       mat-raised-button
       (click)="createIndividual()"
+      [disabled]="!form.valid"
     >
       Créer un individu
     </button>
