@@ -1,7 +1,13 @@
-import { Injectable } from "@angular/core";
-import { FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from "@angular/forms";
-import { DataService } from "../data.service";
-import { CommonService } from "@geonature_common/service/common.service";
+import { Injectable } from '@angular/core';
+import {
+  FormGroup,
+  FormControl,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
+import { DataService } from '../data.service';
+import { CommonService } from '@geonature_common/service/common.service';
 
 @Injectable()
 export class FieldMappingService {
@@ -11,10 +17,8 @@ export class FieldMappingService {
   public newMapping: boolean = false;
   public id_mapping;*/
 
-  constructor(
-    /*private _ds: DataService,
-    private _commonService: CommonService*/
-  ) { }
+  constructor /*private _ds: DataService,
+    private _commonService: CommonService*/() {}
 
   /*getMappingNamesList(mapping_type) {
     this._ds.getMappings(mapping_type).subscribe(
@@ -174,33 +178,38 @@ export class FieldMappingService {
     let codecommune_errors = null;
     let codedepartement_errors = null;
     // check for position
-    if ( g.value.longitude != null || g.value.latitude != null) {
+    if (g.value.longitude != null || g.value.latitude != null) {
       xy = true;
       // ensure both x/y are set
-      if (g.value.longitude == null) longitude_errors = {'required': true};
-      if (g.value.latitude == null) latitude_errors = {'required': true};
+      if (g.value.longitude == null) longitude_errors = { required: true };
+      if (g.value.latitude == null) latitude_errors = { required: true };
     }
     if (g.value.WKT != null) {
       xy = true;
     }
     // check for attachment
-    if (g.value.codemaille != null || g.value.codecommune != null || g.value.codedepartement != null) {
+    if (
+      g.value.codemaille != null ||
+      g.value.codecommune != null ||
+      g.value.codedepartement != null
+    ) {
       attachment = true;
     }
     if (xy == false && attachment == false) {
-      wkt_errors = {'required': true};
-      longitude_errors = {'required': true};
-      latitude_errors = {'required': true};
-      codemaille_errors = {'required': true};
-      codecommune_errors = {'required': true};
-      codedepartement_errors = {'required': true};
+      wkt_errors = { required: true };
+      longitude_errors = { required: true };
+      latitude_errors = { required: true };
+      codemaille_errors = { required: true };
+      codecommune_errors = { required: true };
+      codedepartement_errors = { required: true };
     }
     if ('WKT' in g.controls) g.controls.WKT.setErrors(wkt_errors);
     if ('longitude' in g.controls) g.controls.longitude.setErrors(longitude_errors);
     if ('latitude' in g.controls) g.controls.latitude.setErrors(latitude_errors);
     if ('codemaille' in g.controls) g.controls.codemaille.setErrors(codemaille_errors);
     if ('codecommune' in g.controls) g.controls.codecommune.setErrors(codecommune_errors);
-    if ('codedepartement' in g.controls) g.controls.codedepartement.setErrors(codedepartement_errors);
+    if ('codedepartement' in g.controls)
+      g.controls.codedepartement.setErrors(codedepartement_errors);
     // we set errors on individual form control level, so we return no errors (null) at form group level.
     return null;
   }

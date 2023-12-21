@@ -1,7 +1,7 @@
 export enum Step {
-    Upload = 1,
-    Decode,
-    FieldMapping,
-    ContentMapping,
-    Import,
+  Upload = 1,
+  Decode,
+  FieldMapping,
+  ContentMapping,
+  Import,
 }

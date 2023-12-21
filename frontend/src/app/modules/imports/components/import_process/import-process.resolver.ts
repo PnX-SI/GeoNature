@@ -5,26 +5,25 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, EMPTY, of } from 'rxjs';
 import { catchError, concatMap } from 'rxjs/operators';
 
-import { CommonService } from "@geonature_common/service/common.service";
+import { CommonService } from '@geonature_common/service/common.service';
 
 import { ImportProcessService } from './import-process.service';
-import { Import } from "../../models/import.model";
-import { Step } from "../../models/enums.model";
-import { DataService } from "../../services/data.service";
+import { Import } from '../../models/import.model';
+import { Step } from '../../models/enums.model';
+import { DataService } from '../../services/data.service';
 import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
-export class ImportProcessResolver implements Resolve<Import>{
+export class ImportProcessResolver implements Resolve<Import> {
   constructor(
     private router: Router,
     private ds: DataService,
     private commonService: CommonService,
     private importProcessService: ImportProcessService,
     public config: ConfigService
-  ) { }
+  ) {}
 
-  resolve(route: ActivatedRouteSnapshot,
-          state: RouterStateSnapshot): Import | Observable<Import> {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Import | Observable<Import> {
     let step: Step = route.data.step;
     if (step == Step.Upload && route.params.id_import === undefined) {
       // creating new import
@@ -37,20 +36,23 @@ export class ImportProcessResolver implements Resolve<Import>{
         return this.ds.getOneImport(importId).pipe(
           // typically 404 not found or 403 forbidden, we redirect to import list
           catchError((error: HttpErrorResponse) => {
-            this.commonService.regularToaster("error", error.error.description);
+            this.commonService.regularToaster('error', error.error.description);
             this.router.navigate([this.config.IMPORT.MODULE_URL]);
             return EMPTY;
           }),
           concatMap((importData: Import) => {
             this.importProcessService.setImportData(importData);
             if (this.importProcessService.getLastAvailableStep() < step) {
-              this.commonService.regularToaster("info", "Vous avez été redirigé vers la dernière étape validée.");
+              this.commonService.regularToaster(
+                'info',
+                'Vous avez été redirigé vers la dernière étape validée.'
+              );
               this.importProcessService.navigateToLastStep();
               return EMPTY;
             } else {
               return of(importData);
             }
-          }),
+          })
         );
       } else {
         // previous import is still valid

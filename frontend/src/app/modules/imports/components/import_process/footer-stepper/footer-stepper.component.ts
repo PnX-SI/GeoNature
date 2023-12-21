@@ -1,15 +1,15 @@
-import { Component, OnInit, Input } from "@angular/core";
-import { Router } from "@angular/router";
-import { DataService } from "../../../services/data.service";
-import { ImportProcessService } from "../import-process.service";
-import { isObservable } from "rxjs";
-import { Import } from "../../../models/import.model";
+import { Component, OnInit, Input } from '@angular/core';
+import { Router } from '@angular/router';
+import { DataService } from '../../../services/data.service';
+import { ImportProcessService } from '../import-process.service';
+import { isObservable } from 'rxjs';
+import { Import } from '../../../models/import.model';
 import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
-  selector: "footer-stepper",
-  styleUrls: ["footer-stepper.component.scss"],
-  templateUrl: "footer-stepper.component.html"
+  selector: 'footer-stepper',
+  styleUrls: ['footer-stepper.component.scss'],
+  templateUrl: 'footer-stepper.component.html',
 })
 export class FooterStepperComponent implements OnInit {
   @Input() stepComponent;
@@ -19,16 +19,16 @@ export class FooterStepperComponent implements OnInit {
     private _ds: DataService,
     private importProcessService: ImportProcessService,
     public config: ConfigService
-  ) { }
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   deleteImport() {
     let importData: Import | null = this.importProcessService.getImportData();
     if (importData) {
-      this._ds.deleteImport(importData.id_import).subscribe(
-        () => { this.leaveImport(); }
-      );
+      this._ds.deleteImport(importData.id_import).subscribe(() => {
+        this.leaveImport();
+      });
     } else {
       this.leaveImport();
     }
