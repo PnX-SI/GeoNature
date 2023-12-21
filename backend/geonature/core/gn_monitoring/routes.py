@@ -141,7 +141,7 @@ def get_individuals(id_module):
         .all()
     )
 
-    schema = TIndividualsSchema(exclude=["modules"])
+    schema = TIndividualsSchema(exclude=["modules", "digitiser", "markings", "nomenclature_sex"])
     # In the future: paginate the query. But need infinite scroll on
     # select frontend side
     return schema.jsonify(results, many=True)
