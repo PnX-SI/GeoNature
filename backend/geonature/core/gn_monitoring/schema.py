@@ -15,6 +15,7 @@ class TMarkingEventSchema(MA.SQLAlchemyAutoSchema):
 
     operator = MA.Nested(UserSchema, dump_only=True)
 
+
 class TIndividualsSchema(MA.SQLAlchemyAutoSchema):
     class Meta:
         model = TIndividuals
