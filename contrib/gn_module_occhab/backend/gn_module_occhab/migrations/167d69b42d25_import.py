@@ -991,8 +991,28 @@ def upgrade():
             ]
         )
     )
+    op.execute(
+        """
+        UPDATE
+            gn_commons.t_modules
+        SET 
+            type = 'occhab'
+        WHERE
+            module_code = 'OCCHAB'
+        """
+    )
 
 
 def downgrade():
     op.drop_table(schema="gn_imports", table_name="t_imports_occhab")
     op.execute("DELETE FROM gn_imports.bib_destinations WHERE code = 'occhab'")
+    op.execute(
+        """
+        UPDATE
+            gn_commons.t_modules
+        SET 
+            type = 'base'
+        WHERE
+            module_code = 'OCCHAB'
+        """
+    )
