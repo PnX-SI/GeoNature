@@ -180,6 +180,7 @@ corIndividualModule = DB.Table(
     schema="gn_monitoring",
 )
 
+
 @serializable
 class TMarkingEvent(DB.Model):
     __tablename__ = "t_marking_events"
@@ -211,11 +212,8 @@ class TMarkingEvent(DB.Model):
     marking_details = DB.Column(DB.Text)
     data = DB.Column(JSONB)
 
-    operator = DB.relationship(
-        User,
-        lazy="joined",
-        foreign_keys=[id_operator]
-    )
+    operator = DB.relationship(User, lazy="joined", foreign_keys=[id_operator])
+
 
 @serializable
 class TIndividuals(DB.Model):
@@ -286,5 +284,3 @@ class TIndividuals(DB.Model):
                 ors.append(cls.digitiser.has(id_organisme=user.id_organism))
             query = query.where(or_(*ors))
         return query
-
-
