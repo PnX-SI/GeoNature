@@ -101,8 +101,14 @@ def upgrade():
         sa.Column("marking_code", sa.Unicode(255)),
         sa.Column("marking_details", sa.Text),
         sa.Column("data", JSONB),
-        sa.Column("meta_create_date", sa.DateTime(timezone=False)),
-        sa.Column("meta_update_date", sa.DateTime(timezone=False)),
+        sa.Column(
+            "id_digitiser",
+            sa.Integer,
+            sa.ForeignKey("utilisateurs.t_roles.id_role"),
+            nullable=False,
+        ),
+        sa.Column("meta_create_date", sa.DateTime(timezone=False), server_default=sa.func.now()),
+        sa.Column("meta_update_date", sa.DateTime(timezone=False), server_default=sa.func.now()),
         schema=SCHEMA,
     )
 
