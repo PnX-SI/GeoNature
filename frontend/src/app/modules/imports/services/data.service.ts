@@ -1,16 +1,31 @@
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { Dataset, Import, ImportError, ImportValues, EntitiesThemesFields, TaxaDistribution, ImportPreview } from "../models/import.model";
-import { FieldMapping, FieldMappingValues, ContentMapping, ContentMappingValues } from "../models/mapping.model";
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import {
+  Dataset,
+  Import,
+  ImportError,
+  ImportValues,
+  EntitiesThemesFields,
+  TaxaDistribution,
+  ImportPreview,
+} from '../models/import.model';
+import {
+  FieldMapping,
+  FieldMappingValues,
+  ContentMapping,
+  ContentMappingValues,
+} from '../models/mapping.model';
 import { ConfigService } from '@geonature/services/config.service';
-
 
 @Injectable()
 export class DataService {
   private urlApi = null;
 
-  constructor(private _http: HttpClient, public config: ConfigService) {
+  constructor(
+    private _http: HttpClient,
+    public config: ConfigService
+  ) {
     //this.urlApi = `${this.config.API_ENDPOINT}/import/synthese`;
     this.urlApi = `${this.config.API_ENDPOINT}/import/occhab`;
   }
@@ -20,8 +35,8 @@ export class DataService {
   }
 
   getImportList(values): Observable<Array<Import>> {
-    const url = `${this.urlApi}/imports/`
-    let params = new HttpParams({fromObject:values})
+    const url = `${this.urlApi}/imports/`;
+    let params = new HttpParams({ fromObject: values });
     return this._http.get<Array<Import>>(url, { params: params });
   }
 
@@ -29,23 +44,26 @@ export class DataService {
     return this._http.get<Import>(`${this.urlApi}/imports/${id_import}/`);
   }
 
-
   addFile(datasetId: number, file: File): Observable<Import> {
     let fd = new FormData();
-    fd.append("file", file, file.name);
-    fd.append("datasetId", String(datasetId));
+    fd.append('file', file, file.name);
+    fd.append('datasetId', String(datasetId));
     const url = `${this.urlApi}/imports/upload`;
     return this._http.post<Import>(url, fd);
   }
 
   updateFile(importId: number, file: File): Observable<Import> {
     let fd = new FormData();
-    fd.append("file", file, file.name);
+    fd.append('file', file, file.name);
     const url = `${this.urlApi}/imports/${importId}/upload`;
     return this._http.put<Import>(url, fd);
   }
 
-  decodeFile(importId: number, params: { encoding: string, format: string, srid: string}, decode:number=1): Observable<Import> {
+  decodeFile(
+    importId: number,
+    params: { encoding: string; format: string; srid: string },
+    decode: number = 1
+  ): Observable<Import> {
     const url = `${this.urlApi}/imports/${importId}/decode?decode=${decode}`;
     return this._http.post<Import>(url, params);
   }
@@ -83,28 +101,42 @@ export class DataService {
     return this._http.get<ContentMapping>(`${this.urlApi}/contentmappings/${id_mapping}/`);
   }
 
-  updateFieldMapping(id_mapping: number, values: FieldMappingValues, label: string = ''): Observable<FieldMapping> {
-    let url =  `${this.urlApi}/fieldmappings/${id_mapping}/`
+  updateFieldMapping(
+    id_mapping: number,
+    values: FieldMappingValues,
+    label: string = ''
+  ): Observable<FieldMapping> {
+    let url = `${this.urlApi}/fieldmappings/${id_mapping}/`;
     if (label) {
-        url  = url + `?label=${label}`
+      url = url + `?label=${label}`;
     }
     return this._http.post<FieldMapping>(url, values);
   }
 
-  updateContentMapping(id_mapping: number, values: ContentMappingValues, label: string = ''): Observable<ContentMapping> {
-    let url =  `${this.urlApi}/contentmappings/${id_mapping}/`
+  updateContentMapping(
+    id_mapping: number,
+    values: ContentMappingValues,
+    label: string = ''
+  ): Observable<ContentMapping> {
+    let url = `${this.urlApi}/contentmappings/${id_mapping}/`;
     if (label) {
-        url  = url + `?label=${label}`
+      url = url + `?label=${label}`;
     }
     return this._http.post<ContentMapping>(url, values);
   }
 
   renameFieldMapping(id_mapping: number, label: string): Observable<FieldMapping> {
-    return this._http.post<FieldMapping>(`${this.urlApi}/fieldmappings/${id_mapping}/?label=${label}`, null);
+    return this._http.post<FieldMapping>(
+      `${this.urlApi}/fieldmappings/${id_mapping}/?label=${label}`,
+      null
+    );
   }
 
   renameContentMapping(id_mapping: number, label: string): Observable<ContentMapping> {
-    return this._http.post<ContentMapping>(`${this.urlApi}/contentmappings/${id_mapping}/?label=${label}`, null);
+    return this._http.post<ContentMapping>(
+      `${this.urlApi}/contentmappings/${id_mapping}/?label=${label}`,
+      null
+    );
   }
 
   deleteFieldMapping(id_mapping: number): Observable<null> {
@@ -155,9 +187,7 @@ export class DataService {
   }
 
   getNomencInfo(id_import: number) {
-    return this._http.get<any>(
-      `${this.urlApi}/imports/${id_import}/contentMapping`
-    );
+    return this._http.get<any>(`${this.urlApi}/imports/${id_import}/contentMapping`);
   }
 
   prepareImport(import_id: number): Observable<Import> {
@@ -180,13 +210,13 @@ export class DataService {
 
   getErrorCSV(importId: number) {
     return this._http.get(`${this.urlApi}/imports/${importId}/invalid_rows`, {
-      responseType: "blob"
+      responseType: 'blob',
     });
   }
 
   downloadSourceFile(importId: number) {
     return this._http.get(`${this.urlApi}/imports/${importId}/source_file`, {
-      responseType: "blob"
+      responseType: 'blob',
     });
   }
 
@@ -207,17 +237,17 @@ export class DataService {
   }
 
   getDatasetFromId(datasetId: number) {
-    return this._http.get<Dataset>(
-      `${this.config.API_ENDPOINT}/meta/dataset/${datasetId}`
-    );
+    return this._http.get<Dataset>(`${this.config.API_ENDPOINT}/meta/dataset/${datasetId}`);
   }
 
   getPdf(importId, mapImg, chartImg) {
     const formData = new FormData();
-    formData.append("map", mapImg);
-    if (chartImg !== "") {
-      formData.append("chart", chartImg);
+    formData.append('map', mapImg);
+    if (chartImg !== '') {
+      formData.append('chart', chartImg);
     }
-    return this._http.post(`${this.urlApi}/export_pdf/${importId}`, formData, { responseType: "blob" });
+    return this._http.post(`${this.urlApi}/export_pdf/${importId}`, formData, {
+      responseType: 'blob',
+    });
   }
 }
