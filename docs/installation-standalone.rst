@@ -19,7 +19,7 @@ Récupération de l'application
 
 * Se placer dans le répertoire de l'utilisateur (``/home/geonatureadmin/`` dans notre cas) 
 
-* Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). Voir le `tableau de compatibilité <versions-compatibility.rst>`_ des versions de GeoNature avec ses dépendances.
+* Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_).
 
   ::
 
