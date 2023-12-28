@@ -11,6 +11,7 @@ from sqlalchemy.sql import func, select
 
 
 from geonature.core.gn_meta.models import TDatasets as Dataset
+from geonature.core.imports.models import TImports as Import
 from geonature.utils.env import db
 from pypnnomenclature.models import TNomenclatures as Nomenclature
 from pypnnomenclature.utils import NomenclaturesMixin
@@ -53,6 +54,7 @@ class Station(NomenclaturesMixin, db.Model):
     id_digitiser = db.Column(db.Integer)
     geom_local = deferred(db.Column(Geometry("GEOMETRY")))
     geom_4326 = db.Column(Geometry("GEOMETRY", 4326))
+    id_import = db.Column(db.Integer, ForeignKey(Import.id_import), nullable=True)
 
     habitats = relationship(
         "OccurenceHabitat",
@@ -162,6 +164,7 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
     determiner = db.Column(db.Unicode)
     recovery_percentage = db.Column(db.Float)
     technical_precision = db.Column(db.Unicode)
+    id_import = db.Column(db.Integer, ForeignKey(Import.id_import), nullable=True)
 
     id_nomenclature_determination_type = db.Column(
         db.Integer, ForeignKey(Nomenclature.id_nomenclature)
