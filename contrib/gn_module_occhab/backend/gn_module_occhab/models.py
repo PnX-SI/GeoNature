@@ -34,6 +34,7 @@ class Station(NomenclaturesMixin, db.Model):
     __table_args__ = {"schema": "pr_occhab"}
 
     id_station = db.Column(db.Integer, primary_key=True)
+    id_station_source = db.Column(db.String)
     unique_id_sinp_station = db.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
     id_dataset = db.Column(db.Integer, ForeignKey(Dataset.id_dataset), nullable=False)
     dataset = relationship(Dataset)
