@@ -1034,9 +1034,69 @@ def upgrade():
         sa.Column("id_station_source", sa.String, nullable=True),
         schema="pr_occhab",
     )
+    for table_name in ("t_stations", "t_habitats"):
+        op.add_column(
+            table_name,
+            sa.Column(
+                "id_import",
+                sa.Integer,
+                sa.ForeignKey("gn_imports.t_imports.id_import", onupdate="CASCADE"),
+                nullable=True,
+            ),
+            schema="pr_occhab",
+        )
+        op.execute(f"DROP TRIGGER tri_log_changes_{table_name}_occhab ON pr_occhab.{table_name}")
+        op.execute(
+            f"""
+            CREATE TRIGGER
+                tri_log_changes_insert_{table_name}_occhab
+            AFTER
+                INSERT OR UPDATE ON pr_occhab.{table_name}
+            FOR EACH
+                ROW
+            WHEN
+                (NEW.id_import IS NULL)
+            EXECUTE
+                FUNCTION gn_commons.fct_trg_log_changes()
+            """
+        )
+        op.execute(
+            f"""
+            CREATE TRIGGER
+                tri_log_changes_delete_{table_name}_occhab
+            AFTER
+                DELETE ON pr_occhab.{table_name}
+            FOR EACH
+                ROW
+            WHEN
+                (OLD.id_import IS NULL)
+            EXECUTE
+                FUNCTION gn_commons.fct_trg_log_changes()
+            """
+        )
 
 
 def downgrade():
+    for table_name in ("t_stations", "t_habitats"):
+        op.execute(
+            f"DROP TRIGGER tri_log_changes_insert_{table_name}_occhab ON pr_occhab.{table_name}"
+        )
+        op.execute(
+            f"DROP TRIGGER tri_log_changes_delete_{table_name}_occhab ON pr_occhab.{table_name}"
+        )
+        op.execute(
+            f"""
+            CREATE TRIGGER tri_log_changes_{table_name}_occhab AFTER
+            INSERT
+                OR
+            DELETE
+                OR
+            UPDATE
+                ON
+                pr_occhab.{table_name} FOR EACH ROW EXECUTE FUNCTION gn_commons.fct_trg_log_changes()
+            """
+        )
+        op.drop_column(schema="pr_occhab", table_name=table_name, column_name="id_import")
     op.drop_column(schema="pr_occhab", table_name="t_stations", column_name="id_station_source")
     op.drop_table(schema="gn_imports", table_name="t_imports_occhab")
     op.execute("DELETE FROM gn_imports.bib_destinations WHERE code = 'occhab'")
