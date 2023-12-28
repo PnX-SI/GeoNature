@@ -329,7 +329,8 @@
         id="validateButton"
         type="button"
         mat-raised-button
-        class="button-success uppercase"
+        color="primary"
+        class="uppercase"
         (click)="postStation()"
         [disabled]="occHabForm.stationForm.invalid || showHabForm || !atLeastOneHab"
       >
@@ -344,11 +345,13 @@
             <button
               *ngIf="!showHabForm"
               type="button"
+              color="accent"
+              mat-raised-button
               id="add-hab-btn"
               class="btn btn-sm float-right"
               (click)="addNewHab()"
             >
-              <i style="color: rgb(0, 233, 0)" class="fa fa-plus" aria-hidden="true"></i>
+              <i class="fa fa-plus" aria-hidden="true"></i>
               Ajouter un habitat à la station
             </button>
             <button

@@ -11,7 +11,19 @@
   display: flex;
   width: 100%;
   align-items: stretch;
-  background-color: white;
+  padding: 6px 15px 11px 15px !important;
+}
+
+.map-list-container {
+  background-color: #fff;
+  border: 1px solid #f1f1f1;
+  border-radius: 2px;
+  padding: 8px;
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  height: 100%;
+  display: flex;
+  width: 100%;
 }
 
 @media (min-width: 1000px) {
@@ -48,6 +60,7 @@
 }
 
 .btn-toogle-sidenav {
+  background-color: #fff;
   z-index: 10000;
   position: absolute;
   //left: 248px;

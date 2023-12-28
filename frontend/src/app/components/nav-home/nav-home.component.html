@@ -4,22 +4,24 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <mat-toolbar id="app-toolbar" class="row">
-      <button
-        class="mat-elevation-z1 mr-2"
-        mat-icon-button
-        matTooltip="Ouvrir le menu principal"
-        (click)="closeSideBar()"
-        data-qa="pnx-home-content-sidebar-open-button"
-      >
-        <mat-icon aria-label="Ouvrir le menu principal">menu</mat-icon>
-      </button>
-
-      <span class="mx-2">
-        <a data-qa="nav-home-module-name" class="home-link" href="{{ moduleUrl }}">{{
-          moduleName
-        }}</a>
-      </span>
+    <mat-toolbar id="app-toolbar" class="row justify-content-between">
+      <div class="d-flex align-items-center">
+        <button
+          class="mat-elevation-z1 mr-2"
+          mat-icon-button
+          matTooltip="Ouvrir le menu principal"
+          (click)="closeSideBar()"
+          data-qa="pnx-home-content-sidebar-open-button"
+        >
+          <mat-icon aria-label="Ouvrir le menu principal">arrow_back_ios</mat-icon>
+        </button>
+  
+        <span class="mx-2">
+          <a data-qa="nav-home-module-name" class="home-link" href="{{ moduleUrl }}">{{
+            moduleName
+          }}</a>
+        </span>
+      </div>
 
       <img
         id="logo-structure"
@@ -28,14 +30,15 @@
         alt=""
       />
 
-      <span class="toolbar-spacer"></span>
+      <!-- <span class="toolbar-spacer"></span>
       <div></div>
       <span id="appName">
         <h3>{{ config.appName }}</h3>
-      </span>
+      </span> -->
 
-      <span class="toolbar-spacer"></span>
-
+      <!-- <span class="toolbar-spacer"></span> -->
+      
+      <div class="d-flex align-items-center">
       <ng-container
         *ngIf="
           config.PUBLIC_ACCESS_USERNAME != currentUser?.user_login;
@@ -50,7 +53,7 @@
           "
         >
           <button
-            class="mx-1"
+            class="mx-1 mr-2"
             mat-raised-button
             matTooltip="Ouvrir le menu de mon profil"
             [matMenuTriggerFor]="userMenu"
@@ -81,7 +84,7 @@
         </ng-template>
 
         <!-- add notification only if notification enabled -->
-        <ng-container *ngIf="config.NOTIFICATIONS_ENABLED == true">
+        <!-- <ng-container *ngIf="config.NOTIFICATIONS_ENABLED == true">
           <a
             class="mx-2 mat-elevation-z1"
             mat-icon-button
@@ -92,7 +95,7 @@
           >
             <mat-icon>notifications</mat-icon>
           </a>
-        </ng-container>
+        </ng-container> -->
       </ng-container>
 
       <ng-template #publicAccessUser>
@@ -144,7 +147,9 @@
         </mat-menu>
       </ng-container>
 
-      <a
+    </div>
+
+      <!-- <a
         class="mx-2 mat-elevation-z1"
         mat-icon-button
         matTooltip="Ouvrir la documentation"
@@ -162,7 +167,7 @@
         data-qa="pnx-home-content-exit-button"
       >
         <mat-icon>exit_to_app</mat-icon>
-      </button>
+      </button> -->
     </mat-toolbar>
 
     <div class="app-content">

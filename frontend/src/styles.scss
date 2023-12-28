@@ -1,5 +1,17 @@
 @import 'conf/names_variables.scss';
 
+:root {
+  --main-color: #c3b528;
+  --text-color : #000;
+  --text-contrast : #fff;
+  --secondary-color: #5a7526;
+  --success : #389938;
+  --error : #f9243f;
+  --warning : #ffb53e;
+  --info : #30a5ff;
+  --mdc-typography-button-text-transform : uppercase;
+}
+
 html,
 body,
 material-app,
@@ -9,9 +21,15 @@ mat-sidenav-container {
   height: 100%;
 }
 
+a.btn-action {
+  text-transform: uppercase;
+}
+
 mat-sidenav-content {
   height: 100%;
-  background-color: $solitude;
+  overflow: hidden;
+  /* background-color: $solitude; */
+  background-image: url('assets/images/fond_topo_gris.png');
 }
 
 .cdk-overlay-container {
@@ -23,8 +41,8 @@ mat-sidenav-content {
 }
 
 .button-success {
-  background-color: #389938 !important;
-  color: white !important;
+  background-color: var(--success) !important;
+  color: var(--text-contrast) !important;
 }
 
 .right-aligned-header > .mat-content {
@@ -37,14 +55,14 @@ mat-sidenav-content {
 }
 
 .button-success:disabled {
-  background-color: #38993850 !important;
+  opacity: 0.3 !important;
 }
 
 .mat-toolbar {
-  //min-height: 5vh !important;
   min-height: 40px !important;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12),
-    0 3px 1px -2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  z-index: 9;
 }
 .mat-toolbar-row {
   //height: 5vh !important;
@@ -59,6 +77,9 @@ mat-sidenav-content {
   //background-color: $solitude;
   //height: calc(100% - 5vh);
   padding-top: 5px;
+  margin-top: 64px;
+  overflow: auto;
+  height: calc(100vh - 64px);
 }
 
 .row-sm {
@@ -128,16 +149,12 @@ md-sidenav-layout ::ng-deep .md-sidenav-content {
   margin-bottom: 0px;
 }
 
-.red {
-  color: red;
-}
-
 #map {
   height: 100%;
 }
 
 .underlined {
-  border-bottom: 2px solid black !important;
+  border-bottom: 2px solid var(--text-color) !important;
   display: inline-block;
   padding-bottom: 10px;
   padding-top: 5px;
@@ -177,17 +194,7 @@ footer {
   margin-bottom: 2px;
 }
 
-.error {
-  color: red;
-}
 
-.warning {
-  color: orange;
-}
-
-.success {
-  color: green;
-}
 
 .btn-no-padding {
   padding: 0px !important;
@@ -290,10 +297,10 @@ li.no-bullet {
   border-color: 1px solid #ced4da !important;
 }
 
-.form-control.ng-invalid,
-ng-select.ng-invalid .ng-select-container,
-.mdc-text-field--invalid{
-  border-left: 5px solid #ff0000 !important;
+.ng-invalid,
+.custom-invalid,
+.custom-control > .ng-invalid {
+  border-left: 5px solid var(--error) !important;
 }
 
 .no-box-shadow {
@@ -306,10 +313,17 @@ ng-select.ng-invalid .ng-select-container,
 }
 .panel {
   margin-bottom: 20px;
-  background-color: #fff;
+  /* background-color: #fff;
   border: 1px solid transparent;
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05); */
+}
+
+.panel .card {
+  margin: 10px auto;
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.14), 0px 1px 5px rgba(0, 0, 0, 0.12);
+  border-radius: 5px;
+  min-width: 150px;
 }
 
 .no-padding {
@@ -351,6 +365,9 @@ ng-select.ng-invalid .ng-select-container,
   letter-spacing: 0.025em;
   // height: 60px;
   line-height: 38px;
+  /* background-color: rgba(255, 255, 255, 0.9) !important; */
+  border-radius: 5px;
+  
 }
 
 .title-spaced {
@@ -363,9 +380,18 @@ ng-select.ng-invalid .ng-select-container,
 .falsy-btn {
   padding-right: 5px;
   padding-left: 5px;
-  border-color: black;
+  border-color: var(--text-color);
   border-width: 1px;
   border-style: solid;
+}
+
+.intro {
+  .panel {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  .panel-heading {
+    background-color: transparent;
+  }
 }
 
 .panel-body {
@@ -373,14 +399,14 @@ ng-select.ng-invalid .ng-select-container,
 }
 
 .panel-default .panel-heading {
-  background: #fff;
-  border-bottom: 1px solid #e9ecf2;
+  background: rgba(255, 255, 255, 0.8);; 
+  /* border-bottom: 1px solid #e9ecf2; */
   color: #444444;
 }
 
 .panel-default > .panel-heading {
   color: #333;
-  border-color: #ddd;
+  /* border-color: #ddd; */
 }
 
 .text-muted {
@@ -395,20 +421,20 @@ ng-select.ng-invalid .ng-select-container,
   font-size: 2em;
 }
 
-.color-blue {
-  color: #30a5ff;
+.color-blue, .info {
+  color: var(--info);
 }
 
-.color-orange {
-  color: #ffb53e;
+.color-orange, .warning {
+  color: var(--warning);
 }
 
 .color-teal {
   color: #1ebfae;
 }
 
-.color-red {
-  color: #f9243f;
+.color-red, .red, .error {
+  color: var(--error);
 }
 
 .float-right {

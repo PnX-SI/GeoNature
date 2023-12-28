@@ -6,11 +6,30 @@
     min-width: 65px;
   }
 }
+
+.mat-sidenav:not(.mat-drawer-opened) {
+  max-width: 65px !important;
+  visibility: visible !important;
+  display: block !important;
+  transform : none !important;
+  transition: ease-in 2s !important;
+  .logo {
+    padding: 15px 5px !important;
+  }
+  .module-name {
+    display: none !important;
+  }
+}
+.mat-sidenav:not(.mat-drawer-opened) ~ .mat-sidenav-content {
+  margin-left: 65px !important;
+}
+
 #app-toolbar {
   [mat-raised-button],
   [mat-icon-button] {
-    background-color: white !important;
+    /* background-color: white !important; */
     outline: none;
+    box-shadow: none;
   }
   .user-name {
     font-size: 15px;
