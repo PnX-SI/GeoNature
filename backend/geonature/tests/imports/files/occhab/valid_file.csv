@@ -1,10 +1,21 @@
-id_station;unique_id_sinp_station;unique_dataset_id;date_min;date_max;observers_txt;id_nomenclature_area_surface_calculation;WKT;id_nomenclature_geographic_object;unique_id_sinp_habitat;nom_cite;cd_hab;technical_precision
-;74394855-de7f-4e9d-8f6b-fda41b335441;2ed4663e-5423-4c09-91c0-954b4248dbf4;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;02f1d8c6-4a6f-4d58-9426-0128b867c903;forêt;24;
-;74394855-de7f-4e9d-8f6b-fda41b335441;2ed4663e-5423-4c09-91c0-954b4248dbf4;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;d5056088-5b9e-4bc6-b353-9ab4e553f55c;prairie;24;
-;e7a2ba67-f099-4e82-b15c-8d7e7b6db9ee;2ed4663e-5423-4c09-91c0-954b4248dbf4;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;d1a7e45d-ea40-42a4-bb3d-585f7d985e40;prairie;24;
-;94bf7252-4837-42c8-8880-995435b6a8b6;2ed4663e-5423-4c09-91c0-954b4248dbf4;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;fef26cd9-847d-4bf2-858b-dcd4062b6d66;prairie;24;
-;016f62db-fa78-4fc7-b780-c14ce2aab2bf;2ed4663e-5423-4c09-91c0-954b4248dbf3;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;6d824a66-5293-469f-8330-fc5e0a2b2166;prairie;24;
-;;lalilou;;;;;POINT(3.634 44.399);;;;;
-;;;;;Toto;;;;;;;
-;;;;;;;;;;prairie;24;
-1;;;;;;;;;;;;
+Erreur station;Erreur habitat;id_station_source;unique_id_sinp_station;unique_dataset_id;date_min;date_max;observers_txt;id_nomenclature_area_surface_calculation;WKT;id_nomenclature_geographic_object;unique_id_sinp_habitat;nom_cite;cd_hab;technical_precision
+OK !;OK !;;afa81c29-c75d-408d-bf48-53cce02d5561;VALID_DATASET_UUID;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;4ee53579-b09b-408f-aa1f-d62495a66667;prairie;24;
+OK !;OK !;;74be5e79-72e7-42a8-ba2e-d5e27c9caddb;;17/11/2023;;;;POINT(3.634 44.399);St;d91496e9-d904-45a8-9e18-cb8acbbb6ea6;prairie;24;
+DUPLICATE_UUID(unique_id_sinp_station);ERRONEOUS_PARENT_ENTITY;;462d385f-489a-436b-babb-8cca5fc62e1d;;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;e5e7a184-3e92-4adb-a721-5bd004b3397f;forêt;24;
+DUPLICATE_UUID(unique_id_sinp_station);ERRONEOUS_PARENT_ENTITY;;462d385f-489a-436b-babb-8cca5fc62e1d;;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;8f52f122-b9ae-45b3-b947-2c9f7934b823;prairie;24;
+DATASET_NOT_FOUND(unique_dataset_id);ERRONEOUS_PARENT_ENTITY;;bdc3346d-0fc3-40fa-b787-be927e4dd82e;050d613c-543f-47fd-800a-13931b2721c7;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;2ff4867d-6943-45d8-873d-187fbc6d67a7;prairie;24;
+DATASET_NOT_AUTHORIZED(unique_dataset_id);ERRONEOUS_PARENT_ENTITY;;f5f031a3-cf1b-419c-9817-69c39f51aef4;FORBIDDEN_DATASET_UUID;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;5dfb9930-4795-4e6f-baae-3dd86abb3b70;prairie;24;
+INVALID_UUID(unique_dataset_id);Pas d’habitat;;;erroneous;17/11/2023;17/11/2023;;;POINT(3.634 44.399);;;;;
+NO-GEOM(Champs géométriques);Pas d’habitat;;;;17/11/2023;17/11/2023;Toto;;;;;;;
+MISSING_VALUE(date_min);ERRONEOUS_PARENT_ENTITY;;4ee7728d-387d-49c5-b9a3-4162b0987fa5;;;;;;POINT(3.634 44.399);St;aeb10ac4-6d69-4fa6-8df6-14d9304911df;prairie;24;
+Pas de station;NO_PARENT_ENTITY(id_station);;;;;;;;;;;prairie;24;
+ORPHAN_ROW(unique_id_sinp_station);ORPHAN_ROW(unique_id_sinp_station);;258a2478-8a0e-4321-83df-c2313ad3040e;;;;;;;;;;;
+ORPHAN_ROW(id_station_source);ORPHAN_ROW(id_station_source);Station 0;;;;;;;;;;;;
+DUPLICATE_SOURCE_ENTITY_PK(id_station_source);ERRONEOUS_PARENT_ENTITY;Station 1;;;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;;prairie;24;
+DUPLICATE_SOURCE_ENTITY_PK(id_station_source);ERRONEOUS_PARENT_ENTITY;Station 1;;;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;;prairie;24;
+OK !;OK !;Station 2;;;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;;prairie;24;
+Pas de station;OK !;Station 2;;;;;;;;;;prairie;24;
+Pas de station;OK !;;74be5e79-72e7-42a8-ba2e-d5e27c9caddb;;;;;;;;;prairie;24;
+Pas de station;ERRONEOUS_PARENT_ENTITY;;bdc3346d-0fc3-40fa-b787-be927e4dd82e;;;;;;;;;prairie;24;
+INVALID_UUID(unique_id_sinp_station);INVALID_UUID(unique_id_sinp_station),ERRONEOUS_PARENT_ENTITY;;erroneous;;17/11/2023;17/11/2023;;;POINT(3.634 44.399);St;6c02ef80-2e78-4c2c-b8b5-1c75e2349fc2;prairie;24;
+Pas de station;INVALID_UUID(unique_id_sinp_station);;erroneous;;;;;;;;;prairie;24;
