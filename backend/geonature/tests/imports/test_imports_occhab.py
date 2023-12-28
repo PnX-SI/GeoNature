@@ -1,3 +1,4 @@
+from io import BytesIO
 from pathlib import Path
 
 import pytest
@@ -5,6 +6,7 @@ import pytest
 from flask import url_for, g
 from werkzeug.datastructures import Headers
 
+import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
 
 from geonature.utils.env import db
@@ -19,6 +21,9 @@ from geonature.tests.imports.utils import assert_import_errors
 
 
 occhab = pytest.importorskip("gn_module_occhab")
+
+
+from gn_module_occhab.models import Station, OccurenceHabitat
 
 
 test_files_path = Path(__file__).parent / "files" / "occhab"
@@ -78,6 +83,16 @@ def uploaded_import(client, users, datasets, import_file_name):
     with open(test_files_path / import_file_name, "rb") as f:
         test_file_line_count = sum(1 for line in f) - 1  # remove headers
         f.seek(0)
+        content = f.read()
+        content = content.replace(
+            b"VALID_DATASET_UUID",
+            datasets["own_dataset"].unique_dataset_id.hex.encode("ascii"),
+        )
+        content = content.replace(
+            b"FORBIDDEN_DATASET_UUID",
+            datasets["orphan_dataset"].unique_dataset_id.hex.encode("ascii"),
+        )
+        f = BytesIO(content)
         data = {
             "file": (f, import_file_name),
             "datasetId": datasets["own_dataset"].id_dataset,
@@ -170,11 +185,35 @@ class TestImportsOcchab:
         assert_import_errors(
             imported_import,
             {
-                ("DATASET_NOT_AUTHORIZED", "unique_dataset_id", frozenset({2, 3, 4, 5})),
+                # Stations errors
+                ("DUPLICATE_UUID", "unique_id_sinp_station", frozenset({4, 5})),
                 ("DATASET_NOT_FOUND", "unique_dataset_id", frozenset({6})),
-                ("INVALID_UUID", "unique_dataset_id", frozenset({7})),
-                ("NO-GEOM", "Champs géométriques", frozenset({8})),
-                ("MISSING_VALUE", "date_min", frozenset({7, 8})),
-                ("ORPHAN_ROW", "id_station", frozenset({10})),
+                ("DATASET_NOT_AUTHORIZED", "unique_dataset_id", frozenset({7})),
+                ("INVALID_UUID", "unique_dataset_id", frozenset({8})),
+                ("NO-GEOM", "Champs géométriques", frozenset({9})),
+                ("MISSING_VALUE", "date_min", frozenset({10})),
+                ("DUPLICATE_ENTITY_SOURCE_PK", "id_station_source", frozenset({14, 15})),
+                ("INVALID_UUID", "unique_id_sinp_station", frozenset({20, 21})),
+                # Habitats errors
+                ("ERRONEOUS_PARENT_ENTITY", "", frozenset({4, 5, 6, 7, 10, 14, 15, 19, 20})),
+                ("NO_PARENT_ENTITY", "id_station", frozenset({11})),
+                # Other errors
+                ("ORPHAN_ROW", "unique_id_sinp_station", frozenset({12})),
+                ("ORPHAN_ROW", "id_station_source", frozenset({13})),
             },
+        )
+        assert imported_import.statistics == {"station_count": 3, "habitat_count": 5}
+        assert (
+            db.session.scalar(
+                sa.select(sa.func.count()).where(Station.id_import == imported_import.id_import)
+            )
+            == 3
+        )
+        assert (
+            db.session.scalar(
+                sa.select(sa.func.count()).where(
+                    OccurenceHabitat.id_import == imported_import.id_import
+                )
+            )
+            == 5
         )
