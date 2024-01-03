@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # backend
-black .
+black . --line-length 100
 
 # frontend
 cd frontend
