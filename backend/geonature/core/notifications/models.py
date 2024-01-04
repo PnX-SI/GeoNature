@@ -88,28 +88,6 @@ class Notification(db.Model):
     user = db.relationship(User)
 
 
-class NotificationRuleQuery(db.Query):
-    def filter_by_role_with_defaults(self, id_role=None):
-        if id_role is None:
-            id_role = g.current_user.id_role
-        cte = (
-            NotificationRule.query.where(
-                sa.or_(
-                    NotificationRule.id_role.is_(None),
-                    NotificationRule.id_role == id_role,
-                )
-            )
-            .distinct(NotificationRule.code_category, NotificationRule.code_method)
-            .order_by(
-                NotificationRule.code_category.desc(),
-                NotificationRule.code_method.desc(),
-                NotificationRule.id_role.asc(),
-            )
-            .cte("cte")
-        )
-        return self.where(NotificationRule.id == cte.c.id)
-
-
 @serializable
 class NotificationRule(db.Model):
     __tablename__ = "t_notifications_rules"
@@ -128,7 +106,6 @@ class NotificationRule(db.Model):
         ),
         {"schema": "gn_notifications"},
     )
-    # query_class = NotificationRuleQuery
 
     id = db.Column(db.Integer, primary_key=True)
     id_role = db.Column(db.Integer, ForeignKey(User.id_role), nullable=True)
@@ -145,8 +122,7 @@ class NotificationRule(db.Model):
     user = db.relationship(User)
 
     @qfilter(query=True)
-    def filter_by_role_with_defaults(cls, id_role=None, **kwargs):
-        query = kwargs["query"]
+    def filter_by_role_with_defaults(cls, *, query, id_role=None):
         if id_role is None:
             id_role = g.current_user.id_role
         cte = (

@@ -205,8 +205,7 @@ class TAcquisitionFramework(db.Model):
         return cruved["R"]
 
     @qfilter(query=True)
-    def filter_by_scope(cls, scope, user=None, **kwargs):
-        query = kwargs["query"]
+    def filter_by_scope(cls, scope, *, query, user=None):
         if user is None:
             user = g.current_user
         if scope == 0:
@@ -232,18 +231,17 @@ class TAcquisitionFramework(db.Model):
         return query
 
     @qfilter(query=True)
-    def filter_by_readable(cls, **kwargs):
+    def filter_by_readable(cls, *, query, user=None):
         """
         Return the afs where the user has autorization via its CRUVED
         """
-        return cls.filter_by_scope(TDatasets._get_read_scope())
+        return cls.filter_by_scope(TDatasets._get_read_scope(user=user), user=user, query=query)
 
     @qfilter(query=True)
-    def filter_by_areas(cls, areas, **kwargs):
+    def filter_by_areas(cls, areas, *, query):
         """
         Filter meta by areas
         """
-        query = kwargs["query"]
         return query.where(
             TAcquisitionFramework.datasets.any(
                 TDatasets.filter_by_areas(areas).whereclause,
@@ -251,8 +249,7 @@ class TAcquisitionFramework(db.Model):
         )
 
     @qfilter(query=True)
-    def filter_by_params(cls, params={}, _ds_search=True, **kwargs):
-        query = kwargs["query"]
+    def filter_by_params(cls, params={}, *, _ds_search=True, query=None):
         # XXX frontend retro-compatibility
         if params.get("selector") == "ds":
             ds_params = params
@@ -336,7 +333,3 @@ class TAcquisitionFramework(db.Model):
                 )
             query = query.where(sa.or_(*ors))
         return query
-
-    @qfilter
-    def without_param_dec(cls, **kwargs):
-        return True
