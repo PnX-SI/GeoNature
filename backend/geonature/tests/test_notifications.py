@@ -27,9 +27,7 @@ log = logging.getLogger()
 
 @pytest.fixture(scope="class")
 def clear_default_notification_rules():
-    db.session.execute(
-        delete(NotificationRule).where(NotificationRule.id_role.is_(None))
-    )  # select(NotificationRule).where(NotificationRule.id_role.is_(None)).delete()
+    db.session.execute(delete(NotificationRule).where(NotificationRule.id_role.is_(None)))
 
 
 @pytest.fixture()

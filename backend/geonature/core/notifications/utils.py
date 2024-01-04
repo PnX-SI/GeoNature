@@ -45,7 +45,7 @@ def dispatch_notification(category, role, title=None, url=None, *, content=None,
     # add role, title and url to rendering context
     context = {"role": role, "title": title, "url": url, **context}
 
-    rules = NotificationRule.filter_by_role_with_defaults(role.id_role).where(
+    rules = NotificationRule.filter_by_role_with_defaults(id_role=role.id_role).where(
         NotificationRule.code_category == category.code,
         NotificationRule.subscribed.is_(sa.true()),
     )
