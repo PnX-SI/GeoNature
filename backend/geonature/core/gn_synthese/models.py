@@ -789,9 +789,7 @@ class SyntheseLogEntry(DB.Model):
         return query.where(f)
 
     @qfilter(query=True)
-    def sort(cls, columns: List[str], **kwargs):
-        query = kwargs["query"]
-
+    def sort(cls, columns: List[str], *, query):
         if not columns:
             columns = ["meta_last_action_date"]
         for col in columns:

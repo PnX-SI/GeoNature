@@ -191,10 +191,9 @@ class TDatasets(db.Model):
         return cruved["C"]
 
     @qfilter(query=True)
-    def filter_by_scope(cls, scope, user=None, **kwargs):
+    def filter_by_scope(cls, scope, *, query, user=None):
         from .aframework import TAcquisitionFramework
 
-        query = kwargs["query"]
         whereclause = sa.true()
         if user is None:
             user = g.current_user
@@ -221,10 +220,9 @@ class TDatasets(db.Model):
         return query.where(whereclause)
 
     @qfilter(query=True)
-    def filter_by_params(cls, params={}, _af_search=True, **kwargs):
+    def filter_by_params(cls, params={}, *, _af_search=True, query=None):
+        # query is always set by qfilter, but we need a default value as params as a default value
         from .aframework import TAcquisitionFramework
-
-        query = kwargs.get("query")
 
         class DatasetFilterSchema(MetadataFilterSchema):
             active = ma.fields.Boolean()
@@ -302,33 +300,29 @@ class TDatasets(db.Model):
         return query
 
     @qfilter(query=True)
-    def filter_by_readable(cls, user=None, **kwargs):
+    def filter_by_readable(cls, query, user=None):
         """
         Return the datasets where the user has autorization via its CRUVED
         """
-        query = kwargs.get("query")
-        whereclause = cls.filter_by_scope(cls._get_read_scope(user)).whereclause
-        return query.where(whereclause)
+        return cls.filter_by_scope(cls._get_read_scope(user), user=user, query=query)
 
     @qfilter(query=True)
-    def filter_by_creatable(cls, module_code, user=None, object_code=None, **kwargs):
+    def filter_by_creatable(cls, module_code, *, query, user=None, object_code=None):
         """
         Return all dataset where user have read rights minus those who user to not have
         create rigth
         """
-        query = kwargs["query"]
         query = query.where(cls.modules.any(module_code=module_code))
         scope = cls._get_read_scope(user)
         create_scope = cls._get_create_scope(module_code, user=user, object_code=object_code)
         if create_scope < scope:
             scope = create_scope
-        return cls.filter_by_scope(scope)
+        return cls.filter_by_scope(scope, user=user, query=query)
 
     @qfilter(query=True)
-    def filter_by_areas(cls, areas, **kwargs):
+    def filter_by_areas(cls, areas, *, query):
         from geonature.core.gn_synthese.models import Synthese
 
-        query = kwargs["query"]
         areaFilter = []
         for id_area in areas:
             areaFilter.append(LAreas.id_area == id_area)
