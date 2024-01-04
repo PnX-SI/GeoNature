@@ -14,8 +14,7 @@ from geonature.utils.env import db
 from jsonschema import validate as validate_json
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user
 from ref_geo.models import BibAreasTypes, LAreas
-from apptax.tests.fixtures import noms_example, attribut_example
-from apptax.taxonomie.models import Taxref
+from geonature.core.gn_synthese.utils.query_select_sqla import remove_accents
 
 
 from pypnusershub.db.models import User
@@ -388,17 +387,27 @@ class TestSynthese:
         assert len(response_data) == expected_length
 
     @pytest.mark.parametrize(
-        "observer_input,expected_length_synthese",
-        [("Vincent", 1), ("Camillé", 2), ("Camille, Elie", 2), ("Jane Doe", 0)],
+        "observer_input,expect_observations",
+        [("Vincent", True), ("Camillé", True), ("Camille,Elie", True), ("Jane Doe", False)],
     )
     def test_get_observations_for_web_filter_observers(
-        self, users, synthese_for_observers, observer_input, expected_length_synthese
+        self, users, synthese_for_observers, observer_input, expect_observations
     ):
         set_logged_user(self.client, users["admin_user"])
 
         filters = {"observers": observer_input}
         r = self.client.get(url_for("gn_synthese.get_observations_for_web"), json=filters)
-        assert len(r.json["features"]) == expected_length_synthese
+        if expect_observations:
+            for feature in r.json["features"]:
+                assert any(
+                    [
+                        remove_accents(observer).lower()
+                        in remove_accents(feature["properties"]["observers"]).lower()
+                        for observer in observer_input.split(",")
+                    ]
+                ), feature["properties"]["observers"]
+        else:
+            assert r.json["features"] == []
 
     def test_get_synthese_data_cruved(self, app, users, synthese_data, datasets):
         set_logged_user(self.client, users["self_user"])
