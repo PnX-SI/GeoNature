@@ -48,12 +48,6 @@ jobs:
           --health-retries 5
 
     steps:
-      - name: Add postgis_raster database extension
-        if: ${{ matrix.postgis-version >= 3 }}
-        run: |
-          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "postgis_raster";'
-        env:
-          PGPASSWORD: geonatpasswd
       - uses: actions/checkout@v4
         with:
           submodules: true
@@ -104,6 +98,7 @@ jobs:
           add_sample_data: true
           install_sig_layers: true
           install_grid_layer_5: true
+          install_grid_layer_10: true
           install_ref_sensitivity: true
       - name: Show database status
         run: |
