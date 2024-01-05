@@ -4,7 +4,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 
 from geonature.utils.env import db
 
-from ref_geo.models import LAreas
+from ref_geo.models import BibAreasTypes, LAreas
 from apptax.taxonomie.models import Taxref
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 
@@ -18,6 +18,18 @@ cor_sensitivity_area = db.Table(
         primary_key=True,
     ),
     db.Column("id_area", db.Integer, ForeignKey(LAreas.id_area), primary_key=True),
+    schema="gn_sensitivity",
+)
+
+cor_sensitivity_area_type = db.Table(
+    "cor_sensitivity_area_type",
+    db.Column(
+        "id_nomenclature_sensitivity",
+        db.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        primary_key=True,
+    ),
+    db.Column("id_area_type", db.Integer, ForeignKey(BibAreasTypes.id_type), primary_key=True),
     schema="gn_sensitivity",
 )
 

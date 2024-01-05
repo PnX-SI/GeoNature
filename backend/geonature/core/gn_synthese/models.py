@@ -12,6 +12,7 @@ from sqlalchemy.orm import (
     joinedload,
     contains_eager,
     deferred,
+    query_expression,
 )
 from sqlalchemy.sql import select, func, exists
 from sqlalchemy.schema import FetchedValue
@@ -20,7 +21,7 @@ from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 
 from geojson import Feature
-from flask import g
+from flask import g, current_app
 import flask_sqlalchemy
 from utils_flask_sqla.models import qfilter
 
@@ -414,6 +415,7 @@ class Synthese(DB.Model):
     the_geom_4326_geojson = column_property(func.ST_AsGeoJSON(the_geom_4326), deferred=True)
     the_geom_point = deferred(DB.Column(Geometry("GEOMETRY", 4326)))
     the_geom_local = deferred(DB.Column(Geometry("GEOMETRY")))
+    the_geom_authorized = query_expression()
     precision = DB.Column(DB.Integer)
     id_area_attachment = DB.Column(DB.Integer, ForeignKey(LAreas.id_area))
     date_min = DB.Column(DB.DateTime, nullable=False)
@@ -455,13 +457,23 @@ class Synthese(DB.Model):
             return True
 
     def _has_permissions_grant(self, permissions):
+        blur_sensitive_observations = current_app.config["SYNTHESE"]["BLUR_SENSITIVE_OBSERVATIONS"]
         if not permissions:
             return False
         for perm in permissions:
             if perm.has_other_filters_than("SCOPE", "SENSITIVITY"):
                 continue  # unsupported filters
-            if perm.sensitivity_filter and self.nomenclature_sensitivity.cd_nomenclature != "0":
-                continue  # sensitivity filter denied access, check next permission
+            if perm.sensitivity_filter:
+                if (
+                    blur_sensitive_observations
+                    and self.nomenclature_sensitivity.cd_nomenclature == "4"
+                ):
+                    continue
+                if (
+                    not blur_sensitive_observations
+                    and self.nomenclature_sensitivity.cd_nomenclature != "0"
+                ):
+                    continue
             if perm.scope_value:
                 if g.current_user == self.digitiser:
                     return True

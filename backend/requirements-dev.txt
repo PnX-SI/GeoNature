@@ -147,6 +147,7 @@ flask-marshmallow==0.15.0
     # via
     #   -r requirements-common.in
     #   pypn-habref-api
+    #   pypn-ref-geo
     #   pypnnomenclature
     #   pypnusershub
 flask-migrate==4.0.5
@@ -232,6 +233,8 @@ marshmallow-sqlalchemy==0.29.0
     #   utils-flask-sqlalchemy-geo
 munch==4.0.0
     # via fiona
+numpy==1.26.2
+    # via shapely
 packaging==23.2
     # via
     #   -r requirements-common.in
@@ -280,10 +283,9 @@ requests==2.31.0
     #   pypnusershub
 s3transfer==0.7.0
     # via boto3
-shapely==1.8.5.post1
+shapely==2.0.2
     # via
     #   -r requirements-common.in
-    #   pypnnomenclature
     #   utils-flask-sqlalchemy-geo
 six==1.16.0
     # via
