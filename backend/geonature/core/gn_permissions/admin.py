@@ -514,10 +514,15 @@ class GroupPermAdmin(RolePermAdmin):
     column_details_list = ("nom_role", "permissions_count", "permissions")
 
     def get_query(self):
-        return select(User).filter_by(groupe=True).where(User.filter_by_app())
+        return db.session.query(User).filter_by(groupe=True).where(User.filter_by_app())
 
     def get_count_query(self):
-        return select(sa.func.count("*")).where(User.groupe == True)
+        return (
+            db.session.query(sa.func.count("*"))
+            .select_from(User)
+            .where(User.groupe == True)
+            .where(User.filter_by_app())
+        )
 
 
 class UserPermAdmin(RolePermAdmin):
@@ -542,11 +547,15 @@ class UserPermAdmin(RolePermAdmin):
     )
 
     def get_query(self):
-        return select(User).filter_by(groupe=False).where(User.filter_by_app())
+        return db.session.query(User).filter_by(groupe=False).where(User.filter_by_app())
 
     def get_count_query(self):
-        # FIXME : must filter by app
-        return select(sa.func.count("*")).select_from(User).where(User.groupe == False)
+        return (
+            db.session.query(sa.func.count("*"))
+            .select_from(User)
+            .where(User.groupe == False)
+            .where(User.filter_by_app())
+        )
 
 
 admin.add_view(
