@@ -4,13 +4,11 @@ from flask import g
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func
-
 from sqlalchemy.orm import relationship, mapped_column, Mapped
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
 from typing import Optional, List
-
 from utils_flask_sqla.models import qfilter
 import marshmallow as ma
 
