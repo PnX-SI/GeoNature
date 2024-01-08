@@ -122,11 +122,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     this.rowNumber = Math.trunc(event.target.innerHeight / 37);
   }
 
-  dateComparator(a: Date, b: Date) {
-    if (new Date(a) < new Date(b)) return -1;
-    if (new Date(a) > new Date(b)) return 1;
-  }
-
   backToModule(url_source, id_pk_source) {
     const link = document.createElement('a');
     link.target = '_blank';
