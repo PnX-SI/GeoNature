@@ -281,6 +281,6 @@ class TIndividuals(DB.Model):
             ]
             # if organism is None => do not filter on id_organism even if level = 2
             if scope == 2 and user.id_organisme is not None:
-                ors.append(cls.digitiser.has(id_organisme=user.id_organism))
+                ors.append(cls.digitiser.has(id_organisme=user.id_organisme))
             query = query.where(or_(*ors))
         return query
