@@ -89,6 +89,43 @@ class TestMonitoring:
         assert actual_individual_uuid.isdisjoint(not_expected_individual_uuid)
         assert actual_individual_uuid.issubset(expected_individual_uuid)
 
+    def test_get_individuals_no_rights(
+        self, users, individuals, module, monitoring_individual_perm_object
+    ):
+        user = users["noright_user"]
+        set_logged_user_cookie(self.client, user)
+
+        response = self.client.get(
+            url_for("gn_monitoring.get_individuals", id_module=module.id_module)
+        )
+
+        assert response.status_code == Forbidden.code
+        expected_msg = f"User {user.id_role} has no permissions to R in {module.module_code} on {monitoring_individual_perm_object.code_object}"
+        assert response.json["description"] == expected_msg
+
+    def test_get_individuals_rights_organism(
+        self, users, individuals, module, monitoring_individual_perm_object
+    ):
+        set_logged_user_cookie(self.client, users["self_user"])
+        set_permissions(
+            module=module,
+            role=users["self_user"],
+            scope_value=2,
+            action="R",
+            object=monitoring_individual_perm_object,
+        )
+
+        response = self.client.get(
+            url_for("gn_monitoring.get_individuals", id_module=module.id_module)
+        )
+        resp_json = response.json
+        not_expected_individual_uuid = {individuals[1].uuid_individual}
+        expected_individual_uuid = {individuals[0].uuid_individual}
+        actual_individual_uuid = {individual["uuid_individual"] for individual in resp_json}
+
+        assert actual_individual_uuid.isdisjoint(not_expected_individual_uuid)
+        assert actual_individual_uuid.issubset(expected_individual_uuid)
+
     def test_create_individuals_forbidden(self, users, module):
         set_logged_user_cookie(self.client, users["self_user"])
 
