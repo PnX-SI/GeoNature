@@ -4,10 +4,11 @@ from flask import g
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, mapped_column, Mapped
 from sqlalchemy.dialects.postgresql import UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
+from typing import Optional, List
 from utils_flask_sqla.models import qfilter
 import marshmallow as ma
 
@@ -28,107 +29,92 @@ class TDatasets(db.Model):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
 
-    id_dataset = DB.Column(DB.Integer, primary_key=True)
-    unique_dataset_id = DB.Column(UUIDType(as_uuid=True), default=select(func.uuid_generate_v4()))
-    id_acquisition_framework = DB.Column(
-        DB.Integer,
+    id_dataset: Mapped[int] = mapped_column(primary_key=True)
+    unique_dataset_id: Mapped[Optional[int]] = mapped_column(UUIDType(as_uuid=True), default=select(func.uuid_generate_v4()))
+    id_acquisition_framework: Mapped[Optional[int]] = mapped_column(
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
-    acquisition_framework = DB.relationship(
-        "TAcquisitionFramework", back_populates="datasets", lazy="joined"
+    acquisition_framework: Mapped[Optional["TAcquisitionFramework"]] = DB.relationship(
+        back_populates="datasets", lazy="joined"
     )  # join AF as required for permissions checks
-    dataset_name = DB.Column(DB.Unicode)
-    dataset_shortname = DB.Column(DB.Unicode)
-    dataset_desc = DB.Column(DB.Unicode)
-    id_nomenclature_data_type = DB.Column(
-        DB.Integer,
+    dataset_name: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    dataset_shortname: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    dataset_desc: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    id_nomenclature_data_type: Mapped[Optional[int]] = mapped_column(
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("DATA_TYP"),
     )
-    keywords = DB.Column(DB.Unicode)
-    marine_domain = DB.Column(DB.Boolean)
-    terrestrial_domain = DB.Column(DB.Boolean)
-    id_nomenclature_dataset_objectif = DB.Column(
-        DB.Integer,
+    keywords: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    marine_domain: Mapped[Optional[bool]]
+    terrestrial_domain: Mapped[Optional[bool]]
+    id_nomenclature_dataset_objectif: Mapped[Optional[int]] = mapped_column(
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("JDD_OBJECTIFS"),
     )
-    bbox_west = DB.Column(DB.Float)
-    bbox_east = DB.Column(DB.Float)
-    bbox_south = DB.Column(DB.Float)
-    bbox_north = DB.Column(DB.Float)
-    id_nomenclature_collecting_method = DB.Column(
-        DB.Integer,
+    bbox_west: Mapped[Optional[float]]
+    bbox_east: Mapped[Optional[float]]
+    bbox_south: Mapped[Optional[float]]
+    bbox_north: Mapped[Optional[float]]
+    id_nomenclature_collecting_method: Mapped[Optional[int]] = mapped_column(
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("METHO_RECUEIL"),
     )
-    id_nomenclature_data_origin = DB.Column(
-        DB.Integer,
+    id_nomenclature_data_origin: Mapped[Optional[int]] = mapped_column(
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("DS_PUBLIQUE"),
     )
-    id_nomenclature_source_status = DB.Column(
-        DB.Integer,
+    id_nomenclature_source_status: Mapped[Optional[int]] = mapped_column(
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("STATUT_SOURCE"),
     )
-    id_nomenclature_resource_type = DB.Column(
-        DB.Integer,
+    id_nomenclature_resource_type: Mapped[Optional[int]] = mapped_column(
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("RESOURCE_TYP"),
     )
-    meta_create_date = DB.Column(DB.DateTime, server_default=FetchedValue())
-    meta_update_date = DB.Column(DB.DateTime, server_default=FetchedValue())
-    active = DB.Column(DB.Boolean, default=True)
-    validable = DB.Column(DB.Boolean, server_default=FetchedValue())
-    id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
-    digitizer = DB.relationship(User, lazy="joined")  # joined for permission check
-    creator = DB.relationship(
+    meta_create_date: Mapped[Optional[datetime.datetime]] = mapped_column(server_default=FetchedValue())
+    meta_update_date: Mapped[Optional[datetime.datetime]] = mapped_column(server_default=FetchedValue())
+    active: Mapped[Optional[bool]] = mapped_column(default=True)
+    validable: Mapped[Optional[bool]] = mapped_column(server_default=FetchedValue())
+    id_digitizer: Mapped[Optional[int]] = mapped_column(ForeignKey(User.id_role))
+    digitizer: Mapped[Optional[User]] = DB.relationship(lazy="joined")  # joined for permission check
+    creator: Mapped[Optional[User]] = DB.relationship(
         User, lazy="joined", overlaps="digitizer"
     )  # overlaps as alias of digitizer
-    id_taxa_list = DB.Column(DB.Integer)
-    modules = DB.relationship("TModules", secondary=cor_module_dataset, backref="datasets")
+    id_taxa_list: Mapped[Optional[int]]
+    modules: Mapped[Optional["TModules"]] = DB.relationship(secondary=cor_module_dataset, backref="datasets")
 
-    nomenclature_data_type = DB.relationship(
-        TNomenclatures,
+    nomenclature_data_type: Mapped[Optional[TNomenclatures]] = DB.relationship(
         foreign_keys=[id_nomenclature_data_type],
     )
-    nomenclature_dataset_objectif = DB.relationship(
-        TNomenclatures,
+    nomenclature_dataset_objectif: Mapped[Optional[TNomenclatures]] = DB.relationship(
         foreign_keys=[id_nomenclature_dataset_objectif],
     )
-    nomenclature_collecting_method = DB.relationship(
-        TNomenclatures,
+    nomenclature_collecting_method: Mapped[Optional[TNomenclatures]] = DB.relationship(
         foreign_keys=[id_nomenclature_collecting_method],
     )
-    nomenclature_data_origin = DB.relationship(
-        TNomenclatures,
+    nomenclature_data_origin: Mapped[Optional[TNomenclatures]] = DB.relationship(
         foreign_keys=[id_nomenclature_data_origin],
     )
-    nomenclature_source_status = DB.relationship(
-        TNomenclatures,
+    nomenclature_source_status: Mapped[Optional[TNomenclatures]] = DB.relationship(
         foreign_keys=[id_nomenclature_source_status],
     )
-    nomenclature_resource_type = DB.relationship(
-        TNomenclatures,
+    nomenclature_resource_type: Mapped[Optional[TNomenclatures]] = DB.relationship(
         foreign_keys=[id_nomenclature_resource_type],
     )
 
-    cor_territories = DB.relationship(
-        TNomenclatures,
+    cor_territories: Mapped[Optional[TNomenclatures]] = DB.relationship(
         secondary=cor_dataset_territory,
         backref=DB.backref("territory_dataset"),
     )
 
     # because CorDatasetActor could be an User or an Organisme object...
-    cor_dataset_actor = relationship(
-        CorDatasetActor,
+    cor_dataset_actor: Mapped[Optional[CorDatasetActor]] = relationship(
         lazy="joined",
         cascade="save-update, merge, delete, delete-orphan",
         backref=DB.backref("actor_dataset"),
     )
-    additional_fields = DB.relationship(
-        "TAdditionalFields", secondary=cor_field_dataset, back_populates="datasets"
+    additional_fields: Mapped[List["TAdditionalFields"]] = DB.relationship(
+        secondary=cor_field_dataset, back_populates="datasets"
     )
 
     @hybrid_property

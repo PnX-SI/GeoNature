@@ -2,6 +2,8 @@
     Modèles du schéma gn_commons
 """
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.orm import mapped_column, Mapped
+from typing import Optional
 
 from utils_flask_sqla.serializers import serializable
 
@@ -18,38 +20,29 @@ class TAdditionalFields(DB.Model):
     __tablename__ = "t_additional_fields"
     __table_args__ = {"schema": "gn_commons"}
     id_field = DB.Column(DB.Integer, primary_key=True)
-    field_name = DB.Column(DB.String, nullable=False)
-    field_label = DB.Column(DB.String, nullable=False)
-    required = DB.Column(DB.Boolean)
-    description = DB.Column(DB.String)
-    quantitative = DB.Column(DB.Boolean, default=False)
-    unity = DB.Column(DB.String(50))
-    field_values = DB.Column(JSONB)
-    code_nomenclature_type = DB.Column(
-        DB.String,
-        DB.ForeignKey("ref_nomenclatures.bib_nomenclatures_types.mnemonique"),
+    field_name: Mapped[str]
+    field_label: Mapped[str]
+    required: Mapped[Optional[bool]]
+    description: Mapped[Optional[str]]
+    quantitative: Mapped[Optional[bool]] = mapped_column(default=False)
+    unity: Mapped[str] = mapped_column(DB.String(30))
+    field_values: Mapped[Optional[dict]] = mapped_column(JSONB)
+    code_nomenclature_type: Mapped[Optional[str]] = mapped_column(DB.ForeignKey("ref_nomenclatures.bib_nomenclatures_types.mnemonique"),
     )
-    additional_attributes = DB.Column(JSONB)
-    id_widget = DB.Column(
-        DB.Integer, DB.ForeignKey("gn_commons.bib_widgets.id_widget"), nullable=False
-    )
-    id_list = DB.Column(DB.Integer)
-    exportable = DB.Column(DB.Boolean, default=True)
-    field_order = DB.Column(DB.Integer)
-    type_widget = DB.relationship("BibWidgets")
-    bib_nomenclature_type = DB.relationship("BibNomenclaturesTypes")
-    additional_attributes = DB.Column(JSONB)
-    multiselect = DB.Column(DB.Boolean)
-    api = DB.Column(DB.String)
-    default_value = DB.Column(DB.String)
-    modules = DB.relationship(
-        "TModules",
-        secondary=cor_field_module,
-    )
-    objects = DB.relationship(PermObject, secondary=cor_field_object)
-    datasets = DB.relationship(
-        TDatasets, secondary=cor_field_dataset, back_populates="additional_fields"
-    )
+    additional_attributes: Mapped[Optional[dict]] = mapped_column(JSONB)
+    id_widget: Mapped[int] = mapped_column(DB.ForeignKey("gn_commons.bib_widgets.id_widget"))
+    id_list: Mapped[Optional[int]]
+    exportable: Mapped[Optional[bool]] = mapped_column(default=True)
+    field_order: Mapped[Optional[int]]
+    type_widget: Mapped[Optional[int]] = DB.relationship("BibWidgets")
+    bib_nomenclature_type: Mapped[Optional["BibNomenclaturesTypes"]] = DB.relationship()
+    additional_attributes: Mapped[Optional[dict]] = DB.Column(JSONB)
+    multiselect: Mapped[Optional[bool]]
+    api: Mapped[Optional[str]]
+    default_value: Mapped[Optional[str]]
+    modules: Mapped[Optional["TModules"]] = DB.relationship(secondary=cor_field_module)
+    objects: Mapped[Optional[PermObject]] = DB.relationship(secondary=cor_field_object)
+    datasets: Mapped[Optional[TDatasets]] = DB.relationship(secondary=cor_field_dataset, back_populates="additional_fields")
 
     def __str__(self):
         return f"{self.field_label} ({self.description})"

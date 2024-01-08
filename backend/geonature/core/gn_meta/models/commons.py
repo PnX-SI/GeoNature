@@ -1,7 +1,8 @@
 import datetime
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, mapped_column, Mapped
 from sqlalchemy import ForeignKey
 from sqlalchemy.ext.hybrid import hybrid_property
+from typing import Optional
 import marshmallow as ma
 
 
@@ -101,32 +102,27 @@ cor_acquisition_framework_territory = db.Table(
 class CorAcquisitionFrameworkActor(DB.Model):
     __tablename__ = "cor_acquisition_framework_actor"
     __table_args__ = {"schema": "gn_meta"}
-    id_cafa = DB.Column(DB.Integer, primary_key=True)
-    id_acquisition_framework = DB.Column(
-        DB.Integer,
+    id_cafa: Mapped[int] = mapped_column(primary_key=True)
+    id_acquisition_framework: Mapped[Optional[int]] = mapped_column(
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
-    id_role = DB.Column(DB.Integer, ForeignKey(User.id_role))
-    id_organism = DB.Column(DB.Integer, ForeignKey(Organisme.id_organisme))
-    id_nomenclature_actor_role = DB.Column(
-        DB.Integer,
+    id_role: Mapped[Optional[int]] = mapped_column(ForeignKey(User.id_role))
+    id_organism: Mapped[Optional[int]] = mapped_column(ForeignKey(Organisme.id_organisme))
+    id_nomenclature_actor_role: Mapped[Optional[int]] = mapped_column(
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("ROLE_ACTEUR"),
     )
 
-    nomenclature_actor_role = DB.relationship(
-        TNomenclatures,
+    nomenclature_actor_role: Mapped[Optional[TNomenclatures]] = DB.relationship(
         lazy="joined",
         primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role),
     )
 
-    role = DB.relationship(
-        User,
+    role: Mapped[Optional[User]] = DB.relationship(
         lazy="joined",
     )
 
-    organism = relationship(
-        Organisme,
+    organism: Mapped[Optional[Organisme]] = relationship(
         lazy="joined",
     )
 
@@ -135,24 +131,22 @@ class CorAcquisitionFrameworkActor(DB.Model):
 class CorDatasetActor(DB.Model):
     __tablename__ = "cor_dataset_actor"
     __table_args__ = {"schema": "gn_meta"}
-    id_cda = DB.Column(DB.Integer, primary_key=True)
-    id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
-    id_role = DB.Column(DB.Integer, ForeignKey(User.id_role))
-    id_organism = DB.Column(DB.Integer, ForeignKey(Organisme.id_organisme))
+    id_cda: Mapped[int] = mapped_column(primary_key=True)
+    id_dataset: Mapped[Optional[int]] = mapped_column(ForeignKey("gn_meta.t_datasets.id_dataset"))
+    id_role: Mapped[Optional[int]] = mapped_column(ForeignKey(User.id_role))
+    id_organism: Mapped[Optional[int]] = mapped_column(ForeignKey(Organisme.id_organisme))
 
-    id_nomenclature_actor_role = DB.Column(
-        DB.Integer,
+    id_nomenclature_actor_role: Mapped[Optional[int]] = mapped_column(
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("ROLE_ACTEUR"),
     )
-    nomenclature_actor_role = DB.relationship(
-        TNomenclatures,
+    nomenclature_actor_role: Mapped[Optional[TNomenclatures]] = DB.relationship(
         lazy="joined",
         foreign_keys=[id_nomenclature_actor_role],
     )
 
-    role = DB.relationship(User, lazy="joined")
-    organism = DB.relationship(Organisme, lazy="joined")
+    role: Mapped[Optional[User]] = DB.relationship(lazy="joined")
+    organism: Mapped[Optional[Organisme]] = DB.relationship(lazy="joined")
 
     @hybrid_property
     def actor(self):
@@ -175,9 +169,9 @@ class CorDatasetProtocol(DB.Model):
     # TODO: replace with table used as secondary in relationships
     __tablename__ = "cor_dataset_protocol"
     __table_args__ = {"schema": "gn_meta"}
-    id_cdp = DB.Column(DB.Integer, primary_key=True)
-    id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
-    id_protocol = DB.Column(DB.Integer, ForeignKey("gn_meta.sinp_datatype_protocols.id_protocol"))
+    id_cdp: Mapped[int] = mapped_column(primary_key=True)
+    id_dataset: Mapped[Optional[int]] = mapped_column(ForeignKey("gn_meta.t_datasets.id_dataset"))
+    id_protocol: Mapped[Optional[int]] = mapped_column(ForeignKey("gn_meta.sinp_datatype_protocols.id_protocol"))
 
 
 cor_dataset_territory = db.Table(
@@ -202,10 +196,9 @@ cor_dataset_territory = db.Table(
 class TBibliographicReference(db.Model):
     __tablename__ = "t_bibliographical_references"
     __table_args__ = {"schema": "gn_meta"}
-    id_bibliographic_reference = DB.Column(DB.Integer, primary_key=True)
-    id_acquisition_framework = DB.Column(
-        DB.Integer,
+    id_bibliographic_reference: Mapped[int] = mapped_column(primary_key=True)
+    id_acquisition_framework: Mapped[Optional[int]] = mapped_column(
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
-    publication_url = DB.Column(DB.Unicode)
-    publication_reference = DB.Column(DB.Unicode)
+    publication_url: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    publication_reference: Mapped[Optional[str]] = mapped_column(DB.Unicode)
