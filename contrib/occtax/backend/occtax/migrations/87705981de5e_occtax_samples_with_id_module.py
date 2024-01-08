@@ -9,6 +9,7 @@ import importlib
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.sql import text
 
 
 # revision identifiers, used by Alembic.
@@ -25,13 +26,15 @@ def upgrade():
     if (
         not op.get_bind()
         .execute(
-            """
+            text(
+                """
                 SELECT EXISTS(
                     SELECT 1
                     FROM gn_meta.t_acquisition_frameworks af
                     WHERE af.unique_acquisition_framework_id = '57b7d0f2-4183-4b7b-8f08-6e105d476dc5'
                 )
                 """
+            )
         )
         .scalar()
     ):
