@@ -3,7 +3,6 @@ from geonature.core.gn_commons.models.base import TModules
 from geonature.core.gn_commons.models.additional_fields import TAdditionalFields
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_permissions.models import PermissionAvailable, PermObject
-from occtax.commands import add_submodule_permissions
 import pytest
 
 from datetime import datetime as dt
@@ -12,7 +11,7 @@ from flask import Flask, url_for, current_app, g
 from werkzeug.exceptions import Unauthorized, Forbidden, NotFound, BadRequest
 from shapely.geometry import Point
 from geoalchemy2.shape import from_shape
-from sqlalchemy import func
+from sqlalchemy import func, select, exists
 from click.testing import CliRunner
 
 from geonature.core.gn_synthese.models import Synthese
@@ -35,11 +34,12 @@ from occtax.models import (
 )
 from occtax.repositories import ReleveRepository
 from occtax.schemas import OccurrenceSchema, ReleveSchema
+from occtax.commands import add_submodule_permissions
 
 
 @pytest.fixture(scope="session")
 def occtax_module():
-    return TModules.query.filter_by(module_code="OCCTAX").one()
+    return db.session.execute(select(TModules).filter_by(module_code="OCCTAX")).scalar_one()
 
 
 @pytest.fixture()
@@ -49,13 +49,11 @@ def releve_mobile_data(client: Any, datasets: dict[Any, TDatasets]):
     """
     # mnemonique_types =
     id_dataset = datasets["own_dataset"].id_dataset
-    nomenclatures = DefaultNomenclaturesValue.query.all()
+    nomenclatures = db.session.scalars(select(DefaultNomenclaturesValue)).all()
     dict_nomenclatures = {n.mnemonique_type: n.id_nomenclature for n in nomenclatures}
-    id_nomenclature_grp_typ = (
-        DefaultNomenclaturesValue.query.filter_by(mnemonique_type="TYP_GRP")
-        .with_entities(DefaultNomenclaturesValue.id_nomenclature)
-        .scalar()
-    )
+    id_nomenclature_grp_typ = db.session.execute(
+        select(DefaultNomenclaturesValue.id_nomenclature).filter_by(mnemonique_type="TYP_GRP")
+    ).scalar_one()
     data = {
         "geometry": {
             "type": "Point",
@@ -105,11 +103,9 @@ def releve_data(client: Any, datasets: dict[Any, TDatasets]):
     Releve associated with dataset created by "user"
     """
     id_dataset = datasets["own_dataset"].id_dataset
-    id_nomenclature_grp_typ = (
-        DefaultNomenclaturesValue.query.filter_by(mnemonique_type="TYP_GRP")
-        .with_entities(DefaultNomenclaturesValue.id_nomenclature)
-        .scalar()
-    )
+    id_nomenclature_grp_typ = db.session.execute(
+        select(DefaultNomenclaturesValue.id_nomenclature).filter_by(mnemonique_type="TYP_GRP")
+    ).scalar_one()
     data = {
         "depth": 2,
         "geometry": {
@@ -138,7 +134,7 @@ def releve_data(client: Any, datasets: dict[Any, TDatasets]):
 
 @pytest.fixture()
 def occurrence_data(client: Any, releve_occtax: Any):
-    nomenclatures = DefaultNomenclaturesValue.query.all()
+    nomenclatures = db.session.scalars(select(DefaultNomenclaturesValue)).all()
     dict_nomenclatures = {n.mnemonique_type: n.id_nomenclature for n in nomenclatures}
     return {
         "id_releve_occtax": releve_occtax.id_releve_occtax,
@@ -164,9 +160,9 @@ def occurrence_data(client: Any, releve_occtax: Any):
         "cor_counting_occtax": [
             {
                 "id_nomenclature_life_stage": dict_nomenclatures["STADE_VIE"],
-                "id_nomenclature_sex": db.session.query(
-                    func.ref_nomenclatures.get_id_nomenclature("SEXE", "3")
-                ).scalar(),
+                "id_nomenclature_sex": db.session.execute(
+                    select(func.ref_nomenclatures.get_id_nomenclature("SEXE", "3"))
+                ).scalar_one(),
                 "id_nomenclature_obj_count": dict_nomenclatures["OBJ_DENBR"],
                 "id_nomenclature_type_count": dict_nomenclatures["TYP_DENBR"],
                 "count_min": 2,
@@ -176,9 +172,9 @@ def occurrence_data(client: Any, releve_occtax: Any):
             },
             {
                 "id_nomenclature_life_stage": dict_nomenclatures["STADE_VIE"],
-                "id_nomenclature_sex": db.session.query(
-                    func.ref_nomenclatures.get_id_nomenclature("SEXE", "2")
-                ).scalar(),
+                "id_nomenclature_sex": db.session.execute(
+                    select(func.ref_nomenclatures.get_id_nomenclature("SEXE", "2"))
+                ).scalar_one(),
                 "id_nomenclature_obj_count": dict_nomenclatures["OBJ_DENBR"],
                 "id_nomenclature_type_count": dict_nomenclatures["TYP_DENBR"],
                 "count_min": 1,
@@ -192,8 +188,12 @@ def occurrence_data(client: Any, releve_occtax: Any):
 
 @pytest.fixture(scope="function")
 def additional_field(app, datasets):
-    module = TModules.query.filter(TModules.module_code == "OCCTAX").one()
-    obj = PermObject.query.filter(PermObject.code_object == "ALL").one()
+    module = db.session.execute(
+        select(TModules).where(TModules.module_code == "OCCTAX")
+    ).scalar_one()
+    obj = db.session.execute(
+        select(PermObject).where(PermObject.code_object == "ALL")
+    ).scalar_one()
     datasets = list(datasets.values())
     additional_field = TAdditionalFields(
         field_name="test",
@@ -259,7 +259,9 @@ def occurrence(app: Flask, occurrence_data: dict[str, Any]):
 
 @pytest.fixture(scope="function")
 def unexisting_id_releve():
-    return (db.session.query(func.max(TRelevesOccurrence.id_releve_occtax)).scalar() or 0) + 1
+    return (
+        db.session.execute(select(func.max(TRelevesOccurrence.id_releve_occtax))).scalar() or 0
+    ) + 1
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets")
@@ -439,7 +441,9 @@ class TestOcctaxOccurrence:
         uuid_counting = [
             counting["unique_id_sinp_occtax"] for counting in occ["cor_counting_occtax"]
         ]
-        synthese_data = Synthese.query.filter(Synthese.unique_id_sinp.in_(uuid_counting))
+        synthese_data = db.session.scalars(
+            select(Synthese).where(Synthese.unique_id_sinp.in_(uuid_counting))
+        ).all()
         for s in synthese_data:
             assert s.cd_nom == 4516
         {3, 5}.issubset([s.count_max for s in synthese_data])
@@ -545,7 +549,7 @@ class TestOcctax:
 
         client_command_line.invoke(add_submodule_permissions, [module.module_code])
         permission_available = (
-            db.select(PermissionAvailable)
+            select(PermissionAvailable)
             .join(TModules)
             .where(TModules.module_code == module.module_code)
         )
@@ -585,7 +589,7 @@ class TestOcctaxGetReleveFilter:
     def test_get_releve_filter_nomenclatures(
         self, users: dict, releve_occtax: Any, occurrence: Any
     ):
-        nomenclatures = DefaultNomenclaturesValue.query.all()
+        nomenclatures = db.session.scalars(select(DefaultNomenclaturesValue)).all()
         dict_nomenclatures = {n.mnemonique_type: n.id_nomenclature for n in nomenclatures}
         query_string = {
             "id_nomenclature_life_stage": [dict_nomenclatures["STADE_VIE"]],

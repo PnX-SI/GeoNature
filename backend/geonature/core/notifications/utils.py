@@ -14,7 +14,7 @@ from geonature.core.notifications.models import (
 )
 from geonature.utils.env import db
 from geonature.core.notifications.tasks import send_notification_mail
-from sqlalchemy import values, Integer, text
+from sqlalchemy import values, Integer, text, select
 
 
 def dispatch_notifications(
@@ -25,12 +25,14 @@ def dispatch_notifications(
 
     categories = chain.from_iterable(
         [
-            NotificationCategory.query.filter(NotificationCategory.code.like(code)).all()
+            db.session.scalars(
+                select(NotificationCategory).where(NotificationCategory.code.like(code))
+            ).all()
             for code in code_categories
         ]
     )
 
-    roles = db.session.scalars(db.select(User).where(User.id_role.in_(id_roles)))
+    roles = db.session.scalars(select(User).where(User.id_role.in_(id_roles)))
 
     for category, role in product(categories, roles):
         dispatch_notification(category, role, title, url, content=content, context=context)
@@ -43,18 +45,20 @@ def dispatch_notification(category, role, title=None, url=None, *, content=None,
     # add role, title and url to rendering context
     context = {"role": role, "title": title, "url": url, **context}
 
-    rules = NotificationRule.query.filter_by_role_with_defaults(role.id_role).filter(
+    rules = NotificationRule.filter_by_role_with_defaults(id_role=role.id_role).where(
         NotificationRule.code_category == category.code,
         NotificationRule.subscribed.is_(sa.true()),
     )
-    for rule in rules.all():
+    for rule in db.session.scalars(rules).all():
         if content:
             notification_content = content
         else:
             # get template for this method and category
-            notification_template = NotificationTemplate.query.filter_by(
-                category=category,
-                method=rule.method,
+            notification_template = db.session.scalars(
+                sa.select(NotificationTemplate).filter_by(
+                    category=category,
+                    method=rule.method,
+                )
             ).one_or_none()
             if not notification_template:
                 continue

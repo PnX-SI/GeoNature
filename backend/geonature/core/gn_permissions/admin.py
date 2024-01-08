@@ -8,8 +8,10 @@ from flask_admin.contrib.sqla.ajax import QueryAjaxModelLoader
 from flask_admin.form.widgets import Select2Widget
 from markupsafe import Markup
 from sqlalchemy.orm import contains_eager, joinedload
+from sqlalchemy import select
 
 from geonature.utils.env import db
+from geonature.utils.config import config
 from geonature.core.admin.admin import admin
 from geonature.core.admin.utils import CruvedProtectedMixin, DynamicOptionsMixin
 from geonature.core.gn_permissions.models import (
@@ -32,27 +34,27 @@ from pypnusershub.db.models import User
 class RoleFilter(DynamicOptionsMixin, FilterEqual):
     def get_dynamic_options(self, view):
         if has_app_context():
-            yield from [(u.id_role, u.nom_complet) for u in User.query.all()]
+            yield from [(u.id_role, u.nom_complet) for u in db.session.scalars(select(User)).all()]
 
 
 class ModuleFilter(DynamicOptionsMixin, FilterEqual):
     def get_dynamic_options(self, view):
         if has_app_context():
-            modules = db.session.scalars(db.select(TModules).order_by(TModules.module_code)).all()
+            modules = db.session.scalars(select(TModules).order_by(TModules.module_code)).all()
             yield from [(module.id_module, module.module_code) for module in modules]
 
 
 class ObjectFilter(DynamicOptionsMixin, FilterEqual):
     def get_dynamic_options(self, view):
         if has_app_context():
-            objects = db.session.scalars(db.select(PermObject)).all()
+            objects = db.session.scalars(select(PermObject)).all()
             yield from [(object.id_object, object.code_object) for object in objects]
 
 
 class ActionFilter(DynamicOptionsMixin, FilterEqual):
     def get_dynamic_options(self, view):
         if has_app_context():
-            actions = db.session.scalars(db.select(PermAction)).all()
+            actions = db.session.scalars(select(PermAction)).all()
             yield from [(action.id_action, action.code_action) for action in actions]
 
 
@@ -67,7 +69,7 @@ class ScopeFilter(DynamicOptionsMixin, FilterEqual):
     def get_dynamic_options(self, view):
         if has_app_context():
             yield (None, "Sans restriction")
-            scopes = db.session.scalars(db.select(PermScope)).all()
+            scopes = db.session.scalars(select(PermScope)).all()
             yield from [(scope.value, scope.label) for scope in scopes]
 
 
@@ -116,7 +118,7 @@ def role_formatter(view, context, model, name):
 
 
 def permissions_formatter(view, context, model, name):
-    available_permissions = PermissionAvailable.query.nice_order().all()
+    available_permissions = db.session.scalars(PermissionAvailable.nice_order()).unique().all()
 
     o = "<table class='table'>"
     columns = ["Module", "Object", "Action", "Label"]
@@ -355,7 +357,10 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         "role.nom_complet": "nom du rôle",
         "availability": "Permission",
         "scope": "Filtre sur l'appartenance des données",
-        "sensitivity_filter": "Exclure les données sensibles",
+        "sensitivity_filter": (
+            "Flouter" if config["SYNTHESE"]["BLUR_SENSITIVE_OBSERVATIONS"] else "Exclure"
+        )
+        + " les données sensibles",
     }
     column_select_related_list = ("availability",)
     column_searchable_list = ("role.identifiant", "role.nom_complet")
@@ -392,7 +397,7 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
     )
     form_args = dict(
         availability=dict(
-            query_factory=lambda: PermissionAvailable.query.nice_order(),
+            query_factory=lambda: PermissionAvailable.nice_order(),
             options_additional_values=["sensitivity_filter", "scope_filter"],
         ),
     )
@@ -422,10 +427,10 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         if request.method == "GET":
             # Set default values from request.args
             if "id_role" in request.args:
-                form.role.data = User.query.get(request.args.get("id_role", type=int))
+                form.role.data = db.session.get(User, request.args.get("id_role", type=int))
             if {"module_code", "code_object", "code_action"}.issubset(request.args.keys()):
                 form.availability.data = db.session.execute(
-                    db.select(PermissionAvailable)
+                    select(PermissionAvailable)
                     .join(PermissionAvailable.module)
                     .join(PermissionAvailable.object)
                     .join(PermissionAvailable.action)
@@ -509,10 +514,10 @@ class GroupPermAdmin(RolePermAdmin):
     column_details_list = ("nom_role", "permissions_count", "permissions")
 
     def get_query(self):
-        return User.query.filter_by(groupe=True).filter_by_app()
+        return select(User).filter_by(groupe=True).where(User.filter_by_app())
 
     def get_count_query(self):
-        return self.session.query(sa.func.count("*")).where(User.groupe == True)
+        return select(sa.func.count("*")).where(User.groupe == True)
 
 
 class UserPermAdmin(RolePermAdmin):
@@ -537,11 +542,11 @@ class UserPermAdmin(RolePermAdmin):
     )
 
     def get_query(self):
-        return User.query.filter_by(groupe=False).filter_by_app()
+        return select(User).filter_by(groupe=False).where(User.filter_by_app())
 
     def get_count_query(self):
         # FIXME : must filter by app
-        return self.session.query(sa.func.count("*")).where(User.groupe == False)
+        return select(sa.func.count("*")).select_from(User).where(User.groupe == False)
 
 
 admin.add_view(

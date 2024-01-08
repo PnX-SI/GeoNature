@@ -390,7 +390,7 @@ Gestion des droits
 Accès à GeoNature et CRUVED
 ```````````````````````````
 
-Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l'application GeoNature sont gérés de manière centralisée dans l'application UsersHub. Pour qu'un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de "Lecteur" dans l'application GeoNature, grâce à l'application UsersHub.
+Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l'application GeoNature sont gérés de manière centralisée dans l'application UsersHub. Pour qu'un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de "Lecteur" dans l'application GeoNature, grâce à l'application UsersHub qui va modifier la table ``utilisateurs.cor_role_app_profil``.
 
 La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (``gn_permissions``) depuis le module ADMIN de GeoNature. Voir https://docs.geonature.fr/user-manual.html#gestion-des-permissions.
 
@@ -455,24 +455,26 @@ Nomenclatures
 
 - Toutes les valeurs des listes déroulantes sont gérées dans une table générique ``ref_nomenclatures.t_nomenclatures``
 - Elles s'appuient sur les nomenclatures du SINP (http://standards-sinp.mnhn.fr/nomenclature/) qui peuvent être désactivées ou completées
-- Chaque nomenclature est associée à un type, et une vue par type de nomenclature a été ajoutée pour simplifier leur usage
+- Chaque nomenclature est associée à un type (``ref_nomenclatures.bib_nomenclatures_types``), et une vue par type de nomenclature a été ajoutée pour simplifier leur usage
 - Ces nomenclatures sont gérées dans un sous-module pour pouvoir les réutiliser (ainsi que leur mécanisme) dans d'autres applications : https://github.com/PnX-SI/Nomenclature-api-module/
 - Les identifiants des nomenclatures et des types de nomenclature sont des serials (entiers auto-incrémentés) et ne sont pas prédéfinis lors de l'installation, ni utilisées en dur dans le code des applications. En effet, les nomenclatures peuvent varier en fonction des structures. On utilise le ``cd_nomenclature`` et le ``mnémonique`` du type de nomenclature pour retrouver dynamiquement l'``id_nomenclature`` d'une nomenclature. C'est cependant cet identifiant qu'on stocke au niveau des données pour garantir l'intégrité référentielle
 - Chaque nomenclature peut être associée à un règne ou un group2inpn (``ref_nomenclatures.cor_taxref_nomenclature``) pour proposer des nomenclatures correspondants à un taxon
+- Il est possible de désactiver des nomenclatures en passant la valeur de la colonne ``active`` en `false`.
 - Les valeurs par défaut sont définies dans chaque module
 - Pour Occtax c'est dans ``pr_occtax.defaults_nomenclatures_value``. Elles peuvent être définies pour chaque type de nomenclature ainsi que par organisme, règne et/ou group2inpn
 - Si organisme = 0 alors la valeur par défaut s'applique à tous les organismes. Idem pour les règnes et group2inpn
 - La fonction ``pr_occtax.get_default_nomenclature_value`` permet de renvoyer l'id de la nomenclature par défaut
 - Ces valeurs par défaut sont aussi utilisées pour certains champs qui sont cachés (statut_observation, floutage, statut_validation...) mais ne sont donc pas modifiables par l'utilisateur
 - Il existe aussi une table pour définir des valeurs par défaut générales de nomenclature (``ref_nomenclatures.defaults_nomenclatures_value``)
-- Elles peuvent être administrées dans le module Admin de GeoNature
+- Elles peuvent être administrées dans le module Admin de GeoNature.
 
 Métadonnées
 """""""""""
 
-- Elles sont gérées dans le schéma ``gn_meta`` basé sur le standard Métadonnées du SINP (http://standards-sinp.mnhn.fr/category/standards/metadonnees/)
-- Elles permettent de gérer des jeux de données, des cadres d'acquisition, des acteurs (propriétaire, financeur, producteur...) et des protocoles
-- Elles peuvent être administrées dans le module Métadonnées de GeoNature
+- Elles sont gérées dans le schéma ``gn_meta`` basé sur le standard Métadonnées du SINP (http://standards-sinp.mnhn.fr/category/standards/metadonnees/).
+- Elles permettent de gérer des jeux de données, des cadres d'acquisition, des acteurs (propriétaire, financeur, producteur...) et des protocoles.
+- Elles peuvent être administrées dans le module Métadonnées de GeoNature.
+- Les acteurs sont quant à eux gérés dans la table ``utilisateurs.bib_organismes`` et donc paramétrables dans UsersHub.
 
 Données SIG
 """""""""""
@@ -1212,6 +1214,8 @@ Vous pouvez renseigner du code HTML sur plusieurs lignes dans ces paramètres, e
 Customiser l'aspect esthétique
 """"""""""""""""""""""""""""""
 
+Le rendu esthétique de GeoNature repose principalement sur l'utilisation de Boostrap.
+
 Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant un fichier ``custom/css/frontend.css`` contenant votre surcouche des classes CSS de l'application.
 
 Par exemple, pour remplacer la couleur de fond du bandeau de navigation par une image, on peut apporter la modification suivante :
@@ -1225,6 +1229,35 @@ Par exemple, pour remplacer la couleur de fond du bandeau de navigation par une 
    }
 
 Dans ce cas, l’image ``bandeau_test.jpg`` doit se trouver dans le répertoire ``custom/images``.
+
+Autre exemple, il est possible personnaliser les polices ou les couleurs :
+
+.. code-block:: css
+
+/* IMPORT POLICE BEBAS NEUE
+ * ! Bebas Neue by @Ryoichi Tsunekawa
+ * License - Open Font License
+ */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+/* Couleurs principales de l'application */
+.color-blue {
+  color:#678BC5!important; 
+}
+.color-orange {
+  color:#DEC70D!important;
+}
+.color-teal {
+  color:#A8DE0D!important;
+}
+.color-red {
+  color:#DE280D!important
+}
+#appName h3{
+	font-family:Bebas Neue,Arial,sans-serif!important;
+	font-size: xx-large
+}
+
+Certains paramètres demandent l'ajout de la mention ``!important`` pour être pris en compte (https://github.com/PnX-SI/GeoNature/issues/2632).
 
 Customiser les noms et pictos des modules
 """""""""""""""""""""""""""""""""""""""""
@@ -1328,7 +1361,37 @@ Si ``ref_geo.dem_vector`` est remplie, cette table est utilisée pour le calcul 
 
 * Vérifiez que leur type existe dans la table ``ref_geo.bib_areas_types``, sinon ajoutez-les
 * Ajoutez vos zonages dans la table ``ref_geo.l_areas`` en faisant bien référence à un ``id_type`` de ``ref_geo.bib_areas_types``. Vous pouvez faire cela en SQL ou en faisant des copier/coller de vos zonages directement dans QGIS
-* Pour les grilles et les communes, vous pouvez ensuite compléter leurs tables d'extension ``ref_geo.li_grids`` et ``ref_geo.li_municipalities``
+* Pour les grilles et les communes, vous pouvez ensuite compléter leurs tables d'extension ``ref_geo.li_grids`` et ``ref_geo.li_municipalities``.
+
+Il est également possible de désactiver des éléments des référentiels géographiques sans les supprimer de la base, en passant la valeur de la colonne ``enable`` en `false` dans la table ``ref_geo.l_areas``.
+
+Affichage des référentiels géographiques dans GeoNature
+""""""""""""""""
+
+Il est possible de choisir les éléments des référentiels géographiques pouvant s'afficher sur les cartes. Par exemple si on souhaite modifier l'affichage des communes : 
+
+::
+
+        # Configuration par défaut :
+        [[MAPCONFIG.REF_LAYERS]]
+            code = "COM" # correspond à type_code de la couche ref_geo.bib_areas_types
+            label = "Communes" # nom s'affichant dans leafmap
+            type = "area" 
+            activate = false # ne s'affiche pas par défaut sur la carte
+            style = { color = "grey", fill = false, fillOpacity = "0.0", weight = 2 }
+            params = {limit = 2000} # nombre d'éléments maximum pouvant être affichés
+
+::
+
+        # Configuration modifiée
+        [[MAPCONFIG.REF_LAYERS]]
+            code = 'COM'
+            label = 'Limite de commune'
+            type = 'area'
+            activate = true
+            style = { color = 'SlateGray', fill = true, fillOpacity = '0.2', weight = 1 }
+            params = {limit = 5000}
+
 
 Données externes
 """"""""""""""""
@@ -1622,7 +1685,7 @@ Le paramètre ``id_observers_list`` permet de changer la liste d'observateurs pr
 
 Par défaut, l'ensemble des observateurs de la liste 9 (observateurs faune/flore) sont affichés.
 
-Personnaliser la liste des taxons saisissables dans le module
+Personnaliser la liste des taxons et habitats saisissables dans le module
 `````````````````````````````````````````````````````````````
 
 Le module est fourni avec une liste restreinte de taxons (8 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
@@ -1648,6 +1711,29 @@ Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa 
     SELECT 100,n.id_nom FROM taxonomie.bib_noms n;
 
 Il est également possible d'éditer des listes à partir de l'application TaxHub.
+
+Il est de même possible de restreindre la liste d'habitats proposés dans le module :
+
+::
+
+    ID_LIST_HABITAT = 2
+
+Avec ``ID_LIST_HABITAT`` faisant référence aux listes définies dans ``ref_habitats.bib_list_habitat``. La liste est peuplée d'habitats grâce à la table ``ref_habitats.cor_list_habitat``. Par exemple :
+
+.. code-block:: sql
+
+        -- Création d'une liste restreinte d'habitats pour OccTax
+        -- (typologie EUNIS de niveau 2)
+        INSERT INTO ref_habitats.cor_list_habitat clh(
+        	cd_hab,
+        	id_list
+        )
+        SELECT 
+        	hr.cd_hab,
+        	2
+        FROM ref_habitats.habref hr
+        WHERE (hr.cd_typo,hr.niveau) = (7 , 2)
+        ;
 
 Gérer les valeurs par défaut des nomenclatures
 ``````````````````````````````````````````````
@@ -1708,6 +1794,16 @@ Par exemple, pour contraindre la saisie à l'affichage de la carte IGN au 1/2500
 ::
 
     releve_map_zoom_level = 15
+
+
+Supprimer le remplissage automatique de la date
+``````````````````````````````
+
+Pour éviter les erreurs de saisie lorsque des données sont rentrées longtemps après le retour du terrain, il est possible de supprimer l'ajout automatique de la date du jour au relevé :
+
+::
+
+    DATE_FORM_WITH_TODAY = false
 
 
 Gestion des exports
@@ -1856,10 +1952,16 @@ Un champ additionnel est définit par:
 - le (ou les) JDD auquel il est rattaché. Si aucun JDD n'est renseigné le champ sera proposé dans tout le module pour tous les JDD. S'il est rattaché à un JDD, le champs sera chargé dynamiquement à la selection du JDD dans le formulaire 
 - une série d'autres options pour paramétrer le comportement du champs (obligatoire, ordre, description, exportable etc...)
 
+Les champs additionnels sont stockés dans la table ``gn_commons.t_additional_fields``.
+
 Exemples de configuration :
 
 Pour les champs de type "select", "multiselect", "checkbox" et "radio", le champs "valeur" doit être rempli par un JSON représentant une liste de dictionnaire "label" (représentant la valeur affiché), et "valeur" (représentant la valeur écrite en base de données).
-Exemple : `[{"label": "Trois", "value": 3}, {"label": "Quatre", "value": 4}]`
+
+Exemples : 
+
+- `[{"label": "Trois", "value": 3}, {"label": "Quatre", "value": 4}]`
+- `[{"label": "1", "value": "Étude générale"}, {"label": "Gestion de site", "value": "2"}, {"label": "Partenariat", "value": "3"}]`
 
 - Un champs type "multiselect": 
 
@@ -1879,6 +1981,7 @@ Configuration avancée des champs
 ````````````````````````````````
 
 Le champs "Attribut additionnels" permet d'ajouter des éléments de configuration sur les formulaires sour forme de JSON:
+
 - Ajouter une icone "?" et un tooltip au survol du formulaire : `{"description" : "mon toolitp"}`
 - Ajouter un sous-titre descriptif : `{"help" : "mon sous titre"}`
 - Ajouter des valeurs min/max pour un input `number` : `{"min": 1, "max": 10}`
@@ -1903,14 +2006,16 @@ Pour l'installer, lancer les commande suivante:
 Base de données
 """""""""""""""
 
-Le module s'appuie sur deux schémas.:
-``ref_habitats``:  Le référentiel habitat du MNHN
-``pr_occhab``: le schéma qui contient les données d'occurrence d'habitat, basé sur standard du MNHN
+Le module s'appuie sur deux schémas :
+
+- ``ref_habitats`` correspond au référentiel habitat du MNHN,
+- ``pr_occhab`` correspond au schéma qui contient les données d'occurrence d'habitat, basé sur standard du MNHN.
 
 Configuration
 """""""""""""
 
-Le paramétrage du module OCCHAB se fait en créant le fichier ``config/occhab_config.toml``, en s’inspirant du fichier d'exemple ``contrib/gn_module_occhab/occhab_config.toml.example``
+Le paramétrage du module OCCHAB se fait en créant le fichier ``config/occhab_config.toml``, en s’inspirant du fichier d'exemple ``contrib/gn_module_occhab/occhab_config.toml.example``.
+
 Reportez vous à la section `Configuration d'un gn_module`_ pour effectuer les opérations supplémentaires nécessaires pour la prise en compte des modifications.
 
 
@@ -1921,7 +2026,7 @@ Formulaire
 
 ``ID_LIST_HABITAT = 1``
 
-- Le formulaire permet de saisir des observateurs basés sur le referentiel utilisateurs (``false``) ou de les saisir en texte libre (``true``).
+- Le formulaire permet de saisir des observateurs basés sur le référentiel utilisateurs (``false``) ou de les saisir en texte libre (``true``).
 
 ``OBSERVER_AS_TXT = false``
 

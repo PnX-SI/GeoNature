@@ -1,33 +1,23 @@
 from datetime import datetime
-from packaging import version
 
-from flask import current_app, g
-from geoalchemy2 import Geometry
 import sqlalchemy as sa
+from flask import g
+from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, synonym
-from sqlalchemy.sql import select, func, and_
-from sqlalchemy.schema import UniqueConstraint, FetchedValue
 from sqlalchemy.dialects.postgresql import UUID
-import flask_sqlalchemy
+from sqlalchemy.orm import relationship, synonym
+from sqlalchemy.schema import FetchedValue, UniqueConstraint
+from sqlalchemy.sql import func, select
 
-if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
-    from flask_sqlalchemy.query import Query
-else:
-    from flask_sqlalchemy import BaseQuery as Query
 
-from pypnusershub.db.models import User
+from geonature.core.gn_meta.models import TDatasets as Dataset
+from geonature.utils.env import db
 from pypnnomenclature.models import TNomenclatures as Nomenclature
 from pypnnomenclature.utils import NomenclaturesMixin
-from pypn_habref_api.models import Habref
+from pypnusershub.db.models import User
+from utils_flask_sqla.models import qfilter
 from utils_flask_sqla.serializers import serializable
-from utils_flask_sqla_geo.serializers import geoserializable
-from utils_flask_sqla_geo.mixins import GeoFeatureCollectionMixin
-from utils_flask_sqla.models import CustomSelect
-
-from geonature.utils.env import db
-from geonature.core.gn_meta.models import TDatasets as Dataset
-
+from werkzeug.datastructures import TypeConversionDict
 
 cor_station_observer = db.Table(
     "cor_station_observer",
@@ -39,49 +29,9 @@ cor_station_observer = db.Table(
 )
 
 
-class StationSelect(GeoFeatureCollectionMixin, CustomSelect):
-    inherit_cache = True
-
-    def filter_by_params(self, params):
-        qs = self
-        id_dataset = params.get("id_dataset", type=int)
-        if id_dataset:
-            qs = qs.filter_by(id_dataset=id_dataset)
-        cd_hab = params.get("cd_hab", type=int)
-        if cd_hab:
-            qs = qs.where(Station.habitats.any(OccurenceHabitat.cd_hab == cd_hab))
-        date_low = params.get("date_low", type=lambda x: datetime.strptime(x, "%Y-%m-%d"))
-        if date_low:
-            qs = qs.where(Station.date_min >= date_low)
-        date_up = params.get("date_up", type=lambda x: datetime.strptime(x, "%Y-%m-%d"))
-        if date_up:
-            qs = qs.where(Station.date_max <= date_up)
-        return qs
-
-    def filter_by_scope(self, scope, user=None):
-        if user is None:
-            user = g.current_user
-        if scope == 0:
-            self = self.where(sa.false())
-        elif scope in (1, 2):
-            ds_list = Dataset.select.filter_by_scope(scope).with_only_columns(Dataset.id_dataset)
-            self = self.where(
-                sa.or_(
-                    Station.observers.any(id_role=user.id_role),
-                    Station.id_dataset.in_(
-                        [ds.id_dataset for ds in db.session.execute(ds_list).all()]
-                    ),
-                )
-            )
-        return self
-
-    habref = db.relationship(Habref, lazy="joined")
-
-
 class Station(NomenclaturesMixin, db.Model):
     __tablename__ = "t_stations"
     __table_args__ = {"schema": "pr_occhab"}
-    __select_class__ = StationSelect
 
     id_station = db.Column(db.Integer, primary_key=True)
     unique_id_sinp_station = db.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
@@ -138,6 +88,7 @@ class Station(NomenclaturesMixin, db.Model):
         Nomenclature,
         foreign_keys=[id_nomenclature_geographic_object],
     )
+    # habref = db.relationship(Habref, lazy="joined")
 
     def has_instance_permission(self, scope):
         if scope == 0:
@@ -148,6 +99,43 @@ class Station(NomenclaturesMixin, db.Model):
             return g.current_user in self.observers or self.dataset.has_instance_permission(scope)
         elif scope == 3:
             return True
+
+    @qfilter(query=True)
+    def filter_by_params(cls, params, *, query):
+        params = TypeConversionDict(**params)
+        id_dataset = params.get("id_dataset", type=int)
+        if id_dataset:
+            query = query.filter_by(id_dataset=id_dataset)
+
+        cd_hab = params.get("cd_hab", type=int)
+        if cd_hab:
+            query = query.where(Station.habitats.any(OccurenceHabitat.cd_hab == cd_hab))
+
+        date_low = params.get("date_low", type=lambda x: datetime.strptime(x, "%Y-%m-%d"))
+        if date_low:
+            query = query.where(Station.date_min >= date_low)
+        date_up = params.get("date_up", type=lambda x: datetime.strptime(x, "%Y-%m-%d"))
+        if date_up:
+            query = query.where(Station.date_max <= date_up)
+        return query
+
+    @qfilter(query=True)
+    def filter_by_scope(cls, scope, user=None, *, query):
+        if user is None:
+            user = g.current_user
+        if scope == 0:
+            query = query.where(sa.false())
+        elif scope in (1, 2):
+            ds_list = Dataset.filter_by_scope(scope).with_only_columns(Dataset.id_dataset)
+            query = query.where(
+                sa.or_(
+                    Station.observers.any(id_role=user.id_role),
+                    Station.id_dataset.in_(
+                        [ds.id_dataset for ds in db.session.execute(ds_list).all()]
+                    ),
+                )
+            )
+        return query
 
 
 @serializable

@@ -67,34 +67,25 @@ def upgrade():
 
 
 def downgrade():
-    bind = op.get_bind()
-    session = sa.orm.Session(bind=bind)
-    # Do not use NotificationCategory.query as it is not the same session!
-    category = (
-        session.query(NotificationCategory)
-        .filter(NotificationCategory.code == CATEGORY_CODE)
-        .one_or_none()
+    conn = op.get_bind()
+    metadata = sa.MetaData(bind=conn)
+    notification_category = sa.Table(
+        "bib_notifications_categories", metadata, schema="gn_notifications", autoload_with=conn
     )
-
-    if category is not None:
-        session.query(NotificationRule).filter(
-            NotificationRule.code_category == category.code
-        ).delete()
-        # Since there is no cascade, need to delete template manually
-        session.query(NotificationTemplate).filter(
-            NotificationTemplate.code_category == category.code
-        ).delete()
-
-        session.delete(category)
-        session.commit()
-
+    notification_template = sa.Table(
+        "bib_notifications_templates", metadata, schema="gn_notifications", autoload_with=conn
+    )
+    notification_rule = sa.Table(
+        "t_notifications_rules", metadata, schema="gn_notifications", autoload_with=conn
+    )
+    category = conn.execute(
+        sa.select(notification_category).where(notification_category.c.code == CATEGORY_CODE)
+    ).one()
     op.execute(
-        f"""
-        DELETE FROM
-            gn_notifications.t_notifications_rules
-        WHERE
-            code_category = '{CATEGORY_CODE}'
-        AND
-            id_role IS NULL
-        """
+        sa.delete(notification_template).where(
+            notification_template.c.code_category == category.code
+        )
+    )
+    op.execute(
+        sa.delete(notification_rule).where(notification_rule.c.code_category == category.code)
     )

@@ -6,6 +6,7 @@ from warnings import warn
 
 from flask import (
     Blueprint,
+    abort,
     request,
     Response,
     current_app,
@@ -14,14 +15,17 @@ from flask import (
     jsonify,
     g,
 )
+from geonature.core.gn_synthese.schemas import SyntheseSchema
 from pypnusershub.db.models import User
+from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from werkzeug.datastructures import MultiDict
 from sqlalchemy import distinct, func, desc, asc, select, case
-from sqlalchemy.orm import joinedload, lazyload, selectinload
+from sqlalchemy.orm import joinedload, lazyload, selectinload, contains_eager
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
-from sqlalchemy.orm import load_only, aliased, Load
+from sqlalchemy.orm import load_only, aliased, Load, with_expression
+from sqlalchemy.exc import NoResultFound
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
@@ -48,12 +52,19 @@ from geonature.core.gn_synthese.models import (
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 
+from geonature.core.gn_synthese.utils.blurring import (
+    build_allowed_geom_cte,
+    build_blurred_precise_geom_queries,
+    build_synthese_obs_query,
+    split_blurring_precise_permissions,
+)
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_synthese.utils.orm import is_already_joined
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required, permissions_required
 from geonature.core.gn_permissions.tools import get_scopes_by_action, get_permissions
+from geonature.core.sensitivity.models import cor_sensitivity_area_type
 
 from ref_geo.models import LAreas, BibAreasTypes
 
@@ -135,65 +146,98 @@ def get_observations_for_web(permissions):
     if output_format not in ["ungrouped_geom", "grouped_geom", "grouped_geom_by_areas"]:
         raise BadRequest(f"Bad format '{output_format}'")
 
-    # Build defaut CTE observations query
-    count_min_max = case(
-        (
-            VSyntheseForWebApp.count_min != VSyntheseForWebApp.count_max,
-            func.concat(VSyntheseForWebApp.count_min, " - ", VSyntheseForWebApp.count_max),
-        ),
-        (VSyntheseForWebApp.count_min != None, func.concat(VSyntheseForWebApp.count_min)),
-        else_="",
-    )
-
-    nom_vern_or_lb_nom = func.coalesce(
-        func.nullif(VSyntheseForWebApp.nom_vern, ""), VSyntheseForWebApp.lb_nom
-    )
-
+    # Get Column Frontend parameter to return only the needed columns
+    param_column_list = {
+        col["prop"] for col in current_app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"]
+    }
+    # Init with compulsory columns
     columns = [
         "id",
         VSyntheseForWebApp.id_synthese,
-        "date_min",
-        VSyntheseForWebApp.date_min,
-        "lb_nom",
-        VSyntheseForWebApp.lb_nom,
-        "cd_nom",
-        VSyntheseForWebApp.cd_nom,
-        "observers",
-        VSyntheseForWebApp.observers,
-        "dataset_name",
-        VSyntheseForWebApp.dataset_name,
         "url_source",
         VSyntheseForWebApp.url_source,
-        "unique_id_sinp",
-        VSyntheseForWebApp.unique_id_sinp,
-        "nom_vern_or_lb_nom",
-        nom_vern_or_lb_nom,
-        "count_min_max",
-        count_min_max,
-        "entity_source_pk_value",
-        VSyntheseForWebApp.entity_source_pk_value,
     ]
+
+    if "count_min_max" in param_column_list:
+        count_min_max = case(
+            (
+                VSyntheseForWebApp.count_min != VSyntheseForWebApp.count_max,
+                func.concat(VSyntheseForWebApp.count_min, " - ", VSyntheseForWebApp.count_max),
+            ),
+            (
+                VSyntheseForWebApp.count_min != None,
+                func.concat(VSyntheseForWebApp.count_min),
+            ),
+            else_="",
+        )
+        columns += ["count_min_max", count_min_max]
+        param_column_list.remove("count_min_max")
+
+    if "nom_vern_or_lb_nom" in param_column_list:
+        nom_vern_or_lb_nom = func.coalesce(
+            func.nullif(VSyntheseForWebApp.nom_vern, ""), VSyntheseForWebApp.lb_nom
+        )
+        columns += ["nom_vern_or_lb_nom", nom_vern_or_lb_nom]
+        param_column_list.remove("nom_vern_or_lb_nom")
+
+    for column in param_column_list:
+        columns += [column, getattr(VSyntheseForWebApp, column)]
+
     observations = func.json_build_object(*columns).label("obs_as_json")
 
-    obs_query = (
-        # select(VSyntheseForWebApp.id_synthese, observations)
-        select(observations)
-        .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
-        .order_by(VSyntheseForWebApp.date_min.desc())
-        .limit(result_limit)
-    )
+    # Need to check if there are blurring permissions so that the blurring process
+    # does not affect the performance if there is no blurring permissions
+    blurring_permissions, precise_permissions = split_blurring_precise_permissions(permissions)
+    if not blurring_permissions:
+        # No need to apply blurring => same path as before blurring feature
+        obs_query = (
+            select(observations)
+            .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
+            .order_by(VSyntheseForWebApp.date_min.desc())
+            .limit(result_limit)
+        )
 
-    # Add filters to observations CTE query
-    synthese_query_class = SyntheseQuery(
-        VSyntheseForWebApp,
-        obs_query,
-        filters,
-    )
-    synthese_query_class.filter_query_all_filters(g.current_user, permissions)
-    obs_query = synthese_query_class.query
+        # Add filters to observations CTE query
+        synthese_query_class = SyntheseQuery(
+            VSyntheseForWebApp,
+            obs_query,
+            dict(filters),
+        )
+        synthese_query_class.apply_all_filters(g.current_user, permissions)
+        obs_query = synthese_query_class.build_query()
+        geojson_column = VSyntheseForWebApp.st_asgeojson
+    else:
+        # Build 2 queries that will be UNIONed
+        # Select size hierarchy if mesh mode is selected
+        select_size_hierarchy = output_format == "grouped_geom_by_areas"
+        blurred_geom_query, precise_geom_query = build_blurred_precise_geom_queries(
+            filters, select_size_hierarchy=select_size_hierarchy
+        )
+
+        allowed_geom_cte = build_allowed_geom_cte(
+            blurring_permissions=blurring_permissions,
+            precise_permissions=precise_permissions,
+            blurred_geom_query=blurred_geom_query,
+            precise_geom_query=precise_geom_query,
+            limit=result_limit,
+        )
+
+        obs_query = build_synthese_obs_query(
+            observations=observations,
+            allowed_geom_cte=allowed_geom_cte,
+            limit=result_limit,
+        )
+        geojson_column = func.st_asgeojson(allowed_geom_cte.c.geom)
 
     if output_format == "grouped_geom_by_areas":
-        obs_query = obs_query.add_columns(VSyntheseForWebApp.id_synthese).cte("OBS")
+        obs_query = obs_query.add_columns(VSyntheseForWebApp.id_synthese)
+        # Need to select the size_hierarchy to use is after (only if blurring permissions are found)
+        if blurring_permissions:
+            obs_query = obs_query.add_columns(
+                allowed_geom_cte.c.size_hierarchy.label("size_hierarchy")
+            )
+        obs_query = obs_query.cte("OBS")
+
         agg_areas = (
             select(CorAreaSynthese.id_synthese, LAreas.id_area)
             .select_from(
@@ -204,14 +248,20 @@ def get_observations_for_web(permissions):
                     BibAreasTypes.id_type == LAreas.id_type,
                 ),
             )
-            .where(CorAreaSynthese.id_synthese == VSyntheseForWebApp.id_synthese)
+            .where(CorAreaSynthese.id_synthese == obs_query.c.id_synthese)
             .where(
                 BibAreasTypes.type_code == current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"]
             )
-            .lateral("agg_areas")
         )
+
+        if blurring_permissions:
+            # Do not select cells which size_hierarchy is bigger than AREA_AGGREGATION_TYPE
+            # It means that we do not aggregate obs that have a blurring geometry greater in
+            # size than the aggregation area
+            agg_areas = agg_areas.where(obs_query.c.size_hierarchy <= BibAreasTypes.size_hierarchy)
+        agg_areas = agg_areas.lateral("agg_areas")
         obs_query = (
-            select(LAreas.geojson_4326.label("geojson"), obs_query.c.obs_as_json)
+            select(func.ST_AsGeoJSON(LAreas.geom_4326).label("geojson"), obs_query.c.obs_as_json)
             .select_from(
                 obs_query.outerjoin(
                     agg_areas, agg_areas.c.id_synthese == obs_query.c.id_synthese
@@ -220,9 +270,7 @@ def get_observations_for_web(permissions):
             .cte("OBSERVATIONS")
         )
     else:
-        obs_query = obs_query.add_columns(VSyntheseForWebApp.st_asgeojson.label("geojson")).cte(
-            "OBSERVATIONS"
-        )
+        obs_query = obs_query.add_columns(geojson_column.label("geojson")).cte("OBSERVATIONS")
 
     if output_format == "ungrouped_geom":
         query = select(obs_query.c.geojson, obs_query.c.obs_as_json)
@@ -251,7 +299,7 @@ def get_observations_for_web(permissions):
 @permissions_required("R", module_code="SYNTHESE")
 def get_one_synthese(permissions, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature"""
-    synthese = Synthese.query.join_nomenclatures().options(
+    synthese_query = Synthese.join_nomenclatures().options(
         joinedload("dataset").options(
             selectinload("acquisition_framework").options(
                 joinedload("creator"),
@@ -259,9 +307,8 @@ def get_one_synthese(permissions, id_synthese):
                 joinedload("nomenclature_financing_type"),
             ),
         ),
-        lazyload("areas").options(
-            joinedload("area_type"),
-        ),
+        # Used to check the sensitivity after
+        joinedload("nomenclature_sensitivity"),
     )
     ##################
 
@@ -301,18 +348,101 @@ def get_one_synthese(permissions, id_synthese):
     ]
 
     # get reports info only if activated by admin config
-    alertModulesActivated = current_app.config["SYNTHESE"]["ALERT_MODULES"]
-    if len(alertModulesActivated) and "SYNTHESE" in alertModulesActivated:
+    if "SYNTHESE" in current_app.config["SYNTHESE"]["ALERT_MODULES"]:
         fields.append("reports.report_type.type")
-        synthese = synthese.options(lazyload(Synthese.reports).joinedload(TReport.report_type))
+        synthese_query = synthese_query.options(
+            lazyload(Synthese.reports).joinedload(TReport.report_type)
+        )
 
-    synthese = synthese.get_or_404(id_synthese)
-
+    try:
+        synthese = (
+            db.session.execute(synthese_query.filter_by(id_synthese=id_synthese))
+            .unique()
+            .scalar_one()
+        )
+    except NoResultFound:
+        raise NotFound()
     if not synthese.has_instance_permission(permissions=permissions):
         raise Forbidden()
 
-    geofeature = synthese.as_geofeature(fields=Synthese.nomenclature_fields + fields)
-    return jsonify(geofeature)
+    _, precise_permissions = split_blurring_precise_permissions(permissions)
+
+    # If blurring permissions and obs sensitive.
+    if (
+        not synthese.has_instance_permission(precise_permissions)
+        and synthese.nomenclature_sensitivity.cd_nomenclature != "0"
+    ):
+        # Use a cte to have the areas associated with the current id_synthese
+        cte = select(CorAreaSynthese).where(CorAreaSynthese.id_synthese == id_synthese).cte()
+        # Blurred area of the observation
+        BlurredObsArea = aliased(LAreas)
+        # Blurred area type of the observation
+        BlurredObsAreaType = aliased(BibAreasTypes)
+        # Types "larger" or equal in area hierarchy size that the blurred area type
+        BlurredAreaTypes = aliased(BibAreasTypes)
+        # Areas associates with the BlurredAreaTypes
+        BlurredAreas = aliased(LAreas)
+
+        # Inner join that retrieve the blurred area of the obs and the bigger areas
+        # used for "Zonages" in Synthese. Need to have size_hierarchy from ref_geo
+        inner = (
+            sa.join(CorAreaSynthese, BlurredObsArea)
+            .join(BlurredObsAreaType)
+            .join(
+                cor_sensitivity_area_type,
+                cor_sensitivity_area_type.c.id_area_type == BlurredObsAreaType.id_type,
+            )
+            .join(
+                BlurredAreaTypes,
+                BlurredAreaTypes.size_hierarchy >= BlurredObsAreaType.size_hierarchy,
+            )
+            .join(BlurredAreas, BlurredAreaTypes.id_type == BlurredAreas.id_type)
+            .join(cte, cte.c.id_area == BlurredAreas.id_area)
+        )
+
+        # Outer join to join CorAreaSynthese taking into account the sensitivity
+        outer = (
+            inner,
+            sa.and_(
+                Synthese.id_synthese == CorAreaSynthese.id_synthese,
+                Synthese.id_nomenclature_sensitivity
+                == cor_sensitivity_area_type.c.id_nomenclature_sensitivity,
+            ),
+        )
+
+        synthese_query = (
+            synthese_query.outerjoin(*outer)
+            # contains_eager: to populate Synthese.areas directly
+            .options(contains_eager(Synthese.areas.of_type(BlurredAreas)))
+            .options(
+                with_expression(
+                    Synthese.the_geom_authorized,
+                    func.coalesce(BlurredObsArea.geom_4326, Synthese.the_geom_4326),
+                )
+            )
+            .order_by(BlurredAreaTypes.size_hierarchy)
+        )
+    else:
+        synthese_query = synthese_query.options(
+            lazyload("areas").options(
+                joinedload("area_type"),
+            ),
+            with_expression(Synthese.the_geom_authorized, Synthese.the_geom_4326),
+        )
+
+    synthese = (
+        db.session.execute(synthese_query.filter(Synthese.id_synthese == id_synthese))
+        .unique()
+        .scalar_one()
+    )
+
+    synthese_schema = SyntheseSchema(
+        only=Synthese.nomenclature_fields + fields,
+        exclude=["areas.geom"],
+        as_geojson=True,
+        feature_geometry="the_geom_authorized",
+    )
+    return synthese_schema.dump(synthese)
 
 
 ################################
@@ -383,13 +513,13 @@ def export_taxon_web(permissions):
 
     subq = synthese_query_class.query.alias("subq")
 
-    q = DB.session.query(*columns, subq.c.nb_obs, subq.c.date_min, subq.c.date_max).join(
+    query = select(*columns, subq.c.nb_obs, subq.c.date_min, subq.c.date_max).join(
         subq, subq.c.cd_ref == columns.cd_ref
     )
 
     return to_csv_resp(
         datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
-        data=serializeQuery(q.all(), q.column_descriptions),
+        data=serializeQuery(db.session.execute(query).all(), query.column_descriptions),
         separator=";",
         columns=[db_col.key for db_col in columns] + ["nb_obs", "date_min", "date_max"],
     )
@@ -421,29 +551,83 @@ def export_observations_web(permissions):
     id_list = request.get_json()
 
     # Get the SRID for the export
-    srid = DB.session.execute(func.Find_SRID("gn_synthese", "synthese", "the_geom_local")).scalar()
+    local_srid = DB.session.execute(
+        func.Find_SRID("gn_synthese", "synthese", "the_geom_local")
+    ).scalar()
 
-    # Get the CTE for synthese filtered by user permissions
-    synthese_query_class = SyntheseQuery(
-        Synthese,
-        select(Synthese.id_synthese),
-        {},
-    )
-    synthese_query_class.filter_query_all_filters(g.current_user, permissions)
-    cte_synthese_filtered = synthese_query_class.build_query().cte("cte_synthese_filtered")
+    blurring_permissions, precise_permissions = split_blurring_precise_permissions(permissions)
 
     # Get the view for export
+    # Useful to have geom column so that they can be replaced by blurred geoms
+    # (only if the user has sensitive permissions)
     export_view = GenericTableGeo(
         tableName="v_synthese_for_export",
         schemaName="gn_synthese",
         engine=DB.engine,
         geometry_field=None,
-        srid=srid,
+        srid=local_srid,
     )
+
+    # If there is no sensitive permissions => same path as before blurring implementation
+    if not blurring_permissions:
+        # Get the CTE for synthese filtered by user permissions
+        synthese_query_class = SyntheseQuery(
+            Synthese,
+            select(Synthese.id_synthese),
+            {},
+        )
+        synthese_query_class.filter_query_all_filters(g.current_user, permissions)
+        cte_synthese_filtered = synthese_query_class.build_query().cte("cte_synthese_filtered")
+        selectable_columns = [export_view.tableDef]
+    else:
+        # Use slightly the same process as for get_observations_for_web()
+        # Add a where_clause to filter the id_synthese provided to reduce the
+        # UNION queries
+        where_clauses = [Synthese.id_synthese.in_(id_list)]
+        blurred_geom_query, precise_geom_query = build_blurred_precise_geom_queries(
+            filters={}, where_clauses=where_clauses
+        )
+
+        cte_synthese_filtered = build_allowed_geom_cte(
+            blurring_permissions=blurring_permissions,
+            precise_permissions=precise_permissions,
+            blurred_geom_query=blurred_geom_query,
+            precise_geom_query=precise_geom_query,
+            limit=current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"],
+        )
+
+        # Overwrite geometry columns to compute the blurred geometry from the blurring cte
+        geojson_4326_col = current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"]
+        geojson_local_col = current_app.config["SYNTHESE"]["EXPORT_GEOJSON_LOCAL_COL"]
+        columns_with_geom_excluded = [
+            col
+            for col in export_view.tableDef.columns
+            if col.name
+            not in [
+                "geometrie_wkt_4326",  # FIXME: hardcoded column names?
+                "x_centroid_4326",
+                "y_centroid_4326",
+                geojson_4326_col,
+                geojson_local_col,
+            ]
+        ]
+        # Recomputed the blurred geometries
+        blurred_geom_columns = [
+            func.st_astext(cte_synthese_filtered.c.geom).label("geometrie_wkt_4326"),
+            func.st_x(func.st_centroid(cte_synthese_filtered.c.geom)).label("x_centroid_4326"),
+            func.st_y(func.st_centroid(cte_synthese_filtered.c.geom)).label("y_centroid_4326"),
+            func.st_asgeojson(cte_synthese_filtered.c.geom).label(geojson_4326_col),
+            func.st_asgeojson(func.st_transform(cte_synthese_filtered.c.geom, local_srid)).label(
+                geojson_local_col
+            ),
+        ]
+
+        # Finally provide all the columns to be selected in the export query
+        selectable_columns = columns_with_geom_excluded + blurred_geom_columns
 
     # Get the query for export
     export_query = (
-        select(export_view.tableDef)
+        select(*selectable_columns)
         .select_from(
             export_view.tableDef.join(
                 cte_synthese_filtered,
@@ -604,7 +788,7 @@ def export_status(permissions):
     filters = request.json if request.is_json else {}
 
     # Initalize the select object
-    q = select(
+    query = select(
         distinct(VSyntheseForWebApp.cd_nom).label("cd_nom"),
         Taxref.cd_ref,
         Taxref.nom_complet,
@@ -619,7 +803,7 @@ def export_status(permissions):
         TaxrefBdcStatutValues.label_statut,
     )
     # Initialize SyntheseQuery class
-    synthese_query = SyntheseQuery(VSyntheseForWebApp, q, filters)
+    synthese_query = SyntheseQuery(VSyntheseForWebApp, query, filters)
 
     # Filter query with permissions
     synthese_query.filter_query_all_filters(g.current_user, permissions)
@@ -659,13 +843,13 @@ def export_status(permissions):
     )
 
     # Build query
-    q = synthese_query.build_query()
+    query = synthese_query.build_query()
 
     # Set enable status texts filter
-    q = q.where(TaxrefBdcStatutText.enable == True)
+    query = query.where(TaxrefBdcStatutText.enable == True)
 
     protection_status = []
-    data = DB.session.execute(q)
+    data = DB.session.execute(query)
     for d in data:
         d = d._mapping
         row = OrderedDict(
@@ -726,13 +910,17 @@ def general_stats(permissions):
         - nb of distinct observer
         - nb of datasets
     """
-    allowed_datasets = db.session.scalars(TDatasets.select.filter_by_readable()).unique().all()
-    q = select(
+    nb_allowed_datasets = db.session.scalar(
+        select(func.count("*"))
+        .select_from(TDatasets)
+        .where(TDatasets.filter_by_readable().whereclause)
+    )
+    query = select(
         func.count(Synthese.id_synthese),
         func.count(func.distinct(Synthese.cd_nom)),
         func.count(func.distinct(Synthese.observers)),
     )
-    synthese_query_obj = SyntheseQuery(Synthese, q, {})
+    synthese_query_obj = SyntheseQuery(Synthese, query, {})
     synthese_query_obj.filter_query_with_cruved(g.current_user, permissions)
     result = DB.session.execute(synthese_query_obj.query)
     synthese_counts = result.fetchone()
@@ -741,7 +929,7 @@ def general_stats(permissions):
         "nb_data": synthese_counts[0],
         "nb_species": synthese_counts[1],
         "nb_observers": synthese_counts[2],
-        "nb_dataset": len(allowed_datasets),
+        "nb_dataset": nb_allowed_datasets,
     }
     return data
 
@@ -757,8 +945,8 @@ def get_taxon_tree():
     taxon_tree_table = GenericTable(
         tableName="v_tree_taxons_synthese", schemaName="gn_synthese", engine=DB.engine
     )
-    data = DB.session.query(taxon_tree_table.tableDef).all()
-    return [taxon_tree_table.as_dict(d) for d in data]
+    data = db.session.execute(select(taxon_tree_table.tableDef)).all()
+    return [taxon_tree_table.as_dict(datum) for datum in data]
 
 
 @routes.route("/taxons_autocomplete", methods=["GET"])
@@ -776,8 +964,8 @@ def get_autocomplete_taxons_synthese():
     :query str group2_inpn : filter with INPN group 2
     """
     search_name = request.args.get("search_name", "")
-    q = (
-        DB.session.query(
+    query = (
+        select(
             VMTaxrefListForautocomplete,
             func.similarity(VMTaxrefListForautocomplete.unaccent_search_name, search_name).label(
                 "idx_trgm"
@@ -787,21 +975,29 @@ def get_autocomplete_taxons_synthese():
         .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
     )
     search_name = search_name.replace(" ", "%")
-    q = q.filter(
+    query = query.where(
         VMTaxrefListForautocomplete.unaccent_search_name.ilike(
             func.unaccent("%" + search_name + "%")
         )
     )
     regne = request.args.get("regne")
     if regne:
-        q = q.filter(VMTaxrefListForautocomplete.regne == regne)
+        query = query.where(VMTaxrefListForautocomplete.regne == regne)
 
     group2_inpn = request.args.get("group2_inpn")
     if group2_inpn:
-        q = q.filter(VMTaxrefListForautocomplete.group2_inpn == group2_inpn)
-    q = q.order_by(desc(VMTaxrefListForautocomplete.cd_nom == VMTaxrefListForautocomplete.cd_ref))
+        query = query.where(VMTaxrefListForautocomplete.group2_inpn == group2_inpn)
+
+    # FIXME : won't work now
+    # query = query.order_by(
+    #     desc(VMTaxrefListForautocomplete.cd_nom == VMTaxrefListForautocomplete.cd_ref)
+    # )
     limit = request.args.get("limit", 20)
-    data = q.order_by(desc("idx_trgm")).limit(20).all()
+    data = db.session.execute(
+        query.order_by(
+            desc("idx_trgm"),
+        ).limit(limit)
+    ).all()
     return [d[0].as_dict() for d in data]
 
 
@@ -813,8 +1009,8 @@ def get_sources():
 
     .. :quickref: Synthese;
     """
-    q = DB.session.query(TSources)
-    data = q.all()
+    q = select(TSources)
+    data = db.session.scalars(q).all()
     return [n.as_dict() for n in data]
 
 
@@ -841,15 +1037,15 @@ def getDefaultsNomenclatures():
         organism = params["organism"]
     types = request.args.getlist("mnemonique_type")
 
-    q = DB.session.query(
+    query = select(
         distinct(DefaultsNomenclaturesValue.mnemonique_type),
         func.gn_synthese.get_default_nomenclature_value(
             DefaultsNomenclaturesValue.mnemonique_type, organism, regne, group2_inpn
         ),
     )
     if len(types) > 0:
-        q = q.filter(DefaultsNomenclaturesValue.mnemonique_type.in_(tuple(types)))
-    data = q.all()
+        query = query.where(DefaultsNomenclaturesValue.mnemonique_type.in_(tuple(types)))
+    data = db.session.execute(query).all()
     if not data:
         raise NotFound
     return jsonify(dict(data))
@@ -880,21 +1076,21 @@ def get_color_taxon():
     id_areas_type = params.getlist("code_area_type")
     cd_noms = params.getlist("cd_nom")
     id_areas = params.getlist("id_area")
-    q = DB.session.query(VColorAreaTaxon)
+    query = select(VColorAreaTaxon)
     if len(id_areas_type) > 0:
-        q = q.join(LAreas, LAreas.id_area == VColorAreaTaxon.id_area).join(
+        query = query.join(LAreas, LAreas.id_area == VColorAreaTaxon.id_area).join(
             BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type
         )
-        q = q.filter(BibAreasTypes.type_code.in_(tuple(id_areas_type)))
+        query = query.where(BibAreasTypes.type_code.in_(tuple(id_areas_type)))
     if len(id_areas) > 0:
         # check if the join already done on l_areas
-        if not is_already_joined(LAreas, q):
-            q = q.join(LAreas, LAreas.id_area == VColorAreaTaxon.id_area)
-        q = q.filter(LAreas.id_area.in_(tuple(id_areas)))
-    q = q.order_by(VColorAreaTaxon.cd_nom).order_by(VColorAreaTaxon.id_area)
+        if not is_already_joined(LAreas, query):
+            query = query.join(LAreas, LAreas.id_area == VColorAreaTaxon.id_area)
+        query = query.where(LAreas.id_area.in_(tuple(id_areas)))
+    query = query.order_by(VColorAreaTaxon.cd_nom).order_by(VColorAreaTaxon.id_area)
     if len(cd_noms) > 0:
-        q = q.filter(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
-    results = q.paginate(page=page, per_page=limit, error_out=False)
+        query = query.where(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
+    results = db.paginate(query, page=page, per_page=limit, error_out=False)
 
     return jsonify([d.as_dict() for d in results.items])
 
@@ -919,11 +1115,12 @@ def get_taxa_count():
     """
     params = request.args
 
-    query = DB.session.query(func.count(distinct(Synthese.cd_nom))).select_from(Synthese)
-
-    if "id_dataset" in params:
-        query = query.filter(Synthese.id_dataset == params["id_dataset"])
-    return query.one()[0]
+    query = (
+        select(func.count(distinct(Synthese.cd_nom)))
+        .select_from(Synthese)
+        .where(Synthese.id_dataset == params["id_dataset"] if "id_dataset" in params else True)
+    )
+    return db.session.scalar(query)
 
 
 @routes.route("/observation_count", methods=["GET"])
@@ -947,10 +1144,10 @@ def get_observation_count():
     """
     params = request.args
 
-    query = db.select(func.count(Synthese.id_synthese)).select_from(Synthese)
+    query = select(func.count(Synthese.id_synthese)).select_from(Synthese)
 
     if "id_dataset" in params:
-        query = query.filter(Synthese.id_dataset == params["id_dataset"])
+        query = query.where(Synthese.id_dataset == params["id_dataset"])
 
     return DB.session.execute(query).scalar_one()
 
@@ -974,13 +1171,13 @@ def get_bbox():
     """
     params = request.args
 
-    query = DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
+    query = select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
 
     if "id_dataset" in params:
-        query = query.filter(Synthese.id_dataset == params["id_dataset"])
+        query = query.where(Synthese.id_dataset == params["id_dataset"])
     if "id_source" in params:
-        query = query.filter(Synthese.id_source == params["id_source"])
-    data = query.one()
+        query = query.where(Synthese.id_source == params["id_source"])
+    data = db.session.execute(query).one()
     if data and data[0]:
         return Response(data[0], mimetype="application/json")
     return "", 204
@@ -1001,7 +1198,7 @@ def observation_count_per_column(column):
         raise BadRequest(f"No column name {column} in Synthese")
     synthese_column = getattr(Synthese, column)
     stmt = (
-        DB.select(
+        select(
             func.count(Synthese.id_synthese).label("count"),
             synthese_column.label(column),
         )
@@ -1035,23 +1232,23 @@ def get_taxa_distribution():
     Taxref.group2_inpn
 
     query = (
-        DB.session.query(func.count(distinct(Synthese.cd_nom)), rank)
+        select(func.count(distinct(Synthese.cd_nom)), rank)
         .select_from(Synthese)
         .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
     )
 
     if id_dataset:
-        query = query.filter(Synthese.id_dataset == id_dataset)
+        query = query.where(Synthese.id_dataset == id_dataset)
 
     elif id_af:
-        query = query.outerjoin(TDatasets, TDatasets.id_dataset == Synthese.id_dataset).filter(
+        query = query.outerjoin(TDatasets, TDatasets.id_dataset == Synthese.id_dataset).where(
             TDatasets.id_acquisition_framework == id_af
         )
     # User can add id_source filter along with id_dataset or id_af
     if id_source is not None:
-        query = query.filter(Synthese.id_source == id_source)
+        query = query.where(Synthese.id_source == id_source)
 
-    data = query.group_by(rank).all()
+    data = db.session.execute(query.group_by(rank)).all()
     return jsonify([{"count": d[0], "group": d[1]} for d in data])
 
 
@@ -1087,22 +1284,31 @@ def create_report(permissions):
     if not type_exists:
         raise BadRequest("This report type does not exist")
 
-    synthese = Synthese.query.options(
-        Load(Synthese).raiseload("*"),
-        joinedload("nomenclature_sensitivity"),
-        joinedload("cor_observers"),
-        joinedload("digitiser"),
-        joinedload("dataset"),
-    ).get_or_404(id_synthese)
+    synthese = db.session.scalars(
+        select(Synthese)
+        .options(
+            Load(Synthese).raiseload("*"),
+            joinedload("nomenclature_sensitivity"),
+            joinedload("cor_observers"),
+            joinedload("digitiser"),
+            joinedload("dataset"),
+        )
+        .filter_by(id_synthese=id_synthese)
+        .limit(1),
+    ).first()
+
+    if not synthese:
+        abort(404)
+
     if not synthese.has_instance_permission(permissions):
         raise Forbidden
 
-    report_query = TReport.query.filter(
+    report_query = TReport.query.where(
         TReport.id_synthese == id_synthese,
         TReport.report_type.has(BibReportsTypes.type == type_name),
     )
 
-    user_pin = TReport.query.filter(
+    user_pin = TReport.query.where(
         TReport.id_synthese == id_synthese,
         TReport.report_type.has(BibReportsTypes.type == "pin"),
         TReport.id_role == g.current_user.id_role,
@@ -1131,7 +1337,7 @@ def create_report(permissions):
         # Get the users that commented the observation
         commenters = {
             report.id_role
-            for report in report_query.filter(
+            for report in report_query.where(
                 TReport.id_role.notin_({synthese.id_digitiser} | observers)
             ).distinct(TReport.id_role)
         }
@@ -1190,11 +1396,11 @@ def list_reports(permissions):
     id_synthese = request.args.get("idSynthese")
     sort = request.args.get("sort")
     # VERIFY ID SYNTHESE
-    synthese = Synthese.query.get_or_404(id_synthese)
+    synthese = db.get_or_404(Synthese, id_synthese)
     if not synthese.has_instance_permission(permissions):
         raise Forbidden
     # START REQUEST
-    req = TReport.query.filter(TReport.id_synthese == id_synthese)
+    req = TReport.query.where(TReport.id_synthese == id_synthese)
     # SORT
     if sort == "asc":
         req = req.order_by(asc(TReport.creation_date))
@@ -1206,10 +1412,10 @@ def list_reports(permissions):
     if type_name and not type_exists:
         raise BadRequest("This report type does not exist")
     if type_name:
-        req = req.filter(TReport.report_type.has(BibReportsTypes.type == type_name))
+        req = req.where(TReport.report_type.has(BibReportsTypes.type == type_name))
     # filter by id_role for pin type only
     if type_name and type_name == "pin":
-        req = req.filter(TReport.id_role == g.current_user.id_role)
+        req = req.where(TReport.id_role == g.current_user.id_role)
     req = req.options(
         joinedload(TReport.user).load_only(User.nom_role, User.prenom_role),
         joinedload(TReport.report_type),
@@ -1272,7 +1478,7 @@ def list_synthese_log_entries() -> dict:
     dict
         log action list
     """
-
+    # FIXME SQLA 2
     deletion_entries = SyntheseLogEntry.query.options(
         load_only(
             SyntheseLogEntry.id_synthese,

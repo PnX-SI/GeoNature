@@ -110,16 +110,14 @@ def get_datasets():
     if "create" in params:
         create = params.pop("create").split(".")
         if len(create) > 1:
-            query = TDatasets.select.filter_by_creatable(
-                module_code=create[0], object_code=create[1]
-            )
+            query = TDatasets.filter_by_creatable(module_code=create[0], object_code=create[1])
         else:
-            query = TDatasets.select.filter_by_creatable(module_code=create[0])
+            query = TDatasets.filter_by_creatable(module_code=create[0])
     else:
-        query = TDatasets.select.filter_by_readable()
+        query = TDatasets.filter_by_readable()
 
     if request.is_json:
-        query = query.filter_by_params(request.json)
+        query = TDatasets.filter_by_params(request.json, query=query)
 
     if "orderby" in params:
         table_columns = TDatasets.__table__.columns
@@ -188,7 +186,7 @@ def get_dataset(scope, id_dataset):
     :param type: int
     :returns: dict<TDataset>
     """
-    dataset = db.get_or_404(TDatasets, id_dataset)  # TDatasets.query.get_or_404(id_dataset)
+    dataset = db.get_or_404(TDatasets, id_dataset)
     if not dataset.has_instance_permission(scope=scope):
         raise Forbidden(f"User {g.current_user} cannot read dataset {dataset.id_dataset}")
 
@@ -257,9 +255,9 @@ def uuid_report():
     id_module = params.get("id_module")
 
     query = (
-        DB.select(Synthese)
-        .where_if(id_module is not None, Synthese.id_module == id_module)
-        .where_if(ds_id is not None, Synthese.id_dataset == ds_id)
+        select(Synthese)
+        .where(Synthese.id_module == id_module if id_module is not None else True)
+        .where(Synthese.id_dataset == ds_id if ds_id is not None else True)
     )
 
     # TODO test in module import ?
@@ -312,12 +310,12 @@ def sensi_report(ds_id=None):
     params = request.args
     if not ds_id:
         ds_id = params["id_dataset"]
-    dataset = db.get_or_404(TDatasets, ds_id)  # TDatasets.query.get_or_404(ds_id)
+    dataset = db.get_or_404(TDatasets, ds_id)
     id_import = params.get("id_import")
     id_module = params.get("id_module")
 
     query = (
-        DB.select(
+        select(
             Synthese,
             func.taxonomie.find_cdref(Synthese.cd_nom).label("cd_ref"),
             func.array_agg(LAreas.area_name).label("codeDepartementCalcule"),
@@ -342,7 +340,7 @@ def sensi_report(ds_id=None):
     )
 
     if id_import:
-        query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).filter(
+        query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).where(
             TSources.name_source == "Import(id={})".format(id_import)
         )
 
@@ -383,7 +381,7 @@ def sensi_report(ds_id=None):
         for row in data
     ]
     sensi_version = DB.session.scalars(
-        db.select(func.gn_commons.get_default_parameter("ref_sensi_version"))
+        select(func.gn_commons.get_default_parameter("ref_sensi_version"))
     ).one_or_none()
 
     if sensi_version:
@@ -524,9 +522,9 @@ def get_acquisition_frameworks():
     """
     only = ["+cruved"]
     # QUERY
-    af_list = TAcquisitionFramework.select.filter_by_readable()
+    af_list = TAcquisitionFramework.filter_by_readable()
     if request.is_json:
-        af_list = af_list.filter_by_params(request.json)
+        af_list = TAcquisitionFramework.filter_by_params(request.json, query=af_list)
 
     af_list = af_list.order_by(TAcquisitionFramework.acquisition_framework_name).options(
         Load(TAcquisitionFramework).raiseload("*"),
@@ -645,7 +643,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     nb_data = len(dataset_ids)
 
     query = (
-        db.select(func.count(Synthese.cd_nom))
+        select(func.count(Synthese.cd_nom))
         .select_from(Synthese)
         .where(Synthese.id_dataset.in_(dataset_ids))
     )
@@ -655,13 +653,12 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     nb_habitat = 0
 
     # Check if pr_occhab exist
-    check_schema_query = exists(
-        select(text("schema_name"))
+    check_schema_query = (
+        select(func.count(text("schema_name")))
         .select_from(text("information_schema.schemata"))
         .where(text("schema_name = 'pr_occhab'"))
     )
-
-    if DB.session.query(check_schema_query).scalar() and nb_data > 0:
+    if DB.session.execute(check_schema_query).scalar_one() > 0 and nb_data > 0:
         query = (
             "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
         ("
@@ -876,7 +873,7 @@ def get_acquisition_framework_stats(id_acquisition_framework):
     :param type: int
     """
     dataset_ids = db.session.scalars(
-        db.select(TDatasets.id_dataset).where(
+        select(TDatasets.id_dataset).where(
             TDatasets.id_acquisition_framework == id_acquisition_framework
         )
     ).all()
@@ -884,13 +881,11 @@ def get_acquisition_framework_stats(id_acquisition_framework):
     nb_datasets = len(dataset_ids)
 
     nb_taxons = db.session.execute(
-        db.select(func.count(Synthese.cd_nom))
-        .where(Synthese.id_dataset.in_(dataset_ids))
-        .distinct()
+        select(func.count(Synthese.cd_nom)).where(Synthese.id_dataset.in_(dataset_ids)).distinct()
     ).scalar_one()
 
     nb_observations = db.session.execute(
-        db.select(func.count("*"))
+        select(func.count("*"))
         .select_from(Synthese)
         .where(
             Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework)
@@ -901,7 +896,7 @@ def get_acquisition_framework_stats(id_acquisition_framework):
 
     if "OCCHAB" in config and nb_datasets > 0:
         nb_habitats = db.session.execute(
-            db.select(func.count("*"))
+            select(func.count("*"))
             .select_from(OccurenceHabitat)
             .join(Station)
             .where(Station.id_dataset.in_(dataset_ids))
@@ -927,19 +922,19 @@ def get_acquisition_framework_bbox(id_acquisition_framework):
     """
 
     dataset_ids = db.session.scalars(
-        db.select(TDatasets.id_dataset).where(
+        select(TDatasets.id_dataset).where(
             TDatasets.id_acquisition_framework == id_acquisition_framework
         )
     ).all()
 
-    geojsonData = (
-        DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
-        .filter(Synthese.id_dataset.in_(dataset_ids))
-        .first()[0]
-    )
+    geojsonData = DB.session.scalars(
+        select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
+        .where(Synthese.id_dataset.in_(dataset_ids))
+        .limit(1)
+    ).first()
     # geojsonData will never be empty, if no entries matching the query condition(s), it will contains [(None,)]
     geojsonData = db.session.execute(
-        db.select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
+        select(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
         .where(Synthese.id_dataset.in_(dataset_ids))
         .limit(1)
     ).first()[0]
@@ -1011,7 +1006,7 @@ def publish_acquisition_framework_mail(af):
         mail_recipients.add(cur_user.email)
 
     if af.id_digitizer:
-        digitizer = DB.session.query(User).get(af.id_digitizer)
+        digitizer = DB.session.get(User, af.id_digitizer)
         if digitizer and digitizer.email:
             mail_recipients.add(digitizer.email)
     # Mail sent
@@ -1030,7 +1025,7 @@ def publish_acquisition_framework(af_id):
 
     # The AF must contain DS to be published
     datasets = (
-        db.session.scalars(db.select(TDatasets).filter_by(id_acquisition_framework=af_id))
+        db.session.scalars(select(TDatasets).filter_by(id_acquisition_framework=af_id))
         .unique()
         .all()
     )
@@ -1039,7 +1034,7 @@ def publish_acquisition_framework(af_id):
         raise Conflict("Le cadre doit contenir des jeux de données")
 
     af_count = db.session.execute(
-        db.select(func.count("*"))
+        select(func.count("*"))
         .select_from(TAcquisitionFramework)
         .where(
             TAcquisitionFramework.id_acquisition_framework == af_id,

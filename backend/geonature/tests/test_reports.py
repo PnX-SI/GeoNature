@@ -2,7 +2,7 @@ import json
 
 import pytest
 from flask import url_for
-from sqlalchemy import func
+from sqlalchemy import func, select, exists
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Unauthorized
 
 from geonature.core.gn_synthese.models import BibReportsTypes, Synthese, TReport
@@ -49,7 +49,7 @@ def self_user_notification_rule(users):
 class TestReports:
     def test_create_report(self, synthese_data, users):
         url = "gn_synthese.create_report"
-        id_synthese = db.session.query(Synthese).first().id_synthese
+        id_synthese = db.session.scalars(select(Synthese).limit(1)).first().id_synthese
         data = {"item": id_synthese, "content": "comment 4", "type": "discussion"}
         # TEST - NO AUTHENT
         response = self.client.post(url_for(url), data=data)
@@ -85,26 +85,47 @@ class TestReports:
     def test_delete_report(self, reports_data, users):
         # NO AUTHENT
         url = "gn_synthese.delete_report"
-        id_report_ko = db.session.query(func.max(TReport.id_report)).scalar() + 1
+        id_report_ko = db.session.execute(select(func.max(TReport.id_report))).scalar_one() + 1
         # get id type for discussion type
         discussionIdType = (
-            BibReportsTypes.query.filter(BibReportsTypes.type == "discussion").first().id_type
+            db.session.scalars(
+                select(BibReportsTypes).where(BibReportsTypes.type == "discussion").limit(1)
+            )
+            .first()
+            .id_type
         )
         # get a report with discussion type
         notDiscussionReportId = (
-            TReport.query.filter(TReport.id_type != discussionIdType).first().id_report
+            db.session.scalars(select(TReport).where(TReport.id_type != discussionIdType))
+            .first()
+            .id_report
         )
         # get a report with other type (e.g alert)
         discussionReportId = (
-            TReport.query.filter(
-                TReport.id_type == discussionIdType, TReport.id_role == users["admin_user"].id_role
+            db.session.scalars(
+                select(TReport)
+                .where(
+                    TReport.id_type == discussionIdType,
+                    TReport.id_role == users["admin_user"].id_role,
+                )
+                .limit(1)
             )
             .first()
             .id_report
         )
         # get alert item
-        alertIdType = BibReportsTypes.query.filter(BibReportsTypes.type == "alert").first().id_type
-        alertReportId = TReport.query.filter(TReport.id_type == alertIdType).first().id_report
+        alertIdType = (
+            db.session.scalars(
+                select(BibReportsTypes).where(BibReportsTypes.type == "alert").limit(1)
+            )
+            .first()
+            .id_type
+        )
+        alertReportId = (
+            db.session.scalars(select(TReport).where(TReport.id_type == alertIdType))
+            .first()
+            .id_report
+        )
         # DELETE WITHOUT AUTH
         response = self.client.delete(url_for(url, id_report=discussionReportId))
         assert response.status_code == 401
@@ -115,14 +136,11 @@ class TestReports:
         # SUCCESS - NOT DELETE WITH DISCUSSION
         response = self.client.delete(url_for(url, id_report=discussionReportId))
         assert response.status_code == 204
-        assert db.session.query(
-            TReport.query.filter_by(id_report=discussionReportId).exists()
-        ).scalar()
+        assert db.session.scalar(exists().where(TReport.id_report == discussionReportId).select())
+
         # SUCCESS - DELETE ALERT
         response = self.client.delete(url_for(url, id_report=alertReportId))
-        assert not db.session.query(
-            TReport.query.filter_by(id_report=alertReportId).exists()
-        ).scalar()
+        assert not db.session.scalar(exists().where(TReport.id_report == alertReportId).select())
 
     def test_list_reports(self, reports_data, synthese_data, users):
         url = "gn_synthese.list_reports"
@@ -188,13 +206,17 @@ class TestReportsNotifications:
 
         # Check that admin_user (observer) and self_user (digitiser) are notified
         id_roles = {user.id_role for user in (users["admin_user"], users["self_user"])}
-        notifications = Notification.query.filter(Notification.id_role.in_(id_roles)).all()
+        notifications = db.session.scalars(
+            select(Notification).where(Notification.id_role.in_(id_roles))
+        ).all()
 
         assert {notification.id_role for notification in notifications} == id_roles
         assert all(synthese.nom_cite in notif.content for notif in notifications)
         # Check that user is not notified since he posted the comment
         assert (
-            Notification.query.filter(Notification.id_role == users["user"].id_role).first()
+            db.session.scalars(
+                select(Notification).where(Notification.id_role == users["user"].id_role).limit(1)
+            ).first()
             is None
         )
 
@@ -228,14 +250,18 @@ class TestReportsNotifications:
         id_roles = {
             user.id_role for user in (users["user"], users["admin_user"], users["self_user"])
         }
-        notifications = Notification.query.filter(Notification.id_role.in_(id_roles)).all()
+        notifications = db.session.scalars(
+            select(Notification).where(Notification.id_role.in_(id_roles))
+        ).all()
 
         assert {notification.id_role for notification in notifications} == id_roles
         assert all(synthese.nom_cite in notif.content for notif in notifications)
         # But check also that associate_user is not notified for the comment he posted
         assert (
-            Notification.query.filter(
-                Notification.id_role == users["associate_user"].id_role
+            db.session.scalars(
+                select(Notification)
+                .where(Notification.id_role == users["associate_user"].id_role)
+                .limit(1)
             ).first()
             is None
         )
@@ -268,8 +294,10 @@ class TestReportsNotifications:
         _ = self.post_comment(synthese=synthese, user=users["associate_user"])
         # Check that associate_user is not notified (just in case)
         assert (
-            Notification.query.filter(
-                Notification.id_role == users["associate_user"].id_role
+            db.session.scalars(
+                select(Notification)
+                .where(Notification.id_role == users["associate_user"].id_role)
+                .limit(1)
             ).first()
             is None
         )
@@ -287,6 +315,8 @@ class TestReportsNotifications:
                 users["user"],
             )
         }
-        notifications = Notification.query.filter(Notification.id_role.in_(user_roles)).all()
+        notifications = db.session.scalars(
+            select(Notification).where(Notification.id_role.in_(user_roles))
+        ).all()
 
         assert {notification.id_role for notification in notifications} == user_roles

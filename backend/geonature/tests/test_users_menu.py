@@ -1,6 +1,6 @@
 import pytest
 from flask import url_for
-from sqlalchemy import func
+from sqlalchemy import func, select
 from sqlalchemy.sql import and_
 
 from geonature.tests.fixtures import users
@@ -12,7 +12,12 @@ from pypnusershub.db.models import UserList
 
 @pytest.fixture
 def unavailable_menu_id(tlist):
-    return db.session.query(func.max(VUserslistForallMenu.id_menu)).scalar() + 1
+    return (
+        db.session.execute(
+            select(func.max(VUserslistForallMenu.id_menu)).select_from(VUserslistForallMenu)
+        ).scalar()
+        + 1
+    )
 
 
 @pytest.fixture
@@ -33,20 +38,17 @@ def user_tlist(tlist):
     Get a user list that is mentioned in VUserslistForallMenu so
     that the get_roles_by_menu_code call works
     """
-    # with entity ?
-    return (
-        UserList.query.with_entities(
+    return db.session.execute(
+        select(
             UserList.nom_liste,
             UserList.code_liste,
             UserList.desc_liste,
             VUserslistForallMenu.nom_complet,
-        )
-        .join(
+        ).join(
             VUserslistForallMenu,
-            and_(UserList.id_liste == VUserslistForallMenu.id_menu),
+            UserList.id_liste == VUserslistForallMenu.id_menu,
         )
-        .first()
-    )
+    ).first()
 
 
 # No need of temporary transaction since only selects are performed
@@ -68,7 +70,6 @@ class TestApiUsersMenu:
     def test_menu_by_id_with_nomcomplet(self):
         # (upper(a.nom_role::text) || ' '::text) || a.prenom_role::text AS nom_complet,
         resp = self.client.get(url_for("users.get_roles_by_menu_id", id_menu=1))
-        print(resp.json)
 
     def test_menu_notexists(self, unavailable_menu_id):
         resp = self.client.get(url_for("users.get_roles_by_menu_id", id_menu=unavailable_menu_id))

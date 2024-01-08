@@ -4,7 +4,7 @@ import pytest
 
 from flask import url_for
 from sqlalchemy.dialects import postgresql
-from sqlalchemy import and_
+from sqlalchemy import and_, select, exists
 from werkzeug.exceptions import Unauthorized, BadRequest
 from werkzeug.datastructures import MultiDict
 
@@ -18,7 +18,7 @@ from .fixtures import *
 
 @pytest.fixture()
 def delete_synthese():
-    synthese = Synthese.query.first()
+    synthese = db.session.scalars(select(Synthese)).first()
     with db.session.begin_nested():
         db.session.delete(synthese)
     return synthese
@@ -30,16 +30,19 @@ class TestSyntheseLogs:
         """
         Test delete synthese trigger insert into t_log_synthese
         """
-
         obs = synthese_data["obs1"]
-        assert not db.session.query(
-            SyntheseLogEntry.query.filter_by(id_synthese=obs.id_synthese).exists()
-        ).scalar()
+        assert not (
+            db.session.execute(
+                exists().where(SyntheseLogEntry.id_synthese == obs.id_synthese).select()
+            ).scalar_one()
+            == True
+        )
         with db.session.begin_nested():
             db.session.delete(obs)
-        assert db.session.query(
-            SyntheseLogEntry.query.filter_by(id_synthese=obs.id_synthese).exists()
-        ).scalar()
+
+        assert db.session.scalar(
+            exists().where(SyntheseLogEntry.id_synthese == obs.id_synthese).select()
+        )
 
     def test_list_synthese_log_entries_unauthenticated(self, users):
         url = url_for("gn_synthese.list_synthese_log_entries")

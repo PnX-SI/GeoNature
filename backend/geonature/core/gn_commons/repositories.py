@@ -7,7 +7,7 @@ from PIL import Image, ImageOps
 from io import BytesIO
 from flask import current_app, url_for
 from werkzeug.utils import secure_filename
-from sqlalchemy import and_
+from sqlalchemy import and_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from pypnnomenclature.models import TNomenclatures
@@ -230,7 +230,7 @@ class TMediaRepository:
 
     def media_type(self):
         nomenclature = DB.session.execute(
-            DB.select(TNomenclatures).where(
+            select(TNomenclatures).where(
                 TNomenclatures.id_nomenclature == self.data["id_nomenclature_media_type"]
             )
         ).scalar_one()
@@ -346,7 +346,7 @@ class TMediumRepository:
         en fonction de son uuid
         """
         medium = DB.session.scalars(
-            DB.select(TMedias).where(TMedias.uuid_attached_row == entity_uuid)
+            select(TMedias).where(TMedias.uuid_attached_row == entity_uuid)
         ).all()
         return medium
 
@@ -360,7 +360,7 @@ class TMediumRepository:
 
         # delete media temp > 24h
         res_medias_temp = DB.session.scalars(
-            DB.select(TMedias.id_media).filter(
+            select(TMedias.id_media).where(
                 and_(
                     TMedias.meta_update_date
                     < (datetime.datetime.now() - datetime.timedelta(hours=24)),
@@ -397,10 +397,10 @@ class TMediumRepository:
         ids_media_file = list(dict.fromkeys(ids_media_file))
 
         # suppression des fichiers dont le media n'existe plpus en base
-        ids_media_base = (
-            DB.session.query(TMedias.id_media).filter(TMedias.id_media.in_(ids_media_file)).all()
-        )
-        ids_media_base = [x[0] for x in ids_media_base]
+        ids_media_base = DB.session.scalars(
+            select(TMedias.id_media).where(TMedias.id_media.in_(ids_media_file))
+        ).all()
+        ids_media_base = [x for x in ids_media_base]
 
         ids_media_to_delete = [x for x in ids_media_file if x not in ids_media_base]
 
@@ -420,9 +420,9 @@ class TMediumRepository:
 def get_table_location_id(schema_name, table_name):
     try:
         location = DB.session.execute(
-            DB.select(BibTablesLocation)
-            .filter(BibTablesLocation.schema_name == schema_name)
-            .filter(BibTablesLocation.table_name == table_name)
+            select(BibTablesLocation)
+            .where(BibTablesLocation.schema_name == schema_name)
+            .where(BibTablesLocation.table_name == table_name)
         ).scalar_one()
     except NoResultFound:
         return None

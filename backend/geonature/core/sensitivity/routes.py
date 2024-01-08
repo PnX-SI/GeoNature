@@ -5,7 +5,7 @@ from zipfile import ZipFile
 
 import click
 from flask import Blueprint, current_app
-from sqlalchemy import func
+from sqlalchemy import func, select
 from sqlalchemy.schema import Table
 
 from geonature.utils.env import db
@@ -30,49 +30,64 @@ def info():
         schema="gn_sensitivity",
         autoload_with=db.session.connection(),
     )
-    total_count = SensitivityRule.query.count()
+    total_count = db.session.scalar(select(func.count("*")).select_from(SensitivityRule))
 
     click.echo("Nombre de règle de sensibilité :")
     click.echo("\tTotal : {}".format(total_count))
     click.echo(
-        "\tRègles actives : {}".format(SensitivityRule.query.filter_by(active=True).count())
+        "\tRègles actives : {}".format(
+            db.session.scalar(
+                select(func.count("*")).select_from(SensitivityRule).filter_by(active=True)
+            )
+        )
     )
     click.echo(
         "\tRègles actives extrapolées aux taxons enfants : {}".format(
-            db.session.query(func.count(SensitivityRuleCache.c.id_sensitivity)).scalar()
+            db.session.scalar(select(func.count(SensitivityRuleCache.c.id_sensitivity)))
         )
     )
 
     if total_count:
         click.echo("Nombre de règles de sensibilité par source (actives / total):")
         q = (
-            db.session.query(
+            select(
                 SensitivityRule.source,
                 func.count(SensitivityRule.id)
-                .filter(SensitivityRule.active == True)
+                .where(SensitivityRule.active == True)
                 .label("active_count"),
                 func.count(SensitivityRule.id).label("total_count"),
             )
             .group_by(SensitivityRule.source)
             .order_by(SensitivityRule.source)
         )
-        for source, active_count, total_count in q.all():
+        for source, active_count, total_count in db.session.execute(q).all():
             click.echo(f"\t{source} : {active_count} / {total_count}")
 
     click.echo(f"Nombre de taxons :")
     click.echo(
-        "\tTotal : {}".format(SensitivityRule.query.distinct(SensitivityRule.cd_nom).count())
+        "\tTotal : {}".format(
+            db.session.scalar(
+                select(func.count("*"))
+                .select_from(SensitivityRule)
+                .distinct(SensitivityRule.cd_nom)
+            )
+        )
     )
     click.echo(
         "\tRègles actives : {}".format(
-            SensitivityRule.query.filter_by(active=True).distinct(SensitivityRule.cd_nom).count()
+            db.session.scalar(
+                select(func.count("*"))
+                .select_from(SensitivityRule)
+                .filter_by(active=True)
+                .distinct(SensitivityRule.cd_nom)
+            )
         )
     )
     click.echo(
         "\tRègles actives extrapolées aux taxons enfants : {}".format(
-            db.session.query(
+            db.session.scalar(
                 func.count(func.distinct(SensitivityRuleCache.c.cd_nom)).label("count")
-            ).scalar()
+            )
         )
     )
 

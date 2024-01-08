@@ -90,7 +90,7 @@ def get_synthese_data(scope):
     to use to populate relationships models.
     """
     last_validation_subquery = (
-        db.select(TValidations)
+        sa.select(TValidations)
         .where(TValidations.uuid_attached_row == Synthese.unique_id_sinp)
         .order_by(TValidations.validation_date.desc())
         .limit(1)
@@ -102,7 +102,7 @@ def get_synthese_data(scope):
 
     if enable_profile:
         profile_subquery = (
-            db.select(VConsistancyData)
+            sa.select(VConsistancyData)
             .where(VConsistancyData.id_synthese == Synthese.id_synthese)
             .limit(result_limit)
             .subquery()
@@ -203,9 +203,10 @@ def get_synthese_data(scope):
 @permissions.check_cruved_scope("C", module_code="VALIDATION")
 def get_statusNames():
     nomenclatures = (
-        TNomenclatures.query.join(BibNomenclaturesTypes)
-        .filter(BibNomenclaturesTypes.mnemonique == "STATUT_VALID")
-        .filter(TNomenclatures.active == True)
+        sa.select(TNomenclatures)
+        .join(BibNomenclaturesTypes)
+        .where(BibNomenclaturesTypes.mnemonique == "STATUT_VALID")
+        .where(TNomenclatures.active == True)
         .order_by(TNomenclatures.cd_nomenclature)
     )
     return jsonify(
@@ -213,7 +214,7 @@ def get_statusNames():
             nomenc.as_dict(
                 fields=["id_nomenclature", "mnemonique", "cd_nomenclature", "definition_default"]
             )
-            for nomenc in nomenclatures.all()
+            for nomenc in db.session.scalars(nomenclatures).all()
         ]
     )
 
@@ -226,7 +227,7 @@ def post_status(scope, id_synthese):
         id_validation_status = data["statut"]
     except KeyError:
         raise BadRequest("Aucun statut de validation n'est sélectionné")
-    validation_status = TNomenclatures.query.get_or_404(id_validation_status)
+    validation_status = db.get_or_404(TNomenclatures, id_validation_status)
     try:
         validation_comment = data["comment"]
     except KeyError:
@@ -238,7 +239,7 @@ def post_status(scope, id_synthese):
         # t_validations.id_validation:
 
         # t_validations.uuid_attached_row:
-        synthese = Synthese.query.get_or_404(int(id))
+        synthese = db.get_or_404(Synthese, int(id))
 
         if not synthese.has_instance_permission(scope):
             raise Forbidden
@@ -286,7 +287,11 @@ def get_validation_date(scope, uuid):
     Retourne la date de validation
     pour l'observation uuid
     """
-    s = Synthese.query.filter_by(unique_id_sinp=uuid).lateraljoin_last_validation().first_or_404()
+    s = db.first_or_404(
+        Synthese.lateraljoin_last_validation(
+            query=sa.select(Synthese).filter_by(unique_id_sinp=uuid)
+        )
+    )
     if not s.has_instance_permission(scope):
         raise Forbidden
     if s.last_validation:

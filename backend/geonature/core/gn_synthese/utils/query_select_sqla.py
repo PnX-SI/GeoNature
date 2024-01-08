@@ -71,6 +71,7 @@ class SyntheseQuery:
         id_digitiser_column="id_digitiser",
         with_generic_table=False,
         query_joins=None,
+        geom_column=None,
     ):
         self.query = query
 
@@ -79,6 +80,7 @@ class SyntheseQuery:
         self.model = model
         self._already_joined_table = []
         self.query_joins = query_joins
+        self.geom_column = geom_column if geom_column is not None else model.the_geom_4326
 
         if with_generic_table:
             model_temp = model.columns
@@ -130,10 +132,11 @@ class SyntheseQuery:
                 # push the joined table in _already_joined_table list
                 self._already_joined_table.append(right_table)
 
-    def filter_query_with_permissions(self, user, permissions):
+    def build_permissions_filter(self, user, permissions):
         """
-        Filter the query with the permissions of a user
+        Return a where clause for the given permissions set
         """
+        blur_sensitive_observations = current_app.config["SYNTHESE"]["BLUR_SENSITIVE_OBSERVATIONS"]
         subquery_observers = (
             select(CorObserverSynthese.id_synthese)
             .select_from(CorObserverSynthese)
@@ -141,30 +144,36 @@ class SyntheseQuery:
         )
         datasets_by_scope = {}  # to avoid fetching datasets several time for same scope
         permissions_filters = []
-        nomenclature_non_sensible = None
+        excluded_sensitivity = None
         for perm in permissions:
             if perm.has_other_filters_than("SCOPE", "SENSITIVITY"):
                 continue
             perm_filters = []
             if perm.sensitivity_filter:
-                if nomenclature_non_sensible is None:
-                    nomenclature_non_sensible = (
-                        TNomenclatures.query.filter(
-                            TNomenclatures.nomenclature_type.has(
-                                BibNomenclaturesTypes.mnemonique == "SENSIBILITE"
-                            )
+                if excluded_sensitivity is None:
+                    excluded_sensitivity = TNomenclatures.query.where(
+                        TNomenclatures.nomenclature_type.has(
+                            BibNomenclaturesTypes.mnemonique == "SENSIBILITE"
                         )
-                        .filter(TNomenclatures.cd_nomenclature == "0")
-                        .one()
                     )
+                    if not blur_sensitive_observations:
+                        excluded_sensitivity = excluded_sensitivity.where(
+                            TNomenclatures.cd_nomenclature > "0"
+                        )
+                    else:
+                        excluded_sensitivity = excluded_sensitivity.where(
+                            TNomenclatures.cd_nomenclature == "4"
+                        )
+                    excluded_sensitivity = excluded_sensitivity.all()
                 perm_filters.append(
-                    self.model.id_nomenclature_sensitivity
-                    == nomenclature_non_sensible.id_nomenclature
+                    self.model.id_nomenclature_sensitivity.notin_(
+                        (nomenclature.id_nomenclature for nomenclature in excluded_sensitivity)
+                    )
                 )
             if perm.scope_value:
                 if perm.scope_value not in datasets_by_scope:
                     datasets_t = (
-                        DB.session.scalars(TDatasets.select.filter_by_scope(perm.scope_value))
+                        DB.session.scalars(TDatasets.filter_by_scope(perm.scope_value))
                         .unique()
                         .all()
                     )
@@ -183,9 +192,16 @@ class SyntheseQuery:
             else:
                 permissions_filters.append(sa.true())
         if permissions_filters:
-            self.query = self.query.where(or_(*permissions_filters))
+            return or_(*permissions_filters)
         else:
-            self.query = self.query.where(sa.false())
+            return sa.false()
+
+    def filter_query_with_permissions(self, user, permissions):
+        """
+        Filter the query with the permissions of a user
+        """
+        where_clause = self.build_permissions_filter(user=user, permissions=permissions)
+        self.query = self.query.where(where_clause)
 
     def filter_query_with_cruved(self, user, scope):
         """
@@ -202,7 +218,7 @@ class SyntheseQuery:
                 self.model_id_syn_col.in_(subquery_observers),
                 self.model_id_digitiser_column == user.id_role,
             ]
-            datasets = DB.session.scalars(TDatasets.select.filter_by_scope(scope)).all()
+            datasets = DB.session.scalars(TDatasets.filter_by_scope(scope)).all()
             allowed_datasets = [dataset.id_dataset for dataset in datasets]
             ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
 
@@ -367,12 +383,12 @@ class SyntheseQuery:
             )
 
         if "id_organism" in self.filters:
-            datasets = (
-                DB.session.query(CorDatasetActor.id_dataset)
-                .filter(CorDatasetActor.id_organism.in_(self.filters.pop("id_organism")))
-                .all()
-            )
-            formated_datasets = [d[0] for d in datasets]
+            datasets = DB.session.scalars(
+                select(CorDatasetActor.id_dataset).where(
+                    CorDatasetActor.id_organism.in_(self.filters.pop("id_organism"))
+                )
+            ).all()
+            formated_datasets = [d for d in datasets]
             self.query = self.query.where(self.model.id_dataset.in_(formated_datasets))
         if "date_min" in self.filters:
             self.query = self.query.where(self.model.date_min >= self.filters.pop("date_min"))
@@ -419,12 +435,12 @@ class SyntheseQuery:
                 if "radius" in feature["properties"]:
                     radius = feature["properties"]["radius"]
                     geo_filter = func.ST_DWithin(
-                        func.ST_GeogFromWKB(self.model.the_geom_4326),
+                        func.ST_GeogFromWKB(self.geom_column),
                         func.ST_GeogFromWKB(geom_wkb),
                         radius,
                     )
                 else:
-                    geo_filter = self.model.the_geom_4326.ST_Intersects(geom_wkb)
+                    geo_filter = self.geom_column.ST_Intersects(geom_wkb)
                 geo_filters.append(geo_filter)
             self.query = self.query.where(or_(*geo_filters))
             self.filters.pop("geoIntersection")
@@ -455,13 +471,19 @@ class SyntheseQuery:
         # generic filters
         for colname, value in self.filters.items():
             if colname.startswith("area"):
-                cor_area_synthese_alias = aliased(CorAreaSynthese)
-                self.add_join(
-                    cor_area_synthese_alias,
-                    cor_area_synthese_alias.id_synthese,
-                    self.model.id_synthese,
-                )
-                self.query = self.query.where(cor_area_synthese_alias.id_area.in_(value))
+                if self.geom_column.class_ != self.model:
+                    l_areas_cte = LAreas.query.filter(LAreas.id_area.in_(value)).cte("area_filter")
+                    self.query = self.query.where(
+                        func.ST_Intersects(self.geom_column, l_areas_cte.c.geom)
+                    )
+                else:
+                    cor_area_synthese_alias = aliased(CorAreaSynthese)
+                    self.add_join(
+                        cor_area_synthese_alias,
+                        cor_area_synthese_alias.id_synthese,
+                        self.model.id_synthese,
+                    )
+                    self.query = self.query.where(cor_area_synthese_alias.id_area.in_(value))
             elif colname.startswith("id_"):
                 col = getattr(self.model.__table__.columns, colname)
                 if isinstance(value, list):
