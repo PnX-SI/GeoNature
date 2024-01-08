@@ -1,85 +1,45 @@
 <!--Table-->
-<ngx-datatable
-  (window:resize)="onResize($event)"
-  #table
-  class="material striped margin-top-xs table-size expandable"
-  [rows]="mapListService.tableData"
-  [columns]="SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND"
-  [columnMode]="'force'"
-  [headerHeight]="50"
-  [footerHeight]="35"
-  [selected]="mapListService.selectedRow"
-  [selectionType]="'single'"
-  [count]="mapListService.tableData.length"
-  [limit]="rowNumber"
-  [rowClass]="getRowClass"
-  [reorderable]="true"
-  sortType="multi"
-  (sort)="onSort($event)"
-  (select)="mapListService.onRowSelect($event)"
->
+<ngx-datatable (window:resize)="onResize($event)" #table class="material striped margin-top-xs table-size expandable"
+  [rows]="mapListService.tableData" [columns]="SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND" [columnMode]="'force'"
+  [headerHeight]="50" [footerHeight]="35" [selected]="mapListService.selectedRow" [selectionType]="'single'"
+  [count]="mapListService.tableData.length" [limit]="rowNumber" [rowClass]="getRowClass" [reorderable]="true"
+  sortType="multi" (sort)="onSort($event)" (select)="mapListService.onRowSelect($event)">
   <ngx-datatable-column [maxWidth]="5">
     <ng-template let-row="row" ngx-datatable-cell-template>
       <button class="btn btn-outline-shadow btn-no-padding btn-ghost" (click)="openInfoModal(row)">
-        <i
-          #iElement
-          matTooltip="{{ row[mapListService.idName] }}"
-          class="fa fa-info-circle"
-          aria-hidden="true "
-          data-qa="synthese-info-btn"
-        ></i>
+        <i #iElement matTooltip="{{ row[mapListService.idName] }}" class="fa fa-info-circle" aria-hidden="true "
+          data-qa="synthese-info-btn"></i>
       </button>
     </ng-template>
   </ngx-datatable-column>
 
   <ngx-datatable-column [maxWidth]="5">
     <ng-template let-row="row" ngx-datatable-cell-template>
-      <button
-        *ngIf="row.url_source"
-        class="btn btn-outline-shadow btn-no-padding btn-ghost"
-        (click)="backToModule(row.url_source, row.entity_source_pk_value)"
-      >
-        <i
-          matTooltip="Voir l'observation dans le module de saisie"
-          class="fa fa-file-text"
-          aria-hidden="true"
-        ></i>
+      <button *ngIf="row.url_source" class="btn btn-outline-shadow btn-no-padding btn-ghost"
+        (click)="backToModule(row.url_source, row.entity_source_pk_value)">
+        <i matTooltip="Voir l'observation dans le module de saisie" class="fa fa-file-text" aria-hidden="true"></i>
       </button>
     </ng-template>
   </ngx-datatable-column>
 
 
   <!-- cellClass is use for test, the "data-qa" attr do not work because the html is generated -->
-  <ngx-datatable-column
-    *ngFor="let col of SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND"
-    [comparator]="dateComparator"
-    [maxWidth]="col.max_width"
-    [name]="col.name"
-    [prop]="col.prop"
-    [sortable]="true"
-    cellClass="synthese-list-col-{{col.prop}}" 
-  >
-  <ng-template let-row="row" ngx-datatable-cell-template>
-    <span [title]="row[col.prop]">
-      {{
+  <ngx-datatable-column *ngFor="let col of SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND" [maxWidth]="col.max_width"
+    [name]="col.name" [prop]="col.prop" [sortable]="true" cellClass="synthese-list-col-{{col.prop}}">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <span [title]="row[col.prop]">
+        {{
         col.prop == 'date_max' || col.prop == 'date_min' ? getDate(row[col.prop]) : row[col.prop]
-      }}
-    </span>
+        }}
+      </span>
 
-  </ng-template>
+    </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>
 
-<button
-  type="button"
-  class="uppercase"
-  id="download-btn"
-  mat-raised-button
-  color="primary"
-  (click)="openDownloadModal()"
-  [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E === 0"
-  data-qa="synthese-download-btn"
->
+<button type="button" class="uppercase" id="download-btn" mat-raised-button color="primary"
+  (click)="openDownloadModal()" [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E === 0"
+  data-qa="synthese-download-btn">
   {{ 'Download' | translate }}
   <mat-icon>file_download</mat-icon>
 </button>
