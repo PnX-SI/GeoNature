@@ -68,7 +68,7 @@ export class ObserversComponent extends GenericFormComponent {
   //upgrade la fonction de recherche de ng-select
   searchFn(term, item) {
     return customSearchFn(term, item, 'nom_complet');
-  };
+  }
 
   formatobs(obs: string): string {
     return obs.toLowerCase().replace(' ', '');

@@ -31,7 +31,7 @@ export class AcquisitionFrameworksComponent extends GenericFormComponent impleme
   //upgrade la fonction de recherche de ng-select
   searchFn(term, item) {
     return customSearchFn(term, item, 'acquisition_framework_name');
-  };
+  }
 
   getAcquisitionFrameworks() {
     this.acquisitionFrameworks = this._dfs.getAcquisitionFrameworks().pipe(

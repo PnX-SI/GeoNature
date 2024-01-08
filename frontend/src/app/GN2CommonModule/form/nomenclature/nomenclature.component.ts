@@ -149,7 +149,7 @@ export class NomenclatureComponent
   //upgrade la fonction de recherche de ng-select
   searchFn(term, item) {
     return customSearchFn(term, item, this.labelLang);
-  };
+  }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();

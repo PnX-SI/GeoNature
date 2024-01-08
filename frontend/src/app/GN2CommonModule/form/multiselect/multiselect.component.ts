@@ -90,5 +90,5 @@ export class MultiSelectComponent implements OnInit {
   //upgrade la fonction de recherche de ng-select
   searchFn(term, item) {
     return customSearchFn(term, item, this.keyLabel);
-  };
+  }
 }
