@@ -30,6 +30,7 @@ class StationSchema(CruvedSchemaMixin, SmartRelationshipsMixin, GeoAlchemyAutoSc
         sqla_session = db.session
         feature_id = "id_station"
         model_converter = StationConverter
+        feature_geometry = "geom_4326"
 
     __module_code__ = "OCCHAB"
 
