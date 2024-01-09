@@ -41,6 +41,28 @@ from .checks import (
 )
 
 
+def preprocess_transient_data(imprt, df):
+    updated_cols = set()
+    date_min_field = db.session.execute(
+        db.select(BibFields)
+        .where(BibFields.destination == imprt.destination)
+        .where(BibFields.name_field == "date_min")
+    ).scalar_one()
+    date_max_field = db.session.execute(
+        db.select(BibFields)
+        .where(BibFields.destination == imprt.destination)
+        .where(BibFields.name_field == "date_max")
+    ).scalar_one()
+    updated_cols |= concat_dates(
+        df,
+        datetime_min_col=date_min_field.source_field,
+        datetime_max_col=date_max_field.source_field,
+        date_min_col=date_min_field.source_field,
+        date_max_col=date_max_field.source_field,
+    )
+    return updated_cols
+
+
 def check_transient_data(task, logger, imprt):
     task.update_state(state="PROGRESS", meta={"progress": 0})
     transient_table = imprt.destination.get_transient_table()
@@ -68,15 +90,6 @@ def check_transient_data(task, logger, imprt):
         ### Dataframe checks
 
         df = load_transient_data_in_dataframe(imprt, entity, source_cols)
-
-        if entity.code == "station":
-            updated_cols |= concat_dates(
-                df,
-                datetime_min_field=fields["date_min"],
-                datetime_max_field=fields["date_max"],
-                date_min_field=fields["date_min"],
-                date_max_field=fields["date_max"],
-            )
 
         updated_cols |= check_types(
             imprt, entity, df, fields
