@@ -9,7 +9,9 @@ flask_app = create_app()
 class ContextTask(app.Task):
     def __call__(self, *args, **kwargs):
         with flask_app.app_context():
-            return self.run(*args, **kwargs)
+            result = self.run(*args, **kwargs)
+            db.session.remove()
+        return result
 
 
 app.Task = ContextTask
