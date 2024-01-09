@@ -134,7 +134,7 @@ def get_role(id_role):
     :param id_role: the id user
     :type id_role: int
     """
-    user = User.query.get_or_404(id_role)
+    user = DB.get_or_404(User, id_role)
     fields = user_fields.copy()
     if g.current_user == user:
         fields.add("email")

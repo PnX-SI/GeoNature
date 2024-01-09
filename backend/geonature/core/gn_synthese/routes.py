@@ -911,7 +911,10 @@ def general_stats(permissions):
         - nb of datasets
     """
     nb_allowed_datasets = db.session.scalar(
-        select(func.count("*")).select_from(TDatasets.select.filter_by_readable())
+        select(func.count("*"))
+        .select_from(TDatasets)
+        .where(TDatasets.filter_by_readable().whereclause)
+
     )
     query = select(
         func.count(Synthese.id_synthese),
