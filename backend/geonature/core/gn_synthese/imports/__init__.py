@@ -91,12 +91,12 @@ def check_transient_data(task, logger, imprt):
         with start_sentry_child(op="check.df", description="concat dates"):
             updated_cols |= concat_dates(
                 df,
-                fields["datetime_min"],
-                fields["datetime_max"],
-                fields["date_min"],
-                fields["date_max"],
-                fields["hour_min"],
-                fields["hour_max"],
+                fields["datetime_min"].dest_field,
+                fields["datetime_max"].dest_field,
+                fields["date_min"].source_field,
+                fields["date_max"].source_field,
+                fields["hour_min"].source_field,
+                fields["hour_max"].source_field,
             )
         update_batch_progress(batch, 2)
 
