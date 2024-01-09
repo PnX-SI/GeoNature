@@ -123,7 +123,10 @@ def check_duplicate_uuid(imprt, entity, uuid_field):
     duplicates = get_duplicates_query(
         imprt,
         uuid_col,
-        whereclause=uuid_col != None,
+        whereclause=sa.and_(
+            transient_table.c[entity.validity_column].isnot(None),
+            uuid_col != None,
+        ),
     )
     report_erroneous_rows(
         imprt,
@@ -167,13 +170,16 @@ def generate_missing_uuid(imprt, entity, uuid_field):
     db.session.execute(stmt)
 
 
-def check_duplicates_source_pk(imprt, entity, field):
+def check_duplicate_source_pk(imprt, entity, field):
     transient_table = imprt.destination.get_transient_table()
-    dest_col = transient_table.c[field.dest_field]
+    dest_col = transient_table.c[field.dest_column]
     duplicates = get_duplicates_query(
         imprt,
         dest_col,
-        whereclause=dest_col != None,
+        whereclause=sa.and_(
+            transient_table.c[entity.validity_column].isnot(None),
+            dest_col != None,
+        ),
     )
     report_erroneous_rows(
         imprt,

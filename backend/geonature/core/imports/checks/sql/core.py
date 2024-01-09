@@ -71,7 +71,7 @@ def check_orphan_rows(imprt):
     ]
     # Select fields associated to multiple entities
     AllEntityField = sa.orm.aliased(EntityField)
-    fields = (
+    multientity_fields = (
         db.session.query(BibFields)
         .join(EntityField)
         .join(Entity)
@@ -82,31 +82,30 @@ def check_orphan_rows(imprt):
         .having(sa.func.count(AllEntityField.id_entity) > 1)
         .all()
     )
-    for field in fields:
+    for field in multientity_fields:
         report_erroneous_rows(
             imprt,
             entity=None,  # OK because ORPHAN_ROW has only WARNING level
             error_type="ORPHAN_ROW",
             error_column=field.name_field,
             whereclause=sa.and_(
+                transient_table.c[field.source_field].isnot(None),
                 *[transient_table.c[col].is_(None) for col in imprt.destination.validity_columns]
             ),
         )
 
 
 # Currently not used as done during dataframe checks
-def check_mandatory_fields(imprt, fields):
+def check_mandatory_fields(imprt, entity, fields):
     for field in fields.values():
         if not field.mandatory or not field.dest_field:
             continue
         transient_table = imprt.destination.get_transient_table()
         source_field = transient_table.c[field.source_column]
-        whereclause = sa.or_(
-            source_field == None,
-            source_field == "",
-        )
+        whereclause = source_field.is_(None)
         report_erroneous_rows(
             imprt,
+            entity=entity,
             error_type="MISSING_VALUE",
             error_column=field.name_field,
             whereclause=whereclause,

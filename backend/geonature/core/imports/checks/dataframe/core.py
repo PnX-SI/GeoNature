@@ -117,10 +117,10 @@ def check_datasets(imprt, df, uuid_field, id_field, module_code, object_code=Non
         authorized_datasets = {
             ds.unique_dataset_id.hex: ds
             for ds in db.session.execute(
-                TDatasets.select.where(TDatasets.unique_dataset_id.in_(uuid))
-                .filter_by_creatable(
+                TDatasets.filter_by_creatable(
                     user=imprt.authors[0], module_code=module_code, object_code=object_code
                 )
+                .where(TDatasets.unique_dataset_id.in_(uuid))
                 .options(sa.orm.raiseload("*"))
             )
             .scalars()
@@ -137,7 +137,7 @@ def check_datasets(imprt, df, uuid_field, id_field, module_code, object_code=Non
 
         if authorized_ds_mask.any():
             df.loc[authorized_ds_mask, id_col] = df[authorized_ds_mask][uuid_col].apply(
-                lambda uuid: authorized_datasets[uuid].id_dataset, axis=1
+                lambda uuid: authorized_datasets[uuid].id_dataset
             )
             updated_cols = {id_col}
 
@@ -146,7 +146,7 @@ def check_datasets(imprt, df, uuid_field, id_field, module_code, object_code=Non
 
     if (~has_uuid_mask).any():
         # Set id_dataset from import for empty cells:
-        df[id_col] = np.where(~has_uuid_mask, imprt.id_dataset, np.nan)
+        df.loc[~has_uuid_mask, id_col] = imprt.id_dataset
         updated_cols = {id_col}
 
     return updated_cols

@@ -33,7 +33,7 @@ from geonature.core.imports.checks.sql import (
     check_duplicate_uuid,
     check_existing_uuid,
     generate_missing_uuid,
-    check_duplicates_source_pk,
+    check_duplicate_source_pk,
     check_dates,
     check_altitudes,
     check_depths,
@@ -195,7 +195,7 @@ def check_transient_data(task, logger, imprt):
     if "cd_hab" in selected_fields:
         check_cd_hab(imprt, entity, selected_fields["cd_hab"])
     if "entity_source_pk_value" in selected_fields:
-        check_duplicates_source_pk(imprt, entity, selected_fields["entity_source_pk_value"])
+        check_duplicate_source_pk(imprt, entity, selected_fields["entity_source_pk_value"])
 
     if imprt.fieldmapping.get("altitudes_generate", False):
         generate_altitudes(
