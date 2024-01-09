@@ -1,3 +1,4 @@
+import itertools
 import json
 import datetime
 import tempfile
@@ -66,7 +67,8 @@ __all__ = [
     "sources_modules",
     "modules",
 ]
-
+from sqlalchemy.orm import sessionmaker
+Session = sessionmaker()
 
 class GeoNatureClient(JSONClient):
     def open(self, *args, **kwargs):
@@ -189,7 +191,7 @@ def users(app):
     app = Application.query.filter(Application.code_application == "GN").one()
     profil = Profil.query.filter(Profil.nom_profil == "Lecteur").one()
 
-    modules = TModules.query.all()
+    modules = db.session.scalars(db.select(TModules)).all()
 
     actions = {code: PermAction.query.filter_by(code_action=code).one() for code in "CRUVED"}
 
@@ -209,7 +211,7 @@ def users(app):
             )
             db.session.add(right)
             if scope > 0:
-                object_all = PermObject.query.filter_by(code_object="ALL").one()
+                object_all = db.session.execute(db.select(PermObject).where(PermObject.code_object=="ALL")).scalar_one()
                 for action in actions.values():
                     for module in modules:
                         for obj in [object_all] + module.objects:
@@ -247,7 +249,29 @@ def users(app):
 
 @pytest.fixture
 def _session(app):
-    return db.session
+    """
+        Based on sqlalchemy 2.0 documentation
+
+        https://docs.sqlalchemy.org/en/20/orm/session_transaction.html#joining-a-session-into-an-external-transaction-such-as-for-test-suites
+    """
+    with app.app_context():
+        connection = db.engine.connect()
+
+        # begin a non-ORM transaction
+        trans = connection.begin()
+
+        # then each time that SAVEPOINT ends, reopen it
+        session = Session(
+            bind=connection, join_transaction_mode="create_savepoint"
+        )
+        
+        yield session
+
+        session.close()
+        trans.rollback()
+
+        # return connection to the Engine
+        connection.close()
 
 
 @pytest.fixture
