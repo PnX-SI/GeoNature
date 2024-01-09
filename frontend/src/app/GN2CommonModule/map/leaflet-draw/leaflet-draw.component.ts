@@ -24,6 +24,7 @@ L.Icon.Default.mergeOptions(CustomIcon);
 export class LeafletDrawComponent implements OnInit, OnChanges {
   public map: Map;
   private _currentDraw: any;
+  private _currentGeojson: any;
   private _Le: any;
   public drawnItems: any;
   // save the current layer type because the edite event do not send it...
@@ -80,6 +81,8 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     }
 
     this.map.on(this._Le.Draw.Event.DRAWSTART, (e) => {
+      this._currentGeojson =
+        this._currentGeojson == null ? { geometry: this.geojson } : this._currentGeojson;
       this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
@@ -110,6 +113,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
 
     // on draw layer created
     this.map.on(this._Le.Draw.Event.CREATED, (e) => {
+      this.mapservice.removeAllLayers(this.map, this.mapservice.leafletDrawFeatureGroup);
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         this.layerDrawed.emit({ geojson: null });
@@ -120,6 +124,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         this.mapservice.leafletDrawFeatureGroup.addLayer(this._currentDraw);
         const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
         this.mapservice.setGeojsonCoord(geojson);
+        this._currentGeojson = geojson;
         this.layerDrawed.emit(geojson);
       }
     });
@@ -128,6 +133,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     this.mapservice.map.on(this._Le.Draw.Event.EDITED, (e) => {
       const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
       this.mapservice.setGeojsonCoord(geojson);
+      this._currentGeojson = geojson;
       this.layerDrawed.emit(geojson);
     });
 
@@ -141,6 +147,16 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       if (geojson) {
         this.layerDrawed.emit(geojson);
         this.mapservice.setGeojsonCoord(geojson);
+      }
+    });
+
+    this.map.on(this._Le.Draw.Event.DRAWSTOP, (e) => {
+      if (this._currentGeojson) {
+        this.mapservice.removeAllLayers(this.map, this.mapservice.leafletDrawFeatureGroup);
+        const layer: L.Layer = this.mapservice.createGeojson(this._currentGeojson.geometry, false);
+        if (!this.mapservice.leafletDrawFeatureGroup.hasLayer(layer)) {
+          this.loadDrawfromGeoJson(this._currentGeojson.geometry);
+        }
       }
     });
   }
@@ -208,6 +224,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       return;
     }
     this.mapservice.leafletDrawFeatureGroup.clearLayers();
+    this._currentGeojson = null;
     this.drawControl.remove();
   }
 
