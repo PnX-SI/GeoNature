@@ -5,7 +5,7 @@ from flask import g
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship, synonym
+from sqlalchemy.orm import relationship, synonym, deferred
 from sqlalchemy.schema import FetchedValue, UniqueConstraint
 from sqlalchemy.sql import func, select
 
@@ -48,8 +48,10 @@ class Station(NomenclaturesMixin, db.Model):
     depth_max = db.Column(db.Integer)
     area = db.Column(db.BigInteger)
     comment = db.Column(db.Unicode)
+    precision = db.Column(db.Integer)
     id_digitiser = db.Column(db.Integer)
-    geom_4326 = db.Column(Geometry("GEOMETRY"))
+    geom_local = deferred(db.Column(Geometry("GEOMETRY")))
+    geom_4326 = db.Column(Geometry("GEOMETRY", 4326))
 
     habitats = relationship(
         "OccurenceHabitat",
