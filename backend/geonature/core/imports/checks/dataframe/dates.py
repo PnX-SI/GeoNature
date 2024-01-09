@@ -1,24 +1,18 @@
 def concat_dates(
     df,
-    datetime_min_field,
-    datetime_max_field,
-    date_min_field,
-    date_max_field=None,
-    hour_min_field=None,
-    hour_max_field=None,
+    datetime_min_col,
+    datetime_max_col,
+    date_min_col,
+    date_max_col=None,
+    hour_min_col=None,
+    hour_max_col=None,
 ):
-    assert datetime_min_field
-    datetime_min_col = datetime_min_field.dest_field
-
-    assert datetime_max_field
-    datetime_max_col = datetime_max_field.dest_field
-
-    assert date_min_field  # date_min is a required field
-    date_min_col = date_min_field.source_field
-
-    date_max_col = date_max_field.source_field if date_max_field else None
-    hour_min_col = hour_min_field.source_field if hour_min_field else None
-    hour_max_col = hour_max_field.source_field if hour_max_field else None
+    assert datetime_min_col
+    assert datetime_max_col
+    assert date_min_col  # date_min is a required field
+    date_max_col = date_max_col if date_max_col else None
+    hour_min_col = hour_min_col if hour_min_col else None
+    hour_max_col = hour_max_col if hour_max_col else None
 
     date_min = df[date_min_col]
 
