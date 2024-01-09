@@ -514,9 +514,11 @@ class GroupPermAdmin(RolePermAdmin):
     column_details_list = ("nom_role", "permissions_count", "permissions")
 
     def get_query(self):
+        # TODO : change to sqla2.0 query when flask admin update to sqla2
         return db.session.query(User).filter_by(groupe=True).where(User.filter_by_app())
 
     def get_count_query(self):
+        # TODO : change to sqla2.0 query when flask admin update to sqla2
         return (
             db.session.query(sa.func.count("*"))
             .select_from(User)
@@ -547,9 +549,11 @@ class UserPermAdmin(RolePermAdmin):
     )
 
     def get_query(self):
+        # TODO : change to sqla2.0 query when flask admin update to sqla2
         return db.session.query(User).filter_by(groupe=False).where(User.filter_by_app())
 
     def get_count_query(self):
+        # TODO : change to sqla2.0 query when flask admin update to sqla2
         return (
             db.session.query(sa.func.count("*"))
             .select_from(User)
