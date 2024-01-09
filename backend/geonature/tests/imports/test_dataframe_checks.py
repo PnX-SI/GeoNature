@@ -266,11 +266,12 @@ class TestChecks:
                 [None, "12:00:00", "2020-01-02", "14:00:00"],
                 ["bogus", "12:00:00", "2020-01-02", "14:00:00"],
             ],
-            columns=[
-                fields[n].source_field for n in ["date_min", "hour_min", "date_max", "hour_max"]
-            ],
+            columns=["src_date_min", "src_hour_min", "src_date_max", "src_hour_max"],
         )
-        concat_dates(df, *fields.values())
+        concat_dates(
+            df,
+            **{f"{field_name}_col": field.source_column for field_name, field in fields.items()},
+        )
         errors = list(check_required_values.__wrapped__(df, fields))
         assert_errors(
             errors,
@@ -335,10 +336,10 @@ class TestChecks:
         )
         concat_dates(
             df,
-            datetime_min_field=fields["datetime_min"],
-            datetime_max_field=fields["datetime_max"],
-            date_min_field=fields["date_min"],
-            hour_min_field=fields["hour_min"],
+            datetime_min_col=fields["datetime_min"].dest_field,
+            datetime_max_col=fields["datetime_max"].dest_field,
+            date_min_col=fields["date_min"].source_field,
+            hour_min_col=fields["hour_min"].source_field,
         )
         errors = list(check_types.__wrapped__(entity, df, fields))
         assert_errors(errors, expected=[])

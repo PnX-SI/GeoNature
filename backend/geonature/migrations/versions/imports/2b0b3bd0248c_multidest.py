@@ -284,8 +284,8 @@ def upgrade():
                 {
                     "error_type": "Ligne orpheline",
                     "name": "ORPHAN_ROW",
-                    "description": "La ligne du fichier n’a pû être rattaché à aucune entitée.",
-                    "error_level": "ERROR",
+                    "description": "La ligne du fichier n’a pû être rattaché à aucune entité.",
+                    "error_level": "WARNING",
                 },
                 {
                     "error_type": "Erreur de référentiel",
@@ -296,7 +296,19 @@ def upgrade():
                 {
                     "error_type": "Erreur de référentiel",
                     "name": "DATASET_NOT_AUTHORIZED",
-                    "description": "Vous n’avez pas les permissions nécessaire sur le jeu de données",
+                    "description": "Vous n’avez pas les permissions nécessaire sur le jeu de données.",
+                    "error_level": "ERROR",
+                },
+                {
+                    "error_type": "Entités",
+                    "name": "NO_PARENT_ENTITY",
+                    "description": "Aucune entité parente identifiée.",
+                    "error_level": "ERROR",
+                },
+                {
+                    "error_type": "Entités",
+                    "name": "ERRONEOUS_PARENT_ENTITY",
+                    "description": "L’entité parente est en erreur.",
                     "error_level": "ERROR",
                 },
             ]
@@ -321,7 +333,15 @@ def downgrade():
     error_type = Table("bib_errors_types", meta, autoload=True, schema="gn_imports")
     op.execute(
         sa.delete(error_type).where(
-            error_type.c.name.in_(["DATASET_NOT_FOUND", "DATASET_NOT_AUTHORIZED", "ORPHAN_ROW"])
+            error_type.c.name.in_(
+                [
+                    "ORPHAN_ROW",
+                    "DATASET_NOT_FOUND",
+                    "DATASET_NOT_AUTHORIZED",
+                    "NO_PARENT_ENTITY",
+                    "ERRONEOUS_PARENT_ENTITY",
+                ]
+            )
         )
     )
     # Restore 'taxa_count'
