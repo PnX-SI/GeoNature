@@ -15,7 +15,7 @@ from geoalchemy2 import Geometry
 
 # revision identifiers, used by Alembic.
 revision = "167d69b42d25"
-down_revision = "85efc9bb5a47"
+down_revision = "f305718b81d3"
 branch_labels = None
 depends_on = ("92f0083cf735",)
 
