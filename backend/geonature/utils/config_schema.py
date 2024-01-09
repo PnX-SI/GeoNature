@@ -4,6 +4,8 @@
 
 import os
 
+import pkg_resources
+
 from marshmallow import (
     Schema,
     fields,
@@ -183,6 +185,7 @@ class MetadataConfig(Schema):
 
 
 class GnPySchemaConf(Schema):
+    API_VERSION = fields.String(load_default=pkg_resources.get_distribution("geonature").version)
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
         validate=Regexp(
