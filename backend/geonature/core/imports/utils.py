@@ -178,6 +178,8 @@ def insert_import_data_in_transient_table(imprt):
             )
         df = pd.DataFrame(data)
 
+        imprt.destination.preprocess_transient_data(imprt, df)
+
         records = df.to_dict(orient="records")
         db.session.execute(insert(transient_table).values(records))
 
