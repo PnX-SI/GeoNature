@@ -307,7 +307,7 @@ class TDatasets(db.Model):
         Return the datasets where the user has autorization via its CRUVED
         """
         query = kwargs.get("query")
-        whereclause = cls.filter_by_scope(cls._get_read_scope(user)).whereclause
+        whereclause = cls.filter_by_scope(cls._get_read_scope(user), user=user).whereclause
         return query.where(whereclause)
 
     @qfilter(query=True)
@@ -322,7 +322,7 @@ class TDatasets(db.Model):
         create_scope = cls._get_create_scope(module_code, user=user, object_code=object_code)
         if create_scope < scope:
             scope = create_scope
-        return cls.filter_by_scope(scope)
+        return cls.filter_by_scope(scope, user=user)
 
     @qfilter(query=True)
     def filter_by_areas(cls, areas, **kwargs):
