@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/services/config.service';
 import { AuthService } from '@geonature/components/auth/auth.service';
 import { UserDataService } from './services/user-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
@@ -21,12 +21,13 @@ export class UserComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private fb: UntypedFormBuilder,
     private userService: UserDataService,
-    private dataService: DataFormService
+    private dataService: DataFormService,
+    private config: ConfigService
   ) { }
 
   ngOnInit() {
     //recupération des infos custom depuis la config de GN
-    this.additionalFieldsForm = [...AppConfig.ACCOUNT_MANAGEMENT.ACCOUNT_FORM]
+    this.additionalFieldsForm = [...this.config.ACCOUNT_MANAGEMENT.ACCOUNT_FORM]
       .map(form_element => {
         //on desactive les elements customs
         form_element['disable'] = true;
@@ -66,10 +67,6 @@ export class UserComponent implements OnInit, AfterViewInit {
   cancel() {
     this.initForm();
     this.form.disable();
-  }
-
-  enableForm() {
-    this.form.enable();
   }
 
   enableForm() {
