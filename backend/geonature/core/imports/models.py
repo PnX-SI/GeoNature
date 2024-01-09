@@ -127,6 +127,13 @@ class Destination(db.Model):
         return [entity.validity_column for entity in self.entities]
 
     @property
+    def preprocess_transient_data(self):
+        if "preprocess_transient_data" in self.module._imports_:
+            return self.module._imports_["preprocess_transient_data"]
+        else:
+            return lambda *args, **kwargs: None
+
+    @property
     def check_transient_data(self):
         return self.module._imports_["check_transient_data"]
 
