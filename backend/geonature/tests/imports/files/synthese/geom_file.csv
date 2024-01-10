@@ -3,12 +3,12 @@ date_min;cd_nom;nom_cite;observateurs;WKT;latitude;longitude;codecommune;codedep
 2017-01-01;67111;Ablette;Toto;;;;code com invalide;;;INVALID_ATTACHMENT_CODE (codecommune)
 2017-01-01;67111;Ablette;Toto;;;;;13;;Valide (codedépartement)  # FIXME invalide altitude_min (bord de mer)
 2017-01-01;67111;Ablette;Toto;;;;;code dep invalide;;INVALID_ATTACHMENT_CODE (codedepartement)
-2017-01-01;67111;Ablette;Toto;;;;;;10kmL93E091N625;Valide (codemaille)
+2017-01-01;67111;Ablette;Toto;;;;;;5kmL93E0905N6250;Valide (codemaille)
 2017-01-01;67111;Ablette;Toto;;;;;;code maille invalide;INVALID_ATTACHMENT_CODE (codemaille)
-2017-01-01;67111;Ablette;Toto;;;;05101;05;10kmL93E097N642;MULTIPLE_CODE_ATTACHMENT
-2017-01-01;67111;Ablette;Toto;POINT(5.4877 43.3056);;;05101;05;10kmL93E097N642;Valide (WKT)
-2017-01-01;67111;Ablette;Toto;;43.3056;5.4877;05101;05;10kmL93E097N642;Valide (X/Y)
-2017-01-01;67111;Ablette;Toto;POINT(5.4877 43.3056);44.85;6.5;05101;05;10kmL93E097N642;MULTIPLE_ATTACHMENT_TYPE_CODE
+2017-01-01;67111;Ablette;Toto;;;;5101;5;5kmL93E0905N6250;MULTIPLE_CODE_ATTACHMENT
+2017-01-01;67111;Ablette;Toto;POINT(5.4877 43.3056);;;5101;5;5kmL93E0905N6250;Valide (WKT)
+2017-01-01;67111;Ablette;Toto;;43.3056;5.4877;5101;5;5kmL93E0905N6250;Valide (X/Y)
+2017-01-01;67111;Ablette;Toto;POINT(5.4877 43.3056);44.85;6.5;5101;5;5kmL93E0905N6250;MULTIPLE_ATTACHMENT_TYPE_CODE
 2017-01-01;67111;Ablette;Toto;POINT(5.4877 43.3056);;;;;;Valide (WKT)
 2017-01-01;67111;Ablette;Toto;;43.3056;5.4877;;;;Valide (X/Y)
 2017-01-01;67111;Ablette;Toto;;43,3056;5,4877;;;;Valide (X/Y)
