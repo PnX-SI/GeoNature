@@ -6,12 +6,12 @@ import { ImportProcessService } from '../import_process/import-process.service';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 
 @Component({
-  selector: 'import-modal-dataset',
-  templateUrl: 'import-modal-dataset.component.html',
-  styleUrls: ['./import-modal-dataset.component.scss'],
+  selector: 'import-modal-destination',
+  templateUrl: 'import-modal-destination.component.html',
+  styleUrls: ['./import-modal-destination.component.scss'],
 })
-export class ImportModalDatasetComponent implements OnInit, OnDestroy {
-  public selectDatasetForm: FormControl;
+export class ImportModalDestinationComponent implements OnInit, OnDestroy {
+  public selectDestinationForm: FormControl;
   public userDatasetsResponse: any;
   public datasetResponse: JSON;
   public isUserDatasetError: Boolean = false; // true if user does not have any declared dataset
@@ -26,7 +26,7 @@ export class ImportModalDatasetComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.selectDatasetForm = new FormControl(null, Validators.required);
+    this.selectDestinationForm = new FormControl(null, Validators.required);
   }
 
   onOpenModal(content) {
@@ -40,7 +40,7 @@ export class ImportModalDatasetComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    this.importProcessService.beginProcess(this.selectDatasetForm.value);
+    this.importProcessService.beginProcess(this.selectDestinationForm.value);
     this.closeModal();
   }
 

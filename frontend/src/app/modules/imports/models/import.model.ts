@@ -64,6 +64,7 @@ export interface Import {
   errors?: [ImportError];
   dataset?: Dataset;
   id_source?: number;
+  id_destination: number;
 }
 
 export interface NomenclatureType {
@@ -152,4 +153,12 @@ export interface ImportPreview {
       n_invalid_data: number;
     },
   ];
+}
+
+export interface Destination {
+  id_destination: number;
+  id_module: number;
+  code: string;
+  label: string;
+  table_name: string;
 }
