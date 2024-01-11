@@ -86,6 +86,11 @@ export class ImportProcessService {
     this.router.navigate(link);
   }
 
+  // beginProcess(datasetId: number, destination: string) {
+  //   const link = [this.config.IMPORT.MODULE_URL, 'process/', Step[Step.Upload].toLowerCase()];
+  //   this.router.navigate(link, { queryParams: { datasetId: datasetId } });
+  // }
+
   continueProcess(importData: Import) {
     this.importData = importData;
     this.navigateToStep(this.getLastAvailableStep());
