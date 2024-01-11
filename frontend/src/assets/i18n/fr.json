@@ -267,5 +267,8 @@
     "type": "Type de média",
     "next": "Voir le média suivant",
     "previous": "Voir le média précédent"
+  },
+  "Import": {
+    "Destinations": "Destinations"
   }
 }
