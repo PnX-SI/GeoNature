@@ -1,0 +1,18 @@
+<small> {{ label }} </small>
+<ng-select
+  [ngClass]="class"
+  [items]="destinations"
+  [bindValue]="bindValue"
+  bindLabel="label"
+  placeholder="Destination"
+  [multiple]="multiSelect"
+  [clearable]="clearable"
+  [virtualScroll]="true"
+  [formControl]="parentFormControl"
+>
+  <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+    <div matTooltip="{{ item.code }}" [attr.data-qa]="item.code">
+      <span class="pre-wrap">{{ item.label }}</span>
+    </div>
+  </ng-template>
+</ng-select>
