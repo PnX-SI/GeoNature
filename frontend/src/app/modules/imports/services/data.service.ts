@@ -9,6 +9,7 @@ import {
   EntitiesThemesFields,
   TaxaDistribution,
   ImportPreview,
+  Destination,
 } from '../models/import.model';
 import {
   FieldMapping,
@@ -249,5 +250,9 @@ export class DataService {
     return this._http.post(`${this.urlApi}/export_pdf/${importId}`, formData, {
       responseType: 'blob',
     });
+  }
+
+  getDestinations(): Observable<Array<Destination>> {
+    return this._http.get<Array<Destination>>(`${this.config.API_ENDPOINT}/import/destinations/`, { });
   }
 }
