@@ -22,6 +22,8 @@ from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
 from geonature.utils.module import iter_modules_dist, get_module_config
 from geonature.utils.utilsmails import clean_recipients
 from geonature.utils.utilstoml import load_and_validate_toml
+from geonature.utils.config_basemaps import ConfigBasemap
+from geonature.utils.config_ref_layers import ConfigRefLayers
 
 
 class EmailStrOrListOfEmailStrField(fields.Field):
@@ -435,35 +437,11 @@ class Synthese(Schema):
     BLUR_SENSITIVE_OBSERVATIONS = fields.Boolean(load_default=False)
 
 
-# Map configuration
-BASEMAP = [
-    {
-        "name": "OpenStreetMap",
-        "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-        "options": {
-            "attribution": "<a href='https://www.openstreetmap.org/copyright' target='_blank'>© OpenStreetMap contributors</a>",
-        },
-    },
-    {
-        "name": "OpenTopoMap",
-        "url": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
-        "options": {
-            "attribution": "Map data: © <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap contributors</a>, SRTM | Map style: © <a href='https://opentopomap.org' target='_blank'>OpenTopoMap</a> (<a href='https://creativecommons.org/licenses/by-sa/3.0/' target='_blank'>CC-BY-SA</a>)",
-        },
-    },
-    {
-        "name": "GoogleSatellite",
-        "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        "options": {
-            "subdomains": ["mt0", "mt1", "mt2", "mt3"],
-            "attribution": "© Google Maps",
-        },
-    },
-]
-
-
 class MapConfig(Schema):
-    BASEMAP = fields.List(fields.Dict(), load_default=BASEMAP)
+    BASEMAP = fields.List(
+        fields.Dict(),
+        load_default=ConfigBasemap.DEFAULT,
+    )
     CENTER = fields.List(fields.Float, load_default=[46.52863469527167, 2.43896484375])
     ZOOM_LEVEL = fields.Integer(load_default=6)
     ZOOM_LEVEL_RELEVE = fields.Integer(load_default=15)
@@ -480,40 +458,7 @@ class MapConfig(Schema):
     OSM_RESTRICT_COUNTRY_CODES = fields.String(load_default=None)
     REF_LAYERS = fields.List(
         fields.Dict(),
-        load_default=[
-            {
-                "code": "limitesadministratives",
-                "label": "Limites administratives (IGN)",
-                "type": "wms",
-                "url": "https://wxs.ign.fr/essentiels/geoportail/r/wms",
-                "activate": False,
-                "params": {
-                    "VERSION": "1.3.0",
-                    "crs": "CRS:84",
-                    "dpiMode": 7,
-                    "format": "image/png",
-                    "layers": "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST",
-                    "styles": "",
-                },
-            },
-            {
-                "code": "znieff1",
-                "label": "ZNIEFF1 (INPN)",
-                "type": "wms",
-                "url": "https://ws.carmencarto.fr/WMS/119/fxx_inpn",
-                "activate": False,
-                "params": {
-                    "layers": "znieff1",
-                    "opacity": 0.2,
-                    "crs": "EPSG:4326",
-                    "service": "wms",
-                    "format": "image/png",
-                    "version": "1.3.0",
-                    "request": "GetMap",
-                    "transparent": True,
-                },
-            },
-        ],
+        load_default=ConfigRefLayers.DEFAULT,
     )
     REF_LAYERS_LEGEND = fields.Boolean(load_default=False)
 

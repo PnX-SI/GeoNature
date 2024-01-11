@@ -164,18 +164,12 @@ export class MapComponent implements OnInit {
     // Baselayers
     const baseControl = {};
     const BASEMAP = JSON.parse(JSON.stringify(this.config.MAPCONFIG.BASEMAP));
+
     BASEMAP.forEach((basemap, index) => {
-      const formatedBasemap = this.formatBaseMapConfig(basemap);
       if (basemap.service === 'wms') {
-        baseControl[formatedBasemap.name] = L.tileLayer.wms(
-          formatedBasemap.url,
-          formatedBasemap.options
-        );
+        baseControl[basemap.name] = L.tileLayer.wms(basemap.url, basemap.options);
       } else {
-        baseControl[formatedBasemap.name] = L.tileLayer(
-          formatedBasemap.url,
-          formatedBasemap.options
-        );
+        baseControl[basemap.name] = L.tileLayer(basemap.url, basemap.options);
       }
       if (index === 0) {
         map.addLayer(baseControl[basemap.name]);
@@ -222,38 +216,6 @@ export class MapComponent implements OnInit {
     setTimeout(() => {
       this.map.invalidateSize();
     }, 50);
-  }
-
-  /** Retrocompatibility hack to format map config to the expected format:
-   *
-   {
-    name: string,
-    url: string,
-    service?: wms|wmts|null
-    options?: {
-        layer?: string,
-        attribution?: string,
-        format?: string
-        [...]
-    }
-  }
-   */
-  formatBaseMapConfig(baseMap) {
-    // eslint-disable-next-line guard-for-in
-    for (let attr in baseMap) {
-      if (attr === 'layer') {
-        baseMap['url'] = baseMap[attr];
-        delete baseMap['layer'];
-      }
-      if (!['url', 'layer', 'name', 'service', 'options'].includes(attr)) {
-        if (!baseMap['options']) {
-          baseMap['options'] = {};
-        }
-        baseMap['options'][attr] = baseMap[attr];
-        delete baseMap[attr];
-      }
-    }
-    return baseMap;
   }
 
   formatter(nominatim) {

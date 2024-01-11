@@ -205,45 +205,64 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 # l'option service est obligatoire uniquement pour les wms
 # l'ensemble des paramètre WMS peuvent être passé dans cette section
 [[MAPCONFIG.BASEMAP]]
-    name = "OpenstreetMap"
+    attribution = "<a href='https://www.openstreetmap.org/copyright' target='_blank'>© OpenStreetMap contributors</a>"
+    name = "OpenStreetMap"
     url = "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
-    attribution = "OSM contributors"
 [[MAPCONFIG.BASEMAP]]
-    name = "IGN Plan v2"
-    url = "https://wxs.ign.fr/cartes/geoportail/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/png&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
-    attribution = "&copy IGN"
+    attribution = "Map data: © <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap contributors</a>, SRTM | Map style: © <a href='https://opentopomap.org' target='_blank'>OpenTopoMap</a> (<a href='https://creativecommons.org/licenses/by-sa/3.0/' target='_blank'>CC-BY-SA</a>)"
+    name = "OpenTopoMap"
+    url = "//a.tile.opentopomap.org/{z}/{x}/{y}.png"
 [[MAPCONFIG.BASEMAP]]
-    name = "IGN Ortho"
-    url = "https://wxs.ign.fr/ortho/geoportail/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/jpeg&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
-    attribution = "&copy IGN"
-[[MAPCONFIG.BASEMAP]]
-    name = "IGN Scan 25"
-    url = "https://wxs.ign.fr/YOUR-IGN-KEY/geoportail/wmts?LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&EXCEPTIONS=text/xml&FORMAT=image/jpeg&SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
-    attribution = "&copy IGN"
-[[MAPCONFIG.BASEMAP]]
-    name = "IGN Cadastre"
-    url = "https://wxs.ign.fr/parcellaire/geoportail/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/png&LAYER=CADASTRALPARCELS.PARCELS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
-    attribution = "&copy IGN"
-[[MAPCONFIG.BASEMAP]]
-    name = "WMS"
-    url = "https://mon_flux_wms"
-    service = "wms"
-    layers = 'ma_layer'
-    attribution = 'lala'
-[[MAPCONFIG.BASEMAP]]
-    attribution = "GoogleSatellite"
-    name = "google"
-    url = "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+    attribution = "© Google Maps"
+    name = "Google Satellite"
     subdomains = ["mt0", "mt1", "mt2", "mt3"]
+    url = "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+[[MAPCONFIG.BASEMAP]]
+    attribution = "© IGN"
+    name = "IGN Plan v2"
+    url = "https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png&STYLE=normal"
+[[MAPCONFIG.BASEMAP]]
+    attribution = "© IGN"
+    name = "IGN Ortho"
+    url = "https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/jpeg&STYLE=normal"
+[[MAPCONFIG.BASEMAP]]
+    attribution = "© IGN"
+    name = "IGN Cadastre"
+    url = "https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=CADASTRALPARCELS.PARCELS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png&STYLE=normal"
+[[MAPCONFIG.BASEMAP]]
+    attribution = "© IGN"
+    name = "IGN Scan 25"
+    url = "https://data.geopf.fr/private/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&apikey=ign_scan_ws&LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&EXCEPTIONS=text/xml&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/jpeg&STYLE=normal"
+[[MAPCONFIG.BASEMAP]]
+    attribution = 'lala'
+    layers = 'ma_layer'
+    name = "WMS"
+    service = "wms"
+    url = "https://mon_flux_wms"
+
 
 # Add base layers on maps (from ref_geo, WMS, WFS, GeoJSON...)
-#[[MAPCONFIG.REF_LAYERS]]
-#    code = "COM"
-#    label = "Communes"
-#    type = "area"
-#    activate = false
-#    style = { color = "grey", fill = false, fillOpacity = "0.0", weight = 2 }
-#    params = {limit = 2000}
+[[MAPCONFIG.REF_LAYERS]]
+    code = "limitesadministratives"
+    label = "Limites administratives (IGN)"
+    type = "wms"
+    url = "https://data.geopf.fr/wms-r"
+    params = { sevice="wms", version = "1.3.0", request="GetMap", layers = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST", style = "normal", format = "image/png", crs = "CRS:84", dpiMode = 7 }
+    activate = false
+[[MAPCONFIG.REF_LAYERS]]
+    code = "znieff1"
+    label = "ZNIEFF1 (INPN)"
+    type = "wms"
+    url = "https://ws.carmencarto.fr/WMS/119/fxx_inpn"
+    activate = false
+    params = { layers = "znieff1", opacity = 0.2, crs = "EPSG:4326", service = "wms", format = "image/png", version = "1.3.0", request = "GetMap", transparent = true }
+[[MAPCONFIG.REF_LAYERS]]
+    code = "COM"
+    label = "Communes"
+    type = "area"
+    activate = false
+    style = { color = "grey", fill = false, fillOpacity = "0.0", weight = 2 }
+    params = {limit = 2000}
 
 # Configuration du module Synthese
 [SYNTHESE]

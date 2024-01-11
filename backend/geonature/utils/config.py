@@ -15,6 +15,7 @@ from geonature.utils.utilstoml import load_toml
 from geonature.utils.env import CONFIG_FILE
 from geonature.utils.errors import ConfigError
 
+from geonature.utils.config_processing import ConfigProcessing
 
 __all__ = ["config", "config_frontend"]
 
@@ -28,6 +29,9 @@ if "GEONATURE_SETTINGS" in os.environ:
 # Load toml file and override with env & py config
 config_toml = load_toml(CONFIG_FILE) if CONFIG_FILE else {}
 config_toml.update(config_programmatic)
+
+# Apply preprocessing on some field
+config_toml = ConfigProcessing.process_basemaps(config_toml)
 
 # Validate config
 try:
