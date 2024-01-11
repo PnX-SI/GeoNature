@@ -8,7 +8,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgChartsModule } from 'ng2-charts';
 
-import { ImportModalDatasetComponent } from './components/modal_dataset/import-modal-dataset.component';
+import { ImportModalDestinationComponent } from './components/modal_destination/import-modal-destination.component';
 import { ModalDeleteImport } from './components/delete-modal/delete-modal.component';
 import { DataService } from './services/data.service';
 import { CsvExportService } from './services/csv-export.service';
@@ -28,6 +28,7 @@ import { StepperComponent } from './components/import_process/stepper/stepper.co
 import { FooterStepperComponent } from './components/import_process/footer-stepper/footer-stepper.component';
 import { Step } from './models/enums.model';
 import { ImportReportComponent } from './components/import_report/import_report.component';
+import { DestinationsComponent } from './components/destinations/destinations.component';
 
 const routes: Routes = [
   { path: '', component: ImportListComponent },
@@ -42,7 +43,7 @@ const routes: Routes = [
     resolve: { importData: ImportProcessResolver },
   },
   {
-    path: 'process',
+    path: 'process/:destination',
     component: ImportProcessComponent,
     children: [
       {
@@ -89,7 +90,7 @@ const routes: Routes = [
   declarations: [
     ImportListComponent,
     ImportErrorsComponent,
-    ImportModalDatasetComponent,
+    ImportModalDestinationComponent,
     ModalDeleteImport,
     UploadFileStepComponent,
     DecodeFileStepComponent,
@@ -100,6 +101,7 @@ const routes: Routes = [
     FooterStepperComponent,
     ImportProcessComponent,
     ImportReportComponent,
+    DestinationsComponent,
   ],
   imports: [
     NgChartsModule,
