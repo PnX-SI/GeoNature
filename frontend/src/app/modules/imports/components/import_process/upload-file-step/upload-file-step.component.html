@@ -13,8 +13,7 @@
                         id="upload_files"
                     >
                         <pnx-datasets
-                            label="{{ 'MetaData.Datasets' | translate }}"
-                            [parentFormControl]="selectDatasetForm"
+                            [parentFormControl]="uploadForm.get('dataset')"
                         >
                         </pnx-datasets>
                     </div>
