@@ -99,7 +99,7 @@ class ImportUserError(db.Model):
     def __str__(self):
         return f"<ImportError import={self.id_import},type={self.type.name},rows={self.rows}>"
 
-
+@serializable
 class Destination(db.Model):
     __tablename__ = "bib_destinations"
     __table_args__ = {"schema": "gn_imports"}
@@ -249,7 +249,7 @@ class ImportQuery(Query):
             raise Exception(f"Unexpected scope {scope}")
 
 
-@serializable(fields=["authors.nom_complet", "dataset.dataset_name", "dataset.active"])
+@serializable(fields=["authors.nom_complet", "dataset.dataset_name", "dataset.active", "destination.code"])
 class TImports(InstancePermissionMixin, db.Model):
     __tablename__ = "t_imports"
     __table_args__ = {"schema": "gn_imports"}
