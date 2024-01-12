@@ -65,6 +65,7 @@ export interface Import {
   dataset?: Dataset;
   id_source?: number;
   id_destination: number;
+  destination?: Destination;
 }
 
 export interface NomenclatureType {
@@ -156,9 +157,8 @@ export interface ImportPreview {
 }
 
 export interface Destination {
-  id_destination: number;
-  id_module: number;
+  id_destination?: number;
+  id_module?: number;
   code: string;
-  label: string;
-  table_name: string;
+  label?: string;
 }
