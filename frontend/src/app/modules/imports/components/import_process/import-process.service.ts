@@ -43,7 +43,8 @@ export class ImportProcessService {
     if (this.importData == null) return null;
     let stepName = Step[step].toLowerCase();
     let importId: number = this.importData.id_import;
-    return [this.config.IMPORT.MODULE_URL, 'process', importId, stepName];
+    let destinationCode: string = this.importData.destination.code;
+    return [this.config.IMPORT.MODULE_URL, 'process', destinationCode, importId, stepName];
   }
 
   navigateToStep(step: Step) {
