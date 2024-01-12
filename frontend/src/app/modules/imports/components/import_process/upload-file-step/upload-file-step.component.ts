@@ -17,8 +17,6 @@ import { ConfigService } from '@geonature/services/config.service';
 export class UploadFileStepComponent implements OnInit {
   public step: Step;
   public importData: Import;
-  public selectDatasetForm: FormControl;
-  public datasetId: number = null;
   public uploadForm: FormGroup;
   public file: File | null = null;
   public fileName: string;
@@ -43,16 +41,17 @@ export class UploadFileStepComponent implements OnInit {
     this.uploadForm = this.fb.group({
       file: [null, Validators.required],
       fileName: [null, [Validators.required, Validators.maxLength(this.maxFileNameLength)]],
+      dataset: [null, Validators.required]
     });
   }
 
   ngOnInit() {
     this.step = this.route.snapshot.data.step;
     this.importData = this.importProcessService.getImportData();
-    this.selectDatasetForm = new FormControl(null, Validators.required);
     if (this.importData === null) {
-      this.datasetId = this.route.snapshot.queryParams['datasetId'];
+      this.uploadForm.patchValue({"dataset": this.route.snapshot.queryParams['datasetId']})
     } else {
+      this.uploadForm.patchValue({"dataset": this.importData.id_dataset})
       this.fileName = this.importData.full_file_name;
     }
   }
@@ -76,7 +75,7 @@ export class UploadFileStepComponent implements OnInit {
     this.emptyError = this.columnFirstError = false;
     this.file = file;
     this.fileName = file.name;
-    this.uploadForm.setValue({
+    this.uploadForm.patchValue({
       file: this.file,
       fileName: this.fileName,
     });
@@ -86,7 +85,7 @@ export class UploadFileStepComponent implements OnInit {
     if (this.importData) {
       return this.ds.updateFile(this.importData.id_import, this.file);
     } else {
-      return this.ds.addFile(this.selectDatasetForm.value, this.file);
+      return this.ds.addFile(this.uploadForm.get('dataset').value, this.file);
     }
   }
   onNextStep() {
