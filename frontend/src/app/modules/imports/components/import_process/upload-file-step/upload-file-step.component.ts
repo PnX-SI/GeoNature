@@ -5,7 +5,7 @@ import { DataService } from '../../../services/data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Step } from '../../../models/enums.model';
-import { Import } from '../../../models/import.model';
+import { Destination, Import } from '../../../models/import.model';
 import { ImportProcessService } from '../import-process.service';
 import { ConfigService } from '@geonature/services/config.service';
 
@@ -26,6 +26,7 @@ export class UploadFileStepComponent implements OnInit {
   public columnFirstError: boolean = false;
   public maxFileNameLength: number = 255;
   public acceptedExtensions: string = null;
+  public destination: Destination = null;
 
   constructor(
     private ds: DataService,
@@ -46,6 +47,7 @@ export class UploadFileStepComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.setupDatasetSelect();
     this.step = this.route.snapshot.data.step;
     this.importData = this.importProcessService.getImportData();
     if (this.importData === null) {
@@ -54,6 +56,14 @@ export class UploadFileStepComponent implements OnInit {
       this.uploadForm.patchValue({"dataset": this.importData.id_dataset})
       this.fileName = this.importData.full_file_name;
     }
+  }
+
+  setupDatasetSelect() {
+    this.route.parent.params.subscribe(params => {
+      this.ds.getDestination(params["destination"]).subscribe(dest => {
+        this.destination = dest
+      });
+    });
   }
 
   isNextStepAvailable() {
