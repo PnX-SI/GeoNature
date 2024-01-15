@@ -76,7 +76,7 @@ def loginCas():
                     "Error with the inpn authentification service", status_code=500
                 )
             info_user = response.json()
-            data = insert_user_and_org(info_user)
+            data = insert_user_and_org(info_user, update_user_organism=False)
             db.session.commit()
 
             # creation de la Response
@@ -157,24 +157,24 @@ def get_user_from_id_inpn_ws(id_user):
         log.error("Error with the inpn authentification service")
 
 
-def insert_user_and_org(info_user):
+def insert_user_and_org(info_user, update_user_organism: bool = True):
     organism_id = info_user["codeOrganisme"]
-    if info_user["libelleLongOrganisme"] is not None:
-        organism_name = info_user["libelleLongOrganisme"]
-    else:
-        organism_name = "Autre"
-
+    organism_name = info_user.get("libelleLongOrganisme", "Autre")
     user_login = info_user["login"]
     user_id = info_user["id"]
+
     try:
         assert user_id is not None and user_login is not None
     except AssertionError:
         log.error("'CAS ERROR: no ID or LOGIN provided'")
         raise CasAuthentificationError("CAS ERROR: no ID or LOGIN provided", status_code=500)
+
     # Reconciliation avec base GeoNature
     if organism_id:
         organism = {"id_organisme": organism_id, "nom_organisme": organism_name}
         insert_or_update_organism(organism)
+
+    # Retrieve user information from `info_user`
     user_info = {
         "id_role": user_id,
         "identifiant": user_login,
@@ -184,15 +184,25 @@ def insert_user_and_org(info_user):
         "email": info_user["email"],
         "active": True,
     }
+
+    # If not updating user organism and user already exists, retrieve existing user organism information rather than information from `info_user`
+    existing_user = User.query.get(user_id)
+    if not update_user_organism and existing_user:
+        user_info["id_organisme"] = existing_user.id_organisme
+
+    # Insert or update user
     user_info = insert_or_update_role(user_info)
-    user = db.session.get(User, user_id)
+
+    # Associate user to a default group if the user is not associated to any group
+    user = existing_user or db.session.get(User, user_id)
     if not user.groups:
-        if not current_app.config["CAS"]["USERS_CAN_SEE_ORGANISM_DATA"] or organism_id is None:
+        if current_app.config["CAS"]["USERS_CAN_SEE_ORGANISM_DATA"] and organism_id:
+            # group socle 2 - for a user associated to an organism if users can see data from their organism
+            group_id = current_app.config["BDD"]["ID_USER_SOCLE_2"]
+        else:
             # group socle 1
             group_id = current_app.config["BDD"]["ID_USER_SOCLE_1"]
-        else:
-            # group socle 2
-            group_id = current_app.config["BDD"]["ID_USER_SOCLE_2"]
         group = db.session.get(User, group_id)
         user.groups.append(group)
+
     return user_info
