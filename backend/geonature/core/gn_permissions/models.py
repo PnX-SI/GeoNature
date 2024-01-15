@@ -149,9 +149,12 @@ class PermissionAvailable(db.Model):
         s += f" | {self.label}"
         return s
 
-    @qfilter(query=True)
-    def nice_order(cls, **kwargs):
-        return _nice_order(PermissionAvailable, kwargs["query"])
+    @staticmethod
+    def nice_order(**kwargs):
+        # TODO fix when flask admin is compatible with
+        # sqlalchemy2.0 query style
+        query = PermissionAvailable.query
+        return _nice_order(PermissionAvailable, query)
 
 
 class PermFilter:
