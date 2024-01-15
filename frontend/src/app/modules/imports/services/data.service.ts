@@ -255,4 +255,8 @@ export class DataService {
   getDestinations(): Observable<Array<Destination>> {
     return this._http.get<Array<Destination>>(`${this.config.API_ENDPOINT}/import/destinations/`, { });
   }
+
+  getDestination(code): Observable<Destination> {
+    return this._http.get<Destination>(`${this.config.API_ENDPOINT}/import/destination/${code}`, { });
+  }
 }
