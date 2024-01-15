@@ -43,7 +43,7 @@ const routes: Routes = [
     resolve: { importData: ImportProcessResolver },
   },
   {
-    path: 'process/:destination',
+    path: ':destination/process',
     component: ImportProcessComponent,
     children: [
       {
