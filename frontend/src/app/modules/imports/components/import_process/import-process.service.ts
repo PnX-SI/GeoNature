@@ -44,7 +44,7 @@ export class ImportProcessService {
     let stepName = Step[step].toLowerCase();
     let importId: number = this.importData.id_import;
     let destinationCode: string = this.importData.destination.code;
-    return [this.config.IMPORT.MODULE_URL, 'process', destinationCode, importId, stepName];
+    return [this.config.IMPORT.MODULE_URL, destinationCode, 'process', importId, stepName];
   }
 
   navigateToStep(step: Step) {
@@ -82,14 +82,9 @@ export class ImportProcessService {
   }
 
   beginProcess(destination: string) {
-    const link = [this.config.IMPORT.MODULE_URL, 'process', destination, Step[Step.Upload].toLowerCase()];
+    const link = [this.config.IMPORT.MODULE_URL, destination, 'process', Step[Step.Upload].toLowerCase()];
     this.router.navigate(link);
   }
-
-  // beginProcess(datasetId: number, destination: string) {
-  //   const link = [this.config.IMPORT.MODULE_URL, 'process/', Step[Step.Upload].toLowerCase()];
-  //   this.router.navigate(link, { queryParams: { datasetId: datasetId } });
-  // }
 
   continueProcess(importData: Import) {
     this.importData = importData;
