@@ -13,7 +13,10 @@
                         id="upload_files"
                     >
                         <pnx-datasets
+                            *ngIf="destination"
                             [parentFormControl]="uploadForm.get('dataset')"
+                            [creatableInModule]="destination?.module.module_code"
+                            [moduleCode]="destination?.module.module_code"
                         >
                         </pnx-datasets>
                     </div>
