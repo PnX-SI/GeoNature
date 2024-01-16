@@ -37,7 +37,7 @@ Prérequis
   - https://registry.npmjs.org
   - https://www.npmjs.com
   - https://raw.githubusercontent.com/
-  - https://wxs.ign.fr/
+  - https://data.geopf.fr/
 
 
 .. _preparation-server:
