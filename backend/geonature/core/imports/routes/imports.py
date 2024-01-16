@@ -64,10 +64,10 @@ def resolve_import(endpoint, values):
             imprt = None
         values["imprt"] = imprt
 
-
+@blueprint.route("/imports/", methods=["GET"])
 @blueprint.route("/<destination>/imports/", methods=["GET"])
 @permissions.check_cruved_scope("R", get_scope=True, module_code="IMPORT", object_code="IMPORT")
-def get_import_list(scope, destination):
+def get_import_list(scope, destination=None):
     """
     .. :quickref: Import; Get all imports.
 
@@ -107,17 +107,21 @@ def get_import_list(scope, destination):
     if sort_dir == "desc":
         order_by = desc(order_by)
 
-    imports = (
-        TImports.query.options(contains_eager(TImports.dataset), contains_eager(TImports.authors))
+    query = (
+        TImports.query
+        .options(contains_eager(TImports.dataset), contains_eager(TImports.authors))
         .join(TImports.dataset, isouter=True)
         .join(TImports.authors, isouter=True)
         .filter_by_scope(scope)
-        .filter(TImports.destination == destination)
         .filter(or_(*filters) if len(filters) > 0 else True)
         .order_by(order_by)
-        .paginate(page=page, error_out=False, max_per_page=limit)
     )
+    
+    if destination:
+        query = query.filter(TImports.destination == destination)
 
+    imports = query.paginate(page=page, error_out=False, max_per_page=limit)
+    
     data = {
         "imports": [imprt.as_dict() for imprt in imports.items],
         "count": imports.total,
