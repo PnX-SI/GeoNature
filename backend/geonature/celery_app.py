@@ -1,6 +1,7 @@
 from .app import create_app
 from .utils.celery import celery_app as app
 from .utils.module import iter_modules_dist
+from .utils.env import db
 
 
 flask_app = create_app()
