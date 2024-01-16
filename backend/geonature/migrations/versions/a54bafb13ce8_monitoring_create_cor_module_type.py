@@ -1,4 +1,4 @@
-"""create_cor_module_type
+""" [monitoring] create_cor_module_type
 
 Revision ID: a54bafb13ce8
 Revises: ce54ba49ce5c
