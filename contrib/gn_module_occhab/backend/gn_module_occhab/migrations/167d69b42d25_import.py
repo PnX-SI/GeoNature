@@ -224,10 +224,12 @@ def upgrade():
                 id_entity_station: {
                     "id_theme": id_theme_general,
                     "order_field": 0,
+                    "comment": "",
                 },
                 id_entity_habitat: {
                     "id_theme": id_theme_general,
                     "order_field": 0,
+                    "comment": "",
                 },
             },
         ),
