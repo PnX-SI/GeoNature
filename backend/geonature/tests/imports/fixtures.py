@@ -8,6 +8,7 @@ from geonature.core.imports.models import Destination
 from sqlalchemy import select
 from geonature.utils.env import db
 
+
 @pytest.fixture(scope="session")
 def default_destination(app):
     """
@@ -43,19 +44,18 @@ def default_synthese_destination(app, default_destination, synthese_destination)
 @pytest.fixture(scope="session")
 def list_all_module_dest_code():
     module_code_dest = db.session.scalars(
-            select(TModules.module_code).join(Destination, Destination.id_module == TModules.id_module)
-        ).all()
+        select(TModules.module_code).join(Destination, Destination.id_module == TModules.id_module)
+    ).all()
     return module_code_dest
+
 
 @pytest.fixture(scope="session")
 def all_modules_destination(list_all_module_dest_code):
-   
     dict_modules_dest = {}
 
     for module_code in list_all_module_dest_code:
-        query = (
-            select(Destination)
-            .filter(Destination.module.has(TModules.module_code == module_code))
+        query = select(Destination).filter(
+            Destination.module.has(TModules.module_code == module_code)
         )
 
         result = db.session.execute(query).scalar_one()
