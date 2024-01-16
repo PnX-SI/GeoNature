@@ -165,6 +165,7 @@ def prepared_import(client, content_mapped_import):
         r = client.post(url_for("import.prepare_import", import_id=imprt.id_import))
     assert r.status_code == 200, r.data
     db.session.refresh(imprt)
+    assert imprt.processed is True
     return imprt
 
 
