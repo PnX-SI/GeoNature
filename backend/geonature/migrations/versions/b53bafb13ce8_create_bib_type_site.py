@@ -1,7 +1,7 @@
 """create_bib_type_site
 
 Revision ID: b53bafb13ce8
-Revises: 446e902a14e7
+Revises: 5a2c9c65129f
 Create Date: 2022-12-06 16:18:24.512562
 
 """
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "b53bafb13ce8"
-down_revision = "446e902a14e7"
+down_revision = "5a2c9c65129f"
 branch_labels = None
 depends_on = None
 
