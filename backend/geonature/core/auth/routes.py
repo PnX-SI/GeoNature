@@ -94,7 +94,7 @@ def loginCas():
                 .id_application
             )
             token = encode_token(data)
-            response.set_cookie("token", token, expires=cookie_exp)
+            response.set_cookie("token", str(token), expires=cookie_exp)
 
             # User cookie
             organism_id = info_user["codeOrganisme"]
