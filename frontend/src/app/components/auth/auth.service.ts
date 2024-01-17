@@ -156,7 +156,7 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return this._cookie.get('token') !== null;
+    return this._cookie.check('gn_id_token') && this._cookie.get('gn_id_token') !== null;
   }
 
   handleLoginError() {

@@ -4,7 +4,11 @@ import { HomeContentComponent } from '../components/home-content/home-content.co
 import { PageNotFoundComponent } from '../components/page-not-found/page-not-found.component';
 import { AuthGuard } from '@geonature/routing/auth-guard.service';
 import { ModuleGuardService } from '@geonature/routing/module-guard.service';
-import { SignUpGuard, UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
+import {
+  SignUpGuard,
+  UserCasGuard,
+  UserPublicGuard,
+} from '@geonature/modules/login/routes-guard.service';
 import { SignUpComponent } from '../modules/login/sign-up/sign-up.component';
 
 import { UserManagementGuard } from '@geonature/modules/login/routes-guard.service';
@@ -36,6 +40,7 @@ const defaultRoutes: Routes = [
   {
     path: '',
     component: NavHomeComponent,
+    canActivate: [UserCasGuard],
     canActivateChild: [AuthGuard],
     children: [
       {
