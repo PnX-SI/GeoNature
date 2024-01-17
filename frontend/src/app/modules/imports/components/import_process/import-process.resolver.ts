@@ -25,6 +25,9 @@ export class ImportProcessResolver implements Resolve<Import> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Import | Observable<Import> {
     let step: Step = route.data.step;
+    let destination: string = route.params["destination"];
+
+    this.ds.setDestination(destination);
     if (step == Step.Upload && route.params.id_import === undefined) {
       // creating new import
       this.importProcessService.setImportData(null);
