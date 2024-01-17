@@ -42,13 +42,6 @@ DEFAULT_LIST_COLUMN = [
         "filter": False,
     },
     {
-        "prop": "taxa_count",
-        "name": "Nb de taxons",
-        "max_width": 120,
-        "show": True,
-        "filter": False,
-    },
-    {
         "prop": "import_count",
         "name": "Nb de donnees",
         "max_width": 120,
