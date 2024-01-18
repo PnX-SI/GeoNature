@@ -42,7 +42,7 @@ export class UploadFileStepComponent implements OnInit {
     this.uploadForm = this.fb.group({
       file: [null, Validators.required],
       fileName: [null, [Validators.required, Validators.maxLength(this.maxFileNameLength)]],
-      dataset: [null, Validators.required]
+      dataset: [null, Validators.required],
     });
   }
 
@@ -51,17 +51,17 @@ export class UploadFileStepComponent implements OnInit {
     this.step = this.route.snapshot.data.step;
     this.importData = this.importProcessService.getImportData();
     if (this.importData === null) {
-      this.uploadForm.patchValue({"dataset": this.route.snapshot.queryParams['datasetId']})
+      this.uploadForm.patchValue({ dataset: this.route.snapshot.queryParams['datasetId'] });
     } else {
-      this.uploadForm.patchValue({"dataset": this.importData.id_dataset})
+      this.uploadForm.patchValue({ dataset: this.importData.id_dataset });
       this.fileName = this.importData.full_file_name;
     }
   }
 
   setupDatasetSelect() {
-    this.route.parent.params.subscribe(params => {
-      this.ds.getDestination(params["destination"]).subscribe(dest => {
-        this.destination = dest
+    this.route.parent.params.subscribe((params) => {
+      this.ds.getDestination(params['destination']).subscribe((dest) => {
+        this.destination = dest;
       });
     });
   }
