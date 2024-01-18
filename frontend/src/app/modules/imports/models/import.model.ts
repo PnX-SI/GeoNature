@@ -165,5 +165,5 @@ export interface Destination {
     id_module: number;
     module_code: string;
     module_label: string;
-  }
+  };
 }

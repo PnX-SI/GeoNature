@@ -82,7 +82,12 @@ export class ImportProcessService {
   }
 
   beginProcess(destination: string) {
-    const link = [this.config.IMPORT.MODULE_URL, destination, 'process', Step[Step.Upload].toLowerCase()];
+    const link = [
+      this.config.IMPORT.MODULE_URL,
+      destination,
+      'process',
+      Step[Step.Upload].toLowerCase(),
+    ];
     this.router.navigate(link);
   }
 
