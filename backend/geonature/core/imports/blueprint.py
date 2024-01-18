@@ -17,9 +17,6 @@ def set_current_destination(endpoint, values):
         g.destination = values["destination"] = Destination.query.filter(
             Destination.code == values["destination"]
         ).first_or_404()
-    else:
-        return
-
 
 from .routes import (
     imports,
