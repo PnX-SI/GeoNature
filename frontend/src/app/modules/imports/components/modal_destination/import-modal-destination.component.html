@@ -4,7 +4,7 @@
     let-d="dismiss"
 >
     <div class="modal-header">
-        <h5 class="modal-title"> Sélection du jeu de données </h5>
+        <h5 class="modal-title"> {{ 'Import.ChooseDestination' | translate }} </h5>
         <button
             type="button"
             class="close"
@@ -21,13 +21,13 @@
         >
         </pnx-destinations>
         <div
-            id="datasetError"
-            *ngIf="isUserDatasetError"
+            id="DestinationError"
+            *ngIf="isUserDestinationError"
         >
             <i
                 id="warningDataset"
                 class="material-icons"
-            >warning</i> {{datasetError}}
+            >warning</i> {{ DestinationError }}
         </div>
     </div>
     <div class="modal-footer">
@@ -38,7 +38,7 @@
                 mat-raised-button
                 color="primary"
             >
-                Valider
+                {{ 'Import.Validate' | translate }}
             </button>
         </div>
     </div>

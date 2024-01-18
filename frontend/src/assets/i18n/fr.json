@@ -269,6 +269,19 @@
     "previous": "Voir le média précédent"
   },
   "Import": {
-    "Destinations": "Destinations"
+    "Destinations": "Destinations",
+    "FileUpload": " Téléversement du fichier ",
+    "ChooseDataset": "Choisir un jeu de données :",
+    "ChooseDestination": "Choisir une destination",
+    "ImportFile": "Importer un fichier :",
+    "ChooseFile": "Choisissez votre fichier",
+    "Next": "Suivant",
+    "Validate": "Valider",
+    "Errors": {
+      "FileTooBig": "Le fichier sélectionné est trop volumineux. La taille maximale est de {{maxFileSize}}Mo",
+      "EmptyFile": "Le fichier sélectionné est vide",
+      "FileColumn": "La première ligne du fichier doit correspondre au nom des colonnes",
+      "FileNameTooBig": "Le nom du fichier est trop long. Il doit faire moins de {{maxFileNameLength}} caractères."
+    }
   }
 }

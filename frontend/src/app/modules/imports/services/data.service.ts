@@ -28,7 +28,7 @@ export class DataService {
   constructor(
     private _http: HttpClient,
     public config: ConfigService
-  ) { 
+  ) {
     this.urlApi = `${this.config.API_ENDPOINT}/import`;
   }
 
@@ -88,11 +88,17 @@ export class DataService {
   }
 
   createFieldMapping(name: string, values: FieldMappingValues): Observable<FieldMapping> {
-    return this._http.post<FieldMapping>(`${this.getUrlApi()}/fieldmappings/?label=${name}`, values);
+    return this._http.post<FieldMapping>(
+      `${this.getUrlApi()}/fieldmappings/?label=${name}`,
+      values
+    );
   }
 
   createContentMapping(name: string, values: ContentMappingValues): Observable<ContentMapping> {
-    return this._http.post<ContentMapping>(`${this.getUrlApi()}/contentmappings/?label=${name}`, values);
+    return this._http.post<ContentMapping>(
+      `${this.getUrlApi()}/contentmappings/?label=${name}`,
+      values
+    );
   }
 
   getFieldMappings(): Observable<Array<FieldMapping>> {
@@ -193,7 +199,10 @@ export class DataService {
   }
 
   setImportContentMapping(idImport: number, values: ContentMappingValues): Observable<Import> {
-    return this._http.post<Import>(`${this.getUrlApi()}/imports/${idImport}/contentmapping`, values);
+    return this._http.post<Import>(
+      `${this.getUrlApi()}/imports/${idImport}/contentmapping`,
+      values
+    );
   }
 
   getNomencInfo(id_import: number) {
@@ -262,10 +271,16 @@ export class DataService {
   }
 
   getDestinations(): Observable<Array<Destination>> {
-    return this._http.get<Array<Destination>>(`${this.config.API_ENDPOINT}/import/destinations/`, { });
+    return this._http.get<Array<Destination>>(
+      `${this.config.API_ENDPOINT}/import/destinations/`,
+      {}
+    );
   }
 
   getDestination(code): Observable<Destination> {
-    return this._http.get<Destination>(`${this.config.API_ENDPOINT}/import/destination/${code}`, { });
+    return this._http.get<Destination>(
+      `${this.config.API_ENDPOINT}/import/destination/${code}`,
+      {}
+    );
   }
 }
