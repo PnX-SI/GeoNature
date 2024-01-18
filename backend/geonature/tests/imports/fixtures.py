@@ -23,8 +23,6 @@ def default_destination(app):
             and g.default_destination
         ):
             values["destination"] = g.default_destination.code
-        else:
-            return
 
 
 @pytest.fixture(scope="session")
