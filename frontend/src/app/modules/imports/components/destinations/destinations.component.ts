@@ -6,10 +6,9 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
 @Component({
   selector: 'pnx-destinations',
   templateUrl: './destinations.component.html',
-  styleUrls: ['./destinations.component.scss']
+  styleUrls: ['./destinations.component.scss'],
 })
 export class DestinationsComponent extends GenericFormComponent {
-
   destinations: Array<Destination>;
 
   @Input() bindValue: string = 'code';
