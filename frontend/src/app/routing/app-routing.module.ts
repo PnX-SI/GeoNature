@@ -109,4 +109,7 @@ const defaultRoutes: Routes = [
   },
 ];
 
-export const routing = RouterModule.forRoot(defaultRoutes, { useHash: true });
+export const routing = RouterModule.forRoot(defaultRoutes, {
+  useHash: true,
+  paramsInheritanceStrategy: 'always',
+});

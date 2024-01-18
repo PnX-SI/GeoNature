@@ -12,10 +12,10 @@ import { CruvedStoreService } from '@geonature_common/service/cruved-store.servi
 })
 export class ImportModalDestinationComponent implements OnInit, OnDestroy {
   public selectDestinationForm: FormControl;
-  public userDatasetsResponse: any;
-  public datasetResponse: JSON;
-  public isUserDatasetError: Boolean = false; // true if user does not have any declared dataset
-  public datasetError: string;
+  public userDestinationResponse: any;
+  public destinationResponse: JSON;
+  public isUserDestinationError: Boolean = false;
+  public DestinationError: string;
   private modalRef: NgbModalRef;
 
   constructor(
