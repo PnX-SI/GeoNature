@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-SERVICES=("geonature" "geonature-worker" "taxhub" "usershub")
+mode=prod
+
+if [ "${mode}" != dev ]; then
+    SERVICES=("geonature" "geonature-worker" "taxhub" "usershub")
+fi
 
 newdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." &> /dev/null && pwd )"
 if (($# > 0)); then
@@ -35,10 +39,12 @@ else
     echo "Lancement de la migration..."
 fi
 
-echo "Arrêt des services…"
-for service in ${SERVICES[@]}; do
-    sudo systemctl stop "${service}"
-done
+if [ "${mode}" != dev ]; then
+    echo "Arrêt des services…"
+    for service in ${SERVICES[@]}; do
+        sudo systemctl stop "${service}"
+    done
+fi
 
 echo "Copie des fichiers de configuration…"
 # Copy all config files (installation, GeoNature, modules)
@@ -105,11 +111,19 @@ nvm use
 
 echo "Installation des dépendances node du frontend …"
 cd "${newdir}/frontend"
-npm ci --only=prod
+if [ "${mode}" != dev ]; then
+    npm ci
+else
+    npm ci --only=prod
+fi
 
 echo "Installation des dépendances node du backend …"
 cd "${newdir}/backend/static"
-npm ci --only=prod
+if [ "${mode}" != dev ]; then
+    npm ci --only=prod
+else
+    npm ci
+fi
 
 
 echo "Mise à jour du backend …"
@@ -167,6 +181,9 @@ if [ -d "${olddir}/frontend/external_modules/" ]; then
                 mv "${moduledir}/config/conf_gn_module.toml" "${newdir}/config/${name}_config.toml"
             fi
         fi
+        # The command `geonature install-gn-module ...` execute a command `npm ci --omit=dev ...`
+        #   Should not it execute either `npm ci --omit=dev ...` (or `npm ci --only=prod`) in prod mode,
+        #   or `npm ci ...` in dev mode ?
         geonature install-gn-module "${moduledir}" "${name^^}" --build=false --upgrade-db=false
     done
 fi
@@ -208,8 +225,10 @@ if [ ! -z "$api_end_point" ]; then
 fi
 sed -i 's|"API_ENDPOINT": .*$|"API_ENDPOINT" : "'${api_end_point}'"|' "${newdir}/frontend/src/assets/config.json"
 
-echo "Mise à jour des fichiers de configuration frontend et rebuild du frontend…"
-geonature update-configuration
+if [ "${mode}" != dev ]; then
+    echo "Mise à jour des fichiers de configuration frontend et rebuild du frontend…"
+    geonature update-configuration
+fi
 
 echo "Mise à jour de la base de données…"
 # Si occtax est installé, alors il faut le mettre à jour en version 4c97453a2d1a (min.)
@@ -244,10 +263,12 @@ for dir in "${olddir}"/backend/media/*; do
 done
 shopt -u nullglob
 
-echo "Redémarrage des services…"
-for service in ${SERVICES[@]}; do
-    sudo systemctl start "${service}"
-done
+if [ "${mode}" != dev ]; then
+    echo "Redémarrage des services…"
+    for service in ${SERVICES[@]}; do
+        sudo systemctl start "${service}"
+    done
+fi
 
 deactivate
 
