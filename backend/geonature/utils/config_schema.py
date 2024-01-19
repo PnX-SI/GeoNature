@@ -64,6 +64,7 @@ class CasSchemaConf(Schema):
     )
     CAS_USER_WS = fields.Nested(CasUserSchemaConf, load_default=CasUserSchemaConf().load({}))
     USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(load_default=False)
+    UPDATE_USER_DATA_FROM_INPN_AUTHENTICATION = fields.Boolean(load_default=True)
     # Quel modules seront associés au JDD récupérés depuis MTD
 
 

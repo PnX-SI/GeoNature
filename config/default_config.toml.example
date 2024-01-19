@@ -115,6 +115,8 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
 [CAS]
     CAS_URL_VALIDATION = "https://preprod-inpn.mnhn.fr/auth/serviceValidate"
+    USERS_CAN_SEE_ORGANISM_DATA = false
+    UPDATE_USER_DATA_FROM_INPN_AUTHENTICATION = true
 
 [CAS.CAS_USER_WS]
     URL = "https://inpn2.mnhn.fr/authentication/information"
