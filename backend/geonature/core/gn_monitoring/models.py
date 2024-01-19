@@ -86,8 +86,8 @@ cor_module_type = DB.Table(
     schema="gn_monitoring",
 )
 
-cor_type_site = DB.Table(
-    "cor_type_site",
+cor_site_type = DB.Table(
+    "cor_site_type",
     DB.Column(
         "id_base_site",
         DB.Integer,
@@ -119,7 +119,7 @@ class BibTypeSite(DB.Model):
         TNomenclatures, uselist=False, backref=DB.backref("bib_type_site", uselist=False)
     )
 
-    sites = DB.relationship("TBaseSites", secondary=cor_type_site, lazy="noload")
+    sites = DB.relationship("TBaseSites", secondary=cor_site_type, lazy="noload")
 
 
 @serializable
