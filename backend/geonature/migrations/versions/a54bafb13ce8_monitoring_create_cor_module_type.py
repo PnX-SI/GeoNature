@@ -53,7 +53,7 @@ def upgrade():
         INSERT INTO gn_monitoring.cor_module_type (id_module, id_type_site )
         SELECT DISTINCT csm.id_module, cts.id_type_site
         FROM gn_monitoring.cor_site_module AS csm
-        JOIN gn_monitoring.cor_type_site AS cts
+        JOIN gn_monitoring.cor_site_type AS cts
         ON Cts.id_base_site = csm.id_base_site ;
     """
     )
