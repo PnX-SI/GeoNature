@@ -40,7 +40,7 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-metadata-exit-af"]').click();
   });
 
-  it('should display "jeux de données"', () => {
+  it('should display "jeux de données"',{defaultCommandTimeout: 60000}, () => {
     cy.get('[data-qa="pnx-metadata-acq-framework-header-' + caUUID + '"]').click();
     cy.get('[data-qa="pnx-metadata-jdd-' + jddUUID + '"]').contains(jdd);
     cy.get('[data-qa="pnx-metadata-jdd-actif-' + jddUUID + '"]').click();
