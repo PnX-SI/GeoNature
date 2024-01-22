@@ -40,7 +40,7 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-metadata-exit-af"]').click();
   });
 
-  it('should display "jeux de données"',{defaultCommandTimeout: 60000}, () => {
+  it('should display "jeux de données"', () => {
     cy.get('[data-qa="pnx-metadata-acq-framework-header-' + caUUID + '"]').click();
     cy.get('[data-qa="pnx-metadata-jdd-' + jddUUID + '"]').contains(jdd);
     cy.get('[data-qa="pnx-metadata-jdd-actif-' + jddUUID + '"]').click();
@@ -53,7 +53,7 @@ describe('Testing metadata', () => {
 
   });
   
-  it('should search a JDD and find it"', () => {
+  it('should search a JDD and find it"', {defaultCommandTimeout: 60000},() => {
     
     cy.get('[data-qa="pnx-metadata-search"]').type(jdd);
     cy.get('[data-qa="pnx-metadata-acq-framework-header-' + caUUID + '"]').click();
