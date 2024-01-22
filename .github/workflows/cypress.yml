@@ -124,7 +124,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
-          record: false
+          record: true
           working-directory: ./frontend
           start: npm run start
           wait-on: http://127.0.0.1:4200
