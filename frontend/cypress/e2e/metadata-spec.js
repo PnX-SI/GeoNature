@@ -53,11 +53,16 @@ describe('Testing metadata', () => {
 
   });
   
-  it('should search a JDD and find it"', () => {
+  it('should search a JDD and find it"', {defaultCommandTimeout: 60000},() => {
     
     cy.get('[data-qa="pnx-metadata-search"]').type(jdd);
-    cy.get('[data-qa="pnx-metadata-acq-framework-header-' + caUUID + '"]').click();
-    cy.get('[data-qa="pnx-metadata-jdd-' + jddUUID + '"]').contains(jdd);
+    //http://127.0.0.1:8000/meta/acquisition_frameworks?datasets=0&creator=1&actors=1
+    cy.intercept(Cypress.env('apiEndpoint') + 'meta/acquisition_frameworks?**').as('getAF');
+    cy.wait('@getAF').then((interception) => {
+      cy.get('[data-qa="pnx-metadata-acq-framework-header-' + caUUID + '"]').click();
+      cy.get('[data-qa="pnx-metadata-jdd-' + jddUUID + '"]').contains(jdd);
+    });
+    
   });
 
   it('should create a new "cardre d\'acquisition"', () => {

@@ -41,11 +41,13 @@ def import_from_table(schema_name, table_name, field_name, value, limit=50):
 
     except (IntegrityError, ProgrammingError) as e:
         if e.orig.pgcode == "42703":
-            raise ValueError("Undefined table : '{}.{}'".format(schema_name, table_name))
-        elif e.orig.pgcode == "42P01":
             raise ValueError(
-                "Undefined column {} in table '{}.{}'".format(field_name, schema_name, table_name)
+                "Undefined column : '{}.{}.{}'. \n This column is mandatory to synchronize with synthese".format(
+                    schema_name, table_name, field_name
+                )
             )
+        elif e.orig.pgcode == "42P01":
+            raise ValueError("Undefined table '{}.{}'".format(schema_name, table_name))
         else:
             raise e
     except Exception as e:
