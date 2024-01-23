@@ -23,72 +23,59 @@ def upgrade():
     op.execute(
         sa.text(
             f"""
-create or replace function {schema}.{fct_name} (
-        new_validation_status varchar default 'Probable',
+create or replace function gn_profiles.fct_auto_validation (
+        new_validation_status int default 2,
         score int default 3
-    ) returns integer [] language plpgsql as $function$
-declare old_validation_status text := 'En attente de validation';
+    ) returns int language plpgsql as $function$
+declare old_validation_status int := 0;
+
+validation_id_type int := ref_nomenclatures.get_id_nomenclature_type('STATUT_VALID');
+
+-- Retrieve the neaw validation status's nomenclature id
 new_id_status_validation int := (
     select tn.id_nomenclature
     from ref_nomenclatures.t_nomenclatures tn
-    where tn.mnemonique = new_validation_status
+    where tn.cd_nomenclature = new_validation_status::varchar
+    and id_type = validation_id_type
 );
+
+-- Retrieve the old validation status's nomenclature id
 old_id_status_validation int := (
     select tn.id_nomenclature
     from ref_nomenclatures.t_nomenclatures tn
-    where tn.mnemonique = old_validation_status
+    where tn.cd_nomenclature = old_validation_status::varchar
+    and id_type = validation_id_type
 );
+
+-- Retrieve the list of observation which are tagged with the old validation status
 list_uuid_obs_status_updatable uuid [] := (
     select array_agg(vlv.uuid_attached_row)
     from gn_commons.v_latest_validation vlv
-        join gn_profiles.v_consistancy_data vcd on vlv.uuid_attached_row = vcd.id_sinp
-        and (
-            (
-                vcd.valid_phenology::int + vcd.valid_altitude::int + vcd.valid_distribution::int
-            ) = score
-        )
+    join gn_profiles.v_consistancy_data vcd on vlv.uuid_attached_row = vcd.id_sinp
+    and (
+        (
+            vcd.valid_phenology::int + vcd.valid_altitude::int + vcd.valid_distribution::int
+        ) = score
+    )
     where vlv.id_nomenclature_valid_status = old_id_status_validation
-        and validation_auto = true
         and id_validator is null
 );
-list_uuid_validation_to_update uuid [] := array (
-    select t.uuid_attached_row
-    from (
-            select distinct on (uuid_attached_row) uuid_attached_row,
-                id_validation,
-                validation_date
-            from gn_commons.t_validations tv
-            where uuid_attached_row = any (list_uuid_obs_status_updatable)
-            order by uuid_attached_row,
-                validation_date desc
-        ) as t
-);
-list_id_sythese_updated int [] := array (
-    select s.id_synthese
-    from gn_synthese.synthese s
-    where s.unique_id_sinp = any (list_uuid_validation_to_update)
-);
-_schema_name text = 'gn_commons';
-_table_name text = 't_validations';
-indx int;
-begin if array_length(list_uuid_validation_to_update, 1) > 0 then for indx in 1..array_length(list_uuid_validation_to_update, 1) loop raise notice 'Mise à jour du status  % --> %,  pour l''uuid_attached_row : % dans la table %.% ( id_synthese = % )',
-old_validation_status,
-new_validation_status,
-list_uuid_validation_to_update [indx],
-_schema_name,
-_table_name,
-list_id_sythese_updated [indx];
-execute format(
-    '
-    INSERT INTO %I.%I (uuid_attached_row, id_nomenclature_valid_status, validation_auto, id_validator, validation_comment, validation_date)
-    VALUES  ($1, $2 ,false, null,''auto = default value'',CURRENT_TIMESTAMP)',
-    _schema_name,
-    _table_name
-) using list_uuid_validation_to_update [indx],
-new_id_status_validation;
-end loop;
+  
+number_of_obs_to_update int := array_length(list_uuid_obs_status_updatable, 1);
+begin if  number_of_obs_to_update > 0 then 
+	raise notice '% observations seront validées automatiquement',number_of_obs_to_update;
+-- Update Validation status 
+	insert into gn_commons.t_validations (uuid_attached_row, id_nomenclature_valid_status, validation_auto, id_validator, validation_comment, validation_date) 
+		select t_uuid.uuid_attached_row, new_id_status_validation ,true, null,'auto = default value',CURRENT_TIMESTAMP
+		from 
+		(select distinct on (uuid_attached_row) uuid_attached_row
+	            from gn_commons.t_validations tv
+	            where uuid_attached_row = any (list_uuid_obs_status_updatable)
+	     )  t_uuid;
+else
+raise notice 'Aucune entrée dans les dernières observations est candidate à la validation automatique';
 end if;
-return list_id_sythese_updated;
+return 0;
 end;
 $function$;
     """
