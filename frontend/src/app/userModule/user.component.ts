@@ -11,7 +11,6 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
   styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit, AfterViewInit {
-
   private roleForm: UntypedFormGroup;
 
   form: UntypedFormGroup;
@@ -23,23 +22,25 @@ export class UserComponent implements OnInit, AfterViewInit {
     private userService: UserDataService,
     private dataService: DataFormService,
     private config: ConfigService
-  ) { }
+  ) {}
 
   ngOnInit() {
     //recupération des infos custom depuis la config de GN
-    this.additionalFieldsForm = [...this.config.ACCOUNT_MANAGEMENT.ACCOUNT_FORM]
-      .map(form_element => {
+    this.additionalFieldsForm = [...this.config.ACCOUNT_MANAGEMENT.ACCOUNT_FORM].map(
+      (form_element) => {
         //on desactive les elements customs
         form_element['disable'] = true;
         return form_element;
-      });
+      }
+    );
     this.initForm();
     this.form.disable();
   }
 
   ngAfterViewInit() {
     //patch du formulaire à partir des infos de l'utilisateur connecté
-    this.dataService.getRole(this.authService.getCurrentUser().id_role)
+    this.dataService
+      .getRole(this.authService.getCurrentUser().id_role)
       .subscribe((user) => this.form.patchValue(user));
   }
 
@@ -53,14 +54,13 @@ export class UserComponent implements OnInit, AfterViewInit {
         [Validators.pattern('^[a-z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$'), Validators.required],
       ],
       remarques: ['', null],
-      champs_addi: this.fb.group({})
+      champs_addi: this.fb.group({}),
     });
   }
 
   save() {
     if (this.form.valid) {
-      this.userService.putRole(this.form.value)
-        .subscribe((res) => this.form.disable());
+      this.userService.putRole(this.form.value).subscribe((res) => this.form.disable());
     }
   }
 

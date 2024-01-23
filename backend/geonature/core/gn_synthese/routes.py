@@ -914,7 +914,6 @@ def general_stats(permissions):
         select(func.count("*"))
         .select_from(TDatasets)
         .where(TDatasets.filter_by_readable().whereclause)
-
     )
     query = select(
         func.count(Synthese.id_synthese),
