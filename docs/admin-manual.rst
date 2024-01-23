@@ -2371,3 +2371,22 @@ Liste des propriétés disponibles :
 - data_link : lien vers l'observation dans son module de saisie
 - tous les champs de la synthèse (acquisition_framework, altitude_max, altitude_min, bio_status, blurring, cd_hab, cd_nom, comment_context, comment_description, date_min, depth_max, depth_min, determiner, diffusion_level, digital_proof, entity_source_pk_value, exist_proof, grp_method, grp_typ, last_action, life_stage, meta_create_date, meta_update_date, meta_v_taxref, meta_validation_date, nat_obj_geo, naturalness, nom_cite, non_digital_proof, obj_count, obs_technique, observation_status, observers, occ_behaviour, occ_stat_biogeo, place_name, precision, sample_number_proof, sensitivity, sex, source, type_count, unique_id_sinp, unique_id_sinp_grp, valid_status, validation_comment)
 - tous les champs du taxon (cd_nom, cd_ref, cd_sup, cd_taxsup, regne, ordre, classe, famille, group1_inpn, group2_inpn, id_rang, nom_complet, nom_habitat, nom_rang, nom_statut, nom_valide, nom_vern)
+
+Validation automatique
+``````````````````````
+Depuis la version 2.14, il est possible d'activer la validation automatique d'observations. Pour cela, il suffit d'ajouter dans le fichier de configuration:
+
+::
+
+    AUTO_VALIDATION_ENABLED = true
+
+Si vous souhaitez activer de manière périodique le processus de validation automatique, ajouter la variable ``AUTO_VALIDATION_CRONTAB`` dans lequel vous indiquer les paramètres de périodicité (séparé par un espace) : minute, heure, jour du mois, mois de l'année, journée de la semaine. Par exemple, pour lancer le processus de validation automatique toutes les heures, ajoutez la ligne suivante :
+
+::
+
+    AUTO_VALIDATION_CRONTAB = "* 1 * * *"
+
+**Note** Si vous voulez ne pas utiliser un des paramètres de périodicités, mettez un astérisque (``*``) à la place
+
+Si vous souhaitez proposer une fonction de validation automatique propres à vos besoins, il est possible d'indiquer son nom dans la variable de configuration 
+``AUTO_VALIDATION_SQL_FUNCTION``.
