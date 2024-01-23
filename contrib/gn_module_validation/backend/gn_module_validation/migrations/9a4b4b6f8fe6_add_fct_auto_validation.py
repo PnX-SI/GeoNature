@@ -21,7 +21,8 @@ fct_name = "fct_auto_validation"
 
 def upgrade():
     op.execute(
-        f"""
+        sa.text(
+            f"""
 create or replace function {schema}.{fct_name} (
         new_validation_status varchar default 'Probable',
         score int default 3
@@ -91,12 +92,15 @@ return list_id_sythese_updated;
 end;
 $function$;
     """
+        )
     )
 
 
 def downgrade():
     op.execute(
-        f"""
+        sa.text(
+            f"""
             DROP FUNCTION {schema}.{fct_name}
         """
+        )
     )

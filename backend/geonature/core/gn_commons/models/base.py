@@ -6,7 +6,7 @@ from pathlib import Path
 from collections import defaultdict
 
 from flask import current_app
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, text
 from sqlalchemy.orm import relationship, aliased
 from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
@@ -234,16 +234,18 @@ class TValidations(DB.Model):
     )
 
     def auto_validation(fct_auto_validation):
-        stmt = f"""
+        stmt = text(
+            f"""
             select routine_name, routine_schema 
             from information_schema.routines 
             where routine_name= '{fct_auto_validation}'
             and routine_type='FUNCTION';
          """
+        )
         result = DB.session.execute(stmt).fetchall()
-        if len(result) == 0:
+        if not result:
             return
-        stmt_auto_validation = f"SELECT gn_profiles.{fct_auto_validation}()"
+        stmt_auto_validation = text(f"SELECT gn_profiles.{fct_auto_validation}()")
         list_synthese_updated = DB.session.execute(stmt_auto_validation).fetchall()[0]
         # DB.session.query(func.gn_profiles.fct_auto_validation())
         return list_synthese_updated

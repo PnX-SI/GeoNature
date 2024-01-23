@@ -27,9 +27,14 @@ min_width = 100
 #min_width = 50
 
 
-## FONCTION AUTO_VALIDATION A SURCOUCHER SI LA FONCTION DE BASE N'EST PAS ADAPATEE A VOTRE CAS D'USAGE
-#AUTO_VALIDATION_CRONTAB = "* 1 * * *"
-#AUTO_VALIDATION_ENABLED = true
+# Uncomment the following line to enable the auto-validation (value must be equal to true)
+#AUTO_VALIDATION_ENABLED = true 
 
-## CUSTOM NAME FUNCTION AUTO VALIDATION
+### Cron parameters for the auto-validation 
+#AUTO_VALIDATION_CRONTAB = "* 1 * * *"
+
+## If the auto-validation function do not fit your usecase, be sure to create your own
+## and indicate its name in the following variable
+## ATTENTION : Be sure that your function is declared in the `gn_profiles` schema in the database
+
 #AUTO_VALIDATION_SQL_FUNCTION = "fct_auto_validation_custom"
