@@ -15,7 +15,7 @@ from pypnnomenclature.models import TNomenclatures
 
 from .fixtures import *
 from .utils import set_logged_user
-
+import sqlalchemy as sa
 
 gn_module_validation = pytest.importorskip("gn_module_validation")
 pytestmark = pytest.mark.skipif(
@@ -25,19 +25,19 @@ pytestmark = pytest.mark.skipif(
 
 @pytest.fixture()
 def validation_with_max_score_and_wait_validation_status():
-    id_nomenclature_attente_validation = db.session.execute(
-        """ select tn.id_nomenclature from ref_nomenclatures.t_nomenclatures tn where tn.mnemonique = 'En attente de validation' """
-    ).scalar()
+    id_nomenclature_attente_validation = db.session.scalar(
+        sa.select(TNomenclatures.id_nomenclature).filter_by(mnemonique="En attente de validation")
+    )
 
-    validations_to_update = (
-        db.session.query(
+    validations_to_update = db.session.scalars(
+        sa.select(
             TValidations.id_validation,
             VLatestValidations.uuid_attached_row,
             VConsistancyData.id_synthese,
         )
         .join(TValidations, TValidations.id_validation == VLatestValidations.id_validation)
         .join(VConsistancyData, VConsistancyData.id_sinp == VLatestValidations.uuid_attached_row)
-        .filter(
+        .where(
             TValidations.validation_auto == True,
             VLatestValidations.id_nomenclature_valid_status == id_nomenclature_attente_validation,
             VLatestValidations.id_validator == None,
@@ -45,8 +45,7 @@ def validation_with_max_score_and_wait_validation_status():
             VConsistancyData.valid_altitude == True,
             VConsistancyData.valid_distribution == True,
         )
-        .all()
-    )
+    ).all()
     return validations_to_update
 
 
@@ -141,27 +140,27 @@ class TestValidation:
         auto_validation_enabled,
         validation_with_max_score_and_wait_validation_status,
     ):
-        fct_auto_validation_name = app.config["VALIDATION"][
-            "AUTO_VALIDATION_SQL_FUNCTION"
-        ]  # config["VALIDATION"]["AUTO_VALIDATION_SQL_FUNCTION"]
+        # fct_auto_validation_name = app.config["VALIDATION"]["AUTO_VALIDATION_SQL_FUNCTION"]
         set_logged_user(self.client, users["user"])
 
-        id_nomenclature_probable = db.session.execute(
-            """ select tn.id_nomenclature from ref_nomenclatures.t_nomenclatures tn where tn.mnemonique = 'Probable' """
-        ).scalar()
-        id_nomenclature_attente_validation = db.session.execute(
-            """ select tn.id_nomenclature from ref_nomenclatures.t_nomenclatures tn where tn.mnemonique = 'En attente de validation' """
-        ).scalar()
+        id_nomenclature_probable = db.session.scalar(
+            sa.select(TNomenclatures.id_nomenclature).filter_by(mnemonique="Probable")
+        )
+        id_nomenclature_attente_validation = db.session.scalar(
+            sa.select(TNomenclatures.id_nomenclature).filter_by(
+                mnemonique="En attente de validation"
+            )
+        )
 
         list_synthese_to_update = []
         for row in validation_with_max_score_and_wait_validation_status:
             list_synthese_to_update.append(row[2])
 
-        synthese_valid_statut_before_update = (
-            db.session.query(Synthese.id_nomenclature_valid_status)
-            .filter(Synthese.id_synthese.in_(list_synthese_to_update))
-            .all()
-        )
+        synthese_valid_statut_before_update = db.session.scalars(
+            sa.select(Synthese.id_nomenclature_valid_status).where(
+                Synthese.id_synthese.in_(list_synthese_to_update)
+            )
+        ).all()
         assert all(
             synthese_valid_statut[0] == id_nomenclature_attente_validation
             for synthese_valid_statut in synthese_valid_statut_before_update
@@ -169,11 +168,11 @@ class TestValidation:
 
         # On applique la fonction
         set_auto_validation()  # list_synthese_updated = TValidations.auto_validation(fct_auto_validation_name)
-        synthese_valid_statut_after_update = (
-            db.session.query(Synthese.id_nomenclature_valid_status)
-            .filter(Synthese.id_synthese.in_(list_synthese_to_update))
-            .all()
-        )
+        synthese_valid_statut_after_update = db.session.scalars(
+            sa.select(Synthese.id_nomenclature_valid_status).where(
+                Synthese.id_synthese.in_(list_synthese_to_update)
+            )
+        ).all()
         assert all(
             synthese_valid_statut[0] == id_nomenclature_probable
             for synthese_valid_statut in synthese_valid_statut_after_update
