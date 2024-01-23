@@ -1,7 +1,7 @@
-"""add_observers_txt_column_t_base_visit
+"""[monitoring] add_observers_txt_column_t_base_visit
 
 Revision ID: 8309591841f3
-Revises: f1dd984bff97
+Revises: 5a2c9c65129f
 Create Date: 2023-10-06 11:07:43.532623
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "8309591841f3"
-down_revision = "f1dd984bff97"
+down_revision = "5a2c9c65129f"
 branch_labels = None
 depends_on = None
 
