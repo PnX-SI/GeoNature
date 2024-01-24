@@ -233,6 +233,7 @@ class TValidations(DB.Model):
         overlaps="nomenclature_valid_status",  # overlaps expected
     )
 
+    @staticmethod
     def auto_validation(fct_auto_validation):
         stmt = text(
             f"""
@@ -246,9 +247,8 @@ class TValidations(DB.Model):
         if not result:
             return
         stmt_auto_validation = text(f"SELECT gn_profiles.{fct_auto_validation}()")
-        list_synthese_updated = DB.session.execute(stmt_auto_validation).fetchall()[0]
-        # DB.session.query(func.gn_profiles.fct_auto_validation())
-        return list_synthese_updated
+        DB.session.execute(stmt_auto_validation)
+        DB.session.commit()
 
 
 last_validation_query = (
