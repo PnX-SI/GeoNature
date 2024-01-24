@@ -529,6 +529,7 @@ Ces profils sont déclinés sur :
 - Le module de validation permet d'attirer l'attention des validateurs sur les données qui sortent du "cadre" déjà connu pour le taxon considéré, et d'apporter des éléments de contexte en complément de la donnée en cours de validation
 - Le module Synthèse (fiche d'information, onglet validation) permet d'apporter des éléments de contexte en complément des données brutes consultées
 - Le module Occtax permet d'alerter les utilisateurs lors de la saisie de données qui sortent du "cadre" déjà connu pour un taxon considéré
+- Le processus de validation automatique permet de valider automatiquement les observations respectant le profils de taxons.
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/validation.png
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/contexte_donnee.png
@@ -2373,20 +2374,40 @@ Liste des propriétés disponibles :
 - tous les champs du taxon (cd_nom, cd_ref, cd_sup, cd_taxsup, regne, ordre, classe, famille, group1_inpn, group2_inpn, id_rang, nom_complet, nom_habitat, nom_rang, nom_statut, nom_valide, nom_vern)
 
 Validation automatique
-``````````````````````
-Depuis la version 2.14, il est possible d'activer la validation automatique d'observations. Pour cela, il suffit d'ajouter dans le fichier de configuration:
+""""""""""""""""""""""
+Depuis la version 2.14, il est possible d'activer la validation automatique d'observations.
+
+Activation
+``````````
+L'activation de la validation automatique s'effectue en ajoutant la ligne suivante dans le fichier de configuration du module de validation ``config/validation_config.toml``:
 
 ::
 
     AUTO_VALIDATION_ENABLED = true
 
-Si vous souhaitez activer de manière périodique le processus de validation automatique, ajouter la variable ``AUTO_VALIDATION_CRONTAB`` dans lequel vous indiquer les paramètres de périodicité (séparé par un espace) : minute, heure, jour du mois, mois de l'année, journée de la semaine. Par exemple, pour lancer le processus de validation automatique toutes les heures, ajoutez la ligne suivante :
+Condition de validation automatique
+```````````````````````````````````
+Une observation sera validée automatiquement si elle rencontre les conditions suivantes:
+ * Son statut de validation est ``En attente de validation``
+ * Si le score calculé à partir du profil de taxons est de 3. Se référer à la section `Profils de taxons`_ pour plus d'informations.
+
+Si ces conditions sont remplies, alors le statut de validation de l'observation est mis à ``Probable``.
+
+**Notes** Si le comportement de validation automtique ne vous correspond pas, il est possible de définir soi-même se dernier dans la base de données sous forme d'une fonction. Reportez-vous à la section `Modification de la fonction de validation automatique`_ pour plus d'informations.
+
+Modification de la périodicité de la validation automatique
+```````````````````````````````````````````````````````````
+
+Le processus de validation automatique est executé à une fréquence définie, par défaut toutes les heures. Si toutefois, vous souhaitez diminuer ou augmenter la durée entre chaque validation automatique, définissez cette dernière dans le fichier de configuration (``config/validation_config.toml``) dans la variable ``AUTO_VALIDATION_CRONTAB``. 
 
 ::
+  
+     AUTO_VALIDATION_CRONTAB ="*/1 * * * *"
 
-    AUTO_VALIDATION_CRONTAB = "* 1 * * *"
+Ce paramètre est composé de cinq valeurs, chacune séparée par un espoace: minute, heure, jour du mois, mois de l'année, journée de la semaine. Dans l'exemple ci-dessus, il est indiqué que le processus d'auto-validation sera répété toutes les minutes. Pour plus d'informations, vous pouvez consulter la documentation de Celery à ce sujet : https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html#crontab-schedules.
 
-**Note** Si vous voulez ne pas utiliser un des paramètres de périodicités, mettez un astérisque (``*``) à la place
+**Note** Si vous ne voulez pas définir un des paramètres de périodicités, utilisez un astérisque (``*``).
 
-Si vous souhaitez proposer une fonction de validation automatique propres à vos besoins, il est possible d'indiquer son nom dans la variable de configuration 
-``AUTO_VALIDATION_SQL_FUNCTION``.
+Modification de la fonction de validation automatique
+`````````````````````````````````````````````````````
+Dans GeoNature, la validation automatique est effectuée par une fonction en ``PL/pgSQL`` déclarée dans le schéma ``gn_profiles``. Si toutefois, le fonctionnement de celle-ci ne correspond à vos besoins, indiquer le nom de la nouvelle fonction dans la variable ``AUTO_VALIDATION_SQL_FUNCTION``. Attention, cette fonction doit aussi être stockée dans le schema ``gn_profiles``. Pour vous aidez, n'hésitez pas à regarder la définition de la fonction par défaut nommée ``fct_auto_validation``.
