@@ -638,8 +638,6 @@ def downgrade():
     drop 'backup_t_filters' after 'backup_cor_role_action_filter_module_object' because of 
     'fk_backup_cor_r_a_f_m_o_id_filter' referencing 'backup_t_filters'
     """
-    op.drop_table(
-        schema="gn_permissions", table_name="backup_cor_role_action_filter_module_object"
-    )
+    op.drop_table(schema="gn_permissions", table_name="backup_cor_role_action_filter_module_object")
     op.drop_table(schema="gn_permissions", table_name="backup_t_filters")
     op.drop_table(schema="gn_permissions", table_name="backup_bib_filters_type")

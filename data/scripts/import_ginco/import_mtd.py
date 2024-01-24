@@ -1114,10 +1114,7 @@ for ds_iter in range(len(ds_uuid_list)):
                 else:
                     cur_protocol_url = "''"
                 # Create or update publication
-                if (
-                    "('" + cur_protocol_name.replace("''", "'") + "',)"
-                    not in get_known_protocols()
-                ):
+                if "('" + cur_protocol_name.replace("''", "'") + "',)" not in get_known_protocols():
                     insert_sinp_datatype_protocols(
                         cur_protocol_name, cur_protocol_desc, cur_protocol_url
                     )

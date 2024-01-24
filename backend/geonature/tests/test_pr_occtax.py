@@ -22,9 +22,7 @@ from .utils import set_logged_user
 from .fixtures import *
 
 occtax = pytest.importorskip("occtax")
-pytestmark = pytest.mark.skipif(
-    "OCCTAX" in config["DISABLED_MODULES"], reason="OccTax is disabled"
-)
+pytestmark = pytest.mark.skipif("OCCTAX" in config["DISABLED_MODULES"], reason="OccTax is disabled")
 
 from occtax.models import (
     DefaultNomenclaturesValue,
@@ -191,9 +189,7 @@ def additional_field(app, datasets):
     module = db.session.execute(
         select(TModules).where(TModules.module_code == "OCCTAX")
     ).scalar_one()
-    obj = db.session.execute(
-        select(PermObject).where(PermObject.code_object == "ALL")
-    ).scalar_one()
+    obj = db.session.execute(select(PermObject).where(PermObject.code_object == "ALL")).scalar_one()
     datasets = list(datasets.values())
     additional_field = TAdditionalFields(
         field_name="test",

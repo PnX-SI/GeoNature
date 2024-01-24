@@ -359,9 +359,7 @@ class Synthese(DB.Model):
     id_nomenclature_blurring = db.Column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
-    nomenclature_blurring = db.relationship(
-        TNomenclatures, foreign_keys=[id_nomenclature_blurring]
-    )
+    nomenclature_blurring = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_blurring])
     id_nomenclature_source_status = db.Column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )

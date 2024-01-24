@@ -95,9 +95,7 @@ def upgrade():
             ForeignKey(SCHEMA_NAME + ".bib_notifications_categories.code"),
             nullable=False,
         ),
-        UniqueConstraint(
-            "id_role", "code_method", "code_category", name="un_role_method_category"
-        ),
+        UniqueConstraint("id_role", "code_method", "code_category", name="un_role_method_category"),
         schema=SCHEMA_NAME,
     )
 

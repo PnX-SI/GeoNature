@@ -110,9 +110,7 @@ def get_csv_from_response(data):
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestGNMeta:
-    def test_acquisition_frameworks_permissions(
-        self, app, acquisition_frameworks, datasets, users
-    ):
+    def test_acquisition_frameworks_permissions(self, app, acquisition_frameworks, datasets, users):
         af = acquisition_frameworks["own_af"]
         with app.test_request_context(headers=logged_user_headers(users["user"])):
             app.preprocess_request()
@@ -478,9 +476,7 @@ class TestGNMeta:
         set_logged_user(self.client, users["user"])
 
         response = self.client.post(
-            url_for(
-                "gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id
-            )
+            url_for("gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id)
         )
 
         assert response.status_code == 200
@@ -489,9 +485,7 @@ class TestGNMeta:
         af_id = acquisition_frameworks["own_af"].id_acquisition_framework
 
         response = self.client.post(
-            url_for(
-                "gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id
-            )
+            url_for("gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id)
         )
 
         assert response.status_code == Unauthorized.code
@@ -1043,9 +1037,7 @@ class TestGNMeta:
             create = TDatasets._get_create_scope(module_code=modcode)
 
         usercreate = TDatasets._get_create_scope(module_code=modcode, user=users["user"])
-        norightcreate = TDatasets._get_create_scope(
-            module_code=modcode, user=users["noright_user"]
-        )
+        norightcreate = TDatasets._get_create_scope(module_code=modcode, user=users["noright_user"])
         associatecreate = TDatasets._get_create_scope(
             module_code=modcode, user=users["associate_user"]
         )

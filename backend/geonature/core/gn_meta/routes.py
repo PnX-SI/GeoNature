@@ -887,9 +887,7 @@ def get_acquisition_framework_stats(id_acquisition_framework):
     nb_observations = db.session.execute(
         select(func.count("*"))
         .select_from(Synthese)
-        .where(
-            Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework)
-        )
+        .where(Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework))
     ).scalar_one()
 
     nb_habitats = 0
@@ -966,9 +964,7 @@ def publish_acquisition_framework_mail(af):
     )
 
     # Mail subject
-    mail_subject = (
-        "Dépôt du cadre d'acquisition " + str(af.unique_acquisition_framework_id).upper()
-    )
+    mail_subject = "Dépôt du cadre d'acquisition " + str(af.unique_acquisition_framework_id).upper()
     mail_subject_base = current_app.config["METADATA"]["MAIL_SUBJECT_AF_CLOSED_BASE"]
     if mail_subject_base:
         mail_subject = mail_subject_base + " " + mail_subject
