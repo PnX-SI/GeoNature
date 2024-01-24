@@ -31,7 +31,7 @@ declare old_validation_status int := 0;
 
 validation_id_type int := ref_nomenclatures.get_id_nomenclature_type('STATUT_VALID');
 
--- Retrieve the neaw validation status's nomenclature id
+-- Retrieve the new validation status's nomenclature id
 new_id_status_validation int := (
     select tn.id_nomenclature
     from ref_nomenclatures.t_nomenclatures tn
@@ -39,7 +39,7 @@ new_id_status_validation int := (
     and id_type = validation_id_type
 );
 
--- Retrieve the old validation status's nomenclature id
+-- Retrieve the old validation status nomenclature id
 old_id_status_validation int := (
     select tn.id_nomenclature
     from ref_nomenclatures.t_nomenclatures tn
@@ -47,7 +47,7 @@ old_id_status_validation int := (
     and id_type = validation_id_type
 );
 
--- Retrieve the list of observation which are tagged with the old validation status
+-- Retrieve the list of observations tagged with the old validation status
 list_uuid_obs_status_updatable uuid [] := (
     select array_agg(vlv.uuid_attached_row)
     from gn_commons.v_latest_validation vlv
@@ -73,7 +73,7 @@ begin if  number_of_obs_to_update > 0 then
 	            where uuid_attached_row = any (list_uuid_obs_status_updatable)
 	     )  t_uuid;
 else
-raise notice 'Aucune entrée dans les dernières observations est candidate à la validation automatique';
+raise notice 'Aucune entrée dans les dernières observations n''est candidate à la validation automatique';
 end if;
 return 0;
 end;

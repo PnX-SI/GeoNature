@@ -529,7 +529,7 @@ Ces profils sont déclinés sur :
 - Le module de validation permet d'attirer l'attention des validateurs sur les données qui sortent du "cadre" déjà connu pour le taxon considéré, et d'apporter des éléments de contexte en complément de la donnée en cours de validation
 - Le module Synthèse (fiche d'information, onglet validation) permet d'apporter des éléments de contexte en complément des données brutes consultées
 - Le module Occtax permet d'alerter les utilisateurs lors de la saisie de données qui sortent du "cadre" déjà connu pour un taxon considéré
-- Le processus de validation automatique permet de valider automatiquement les observations respectant le profils de taxons.
+- Le processus de validation automatique permet de valider automatiquement les observations respectant le profil de taxons (non activé par défaut).
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/validation.png
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/contexte_donnee.png
@@ -2393,7 +2393,7 @@ Une observation sera validée automatiquement si elle rencontre les conditions s
 
 Si ces conditions sont remplies, alors le statut de validation de l'observation est mis à ``Probable``.
 
-**Notes** Si le comportement de validation automtique ne vous correspond pas, il est possible de définir soi-même se dernier dans la base de données sous forme d'une fonction. Reportez-vous à la section `Modification de la fonction de validation automatique`_ pour plus d'informations.
+**Notes** Si le comportement de validation automatique ne vous correspond pas, il est possible de définir soi-même ce dernier dans la base de données sous forme d'une fonction. Reportez-vous à la section `Modification de la fonction de validation automatique`_ pour plus d'informations.
 
 Modification de la périodicité de la validation automatique
 ```````````````````````````````````````````````````````````
@@ -2404,9 +2404,9 @@ Le processus de validation automatique est executé à une fréquence définie, 
   
      AUTO_VALIDATION_CRONTAB ="*/1 * * * *"
 
-Ce paramètre est composé de cinq valeurs, chacune séparée par un espoace: minute, heure, jour du mois, mois de l'année, journée de la semaine. Dans l'exemple ci-dessus, il est indiqué que le processus d'auto-validation sera répété toutes les minutes. Pour plus d'informations, vous pouvez consulter la documentation de Celery à ce sujet : https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html#crontab-schedules.
+Ce paramètre est composé de cinq valeurs, chacune séparée par un espace: minute, heure, jour du mois, mois de l'année, journée de la semaine. Dans l'exemple ci-dessus, il est indiqué que le processus d'auto-validation sera répété toutes les minutes. Pour plus d'informations, vous pouvez consulter la documentation de Celery à ce sujet : https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html#crontab-schedules.
 
-**Note** Si vous ne voulez pas définir un des paramètres de périodicités, utilisez un astérisque (``*``).
+**Note** Si vous ne voulez pas définir un des paramètres de périodicité, utilisez un astérisque (``*``).
 
 Modification de la fonction de validation automatique
 `````````````````````````````````````````````````````

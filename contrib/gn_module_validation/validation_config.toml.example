@@ -6,7 +6,7 @@
 ### Cron parameters for the auto-validation 
 #AUTO_VALIDATION_CRONTAB = "* 1 * * *"
 
-## If the auto-validation function do not fit your usecase, be sure to create your own
+## If the auto-validation function does not fit your usecase, be sure to create your own
 ## and indicate its name in the following variable
 ## ATTENTION : Be sure that your function is declared in the `gn_profiles` schema in the database
 
