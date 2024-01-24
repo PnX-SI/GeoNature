@@ -38,9 +38,7 @@ class ReleveRepository:
         and via the current_module (only datasets of this module)
         """
         q = select(self.model).where(
-            self.model.id_dataset.in_(
-                tuple(map(lambda x: x.id_dataset, g.current_module.datasets))
-            )
+            self.model.id_dataset.in_(tuple(map(lambda x: x.id_dataset, g.current_module.datasets)))
         )
         allowed_datasets = DB.session.scalars(TDatasets.filter_by_scope(scope)).unique().all()
         allowed_datasets = [dataset.id_dataset for dataset in allowed_datasets]

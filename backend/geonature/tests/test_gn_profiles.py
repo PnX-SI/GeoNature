@@ -216,9 +216,7 @@ class TestGnProfiles:
 
     def test_get_phenology(self, sample_synthese_records_for_profile):
         response = self.client.get(
-            url_for(
-                "gn_profiles.get_phenology", cd_ref=sample_synthese_records_for_profile.cd_nom
-            ),
+            url_for("gn_profiles.get_phenology", cd_ref=sample_synthese_records_for_profile.cd_nom),
             query_string={
                 "id_nomenclature_life_stage": db.session.scalar(
                     sa.select(func.ref_nomenclatures.get_id_nomenclature("STADE_VIE", "10"))
@@ -344,9 +342,7 @@ class TestGnProfiles:
         assert response.status_code == 400, response.json
         assert response.json["description"] == "Missing altitude_min or altitude_max"
 
-    def test_get_observation_score_not_observed_altitude(
-        self, sample_synthese_records_for_profile
-    ):
+    def test_get_observation_score_not_observed_altitude(self, sample_synthese_records_for_profile):
         alt_min = 500
         alt_max = 600
         data = {

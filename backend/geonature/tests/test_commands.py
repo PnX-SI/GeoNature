@@ -135,9 +135,7 @@ class TestCommands:
     def test_install_gn_module_no_module_code(self, monkeypatch):
         patch_monkeypatch(monkeypatch)
         module_path = "backend/geonature/core"
-        monkeypatch.setattr(
-            install_module, "iter_modules_dist", iter_module_dist_mock("geonature")
-        )
+        monkeypatch.setattr(install_module, "iter_modules_dist", iter_module_dist_mock("geonature"))
         result = self.cli.invoke(install_module.install_gn_module, [module_path])
         assert result.exit_code == 0
 
@@ -147,25 +145,19 @@ class TestCommands:
         monkeypatch.setattr(install_module, "iter_modules_dist", lambda: [])
         result = self.cli.invoke(install_module.install_gn_module, [module_path])
         assert result.exit_code > 0
-        monkeypatch.setattr(
-            install_module, "iter_modules_dist", iter_module_dist_mock("geonature")
-        )
+        monkeypatch.setattr(install_module, "iter_modules_dist", iter_module_dist_mock("geonature"))
 
     def test_install_gn_module_nomodule_code(self, monkeypatch):
         patch_monkeypatch(monkeypatch)
         module_path = "backend/geonature/core"
-        monkeypatch.setattr(
-            install_module, "iter_modules_dist", iter_module_dist_mock("geonature")
-        )
+        monkeypatch.setattr(install_module, "iter_modules_dist", iter_module_dist_mock("geonature"))
         result = self.cli.invoke(install_module.install_gn_module, [module_path, "--build=false"])
         assert result.exit_code == 0
 
     def test_install_gn_module_false_upgrade_db(self, monkeypatch):
         patch_monkeypatch(monkeypatch)
         module_path = "backend/geonature/core"
-        monkeypatch.setattr(
-            install_module, "iter_modules_dist", iter_module_dist_mock("geonature")
-        )
+        monkeypatch.setattr(install_module, "iter_modules_dist", iter_module_dist_mock("geonature"))
 
         result = self.cli.invoke(
             install_module.install_gn_module, [module_path, "--upgrade-db=false"]
@@ -175,9 +167,7 @@ class TestCommands:
     def test_install_gn_module_symlink_not_exists(self, monkeypatch):
         patch_monkeypatch(monkeypatch)
         module_path = "backend/geonature/core"
-        monkeypatch.setattr(
-            install_module, "iter_modules_dist", iter_module_dist_mock("geonature")
-        )
+        monkeypatch.setattr(install_module, "iter_modules_dist", iter_module_dist_mock("geonature"))
         monkeypatch.setattr(install_module.os.path, "exists", lambda x: False)
         result = self.cli.invoke(install_module.install_gn_module, [module_path])
 
@@ -192,9 +182,7 @@ class TestCommands:
         assert result.exit_code > 0  # will fail
 
     def test_upgrade_modules_db(self, monkeypatch):
-        monkeypatch.setattr(
-            install_module, "iter_modules_dist", iter_module_dist_mock("geonature")
-        )
+        monkeypatch.setattr(install_module, "iter_modules_dist", iter_module_dist_mock("geonature"))
         result = self.cli.invoke(install_module.upgrade_modules_db, [])
         assert result.exit_code > 0
 

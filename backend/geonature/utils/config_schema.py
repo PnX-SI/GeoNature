@@ -210,9 +210,7 @@ class GnPySchemaConf(Schema):
     CELERY = fields.Nested(CeleryConfig, load_default=CeleryConfig().load({}))
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     ADMIN_APPLICATION_LOGIN = fields.String()
-    ACCOUNT_MANAGEMENT = fields.Nested(
-        AccountManagement, load_default=AccountManagement().load({})
-    )
+    ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
     BAD_LOGIN_STATUS_CODE = fields.Integer(load_default=401)
     USERSHUB = fields.Nested(UsersHubConfig, load_default=UsersHubConfig().load({}))
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
@@ -547,9 +545,7 @@ class GnGeneralSchemaConf(Schema):
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(load_default=True)
     BDD = fields.Nested(BddConfig, load_default=BddConfig().load({}))
     URL_USERSHUB = fields.Url(required=False)
-    ACCOUNT_MANAGEMENT = fields.Nested(
-        AccountManagement, load_default=AccountManagement().load({})
-    )
+    ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
     STATIC_URL = fields.String(load_default="/static")
     MEDIA_URL = fields.String(load_default="/media")

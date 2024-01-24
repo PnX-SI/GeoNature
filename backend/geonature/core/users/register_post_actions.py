@@ -41,9 +41,7 @@ def validate_temp_user(data):
     """
     token = data.get("token", None)
 
-    user = DB.session.scalars(
-        select(TempUser).where(TempUser.token_role == token).limit(1)
-    ).first()
+    user = DB.session.scalars(select(TempUser).where(TempUser.token_role == token).limit(1)).first()
     if not user:
         return {
             "msg": "{token}: ce token n'est pas associé à un compte temporaire".format(token=token)

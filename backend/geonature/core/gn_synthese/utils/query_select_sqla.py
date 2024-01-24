@@ -355,9 +355,7 @@ class SyntheseQuery:
                 comment_filter = ~comment_filter
             self.query = self.query.where(comment_filter)
         if "id_dataset" in self.filters:
-            self.query = self.query.where(
-                self.model.id_dataset.in_(self.filters.pop("id_dataset"))
-            )
+            self.query = self.query.where(self.model.id_dataset.in_(self.filters.pop("id_dataset")))
         if "observers" in self.filters:
             # découpe des éléments saisies par des ","
             observers = self.filters.pop("observers").split(",")

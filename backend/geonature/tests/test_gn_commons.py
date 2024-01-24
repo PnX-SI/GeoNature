@@ -37,9 +37,7 @@ def additional_field(app, datasets):
     module = db.session.execute(
         select(TModules).where(TModules.module_code == "SYNTHESE")
     ).scalar_one()
-    obj = db.session.execute(
-        select(PermObject).where(PermObject.code_object == "ALL")
-    ).scalar_one()
+    obj = db.session.execute(select(PermObject).where(PermObject.code_object == "ALL")).scalar_one()
     datasets = list(datasets.values())
     additional_field = TAdditionalFields(
         field_name="test",
@@ -454,9 +452,7 @@ class TestCommons:
         assert response.status_code == 200
         assert db.session.scalar(
             exists()
-            .where(
-                TPlaces.place_name == place.place_name, TPlaces.id_role == users["user"].id_role
-            )
+            .where(TPlaces.place_name == place.place_name, TPlaces.id_role == users["user"].id_role)
             .select()
         )
 

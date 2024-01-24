@@ -115,9 +115,7 @@ class TMediaRepository:
             if "check_entity_field_exist" in exp.args[0]:
                 raise Exception("{} doesn't exists".format(self.data["id_table_location"]))
             if "fk_t_medias_check_entity_value" in exp.args[0]:
-                raise Exception(
-                    "id {} of {} doesn't exists".format(self.data["id_table_location"])
-                )
+                raise Exception("id {} of {} doesn't exists".format(self.data["id_table_location"]))
             else:
                 raise Exception("Errors {}".format(exp.args))
 

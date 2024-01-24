@@ -167,27 +167,19 @@ class TestNotification:
     def test_update_notification(self, users, notification_data):
         # Init data for test
         url = "notifications.update_notification"
-        log.debug(
-            "Url d'appel %s", url_for(url, id_notification=notification_data.id_notification)
-        )
+        log.debug("Url d'appel %s", url_for(url, id_notification=notification_data.id_notification))
 
-        response = self.client.post(
-            url_for(url, id_notification=notification_data.id_notification)
-        )
+        response = self.client.post(url_for(url, id_notification=notification_data.id_notification))
         assert response.status_code == Unauthorized.code
 
         # TEST CONNECTED USER BUT NOTIFICATION DOES NOT EXIST FOR THIS USER
         set_logged_user(self.client, users["user"])
-        response = self.client.post(
-            url_for(url, id_notification=notification_data.id_notification)
-        )
+        response = self.client.post(url_for(url, id_notification=notification_data.id_notification))
         assert response.status_code == Forbidden.code
 
         # TEST CONNECTED USER WITH NOTIFICATION
         set_logged_user(self.client, users["admin_user"])
-        response = self.client.post(
-            url_for(url, id_notification=notification_data.id_notification)
-        )
+        response = self.client.post(url_for(url, id_notification=notification_data.id_notification))
         assert response.status_code == 200
 
     def test_delete_all_notifications(self, users, notification_data):

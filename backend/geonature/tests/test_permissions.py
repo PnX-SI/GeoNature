@@ -138,9 +138,7 @@ def permissions(roles, groups, actions, module_gn):
                 else:
                     s = int(s)
                 db.session.add(
-                    Permission(
-                        role=role, action=actions[a], module=module, scope_value=s, **kwargs
-                    )
+                    Permission(role=role, action=actions[a], module=module, scope_value=s, **kwargs)
                 )
 
     return _permissions

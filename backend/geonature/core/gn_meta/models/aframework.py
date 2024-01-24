@@ -276,9 +276,7 @@ class TAcquisitionFramework(db.Model):
                 if name
                 else True
             )
-            .where(
-                TAcquisitionFramework.acquisition_framework_start_date == date if date else True
-            )
+            .where(TAcquisitionFramework.acquisition_framework_start_date == date if date else True)
         )
 
         actors = []
@@ -326,9 +324,7 @@ class TAcquisitionFramework(db.Model):
             if _ds_search:
                 ors.append(
                     TAcquisitionFramework.datasets.any(
-                        TDatasets.filter_by_params(
-                            {"search": search}, _af_search=False
-                        ).whereclause
+                        TDatasets.filter_by_params({"search": search}, _af_search=False).whereclause
                     ),
                 )
             query = query.where(sa.or_(*ors))
