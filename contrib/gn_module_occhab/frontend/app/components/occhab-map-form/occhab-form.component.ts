@@ -123,6 +123,7 @@ export class OccHabFormComponent implements OnInit, OnDestroy {
 
   // toggle the hab form and call the editHab function of form service
   editHab(index) {
+    this.occHabForm.cancelHab();
     this.occHabForm.editHab(index);
     this.showHabForm = true;
   }
