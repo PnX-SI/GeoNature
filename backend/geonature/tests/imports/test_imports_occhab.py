@@ -59,9 +59,7 @@ def contentmapping(occhab_destination):
         BibFields.query.filter_by(destination=occhab_destination, display=True)
         .filter(BibFields.nomenclature_type != None)
         .options(
-            joinedload(BibFields.nomenclature_type).joinedload(
-                BibNomenclaturesTypes.nomenclatures
-            ),
+            joinedload(BibFields.nomenclature_type).joinedload(BibNomenclaturesTypes.nomenclatures),
         )
         .all()
     )

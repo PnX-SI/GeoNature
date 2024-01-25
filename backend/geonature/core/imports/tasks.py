@@ -50,9 +50,7 @@ def do_import_checks(self, import_id):
                 array_agg(aggregate_order_by(transient_table.c.line_no, transient_table.c.line_no))
             )
             .where(
-                sa.or_(
-                    *[transient_table.c[v] == False for v in imprt.destination.validity_columns]
-                )
+                sa.or_(*[transient_table.c[v] == False for v in imprt.destination.validity_columns])
             )
             .where(transient_table.c.id_import == imprt.id_import)
         )

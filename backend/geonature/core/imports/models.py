@@ -213,8 +213,7 @@ class InstancePermissionMixin:
             user = g.current_user
         if isinstance(scopes, Mapping):
             return {
-                key: self.has_instance_permission(scope, user=user)
-                for key, scope in scopes.items()
+                key: self.has_instance_permission(scope, user=user) for key, scope in scopes.items()
             }
         else:
             return [self.has_instance_permission(scope, user=user) for scope in scopes]

@@ -591,9 +591,7 @@ def import_valid_data(scope, imprt):
         select(
             exists()
             .where(transient_table.c.id_import == imprt.id_import)
-            .where(
-                or_(*[transient_table.c[v] == True for v in imprt.destination.validity_columns])
-            )
+            .where(or_(*[transient_table.c[v] == True for v in imprt.destination.validity_columns]))
         )
     ).scalar():
         raise BadRequest("Not valid data to import")

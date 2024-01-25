@@ -89,9 +89,7 @@ def get_nomenclatures(destination):
         BibFields.query.filter(BibFields.destination == destination)
         .filter(BibFields.nomenclature_type != None)
         .options(
-            joinedload(BibFields.nomenclature_type).joinedload(
-                BibNomenclaturesTypes.nomenclatures
-            ),
+            joinedload(BibFields.nomenclature_type).joinedload(BibNomenclaturesTypes.nomenclatures),
         )
         .all()
     )

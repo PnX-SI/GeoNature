@@ -118,9 +118,7 @@ def import_dataset(datasets, import_file_name):
     if import_file_name == "nomenclatures_file.csv":
         previous_data_origin = ds.nomenclature_data_origin
         ds.nomenclature_data_origin = TNomenclatures.query.filter(
-            TNomenclatures.nomenclature_type.has(
-                BibNomenclaturesTypes.mnemonique == "DS_PUBLIQUE"
-            ),
+            TNomenclatures.nomenclature_type.has(BibNomenclaturesTypes.mnemonique == "DS_PUBLIQUE"),
             TNomenclatures.mnemonique == "Privée",
         ).one()
     yield ds
@@ -377,9 +375,7 @@ class TestImportsSynthese:
 
     def test_order_import_foreign(self, users, imports, uploaded_import):
         set_logged_user(self.client, users["user"])
-        response = self.client.get(
-            url_for("import.get_import_list") + "?sort=dataset.dataset_name"
-        )
+        response = self.client.get(url_for("import.get_import_list") + "?sort=dataset.dataset_name")
         assert response.status_code == 200, response.data
         imports = response.get_json()["imports"]
         for a, b in zip(imports[:1], imports[1:]):
