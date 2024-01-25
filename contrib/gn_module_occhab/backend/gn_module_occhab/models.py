@@ -36,7 +36,10 @@ class Station(NomenclaturesMixin, db.Model):
 
     id_station = db.Column(db.Integer, primary_key=True)
     id_station_source = db.Column(db.String)
-    unique_id_sinp_station = db.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
+    unique_id_sinp_station = db.Column(
+        UUID(as_uuid=True),
+        server_default=select(func.uuid_generate_v4()),
+    )
     id_dataset = db.Column(db.Integer, ForeignKey(Dataset.id_dataset), nullable=False)
     dataset = relationship(Dataset)
     date_min = db.Column(db.DateTime, server_default=FetchedValue())
@@ -86,8 +89,7 @@ class Station(NomenclaturesMixin, db.Model):
         foreign_keys=[id_nomenclature_area_surface_calculation],
     )
     id_nomenclature_geographic_object = db.Column(
-        db.Integer,
-        ForeignKey(Nomenclature.id_nomenclature),
+        db.Integer, ForeignKey(Nomenclature.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_geographic_object = db.relationship(
         Nomenclature,
@@ -155,8 +157,7 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
     )  # TODO: remove joined
     unique_id_sinp_hab = db.Column(
         UUID(as_uuid=True),
-        default=select(func.uuid_generate_v4()),
-        nullable=False,
+        server_default=select(func.uuid_generate_v4()),
     )
     cd_hab = db.Column(db.Integer, ForeignKey("ref_habitats.habref.cd_hab"), nullable=False)
     habref = db.relationship("Habref", lazy="joined")
