@@ -1,6 +1,65 @@
 CHANGELOG
 =========
 
+2.14.0 (unreleased)
+-------------------
+
+Floutage, Auto-validation, SQLA 1.4, 
+
+Suppression support Debian 10
+Suppression support Python 3.7
+Vérifiez qu'il existe une version compatible SQLA 1.4 de vos modules.
+Pas forcément car SQLA 1.4 garde la rétro-compatibilité avec SQLA 1.3.
+Par contre, cela ne sera plus le cas dans la prochaine version de GN avec le passage à SQLA 2.0 qui devra obligatoirement être répercutée dans vos modules.
+Passage de Flask 2 à 3 - Attention à vos modules...
+Attention suppression app.config.ts (#2747) déjà prévue et annoncée, mais désormais effective - A vérifier dans modules
+
+MAJ TaxHub et release RefGeo, Nomenclatures, Utils, ainsi que les modules GN avec SQLA 1.4, nécessitant GN 2.14 (mais pas l'inverse)
+
+**🚀 Nouveautés**
+
+- [Synthèse] Floutage des données sensibles (#2558) A activer par défaut ?? (https://github.com/PnX-SI/GeoNature/pull/2687/files#diff-65a65672498143f8059563752374b76842b8bf95b8b02871c69cd5a08db05b0dR435)
+- [Validation] Fonction d'auto-validation basée sur les profils de taxons (non activée par défaut et surcouchable avec une fonction spécifique) (#2600)
+- [RefGeo] Répercussion du remplacement du champs `geojson_4326` par `geom_4326` dans la table `l_areas` (#2809)
+- [Documentation] Ajout du fichier source des diagramme de documentation (#2760)
+- Mise à jour des URL des exemples de fonds de carte IGN (#2789)
+
+**🐛 Corrections**
+
+- Correction de l'affiche du nom de la page quand on revient à la page d'accueil (#2795)
+- [Synthèse] Correction du tri des colonnes dans la liste des observations (#1943)
+- Conservation de la géométrie existante lorsqu'on annule modification d'une géométrie (#2778)
+- [Métadonnées] Correction de l'affichage du type de financement sur les fiches détail des CA et JDD (#2840)
+
+**💻 Développement**
+
+- SQLA 1.4 (#2751)
+- Flask 2 à 3 (#2751)
+- Intégration automatique de la documentation des composants Frontend et des fonctions backend (#2765)
+- Abandon du système d'authentification par cookie. Le token d'authentification (JWT) est maintenant passé dans chaque appel à l'API dans le header HTTP "Authorization Bearer". Il est aussi fourni par la route de login du sous module d'authentification et stocké dans le localStorage (#2586 - Fix : #2161 #490 #2574)
+- Suppression app.config.ts (#2747)
+- Correction des paramètres du linter python à 100 caractères (#2847)
+- When polymorphic modules are declared in database, but absent from venv, this raise a sqlalchemy polymorphic error. This commit fallback missing polymorphic identities on default "base" identity (#2792)
+- Drop support for Debian 10 and python <3.9 (#2751)
+* Update to Flask 3.0 (#2751)
+* Update to SQLAlchemy 1.4 (query to 2.0 style, fix warnings and tests)
+* new requirements-dev.txt (#2751)
+* Increase test coverage (#2751)
+  - gn_meta/repositories 
+  - gn_meta/mtd
+  - occtax
+  - occhab
+  - utilstoml
+  - install-gn-module commands
+* (temporary) use of CustomSelect instead of Query --> Station (deleted later)
+* Change fixtures: datasets + stations + user (#2751)
+* Remove deprecated and unused modules (utilsgeometry.py, utilssqlalchemy.py,config_manager.py) (#2751)
+* DOC SQLA 1.4 ?
+
+**📝 Merci aux contributeurs**
+
+@
+
 2.13.4 (2023-12-15)
 -------------------
 
