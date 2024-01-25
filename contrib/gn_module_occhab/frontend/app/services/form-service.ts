@@ -20,6 +20,7 @@ export class OcchabFormService {
   public typoHabControl = new UntypedFormControl();
   public selectedTypo: any;
   public currentEditingHabForm = null;
+  public currentHabCopy = null;
   constructor(
     private _fb: UntypedFormBuilder,
     private _dateParser: NgbDateParserFormatter,
@@ -137,7 +138,11 @@ export class OcchabFormService {
    * @param index: index of the habitat to edit
    */
   editHab(index) {
+    const habArrayForm = this.stationForm.controls.habitats as UntypedFormArray;
     this.currentEditingHabForm = index;
+    this.currentHabCopy = {
+      ...habArrayForm.controls[this.currentEditingHabForm].value,
+    };
   }
 
   /** Cancel the current hab
@@ -145,8 +150,12 @@ export class OcchabFormService {
    * we keep the order
    */
   cancelHab() {
-    this.deleteHab(this.currentEditingHabForm);
-    this.currentEditingHabForm = null;
+    if (this.currentEditingHabForm !== null) {
+      const habArrayForm = this.stationForm.controls.habitats as UntypedFormArray;
+      habArrayForm.controls[this.currentEditingHabForm].setValue(this.currentHabCopy);
+      this.currentHabCopy = null;
+      this.currentEditingHabForm = null;
+    }
   }
 
   /**
