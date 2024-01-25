@@ -328,7 +328,7 @@ def datasets(users, acquisition_frameworks, module):
     ).scalar_one()
 
     # add module code in the list to associate them to datasets
-    writable_module_code = ["OCCTAX"]
+    writable_module_code = ["OCCTAX", "OCCHAB"]
     writable_module = db.session.scalars(
         select(TModules).where(TModules.module_code.in_(writable_module_code))
     ).all()
