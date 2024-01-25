@@ -1102,6 +1102,13 @@ def upgrade():
         column_name="unique_id_sinp_hab",
         nullable=True,
     )
+    op.alter_column(
+        schema="pr_occhab",
+        table_name="t_stations",
+        column_name="id_nomenclature_geographic_object",
+        nullable=False,
+        server_default=sa.func.pr_occhab.get_default_nomenclature_value("NAT_OBJ_GEO"),
+    )
 
 
 def downgrade():
