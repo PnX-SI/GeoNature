@@ -55,6 +55,7 @@ MAJ TaxHub et release RefGeo, Nomenclatures, Utils, ainsi que les modules GN ave
 * Change fixtures: datasets + stations + user (#2751)
 * Remove deprecated and unused modules (utilsgeometry.py, utilssqlalchemy.py,config_manager.py) (#2751)
 * DOC SQLA 1.4 ?
+* Mettre à jour la version de Black (#2879)
 
 **📝 Merci aux contributeurs**
 
