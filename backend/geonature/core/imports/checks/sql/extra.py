@@ -151,6 +151,18 @@ def check_existing_uuid(imprt, entity, uuid_field, whereclause=sa.true()):
         ),
     )
 
+def check_missing_uuid(imprt, entity, uuid_field):
+    transient_table = imprt.destination.get_transient_table()
+    report_erroneous_rows(
+        imprt,
+        entity,
+        error_type="MISSING_VALUE",
+        error_column=uuid_field.name_field,
+        whereclause=sa.and_(
+            transient_table.c[uuid_field.dest_field] == None,
+        ),
+    )
+
 
 def generate_missing_uuid(imprt, entity, uuid_field):
     transient_table = imprt.destination.get_transient_table()
