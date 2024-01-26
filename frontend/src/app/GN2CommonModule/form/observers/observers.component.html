@@ -9,8 +9,9 @@
   [clearable]="clearable"
   placeholder="Observateur(s)"
   data-qa="gn-common-form-observers-select"
-  [virtualScroll]="true"
+  [virtualScroll]="false"
   [formControl]="parentFormControl"
+  [searchFn]="searchFn"
 >
 	<ng-template 
     ng-option-tmp 
@@ -18,7 +19,7 @@
     let-index="index" 
     let-search="searchTerm"
   >
-    <div matTooltip="{{item.nom_complet}}">
+    <div>
       <span class="pre-wrap" [attr.data-qa]='"gn-common-form-observers-select-"+item.nom_complet'>{{item.nom_complet}}</span>
     </div>
   </ng-template>

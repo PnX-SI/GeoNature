@@ -9,7 +9,7 @@
   [placeholder]="label"
   [multiple]="true"
   [clearable]="clearable"
-  [virtualScroll]="true"
+  [virtualScroll]="false"
   [typeahead]="areas_input$"
   [loading]="loading"
   [formControl]="parentFormControl"
@@ -51,7 +51,7 @@
   </ng-template>
 
   <ng-template ng-option-tmp let-item="item">
-    <div matTooltip="{{ item.area_name }}">
+    <div>
       <span class="pre-wrap">{{ item.area_name }}</span>
     </div>
   </ng-template>

@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
+import { customSearchFn } from '@geonature/utils/ng-select-searchFn';
 
 /**
  *  Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des cadres d'acquisition sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_acqusitions_framework`` et ``gn_meta.cor_acquisition_framework_actor``)
@@ -25,6 +26,11 @@ export class AcquisitionFrameworksComponent extends GenericFormComponent impleme
 
   ngOnInit() {
     this.getAcquisitionFrameworks();
+  }
+
+  //upgrade la fonction de recherche de ng-select
+  searchFn(term, item) {
+    return customSearchFn(term, item, 'acquisition_framework_name');
   }
 
   getAcquisitionFrameworks() {

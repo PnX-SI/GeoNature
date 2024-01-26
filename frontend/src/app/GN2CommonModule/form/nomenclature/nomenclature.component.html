@@ -6,12 +6,18 @@
   [bindLabel]="labelLang"
   [bindValue]="keyValue"
   [placeholder]="label"
-  [virtualScroll]="true"
+  [virtualScroll]="false"
   [formControl]="parentFormControl"
   [attr.qa-test]="label"
   appendTo="body"
+  [searchFn]="searchFn.bind(this)"
 >
-  <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+  <ng-template 
+    ng-option-tmp 
+    let-item="item" 
+    let-index="index" 
+    let-search="searchTerm"
+  >
     <div matTooltip="{{ item[definitionLang] }}" [attr.data-qa]="item['cd_nomenclature']">
       <span class="pre-wrap">{{ item[labelLang] }}</span>
     </div>

@@ -546,6 +546,9 @@ pnx-root:empty + #cover-spin-removable {
   .ng-value-icon.left {
   border-right: none;
 }
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+  white-space: normal!important;
+}
 a.mat-raised-button:hover {
   text-decoration: none !important;
 }
