@@ -5,6 +5,7 @@ Revises: 42040535a20e
 Create Date: 2022-09-22 09:58:19.055808
 
 """
+
 import datetime
 from alembic import op
 from sqlalchemy import Column, ForeignKey, Integer, Unicode, UnicodeText, DateTime

@@ -89,9 +89,11 @@ def getReleves(scope):
     page = int(parameters.get("offset", 0))
     orderby = {
         "orderby": (parameters.get("orderby", "date_max")).lower(),
-        "order": (parameters.get("order", "desc")).lower()
-        if (parameters.get("order", "desc")).lower() == "asc"
-        else "desc",  # asc or desc
+        "order": (
+            (parameters.get("order", "desc")).lower()
+            if (parameters.get("order", "desc")).lower() == "asc"
+            else "desc"
+        ),  # asc or desc
     }
 
     # Filters

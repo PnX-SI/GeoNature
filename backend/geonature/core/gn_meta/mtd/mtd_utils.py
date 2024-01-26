@@ -57,9 +57,11 @@ def sync_ds(ds, cd_nomenclatures):
 
     ds["id_acquisition_framework"] = af.id_acquisition_framework
     ds = {
-        k: func.ref_nomenclatures.get_id_nomenclature(NOMENCLATURE_MAPPING[k], v)
-        if k.startswith("id_nomenclature")
-        else v
+        k: (
+            func.ref_nomenclatures.get_id_nomenclature(NOMENCLATURE_MAPPING[k], v)
+            if k.startswith("id_nomenclature")
+            else v
+        )
         for k, v in ds.items()
         if v is not None
     }

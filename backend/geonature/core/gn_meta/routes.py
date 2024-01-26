@@ -1,6 +1,7 @@
 """
     Routes for gn_meta 
 """
+
 import datetime as dt
 import json
 import logging
@@ -679,20 +680,20 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
         acquisition_framework["chart"] = request.json["chart"]
 
     if acquisition_framework:
-        acquisition_framework[
-            "nomenclature_territorial_level"
-        ] = af.nomenclature_territorial_level.as_dict()
-        acquisition_framework[
-            "nomenclature_financing_type"
-        ] = af.nomenclature_financing_type.as_dict()
+        acquisition_framework["nomenclature_territorial_level"] = (
+            af.nomenclature_territorial_level.as_dict()
+        )
+        acquisition_framework["nomenclature_financing_type"] = (
+            af.nomenclature_financing_type.as_dict()
+        )
         if acquisition_framework["acquisition_framework_start_date"]:
-            acquisition_framework[
-                "acquisition_framework_start_date"
-            ] = af.acquisition_framework_start_date.strftime("%d/%m/%Y")
+            acquisition_framework["acquisition_framework_start_date"] = (
+                af.acquisition_framework_start_date.strftime("%d/%m/%Y")
+            )
         if acquisition_framework["acquisition_framework_end_date"]:
-            acquisition_framework[
-                "acquisition_framework_end_date"
-            ] = af.acquisition_framework_end_date.strftime("%d/%m/%Y")
+            acquisition_framework["acquisition_framework_end_date"] = (
+                af.acquisition_framework_end_date.strftime("%d/%m/%Y")
+            )
         acquisition_framework["css"] = {
             "logo": "Logo_pdf.png",
             "bandeau": "Bandeau_pdf.png",

@@ -1,6 +1,7 @@
 """
 Models of gn_permissions schema
 """
+
 from packaging import version
 
 import sqlalchemy as sa

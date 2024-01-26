@@ -5,6 +5,7 @@ Filter the query of synthese using SQLA expression language and 'select' object
 https://docs.sqlalchemy.org/en/latest/core/tutorial.html#selecting
 much more efficient
 """
+
 import datetime
 import unicodedata
 import uuid
