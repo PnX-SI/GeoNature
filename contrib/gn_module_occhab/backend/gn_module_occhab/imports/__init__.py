@@ -159,9 +159,7 @@ def check_transient_data(task, logger, imprt):
                 imprt, entity, selected_fields.get("depth_min"), selected_fields.get("depth_max")
             )
             if "WKT" in selected_fields:
-                check_is_valid_geography(
-                    imprt, entity, selected_fields["WKT"], fields["geom_4326"]
-                )
+                check_is_valid_geography(imprt, entity, selected_fields["WKT"], fields["geom_4326"])
             if current_app.config["IMPORT"]["ID_AREA_RESTRICTION"]:
                 check_geography_outside(
                     imprt,

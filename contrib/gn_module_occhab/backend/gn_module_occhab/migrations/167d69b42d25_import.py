@@ -81,9 +81,7 @@ def upgrade():
         sa.Column(
             "id_import",
             sa.Integer,
-            sa.ForeignKey(
-                "gn_imports.t_imports.id_import", onupdate="CASCADE", ondelete="CASCADE"
-            ),
+            sa.ForeignKey("gn_imports.t_imports.id_import", onupdate="CASCADE", ondelete="CASCADE"),
             primary_key=True,
         ),
         sa.Column("line_no", sa.Integer, primary_key=True),
