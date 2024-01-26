@@ -1,6 +1,5 @@
 #!/bin/bash
 geonature db upgrade geonature@head -x local-srid=$srid_local
-geonature db upgrade taxonomie@head -x local-srid=$srid_local
 geonature db autoupgrade -x local-srid=$srid_local
 
 geonature db exec "DO 'BEGIN ASSERT EXISTS (SELECT 1 FROM taxonomie.taxref); END'" 2>/dev/null \
