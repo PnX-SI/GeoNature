@@ -1,6 +1,7 @@
 """
 Action triggered after register action (create temp user, change password etc...)
 """
+
 import datetime
 from warnings import warn
 

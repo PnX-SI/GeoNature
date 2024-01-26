@@ -2,6 +2,7 @@
 	Script importing metadata in GeoNature DataBase based on uuid of datasets to import
 	Use the inpn webservice to get corresponding xml files. Works with datasets and acquisition frameworks, not yet with parents acquisition frameworks (to do)
 """
+
 import os
 import xml.etree.ElementTree as ET
 

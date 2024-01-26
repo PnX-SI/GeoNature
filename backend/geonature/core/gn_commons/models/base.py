@@ -1,6 +1,7 @@
 """
     Modèles du schéma gn_commons
 """
+
 import os
 from pathlib import Path
 from collections import defaultdict
