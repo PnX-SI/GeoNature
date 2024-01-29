@@ -972,7 +972,8 @@ def get_autocomplete_taxons_synthese():
             ),
         )
         .distinct()
-        .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
+        .join(Taxref, Taxref.cd_ref == VMTaxrefListForautocomplete.cd_ref)
+        .join(Synthese, Synthese.cd_nom == Taxref.cd_nom)
     )
     search_name = search_name.replace(" ", "%")
     query = query.where(
