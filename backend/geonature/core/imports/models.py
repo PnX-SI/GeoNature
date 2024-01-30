@@ -251,7 +251,13 @@ class ImportQuery(Query):
 
 
 @serializable(
-    fields=["authors.nom_complet", "dataset.dataset_name", "dataset.active", "destination.code"]
+    fields=[
+        "authors.nom_complet",
+        "dataset.dataset_name",
+        "dataset.active",
+        "destination.code",
+        "destination.label",
+    ]
 )
 class TImports(InstancePermissionMixin, db.Model):
     __tablename__ = "t_imports"
