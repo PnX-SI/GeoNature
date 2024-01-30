@@ -1,3 +1,4 @@
+-e file:dependencies/UsersHub#egg=usershub
 -e file:dependencies/UsersHub-authentification-module#egg=pypnusershub
 -e file:dependencies/Nomenclature-api-module#egg=pypnnomenclature
 -e file:dependencies/Habref-api-module#egg=pypn_habref_api
