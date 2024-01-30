@@ -14,13 +14,6 @@ DEFAULT_LIST_COLUMN = [
         "filter": True,
     },
     {
-        "prop": "id_source",
-        "name": "Id source",
-        "max_width": 80,
-        "show": True,
-        "filter": True,
-    },
-    {
         "prop": "format_source_file",
         "name": "Format",
         "max_width": 80,
