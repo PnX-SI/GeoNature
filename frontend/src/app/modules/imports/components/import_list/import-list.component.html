@@ -5,6 +5,8 @@
         </div>
         <div class="card-body">
             <div *ngIf="!empty">
+              <pnx-destinations label="{{ 'Import.Destinations' | translate }}" [parentFormControl]="selectDestinationForm">
+              </pnx-destinations>
                 <input
                     [formControl]="search"
                     id="search"
