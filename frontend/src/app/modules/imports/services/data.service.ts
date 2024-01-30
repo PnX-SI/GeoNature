@@ -44,8 +44,9 @@ export class DataService {
     return this._http.get<any>(`${this.getUrlApi()}/nomenclatures`);
   }
 
-  getImportList(values): Observable<Array<Import>> {
-    const url = `${this.urlApi}/imports/`;
+  getImportList(values, destination: string = null): Observable<Array<Import>> {
+    let url =
+      destination == null ? `${this.urlApi}/imports/` : `${this.urlApi}/${destination}/imports/`;
     let params = new HttpParams({ fromObject: values });
     return this._http.get<Array<Import>>(url, { params: params });
   }
