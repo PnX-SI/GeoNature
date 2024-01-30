@@ -24,6 +24,7 @@ export class ImportListComponent implements OnInit {
   public deleteOne: Import;
   public interval: any;
   public search = new FormControl();
+  public selectDestinationForm = new FormControl();
   public total: number;
   public offset: number;
   public limit: number;
@@ -58,6 +59,10 @@ export class ImportListComponent implements OnInit {
         }
       }, 500);
     });
+
+    this.selectDestinationForm.valueChanges.subscribe((desCode: string) => {
+      this.updateOnDest(desCode);
+    });
   }
 
   ngOnDestroy() {
@@ -72,8 +77,12 @@ export class ImportListComponent implements OnInit {
     // listes des colonnes selon lesquelles filtrer
   }
 
-  private onImportList(page, search) {
-    this._ds.getImportList({ page: page, search: search }).subscribe((res) => {
+  updateOnDest(destCode: string) {
+    this.onImportList(1, '', destCode);
+  }
+
+  private onImportList(page, search, destination: string = null) {
+    this._ds.getImportList({ page: page, search: search }, destination).subscribe((res) => {
       this.history = res['imports'];
       this.getImportsStatus();
 
