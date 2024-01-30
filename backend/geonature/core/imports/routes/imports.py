@@ -80,6 +80,7 @@ def get_import_list(scope, destination=None):
     sort = request.args.get("sort", default="date_create_import", type=str)
     sort_dir = request.args.get("sort_dir", default="desc", type=str)
     filters = []
+
     if search:
         filters.append(TImports.full_file_name.ilike(f"%{search}%"))
         filters.append(
@@ -109,9 +110,14 @@ def get_import_list(scope, destination=None):
         order_by = desc(order_by)
 
     query = (
-        TImports.query.options(contains_eager(TImports.dataset), contains_eager(TImports.authors))
+        TImports.query.options(
+            contains_eager(TImports.dataset),
+            contains_eager(TImports.authors),
+            contains_eager(TImports.destination).load_only(Destination.label, Destination.label),
+        )
         .join(TImports.dataset, isouter=True)
         .join(TImports.authors, isouter=True)
+        .join(Destination)
         .filter_by_scope(scope)
         .filter(or_(*filters) if len(filters) > 0 else True)
         .order_by(order_by)

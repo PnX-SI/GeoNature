@@ -63,6 +63,11 @@
                             </ng-container>
                         </ng-template>
                     </ngx-datatable-column>
+                    <ngx-datatable-column maxWidth="200" name="Destination" [sortable]="true" prop="destination.code">
+                      <ng-template let-row="row" ngx-datatable-cell-template>
+                        <p *ngIf="row.destination">{{row.destination.label}}</p>
+                      </ng-template>
+                    </ngx-datatable-column>
                     <ngx-datatable-column
                         maxWidth="200"
                         name="Fin import"
@@ -80,6 +85,7 @@
                             <p *ngIf="checkingImport.includes(row.id_import)" class="import-status">vérifications en cours</p>
                         </ng-template>
                     </ngx-datatable-column>
+
                     <ngx-datatable-column
                         name="Actions"
                         [sortable]="false"
