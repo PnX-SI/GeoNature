@@ -60,3 +60,13 @@ class TestImportsRoute:
         ]
 
         assert all(imprt["id_destination"] in ids_destination for imprt in json_data["imports"])
+
+    def test_order_import_foreign(self, users, imports_all):
+        set_logged_user(self.client, users["user"])
+        response = self.client.get(url_for("import.get_import_list") + "?sort=destination.code")
+        assert response.status_code == 200, response.data
+        imports = response.get_json()["imports"]
+        for a, b in zip(imports[:1], imports[1:]):
+            assert (a["destination"] is None) or (
+                a["destination"]["code"] <= b["destination"]["code"]
+            )
