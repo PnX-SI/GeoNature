@@ -59,7 +59,8 @@
     "RefreshFilters": "Rafraichir les filtres",
     "AdvancedFilters": "Filtres avancés",
     "OtherFilters": "Autres filtres",
-    "Organism": "Organisme(s)"
+    "Organism": "Organisme(s)",
+    "Filter":"Filtrer"
   },
   "List": {
     "Columns": "Colonnes",
