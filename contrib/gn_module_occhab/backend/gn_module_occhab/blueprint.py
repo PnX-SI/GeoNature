@@ -78,6 +78,9 @@ def list_stations(scope):
     if request.args.get("nomenclatures", default=False, type=int):
         only.extend(Station.__nomenclatures__)
         stations = stations.options(*[joinedload(nomenc) for nomenc in Station.__nomenclatures__])
+        stations = stations.options(
+            joinedload(User.groups)
+        )  # FIXME: Why the joineload of nomenclatures need users.groups... Raise an error due to a supposed lazy="raise" in the User.groups relationship (its not !)
     fmt = request.args.get("format", default="geojson")
     if fmt not in ("json", "geojson"):
         raise BadRequest("Unsupported format")
