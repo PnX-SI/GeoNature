@@ -59,7 +59,7 @@ class Station(NomenclaturesMixin, db.Model):
     )
     t_habitats = synonym(habitats)
     observers = db.relationship(
-        "User",
+        User,
         secondary=cor_station_observer,
         lazy="joined",
     )

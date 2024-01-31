@@ -39,7 +39,7 @@ class StationSchema(CruvedSchemaMixin, SmartRelationshipsMixin, GeoAlchemyAutoSc
     date_max = fields.DateTime("%Y-%m-%d")
 
     habitats = Nested("OccurenceHabitatSchema", unknown=EXCLUDE, many=True)
-    observers = Nested(UserSchema, unknown=EXCLUDE, many=True)
+    observers = Nested(UserSchema, exclude=["max_level_profil"], unknown=EXCLUDE, many=True)
     dataset = Nested(DatasetSchema, dump_only=True)
 
     @validates_schema
