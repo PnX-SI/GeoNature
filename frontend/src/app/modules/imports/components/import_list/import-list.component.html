@@ -4,18 +4,23 @@
             <h5 class="card-title mb-0">Liste des imports</h5>
         </div>
         <div class="card-body">
-            <div *ngIf="!empty">
-              <pnx-destinations label="{{ 'Import.Destinations' | translate }}" [parentFormControl]="selectDestinationForm">
+            <div *ngIf="!empty" >
+            <div class="d-flex  mb-2">
+              <pnx-destinations label="{{'Form.Filter'  | translate }} {{ 'By'   | translate | lowercase}} {{ 'Import.Destinations' | translate | lowercase }}" [parentFormControl]="selectDestinationForm" class="flex-fill pr-1">
               </pnx-destinations>
+              <div class="flex-fill">
+              <label for="search" class="mb-0"><small>{{ 'Form.OtherFilters' | translate}}</small></label>
                 <input
                     [formControl]="search"
                     id="search"
                     type="text"
                     class="form-control"
-                    placeholder="Search"
+                    placeholder="{{'Search' | translate}}"
                     aria-label="Search"
                     aria-describedby="basic-addon1"
                 />
+            </div>
+            </div>
                 <ngx-datatable
                     #table
                     class="material striped"
