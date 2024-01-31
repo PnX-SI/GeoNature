@@ -50,7 +50,8 @@
     "RefreshFilters": "Refresh filters",
     "AdvancedFilters": "Filtres avancés",
     "OtherFilters": "Other filter",
-    "Organism": "Organism(s)"
+    "Organism": "Organism(s)",
+    "Filter":"Filtrer"
   },
   "List": {
     "Columns": "Columns",
