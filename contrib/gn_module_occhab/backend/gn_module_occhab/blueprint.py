@@ -240,7 +240,7 @@ def export_all_habitats(
             if db_col.key != "geometry":
                 db_cols_for_shape.append(db_col)
             columns_to_serialize.append(db_col.key)
-    results = db.session.scalars(
+    results = db.session.execute(
         select(export_view.tableDef)
         .where(export_view.tableDef.columns.id_station.in_(data["idsStation"]))
         .limit(blueprint.config["NB_MAX_EXPORT"])
