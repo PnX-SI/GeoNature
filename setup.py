@@ -31,12 +31,7 @@ setuptools.setup(
     install_requires=list(open("backend/requirements-common.in", "r"))
     + list(open("backend/requirements-dependencies.in", "r")),
     extras_require={
-        "tests": [
-            "pytest",
-            "pytest-flask",
-            "pytest-cov",
-            "jsonschema",
-        ],
+        "tests": ["pytest", "pytest-flask", "pytest-cov", "jsonschema", "pandas"],
         "doc": [
             "sphinx",
             "sphinx_rtd_theme",
