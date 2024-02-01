@@ -38,7 +38,7 @@ const routes: Routes = [
     resolve: { importData: ImportProcessResolver },
   },
   {
-    path: ':id_import/report',
+    path: ':destination/:id_import/report',
     component: ImportReportComponent,
     resolve: { importData: ImportProcessResolver },
   },
