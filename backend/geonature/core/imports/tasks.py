@@ -105,7 +105,10 @@ def notify_import_done(imprt):
         code_categories=["IMPORT-DONE%"],
         id_roles=id_authors,
         title="Import terminé",
-        url=(current_app.config["URL_APPLICATION"] + f"/#/import/{imprt.id_import}/report"),
+        url=(
+            current_app.config["URL_APPLICATION"]
+            + f"/#/import/{imprt.destination.code}/{imprt.id_import}/report"
+        ),
         context={
             "import": imprt,
             "destination": imprt.destination,
