@@ -128,6 +128,7 @@ export class ImportListComponent implements OnInit {
   }
 
   downloadSourceFile(row: Import) {
+    this._ds.setDestination(row.destination.code);
     this._ds.downloadSourceFile(row.id_import).subscribe((result) => {
       saveAs(result, row.full_file_name);
     });
@@ -135,6 +136,7 @@ export class ImportListComponent implements OnInit {
 
   openDeleteModal(row: Import, modalDelete) {
     this.deleteOne = row;
+    this._ds.setDestination(row.destination.code);
     this.modal.open(modalDelete);
   }
 
