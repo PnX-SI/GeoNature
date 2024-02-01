@@ -63,7 +63,7 @@
         </div>
 
 
-        <div class="card card-margin" *ngIf="!importDone">
+        <div class="card card-margin" *ngIf="!importDone && this.previewData.valid_bbox">
             <h4 class="card-header">
                 <mat-icon>room</mat-icon>
                 Zone géographique
