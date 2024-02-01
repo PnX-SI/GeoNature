@@ -1,13 +1,15 @@
+from io import BytesIO, StringIO
 from typing import List
 from geonature.core.gn_meta.models import TDatasets
 import pytest
 from copy import deepcopy
+import json
 
+import pandas as pd
 from flask import url_for
 from werkzeug.datastructures import TypeConversionDict
 from werkzeug.exceptions import Unauthorized, Forbidden, BadRequest
 from shapely.geometry import Point
-import geojson
 from geojson import Feature
 from geoalchemy2.shape import from_shape, to_shape
 import sqlalchemy as sa
@@ -533,3 +535,41 @@ class TestOcchab:
 
     def test_has_instance_permission(self, stations):
         assert not stations["station_1"].has_instance_permission(scope=0)
+
+    def test_export_occhab(self, stations, users, monkeypatch):
+        set_logged_user(self.client, users["admin_user"])
+
+        data = {"idsStation": [stations["station_1"].id_station, stations["station_2"].id_station]}
+        uuidINPN = set(
+            [
+                str(stations["station_1"].unique_id_sinp_station),
+                str(stations["station_2"].unique_id_sinp_station),
+            ]
+        )
+        # Test the CSV export
+        response = self.client.post(
+            url_for("occhab.export_all_habitats", export_format="csv"), data=data
+        )
+        assert response.status_code == 200
+        # Read the CSV and verify all declared stations are contained in the export
+        uuids_INPN_export = pd.read_csv(
+            StringIO(response.data.decode("utf-8")), sep=";"
+        ).identifiantStaSINP.unique()
+        assert all([True if uuid_ in uuids_INPN_export else False for uuid_ in uuidINPN])
+
+        # Test the GEOJSON export
+        response = self.client.post(
+            url_for("occhab.export_all_habitats", export_format="geojson"), data=data
+        )
+        assert response.status_code == 200
+        returned_data = [
+            item["properties"]["identifiantStaSINP"]
+            for item in json.loads(response.data)["features"]
+        ]
+        assert all([True if uuid_ in returned_data else False for uuid_ in uuidINPN])
+
+        # Test the SHAPEFILE export
+        response = self.client.post(
+            url_for("occhab.export_all_habitats", export_format="shapefile"), data=data
+        )
+        assert response.status_code == 200
