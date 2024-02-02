@@ -536,7 +536,11 @@ class TestOcchab:
     def test_has_instance_permission(self, stations):
         assert not stations["station_1"].has_instance_permission(scope=0)
 
-    def test_export_occhab(self, stations, users, monkeypatch):
+    def test_export_occhab(self, stations, users):
+        """
+        Check if the export route in OCCHAB works and if the returned data is consistent.
+        """
+
         set_logged_user(self.client, users["admin_user"])
 
         data = {"idsStation": [stations["station_1"].id_station, stations["station_2"].id_station]}
@@ -562,11 +566,12 @@ class TestOcchab:
             url_for("occhab.export_all_habitats", export_format="geojson"), data=data
         )
         assert response.status_code == 200
-        returned_data = [
+        # READ the GEOJson and check if all stations INPN uuid are present
+        uuids_INPN_export = [
             item["properties"]["identifiantStaSINP"]
             for item in json.loads(response.data)["features"]
         ]
-        assert all([True if uuid_ in returned_data else False for uuid_ in uuidINPN])
+        assert all([True if uuid_ in uuids_INPN_export else False for uuid_ in uuidINPN])
 
         # Test the SHAPEFILE export
         response = self.client.post(
