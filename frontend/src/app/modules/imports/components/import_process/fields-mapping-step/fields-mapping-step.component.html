@@ -168,9 +168,9 @@
                 </fieldset>
             </form>
             <form [formGroup]="syntheseForm">
-                <div *ngFor="let entitythemes of targetFields">
-                  <h3>{{ entitythemes.entity.label }}</h3><!-- TODO: convert to tabs -->
-                  <div *ngFor="let themefields of entitythemes.themes">
+              <mat-tab-group [(selectedIndex)]="selectedIndex" animationDuration="0ms" class="entities-tab">
+                <mat-tab *ngFor="let entitythemes of targetFields" label="{{ entitythemes.entity.label }}">
+                  <div *ngFor="let themefields of entitythemes.themes" class="entities-tab__content">
                     <fieldset>
                         <legend class="px-1">
                             {{themefields.theme.fr_label_theme}}
@@ -205,7 +205,7 @@
                                         >
                                             <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
                                                 <div>
-                                                    <span 
+                                                    <span
                                                         [ngClass]="{'in_use': mappedSourceFields.has(item)}"
                                                         class="pre-wrap"
                                                     >
@@ -248,7 +248,8 @@
                         </div>
                     </fieldset>
                   </div>
-                </div>
+                </mat-tab>
+                </mat-tab-group>
                 <br>
                 <div class="d-flex flex-row justify-content-between">
                     <button
