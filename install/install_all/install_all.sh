@@ -88,11 +88,6 @@ if [ ! -d "${GEONATURE_DIR}" ]; then
 fi
 
 cd "${GEONATURE_DIR}"
-# FIXME: postgresql raise error because it cannot access geonature directory, maybe there is a better way to fix that...
-if [ "$OS_NAME" != "debian" ] && [ "$OS_VERSION" != "12" ]
-then 
-    sudo chmod +x "${GEONATURE_DIR}"
-fi
 
 # Updating GeoNature settings
 cp config/settings.ini.sample config/settings.ini
