@@ -55,6 +55,8 @@ export class FieldsMappingStepComponent implements OnInit {
   @ViewChild('saveMappingModal') saveMappingModal;
   @ViewChild('deleteConfirmModal') deleteConfirmModal;
 
+  public selectedIndex: number = null;
+
   constructor(
     private _ds: DataService,
     private _fm: FieldMappingService,
