@@ -94,3 +94,20 @@ ng-select span.in_use {
   color: #787878;
   font-style: italic;
 }
+
+.entities-tab {
+  border: silver solid 1px;
+  border-radius: 4px;
+
+  mat-tab-header {
+    border-bottom: 1px solid #673ab722;
+  }
+
+  .mdc-tab__text-label {
+    text-transform: uppercase;
+  }
+
+  &__content {
+    padding: 1em;
+  }
+}
