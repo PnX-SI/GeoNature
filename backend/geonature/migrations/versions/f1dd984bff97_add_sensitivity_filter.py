@@ -5,6 +5,7 @@ Revises: f051b88a57fd
 Create Date: 2023-04-19 16:24:57.945428
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy import Column, Boolean

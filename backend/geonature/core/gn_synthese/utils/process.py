@@ -1,6 +1,7 @@
 """
     functions to insert update or delete data in table gn_synthese.synthese
 """
+
 from sqlalchemy.exc import IntegrityError, ProgrammingError
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError

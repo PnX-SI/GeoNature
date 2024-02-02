@@ -1,6 +1,7 @@
 """
 Models of gn_notifications schema
 """
+
 import datetime
 
 import sqlalchemy as sa

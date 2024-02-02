@@ -5,6 +5,7 @@ Revises: 699c25251384
 Create Date: 2022-05-12 09:39:45.951064
 
 """
+
 import sqlalchemy as sa
 from sqlalchemy.schema import Table, MetaData
 from sqlalchemy.exc import NoReferenceError

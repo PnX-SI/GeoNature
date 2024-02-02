@@ -5,6 +5,7 @@ Revises: 85efc9bb5a47
 Create Date: 2023-11-07 16:09:58.406426
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.schema import Table, MetaData, ForeignKeyConstraint

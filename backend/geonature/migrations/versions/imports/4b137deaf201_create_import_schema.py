@@ -5,6 +5,7 @@ Revises:
 Create Date: 2021-03-29 18:38:24.512562
 
 """
+
 from alembic import op, context
 import sqlalchemy as sa
 import pkg_resources

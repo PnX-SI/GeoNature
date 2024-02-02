@@ -6,6 +6,7 @@
     fichiers de routing du frontend etc...). Ces dernières doivent pouvoir fonctionner même si
     un paquet PIP du requirement GeoNature n'a pas été bien installé
 """
+
 import os
 import json
 from subprocess import run, DEVNULL

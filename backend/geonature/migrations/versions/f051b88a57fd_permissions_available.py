@@ -5,6 +5,7 @@ Revises: 7fe46b0e4729
 Create Date: 2023-04-14 17:19:36.490766
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.types import Integer, Boolean, Unicode

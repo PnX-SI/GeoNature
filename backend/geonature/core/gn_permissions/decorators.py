@@ -1,6 +1,7 @@
 """
 Decorators to protects routes with permissions
 """
+
 from functools import wraps
 from warnings import warn
 
