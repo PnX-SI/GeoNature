@@ -146,6 +146,10 @@ class Destination(db.Model):
     def remove_data_from_destination(self):
         return self.module._imports_["remove_data_from_destination"]
 
+    @property
+    def statistics_labels(self):
+        return self.module._imports_.get("statistics_labels", {})
+
 
 @serializable
 class BibThemes(db.Model):
@@ -257,6 +261,7 @@ class ImportQuery(Query):
         "dataset.active",
         "destination.code",
         "destination.label",
+        "destination.statistics_labels",
     ]
 )
 class TImports(InstancePermissionMixin, db.Model):

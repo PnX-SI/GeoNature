@@ -13,4 +13,7 @@ class SyntheseModule(TModules):
         "check_transient_data": check_transient_data,
         "import_data_to_destination": import_data_to_synthese,
         "remove_data_from_destination": remove_data_from_synthese,
+        "statistics_labels": [
+            {"key": "taxa_count", "value": "Nombre de taxons importés"},
+        ],
     }
