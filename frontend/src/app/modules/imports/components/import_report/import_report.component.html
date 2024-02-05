@@ -43,7 +43,15 @@
             <p><b> SRID : </b> {{ importData?.srid }}</p>
             <p><b> Encodage :</b> {{ importData?.encoding }}</p>
             <p><b> Format : </b>{{ importData?.format_source_file }}</p>
-            <p><b>Nombre de lignes importées : </b> ({{importData?.import_count || 0}} / {{ importData?.source_count || 0 }})</p>
+            <p><b> Nombre de lignes : </b> {{ importData?.source_count || 0 }}</p>
+            <div *ngIf="importStatus === 'TERMINE'">
+              <p><b> Nombre d’entités importées : </b> {{importData?.import_count || 0}}</p>
+              <div *ngFor="let item of importData?.destination.statistics_labels">
+                <ng-container *ngIf="importData?.statistics[item.key] !== null">
+                  <p><b> {{ item.value }} : </b> {{ importData?.statistics[item.key] }}</p>
+                </ng-container>
+              </div>
+            </div>
           </div>
           <div class="col-sm-4 d-flex flex-column justify-content-center">
             <button  mat-raised-button color="primary" [disabled]="loadingPdf" (click)="exportAsPDF()" class="align-self-center">
