@@ -6,8 +6,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "format": "prettier --config .prettierrc --ignore-path .prettierignore --write '**/*.ts' '../contrib/*/frontend/**/*.ts'",
-    "format:check": "prettier --config .prettierrc --ignore-path .prettierignore --check '**/*.ts' '../contrib/*/frontend/**/*.ts'",
+    "format": "prettier --config .prettierrc --ignore-path .prettierignore --write '**/*.{ts,html,scss}' '../contrib/*/frontend/**/*.{ts,html,scss}'",
+    "format:check": "prettier --config .prettierrc --ignore-path .prettierignore --check '**/*.{ts,html,scss}' '../contrib/*/frontend/**/*.{ts,html,scss}'",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "docBuild": "npx compodoc -p tsconfig.doc.json -d ../docs/external_doc/documentation_js"
