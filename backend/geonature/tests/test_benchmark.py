@@ -92,13 +92,54 @@ class BenchmarkTest:
         return function_to_include_fixture(*fixture)
 
 
+from geonature.utils.env import db
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+import time
+import logging
+
+logging.basicConfig()
+logger = logging.getLogger("logger-name")
+logger.setLevel(logging.DEBUG)
+
+import pandas
+
+
+@pytest.fixture(scope="class")
+def activate_profiling_sql():
+    """
+    Fixture to activate profiling for SQL queries and storing query's statements and execution times in a csv file.
+    """
+
+    results_file = "sql_queries.csv"
+    df = pandas.DataFrame([], columns=["Query", "Total Time [s.]"])
+    df.to_csv(results_file, mode="a", header=True, index=None, sep=";")
+
+    # @event.listens_for(Engine, "before_cursor_execute")
+    def before_cursor_execute(conn, cursor, statement, parameters, context, executemany):
+        conn.info.setdefault("query_start_time", []).append(time.time())
+        logger.debug("Start Query: %s" % statement)
+
+    # @event.listens_for(Engine, "after_cursor_execute")
+    def after_cursor_execute(conn, cursor, statement, parameters, context, executemany):
+        total = time.time() - conn.info["query_start_time"].pop(-1)
+        logger.debug("Query Complete!")
+        logger.debug("Total Time: %f" % total)
+        if statement.startswith("SELECT"):
+            df = pandas.DataFrame([[statement, total]], columns=["Query", "Total Time"])
+            df.to_csv(results_file, mode="a", header=False, index=None, sep=";")
+
+    event.listen(db.engine, "before_cursor_execute", before_cursor_execute)
+    event.listen(db.engine, "after_cursor_execute", after_cursor_execute)
+
+
 tests = [
-    BenchmarkTest(
-        GetLatter("self.client.get"),
-        "get_station",
-        [GetLatter("""url_for("occhab.get_station", id_station=8)""")],
-        dict(user_profile="user", fixture=[stations]),
-    ),
+    # BenchmarkTest(
+    #     GetLatter("self.client.get"),
+    #     "get_station",
+    #     [GetLatter("""url_for("occhab.get_station", id_station=8)""")],
+    #     dict(user_profile="user", fixture=[stations]),
+    # ),
     BenchmarkTest(
         GetLatter("self.client.get"),
         "get_default_nomenclatures",
@@ -108,7 +149,7 @@ tests = [
 ]
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class", "temporary_transaction", "activate_profiling_sql")
 class TestBenchie:
     pass
 
