@@ -1,30 +1,21 @@
-name: pytestPerf
+name: Routes performance evaluation
 
 on:
-  push:
-    branches:
-      - master
-      - hotfixes
-      - develop
-  pull_request:
-    branches:
-      - master
-      - hotfixes
-      - develop
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     strategy:
       fail-fast: false
       matrix:
         debian-version: ["11", "12"]
         include:
-          # - debian-version: "11"
-          #   python-version: "3.9"
-          #   postgres-version: "13"
-          #   postgis-version: "3.2"
+          - debian-version: "11"
+            python-version: "3.9"
+            postgres-version: "13"
+            postgis-version: "3.2"
           - debian-version: "12"
             python-version: "3.11"
             postgres-version: "15"
@@ -88,22 +79,31 @@ jobs:
           geonature db status --dependencies
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
-      - name: Install database
+      - name: Restore database
         run: |
-          wget https://geonature.fr/data/2024-02-GeoNature-Backup-Synthese-9000
-          pg_restore -U geonatadmin -d geonature2db -1 2024-02-GeoNature-Backup-Synthese-9000
+          # wget https://www.dropbox.com/scl/fi/17gsthsftfg59mxwmbbre/export_geonature_10000.zip?rlkey=33choleag4xw60wadm802c3oh&dl=1 -O 10kDump.zip
+          # unzip 10kDump.zip
+          wget https://www.dropbox.com/scl/fi/jjkxyg120bxc0dp8uy8kq/300KDump.sql?rlkey=tyuk2svitcb9nyshn7r09yo7b&dl=1 -O 300KDump.sql
+          ls
+          psql -h localhost -U geonatadmin -d geonature2db -f 300KDump.sql
         env:
           PGPASSWORD: geonatpasswd
-      - name: Show database status
+      - name: Install module import
         run: |
-          geonature db status
-        env:
-          GEONATURE_CONFIG_FILE: config/test_config.toml
+          wget https://github.com/PnX-SI/gn_module_import/archive/refs/heads/develop.zip
+          unzip develop.zip
+          cd gn_module_import-develop
+          pip install -e .
       - name: Install core modules backend
         run: |
           pip install -e contrib/occtax
           pip install -e contrib/gn_module_occhab
           pip install -e contrib/gn_module_validation
+      - name: Show database status
+        run: |
+          geonature db status
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Install core modules database
         run: |
           geonature upgrade-modules-db
@@ -116,11 +116,7 @@ jobs:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Test with pytest
         run: |
-          pytest -v --cov --cov-report xml
+          pytest backend/geonature/tests/test_benchmark.py
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
-      - name: Upload coverage to Codecov
-        if: ${{ matrix.debian-version == '11' }}
-        uses: codecov/codecov-action@v3
-        with:
-          flags: pytest
+        # https://stackoverflow.com/a/64126737 For posting results on GitHub Pull Requests

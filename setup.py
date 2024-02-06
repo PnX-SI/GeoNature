@@ -32,6 +32,7 @@ setuptools.setup(
     + list(open("backend/requirements-dependencies.in", "r")),
     extras_require={
         "tests": [
+            "pandas",
             "pytest",
             "pytest-flask",
             "pytest-benchmark",
