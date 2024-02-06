@@ -151,6 +151,7 @@ def check_existing_uuid(imprt, entity, uuid_field, whereclause=sa.true()):
         ),
     )
 
+
 def check_missing_uuid(imprt, entity, uuid_field):
     transient_table = imprt.destination.get_transient_table()
     report_erroneous_rows(
@@ -159,12 +160,18 @@ def check_missing_uuid(imprt, entity, uuid_field):
         error_type="MISSING_VALUE",
         error_column=uuid_field.name_field,
         whereclause=sa.and_(
-            transient_table.c[uuid_field.dest_field] == None,
+            transient_table.c[uuid_field.dest_field].is_(None),
+            transient_table.c[entity.validity_column].isnot(None),
         ),
     )
 
 
 def generate_missing_uuid(imprt, entity, uuid_field):
+    """
+    Generate UUID if:
+    - no uuid provided, correct or not (source_field IS NULL)
+    - entity is valid
+    """
     transient_table = imprt.destination.get_transient_table()
     stmt = (
         update(transient_table)
@@ -175,9 +182,11 @@ def generate_missing_uuid(imprt, entity, uuid_field):
         )
         .where(transient_table.c.id_import == imprt.id_import)
         .where(
-            transient_table.c[uuid_field.source_field] == None,
+            sa.and_(
+                transient_table.c[uuid_field.source_field].is_(None),
+                transient_table.c[entity.validity_column].is_(True),
+            )
         )
-        .where(transient_table.c[uuid_field.dest_field] == None)
     )
     db.session.execute(stmt)
 
