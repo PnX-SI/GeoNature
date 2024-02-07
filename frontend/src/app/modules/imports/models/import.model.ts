@@ -112,7 +112,7 @@ interface Theme {
   desc_theme: string;
 }
 
-interface Field {
+export interface Field {
   id_field: number;
   name_field: string;
   fr_label: string;
@@ -123,7 +123,7 @@ interface Field {
   comment: string;
 }
 
-interface ThemesFields {
+export interface ThemesFields {
   theme: Theme;
   fields: [Field];
 }
