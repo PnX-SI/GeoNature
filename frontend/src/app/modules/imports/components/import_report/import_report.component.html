@@ -72,15 +72,16 @@
           <h6>Champs ({{ (importData?.fieldmapping || {} | keyvalue).length }})</h6>
         </mat-panel-title>
         </mat-expansion-panel-header>
-        <table class="table table-striped table-bordered">
-        <thead>
+        <table *ngFor="let entity of tableFieldsCorresp" class="table table-striped table-bordered">
+        <caption>{{ entity.entityLabel }}</caption>
+          <thead>
           <tr>
           <th>Champ source</th>
           <th>Champ cible</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let field of importData?.fieldmapping | keyvalue ">
+          <tr *ngFor="let field of entity?.themes | keyvalue">
           <td>{{ field.value }}</td>
           <td>{{ field.key }}</td>
           </tr>
