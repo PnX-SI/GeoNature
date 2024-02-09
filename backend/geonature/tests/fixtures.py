@@ -555,6 +555,49 @@ def synthese_data(app, users, datasets, source, sources_modules):
 @pytest.fixture()
 def synthese_sensitive_data(app, users, datasets, source):
     data = {}
+    # Retrieve all the taxa with a protection status, and the corresponding areas
+    cte_taxa_area_with_status = (
+        db.session.query(TaxrefBdcStatutTaxon.cd_nom, LAreas.id_area)
+        .select_from(TaxrefBdcStatutTaxon, LAreas)
+        .join(
+            TaxrefBdcStatutCorTextValues,
+            TaxrefBdcStatutTaxon.id_value_text == TaxrefBdcStatutCorTextValues.id_value_text,
+        )
+        .join(
+            bdc_statut_cor_text_area,
+            LAreas.id_area == bdc_statut_cor_text_area.c.id_area,
+        )
+        .join(
+            TaxrefBdcStatutText, bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutText.id_text
+        )
+        .filter(bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutCorTextValues.id_text)
+        .filter(TaxrefBdcStatutText.enable == True)
+    ).cte("taxa_with_status")
+
+    # Retrieve all the taxa with a sensitivity rule, and the corresponding areas
+    cte_taxa_area_with_sensitivity = (
+        db.session.query(SensitivityRule.cd_nom, cor_sensitivity_area.c.id_area)
+        .select_from(SensitivityRule)
+        .join(cor_sensitivity_area, SensitivityRule.id == cor_sensitivity_area.c.id_sensitivity)
+        .filter(SensitivityRule.active == True)
+    ).cte("taxa_with_sensitivity")
+
+    # Retrieve a cd_nom and point that fit both a sensitivity rule and a protection status
+    sensitive_protected_cd_nom, sensitive_protected_id_area = (
+        db.session.query(
+            cte_taxa_area_with_status.c.cd_nom,
+            cte_taxa_area_with_status.c.id_area,
+        )
+        .join(
+            cte_taxa_area_with_sensitivity,
+            sa.and_(
+                cte_taxa_area_with_status.c.cd_nom == cte_taxa_area_with_sensitivity.c.cd_nom,
+                cte_taxa_area_with_status.c.id_area == cte_taxa_area_with_sensitivity.c.id_area,
+            ),
+        )
+        .order_by(cte_taxa_area_with_status.c.cd_nom)
+        .first()
+    )
 
     sensitive_area, sensitive_area_centroid = db.session.execute(
         sa.select(LAreas, func.ST_Centroid(LAreas.geom_4326)).where(
@@ -605,8 +648,7 @@ def synthese_sensitive_data(app, users, datasets, source):
             ),
         )
         .order_by(cte_taxa_area_with_status.c.cd_nom)
-        .first()
-    )
+    ).first()
     sensitivity_rule = SensitivityRule.query.filter(
         SensitivityRule.cd_nom == sensitive_protected_cd_nom,
         SensitivityRule.areas.any(LAreas.id_area == sensitive_protected_id_area),
