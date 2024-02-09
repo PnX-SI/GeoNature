@@ -36,15 +36,27 @@
         class="no-link-style"
         ngbTooltip="{{ 'Synthese.GnRecord' | translate }}"
         placement="bottom"
-        *ngIf="selectedObsTaxonDetail && config.FRONTEND['ENABLE_PROFILES']"
         [routerLink]="['/synthese/taxon', selectedObsTaxonDetail?.cd_ref]"
         target="_blank"
-      >
+        *ngIf="selectedObsTaxonDetail && config.FRONTEND['ENABLE_PROFILES']; else notLink"
+        >
         <span *ngIf="selectedObsTaxonDetail?.nom_vern">
           {{ selectedObsTaxonDetail?.nom_vern }} -
         </span>
         {{ selectedObsTaxonDetail?.nom_valide }}
       </a>
+      <ng-template #notLink>
+        <div
+          class="no-link-style" 
+          placement="bottom"
+          *ngIf="selectedObsTaxonDetail"
+          >
+          <span *ngIf="selectedObsTaxonDetail?.nom_vern">
+            {{ selectedObsTaxonDetail?.nom_vern }} -
+          </span>
+          {{ selectedObsTaxonDetail?.nom_valide }}
+        </div>
+      </ng-template>
     </h4>
     <div>
       <mat-toolbar class="action-tbar">
