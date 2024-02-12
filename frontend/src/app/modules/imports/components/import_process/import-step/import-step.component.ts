@@ -7,6 +7,7 @@ import { Step } from '../../../models/enums.model';
 import { Import, ImportPreview } from '../../../models/import.model';
 import { ConfigService } from '@geonature/services/config.service';
 import { CsvExportService } from '../../../services/csv-export.service';
+import { ImportStepComponentsError } from './import-step.component-errors';
 
 @Component({
   selector: 'import-step',
@@ -16,13 +17,8 @@ import { CsvExportService } from '../../../services/csv-export.service';
 export class ImportStepComponent implements OnInit {
   public step: Step;
   public importData: Import;
-  // public isCollapsed = false;
-  // public idImport: any;
-  // importDataRes: any;
-  // total_columns: any;
   public previewData: ImportPreview;
   public spinner: boolean = false;
-  // public nbLignes: string = "X";
   public errorCount: number;
   public warningCount: number;
   public invalidRowCount: number;
@@ -32,7 +28,7 @@ export class ImportStepComponent implements OnInit {
   public importRunning: boolean = false;
   public importDone: boolean = false;
   public progressBar: boolean = false;
-  public errorStatus: string = '';
+  public errorStatus: ImportStepComponentsError = ImportStepComponentsError.NONE;
   private timeout: number = 100;
   private runningTimeout: any;
 
@@ -47,6 +43,21 @@ export class ImportStepComponent implements OnInit {
     public _csvExport: CsvExportService,
     public config: ConfigService
   ) {}
+
+  //
+  get errorIsImport() {
+    return this.errorStatus === ImportStepComponentsError.IMPORT;
+  }
+  get errorIsNotImport() {
+    return this.errorStatus !== ImportStepComponentsError.IMPORT;
+  }
+
+  get errorIsCheck() {
+    return this.errorStatus === ImportStepComponentsError.CHECK;
+  }
+  get errorIsNotCheck() {
+    return this.errorStatus !== ImportStepComponentsError.CHECK;
+  }
 
   ngOnInit() {
     this.step = this._route.snapshot.data.step;
@@ -122,7 +133,7 @@ export class ImportStepComponent implements OnInit {
         } else if (importData.task_progress === -1) {
           this.timeout = 100;
           this.progress = 0;
-          this.errorStatus = 'check';
+          this.errorStatus = ImportStepComponentsError.CHECK;
           this.progressBar = false;
         } else {
           this.progress = 100 * importData.task_progress;
@@ -156,7 +167,7 @@ export class ImportStepComponent implements OnInit {
             'report',
           ]);
         } else if (importData.task_progress === -1) {
-          this.errorStatus = 'import';
+          this.errorStatus = ImportStepComponentsError.IMPORT;
           this.importRunning = false;
         } else {
           this.progress = 100 * importData.task_progress;
