@@ -1,6 +1,7 @@
 import datetime
 import json
 import tempfile
+import time
 from warnings import warn
 
 import pytest
@@ -38,14 +39,13 @@ from geonature.core.gn_synthese.models import (
 )
 from geonature.core.sensitivity.models import SensitivityRule, cor_sensitivity_area
 from geonature.utils.env import db
-
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from pypnusershub.db.models import Application, Organisme
 from pypnusershub.db.models import Profils as Profil
 from pypnusershub.db.models import User, UserApplicationRight
 from ref_geo.models import BibAreasTypes, LAreas
-
 from utils_flask_sqla.tests.utils import JSONClient
+from werkzeug.datastructures import Headers
 
 
 __all__ = [
@@ -555,7 +555,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
 @pytest.fixture()
 def synthese_sensitive_data(app, users, datasets, source):
     data = {}
-
+    deb = time.time()
     # Retrieve all the taxa with a protection status, and the corresponding areas
     cte_taxa_area_with_status = (
         sa.select(TaxrefBdcStatutTaxon.cd_nom, LAreas.id_area)
@@ -581,11 +581,12 @@ def synthese_sensitive_data(app, users, datasets, source):
         .select_from(SensitivityRule)
         .join(cor_sensitivity_area, SensitivityRule.id == cor_sensitivity_area.c.id_sensitivity)
         .filter(SensitivityRule.active == True)
+        .limit(10)  # For performance reason
     ).cte("taxa_with_sensitivity")
 
     # Retrieve a cd_nom and point that fit both a sensitivity rule and a protection status
-    sensitive_protected_cd_nom, sensitive_protected_id_area = (
-        db.session.query(
+    sensitive_protected_cd_nom, sensitive_protected_id_area = db.session.execute(
+        sa.select(
             cte_taxa_area_with_status.c.cd_nom,
             cte_taxa_area_with_status.c.id_area,
         )
@@ -597,21 +598,22 @@ def synthese_sensitive_data(app, users, datasets, source):
             ),
         )
         .order_by(cte_taxa_area_with_status.c.cd_nom)
-        .first()
-    )
+        .limit(1)
+    ).first()
 
-    sensitive_area, sensitive_area_centroid = db.session.execute(
-        sa.select(LAreas, func.ST_Centroid(LAreas.geom_4326)).where(
+    sensitive_area = db.session.execute(
+        sa.select(LAreas).where(
             LAreas.area_type.has(BibAreasTypes.type_code == "DEP"),
             LAreas.area_code == "03",
         )  # Allier
-    ).one()
-    unsensitive_area, unsensitive_area_centroid = db.session.execute(
-        sa.select(LAreas, func.ST_Centroid(LAreas.geom_4326)).where(
+    ).scalar_one()
+
+    unsensitive_area = db.session.execute(
+        sa.select(LAreas).where(
             LAreas.area_type.has(BibAreasTypes.type_code == "DEP"),
             LAreas.area_code == "01",
         )  # Ain
-    ).one()
+    ).scalar_one()
 
     sensitive_protected_taxon = db.session.execute(
         select(Taxref).filter_by(cd_nom=139)
@@ -628,14 +630,12 @@ def synthese_sensitive_data(app, users, datasets, source):
         )
         .limit(1)
     ).first()
+
     assert sensitivity_rule, "Le référentiel de sensibilité ne convient pas aux tests"
     assert (
         sensitivity_rule.criterias == []
     ), "Le référentiel de sensibilité ne convient pas aux tests"
 
-    unsensitive_protected_taxon = db.session.execute(
-        select(Taxref).filter_by(cd_nom=64357)
-    ).scalar_one()  # Datte de mer
     sensitivity_rule = db.session.scalars(
         select(SensitivityRule)
         .where(
@@ -651,21 +651,28 @@ def synthese_sensitive_data(app, users, datasets, source):
             ),
         )
         .order_by(cte_taxa_area_with_status.c.cd_nom)
+        .limit(1)
     ).first()
 
-    sensitivity_rule = SensitivityRule.query.filter(
-        SensitivityRule.cd_nom == sensitive_protected_cd_nom,
-        SensitivityRule.areas.any(LAreas.id_area == sensitive_protected_id_area),
+    sensitivity_rule = db.session.scalars(
+        sa.select(SensitivityRule)
+        .where(
+            SensitivityRule.cd_nom == sensitive_protected_cd_nom,
+            SensitivityRule.areas.any(LAreas.id_area == sensitive_protected_id_area),
+        )
+        .limit(1)
     ).first()
 
-    sensitive_protected_area = LAreas.query.filter(
-        LAreas.id_area == sensitive_protected_id_area
+    sensitive_protected_area = db.session.scalars(
+        select(LAreas).where(LAreas.id_area == sensitive_protected_id_area).limit(1)
     ).first()
 
     # Get one point inside the area : the centroid (assuming the area is convex)
-    sensitive_protected_point = db.session.query(
-        func.ST_PointOnSurface(func.ST_Transform(sensitive_protected_area.geom, 4326))
-    ).first()[0]
+    sensitive_protected_point = db.session.scalar(
+        sa.select(
+            func.ST_PointOnSurface(func.ST_Transform(sensitive_protected_area.geom, 4326))
+        ).limit(1)
+    )
 
     # Add a criteria to the sensitivity rule if needed
     id_nomenclature_bio_status = None
@@ -680,6 +687,7 @@ def synthese_sensitive_data(app, users, datasets, source):
         .one()
         .id_type
     )
+
     # Get one criteria for the sensitivity rule if needed
     list_criterias_for_sensitivity_rule = sensitivity_rule.criterias
     if list_criterias_for_sensitivity_rule:
@@ -691,35 +699,24 @@ def synthese_sensitive_data(app, users, datasets, source):
             id_nomenclature_behaviour = one_criteria_for_sensitive_rule.id_nomenclature
 
     # Retrieve a cd_nom and point that fit a protection status but no sensitivity rule
-    protected_not_sensitive_cd_nom, protected_not_sensitive_id_area = (
-        db.session.query(cte_taxa_area_with_status.c.cd_nom, cte_taxa_area_with_status.c.id_area)
-        .filter(
-            cte_taxa_area_with_status.c.cd_nom.notin_([cte_taxa_area_with_sensitivity.c.cd_nom])
-        )
-        .first()
-    )
-    protected_not_sensitive_area = LAreas.query.filter(
-        LAreas.id_area == protected_not_sensitive_id_area
+    protected_not_sensitive_cd_nom, protected_not_sensitive_id_area = db.session.execute(
+        sa.select(cte_taxa_area_with_status.c.cd_nom, cte_taxa_area_with_status.c.id_area)
+        .where(cte_taxa_area_with_status.c.cd_nom.notin_([cte_taxa_area_with_sensitivity.c.cd_nom]))
+        .limit(1)
     ).first()
-    # Get one point inside the area : the centroid (assuming the area is convex)
-    protected_not_sensitive_point = db.session.query(
-        func.ST_PointOnSurface(func.ST_Transform(protected_not_sensitive_area.geom, 4326))
-    ).first()[0]
-    id_nomenclature_not_sensitive = (
-        TNomenclatures.query.filter(
-            TNomenclatures.nomenclature_type.has(BibNomenclaturesTypes.mnemonique == "SENSIBILITE")
-        )
-        .filter(TNomenclatures.cd_nomenclature == "0")
-        .one()
-    ).id_nomenclature
 
-    id_nomenclature_sensitive = (
-        TNomenclatures.query.filter(
-            TNomenclatures.nomenclature_type.has(BibNomenclaturesTypes.mnemonique == "SENSIBILITE")
+    protected_not_sensitive_area = db.session.execute(
+        select(LAreas).where(LAreas.id_area == protected_not_sensitive_id_area)
+    ).scalar_one()
+
+    # Get one point inside the area : the centroid (assuming the area is convex)
+    protected_not_sensitive_point = db.session.scalar(
+        sa.select(
+            func.ST_PointOnSurface(func.ST_Transform(protected_not_sensitive_area.geom, 4326))
         )
-        .filter(TNomenclatures.cd_nomenclature == "2")
-        .one()
-    ).id_nomenclature
+    )
+    id_nomenclature_not_sensitive = get_id_nomenclature("SENSIBILITE", "0")
+    id_nomenclature_sensitive = get_id_nomenclature("SENSIBILITE", "2")
 
     with db.session.begin_nested():
         for name, cd_nom, point, ds, comment_description, id_nomenclature_sensitivity in [
@@ -784,6 +781,7 @@ def synthese_sensitive_data(app, users, datasets, source):
         Synthese.query.filter(
             Synthese.id_synthese == data["obs_protected_not_sensitive"].id_synthese
         )
+        .limit(1)
         .first()
         .id_nomenclature_sensitivity
         == id_nomenclature_not_sensitive
