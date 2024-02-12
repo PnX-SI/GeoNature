@@ -138,6 +138,7 @@ def get_role(id_role):
     fields = user_fields.copy()
     if g.current_user == user:
         fields.add("email")
+        fields.add("champs_addi")
     return user.as_dict(fields=fields)
 
 
