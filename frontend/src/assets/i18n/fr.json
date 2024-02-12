@@ -279,6 +279,12 @@
     "ChooseFile": "Choisissez votre fichier",
     "Next": "Suivant",
     "Validate": "Valider",
+    "ErrorMessage": {
+      "Title": "Le module d'import a rencontré un problème",
+      "Remark": "Il s'agit d'un problème indépendant du controle des données.",
+      "DescriptionRestart": "Vous pouvez essayer de relancer l'import après vérification des paramètres.",
+      "DescriptionContactAdmin": "Si le problème persiste, merci de contacter votre administrateur."
+    },
     "Errors": {
       "FileTooBig": "Le fichier sélectionné est trop volumineux. La taille maximale est de {{maxFileSize}}Mo",
       "EmptyFile": "Le fichier sélectionné est vide",
