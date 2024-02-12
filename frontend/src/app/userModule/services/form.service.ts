@@ -42,6 +42,7 @@ export class RoleFormService {
         [Validators.pattern('^[a-z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$'), Validators.required],
       ],
       remarques: ['', null],
+      champs_addi: this.fb.group({})
     });
     this.roleForm.disable();
   }

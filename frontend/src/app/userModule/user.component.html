@@ -60,7 +60,7 @@
       <div class="float-right">
         <ng-container *ngIf="form.disabled; else validation">
           <button type="button" mat-raised-button color="primary" matTooltip="Editer ces informations"
-            matTooltipPosition="left" (click)="enableForm()">
+            matTooltipPosition="left" (click)="form.enable()">
             Editer
             <mat-icon>edit</mat-icon>
           </button>
@@ -69,7 +69,7 @@
           <button mat-raised-button color="warn" matTooltip="Annuler modifications" (click)="cancel()">
             Annuler
           </button>
-          <button mat-raised-button type="button" class="button-success ml-1" matTooltip="Enrigistrer modifications"
+          <button mat-raised-button type="button" class="button-success ml-1" matTooltip="Enregistrer modifications"
             (click)="save()">
             Enregistrer
             <mat-icon>save</mat-icon>

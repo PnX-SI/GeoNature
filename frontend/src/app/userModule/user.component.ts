@@ -1,31 +1,28 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { ConfigService } from '@geonature/services/config.service';
+import { Component, OnInit } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { AuthService } from '@geonature/components/auth/auth.service';
+import { RoleFormService } from './services/form.service';
 import { UserDataService } from './services/user-data.service';
-import { DataFormService } from '@geonature_common/form/data-form.service';
+import { ConfigService } from '@geonature/services/config.service';
 
 @Component({
   selector: 'pnx-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss'],
 })
-export class UserComponent implements OnInit, AfterViewInit {
-  private roleForm: UntypedFormGroup;
-
+export class UserComponent implements OnInit {
   form: UntypedFormGroup;
   additionalFieldsForm: Array<any>;
 
   constructor(
-    private authService: AuthService,
     private fb: UntypedFormBuilder,
+    private authService: AuthService,
+    private roleFormService: RoleFormService,
     private userService: UserDataService,
-    private dataService: DataFormService,
-    private config: ConfigService
+    private config: ConfigService,
   ) { }
 
   ngOnInit() {
-    //recupération des infos custom depuis la config de GN
     this.additionalFieldsForm = [...this.config.ACCOUNT_MANAGEMENT.ACCOUNT_FORM].map(
       (form_element) => {
         //on desactive les elements customs
@@ -34,28 +31,14 @@ export class UserComponent implements OnInit, AfterViewInit {
       }
     );
     this.initForm();
-    this.form.disable();
-  }
-
-  ngAfterViewInit() {
-    //patch du formulaire à partir des infos de l'utilisateur connecté
-    this.dataService
-      .getRole(this.authService.getCurrentUser().id_role)
-      .subscribe((user) => this.form.patchValue(user));
   }
 
   initForm() {
-    this.form = this.fb.group({
-      identifiant: ['', Validators.required],
-      nom_role: ['', Validators.required],
-      prenom_role: ['', Validators.required],
-      email: [
-        '',
-        [Validators.pattern('^[a-z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$'), Validators.required],
-      ],
-      remarques: ['', null],
-      champs_addi: this.fb.group({}),
-    });
+    this.form = this.getForm(this.authService.getCurrentUser().id_role);
+  }
+
+  getForm(role: number): UntypedFormGroup {
+    return this.roleFormService.getForm(role);
   }
 
   save() {
@@ -67,9 +50,5 @@ export class UserComponent implements OnInit, AfterViewInit {
   cancel() {
     this.initForm();
     this.form.disable();
-  }
-
-  enableForm() {
-    this.form.enable();
   }
 }
