@@ -232,6 +232,26 @@
       "Errors": {
         "Entity": "Entity"
       }
+    },
+    "Destinations": "Destinations",
+    "FileUpload": " Upload a file ",
+    "ChooseDataset": "Select a dataset",
+    "ChooseDestination": "Select a destination",
+    "ImportFile": "Import a file",
+    "ChooseFile": "Select a file",
+    "Next": "Next",
+    "Validate": "Validate",
+    "ErrorMessage": {
+      "Title": "The import module encountered an issue.",
+      "Remark": "This  issue is not related to the data control.",
+      "DescriptionRestart": "You can retry the import after parameters checking.",
+      "DescriptionContactAdmin": "If the problem ius still there, please contact your administrator."
+    },
+    "Errors": {
+      "FileTooBig": "Le fichier sélectionné est trop volumineux. La taille maximale est de {{maxFileSize}}Mo",
+      "EmptyFile": "Le fichier sélectionné est vide",
+      "FileColumn": "La première ligne du fichier doit correspondre au nom des colonnes",
+      "FileNameTooBig": "Le nom du fichier est trop long. Il doit faire moins de {{maxFileNameLength}} caractères."
     }
   }
 }
