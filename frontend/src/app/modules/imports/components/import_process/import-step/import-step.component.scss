@@ -64,3 +64,25 @@ ngx-datatable {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.3);
 }
+
+.error-import {
+  $error-color: red;
+  max-width: 50%;
+  &__title {
+    color: $error-color;
+    font-weight: 700;
+    margin-bottom: 1em;
+  }
+
+  &__remark, &__description {
+    font-size: 0.9em;
+    text-align: justify;
+  }
+  &__remark {
+    filter: brightness(0.5);
+    font-style: italic;
+  }
+  &__description span {
+    display: inline-block;
+  }
+}
