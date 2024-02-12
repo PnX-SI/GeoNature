@@ -484,6 +484,35 @@ class TestSynthese:
         assert response.status_code == 200
 
     @pytest.mark.parametrize(
+        "additionnal_column",
+        [("altitude_min"), ("count_min_max"), ("nom_vern_or_lb_nom")],
+    )
+    def test_get_observations_for_web_param_column_frontend(
+        self, app, users, synthese_data, additionnal_column
+    ):
+        """
+        Test de renseigner le paramètre LIST_COLUMNS_FRONTEND pour renvoyer uniquement
+        les colonnes souhaitées
+        """
+        app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"] = [
+            {
+                "prop": additionnal_column,
+                "name": "My label",
+            }
+        ]
+
+        set_logged_user(self.client, users["self_user"])
+
+        response = self.client.get(url_for("gn_synthese.get_observations_for_web"))
+        data = response.get_json()
+
+        expected_columns = {"id", "url_source", additionnal_column}
+
+        assert all(
+            set(feature["properties"].keys()) == expected_columns for feature in data["features"]
+        )
+
+    @pytest.mark.parametrize(
         "group_inpn",
         [
             ("group2_inpn"),
@@ -759,7 +788,6 @@ class TestSynthese:
             rows_data_response = response.data.decode("utf-8").split("\r\n")[0:-1]
             row_header = rows_data_response[0]
             rows_taxons_data_response = rows_data_response[1:]
-            print(row_header.split(";"), expected_columns_exports)
             assert row_header.split(";") == expected_columns_exports
 
             nb_expected_cd_noms = len(set_expected_cd_ref)
