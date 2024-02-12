@@ -1,6 +1,7 @@
 """
     Routes for gn_meta 
 """
+
 import datetime as dt
 import json
 import logging
@@ -679,20 +680,20 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
         acquisition_framework["chart"] = request.json["chart"]
 
     if acquisition_framework:
-        acquisition_framework[
-            "nomenclature_territorial_level"
-        ] = af.nomenclature_territorial_level.as_dict()
-        acquisition_framework[
-            "nomenclature_financing_type"
-        ] = af.nomenclature_financing_type.as_dict()
+        acquisition_framework["nomenclature_territorial_level"] = (
+            af.nomenclature_territorial_level.as_dict()
+        )
+        acquisition_framework["nomenclature_financing_type"] = (
+            af.nomenclature_financing_type.as_dict()
+        )
         if acquisition_framework["acquisition_framework_start_date"]:
-            acquisition_framework[
-                "acquisition_framework_start_date"
-            ] = af.acquisition_framework_start_date.strftime("%d/%m/%Y")
+            acquisition_framework["acquisition_framework_start_date"] = (
+                af.acquisition_framework_start_date.strftime("%d/%m/%Y")
+            )
         if acquisition_framework["acquisition_framework_end_date"]:
-            acquisition_framework[
-                "acquisition_framework_end_date"
-            ] = af.acquisition_framework_end_date.strftime("%d/%m/%Y")
+            acquisition_framework["acquisition_framework_end_date"] = (
+                af.acquisition_framework_end_date.strftime("%d/%m/%Y")
+            )
         acquisition_framework["css"] = {
             "logo": "Logo_pdf.png",
             "bandeau": "Bandeau_pdf.png",
@@ -887,9 +888,7 @@ def get_acquisition_framework_stats(id_acquisition_framework):
     nb_observations = db.session.execute(
         select(func.count("*"))
         .select_from(Synthese)
-        .where(
-            Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework)
-        )
+        .where(Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework))
     ).scalar_one()
 
     nb_habitats = 0
@@ -966,9 +965,7 @@ def publish_acquisition_framework_mail(af):
     )
 
     # Mail subject
-    mail_subject = (
-        "Dépôt du cadre d'acquisition " + str(af.unique_acquisition_framework_id).upper()
-    )
+    mail_subject = "Dépôt du cadre d'acquisition " + str(af.unique_acquisition_framework_id).upper()
     mail_subject_base = current_app.config["METADATA"]["MAIL_SUBJECT_AF_CLOSED_BASE"]
     if mail_subject_base:
         mail_subject = mail_subject_base + " " + mail_subject

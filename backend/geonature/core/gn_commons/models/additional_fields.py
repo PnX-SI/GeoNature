@@ -1,6 +1,7 @@
 """
     Modèles du schéma gn_commons
 """
+
 from sqlalchemy.dialects.postgresql import JSONB
 
 from utils_flask_sqla.serializers import serializable

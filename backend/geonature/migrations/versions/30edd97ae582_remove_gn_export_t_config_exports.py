@@ -5,6 +5,7 @@ Revises: dde31e76ce45
 Create Date: 2022-01-21 10:51:15.288875
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.exc import InternalError

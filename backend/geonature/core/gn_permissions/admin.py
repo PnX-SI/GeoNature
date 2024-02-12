@@ -133,9 +133,7 @@ def permissions_formatter(view, context, model, name):
     for ap in available_permissions:
         own_permissions = list(
             filter(
-                lambda p: p.module == ap.module
-                and p.object == ap.object
-                and p.action == ap.action,
+                lambda p: p.module == ap.module and p.object == ap.object and p.action == ap.action,
                 model.permissions,
             )
         )

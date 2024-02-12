@@ -1,12 +1,13 @@
 """
     Modèles du schéma gn_commons
 """
+
 import os
 from pathlib import Path
 from collections import defaultdict
 
 from flask import current_app
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, text
 from sqlalchemy.orm import relationship, aliased
 from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
@@ -232,6 +233,23 @@ class TValidations(DB.Model):
         foreign_keys=[id_nomenclature_valid_status],
         overlaps="nomenclature_valid_status",  # overlaps expected
     )
+
+    @staticmethod
+    def auto_validation(fct_auto_validation):
+        stmt = text(
+            f"""
+            select routine_name, routine_schema 
+            from information_schema.routines 
+            where routine_name= '{fct_auto_validation}'
+            and routine_type='FUNCTION';
+         """
+        )
+        result = DB.session.execute(stmt).fetchall()
+        if not result:
+            return
+        stmt_auto_validation = text(f"SELECT gn_profiles.{fct_auto_validation}()")
+        DB.session.execute(stmt_auto_validation)
+        DB.session.commit()
 
 
 last_validation_query = (

@@ -30,6 +30,7 @@ setuptools.setup(
             "blueprint = gn_module_validation.blueprint:blueprint",
             "config_schema = gn_module_validation.conf_schema_toml:GnModuleSchemaConf",
             "migrations = gn_module_validation:migrations",
+            "tasks = gn_module_validation.tasks",
         ],
     },
     classifiers=[

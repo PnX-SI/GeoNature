@@ -60,9 +60,7 @@ def count_notification():
     notificationNumber = db.session.execute(
         select(func.count("*"))
         .select_from(Notification)
-        .where(
-            Notification.id_role == g.current_user.id_role, Notification.code_status == "UNREAD"
-        )
+        .where(Notification.id_role == g.current_user.id_role, Notification.code_status == "UNREAD")
     ).scalar_one()
     return jsonify(notificationNumber)
 

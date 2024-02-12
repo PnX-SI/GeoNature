@@ -2,6 +2,7 @@
 	Script importing metadata in GeoNature DataBase based on uuid of datasets to import
 	Use the inpn webservice to get corresponding xml files. Works with datasets and acquisition frameworks, not yet with parents acquisition frameworks (to do)
 """
+
 import os
 import xml.etree.ElementTree as ET
 
@@ -1114,10 +1115,7 @@ for ds_iter in range(len(ds_uuid_list)):
                 else:
                     cur_protocol_url = "''"
                 # Create or update publication
-                if (
-                    "('" + cur_protocol_name.replace("''", "'") + "',)"
-                    not in get_known_protocols()
-                ):
+                if "('" + cur_protocol_name.replace("''", "'") + "',)" not in get_known_protocols():
                     insert_sinp_datatype_protocols(
                         cur_protocol_name, cur_protocol_desc, cur_protocol_url
                     )

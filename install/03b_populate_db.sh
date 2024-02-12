@@ -43,11 +43,11 @@ geonature db exec "DO 'BEGIN ASSERT EXISTS (SELECT 1 FROM gn_sensitivity.t_sensi
 then
     geonature db upgrade ref_geo_fr_departments@head
     geonature sensitivity add-referential \
-            --source-name "Référentiel sensibilité TAXREF v16 20230203" \
-            --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip \
-            --zipfile RefSensibiliteV16_20230203.zip \
-            --csvfile RefSensibiliteV16_20230203/RefSensibilite_16.csv  \
-            --encoding=iso-8859-15
+    --source-name "Référentiel sensibilité TAXREF v16 20230203" \
+    --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip \
+    --zipfile RefSensibiliteV16_20230203.zip \
+    --csvfile RefSensibiliteV16_20230203/RefSensibilite_16.csv  \
+    --encoding=iso-8859-15
     geonature sensitivity refresh-rules-cache
 fi
 

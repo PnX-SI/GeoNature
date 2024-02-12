@@ -257,9 +257,7 @@ def export_all_habitats(
                     properties=export_view.as_dict(r, fields=columns_to_serialize),
                 )
             )
-        return to_json_resp(
-            FeatureCollection(features), as_file=True, filename=file_name, indent=4
-        )
+        return to_json_resp(FeatureCollection(features), as_file=True, filename=file_name, indent=4)
     else:
         dir_name, file_name = export_as_geo_file(
             export_format=export_format,

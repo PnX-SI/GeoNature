@@ -59,9 +59,7 @@ class CorCountingOccurrence(DB.Model):
         DB.Integer, nullable=False, server_default=FetchedValue()
     )
     id_nomenclature_sex = DB.Column(DB.Integer, nullable=False, server_default=FetchedValue())
-    id_nomenclature_obj_count = DB.Column(
-        DB.Integer, nullable=False, server_default=FetchedValue()
-    )
+    id_nomenclature_obj_count = DB.Column(DB.Integer, nullable=False, server_default=FetchedValue())
     id_nomenclature_type_count = DB.Column(DB.Integer, server_default=FetchedValue())
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)

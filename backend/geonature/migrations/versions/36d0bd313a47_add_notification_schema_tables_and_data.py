@@ -5,6 +5,7 @@ Revises: 42040535a20e
 Create Date: 2022-09-22 09:58:19.055808
 
 """
+
 import datetime
 from alembic import op
 from sqlalchemy import Column, ForeignKey, Integer, Unicode, UnicodeText, DateTime
@@ -95,9 +96,7 @@ def upgrade():
             ForeignKey(SCHEMA_NAME + ".bib_notifications_categories.code"),
             nullable=False,
         ),
-        UniqueConstraint(
-            "id_role", "code_method", "code_category", name="un_role_method_category"
-        ),
+        UniqueConstraint("id_role", "code_method", "code_category", name="un_role_method_category"),
         schema=SCHEMA_NAME,
     )
 

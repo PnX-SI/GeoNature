@@ -5,6 +5,7 @@ Revises: cf1c1fdbde77
 Create Date: 2023-04-12 14:38:44.788935
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy import Column, ForeignKey, Integer, Unicode

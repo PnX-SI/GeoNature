@@ -110,9 +110,7 @@ def build_blurred_precise_geom_queries(
     )
     # Joins here are needed to retrieve the blurred geometry
     blurred_geom_query.add_join(LAreasAlias, LAreasAlias.id_area, CorAreaSyntheseAlias.id_area)
-    blurred_geom_query.add_join(
-        BibAreasTypesAlias, BibAreasTypesAlias.id_type, LAreasAlias.id_type
-    )
+    blurred_geom_query.add_join(BibAreasTypesAlias, BibAreasTypesAlias.id_type, LAreasAlias.id_type)
     blurred_geom_query.add_join(
         cor_sensitivity_area_type,
         cor_sensitivity_area_type.c.id_area_type,

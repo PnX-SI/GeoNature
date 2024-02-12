@@ -55,9 +55,7 @@ def configure_alembic(alembic_config):
     'migrations' entry point value of the 'gn_module' group for all modules having such entry point.
     Thus, alembic will find migrations of all installed geonature modules.
     """
-    version_locations = set(
-        alembic_config.get_main_option("version_locations", default="").split()
-    )
+    version_locations = set(alembic_config.get_main_option("version_locations", default="").split())
     if "VERSION_LOCATIONS" in config["ALEMBIC"]:
         version_locations |= set(config["ALEMBIC"]["VERSION_LOCATIONS"].split())
     for entry_point in chain(

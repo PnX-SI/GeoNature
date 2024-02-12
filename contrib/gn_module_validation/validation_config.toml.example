@@ -1,3 +1,17 @@
+# PARAMETRES CONFIG MODULE VALIDATION
+
+# Uncomment the following line to enable the auto-validation (value must be equal to true)
+#AUTO_VALIDATION_ENABLED = true 
+
+### Cron parameters for the auto-validation 
+#AUTO_VALIDATION_CRONTAB = "* 1 * * *"
+
+## If the auto-validation function does not fit your usecase, be sure to create your own
+## and indicate its name in the following variable
+## ATTENTION : Be sure that your function is declared in the `gn_profiles` schema in the database
+
+#AUTO_VALIDATION_SQL_FUNCTION = "fct_auto_validation_custom"
+
 [[COLUMN_LIST]]
 column_label = "Taxon"
 column_name = "taxref.nom_vern_or_lb_nom"
@@ -23,3 +37,5 @@ min_width = 100
 #column_label = "Stade de vie"
 #column_name = "nomenclature_life_stage.label_default"
 #min_width = 50
+
+

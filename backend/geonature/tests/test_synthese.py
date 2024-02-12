@@ -272,9 +272,7 @@ class TestSynthese:
         )
 
         # test ref geo area filter
-        com_type = db.session.execute(
-            select(BibAreasTypes).filter_by(type_code="COM")
-        ).scalar_one()
+        com_type = db.session.execute(select(BibAreasTypes).filter_by(type_code="COM")).scalar_one()
         chambery = db.session.execute(
             select(LAreas).filter_by(area_type=com_type, area_name="Chambéry")
         ).scalar_one()
@@ -430,9 +428,7 @@ class TestSynthese:
         assert len(features) > 0
 
         for feat in features:
-            assert feat["properties"]["id"] in [
-                synt.id_synthese for synt in synthese_data.values()
-            ]
+            assert feat["properties"]["id"] in [synt.id_synthese for synt in synthese_data.values()]
         assert response.status_code == 200
 
     def test_get_synthese_data_aggregate(self, users, datasets, synthese_data):
@@ -1015,9 +1011,7 @@ class TestSynthese:
         # Create a dict (id_dataset, nb_obs) for the expected data
         dict_expected_datasets = {}
         expected_data_synthese = [
-            obs_synthese
-            for name_obs, obs_synthese in synthese_data.items()
-            if name_obs in ["obs1"]
+            obs_synthese for name_obs, obs_synthese in synthese_data.items() if name_obs in ["obs1"]
         ]
         for obs_data_synthese in expected_data_synthese:
             id_dataset = obs_data_synthese.id_dataset
@@ -1373,9 +1367,7 @@ def blur_sensitive_observations(monkeypatch):
 
 def get_one_synthese_reponse_from_id(response: dict, id_synthese: int):
     return [
-        synthese
-        for synthese in response["features"]
-        if synthese["properties"]["id"] == id_synthese
+        synthese for synthese in response["features"] if synthese["properties"]["id"] == id_synthese
     ][0]
 
 

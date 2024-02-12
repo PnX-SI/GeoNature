@@ -210,9 +210,7 @@ class GnPySchemaConf(Schema):
     CELERY = fields.Nested(CeleryConfig, load_default=CeleryConfig().load({}))
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     ADMIN_APPLICATION_LOGIN = fields.String()
-    ACCOUNT_MANAGEMENT = fields.Nested(
-        AccountManagement, load_default=AccountManagement().load({})
-    )
+    ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
     BAD_LOGIN_STATUS_CODE = fields.Integer(load_default=401)
     USERSHUB = fields.Nested(UsersHubConfig, load_default=UsersHubConfig().load({}))
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
@@ -485,15 +483,17 @@ class MapConfig(Schema):
                 "code": "limitesadministratives",
                 "label": "Limites administratives (IGN)",
                 "type": "wms",
-                "url": "https://wxs.ign.fr/essentiels/geoportail/r/wms",
+                "url": "https://data.geopf.fr/wms-r",
                 "activate": False,
                 "params": {
-                    "VERSION": "1.3.0",
+                    "service": "wms",
+                    "version": "1.3.0",
+                    "request": "GetMap",
+                    "layers": "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST",
+                    "styles": "normal",
+                    "format": "image/png",
                     "crs": "CRS:84",
                     "dpiMode": 7,
-                    "format": "image/png",
-                    "layers": "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST",
-                    "styles": "",
                 },
             },
             {
@@ -503,13 +503,13 @@ class MapConfig(Schema):
                 "url": "https://ws.carmencarto.fr/WMS/119/fxx_inpn",
                 "activate": False,
                 "params": {
-                    "layers": "znieff1",
-                    "opacity": 0.2,
-                    "crs": "EPSG:4326",
                     "service": "wms",
-                    "format": "image/png",
                     "version": "1.3.0",
                     "request": "GetMap",
+                    "layers": "znieff1",
+                    "format": "image/png",
+                    "crs": "EPSG:4326",
+                    "opacity": 0.2,
                     "transparent": True,
                 },
             },
@@ -545,9 +545,7 @@ class GnGeneralSchemaConf(Schema):
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(load_default=True)
     BDD = fields.Nested(BddConfig, load_default=BddConfig().load({}))
     URL_USERSHUB = fields.Url(required=False)
-    ACCOUNT_MANAGEMENT = fields.Nested(
-        AccountManagement, load_default=AccountManagement().load({})
-    )
+    ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
     STATIC_URL = fields.String(load_default="/static")
     MEDIA_URL = fields.String(load_default="/media")

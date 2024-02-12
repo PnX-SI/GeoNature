@@ -156,9 +156,7 @@ def get_metadata_list(role, scope, args, exclude_cols):
                 if acquisition_framework_name
                 else True
             )
-            .where(
-                CorAcquisitionFrameworkActor.id_organism == id_organism if id_organism else True
-            )
+            .where(CorAcquisitionFrameworkActor.id_organism == id_organism if id_organism else True)
             .where(CorAcquisitionFrameworkActor.id_role == id_role if id_role else True)
         )
 
