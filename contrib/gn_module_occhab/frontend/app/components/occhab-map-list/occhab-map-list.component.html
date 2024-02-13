@@ -1,7 +1,4 @@
-<div
-  id="cover-spin"
-  *ngIf="dataLoading"
-></div>
+<div id="cover-spin" *ngIf="dataLoading"></div>
 
 <div class="float-btns">
   <button
@@ -27,27 +24,20 @@
     matBadgeColor="warn"
   >
     Filter
-    <i
-      class="fa fa-sliders"
-      aria-hidden="true"
-    ></i>
+    <i class="fa fa-sliders" aria-hidden="true"></i>
   </button>
 </div>
 
-<div
-  class="row row-sm map-list-container"
-  data-qa="pnx-occhab-map-list"
->
+<div class="row row-sm map-list-container" data-qa="pnx-occhab-map-list">
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
-    <pnx-map-list
-      height="88vh"
-      idName="id_station"
-    ></pnx-map-list>
+    <pnx-map-list height="88vh" idName="id_station"></pnx-map-list>
   </div>
 
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
     <div [(ngbCollapse)]="isCollapseFilter">
-      <pnx-occhab-map-list-filter (onSearch)="searchData($event)"></pnx-occhab-map-list-filter>
+      <pnx-occhab-map-list-filter
+        (onSearch)="searchData($event)"
+      ></pnx-occhab-map-list-filter>
     </div>
     <div class="container">
       <div class="row">
@@ -68,10 +58,7 @@
             (select)="mapListService.onRowSelect($event)"
             data-qa="pnx-occhab-map-list-datatable"
           >
-            <ngx-datatable-row-detail
-              #myDetailRow
-              rowHeight="100"
-            >
+            <ngx-datatable-row-detail #myDetailRow rowHeight="100">
               <ng-template
                 ngx-datatable-row-detail-template
                 let-row="row"
@@ -81,7 +68,9 @@
                   <strong>ID station :</strong>
                   {{ row.id_station }}
                 </div>
-                <ng-container *ngIf="row.comment !== null && row?.comment.trim() !== ''">
+                <ng-container
+                  *ngIf="row.comment !== null && row?.comment.trim() !== ''"
+                >
                   <div>
                     <strong>Commentaire :</strong>
                     {{ row.comment }}
@@ -92,7 +81,7 @@
                   {{
                     row.altitude_min == row.altitude_max
                       ? row.altitude_min
-                      : row.altitude_min + ' - ' + row.altitude_max
+                      : row.altitude_min + " - " + row.altitude_max
                   }}
                 </div>
                 <div><strong>Observé par:</strong></div>
@@ -130,81 +119,53 @@
                 ></a>
               </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column
-              maxWidth="10"
-              [sortable]="false"
-            >
-              <ng-template
-                let-row="row"
-                ngx-datatable-cell-template
-              >
+            <ngx-datatable-column maxWidth="10" [sortable]="false">
+              <ng-template let-row="row" ngx-datatable-cell-template>
                 <button
                   [matTooltip]="row.id_station"
                   [routerLink]="['info', row.id_station]"
                   class="btn btn-outline-shadow btn-no-padding btn-ghost"
                 >
-                  <i
-                    class="fa fa-info-circle"
-                    aria-hidden="true"
-                  ></i>
+                  <i class="fa fa-info-circle" aria-hidden="true"></i>
                   {{ row.id_station }}
                 </button>
               </ng-template>
             </ngx-datatable-column>
 
-            <ngx-datatable-column
-              maxWidth="10"
-              [sortable]="false"
-            >
-              <ng-template
-                let-row="row"
-                ngx-datatable-cell-template
-              >
+            <ngx-datatable-column maxWidth="10" [sortable]="false">
+              <ng-template let-row="row" ngx-datatable-cell-template>
                 <button
                   class="btn btn-outline-shadow btn-no-padding btn-ghost"
                   [routerLink]="['edit', row.id_station]"
                   [disabled]="!row.cruved.U"
                 >
-                  <i
-                    class="fa fa-pencil-square-o"
-                    aria-hidden="true"
-                  ></i>
+                  <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                 </button>
               </ng-template>
             </ngx-datatable-column>
 
-            <ngx-datatable-column
-              maxWidth="10"
-              [sortable]="false"
-            >
-              <ng-template
-                let-row="row"
-                ngx-datatable-cell-template
-              >
+            <ngx-datatable-column maxWidth="10" [sortable]="false">
+              <ng-template let-row="row" ngx-datatable-cell-template>
                 <button
                   class="btn btn-outline-shadow btn-no-padding btn-ghost"
                   (click)="openDeleteModal(row, deleteModal)"
                   [disabled]="!row.cruved.D"
                 >
-                  <i
-                    class="fa fa-trash-o"
-                    aria-hidden="true"
-                  ></i>
+                  <i class="fa fa-trash-o" aria-hidden="true"></i>
                 </button>
               </ng-template>
             </ngx-datatable-column>
 
             <ngx-datatable-column name="Habitat">
-              <ng-template
-                ngx-datatable-cell-template
-                let-row="row"
-              >
+              <ng-template ngx-datatable-cell-template let-row="row">
                 <span
                   [matTooltip]="displayHabTooltip(row).join('\n')"
                   matTooltipPosition="left"
                 >
                   <span>
-                    <span class="badge badge-dark">{{ row.habitats?.length }}</span>
+                    <span class="badge badge-dark">{{
+                      row.habitats?.length
+                    }}</span>
                     {{ displayHabTooltip(row) }}
                   </span>
                 </span>
@@ -217,17 +178,14 @@
                 let-row="row"
                 maxWidth="50"
               >
-                <span matTooltip="{{ row.date_min | date: 'dd-MM-yyyy' }}">
-                  {{ row.date_min | date: 'dd-MM-yyyy' }}
+                <span matTooltip="{{ row.date_min | date : 'dd-MM-yyyy' }}">
+                  {{ row.date_min | date : "dd-MM-yyyy" }}
                 </span>
               </ng-template>
             </ngx-datatable-column>
 
             <ngx-datatable-column name="Jeu de données">
-              <ng-template
-                ngx-datatable-cell-template
-                let-row="row"
-              >
+              <ng-template ngx-datatable-cell-template let-row="row">
                 <span matTooltip="{{ row.dataset.dataset_name }}">
                   {{ row.dataset.dataset_name }}
                 </span>
@@ -244,9 +202,14 @@
             mat-raised-button
             color="primary"
             class="btn-action uppercase"
-            [routerLink]="['/import', destinationImportCode, 'process', 'upload']"
+            [routerLink]="[
+              '/import',
+              destinationImportCode,
+              'process',
+              'upload'
+            ]"
           >
-            {{ 'Upload' | translate }}
+            {{ "Upload" | translate }}
             <mat-icon>file_upload</mat-icon>
           </button>
         </div>
@@ -258,7 +221,7 @@
             class="btn-action uppercase"
             (click)="openModal()"
           >
-            {{ 'Download' | translate }}
+            {{ "Download" | translate }}
             <mat-icon>file_download</mat-icon>
           </button>
         </div>
@@ -267,11 +230,7 @@
   </div>
 </div>
 
-<ng-template
-  #deleteModal
-  let-c="close "
-  let-d="dismiss"
->
+<ng-template #deleteModal let-c="close " let-d="dismiss">
   <pnx-occhab-delete
     [c]="c"
     [idStation]="deleteOne.id_station"
