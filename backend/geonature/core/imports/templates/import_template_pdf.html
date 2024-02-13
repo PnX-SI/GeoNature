@@ -35,40 +35,28 @@
       <h5> Nom du fichier d'import : {{ data.full_file_name }} </h5>
       <div class="ligne-titre ligne main-color"></div>
     </div>
+    <div id="Statistiques-block" class="information">
+      <p class="info-titre">Statistiques</p>
+      <div id="stats">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th class="main-color">Champs</th>
+          <th class="main-color">Valeur</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for key, value in data.statistics.items() %}
+        <tr>
+          <td>{{ key|capitalize }}</td>
+          <td>{{ value }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+  </div>
     <div class="etiquettes">
-      <div id="taxons" class="etiquette">
-        <div class="etiquette-haut">
-          <img
-            class="logo-etiquette"
-            src="{{url_for('static', filename='images/Taxon_icon.svg')}}"
-            alt="taxon-icon"
-          >
-          <div class="etiquette-bas">
-            <small>Taxons</small>
-            </br>
-            {% if data.taxa_count: %}
-            {{ data.taxa_count }}
-            {% endif %}
-          </div>
-        </div>
-      </div>
-      
-      <div id="data" class="etiquette">
-        <div class="etiquette-haut">
-          <img
-            class="logo-etiquette"
-            src="{{url_for('static', filename='images/Donnee_icon.svg')}}"
-            alt="donnee-icon"
-          >
-          <div class="etiquette-bas">
-            <small>Données importées/totales</small>
-            </br>
-            {% if data.import_count: %}
-            {{ data.import_count }} / {{ data.source_count }}
-            {% endif %}
-          </div>
-        </div>
-      </div>
       {% if data.map is not none %}
       <div class="zone">
         <!-- <p class="zone-geographique">Périmètre géographique</p> -->
@@ -132,7 +120,7 @@
       <p class="info-titre">Erreurs</p>
       <p class="info-contenu">
       <div id="errors">
-        <table id="error-table">
+        <table class="custom-table">
           <thead>
             <tr>
                 <th class="main-color">Type d'erreur</th>
@@ -180,32 +168,32 @@ h5 {
   text-align: center;
 }
 
-#Error-block {
+#Error-block, #Statistiques-block {
   margin-top: 20px;
   margin-left: 5px;
 }
 
-#errors {
+#errors,  #stats {
   margin-right: 10px;
 }
 
-#error-table {
+.custom-table {
   border-collapse: collapse;
   width: 100%;
 }
 
-#error-table td, #error-table th {
+.custom-table td, .custom-table th{
   border: 1px solid #ddd;
   padding: 8px;
 }
 
-#error-table tr:nth-child(even){background-color: #f2f2f2;}
+.custom-table tr:nth-child(even){background-color: #f2f2f2;}
 
-#error-table td {
+.custom-table td {
   font-size: 10px;
 }
 
-#error-table th {
+.custom-table th {
   padding-top: 8px;
   padding-bottom: 8px;
   text-align: left;
