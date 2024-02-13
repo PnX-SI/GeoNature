@@ -37,8 +37,7 @@ export class OccHabMapListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-
-    this.destinationImportCode = this.config.OCCHAB.MODULE_CODE.toLowerCase()
+    this.destinationImportCode = this.config.OCCHAB.MODULE_CODE.toLowerCase();
     if (this.storeService.firstMessageMapList) {
       this._commonService.regularToaster('info', 'Les 50 dernières stations saisies');
       this.storeService.firstMessageMapList = false;
