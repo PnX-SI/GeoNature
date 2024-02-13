@@ -10,7 +10,10 @@ import * as moment from 'moment';
 import { ConfigService } from '@geonature/services/config.service';
 import { OccHabMapListService } from '../../services/occhab-map-list.service';
 import { ModuleService } from '@geonature/services/module.service';
+<<<<<<< HEAD
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
+=======
+>>>>>>> 66050cdf4 (refact: use different way to use module_code)
 
 @Component({
   selector: 'pnx-occhab-map-list',
@@ -39,6 +42,7 @@ export class OccHabMapListComponent implements OnInit {
     private _commonService: CommonService,
     public config: ConfigService,
     public mapListFormService: OccHabMapListService,
+<<<<<<< HEAD
     private _moduleService: ModuleService,
     public cruvedStore: CruvedStoreService
   ) {}
@@ -54,6 +58,14 @@ export class OccHabMapListComponent implements OnInit {
     this.canImport = canCreateImport && canCreateOcchab;
     this.destinationImportCode = currentModule.destination[0]?.code;
 
+=======
+    private _moduleService: ModuleService
+  ) {}
+
+  ngOnInit() {
+    const currentModule = this._moduleService.currentModule;
+    this.destinationImportCode = currentModule.module_code.toLowerCase();
+>>>>>>> 66050cdf4 (refact: use different way to use module_code)
     if (this.storeService.firstMessageMapList) {
       this._commonService.regularToaster('info', 'Les 50 dernières stations saisies');
       this.storeService.firstMessageMapList = false;
