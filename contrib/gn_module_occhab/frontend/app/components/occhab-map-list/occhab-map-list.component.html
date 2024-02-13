@@ -37,76 +37,59 @@
     <div [(ngbCollapse)]="isCollapseFilter">
       <pnx-occhab-map-list-filter (onSearch)="searchData($event)"> </pnx-occhab-map-list-filter>
     </div>
-    <button
-      id="download-btn"
-      mat-raised-button
-      color="primary"
-      class="btn-action uppercase"
-      (click)="openModal()"
-    >
-      {{ 'Download' | translate }}
-
-      <mat-icon>file_download</mat-icon>
-    </button>
-
-    <ngx-datatable
-      (window:resize)="onResize($event)"
-      #dataTable
-      class="material striped margin-top-xs table-size expandable"
-      [rows]="mapListService.tableData"
-      [rowHeight]="40"
-      [selected]="mapListService.selectedRow"
-      [selectionType]="'single'"
-      [rowClass]="mapListService.getRowClass"
-      [count]="mapListService.tableData.length"
-      [limit]="rowNumber"
-      [footerHeight]="50"
-      [headerHeight]="50"
-      (select)="mapListService.onRowSelect($event)"
-      data-qa="pnx-occhab-map-list-datatable"
-    >
-      <ngx-datatable-row-detail #myDetailRow rowHeight="100">
-        <ng-template ngx-datatable-row-detail-template let-row="row" let-expanded="expanded">
-          <div><strong>ID station : </strong>{{ row.id_station }}</div>
-          <ng-container *ngIf="row.comment !== null && row?.comment.trim() !== ''">
-            <div><strong>Commentaire : </strong>{{ row.comment }}</div>
-          </ng-container>
-          <div>
-            <strong>Altitude : </strong
-            >{{
-              row.altitude_min == row.altitude_max
-                ? row.altitude_min
-                : row.altitude_min + ' - ' + row.altitude_max
-            }}
-          </div>
-          <div><strong>Observé par: </strong></div>
-          <div style="margin-left: 20px">
-            <div *ngFor="let obs of displayObservateursTooltip(row)">
-              {{ obs }}
-            </div>
-          </div>
-          <div><strong>Habitats(s): </strong></div>
-          <div style="margin-left: 20px">
-            <div *ngFor="let hab of displayHabTooltip(row)">
-              {{ hab }}
-            </div>
-          </div>
-        </ng-template>
-      </ngx-datatable-row-detail>
-      <ngx-datatable-column
-        [width]="10"
-        [resizeable]="false"
-        [sortable]="false"
-        [draggable]="false"
-        [canAutoResize]="false"
-      >
-        <ng-template ngx-datatable-cell-template let-row="row" let-expanded="expanded">
-          <a
-            href="javascript:void(0)"
-            matTooltip="Ouvrir/fermer le détail"
-            [class.datatable-icon-right]="!expanded"
-            [class.datatable-icon-down]="expanded"
-            (click)="toggleExpandRow(row)"
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <ngx-datatable
+          (window:resize)="onResize($event)"
+          #dataTable
+          class="material striped margin-top-xs table-size expandable"
+          [rows]="mapListService.tableData"
+          [rowHeight]="40"
+          [selected]="mapListService.selectedRow"
+          [selectionType]="'single'"
+          [rowClass]="mapListService.getRowClass"
+          [count]="mapListService.tableData.length"
+          [limit]="rowNumber"
+          [footerHeight]="50"
+          [headerHeight]="50"
+          (select)="mapListService.onRowSelect($event)"
+          data-qa="pnx-occhab-map-list-datatable"
+        >
+          <ngx-datatable-row-detail #myDetailRow rowHeight="100">
+            <ng-template ngx-datatable-row-detail-template let-row="row" let-expanded="expanded">
+              <div><strong>ID station : </strong>{{ row.id_station }}</div>
+              <ng-container *ngIf="row.comment !== null && row?.comment.trim() !== ''">
+                <div><strong>Commentaire : </strong>{{ row.comment }}</div>
+              </ng-container>
+              <div>
+                <strong>Altitude : </strong
+                >{{
+                  row.altitude_min == row.altitude_max
+                    ? row.altitude_min
+                    : row.altitude_min + ' - ' + row.altitude_max
+                }}
+              </div>
+              <div><strong>Observé par: </strong></div>
+              <div style="margin-left: 20px">
+                <div *ngFor="let obs of displayObservateursTooltip(row)">
+                  {{ obs }}
+                </div>
+              </div>
+              <div><strong>Habitats(s): </strong></div>
+              <div style="margin-left: 20px">
+                <div *ngFor="let hab of displayHabTooltip(row)">
+                  {{ hab }}
+                </div>
+              </div>
+            </ng-template>
+          </ngx-datatable-row-detail>
+          <ngx-datatable-column
+            [width]="10"
+            [resizeable]="false"
+            [sortable]="false"
+            [draggable]="false"
+            [canAutoResize]="false"
           >
           </a>
         </ng-template>
@@ -175,6 +158,96 @@
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
+            <ng-template ngx-datatable-cell-template let-row="row" let-expanded="expanded">
+              <a
+                href="javascript:void(0)"
+                matTooltip="Ouvrir/fermer le détail"
+                [class.datatable-icon-right]="!expanded"
+                [class.datatable-icon-down]="expanded"
+                (click)="toggleExpandRow(row)"
+              >
+              </a>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column maxWidth="10">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <button
+                [matTooltip]="row.id_station"
+                [routerLink]="['info', row.id_station]"
+                class="btn btn-outline-shadow btn-no-padding btn-ghost"
+              >
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                {{ row.id_station }}
+              </button>
+            </ng-template>
+          </ngx-datatable-column>
+    
+          <ngx-datatable-column maxWidth="10">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <button
+                class="btn btn-outline-shadow btn-no-padding btn-ghost"
+                [routerLink]="['edit', row.id_station]"
+              >
+                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+              </button>
+            </ng-template>
+          </ngx-datatable-column>
+    
+          <ngx-datatable-column maxWidth="10">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <button
+                class="btn btn-outline-shadow btn-no-padding btn-ghost"
+                (click)="openDeleteModal(row, deleteModal)"
+              >
+                <i class="fa fa-trash-o" aria-hidden="true"></i>
+              </button>
+            </ng-template>
+          </ngx-datatable-column>
+    
+          <ngx-datatable-column name="Habitat">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <span [matTooltip]="displayHabTooltip(row).join('\n')" matTooltipPosition="left">
+                <span>
+                  <span class="badge badge-dark"> {{ row.habitats?.length }} </span>
+                  {{ displayHabTooltip(row) }}
+                </span>
+              </span>
+            </ng-template>
+          </ngx-datatable-column>
+    
+          <ngx-datatable-column name="Date min">
+            <ng-template ngx-datatable-cell-template let-row="row" maxWidth="50">
+              <span matTooltip="{{ row.date_min | date : 'dd-MM-yyyy' }}">
+                {{ row.date_min | date : 'dd-MM-yyyy' }}
+              </span>
+            </ng-template>
+          </ngx-datatable-column>
+    
+          <ngx-datatable-column name="Jeu de données">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <span matTooltip="{{ row.dataset.dataset_name }}">
+                {{ row.dataset.dataset_name }}
+              </span>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+    </div>
+    <div class="row mt-3 justify-content-end">
+      <div class="col-auto">
+        <button
+          id="download-btn"
+          mat-raised-button
+          color="primary"
+          class="btn-action uppercase"
+          (click)="openModal()"
+        >
+          {{ 'Download' | translate }}
+          <mat-icon>file_download</mat-icon>
+        </button>
+      </div>
+    </div>
+   </div>
   </div>
 </div>
 
