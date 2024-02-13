@@ -288,6 +288,18 @@
     <div class="row mt-3 justify-content-end">
       <div class="col-auto">
         <button
+          id="upload-btn"
+          mat-raised-button
+          color="primary"
+          class="btn-action uppercase"
+          [routerLink]="['/import', destinationImportCode, 'process', 'upload']"
+        >
+          {{ 'Upload' | translate }}
+          <mat-icon>file_upload</mat-icon>
+        </button>
+      </div>
+      <div class="col-auto">
+        <button
           id="download-btn"
           mat-raised-button
           color="primary"
