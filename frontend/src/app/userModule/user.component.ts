@@ -19,18 +19,30 @@ export class UserComponent implements OnInit {
     private roleFormService: RoleFormService,
     private userService: UserDataService,
     private config: ConfigService
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.additionalFieldsForm = [...this.config.ACCOUNT_MANAGEMENT.ACCOUNT_FORM].map(
-      (form_element) => {
-        //on desactive les elements customs
-        form_element['disable'] = true;
-        return form_element;
+    this.additionalFieldsForm = []
+    for (let form of [...this.config.ACCOUNT_MANAGEMENT.ACCOUNT_FORM]) {
+      form['disable'] = true;
+      if (form.type_widget !== "nomenclature") {
+        this.additionalFieldsForm.push(form);
       }
-    );
+
+    } // FIXME : debug so we can use nomenclature form type
+    // this.additionalFieldsForm = [...this.config.ACCOUNT_MANAGEMENT.ACCOUNT_FORM].map(
+    //   (form_element) => {
+    //     //on desactive les elements customs
+    //     form_element['disable'] = true;
+    //     return form_element;
+    //   }
+    // );
+
+
     this.initForm();
+    this.form.disable();
   }
+
 
   initForm() {
     this.form = this.getForm(this.authService.getCurrentUser().id_role);
