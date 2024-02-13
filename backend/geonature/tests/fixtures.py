@@ -646,11 +646,11 @@ def synthese_sensitive_data(app, users, datasets, source):
             LAreas.area_code == "01",
         )  # Ain
     ).one()
-    
+
     unsensitive_protected_taxon = db.session.execute(
-            select(Taxref).filter_by(cd_nom=64357)
-        ).scalar_one().cd_nom
-    
+        select(Taxref.cd_nom).filter_by(cd_nom=64357)
+    ).scalar_one()
+
     with db.session.begin_nested():
         for name, cd_nom, point, ds, comment_description, id_nomenclature_sensitivity in [
             (
