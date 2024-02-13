@@ -1,19 +1,38 @@
-.font-size-medium {
-  font-size: 12px;
-}
+$line-tb-padding: 10px;
+$icon-size: 20px;
 
 ngx-datatable{
   box-shadow: none !important
 }
 
 .sortable .sort-btn:not([class*="datatable-icon-"]):before {
-   font-family: data-table; content: "c"; 
+  font-family: data-table; content: "c";
 }
 
 :host ::ng-deep datatable-body-cell {
-  padding: 10px 5px !important;
+  padding: $line-tb-padding  $line-tb-padding * 0.5 !important;
 }
 
-.import-status{
-  font-style: italic;
+.import-list {
+  .button {
+    margin-top: -0.5 * $line-tb-padding !important;
+    padding: 0 !important;
+    height: 2*$icon-size !important;
+    width: 2*$icon-size !important;
+    mat-icon {
+      font-size: $icon-size !important;
+      margin: auto;
+    }
+  }
+
+  .button-tooltip {
+    filter: opacity(0.6);
+    &--disabled {
+      filter: opacity(0.2);
+    }
+  }
+}
+
+::ng-deep .button-tooltip__tooltip {
+  white-space: pre-line;
 }

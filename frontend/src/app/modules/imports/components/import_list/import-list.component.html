@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid import-list">
     <div class="card">
         <div class="card-header">
             <h5 class="card-title mb-0">Liste des imports</h5>
@@ -90,7 +90,33 @@
                             <p *ngIf="checkingImport.includes(row.id_import)" class="import-status">vérifications en cours</p>
                         </ng-template>
                     </ngx-datatable-column>
-
+                    <ngx-datatable-column
+                      [width]="30"
+                      [resizeable]="false"
+                      [sortable]="false"
+                      [draggable]="false"
+                      [canAutoResize]="false"
+                    >
+                      <ng-template ngx-datatable-header-template>
+                        <i
+                          class="fa fa-bar-chart"
+                          aria-hidden="true"
+                          data-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                        </i>
+                      </ng-template>
+                      <ng-template ngx-datatable-cell-template let-row="row" let-expanded="expanded">
+                          <mat-button-toggle
+                            class="button button-tooltip"
+                            [ngClass]="hasStatistics(row) ? 'purple' : 'button-tooltip--disabled'"
+                            [matTooltip]="hasStatistics(row) ? getStatisticsTooltip(row) : None"
+                            matTooltipClass="button-tooltip__tooltip"
+                          >
+                            <mat-icon>query_stats</mat-icon>
+                          </mat-button-toggle>
+                      </ng-template>
+                    </ngx-datatable-column>
                     <ngx-datatable-column
                         name="Actions"
                         [sortable]="false"
@@ -104,9 +130,8 @@
                                 [matTooltip]="getTooltip(row,'edit')"
                                 mat-icon-button
                                 color="primary"
-                                class="import-button"
+                                class="button"
                                 *ngIf="!row.processing"
-                                style="margin-top: -10px;"
                                 (click)="onFinishImport(row)"
                             >
                                 <mat-icon>edit</mat-icon>
@@ -114,9 +139,8 @@
                             <button
                                 matTooltip="Rapport"
                                 mat-icon-button
-                                class="import-button"
+                                class="button"
                                 color="primary"
-                                style="margin-top: -10px;"
                                 [routerLink]="[row.destination.code, row.id_import, 'report']"
                             >
                                 <mat-icon>info</mat-icon>
@@ -124,9 +148,8 @@
                             <button
                                 *ngIf="row.errors_count"
                                 mat-icon-button
-                                class="import-button"
+                                class="button"
                                 color="primary"
-                                style="margin-top: -10px;"
                                 (click)="_csvExport.onCSV(row.id_import)"
                                 matTooltip='Téléchargement des données invalides'
                             >
@@ -136,7 +159,7 @@
                                 [disabled]="!row?.cruved?.D || !row?.dataset?.active"
                                 mat-icon-button
                                 color=warn
-                                style="margin-top: -10px;"
+                                class="button"
                                 (click)="openDeleteModal(row, deleteModal)"
                                 [matTooltip]="getTooltip(row,'delete')"
                             >

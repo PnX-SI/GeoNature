@@ -1,6 +1,6 @@
 // @ts-ignore
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { saveAs } from 'file-saver';
@@ -196,6 +196,31 @@ export class ImportListComponent implements OnInit {
       return "Modifier l'import";
     } else {
       return "Supprimer l'import";
+    }
+  }
+
+  _getStatistics(row) {
+    return 'statistics' in row  ? row['statistics'] : null;
+  }
+
+  getStatisticsTooltip(row) {
+    const statistics = this._getStatistics(row);
+    return Object.keys(statistics).map(statkey => this.getStatisticsLabel(statkey) + ": " + statistics[statkey]).join('\n');
+  }
+
+  hasStatistics(row) {
+    const statistics = this._getStatistics(row);
+    return statistics && Object.keys(statistics).length;
+  }
+
+  // TODO: This is a placeholder.
+  // It should be handled server side
+  getStatisticsLabel(statKey: string): string {
+    switch (statKey){
+      case "taxa_count":
+        return "Nombre de taxon(s)"
+      default:
+        return statKey
     }
   }
 }
