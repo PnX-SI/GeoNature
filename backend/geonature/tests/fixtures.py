@@ -556,41 +556,12 @@ def synthese_data(app, users, datasets, source, sources_modules):
 def synthese_sensitive_data(app, users, datasets, source):
     data = {}
 
-    # Retrieve all the taxa with a protection status, and the corresponding areas
-    cte_taxa_area_with_status = (
-        sa.select(TaxrefBdcStatutTaxon.cd_nom, LAreas.id_area)
-        .select_from(TaxrefBdcStatutTaxon, LAreas)
-        .join(
-            TaxrefBdcStatutCorTextValues,
-            TaxrefBdcStatutTaxon.id_value_text == TaxrefBdcStatutCorTextValues.id_value_text,
-        )
-        .join(
-            bdc_statut_cor_text_area,
-            LAreas.id_area == bdc_statut_cor_text_area.c.id_area,
-        )
-        .join(
-            TaxrefBdcStatutText, bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutText.id_text
-        )
-        .where(bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutCorTextValues.id_text)
-        .where(TaxrefBdcStatutText.enable == True)
-    ).cte("taxa_with_status")
-
-    # Retrieve all the taxa with a sensitivity rule, and the corresponding areas
-    cte_taxa_area_with_sensitivity = (
+    # Retrieve a cd_nom and point that fit both a sensitivity rule and a protection status
+    sensitive_protected_cd_nom, sensitive_protected_id_area = db.session.execute(
         sa.select(SensitivityRule.cd_nom, cor_sensitivity_area.c.id_area)
         .select_from(SensitivityRule)
         .join(cor_sensitivity_area, SensitivityRule.id == cor_sensitivity_area.c.id_sensitivity)
         .filter(SensitivityRule.active == True)
-        .limit(10)  # For performance reason
-    ).cte("taxa_with_sensitivity")
-
-    # Retrieve a cd_nom and point that fit both a sensitivity rule and a protection status
-    sensitive_protected_cd_nom, sensitive_protected_id_area = db.session.execute(
-        sa.select(
-            cte_taxa_area_with_sensitivity.c.cd_nom,
-            cte_taxa_area_with_sensitivity.c.id_area,
-        )
-        .order_by(cte_taxa_area_with_sensitivity.c.cd_nom)
         .limit(1)
     ).first()
 
@@ -666,26 +637,20 @@ def synthese_sensitive_data(app, users, datasets, source):
         elif id_type_criteria_for_sensitive_rule == id_type_nomenclature_behaviour:
             id_nomenclature_behaviour = one_criteria_for_sensitive_rule.id_nomenclature
 
-    # Retrieve a cd_nom and point that fit a protection status but no sensitivity rule
-    protected_not_sensitive_cd_nom, protected_not_sensitive_id_area = db.session.execute(
-        sa.select(cte_taxa_area_with_status.c.cd_nom, cte_taxa_area_with_status.c.id_area)
-        .where(cte_taxa_area_with_status.c.cd_nom.notin_([cte_taxa_area_with_sensitivity.c.cd_nom]))
-        .limit(1)
-    ).first()
-
-    protected_not_sensitive_area = db.session.execute(
-        select(LAreas).where(LAreas.id_area == protected_not_sensitive_id_area)
-    ).scalar_one()
-
-    # Get one point inside the area : the centroid (assuming the area is convex)
-    protected_not_sensitive_point = db.session.scalar(
-        sa.select(
-            func.ST_PointOnSurface(func.ST_Transform(protected_not_sensitive_area.geom, 4326))
-        )
-    )
     id_nomenclature_not_sensitive = get_id_nomenclature("SENSIBILITE", "0")
     id_nomenclature_sensitive = get_id_nomenclature("SENSIBILITE", "2")
 
+    _, unsensitive_area_centroid = db.session.execute(
+        sa.select(LAreas, func.ST_Centroid(LAreas.geom_4326)).where(
+            LAreas.area_type.has(BibAreasTypes.type_code == "DEP"),
+            LAreas.area_code == "01",
+        )  # Ain
+    ).one()
+    
+    unsensitive_protected_taxon = db.session.execute(
+            select(Taxref).filter_by(cd_nom=64357)
+        ).scalar_one().cd_nom
+    
     with db.session.begin_nested():
         for name, cd_nom, point, ds, comment_description, id_nomenclature_sensitivity in [
             (
@@ -698,8 +663,8 @@ def synthese_sensitive_data(app, users, datasets, source):
             ),
             (
                 "obs_protected_not_sensitive",
-                protected_not_sensitive_cd_nom,
-                protected_not_sensitive_point,
+                unsensitive_protected_taxon,
+                unsensitive_area_centroid,
                 datasets["own_dataset"],
                 "obs_protected_not_sensitive",
                 id_nomenclature_not_sensitive,
