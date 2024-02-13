@@ -29,6 +29,7 @@
   "LoginError": "Identifiant ou mot de passe incorrect",
   "Downloading": "Téléchargement en cours",
   "DownloadData": "Télécharger les données",
+  "Upload": "Importer",
   "Download": "Télécharger",
   "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
   "AllItems": "Tous",

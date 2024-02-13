@@ -27,6 +27,7 @@
   "LoginError": "Login or password incorrect",
   "DownloadData": "Download data",
   "Download": "Download",
+  "Upload": "Upload",
   "Downloading": "Downloading",
   "DownloadOverflow": "The number of items is too big to be downloaded, please modify your request or contact your administrator",
   "AllItems": "all",
