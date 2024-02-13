@@ -91,20 +91,35 @@
   </ngx-datatable-column>
 </ngx-datatable>
 
-<button
-  type="button"
-  class="uppercase"
-  id="download-btn"
-  mat-raised-button
-  color="primary"
-  (click)="openDownloadModal()"
-  [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E === 0"
-  data-qa="synthese-download-btn"
->
-  {{ 'Download' | translate }}
-  <mat-icon>file_download</mat-icon>
-</button>
-
+<div class="row mt-3 justify-content-end">
+  <div class="col-auto">
+    <button
+      id="upload-btn"
+      mat-raised-button
+      color="primary"
+      class="btn-action uppercase"
+      [routerLink]="['/import', destinationImportCode, 'process', 'upload']"
+    >
+      {{ 'Upload' | translate }}
+      <mat-icon>file_upload</mat-icon>
+    </button>
+  </div>
+  <div class="col-auto">
+    <button
+      type="button"
+      class="uppercase"
+      id="download-btn"
+      mat-raised-button
+      color="primary"
+      (click)="openDownloadModal()"
+      [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E === 0"
+      data-qa="synthese-download-btn"
+    >
+      {{ 'Download' | translate }}
+      <mat-icon>file_download</mat-icon>
+    </button>
+  </div>
+</div>
 <ng-template
   #modalCol
   let-c="close"

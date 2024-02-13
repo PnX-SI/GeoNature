@@ -47,6 +47,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   @Input() inputSyntheseData: GeoJSON;
   @ViewChild('table', { static: true }) table: DatatableComponent;
   private _latestWidth: number;
+  public destinationImportCode: string;
+
   constructor(
     public mapListService: MapListService,
     public ngbModal: NgbModal,
@@ -56,6 +58,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     public config: ConfigService
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
+    this.destinationImportCode = this.SYNTHESE_CONFIG.MODULE_CODE;
   }
 
   ngOnInit() {
