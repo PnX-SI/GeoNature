@@ -22,6 +22,8 @@ export class OccHabMapListComponent implements OnInit {
   public dataLoading = true;
   public deleteOne: any;
 
+  public destinationImportCode: string;
+
   public isCollapseFilter = true;
 
   constructor(
@@ -35,6 +37,8 @@ export class OccHabMapListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+
+    this.destinationImportCode = this.config.OCCHAB.MODULE_CODE.toLowerCase()
     if (this.storeService.firstMessageMapList) {
       this._commonService.regularToaster('info', 'Les 50 dernières stations saisies');
       this.storeService.firstMessageMapList = false;
