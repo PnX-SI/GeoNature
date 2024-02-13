@@ -135,11 +135,12 @@ def get_role(id_role):
     :type id_role: int
     """
     user = DB.get_or_404(User, id_role)
-    fields = user_fields.copy()
     if g.current_user == user:
+        fields = user_fields.copy()
         fields.add("email")
         fields.add("champs_addi")
-    return user.as_dict(fields=fields)
+        return user.as_dict(fields=fields)
+    raise Forbidden("Vous souhaitez accéder aux données d'un autre utilisateur !")
 
 
 @routes.route("/roles", methods=["GET"])
