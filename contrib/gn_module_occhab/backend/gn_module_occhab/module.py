@@ -10,6 +10,11 @@ from .imports import (
 class OcchabModule(TModules):
     __mapper_args__ = {"polymorphic_identity": "occhab"}
 
+    def generate_input_url_for_dataset(self, dataset):
+        return f"/import/occhab/process/upload?datasetId={dataset.id_dataset}"
+
+    generate_input_url_for_dataset.label = "Importer des habitats"
+
     _imports_ = {
         "preprocess_transient_data": preprocess_transient_data,
         "check_transient_data": check_transient_data,
