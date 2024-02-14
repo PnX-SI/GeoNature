@@ -9,6 +9,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 import * as moment from 'moment';
 import { ConfigService } from '@geonature/services/config.service';
 import { OccHabMapListService } from '../../services/occhab-map-list.service';
+import { ModuleService } from '@geonature/services/module.service';
 
 @Component({
   selector: 'pnx-occhab-map-list',
@@ -33,11 +34,13 @@ export class OccHabMapListComponent implements OnInit {
     private _ngbModal: NgbModal,
     private _commonService: CommonService,
     public config: ConfigService,
-    public mapListFormService: OccHabMapListService
+    public mapListFormService: OccHabMapListService,
+    private _moduleService: ModuleService
   ) {}
 
   ngOnInit() {
-    this.destinationImportCode = this.config.OCCHAB.MODULE_CODE.toLowerCase();
+    const currentModule = this._moduleService.currentModule;
+    this.destinationImportCode = currentModule.module_code.toLowerCase();
     if (this.storeService.firstMessageMapList) {
       this._commonService.regularToaster('info', 'Les 50 dernières stations saisies');
       this.storeService.firstMessageMapList = false;
