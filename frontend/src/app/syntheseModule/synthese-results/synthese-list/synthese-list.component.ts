@@ -23,7 +23,8 @@ import { ColumnMode } from '@swimlane/ngx-datatable';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { ConfigService } from '@geonature/services/config.service';
-import { FormArray, FormControl } from '@angular/forms';
+import { ModuleService } from '@geonature/services/module.service';
+
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
@@ -55,10 +56,13 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
     public _cruvedStore: CruvedStoreService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _moduleService: ModuleService
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
-    this.destinationImportCode = this.SYNTHESE_CONFIG.MODULE_CODE;
+    const currentModule = this._moduleService.currentModule;
+    this.destinationImportCode = currentModule.module_code.toLowerCase();
+    
   }
 
   ngOnInit() {
