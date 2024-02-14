@@ -9,6 +9,11 @@ from geonature.core.gn_synthese.imports import (
 class SyntheseModule(TModules):
     __mapper_args__ = {"polymorphic_identity": "synthese"}
 
+    def generate_input_url_for_dataset(self, dataset):
+        return f"/import/synthese/process/upload?datasetId={dataset.id_dataset}"
+
+    generate_input_url_for_dataset.label = "Importer des occurrences de taxons"
+
     _imports_ = {
         "check_transient_data": check_transient_data,
         "import_data_to_destination": import_data_to_synthese,
