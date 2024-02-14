@@ -441,9 +441,17 @@
             </button>
           </span>
           <div *ngFor="let module of dataset?.modules">
-            <span
-              *ngIf="module.input_label"
-              [matTooltip]="dataset.active ? module.input_label : 'Le jeu de données est inactif'"
+          <span
+            *ngIf="module.input_label"
+            [matTooltip]="
+              dataset.active ? module.input_label : 'Le jeu de données est inactif'
+            "
+          ><button
+              [disabled]="!dataset.active"
+              mat-raised-button
+              color="primary"
+              class="mb-2 mr-1"
+              (click)="useModuleWithDs(module)"
             >
               <button
                 [disabled]="!dataset.active"
