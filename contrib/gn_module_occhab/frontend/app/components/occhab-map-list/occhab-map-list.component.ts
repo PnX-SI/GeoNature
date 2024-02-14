@@ -43,7 +43,7 @@ export class OccHabMapListComponent implements OnInit {
   ngOnInit() {
     const currentModule = this._moduleService.currentModule;
     this.destinationImportCode = currentModule.module_code.toLowerCase();
-    
+
     // get user cruved
     this.userCruved = currentModule.cruved;
     if (this.storeService.firstMessageMapList) {

@@ -64,7 +64,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
     const currentModule = this._moduleService.currentModule;
     this.destinationImportCode = currentModule.module_code.toLowerCase();
-    
+
     // get user cruved
     this.userCruved = currentModule.cruved;
   }
