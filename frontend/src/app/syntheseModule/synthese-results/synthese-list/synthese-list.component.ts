@@ -48,6 +48,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   private _latestWidth: number;
   public destinationImportCode: string;
 
+  public userCruved: any;
+
   constructor(
     public mapListService: MapListService,
     public ngbModal: NgbModal,
@@ -61,6 +63,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     const currentModule = this._moduleService.currentModule;
     this.destinationImportCode = currentModule.module_code.toLowerCase();
     
+    // get user cruved
+    this.userCruved = currentModule.cruved;
   }
 
   ngOnInit() {
