@@ -27,6 +27,8 @@ export class OccHabMapListComponent implements OnInit {
 
   public isCollapseFilter = true;
 
+  public userCruved: any;
+
   constructor(
     public storeService: OcchabStoreService,
     private _occHabDataService: OccHabDataService,
@@ -41,6 +43,9 @@ export class OccHabMapListComponent implements OnInit {
   ngOnInit() {
     const currentModule = this._moduleService.currentModule;
     this.destinationImportCode = currentModule.module_code.toLowerCase();
+    
+    // get user cruved
+    this.userCruved = currentModule.cruved;
     if (this.storeService.firstMessageMapList) {
       this._commonService.regularToaster('info', 'Les 50 dernières stations saisies');
       this.storeService.firstMessageMapList = false;
