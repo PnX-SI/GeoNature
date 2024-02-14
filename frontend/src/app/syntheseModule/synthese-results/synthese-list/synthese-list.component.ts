@@ -63,7 +63,9 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     private _moduleService: ModuleService
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
-    this.destinationImportCode = this.SYNTHESE_CONFIG.MODULE_CODE;
+    const currentModule = this._moduleService.currentModule;
+    this.destinationImportCode = currentModule.module_code.toLowerCase();
+    
   }
 
   ngOnInit() {
