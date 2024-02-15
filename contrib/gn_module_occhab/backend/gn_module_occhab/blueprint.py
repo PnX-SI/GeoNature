@@ -113,7 +113,8 @@ def get_station(id_station, scope):
     """
     joinedload_when_scope = []
     if scope != 0:
-        # Required when a scope is defined. The following enable the restricted user to access one (or more) stations' datasets information
+        # Required when a scope is defined.
+        # The following enable the restricted user to access one (or more) stations' datasets information
         joinedload_when_scope = [
             joinedload(TDatasets.cor_dataset_actor).options(joinedload(CorDatasetActor.role)),
             joinedload(TDatasets.acquisition_framework).options(
