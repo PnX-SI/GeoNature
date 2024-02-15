@@ -200,12 +200,14 @@ export class ImportListComponent implements OnInit {
   }
 
   _getStatistics(row) {
-    return 'statistics' in row  ? row['statistics'] : null;
+    return 'statistics' in row ? row['statistics'] : null;
   }
 
   getStatisticsTooltip(row) {
     const statistics = this._getStatistics(row);
-    return Object.keys(statistics).map(statkey => this.getStatisticsLabel(statkey) + ": " + statistics[statkey]).join('\n');
+    return Object.keys(statistics)
+      .map((statkey) => this.getStatisticsLabel(statkey) + ': ' + statistics[statkey])
+      .join('\n');
   }
 
   hasStatistics(row) {
@@ -216,11 +218,11 @@ export class ImportListComponent implements OnInit {
   // TODO: This is a placeholder.
   // It should be handled server side
   getStatisticsLabel(statKey: string): string {
-    switch (statKey){
-      case "taxa_count":
-        return "Nombre de taxon(s)"
+    switch (statKey) {
+      case 'taxa_count':
+        return 'Nombre de taxon(s)';
       default:
-        return statKey
+        return statKey;
     }
   }
 }
