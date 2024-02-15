@@ -55,7 +55,7 @@ from ref_geo.models import LAreas, BibAreasTypes
 from utils_flask_sqla.tests.utils import JSONClient
 
 import sqlalchemy as sa
-
+from .utils import create_user
 
 __all__ = [
     "datasets",
@@ -197,50 +197,6 @@ def perm_object():
 
 @pytest.fixture(scope="session")
 def users(app):
-    app = db.session.execute(
-        select(Application).where(Application.code_application == "GN")
-    ).scalar_one()
-    profil = db.session.execute(select(Profil).where(Profil.nom_profil == "Lecteur")).scalar_one()
-
-    modules = db.session.scalars(select(TModules)).all()
-
-    actions = {
-        code: db.session.execute(select(PermAction).filter_by(code_action=code)).scalar_one()
-        for code in "CRUVED"
-    }
-
-    def create_user(username, organisme=None, scope=None, sensitivity_filter=False, **kwargs):
-        # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
-        with db.session.begin_nested():
-            user = User(
-                groupe=False, active=True, identifiant=username, password=username, **kwargs
-            )
-            db.session.add(user)
-            user.organisme = organisme
-        # user must have been commited for user.id_role to be defined
-        with db.session.begin_nested():
-            # login right
-            right = UserApplicationRight(
-                id_role=user.id_role, id_application=app.id_application, id_profil=profil.id_profil
-            )
-            db.session.add(right)
-            if scope > 0:
-                object_all = db.session.execute(
-                    select(PermObject).filter_by(code_object="ALL")
-                ).scalar_one()
-                for action in actions.values():
-                    for module in modules:
-                        for obj in [object_all] + module.objects:
-                            permission = Permission(
-                                action=action,
-                                module=module,
-                                object=obj,
-                                scope_value=scope if scope != 3 else None,
-                                sensitivity_filter=sensitivity_filter,
-                            )
-                            db.session.add(permission)
-                            permission.role = user
-        return user
 
     users = {}
 

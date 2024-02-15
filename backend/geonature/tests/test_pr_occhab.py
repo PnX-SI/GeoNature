@@ -1,6 +1,7 @@
 from io import BytesIO, StringIO
 from typing import List
 from geonature.core.gn_meta.models import TDatasets
+from pypnusershub.db.models import User, UserApplicationRight
 import pytest
 from copy import deepcopy
 import json
