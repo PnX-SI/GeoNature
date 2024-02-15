@@ -34,3 +34,8 @@ class TestUsersLogin:
         with app.test_request_context(headers=logged_user_headers(user)):
             app.preprocess_request()
             assert g.current_user == user
+
+    def test_public_user(self, app, user, monkeypatch):
+        monkeypatch.setitem(app.config, "PUBLIC_ACCESS_USERNAME", user.identifiant)
+        response = self.client.post(url_for("auth.public_login"))
+        assert response.status_code == 200
