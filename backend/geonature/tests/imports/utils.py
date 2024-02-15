@@ -1,4 +1,5 @@
 from sqlalchemy import or_, select
+import csv
 
 from geonature.utils.env import db
 
@@ -28,3 +29,17 @@ def assert_import_errors(imprt, expected_errors):
         )
         erroneous_rows = {line_no for line_no, in db.session.execute(stmt)}
         assert erroneous_rows == expected_erroneous_rows
+
+
+def extract_row_csv_by_line_number(csv_file_path, line_number, separator=";"):
+
+    with open(csv_file_path, "rb") as file:
+        header_row = file.readline().decode("utf-8").strip().split(separator)
+        file.seek(0)
+        reader = csv.DictReader(
+            (line.decode("utf-8") for line in file), fieldnames=header_row, delimiter=separator
+        )
+        # Start at 1 because idx 0 is header
+        for idx, row in enumerate(reader, start=1):
+            if idx == line_number:
+                return row
