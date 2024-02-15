@@ -32,7 +32,7 @@ from apptax.tests.fixtures import noms_example, attribut_example
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user
 
 from .fixtures import *
-from .fixtures import create_synthese, create_module
+from .fixtures import create_synthese, create_module, synthese_with_protected_status
 from .utils import jsonschema_definitions
 
 
@@ -729,9 +729,9 @@ class TestSynthese:
             [
                 synthese_sensitive_data[name_obs].id_synthese
                 for name_obs in [
-                    "obs_sensitive_protected",
-                    "obs_protected_not_sensitive",
-                    "obs_sensitive_protected_2",
+                    "obs_sensitive",
+                    "obs_not_sensitive",
+                    "obs_sensitive_2",
                 ]
             ]
         )
@@ -741,10 +741,7 @@ class TestSynthese:
         user = users["associate_user_2_exclude_sensitive"]
         expected_id_synthese_list = [synthese_data[name_obs].id_synthese for name_obs in ["obs1"]]
         expected_id_synthese_list.extend(
-            [
-                synthese_sensitive_data[name_obs].id_synthese
-                for name_obs in ["obs_protected_not_sensitive"]
-            ]
+            [synthese_sensitive_data[name_obs].id_synthese for name_obs in ["obs_not_sensitive"]]
         )
         assert_export_results(user, expected_id_synthese_list)
 
@@ -830,9 +827,9 @@ class TestSynthese:
                 .one()
                 .cd_ref
                 for name_obs in [
-                    "obs_sensitive_protected",
-                    "obs_protected_not_sensitive",
-                    "obs_sensitive_protected_2",
+                    "obs_sensitive",
+                    "obs_not_sensitive",
+                    "obs_sensitive_2",
                 ]
             )
         )
@@ -851,7 +848,7 @@ class TestSynthese:
         set_expected_cd_ref.add(
             db.session.scalars(
                 select(Taxref).where(
-                    Taxref.cd_nom == synthese_sensitive_data["obs_protected_not_sensitive"].cd_nom
+                    Taxref.cd_nom == synthese_sensitive_data["obs_not_sensitive"].cd_nom
                 )
             )
             .one()
@@ -859,7 +856,7 @@ class TestSynthese:
         )
         assert_export_taxons_results(user, set_expected_cd_ref)
 
-    def test_export_status(self, users, synthese_data, synthese_sensitive_data):
+    def test_export_status(self, users, synthese_sensitive_data, synthese_with_protected_status):
         expected_columns_exports = [
             '"nom_complet"',
             '"nom_vern"',
@@ -884,8 +881,9 @@ class TestSynthese:
             )
 
             assert response.status_code == 200
-
+            # -1 because last line is empty
             rows_data_response = response.data.decode("utf-8").split("\r\n")[0:-1]
+
             row_header = rows_data_response[0]
             rows_taxons_data_response = rows_data_response[1:]
 
@@ -895,6 +893,7 @@ class TestSynthese:
             set_cd_ref_data_response = set(
                 row.split(";")[index_column_cd_nom] for row in rows_taxons_data_response
             )
+
             nb_cd_ref_response = len(set_cd_ref_data_response)
 
             assert nb_cd_ref_response >= nb_expected_cd_ref
@@ -903,31 +902,38 @@ class TestSynthese:
                 set_cd_ref_data_response
             )
 
+        user = users["user"]
+        set_expected_cd_ref = set(
+            db.session.scalars(select(Taxref.cd_ref).where(Taxref.cd_nom == obs.cd_nom)).one()
+            for obs in synthese_with_protected_status.values()
+        )
+        assert_export_status_results(user, set_expected_cd_ref)
+
         ## "self_user" : scope 1 and include sensitive data
         user = users["self_user"]
         set_expected_cd_ref = set(
             db.session.scalars(
-                select(Taxref).where(Taxref.cd_nom == synthese_sensitive_data[name_obs].cd_nom)
-            )
-            .one()
-            .cd_ref
+                select(Taxref.cd_ref).where(
+                    Taxref.cd_nom == synthese_sensitive_data[name_obs].cd_nom
+                )
+            ).one()
             for name_obs in [
-                "obs_sensitive_protected",
-                "obs_protected_not_sensitive",
-                "obs_sensitive_protected_2",
+                "obs_sensitive",
+                "obs_not_sensitive",
+                "obs_sensitive_2",
             ]
         )
         assert_export_status_results(user, set_expected_cd_ref)
 
-        ## "associate_user_2_exclude_sensitive" : scope 2 and exclude sensitive data
+        ## "associate_user_2_exclude_sensitive" : scope 2 and exclude sensitive data blurred
         user = users["associate_user_2_exclude_sensitive"]
         set_expected_cd_ref = set(
             db.session.scalars(
-                select(Taxref).where(Taxref.cd_nom == synthese_sensitive_data[name_obs].cd_nom)
-            )
-            .one()
-            .cd_ref
-            for name_obs in ["obs_protected_not_sensitive"]
+                select(Taxref.cd_ref).where(
+                    Taxref.cd_nom == synthese_sensitive_data[name_obs].cd_nom
+                )
+            ).one()
+            for name_obs in ["obs_not_sensitive"]
         )
         assert_export_status_results(user, set_expected_cd_ref)
 
@@ -1019,9 +1025,9 @@ class TestSynthese:
             for name_obs, obs_synthese in synthese_sensitive_data.items()
             if name_obs
             in [
-                "obs_sensitive_protected",
-                "obs_protected_not_sensitive",
-                "obs_sensitive_protected_2",
+                "obs_sensitive",
+                "obs_not_sensitive",
+                "obs_sensitive_2",
             ]
         ]
         for obs_data_synthese in expected_data_synthese:
@@ -1050,7 +1056,7 @@ class TestSynthese:
             for name_obs, obs_synthese in synthese_sensitive_data.items()
             if name_obs
             in [
-                "obs_protected_not_sensitive",
+                "obs_not_sensitive",
             ]
         ]
         for obs_data_synthese in expected_data_synthese:
@@ -1476,7 +1482,7 @@ class TestSyntheseBlurring:
         response_json = self.client.post(url, json={"id_source": [source.id_source]}).json
 
         # Check unsensitive synthese obs geometry
-        unsensitive_synthese = synthese_sensitive_data["obs_protected_not_sensitive"]
+        unsensitive_synthese = synthese_sensitive_data["obs_not_sensitive"]
         unsensitive_synthese_from_response = get_one_synthese_reponse_from_id(
             response_json, unsensitive_synthese.id_synthese
         )
@@ -1487,7 +1493,7 @@ class TestSyntheseBlurring:
         )
 
         # Check sensitive synthese obs geometry
-        sensitive_synthese = synthese_sensitive_data["obs_sensitive_protected"]
+        sensitive_synthese = synthese_sensitive_data["obs_sensitive"]
         sensitive_synthese_from_response = get_one_synthese_reponse_from_id(
             response_json, sensitive_synthese.id_synthese
         )
@@ -1516,8 +1522,8 @@ class TestSyntheseBlurring:
         sensitive_synthese_ids = (
             synthese.id_synthese
             for synthese in [
-                synthese_sensitive_data["obs_sensitive_protected"],
-                synthese_sensitive_data["obs_sensitive_protected_2"],
+                synthese_sensitive_data["obs_sensitive"],
+                synthese_sensitive_data["obs_sensitive_2"],
             ]
         )
 
@@ -1557,8 +1563,8 @@ class TestSyntheseBlurring:
         sensitive_synthese_ids = [
             synthese.id_synthese
             for synthese in (
-                synthese_sensitive_data["obs_sensitive_protected"],
-                synthese_sensitive_data["obs_sensitive_protected_2"],
+                synthese_sensitive_data["obs_sensitive"],
+                synthese_sensitive_data["obs_sensitive_2"],
             )
         ]
 
@@ -1581,7 +1587,7 @@ class TestSyntheseBlurring:
         blur_sensitive_observations,  # So that all burred geoms will not appear on the aggregated areas
     ):
         current_user = users["stranger_user"]
-        sensitive_synthese = synthese_sensitive_data["obs_sensitive_protected"]
+        sensitive_synthese = synthese_sensitive_data["obs_sensitive"]
         # None is 3
         synthese_read_permissions(current_user, None, sensitivity_filter=True)
         synthese_read_permissions(current_user, 1, sensitivity_filter=False)
@@ -1591,7 +1597,7 @@ class TestSyntheseBlurring:
 
         response_json = self.client.get(url).json
 
-        sensitive_synthese = synthese_sensitive_data["obs_sensitive_protected"]
+        sensitive_synthese = synthese_sensitive_data["obs_sensitive"]
 
         assert_blurred_synthese(geojson=response_json, obs=sensitive_synthese)
 
@@ -1599,7 +1605,7 @@ class TestSyntheseBlurring:
         self, users, synthese_sensitive_data, synthese_read_permissions
     ):
         current_user = users["stranger_user"]
-        unsensitive_synthese = synthese_sensitive_data["obs_protected_not_sensitive"]
+        unsensitive_synthese = synthese_sensitive_data["obs_not_sensitive"]
         # None is 3
         synthese_read_permissions(current_user, None, sensitivity_filter=True)
         synthese_read_permissions(current_user, 1, sensitivity_filter=False)
@@ -1619,7 +1625,7 @@ class TestSyntheseBlurring:
         exclude_sensitive_observations,
     ):
         current_user = users["stranger_user"]
-        sensitive_synthese = synthese_sensitive_data["obs_sensitive_protected"]
+        sensitive_synthese = synthese_sensitive_data["obs_sensitive"]
         # None is 3
         synthese_read_permissions(current_user, None, sensitivity_filter=True)
         synthese_read_permissions(current_user, 1, sensitivity_filter=False)
@@ -1653,14 +1659,11 @@ class TestSyntheseBlurring:
         file_like_obj = StringIO(response.data.decode("utf-8"))
         reader = csv.DictReader(file_like_obj, delimiter=";")
         for row in reader:
-            if (
-                int(row["id_synthese"])
-                == synthese_sensitive_data["obs_protected_not_sensitive"].id_synthese
-            ):
+            if int(row["id_synthese"]) == synthese_sensitive_data["obs_not_sensitive"].id_synthese:
                 unsensitive_response_synthese = row
 
         # Unsensitive
-        geom_shape = to_shape(synthese_sensitive_data["obs_protected_not_sensitive"].the_geom_4326)
+        geom_shape = to_shape(synthese_sensitive_data["obs_not_sensitive"].the_geom_4326)
         assert float(unsensitive_response_synthese["x_centroid_4326"]) == pytest.approx(
             geom_shape.x, 0.000001
         )
@@ -1691,7 +1694,7 @@ class TestSyntheseBlurring:
         )
 
         assert response.status_code == 200
-        sensitive_synthese = synthese_sensitive_data["obs_sensitive_protected"]
+        sensitive_synthese = synthese_sensitive_data["obs_sensitive"]
         json_feature_synthese = [
             feature
             for feature in response.json["features"]
@@ -1716,8 +1719,8 @@ class TestSyntheseBlurring:
         list_id_synthese = [
             synthese.id_synthese
             for synthese in [
-                synthese_sensitive_data["obs_sensitive_protected"],
-                synthese_sensitive_data["obs_sensitive_protected_2"],
+                synthese_sensitive_data["obs_sensitive"],
+                synthese_sensitive_data["obs_sensitive_2"],
             ]
         ]
 
