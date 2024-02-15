@@ -284,4 +284,11 @@ export class DataService {
       {}
     );
   }
+
+  getDestinationByIdModule(idModule): Observable<Destination> {
+    return this._http.get<Destination>(
+      `${this.config.API_ENDPOINT}/import/destination/module/${idModule}`,
+      {}
+    );
+  }
 }

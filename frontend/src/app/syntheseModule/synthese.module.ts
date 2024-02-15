@@ -16,6 +16,7 @@ import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list
 import { DiscussionCardComponent } from '@geonature/shared/discussionCardModule/discussion-card.component';
 import { AlertInfoComponent } from '../shared/alertInfoModule/alert-Info.component';
 import { TaxonSheetComponent } from './taxon-sheet/taxon-sheet.component';
+import { DataService } from '../modules/imports/services/data.service';
 const routes: Routes = [
   { path: '', component: SyntheseComponent },
   { path: 'occurrence/:id_synthese', component: SyntheseComponent, pathMatch: 'full' },
@@ -43,6 +44,12 @@ const routes: Routes = [
     DiscussionCardComponent,
     AlertInfoComponent,
   ],
-  providers: [MapService, DynamicFormService, TaxonAdvancedStoreService, SyntheseFormService],
+  providers: [
+    MapService,
+    DynamicFormService,
+    TaxonAdvancedStoreService,
+    SyntheseFormService,
+    DataService,
+  ],
 })
 export class SyntheseModule {}
