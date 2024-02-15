@@ -39,7 +39,7 @@ from geonature.core.imports.models import (
 from geonature.core.imports.utils import insert_import_data_in_transient_table
 
 from .jsonschema_definitions import jsonschema_definitions
-from .utils import assert_import_errors
+from .utils import assert_import_errors, extract_row_csv_by_line_number
 
 
 tests_path = Path(__file__).parent
@@ -1234,4 +1234,34 @@ class TestImportsSynthese:
         assert all(
             set(nomenclature.keys()) == {"nomenclature_type", "nomenclatures"}
             for nomenclature in resp.json.values()
+        )
+
+    @pytest.mark.parametrize("import_file_name", ["multiline_comment_file.csv"])
+    def test_import_compare_error_line_with_csv(self, users, imported_import, import_file_name):
+        csv_file_path = tests_path / "files" / "synthese" / import_file_name
+        erroneous_rows_line_import = list(map(int, imported_import.erroneous_rows))
+
+        set_logged_user(self.client, users["user"])
+        r = self.client.get(
+            url_for("import.get_import_invalid_rows_as_csv", import_id=imported_import.id_import)
+        )
+        csvfile = StringIO(r.data.decode("utf-8"))
+        csvreader = csv.DictReader(csvfile, delimiter=";")
+        rows_error_imprt = list(csvreader)
+
+        expected_list_rows_error_csv = []
+        for error_line_no in erroneous_rows_line_import:
+            expected_list_rows_error_csv.append(
+                extract_row_csv_by_line_number(csv_file_path, error_line_no)
+            )
+
+        for dict_csv in expected_list_rows_error_csv:
+            assert any(dict_csv == dict_import_err for dict_import_err in rows_error_imprt)
+
+        list_expected_line_number_error = [
+            int(d["line_number"]) for d in expected_list_rows_error_csv if "line_number" in d
+        ]
+        assert all(
+            line_number in erroneous_rows_line_import
+            for line_number in list_expected_line_number_error
         )
