@@ -1,6 +1,9 @@
 import datetime
 import json
 import geojson
+from geonature.core.gn_meta.models.aframework import TAcquisitionFramework
+from geonature.core.gn_meta.models.commons import CorDatasetActor
+from geonature.core.gn_meta.models.datasets import TDatasets
 from marshmallow import EXCLUDE, INCLUDE
 
 from flask import (
@@ -108,13 +111,22 @@ def get_station(id_station, scope):
     :rtype dict<TStationsOcchab>
 
     """
+    joinedload_when_scope = []
+    if scope != 0:
+        # Required when a scope is defined. The following enable the restricted user to access one (or more) stations' datasets information
+        joinedload_when_scope = [
+            joinedload(TDatasets.cor_dataset_actor).options(joinedload(CorDatasetActor.role)),
+            joinedload(TDatasets.acquisition_framework).options(
+                joinedload(TAcquisitionFramework.cor_af_actor)
+            ),
+        ]
     station = (
         db.session.scalars(
             select(Station)
             .options(
                 raiseload("*"),
                 joinedload(Station.observers),
-                joinedload(Station.dataset),
+                joinedload(Station.dataset).options(*joinedload_when_scope),
                 joinedload(Station.habitats).options(
                     joinedload(OccurenceHabitat.habref),
                     *[
