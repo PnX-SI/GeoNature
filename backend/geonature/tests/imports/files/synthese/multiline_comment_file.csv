@@ -1,6 +1,6 @@
-date_min;nom_cite;observateurs;WKT;cd_nom;comment_description
-2017-01-01;Ablette;Toto;POINT(6.5 44.85);;"Ligne erronée : MISSING_VALUE (cd_nom)"
+date_min;nom_cite;observateurs;WKT;cd_nom;comment_description;line_number
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);;"Ligne erronée : MISSING_VALUE (cd_nom)";2
 2017-01-01;Ablette;Toto;POINT(6.5 44.85);123456789;"Ligne erronée :
-CD_NOM_NOT_FOUND"
+CD_NOM_NOT_FOUND";3
 2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;"Cette ligne
-est valide"
+est valide";4
