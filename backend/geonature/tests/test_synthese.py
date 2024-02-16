@@ -7,6 +7,7 @@ from collections import Counter
 import pytest
 from flask import url_for, current_app
 import sqlalchemy as sa
+import pandas as pd
 from sqlalchemy import func, select
 from werkzeug.exceptions import Forbidden, BadRequest, Unauthorized
 from jsonschema import validate as validate_json
@@ -21,7 +22,7 @@ from geonature.core.gn_synthese.utils.blurring import split_blurring_precise_per
 from geonature.core.gn_synthese.utils.query_select_sqla import remove_accents
 from geonature.core.sensitivity.models import cor_sensitivity_area_type
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_synthese.models import Synthese, TSources
+from geonature.core.gn_synthese.models import Synthese, TSources, VSyntheseForWebApp
 from geonature.core.gn_synthese.schemas import SyntheseSchema
 from geonature.core.gn_permissions.models import PermAction, Permission
 from geonature.core.gn_commons.models.base import TModules

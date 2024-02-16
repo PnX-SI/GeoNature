@@ -850,6 +850,7 @@ def export_status(permissions):
 
     protection_status = []
     data = DB.session.execute(query)
+
     for d in data:
         d = d._mapping
         row = OrderedDict(
