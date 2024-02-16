@@ -23,6 +23,9 @@ import { ColumnMode } from '@swimlane/ngx-datatable';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { ConfigService } from '@geonature/services/config.service';
+import { ModuleService } from '@geonature/services/module.service';
+import { DataService } from '@geonature/modules/imports/services/data.service';
+
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
@@ -44,15 +47,26 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   @Input() inputSyntheseData: GeoJSON;
   @ViewChild('table', { static: true }) table: DatatableComponent;
   private _latestWidth: number;
+  public destinationImportCode: string;
+
+  public userCruved: any;
+
   constructor(
     public mapListService: MapListService,
     public ngbModal: NgbModal,
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
     public _cruvedStore: CruvedStoreService,
-    public config: ConfigService
+    public config: ConfigService,
+    private ds: DataService,
+    private _moduleService: ModuleService
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
+    const currentModule = this._moduleService.currentModule;
+    this.destinationImportCode = currentModule.destination[0]?.code;
+
+    // get user cruved
+    this.userCruved = currentModule.cruved;
   }
 
   ngOnInit() {

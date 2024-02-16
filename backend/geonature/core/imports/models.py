@@ -111,7 +111,7 @@ class Destination(db.Model):
     label = db.Column(db.String(128))
     table_name = db.Column(db.String(64))
 
-    module = relationship(TModules)
+    module = relationship(TModules, backref="destination")
     entities = relationship("Entity", back_populates="destination")
 
     def get_transient_table(self):
