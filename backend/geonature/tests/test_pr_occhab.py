@@ -187,10 +187,11 @@ class TestOcchab:
         response = self.client.get(url)
         assert response.status_code == Forbidden.code
 
-        set_logged_user(self.client, users["user"])
-        response = self.client.get(url)
-        assert response.status_code == 200
-        StationSchema(many=True).validate(response.json)
+        for user_pseudo in ["user", "user_restricted_occhab"]:
+            set_logged_user(self.client, users[user_pseudo])
+            response = self.client.get(url)
+            assert response.status_code == 200
+            StationSchema(many=True).validate(response.json)
 
         set_logged_user(self.client, users["user"])
         response = self.client.get(url, query_string={"format": "geojson"})
@@ -230,6 +231,11 @@ class TestOcchab:
             unknown=EXCLUDE,
         )
         assert set(response_station.habitats) == set(station.habitats)
+
+        # Test with restricted rights
+        set_logged_user(self.client, users["user_restricted_occhab"])
+        response = self.client.get(url)
+        assert response.status_code == 200
 
     def test_create_station(self, users, datasets, station):
         url = url_for("occhab.create_or_update_station")
@@ -453,7 +459,17 @@ class TestOcchab:
         assert station_habitats == {hab.id_habitat for hab in station.habitats}
         assert station2_habitats == {hab.id_habitat for hab in station2.habitats}
 
-    def test_delete_station(self, users, station):
+        # Try to update a station not created by user -> must fail because U = 1
+        set_logged_user(self.client, users["user_restricted_occhab"])
+        url = url_for("occhab.create_or_update_station", id_station=station2.id_station)
+        feature = StationSchema(as_geojson=True, only=["habitats", "observers", "dataset"]).dump(
+            station2
+        )
+        feature["station_name"] = "monde merveilleux"
+        response = self.client.post(url, data=feature)
+        assert response.status_code == Forbidden.code
+
+    def test_delete_station(self, users, station, station2):
         url = url_for("occhab.delete_station", id_station=station.id_station)
 
         response = self.client.delete(url)
@@ -479,6 +495,12 @@ class TestOcchab:
         assert not db.session.execute(
             sa.exists().where(Station.id_station == station.id_station).select()
         ).scalar()
+
+        # Try to delete a station not created by user -> must fail because D = 1
+        url = url_for("occhab.delete_station", id_station=station2.id_station)
+        set_logged_user(self.client, users["user_restricted_occhab"])
+        response = self.client.delete(url)
+        assert response.status_code == Forbidden.code
 
     def test_get_default_nomenclatures(self, users):
         response = self.client.get(url_for("occhab.get_default_nomenclatures"))
