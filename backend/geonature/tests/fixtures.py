@@ -1,61 +1,52 @@
-import json
 import datetime
+import json
 import tempfile
 from warnings import warn
 
-from PIL import Image
 import pytest
-from flask import testing, url_for, current_app
-from werkzeug.datastructures import Headers
-from sqlalchemy import func, select
-from shapely.geometry import Point
-from geoalchemy2.shape import from_shape
+import sqlalchemy as sa
 
-from geonature import create_app
-from geonature.utils.env import db
-from geonature.core.gn_permissions.models import (
-    PermFilterType,
-    PermAction,
-    PermObject,
-    Permission,
+from flask import current_app, testing, url_for
+from geoalchemy2.shape import from_shape
+from PIL import Image
+from shapely.geometry import Point
+from sqlalchemy import func, select
+from werkzeug.datastructures import Headers
+
+from apptax.taxonomie.models import (
+    Taxref,
+    TaxrefBdcStatutCorTextValues,
+    TaxrefBdcStatutTaxon,
+    TaxrefBdcStatutText,
+    bdc_statut_cor_text_area,
 )
-from geonature.core.gn_commons.models import TModules, TMedias, BibTablesLocation
+from geonature import create_app
+from geonature.core.gn_commons.models import BibTablesLocation, TMedias, TModules
 from geonature.core.gn_meta.models import (
+    CorAcquisitionFrameworkActor,
+    CorDatasetActor,
     TAcquisitionFramework,
     TDatasets,
-    CorDatasetActor,
-    CorAcquisitionFrameworkActor,
 )
+from geonature.core.gn_permissions.models import PermAction, PermFilterType, Permission, PermObject
 from geonature.core.gn_synthese.models import (
-    TSources,
+    BibReportsTypes,
     Synthese,
     TReport,
-    BibReportsTypes,
+    TSources,
     corAreaSynthese,
 )
 from geonature.core.sensitivity.models import SensitivityRule, cor_sensitivity_area
+from geonature.utils.env import db
 
-from pypnusershub.db.models import (
-    User,
-    Organisme,
-    Application,
-    Profils as Profil,
-    UserApplicationRight,
-)
-from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
-from apptax.taxonomie.models import (
-    Taxref,
-    TaxrefBdcStatutTaxon,
-    TaxrefBdcStatutCorTextValues,
-    bdc_statut_cor_text_area,
-    TaxrefBdcStatutText,
-)
-from ref_geo.models import LAreas, BibAreasTypes
+from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
+from pypnusershub.db.models import Application, Organisme
+from pypnusershub.db.models import Profils as Profil
+from pypnusershub.db.models import User, UserApplicationRight
+from ref_geo.models import BibAreasTypes, LAreas
 
 from utils_flask_sqla.tests.utils import JSONClient
 
-import sqlalchemy as sa
-from .utils import create_user
 
 __all__ = [
     "datasets",
@@ -197,6 +188,121 @@ def perm_object():
 
 @pytest.fixture(scope="session")
 def users(app):
+    app = db.session.execute(
+        select(Application).where(Application.code_application == "GN")
+    ).scalar_one()
+
+    profil = db.session.execute(select(Profil).where(Profil.nom_profil == "Lecteur")).scalar_one()
+
+    actions = {
+        code: db.session.execute(select(PermAction).filter_by(code_action=code)).scalar_one()
+        for code in "CRUVED"
+    }
+
+    def get_scope(scope, detailed_scopes, module_code, action):
+        """
+        Return the scope for a module and a given action
+
+        Parameters
+        ----------
+        scope : int
+            default scope
+        detailed_scopes : dict
+            contains detailed scopes for specific action and modules (given in `create_user`)
+        module_code : str
+            code of the concerned module
+        action : str
+            action code ("C","R","U","V","E","D")
+
+        Returns
+        -------
+        int
+            scope
+        """
+        scope = scope if scope != 3 else None
+        if not module_code in detailed_scopes:
+            return scope
+        if not action in detailed_scopes[module_code]:
+            return scope
+
+        detailed_scope = detailed_scopes[module_code][action]
+        if isinstance(detailed_scope, int) and 0 < detailed_scope < 3:
+            return detailed_scope
+        return scope
+
+    def create_user(
+        username,
+        organisme=None,
+        scope=None,
+        sensitivity_filter=False,
+        modules_codes=[],
+        detailed_scopes={},
+        **kwargs,
+    ):
+        """
+        Create a user
+
+        Parameters
+        ----------
+        username : str
+            username
+        organisme : str, optional
+            organism name, by default None
+        scope : int, optional
+            general scope, by default None
+        sensitivity_filter : bool, optional
+            does the user see blurred data concerning sensitive observation , by default False
+        modules_codes : list, optional
+            list of modules the user may access. If an empty list is given, the user will have access to all modules, by default []
+        detailed_scopes : dict, optional
+            if needed you can define detailed scopes for each module and action. For example, {"OCCHAB": {"C": 2}} will create a user with scope 2 on OCCHAB when creating a station.
+            Every action not declared will we associated with the default scope (see `scope`). By default {}
+
+        Returns
+        -------
+        User
+            a GeoNature user
+        """
+        modules_query = select(TModules)
+        if len(modules_codes) > 0:
+            modules_query = modules_query.where(TModules.module_code.in_(modules_codes))
+
+        modules = db.session.scalars(modules_query).all()
+
+        # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
+        with db.session.begin_nested():
+            user = User(
+                groupe=False, active=True, identifiant=username, password=username, **kwargs
+            )
+            db.session.add(user)
+            user.organisme = organisme
+        # user must have been commited for user.id_role to be defined
+        with db.session.begin_nested():
+            # login right
+            right = UserApplicationRight(
+                id_role=user.id_role, id_application=app.id_application, id_profil=profil.id_profil
+            )
+            db.session.add(right)
+            if scope > 0 or detailed_scopes:
+                object_all = db.session.execute(
+                    select(PermObject).filter_by(code_object="ALL")
+                ).scalar_one()
+                for action in actions.values():
+                    for module in modules:
+                        for obj in [object_all] + module.objects:
+                            scope_value = scope
+                            permission = Permission(
+                                action=action,
+                                module=module,
+                                object=obj,
+                                scope_value=get_scope(
+                                    scope, detailed_scopes, module.module_code, action.code_action
+                                ),
+                                sensitivity_filter=sensitivity_filter,
+                            )
+                            db.session.add(permission)
+                            permission.role = user
+        return user
 
     users = {}
 
@@ -211,10 +317,21 @@ def users(app):
         (("user", organisme, 2), {"nom_role": "Bob", "prenom_role": "Bobby"}),
         (("admin_user", organisme, 3), {}),
         (("associate_user_2_exclude_sensitive", organisme, 2, True), {}),
+        (
+            (
+                "user_restricted_occhab",
+                organisme,
+                2,
+                False,
+                [],
+                {"OCCHAB": {"C": 3, "R": 3, "U": 1, "E": 3, "D": 1}},
+            ),
+            {},
+        ),
     ]
 
     for (username, *args), kwargs in users_to_create:
-        users[username] = create_user(username, *args)
+        users[username] = create_user(username, *args, **kwargs)
 
     return users
 
