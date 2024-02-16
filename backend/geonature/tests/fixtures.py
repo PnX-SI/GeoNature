@@ -43,6 +43,8 @@ from ref_geo.models import BibAreasTypes, LAreas
 from utils_flask_sqla.tests.utils import JSONClient
 from werkzeug.datastructures import Headers
 
+from .utils import get_id_nomenclature
+
 
 __all__ = [
     "datasets",
@@ -688,21 +690,26 @@ def synthese_with_protected_status(users, datasets, source):
     protected_taxon = db.session.scalars(
         select(Taxref)
         .where(
-            Taxref.cd_nom.in_(
-                select(TaxrefBdcStatutTaxon.cd_nom).limit(100),
-            )
+            Taxref.cd_nom.in_(select(TaxrefBdcStatutTaxon.cd_nom).limit(100)),
         )
         .distinct(Taxref.cd_ref, Taxref.cd_nom)
         .limit(5)
     ).all()
-
     # dumb geometry
-    geom = from_shape(Point(5.486786, 42.832182), 4326)
+
+    geom = from_shape(Point(5.511, 43.429), 4326)
 
     # Generate a Synthese object for each taxon retrieved previously
     with db.session.begin_nested():
         for taxon in protected_taxon:
-            synthese = create_synthese(geom, taxon, users["user"], datasets["own_dataset"], source)
+            synthese = create_synthese(
+                geom,
+                taxon,
+                users["self_user"],
+                datasets["own_dataset"],
+                source,
+                cor_observers=[users["self_user"]],
+            )
             db.session.add(synthese)
             synthese_element[taxon.cd_nom] = synthese
 
