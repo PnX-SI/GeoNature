@@ -905,8 +905,11 @@ class TestSynthese:
 
         user = users["user"]
         set_expected_cd_ref = set(
-            db.session.scalars(select(Taxref.cd_ref).where(Taxref.cd_nom == obs.cd_nom)).one()
-            for obs in synthese_with_protected_status.values()
+            db.session.scalars(
+                select(Taxref.cd_ref).where(
+                    Taxref.cd_nom.in_([el.cd_nom for el in synthese_with_protected_status])
+                )
+            ).all()
         )
         assert_export_status_results(user, set_expected_cd_ref)
 

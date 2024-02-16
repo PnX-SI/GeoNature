@@ -684,7 +684,7 @@ def synthese_with_protected_status(users, datasets, source):
     pytest.Fixture
         fixture with synthese observations
     """
-    synthese_element = {}
+    synthese_element = []
 
     # Retrieve protected taxon from the bdc_statut_taxons table
     protected_taxon = db.session.scalars(
@@ -711,7 +711,7 @@ def synthese_with_protected_status(users, datasets, source):
                 cor_observers=[users["self_user"]],
             )
             db.session.add(synthese)
-            synthese_element[taxon.cd_nom] = synthese
+            synthese_element.append(synthese)
 
     return synthese_element
 
