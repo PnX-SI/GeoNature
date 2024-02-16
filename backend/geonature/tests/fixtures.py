@@ -219,16 +219,25 @@ def users(app):
         int
             scope
         """
-        scope = scope if scope != 3 else None
+        parse_scope = lambda scope: scope if scope != 3 else None
+        scope = parse_scope(scope)
         if not module_code in detailed_scopes:
-            return scope
-        if not action in detailed_scopes[module_code]:
+            # if detailed scope indicate a global scope for an action
+            if action in detailed_scopes:
+                return parse_scope(detailed_scopes[action])
+            # else return the default scope
             return scope
 
-        detailed_scope = detailed_scopes[module_code][action]
-        if isinstance(detailed_scope, int) and 0 < detailed_scope < 3:
-            return detailed_scope
-        return scope
+        # If not action indicated in the module detailed scope
+        if not action in detailed_scopes[module_code]:
+            # If a default scope is defined for the given action
+            if action in detailed_scopes:
+                return parse_scope(detailed_scopes[action])
+            # return the default scope
+            return scope
+
+        # if a scope is defined for the given action and modules, return the value
+        return parse_scope(detailed_scopes[module_code][action])
 
     def create_user(
         username,
@@ -324,7 +333,7 @@ def users(app):
                 2,
                 False,
                 [],
-                {"OCCHAB": {"C": 3, "R": 3, "U": 1, "E": 3, "D": 1}},
+                {"C": 2, "OCCHAB": {"R": 2, "U": 1, "E": 2, "D": 1}},
             ),
             {},
         ),
