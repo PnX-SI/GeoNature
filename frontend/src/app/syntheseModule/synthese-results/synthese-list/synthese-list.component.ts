@@ -49,6 +49,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   public destinationImportCode: string;
 
   public userCruved: any;
+  public canImport: boolean = false;
 
   constructor(
     public mapListService: MapListService,
@@ -60,14 +61,18 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     private _moduleService: ModuleService
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
-    const currentModule = this._moduleService.currentModule;
-    this.destinationImportCode = currentModule.module_code.toLowerCase();
-
-    // get user cruved
-    this.userCruved = currentModule.cruved;
   }
 
   ngOnInit() {
+    const currentModule = this._moduleService.currentModule;
+    this.destinationImportCode = currentModule.module_code.toLowerCase();
+    // get user cruved
+    this.userCruved = currentModule.cruved;
+    const cruvedImport = this._cruvedStore.cruved.IMPORT.module_objects.IMPORT.cruved;
+    const canCreateImport = cruvedImport.C > 0;
+    const canCreateSynthese = this.userCruved.C > 0;
+
+    this.canImport = canCreateImport && canCreateSynthese;
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
     this.rowNumber = Math.trunc(h / 37);
