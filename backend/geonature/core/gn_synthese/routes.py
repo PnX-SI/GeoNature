@@ -240,14 +240,8 @@ def get_observations_for_web(permissions):
 
         agg_areas = (
             select(CorAreaSynthese.id_synthese, LAreas.id_area)
-            .select_from(
-                CorAreaSynthese.__table__.join(
-                    LAreas, LAreas.id_area == CorAreaSynthese.id_area
-                ).join(
-                    BibAreasTypes,
-                    BibAreasTypes.id_type == LAreas.id_type,
-                ),
-            )
+            .join(CorAreaSynthese, CorAreaSynthese.id_area == LAreas.id_area)
+            .join(BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type)
             .where(CorAreaSynthese.id_synthese == obs_query.c.id_synthese)
             .where(
                 BibAreasTypes.type_code == current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"]
