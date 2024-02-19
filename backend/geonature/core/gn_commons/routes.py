@@ -68,6 +68,7 @@ def list_modules():
     query = (
         select(TModules)
         .options(joinedload(TModules.objects))
+        .options(joinedload(TModules.destination))
         .where(TModules.module_code.notin_(exclude))
         .order_by(TModules.module_order.asc())
         .order_by(TModules.module_label.asc())
@@ -80,7 +81,7 @@ def list_modules():
         # HACK : on a besoin d'avoir le module GeoNature en front pour l'URL de la doc
         if module.module_code == "GEONATURE":
             module_allowed = True
-        module_dict = module.as_dict(fields=["objects"])
+        module_dict = module.as_dict(fields=["objects", "destination.code"])
         # TODO : use has_any_permissions instead - must refactor the front
         module_dict["cruved"] = {
             action: get_scope(action, module_code=module.module_code, bypass_warning=True)

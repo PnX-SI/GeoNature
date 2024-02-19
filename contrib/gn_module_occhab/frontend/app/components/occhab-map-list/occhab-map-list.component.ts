@@ -52,8 +52,7 @@ export class OccHabMapListComponent implements OnInit {
     const canCreateOcchab = this.userCruved.C > 0;
 
     this.canImport = canCreateImport && canCreateOcchab;
-
-    this.destinationImportCode = currentModule.module_code.toLowerCase();
+    this.destinationImportCode = currentModule.destination[0]?.code;
 
     if (this.storeService.firstMessageMapList) {
       this._commonService.regularToaster('info', 'Les 50 dernières stations saisies');
