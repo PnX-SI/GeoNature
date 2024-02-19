@@ -17,6 +17,8 @@ from werkzeug.datastructures import Headers
 from apptax.taxonomie.models import (
     Taxref,
     TaxrefBdcStatutTaxon,
+    TaxrefBdcStatutCorTextValues,
+    TaxrefBdcStatutText,
 )
 from geonature import create_app
 from geonature.core.gn_commons.models import BibTablesLocation, TMedias, TModules
@@ -690,14 +692,23 @@ def synthese_with_protected_status(users, datasets, source):
     protected_taxon = db.session.scalars(
         select(Taxref)
         .where(
-            Taxref.cd_nom.in_(select(TaxrefBdcStatutTaxon.cd_nom).limit(100)),
+            Taxref.cd_nom.in_(
+                select(TaxrefBdcStatutTaxon.cd_nom)
+                .join(TaxrefBdcStatutCorTextValues)
+                .join(
+                    TaxrefBdcStatutText,
+                    TaxrefBdcStatutCorTextValues.id_text == TaxrefBdcStatutText.id_text,
+                )
+                .where(TaxrefBdcStatutText.cd_sig == "TERFXFR")  # Terrestre en France
+                .limit(100)
+            ),
         )
         .distinct(Taxref.cd_ref, Taxref.cd_nom)
         .limit(5)
     ).all()
     # dumb geometry
 
-    geom = from_shape(Point(5.511, 43.429), 4326)
+    geom = from_shape(Point(1.11, 48.65), 4326)
 
     # Generate a Synthese object for each taxon retrieved previously
     with db.session.begin_nested():
