@@ -5,6 +5,8 @@ from .test_pr_occhab import stations
 from flask import url_for
 import pytest
 
+from .benchmark_data import *
+
 
 class GetLatter:
     def __init__(self, value) -> None:
@@ -133,18 +135,52 @@ def activate_profiling_sql():
     event.listen(db.engine, "after_cursor_execute", after_cursor_execute)
 
 
+# r = self.client.post(url_for("gn_synthese.get_observations_for_web"), json=filters)
 tests = [
-    # BenchmarkTest(
-    #     GetLatter("self.client.get"),
-    #     "get_station",
-    #     [GetLatter("""url_for("occhab.get_station", id_station=8)""")],
-    #     dict(user_profile="user", fixture=[stations]),
-    # ),
+    BenchmarkTest(
+        GetLatter("self.client.get"),
+        "get_station",
+        [GetLatter("""url_for("occhab.get_station", id_station=8)""")],
+        dict(user_profile="user", fixture=[stations]),
+    ),
     BenchmarkTest(
         GetLatter("self.client.get"),
         "get_default_nomenclatures",
         [GetLatter("""url_for("gn_synthese.getDefaultsNomenclatures")""")],
         dict(user_profile="self_user"),
+    ),
+    BenchmarkTest(
+        GetLatter("self.client.post"),
+        "synthese_with_geometry_bbox",
+        [GetLatter("""url_for("gn_synthese.get_observations_for_web")""")],
+        dict(user_profile="admin_user", json=benchmark_synthese_intersection_data_test_bbox),
+    ),
+    BenchmarkTest(
+        GetLatter("self.client.post"),
+        "synthese_with_geometry_complex_poly",
+        [GetLatter("""url_for("gn_synthese.get_observations_for_web")""")],
+        dict(
+            user_profile="admin_user",
+            json=benchmark_synthese_intersection_data_test_complex_polygon,
+        ),
+    ),
+    BenchmarkTest(
+        GetLatter("self.client.post"),
+        "synthese_with_commune",
+        [GetLatter("""url_for("gn_synthese.get_observations_for_web")""")],
+        dict(
+            user_profile="admin_user",
+            json=benchmark_synthese_intersection_data_test_commune,
+        ),
+    ),
+    BenchmarkTest(
+        GetLatter("self.client.post"),
+        "synthese_with_up_tree_taxon",
+        [GetLatter("""url_for("gn_synthese.get_observations_for_web")""")],
+        dict(
+            user_profile="admin_user",
+            json=benchmark_synthese_with_tree_taxon,
+        ),
     ),
 ]
 
