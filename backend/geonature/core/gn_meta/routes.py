@@ -1065,13 +1065,14 @@ def publish_acquisition_framework(af_id):
 
 
 @routes.cli.command()
-@click.argument("id_role", nargs=1, required=False, default=None)
-@click.argument("id_af", nargs=1, required=False, default=None)
+@click.option("--id-role", nargs=1, required=False, default=None)
+@click.option("--id-af", nargs=1, required=False, default=None)
 def mtd_sync(id_role, id_af):
     """
     Trigger global sync or a sync for a given user only.
 
     :param id_role: user id
+    :param id_af: acquisition framework id
     """
     if id_role:
         return sync_af_and_ds_by_user(id_role, id_af)
