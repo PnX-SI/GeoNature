@@ -67,7 +67,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
 
   ngOnInit() {
     const currentModule = this._moduleService.currentModule;
-    this.destinationImportCode = currentModule.module_code.toLowerCase();
+    this.destinationImportCode = currentModule.destination[0]?.code;
+
     // get user cruved
     this.userCruved = currentModule.cruved;
     const cruvedImport = this._cruvedStore.cruved.IMPORT.module_objects.IMPORT.cruved;
