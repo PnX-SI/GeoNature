@@ -3,6 +3,7 @@ import time
 from datetime import *
 from urllib.parse import urljoin
 
+from lxml import etree
 import requests
 from geonature.core.auth.routes import insert_user_and_org
 from geonature.core.gn_meta.models import CorAcquisitionFrameworkActor, CorDatasetActor
