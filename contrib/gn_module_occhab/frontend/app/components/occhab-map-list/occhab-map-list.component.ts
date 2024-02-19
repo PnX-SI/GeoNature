@@ -10,6 +10,7 @@ import * as moment from 'moment';
 import { ConfigService } from '@geonature/services/config.service';
 import { OccHabMapListService } from '../../services/occhab-map-list.service';
 import { ModuleService } from '@geonature/services/module.service';
+import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 
 @Component({
   selector: 'pnx-occhab-map-list',
@@ -28,6 +29,7 @@ export class OccHabMapListComponent implements OnInit {
   public isCollapseFilter = true;
 
   public userCruved: any;
+  public canImport: boolean = false;
 
   constructor(
     public storeService: OcchabStoreService,
@@ -37,15 +39,22 @@ export class OccHabMapListComponent implements OnInit {
     private _commonService: CommonService,
     public config: ConfigService,
     public mapListFormService: OccHabMapListService,
-    private _moduleService: ModuleService
+    private _moduleService: ModuleService,
+    public cruvedStore: CruvedStoreService
   ) {}
 
   ngOnInit() {
+    // get user cruved
     const currentModule = this._moduleService.currentModule;
+    this.userCruved = currentModule.cruved;
+    const cruvedImport = this.cruvedStore.cruved.IMPORT.module_objects.IMPORT.cruved;
+    const canCreateImport = cruvedImport.C > 0;
+    const canCreateOcchab = this.userCruved.C > 0;
+
+    this.canImport = canCreateImport && canCreateOcchab;
+
     this.destinationImportCode = currentModule.module_code.toLowerCase();
 
-    // get user cruved
-    this.userCruved = currentModule.cruved;
     if (this.storeService.firstMessageMapList) {
       this._commonService.regularToaster('info', 'Les 50 dernières stations saisies');
       this.storeService.firstMessageMapList = false;
