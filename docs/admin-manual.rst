@@ -1212,6 +1212,19 @@ Pour cela, renseignez les paramètres dans le fichier de configuration de GeoNat
 
 Vous pouvez renseigner du code HTML sur plusieurs lignes dans ces paramètres, en le plaçant entre triple quote (`"""<b>Hello</b>"""`).
 
+Customiser la page de connexion
+"""""""""""""""""""""""""""""""
+
+Il est possible d'ajouter des liens vers des ressources externes sur la page de connexion de GeoNature. Pour cela,
+remplissez un item ``ACCOUNT_MANAGEMENT.EXTERNAL_LINKS`` dans la configuration. 
+Dans cette variable, le lien est indiqué dans le champ ``url`` et le texte affiché de ce dernier doit être renseigné dans le
+champ ``label``. Un exemple est disponible ci-dessous.
+
+.. code-block:: toml
+    [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]
+        label = "Mot de passe oublié ?"
+        url = "https://mon.formulaire.de.motdepasse"
+
 Customiser l'aspect esthétique
 """"""""""""""""""""""""""""""
 
