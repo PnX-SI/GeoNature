@@ -441,26 +441,51 @@ def prepare_import(scope, imprt):
 @blueprint.route("/<destination>/imports/<int:import_id>/preview_valid_data", methods=["GET"])
 @permissions.check_cruved_scope("C", get_scope=True, module_code="IMPORT", object_code="IMPORT")
 def preview_valid_data(scope, imprt):
+    """Preview valid data for a given import.
+
+    Parameters
+    ----------
+    scope : int
+        The scope of the (C, "IMPORT", "IMPORT") permission for the current user.
+    imprt : geonature.core.imports.models.TImports
+        The import object.
+
+    Returns
+    -------
+    flask.wrappers.Response
+        A JSON response containing valid data, entities, columns, and data statistics.
+
+    Raises
+    ------
+    Forbidden
+        If the current user has no sufficient permission given the scope and the import object.
+    Conflict
+        If the import is not processed, i.e. it has not been prepared yet.
+    """
     if not imprt.has_instance_permission(scope):
         raise Forbidden
     if not imprt.processed:
         raise Conflict("Import must have been prepared before executing this action.")
-    transient_table = imprt.destination.get_transient_table()
+
+    # Retrieve valid_bbox and initialize data for response
     # FIXME FIXME FIXME
     if imprt.destination.code == "synthese":
-        entity = Entity.query.filter_by(destination=imprt.destination, code="observation").one()
-        geom_4326_field = BibFields.query.filter_by(
-            destination=imprt.destination, name_field="the_geom_4326"
-        ).one()
+        code_entity = "observation"
+        name_field_geom_4326 = "the_geom_4326"
     elif imprt.destination.code == "occhab":
-        entity = Entity.query.filter_by(destination=imprt.destination, code="station").one()
-        geom_4326_field = BibFields.query.filter_by(
-            destination=imprt.destination, name_field="geom_4326"
-        ).one()
+        code_entity = "station"
+        name_field_geom_4326 = "geom_4326"
+    entity = Entity.query.filter_by(destination=imprt.destination, code=code_entity).one()
+    geom_4326_field = BibFields.query.filter_by(
+        destination=imprt.destination, name_field=name_field_geom_4326
+    ).one()
     data = {
         "valid_bbox": get_valid_bbox(imprt, entity, geom_4326_field),
         "entities": [],
     }
+
+    # Retrieve data for each entity from entries in the transient table which are related to the import
+    transient_table = imprt.destination.get_transient_table()
     for entity in (
         Entity.query.filter_by(destination=imprt.destination).order_by(Entity.order).all()
     ):
@@ -497,6 +522,7 @@ def preview_valid_data(scope, imprt):
                 "n_invalid_data": n_invalid_data,
             }
         )
+
     return jsonify(data)
 
 
