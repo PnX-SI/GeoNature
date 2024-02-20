@@ -1,7 +1,7 @@
 <p>*** Ceci est un message généré automatiquement ***</p>
 <p>Bonjour,</p>
 <p>
-  Un utilisateur vient d'effectuer une demande de création de compte 
+  Un utilisateur vient d'effectuer une demande de création de compte
   sur GeoNature.
 </p>
 <p>Voici les informations de l'utilisateur :</p>
@@ -18,12 +18,12 @@
   <h5>Informations complémentaires :</h5>
     <ul>
     {% for item in additional_fields %}
-      <li><b> {{item.key}}: </b>  {{item.value}}  </li> 
+      <li><b> {{item.key}}: </b>  {{item.value}}  </li>
     {% endfor %}
   </ul>
 {% endif%}
 
-<h5>Souhaitez vous :</h5>
+<h5>Vous pouvez :</h5>
 <ul>
   {% if url_usershub %}
   <li>
@@ -32,12 +32,7 @@
     </a>
   </li>
   {% endif%}
-  <li>
-    <a href="{{ url_validation }}">
-      Accepter directement cette demande, en cliquant sur ce lien.
-    </a>
-  </li>
-</ul>    
+</ul>
 
 <p>Bien cordialement,</p>
 <p>l'administrateur.</p>
