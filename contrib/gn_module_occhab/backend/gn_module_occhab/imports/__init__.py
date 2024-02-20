@@ -143,6 +143,7 @@ def check_transient_data(task, logger, imprt):
                 geom_local_field=fields["geom_local"],
             )
             if imprt.fieldmapping.get("altitudes_generate", False):
+                # TODO@TestImportsOcchab.test_import_valid_file: add testcase
                 generate_altitudes(
                     imprt, fields["the_geom_local"], fields["altitude_min"], fields["altitude_max"]
                 )
@@ -160,6 +161,7 @@ def check_transient_data(task, logger, imprt):
             )
             if "WKT" in selected_fields:
                 check_is_valid_geography(imprt, entity, selected_fields["WKT"], fields["geom_4326"])
+            # TODO@TestImportsOcchab.test_import_valid_file: remove this check
             if current_app.config["IMPORT"]["ID_AREA_RESTRICTION"]:
                 check_geography_outside(
                     imprt,
@@ -236,6 +238,7 @@ def import_data_to_occhab(imprt):
                 continue
             field = fields[field_name]
             if field.multi:
+                # TODO@TestImportsOcchab.test_import_valid_file: add testcase
                 if not set(source_field).isdisjoint(imprt.columns):
                     insert_fields |= {field}
             else:
@@ -246,6 +249,7 @@ def import_data_to_occhab(imprt):
             insert_fields -= {fields["unique_dataset_id"]}
             insert_fields |= {fields["id_dataset"]}
             insert_fields |= {fields["geom_4326"], fields["geom_local"]}
+            # TODO@TestImportsOcchab.test_import_valid_file: add testcase
             if imprt.fieldmapping.get("altitudes_generate", False):
                 insert_fields |= {fields["altitude_min"], fields["altitude_max"]}
             # FIXME:
