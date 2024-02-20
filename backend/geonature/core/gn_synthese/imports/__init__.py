@@ -27,6 +27,7 @@ from geonature.core.imports.checks.sql import (
     check_nomenclature_blurring,
     check_nomenclature_source_status,
     convert_geom_columns,
+    set_geom_point,
     check_cd_nom,
     check_cd_hab,
     generate_altitudes,
@@ -39,8 +40,11 @@ from geonature.core.imports.checks.sql import (
     check_depths,
     check_digital_proof_urls,
     check_geography_outside,
+    check_geometry_defined,
     check_is_valid_geography,
 )
+
+from .geo import convert_geom_columns_from_area_code
 
 
 def check_transient_data(task, logger, imprt):
@@ -151,11 +155,27 @@ def check_transient_data(task, logger, imprt):
         entity,
         geom_4326_field=fields["the_geom_4326"],
         geom_local_field=fields["the_geom_local"],
-        geom_point_field=fields["the_geom_point"],
+    )
+
+    convert_geom_columns_from_area_code(
+        imprt,
+        entity,
+        geom_4326_field=fields["the_geom_4326"],
+        geom_local_field=fields["the_geom_local"],
         codecommune_field=fields["codecommune"],
         codemaille_field=fields["codemaille"],
         codedepartement_field=fields["codedepartement"],
     )
+
+    if fields["the_geom_point"] != None:
+        set_geom_point(
+            imprt=imprt,
+            entity=entity,
+            geom_4326_field=fields["the_geom_4326"],
+            geom_point_field=fields["the_geom_point"],
+        )
+
+    check_geometry_defined(imprt=imprt, entity=entity, geom_4326_field=fields["the_geom_4326"])
 
     do_nomenclatures_mapping(
         imprt,
