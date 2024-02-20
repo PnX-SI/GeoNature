@@ -70,4 +70,8 @@ export class OccHabDataService {
     );
     this._gnDataService.subscribeAndDownload(sub, 'export_hab', export_format);
   }
+
+  get_imported_data_link() {
+    return 'ok';
+  }
 }
