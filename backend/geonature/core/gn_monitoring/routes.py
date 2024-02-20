@@ -82,6 +82,7 @@ def get_site_areas(id_site):
     params = request.args
 
     query = (
+        # TODO@LAreas.geom_4326
         select(corSiteArea, func.ST_Transform(LAreas.geom, 4326))
         .join(LAreas, LAreas.id_area == corSiteArea.c.id_area)
         .where(corSiteArea.c.id_base_site == id_site)
