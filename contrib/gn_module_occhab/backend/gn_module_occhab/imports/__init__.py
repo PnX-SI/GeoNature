@@ -29,6 +29,7 @@ from geonature.core.imports.checks.sql import (
     check_dates,
     check_altitudes,
     check_depths,
+    check_geometry_defined,
     check_is_valid_geography,
     set_id_parent_from_destination,
     set_parent_line_no,
@@ -142,6 +143,7 @@ def check_transient_data(task, logger, imprt):
                 geom_4326_field=fields["geom_4326"],
                 geom_local_field=fields["geom_local"],
             )
+            check_geometry_defined(imprt=imprt, entity=entity, geom_4326_field=fields["geom_4326"])
             if imprt.fieldmapping.get("altitudes_generate", False):
                 generate_altitudes(
                     imprt, fields["the_geom_local"], fields["altitude_min"], fields["altitude_max"]
