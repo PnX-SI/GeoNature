@@ -134,3 +134,18 @@ i.loader .mat-spinner {
   height: 20px !important;
   margin-right: 8px !important;
 }
+
+// .external_link {
+//   font-size: 0.8rem;
+//   margin-top: -10px;
+//   margin-bottom: 10px;
+//   cursor: pointer;
+// }
+
+.external_link a {
+  color: inherit;
+}
+
+.external_link:hover {
+  text-decoration: underline;
+}

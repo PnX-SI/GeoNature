@@ -116,6 +116,10 @@ class AccountManagement(Schema):
     ACCOUNT_FORM = fields.List(fields.Dict(), load_default=[])
     ADDON_USER_EMAIL = fields.String(load_default="")
     DATASET_MODULES_ASSOCIATION = fields.List(fields.String(), load_default=["OCCTAX"])
+    EXTERNAL_LINKS = fields.List(
+        fields.Dict,
+        load_default=[],
+    )
 
 
 class UsersHubConfig(Schema):
