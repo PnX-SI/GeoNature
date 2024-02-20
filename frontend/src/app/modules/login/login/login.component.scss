@@ -80,7 +80,7 @@ small {
   color: red;
 }
 
-.inscription {
+.inscription, .external_link {
   color: #fff;
 }
 
@@ -91,12 +91,12 @@ small {
   margin-bottom: 10px;
   cursor: pointer;
 }
-.forgot:hover {
+.forgot:hover,.external_link:hover  {
   text-decoration: underline;
 }
 
 .inscription a,
-.forgot-password a {
+.forgot-password a, .external_link a {
   color: inherit;
 }
 
@@ -133,19 +133,4 @@ i.loader .mat-spinner {
   width: 20px !important;
   height: 20px !important;
   margin-right: 8px !important;
-}
-
-// .external_link {
-//   font-size: 0.8rem;
-//   margin-top: -10px;
-//   margin-bottom: 10px;
-//   cursor: pointer;
-// }
-
-.external_link a {
-  color: inherit;
-}
-
-.external_link:hover {
-  text-decoration: underline;
 }
