@@ -64,6 +64,12 @@
                     <a routerLink="/login/inscription">{{ 'CreateAccount' | translate }}</a>
                   </div>
                 </div>
+                <div
+                *ngFor="let link of external_links;"
+                  class="external_link"  
+                >
+                  <a href="{{link.url}}">{{link.label}}</a>
+                </div>
                 <!-- <input type="submit" class="btn btn-success" value="Connexion"> -->
               </form>
             </ng-container>

@@ -475,6 +475,23 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # compte utilisateur
     AUTO_DATASET_CREATION = true
 
+    # Ajouter des liens sur la page de connexion de GeoNature,
+    # peut être utile lors d'une externalisation des services de connexion
+    # Chaque [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]] correspond à un lien
+    # supplémentaire ajouté sous le bouton "SE CONNECTER"
+
+    [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]
+    label = "Mot de passe oublié ?"
+    url = "https://mon.formulaire.de.motdepasse"
+
+    [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]
+    label = "Demande d'inscription"
+    url = "https://mon.formulaire.dinscription"
+
+    [[ACCOUNT_MANAGEMENT.EXTERNAL_LINKS]]
+    label = "Un autre lien"
+    url = "https://un.autre.lien"
+
     # Email du validateur si auto_account_creation = false.
     # Deux syntaxes alternatives sont autorisées pour ce paramètre :
     # - une chaine contenant un ou plusieurs emails séparés par des
@@ -550,6 +567,7 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
             <strong>validation de l’administrateur</strong>, vous
             pourrez accéder aux observations publiques avec leur
             précision de géolocalisation maximale.</p>"""
+
 
 [SERVER]
     # Nivau de log du serveur.

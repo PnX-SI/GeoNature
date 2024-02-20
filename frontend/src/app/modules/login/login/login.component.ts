@@ -17,6 +17,7 @@ import { RoutingService } from '@geonature/routing/routing.service';
 export class LoginComponent implements OnInit {
   enable_sign_up: boolean = false;
   enable_user_management: boolean = false;
+  external_links: [] = [];
   public casLogin: boolean;
   public disableSubmit = false;
   public enablePublicAccess = null;
@@ -41,6 +42,7 @@ export class LoginComponent implements OnInit {
     this.enable_sign_up = this.config['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false;
     this.enable_user_management =
       this.config['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false;
+    this.external_links = this.config['ACCOUNT_MANAGEMENT']['EXTERNAL_LINKS']
   }
 
   ngOnInit() {
