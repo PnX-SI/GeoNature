@@ -19,7 +19,7 @@ def set_geom_from_area_code(
             transient_table.c.line_no,
             LAreas.id_area,
             LAreas.geom,
-            # TODO: add LAreas.geom_4326
+            LAreas.geom_4326,
         )
         .select_from(
             join(transient_table, LAreas, source_column == LAreas.area_code).join(BibAreasTypes)
@@ -36,9 +36,7 @@ def set_geom_from_area_code(
             {
                 transient_table.c.id_area_attachment: cte.c.id_area,
                 transient_table.c[geom_local_col]: cte.c.geom,
-                transient_table.c[geom_4326_col]: ST_Transform(
-                    cte.c.geom, 4326
-                ),  # TODO: replace with cte.c.geom_4326
+                transient_table.c[geom_4326_col]: cte.c.geom_4326,
             }
         )
         .where(transient_table.c.id_import == cte.c.id_import)
