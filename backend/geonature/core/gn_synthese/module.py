@@ -3,6 +3,8 @@ from geonature.core.gn_synthese.imports import (
     check_transient_data,
     import_data_to_synthese,
     remove_data_from_synthese,
+    get_name_geom_4326_field,
+    get_where_clause_id_import,
 )
 
 
@@ -13,4 +15,6 @@ class SyntheseModule(TModules):
         "check_transient_data": check_transient_data,
         "import_data_to_destination": import_data_to_synthese,
         "remove_data_from_destination": remove_data_from_synthese,
+        "get_name_geom_4326_field": get_name_geom_4326_field,
+        "get_where_clause_id_import": get_where_clause_id_import,
     }
