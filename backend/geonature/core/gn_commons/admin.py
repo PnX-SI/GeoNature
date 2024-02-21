@@ -1,6 +1,6 @@
 import logging
 
-from flask import current_app, flash
+from flask import current_app, flash, request
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import BaseForm
 from wtforms import validators, Form
@@ -20,15 +20,16 @@ log = logging.getLogger()
 
 class TAdditionalFieldsForm(BaseForm):
     def validate(self, extra_validators=None):
-        try:
-            TAdditionalFieldsSchema().load(self.data)
-        except ValidationError as e:
-            log.exception("additional field validation error")
-            flash("The form has errors", "error")
-            self.field_values.errors = (
-                f"Value input must contain a list of dict with value/label key for {self.data['type_widget']} widget ",
-            )
-            return False
+        if not request.endpoint == "tadditionalfields.delete_view":
+            try:
+                TAdditionalFieldsSchema().load(self.data)
+            except ValidationError as e:
+                log.exception("additional field validation error")
+                flash("The form has errors", "error")
+                self.field_values.errors = (
+                    f"Value input must contain a list of dict with value/label key for {self.data['type_widget']} widget ",
+                )
+                return False
         return super().validate(extra_validators)
 
 

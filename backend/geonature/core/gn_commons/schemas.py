@@ -74,6 +74,12 @@ class TAdditionalFieldsSchema(MA.SQLAlchemyAutoSchema):
         load_instance = True
 
     def load(self, data, *, many=None, **kwargs):
-        if data["type_widget"].widget_name in ("select", "checkbox", "radio", "multiselect"):
+
+        if data["type_widget"].widget_name in (
+            "select",
+            "checkbox",
+            "radio",
+            "multiselect",
+        ):
             LabelValueDict(many=True).load(data["field_values"])
         return super().load(data, many=many, unknown=EXCLUDE)
