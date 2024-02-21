@@ -8,9 +8,9 @@ from geonature.utils.env import db
 from ref_geo.models import LAreas, BibAreasTypes
 
 
-def set_geom_from_area_code(
-    imprt, entity, geom_4326_col, geom_local_col, source_column, area_type_filter
-):  # XXX specific synthese
+def set_geom_columns_from_area_code(
+    imprt, entity, geom_4326_col, geom_local_col, code_column, area_type_filter
+):
     transient_table = imprt.destination.get_transient_table()
     # Find area in CTE, then update corresponding column in statement
     cte = (
@@ -22,7 +22,7 @@ def set_geom_from_area_code(
             LAreas.geom_4326,
         )
         .select_from(
-            join(transient_table, LAreas, source_column == LAreas.area_code).join(BibAreasTypes)
+            join(transient_table, LAreas, code_column == LAreas.area_code).join(BibAreasTypes)
         )
         .where(transient_table.c.id_import == imprt.id_import)
         .where(transient_table.c[entity.validity_column] == True)
@@ -45,7 +45,7 @@ def set_geom_from_area_code(
     db.session.execute(stmt)
 
 
-def convert_geom_columns_from_area_code(
+def set_geom_columns_from_area_codes(
     imprt,
     entity,
     geom_4326_field,
@@ -65,7 +65,7 @@ def convert_geom_columns_from_area_code(
             continue
         source_column = transient_table.c[field.source_field]
         # Set geom from area of the given type and with matching area_code:
-        set_geom_from_area_code(
+        set_geom_columns_from_area_code(
             imprt,
             entity,
             geom_4326_field.dest_field,

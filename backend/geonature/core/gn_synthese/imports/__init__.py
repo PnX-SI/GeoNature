@@ -40,11 +40,10 @@ from geonature.core.imports.checks.sql import (
     check_depths,
     check_digital_proof_urls,
     check_geography_outside,
-    check_geometry_defined,
     check_is_valid_geography,
 )
 
-from .geo import convert_geom_columns_from_area_code
+from .geo import set_geom_columns_from_area_codes
 
 
 def check_transient_data(task, logger, imprt):
@@ -156,8 +155,7 @@ def check_transient_data(task, logger, imprt):
         geom_4326_field=fields["the_geom_4326"],
         geom_local_field=fields["the_geom_local"],
     )
-
-    convert_geom_columns_from_area_code(
+    set_geom_columns_from_area_codes(
         imprt,
         entity,
         geom_4326_field=fields["the_geom_4326"],
@@ -166,16 +164,13 @@ def check_transient_data(task, logger, imprt):
         codemaille_field=fields["codemaille"],
         codedepartement_field=fields["codedepartement"],
     )
-
-    if fields["the_geom_point"] != None:
-        set_geom_point(
-            imprt=imprt,
-            entity=entity,
-            geom_4326_field=fields["the_geom_4326"],
-            geom_point_field=fields["the_geom_point"],
-        )
-
-    check_geometry_defined(imprt=imprt, entity=entity, geom_4326_field=fields["the_geom_4326"])
+    set_geom_point(
+        imprt=imprt,
+        entity=entity,
+        geom_4326_field=fields["the_geom_4326"],
+        geom_point_field=fields["the_geom_point"],
+    )
+    # All valid rows should have a geom as verified in dataframe check 'check_geography'
 
     do_nomenclatures_mapping(
         imprt,
