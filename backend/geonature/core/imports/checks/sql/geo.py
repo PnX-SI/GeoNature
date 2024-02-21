@@ -16,7 +16,6 @@ __all__ = [
     "set_geom_point",
     "convert_geom_columns",
     "check_is_valid_geography",
-    "check_geometry_defined",
     "check_geography_outside",
 ]
 
@@ -40,45 +39,39 @@ def set_geom_point(imprt, entity, geom_4326_field, geom_point_field):
 
 
 def convert_geom_columns(imprt, entity, geom_4326_field, geom_local_field):
+    """
+    Set geom_local from geom_4326, or geom_4326 from geom_local.
+    """
+    file_srid = imprt.srid
     local_srid = db.session.execute(sa.func.Find_SRID("ref_geo", "l_areas", "geom")).scalar()
-    transient_table = imprt.destination.get_transient_table()
-    if geom_4326_field is None:
-        assert geom_local_field
+    dest_srid = None
+    if file_srid == local_srid:
+        # dataframe check defined geom_local, we must use it to define geom_4326
         source_col = geom_local_field.dest_field
         dest_col = geom_4326_field.dest_field
         dest_srid = 4326
-    else:
-        assert geom_4326_field is not None
+    elif file_srid == 4326:
+        # dataframe check defined geom_4326, we must use it to define geom_local
         source_col = geom_4326_field.dest_field
         dest_col = geom_local_field.dest_field
         dest_srid = local_srid
-    stmt = (
-        update(transient_table)
-        .where(transient_table.c.id_import == imprt.id_import)
-        .where(transient_table.c[entity.validity_column] == True)
-        .where(transient_table.c[source_col] != None)
-        .values(
-            {
-                dest_col: ST_Transform(transient_table.c[source_col], dest_srid),
-            }
+    else:
+        # dataframe check has already defined geom_4326 and geom_local
+        pass
+    if dest_srid:
+        transient_table = imprt.destination.get_transient_table()
+        stmt = (
+            update(transient_table)
+            .where(transient_table.c.id_import == imprt.id_import)
+            .where(transient_table.c[entity.validity_column] == True)
+            .where(transient_table.c[source_col] != None)
+            .values(
+                {
+                    dest_col: ST_Transform(transient_table.c[source_col], dest_srid),
+                }
+            )
         )
-    )
-    db.session.execute(stmt)
-
-
-def check_geometry_defined(imprt, entity, geom_4326_field):
-    transient_table = imprt.destination.get_transient_table()
-    # Mark rows with no geometry as invalid:
-    report_erroneous_rows(
-        imprt,
-        entity,
-        error_type="NO-GEOM",
-        error_column="Colonnes géométriques",
-        whereclause=sa.and_(
-            transient_table.c[geom_4326_field.dest_field] == None,
-            transient_table.c[entity.validity_column] == True,
-        ),
-    )
+        db.session.execute(stmt)
 
 
 def check_is_valid_geography(imprt, entity, wkt_field, geom_field):
