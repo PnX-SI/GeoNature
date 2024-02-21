@@ -39,7 +39,7 @@ from geonature.core.imports.models import (
 from geonature.core.imports.utils import insert_import_data_in_transient_table
 
 from .jsonschema_definitions import jsonschema_definitions
-from .utils import assert_import_errors, extract_row_csv_by_line_number
+from .utils import assert_import_errors
 
 
 tests_path = Path(__file__).parent
@@ -1238,30 +1238,32 @@ class TestImportsSynthese:
 
     @pytest.mark.parametrize("import_file_name", ["multiline_comment_file.csv"])
     def test_import_compare_error_line_with_csv(self, users, imported_import, import_file_name):
-        csv_file_path = tests_path / "files" / "synthese" / import_file_name
-        erroneous_rows_line_import = list(map(int, imported_import.erroneous_rows))
+        """
+        This test verify generated errors csv file contains right rows from source file.
+        This test does not not verify expected errors of the given imported file, there are other tests for that.
+        """
+        source_csvfile_path = tests_path / "files" / "synthese" / import_file_name
+        with open(source_csvfile_path) as source_csvfile:
+            source_csvreader = csv.DictReader(source_csvfile, delimiter=";")
+            source_rows = list(source_csvreader)
 
         set_logged_user(self.client, users["user"])
         r = self.client.get(
             url_for("import.get_import_invalid_rows_as_csv", import_id=imported_import.id_import)
         )
-        csvfile = StringIO(r.data.decode("utf-8"))
-        csvreader = csv.DictReader(csvfile, delimiter=";")
-        rows_error_imprt = list(csvreader)
+        error_csvfile = StringIO(r.data.decode("utf-8"))
+        error_csvreader = csv.DictReader(error_csvfile, delimiter=";")
+        error_rows = list(error_csvreader)
 
-        expected_list_rows_error_csv = []
-        for error_line_no in erroneous_rows_line_import:
-            expected_list_rows_error_csv.append(
-                extract_row_csv_by_line_number(csv_file_path, error_line_no)
-            )
+        # headers should be equals
+        assert source_csvreader.fieldnames == error_csvreader.fieldnames
 
-        for dict_csv in expected_list_rows_error_csv:
-            assert any(dict_csv == dict_import_err for dict_import_err in rows_error_imprt)
-
-        list_expected_line_number_error = [
-            int(d["line_number"]) for d in expected_list_rows_error_csv if "line_number" in d
-        ]
-        assert all(
-            line_number in erroneous_rows_line_import
-            for line_number in list_expected_line_number_error
-        )
+        for error_number, erroneous_line_number in enumerate(imported_import.erroneous_rows):
+            error_row = error_rows[error_number]
+            # -1 because source_rows array does not contains the header
+            # -1 because source_rows array start at index 0, but line numbering start at index 1
+            source_row = source_rows[erroneous_line_number - 1 - 1]
+            # this assert verify we get the right source row:
+            assert int(source_row["line_number"]) == erroneous_line_number
+            # and this is the test purpose assert:
+            assert error_row == source_row
