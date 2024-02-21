@@ -103,7 +103,7 @@ def detect_separator(f, encoding):
     return dialect.delimiter
 
 
-def get_valid_bbox(imprt, entity, geom_4326_field):
+def get_valid_bbox(imprt, entity):
     """Get the valid bounding box for a given import.
 
     Parameters
@@ -123,46 +123,43 @@ def get_valid_bbox(imprt, entity, geom_4326_field):
     Raises
     ------
     NotImplementedError
-        If the destination of the import is not implemented yet (e.g.: 'metadata'...)
+        If the function is not implemented for the destination of the import.
     """
-    # TODO: verify how to assert that an import has data in transient table or not and whether it is related to t_imports.date_end_import or t_imports.loaded fields
+    # Retrieve the name of the geom field to retrieve geometries of data from
+    if "get_name_geom_4326_field" not in imprt.destination.module._imports_:
+        raise NotImplementedError(
+            f"function get_valid_bbox not implemented for an import with destination '{imprt.destination.code}, needs `get_name_geom_4326_field` function"
+        )
+    name_geom_4326_field = imprt.destination.module._imports_["get_name_geom_4326_field"]()
+
+    # Retrieve the where clause to filter data for the given import
+    if "get_where_clause_id_import" not in imprt.destination.module._imports_:
+        raise NotImplementedError(
+            f"function get_valid_bbox not implemented for an import with destination '{imprt.destination.code}, needs `get_where_clause_id_import` function"
+        )
+    where_clause_id_import = imprt.destination.module._imports_["get_where_clause_id_import"](imprt)
+
+    # Build the statement to retrieve the valid bounding box
+    statement = None
     if imprt.loaded == True:
         # Compute from entries in the transient table and related to the import
         transient_table = imprt.destination.get_transient_table()
-        stmt = (
-            select(func.ST_AsGeojson(func.ST_Extent(transient_table.c[geom_4326_field.dest_field])))
-            .where(transient_table.c.id_import == imprt.id_import)
+        statement = (
+            select(func.ST_AsGeojson(func.ST_Extent(transient_table.c[name_geom_4326_field])))
+            .where(where_clause_id_import)
             .where(transient_table.c[entity.validity_column] == True)
         )
     else:
         # Compute from entries in the destination table and related to the import
-        id_module_import = db.session.execute(
-            select(TModules.id_module).where(TModules.module_code == "IMPORT")
-        ).scalar()
-        # TODO: build a destination-generic query using geom_4326_field.dest_field or another method to retrieve geom field from entity or destination
-        #   Need to handle the filtering by id_import in a generic way, but the logic is different between Synthese (no id_import field, and join needed) and occhab (with id_import field)
         destination_table = entity.get_destination_table()
-        stmt = None
-        if imprt.destination.code == 'synthese':
-            stmt = (
-                select(
-                    func.ST_AsGeojson(
-                        func.ST_Extent(destination_table.c[geom_4326_field.dest_field])
-                    )
-                )
-                .join(TSources)
-                .where(TSources.id_module == id_module_import)
-                .where(TSources.name_source == f"Import(id={imprt.id_import})")
-            )
-        elif imprt.destination.code == 'occhab':
-            stmt = select(
-                func.ST_AsGeojson(func.ST_Extent(destination_table.c[geom_4326_field.dest_field]))
-            ).where(destination_table.c["id_import"] == imprt.id_import)
-        else:
-            raise NotImplementedError(f"function get_valid_bbox not implemented for an import with destination '{imprt.destination.code}'")
+        statement = select(
+            func.ST_AsGeojson(func.ST_Extent(destination_table.c[name_geom_4326_field]))
+        ).where(where_clause_id_import)
 
-    (valid_bbox,) = db.session.execute(stmt).fetchone()
+    # Execute the statement to eventually retrieve the valid bounding box
+    (valid_bbox,) = db.session.execute(statement).fetchone()
 
+    # Return the valid bounding box or None
     if valid_bbox:
         return json.loads(valid_bbox)
 
