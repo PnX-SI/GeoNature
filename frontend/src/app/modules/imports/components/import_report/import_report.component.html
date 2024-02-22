@@ -176,6 +176,7 @@
           <th>Description erreur</th>
           <th>Nombre d'erreur(s)</th>
           <th>Numéro des lignes en erreur</th>
+          <th>{{ "Import.Report.Errors.Entity" | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -206,6 +207,9 @@
             </button>
             </span>
           </td>
+          <td>
+            {{ error.entity ? error.entity.label : "" }}
+          </td>
           </tr>
         </tbody>
         </table>
@@ -224,6 +228,7 @@
           <th>Description erreur</th>
           <th>Nombre d'erreur(s)</th>
           <th>Numéro des lignes en erreur</th>
+          <th>{{ "Import.Report.Errors.Entity" | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -253,6 +258,9 @@
               <mat-icon>expand_less</mat-icon>
             </button>
             </span>
+          </td>
+          <td>
+            {{ error.entity ? error.entity.label : "" }}
           </td>
           </tr>
         </tbody>

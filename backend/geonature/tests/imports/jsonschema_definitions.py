@@ -256,6 +256,13 @@ jsonschema_definitions = {
             "id_import": {"type": "integer"},
             "id_type": {"type": "integer"},
             "type": {"$ref": "#/definitions/error_type"},
+            "id_entity": {"type": ["null", "integer"]},
+            "entity": {
+                "oneOf": [
+                    {"type": "null"},
+                    {"$ref": "#/definitions/entity_type"},
+                ]
+            },
             "column": {"type": "string"},
             "rows": {
                 "type": "array",
@@ -309,6 +316,34 @@ jsonschema_definitions = {
             "D": {"type": "boolean"},
         },
         "minProperties": 6,
+        "additionalProperties": False,
+    },
+    "entity_type": {
+        "type": "object",
+        "properties": {
+            "id_entity": {"type": "integer"},
+            "id_destination": {"type": "integer"},
+            "destination": {"$ref": "#/definitions/destination"},
+            "code": {"type": "string"},
+            "label": {"type": "string"},
+            "order": {"type": "integer"},
+            "validity_column": {"type": "string"},
+            "destination_table_schema": {"type": "string"},
+            "destination_table_name": {"type": "string"},
+        },
+        "additionalProperties": False,
+    },
+    "destination": {
+        "type": "object",
+        "properties": {
+            "id_destination": {"type": "integer"},
+            "id_module": {"type": "integer"},
+            "code": {"type": "string"},
+            "label": {"type": "string"},
+            "table_name": {"type": "string"},
+            "module": {"type": "object"},
+            "entities": {"type": "object"},
+        },
         "additionalProperties": False,
     },
 }
