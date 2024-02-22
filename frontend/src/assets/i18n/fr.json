@@ -284,6 +284,11 @@
       "EmptyFile": "Le fichier sélectionné est vide",
       "FileColumn": "La première ligne du fichier doit correspondre au nom des colonnes",
       "FileNameTooBig": "Le nom du fichier est trop long. Il doit faire moins de {{maxFileNameLength}} caractères."
+    },
+    "Report": {
+      "Errors": {
+        "Entity": "Entité"
+      }
     }
   }
 }
