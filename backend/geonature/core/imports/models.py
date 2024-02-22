@@ -95,6 +95,11 @@ class ImportUserError(db.Model):
     column = db.Column("column_error", db.Unicode)
     rows = db.Column("id_rows", db.ARRAY(db.Integer))
     comment = db.Column(db.UnicodeText)
+    id_entity = db.Column(
+        db.Integer,
+        db.ForeignKey("gn_imports.bib_entities.id_entity", onupdate="CASCADE", ondelete="CASCADE"),
+    )
+    entity = db.relationship("Entity")
 
     def __str__(self):
         return f"<ImportError import={self.id_import},type={self.type.name},rows={self.rows}>"

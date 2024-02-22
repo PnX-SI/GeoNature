@@ -62,6 +62,7 @@ def report_error(imprt, entity, df, error):
         {
             "id_import": imprt.id_import,
             "id_error": error_type.pk,
+            "id_entity": entity.id_entity if entity else None,
             "column_error": column,
             "id_rows": ordered_invalid_rows,
             "comment": error.get("comment"),
