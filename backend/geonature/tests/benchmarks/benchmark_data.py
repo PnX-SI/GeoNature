@@ -1,3 +1,8 @@
+from geonature.utils.env import db
+import pytest
+from ref_geo.models import BibAreasTypes, LAreas
+from sqlalchemy import select
+
 benchmark_synthese_intersection_data_test_bbox = {
     "modif_since_validation": False,
     "geoIntersection": {
@@ -88,10 +93,47 @@ benchmark_synthese_intersection_data_test_complex_polygon = {
     },
 }
 
-benchmark_synthese_intersection_data_test_commune = {
-    "modif_since_validation": False,
-    "area_COM": [28612],
-}
+
+def benchmark_synthese_intersection_data_test_commune():
+    return {
+        "modif_since_validation": False,
+        "area_COM": [
+            db.session.scalars(
+                select(LAreas).join(BibAreasTypes).where(BibAreasTypes.type_code == "COM").limit(1)
+            )
+            .one()
+            .id_area
+        ],
+    }
+
+
+def benchmark_synthese_intersection_data_test_departement():
+    return {
+        "modif_since_validation": False,
+        "area_DEP": [
+            db.session.scalars(
+                select(LAreas.id_area)
+                .join(BibAreasTypes)
+                .where(BibAreasTypes.type_code == "DEP")
+                .limit(1)
+            ).first()
+        ],
+    }
+
+
+def benchmark_synthese_intersection_data_test_region():
+    return {
+        "modif_since_validation": False,
+        "area_REG": [
+            db.session.scalars(
+                select(LAreas.id_area)
+                .join(BibAreasTypes)
+                .where(BibAreasTypes.type_code == "REG")
+                .limit(1)
+            ).first()
+        ],
+    }
+
 
 benchmark_synthese_with_tree_taxon = {
     "modif_since_validation": False,
