@@ -62,14 +62,15 @@ def report_error(imprt, entity, df, error):
         {
             "id_import": imprt.id_import,
             "id_error": error_type.pk,
-            "id_entity": entity.id_entity if entity else None,
+            "id_entity": entity.id_entity,
             "column_error": column,
             "id_rows": ordered_invalid_rows,
             "comment": error.get("comment"),
         }
     )
     stmt = stmt.on_conflict_do_update(
-        constraint="t_user_errors_un",  # unique (import, error_type, column)
+        index_elements=("id_import", "id_entity", "id_error", "column_error"),
+        index_where=ImportUserError.id_entity.isnot(None),
         set_={
             "id_rows": func.array_cat(ImportUserError.rows, stmt.excluded["id_rows"]),
         },

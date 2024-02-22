@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "bfc90691737d"
-down_revision = "2b0b3bd0248c"
+down_revision = "02e9b8758709"
 branch_labels = None
 depends_on = None
 
@@ -37,14 +37,49 @@ def upgrade():
         onupdate="CASCADE",
         ondelete="CASCADE",
     )
-    pass
+    op.drop_constraint(
+        schema="gn_imports",
+        table_name="t_user_errors",
+        constraint_name="t_user_errors_un",
+    )
+    op.create_index(
+        index_name="t_user_errors_un",
+        schema="gn_imports",
+        table_name="t_user_errors",
+        columns=("id_import", "id_error", "column_error"),
+        unique=True,
+        postgresql_where="id_entity IS NULL",
+    )
+    op.create_index(
+        index_name="t_user_errors_entity_un",
+        schema="gn_imports",
+        table_name="t_user_errors",
+        columns=("id_import", "id_entity", "id_error", "column_error"),
+        unique=True,
+        postgresql_where="id_entity IS NOT NULL",
+    )
 
 
 def downgrade():
+    op.drop_index(
+        schema="gn_imports",
+        table_name="t_user_errors",
+        index_name="t_user_errors_entity_un",
+    )
+    op.drop_index(
+        schema="gn_imports",
+        table_name="t_user_errors",
+        index_name="t_user_errors_un",
+    )
+    op.create_unique_constraint(
+        constraint_name="t_user_errors_un",
+        schema="gn_imports",
+        table_name="t_user_errors",
+        columns=("id_import", "id_error", "column_error"),
+    )
     op.drop_constraint(
         schema="gn_imports",
         table_name="t_user_errors",
         constraint_name="t_user_errors_id_entity_fkey",
     )
     op.drop_column(schema="gn_imports", table_name="t_user_errors", column_name="id_entity")
-    pass
