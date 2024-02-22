@@ -187,20 +187,26 @@ class TestImportsOcchab:
             imported_import,
             {
                 # Stations errors
-                ("DUPLICATE_UUID", "unique_id_sinp_station", frozenset({4, 5})),
-                ("DATASET_NOT_FOUND", "unique_dataset_id", frozenset({6})),
-                ("DATASET_NOT_AUTHORIZED", "unique_dataset_id", frozenset({7})),
-                ("INVALID_UUID", "unique_dataset_id", frozenset({8})),
-                ("NO-GEOM", "Champs géométriques", frozenset({9})),
-                ("MISSING_VALUE", "date_min", frozenset({10})),
-                ("DUPLICATE_ENTITY_SOURCE_PK", "id_station_source", frozenset({14, 15})),
-                ("INVALID_UUID", "unique_id_sinp_station", frozenset({20, 21})),
+                ("DUPLICATE_UUID", "station", "unique_id_sinp_station", frozenset({4, 5})),
+                ("DATASET_NOT_FOUND", "station", "unique_dataset_id", frozenset({6})),
+                ("DATASET_NOT_AUTHORIZED", "station", "unique_dataset_id", frozenset({7})),
+                ("INVALID_UUID", "station", "unique_dataset_id", frozenset({8})),
+                ("NO-GEOM", "station", "Champs géométriques", frozenset({9})),
+                ("MISSING_VALUE", "station", "date_min", frozenset({10})),
+                ("DUPLICATE_ENTITY_SOURCE_PK", "station", "id_station_source", frozenset({14, 15})),
+                ("INVALID_UUID", "station", "unique_id_sinp_station", frozenset({20})),
                 # Habitats errors
-                ("ERRONEOUS_PARENT_ENTITY", "", frozenset({4, 5, 6, 7, 10, 14, 15, 19, 20})),
-                ("NO_PARENT_ENTITY", "id_station", frozenset({11})),
+                ("INVALID_UUID", "habitat", "unique_id_sinp_station", frozenset({20, 21})),
+                (
+                    "ERRONEOUS_PARENT_ENTITY",
+                    "habitat",
+                    "",
+                    frozenset({4, 5, 6, 7, 10, 14, 15, 19, 20}),
+                ),
+                ("NO_PARENT_ENTITY", "habitat", "id_station", frozenset({11})),
                 # Other errors
-                ("ORPHAN_ROW", "unique_id_sinp_station", frozenset({12})),
-                ("ORPHAN_ROW", "id_station_source", frozenset({13})),
+                ("ORPHAN_ROW", None, "unique_id_sinp_station", frozenset({12})),
+                ("ORPHAN_ROW", None, "id_station_source", frozenset({13})),
             },
         )
         assert imported_import.statistics == {"station_count": 3, "habitat_count": 5}
