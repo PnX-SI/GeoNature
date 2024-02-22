@@ -510,7 +510,7 @@ def get_import_errors(scope, imprt):
     """
     if not imprt.has_instance_permission(scope):
         raise Forbidden
-    return jsonify([error.as_dict(fields=["type"]) for error in imprt.errors])
+    return jsonify([error.as_dict(fields=["type", "entity"]) for error in imprt.errors])
 
 
 @blueprint.route("/<destination>/imports/<int:import_id>/source_file", methods=["GET"])
@@ -644,7 +644,7 @@ def export_pdf(scope, imprt):
     """
     if not imprt.has_instance_permission(scope):
         raise Forbidden
-    ctx = imprt.as_dict(fields=["errors", "errors.type", "dataset.dataset_name"])
+    ctx = imprt.as_dict(fields=["errors", "errors.type", "errors.entity", "dataset.dataset_name"])
 
     ctx["map"] = request.form.get("map")
     ctx["chart"] = request.form.get("chart")

@@ -1,7 +1,7 @@
 <div class="container">
     <div class="card border-danger">
         <div class="card-header bg-danger text-white text-center">
-            <b>Rapport d'erreur(s) </b> 
+            <b>Rapport d'erreur(s) </b>
         </div>
         <div class="card-body">
             <h3 class="underlined">
@@ -22,7 +22,6 @@
                 </div>
             </div>
 
-        
             <h3 class="underlined" *ngIf="importErrors"> Erreurs</h3>
             <div *ngIf="importErrors; then errors"></div>
             <ng-template #errors>
@@ -35,6 +34,7 @@
                            <th>Description erreur</th>
                            <th>Nombre d'erreur(s)</th>
                            <th>Numéro des lignes en erreur </th>
+                           <th>{{ "Import.Report.Errors.Entity" | translate }}</th>
                        </tr>
                    </thead>
                    <tbody>
@@ -44,9 +44,10 @@
                            <td> {{error.type.description}} <i *ngIf="error.comment"> <br> {{error.comment}} </i> </td>
                            <td> {{error.rows.length || ''}} </td>
                            <td> {{error.rows.join(', ')}} </td>
+                           <td> {{error.entity ? error.entity.label : ""}} </td>
                        </tr>
                    </tbody>
-                </table>        
+                </table>
             </ng-template>
             <h3 class="underlined" *ngIf="importWarnings"> Alertes </h3>
             <div *ngIf="importWarnings; then warnings"></div>
@@ -60,6 +61,7 @@
                         <th>Description alert</th>
                         <th>Nombre d'erreur(s)</th>
                         <th>Numéro des lignes en erreur </th>
+                        <th>{{ "Import.Report.Errors.Entity" | translate }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -69,6 +71,7 @@
                         <td> {{warning.type.description}} <i *ngIf="warning.comment"> <br> {{warning.comment}} </i> </td>
                         <td> {{warning.rows.length || ''}} </td>
                         <td> {{warning.rows.join(', ')}} </td>
+                        <td> {{error.entity ? error.entity.label : ""}} </td>
                     </tr>
                     </tbody>
                 </table>

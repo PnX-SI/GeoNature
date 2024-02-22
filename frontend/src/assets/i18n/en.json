@@ -226,5 +226,12 @@
     "type": "Media Type",
     "next": "Go to previous media",
     "previous": "Go to next media"
+  },
+  "Import": {
+    "Report": {
+      "Errors": {
+        "Entity": "Entity"
+      }
+    }
   }
 }
