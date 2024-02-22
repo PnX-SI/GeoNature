@@ -126,6 +126,7 @@
                 <th class="main-color">Type d'erreur</th>
                 <th class="main-color">Champ</th>
                 <th class="main-color">Nombre d'erreur(s)</th>
+                <th class="main-color">Entité</th>
             </tr>
           </thead>
           <tbody>
@@ -134,6 +135,7 @@
                 <td>{{ error.type.description }}</td>
                 <td>{{ error.column }}</td>
                 <td>{{ error.rows | length }}</td>
+                <td>{{ error.entity.label if error.entity else "" }}</td>
             </tr>
             {% endfor %}
           </tbody>
