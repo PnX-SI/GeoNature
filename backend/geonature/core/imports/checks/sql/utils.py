@@ -82,7 +82,11 @@ def report_erroneous_rows(imprt, entity, error_type, error_column, whereclause):
     }
 
     if entity is not None:
-        ImportUserError.id_entity: literal(entity.id_entity).label("id_entity")
+        insert_args.update(
+            {
+                ImportUserError.id_entity: literal(entity.id_entity).label("id_entity"),
+            }
+        )
 
     # Create the final insert statement
     error_select = select(insert_args.values()).alias("error")
