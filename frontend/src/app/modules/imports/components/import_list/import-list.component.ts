@@ -46,7 +46,7 @@ export class ImportListComponent implements OnInit {
     private importProcessService: ImportProcessService,
     public _csvExport: CsvExportService,
     public config: ConfigService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.onImportList(1);
@@ -64,7 +64,7 @@ export class ImportListComponent implements OnInit {
     const value = val.toString().toLowerCase().trim();
     this.search_string = value;
     this.onImportList(1);
-    
+
     // listes des colonnes selon lesquelles filtrer
   }
 
@@ -74,16 +74,18 @@ export class ImportListComponent implements OnInit {
   }
 
   private onImportList(page) {
-    this._ds.getImportList({ page: page, search: this.search_string }, this.destCode).subscribe((res) => {
-      this.history = res['imports'];
-      this.getImportsStatus();
+    this._ds
+      .getImportList({ page: page, search: this.search_string }, this.destCode)
+      .subscribe((res) => {
+        this.history = res['imports'];
+        this.getImportsStatus();
 
-      this.filteredHistory = this.history;
-      this.empty = res.length == 0;
-      this.total = res['count'];
-      this.limit = res['limit'];
-      this.offset = res['offset'];
-    });
+        this.filteredHistory = this.history;
+        this.empty = res.length == 0;
+        this.total = res['count'];
+        this.limit = res['limit'];
+        this.offset = res['offset'];
+      });
   }
   private getImportsStatus() {
     this.history.forEach((h) => {
