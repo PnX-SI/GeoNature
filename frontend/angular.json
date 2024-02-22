@@ -33,6 +33,11 @@
             "assets": [
               "src/assets",
               {
+                "glob": "*.json",
+                "input": "../custom/translations",
+                "output": "./assets/i18n/override/"
+              },
+              {
                 "glob": "**/*",
                 "input": "external_modules/*/assets/",
                 "output": "./assets/"
