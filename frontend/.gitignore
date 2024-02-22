@@ -11,7 +11,7 @@ src/app/routing/app-routing.module.ts
 #tsconfig
 tsconfig.json
 #i18n
-i18n/*.override.json
+src/**/i18n/*.override.json
 
 # custom components
 src/custom/components/**/*.component.ts
