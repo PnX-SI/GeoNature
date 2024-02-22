@@ -22,7 +22,7 @@ class BenchmarkTest:
     @pytest.mark.usefixtures("client_class", "temporary_transaction")
         class TestBenchie:
             pass
-    TestBenchie.test_print = bench.generate_func_test()
+    TestBenchie.test_print = bench()
     ```
 
     If a function or its argument depend on the pytest function context, use the GetLatter class : GetLatter("<python expression">). For example, to use
@@ -42,8 +42,6 @@ class BenchmarkTest:
         ----------
         function : Callable | GetLatter
             function that will be benchmark
-        name_benchmark : str
-            name of the benchmark
         function_args : Sequence[Any | GetLatter]
             args for the function
         function_kwargs : Dict[str,Any]
@@ -73,7 +71,6 @@ class BenchmarkTest:
 
         fixtures = self.function_kwargs.pop("fixtures", [])
         user_profile = self.function_kwargs.pop("user_profile", None)
-        imports = self.function_kwargs.pop("imports", [])
 
         func, args, kwargs = self.function, self.function_args, self.function_kwargs
 
