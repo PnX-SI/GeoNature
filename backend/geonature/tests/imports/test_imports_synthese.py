@@ -39,7 +39,7 @@ from geonature.core.imports.models import (
 from geonature.core.imports.utils import insert_import_data_in_transient_table
 
 from .jsonschema_definitions import jsonschema_definitions
-from .utils import assert_import_errors
+from .utils import assert_import_errors as _assert_import_errors
 
 
 tests_path = Path(__file__).parent
@@ -52,6 +52,10 @@ valid_file_invalid_rows = reduce(or_, [rows for _, _, rows in valid_file_expecte
 valid_file_line_count = 6
 valid_file_column_count = 76
 valid_file_taxa_count = 2
+
+
+def assert_import_errors(imprt, expected_errors):
+    return _assert_import_errors(imprt, expected_errors, entity_code="observation")
 
 
 @pytest.fixture(scope="class")
