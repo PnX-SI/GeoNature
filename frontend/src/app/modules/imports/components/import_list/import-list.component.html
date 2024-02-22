@@ -11,6 +11,7 @@
               'Import.Destinations' | translate | lowercase
             }}"
             [parentFormControl]="selectDestinationForm"
+            onchange="updateDest"
             class="flex-fill pr-1"
           ></pnx-destinations>
           <div class="flex-fill">
@@ -28,6 +29,7 @@
               placeholder="{{ 'Search' | translate }}"
               aria-label="Search"
               aria-describedby="basic-addon1"
+              onchange="updateFilter"
             />
           </div>
         </div>
