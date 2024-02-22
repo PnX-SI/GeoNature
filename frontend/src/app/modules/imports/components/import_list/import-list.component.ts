@@ -35,6 +35,7 @@ export class ImportListComponent implements OnInit {
   public inErrorImport: Array<number> = [];
   public checkingImport: Array<number> = [];
   private fetchTimeout: any;
+  private destCode: string = '';
 
   constructor(
     public _cruvedStore: CruvedStoreService,
@@ -48,21 +49,10 @@ export class ImportListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.onImportList(1, '');
+    this.onImportList(1);
     this.fetchTimeout = setTimeout(() => {
       this.updateImports();
     }, 15000);
-    this.search.valueChanges.subscribe((value) => {
-      setTimeout(() => {
-        if (value == this.search.value) {
-          this.updateFilter(value);
-        }
-      }, 500);
-    });
-
-    this.selectDestinationForm.valueChanges.subscribe((desCode: string) => {
-      this.updateOnDest(desCode);
-    });
   }
 
   ngOnDestroy() {
@@ -72,26 +62,30 @@ export class ImportListComponent implements OnInit {
 
   updateFilter(val: any) {
     const value = val.toString().toLowerCase().trim();
-    this.onImportList(1, value);
     this.search_string = value;
+    this.onImportList(1);
+
     // listes des colonnes selon lesquelles filtrer
   }
 
-  updateOnDest(destCode: string) {
-    this.onImportList(1, '', destCode);
+  updateDest(destCode: string) {
+    this.destCode = destCode;
+    this.onImportList(1);
   }
 
-  private onImportList(page, search, destination: string = null) {
-    this._ds.getImportList({ page: page, search: search }, destination).subscribe((res) => {
-      this.history = res['imports'];
-      this.getImportsStatus();
+  private onImportList(page) {
+    this._ds
+      .getImportList({ page: page, search: this.search_string }, this.destCode)
+      .subscribe((res) => {
+        this.history = res['imports'];
+        this.getImportsStatus();
 
-      this.filteredHistory = this.history;
-      this.empty = res.length == 0;
-      this.total = res['count'];
-      this.limit = res['limit'];
-      this.offset = res['offset'];
-    });
+        this.filteredHistory = this.history;
+        this.empty = res.length == 0;
+        this.total = res['count'];
+        this.limit = res['limit'];
+        this.offset = res['offset'];
+      });
   }
   private getImportsStatus() {
     this.history.forEach((h) => {
