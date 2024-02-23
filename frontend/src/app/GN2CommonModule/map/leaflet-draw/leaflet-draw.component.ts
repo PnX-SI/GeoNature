@@ -55,7 +55,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     public mapservice: MapService,
     private _commonService: CommonService,
     public config: ConfigService
-  ) { }
+  ) {}
 
   ngOnInit() {
     // HACK for leaflet draw compatibility
@@ -158,7 +158,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         }
       }
     });
-
   }
 
   getGeojsonFromFeatureGroup(layerType) {
