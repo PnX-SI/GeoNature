@@ -349,7 +349,7 @@ def sensi_report(ds_id=None):
         Synthese.id_synthese, TNomenclatures.cd_nomenclature, TNomenclatures.label_fr
     )
 
-    data = db.session.scalars(query).all()
+    data = db.session.execute(query).all()
 
     str_productor = ""
     header = ""
