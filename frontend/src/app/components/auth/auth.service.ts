@@ -29,6 +29,7 @@ export class AuthService {
   token: string;
   loginError: boolean;
   public isLoading = false;
+  private prefix: string = "gn_";
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -38,14 +39,14 @@ export class AuthService {
     private _routingService: RoutingService,
     private moduleService: ModuleService,
     public config: ConfigService
-  ) {}
+  ) { }
 
   setCurrentUser(user) {
-    localStorage.setItem('current_user', JSON.stringify(user));
+    localStorage.setItem(this.prefix + 'current_user', JSON.stringify(user));
   }
 
   getCurrentUser() {
-    let currentUser = localStorage.getItem('current_user');
+    let currentUser = localStorage.getItem(this.prefix + 'current_user');
     return JSON.parse(currentUser);
   }
 
@@ -72,8 +73,8 @@ export class AuthService {
   }
 
   setSession(authResult) {
-    localStorage.setItem('gn_id_token', authResult.token);
-    localStorage.setItem('expires_at', authResult.expires);
+    localStorage.setItem(this.prefix + 'id_token', authResult.token);
+    localStorage.setItem(this.prefix + 'expires_at', authResult.expires);
   }
 
   signinUser(user: any) {
@@ -126,7 +127,7 @@ export class AuthService {
   }
 
   getExpiration() {
-    const expiration = localStorage.getItem('expires_at');
+    const expiration = localStorage.getItem(this.prefix + 'expires_at');
     return moment(expiration).utc();
   }
 
@@ -150,7 +151,7 @@ export class AuthService {
 
   private cleanLocalStorage() {
     // Remove only local storage items need to clear when user logout
-    localStorage.removeItem('current_user');
+    localStorage.removeItem(this.prefix + 'current_user');
     localStorage.removeItem('modules');
   }
 
