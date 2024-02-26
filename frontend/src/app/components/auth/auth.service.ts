@@ -29,7 +29,7 @@ export class AuthService {
   token: string;
   loginError: boolean;
   public isLoading = false;
-  private prefix: string = "gn_";
+  private prefix: string = 'gn_';
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -39,7 +39,7 @@ export class AuthService {
     private _routingService: RoutingService,
     private moduleService: ModuleService,
     public config: ConfigService
-  ) { }
+  ) {}
 
   setCurrentUser(user) {
     localStorage.setItem(this.prefix + 'current_user', JSON.stringify(user));
