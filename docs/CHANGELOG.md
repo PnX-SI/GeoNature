@@ -24,7 +24,6 @@ de versions des librairies python utilisées comme Flask (3.0), SQLAlchemy (1.4)
 - [Carte] Mise à jour des exemples d'URL de fonds de carte IGN (#2789)
 - [Authentification] Possibilité d'ajouter des liens externes (#2927)
 - [Synthèse] Ajout du groupe 3 INPN dans les filtres de la Synthèse (#2621)
-- 
 
 
 **🐛 Corrections**
@@ -40,28 +39,18 @@ de versions des librairies python utilisées comme Flask (3.0), SQLAlchemy (1.4)
 
 - Mise à jour vers SQLA 1.4 (#2751)
 - Mise à jour vers Flask 3 (#2751)
+- Mise à jour de Black en version 24 (#2879)
+- Suppression des modules dépréciés : `utilsgeometry.py`, `utilssqlalchemy.py`, `config_manager.py` (#2751)
 - Intégration la documentation des composants Frontend (avec `compodoc`) et des fonctions et classes du backend (avec `sphinx-autoapi`) (#2765)
 - Abandon du système d'authentification par cookie. Le token d'authentification (JWT) est maintenant passé dans chaque appel à l'API dans le header HTTP "Authorization Bearer". Il est aussi fourni par la route de login du sous module d'authentification et stocké dans le localStorage (#2586 - Fix : #2161 #490 #2574)
-- Suppression app.config.ts (#2747)
-- Correction des paramètres du linter python à 100 caractères (#2847)
-- When polymorphic modules are declared in database, but absent from venv, this raise a sqlalchemy polymorphic error. This commit fallback missing polymorphic identities on default "base" identity (#2792)
-- Drop support for Debian 10 and python <3.9 (#2751)
-* Update to Flask 3.0 (#2751)
-* Update to SQLAlchemy 1.4 (query to 2.0 style, fix warnings and tests)
-* new requirements-dev.txt (#2751)
-* Increase test coverage (#2751)
-  - gn_meta/repositories 
-  - gn_meta/mtd
-  - occtax
-  - occhab
-  - utilstoml
-  - install-gn-module commands
-* (temporary) use of CustomSelect instead of Query --> Station (deleted later)
-* Change fixtures: datasets + stations + user (#2751)
-* Remove deprecated and unused modules (utilsgeometry.py, utilssqlalchemy.py,config_manager.py) (#2751)
-* DOC SQLA 1.4 ?
-* Mettre à jour la version de Black (#2879)
-* Gestion du login avec `flask-login` : #2586
+- Suppression du fichier `app.config.ts` (#2747)
+- Passage du paramètre `--line-length` de Black de 99 à 100 caractères (#2847)
+- Modification de `TModules` pour éviter de lever l'erreur de polymorphisme de SQLAlchemy (#2792)
+- Fin du support de Debian 10 et de Python 3.7 (#2751)
+* Changement de l'ensemble des requêtes SQLAlchemy au style 2.0 (#2751)
+* Augmentation du nombre de tests unitaires dans : `gn_meta`, `occtax`, `occhab`, `synthese` (#2751) 
+* Modification des `fixtures` : `datasets`, `stations` + `user`(#2751). Possibilité de créer des utilisateurs de tests avec des permissions plus fines (#2915)
+* 
 
 **📝 Merci aux contributeurs**
 
