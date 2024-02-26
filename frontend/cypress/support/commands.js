@@ -11,9 +11,9 @@ Cypress.Commands.add("geonatureLogin", () => {
     })
     .its('body')
     .then(body => {
-      window.localStorage.setItem("expires_at", body.expires);
+      window.localStorage.setItem("gn_expires_at", body.expires);
       window.localStorage.setItem("gn_id_token", body.token);
-      window.localStorage.setItem('current_user', JSON.stringify(body.user));
+      window.localStorage.setItem('gn_current_user', JSON.stringify(body.user));
     })
   })
 });
