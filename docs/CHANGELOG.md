@@ -4,57 +4,64 @@ CHANGELOG
 2.14.0 (unreleased)
 -------------------
 
-Cette nouvelle version de GeoNature propose de nouvelles fonctionnalités comme le floutage de données sensibles, un système d'auto-validation. Elle intégre plusieurs évolutions
-de versions des librairies python utilisées comme Flask (3.0), SQLAlchemy (1.4).
+Cette nouvelle version de GeoNature propose de nouvelles fonctionnalités comme le floutage de données sensibles dans le module Synthèse ainsi qu'un système d'auto-validation des données basé sur les profils de taxons. 
+Elle intégre aussi plusieurs mises à jour des versions des librairies python utilisées comme Flask (3.0) et SQLAlchemy (1.4).
 
-**:warning: Compatibilité et Support :warning:**
+**⚠️ Compatibilité et Support**
 
-- **Suppression du support de Debian 10** Le support officiel de Debian 10 est terminée
-- **Suppression du support Python 3.7** Une mise à jour vers Python 3.9 est nécessaire !
-- **Mise à jour de SQLAlchemy 1.4** SQLAlchemy 1.4 est une version de transition pour la version 2.0. Si la retro-compatibilité est assurée pour une majeure partie du code s'appuyant sur la 1.3, il est fortement conseillée de mettre à jour les requêtes dans vos modules GeoNature ! Vous pouvez vous appuyez sur la documentation officielle de SQLAlchemy : https://docs.sqlalchemy.org/en/20/changelog/migration_20.html#migration-orm-usage.
-* **Supression du fichier `app.config.ts`** Prévue et annoncé, la suppression de `app.config.ts` est desormé effective !
-
+- Suppression du support de Debian 10
+- Suppression du support de Python 3.7
+- Mise à jour de SQLAlchemy 1.3 à 1.4. SQLAlchemy 1.4 est une version de transition pour la version 2.0. Si la rétrocompatibilité est assurée pour une majeure partie du code s'appuyant sur la 1.3, il est fortement conseillé de mettre à jour les requêtes de la base de données dans vos modules GeoNature. Vous pouvez vous appuyez sur la documentation officielle de SQLAlchemy : https://docs.sqlalchemy.org/en/20/changelog/migration_20.html#migration-orm-usage.  
+  La compatibilité est assurée avec les modules Export (version 1.7.0), Import (version 2.3.0), Dashboard (1.5.0) et Monitoring (0.7.2)
+- Supression du fichier `app.config.ts`
 
 **🚀 Nouveautés**
 
 - [Synthèse] Floutage des données sensibles (#2558)
-- [Validation] Fonction d'auto-validation basée sur les profils de taxons (non activée par défaut et surcouchable avec une fonction spécifique) (#2600, #2768)
-- [RefGeo] Répercussion du remplacement du champs `geojson_4326` par `geom_4326` dans la table `l_areas` (#2809)
-- [Documentation] Ajout du fichier source des diagramme de documentation (#2760)
+  - Il est désormais possible de définir un filtre "Flouter les données sensibles" sur les actions Lire et Exporter du module Synthèse
+  - Pour les utilisateurs qui ont ce filtre de permission appliqué, les données sensibles seront floutées lors de leur affichage ou de leur export dans le module Synthèse, en fonction des mailles ou zonages définis dans les règles de sensibilité du SINP
+  - En mode Mailles, les données sensibles dont la géométrie floutée est plus grande que la maille affichée sont exclues
+  - Dans l'onglet "Zonage" des fiches des observations de la Synthèse, on affiche uniquement les zonages plus grands que la géométrie floutée des données sensibles
+  - Si un utilisateur dispose de permissions filtrées sur les données sensibles, alors les filtres par zonage s'appuie sur une intersection spatiale avec les géométries floutées pour ne pas renvoyer d'informations plus précises sur les données floutées
+  - La documentation sur le sensibilité des données a été complétée : https://docs.geonature.fr/admin-manual.html#gestion-de-la-sensibilite)
+  - Le paramètre `BLUR_SENSITIVE_OBSERVATIONS` permet de basculer sur l'exclusion des données sensibles plutôt que leur floutage, comme implémenté dans la version 2.13
+- [Validation] Fonction d'auto-validation basée sur les profils de taxons (non activée par défaut et surcouchable avec une fonction spécifique) (#2600)
+- [Synthèse] Ajout des groupes 3 INPN dans les filtres et les exports de la Synthèse (#2621, #2637)
+- [Occtax] Ajout de la possibilité d'associer des nomenclatures à des groupes 3 INPN (#2684)
+- [Authentification] Possibilité d'ajouter des liens externes (#2917)
 - [Carte] Mise à jour des exemples d'URL de fonds de carte IGN (#2789)
-- [Authentification] Possibilité d'ajouter des liens externes (#2927)
-- [Synthèse] Ajout du groupe 3 INPN dans les filtres de la Synthèse (#2621)
-
+- [RefGeo] Répercussion du remplacement du champs `geojson_4326` par `geom_4326` dans la table `l_areas` (#2809)
+- [Documentation] Ajout du fichier source des diagrammes de documentation (#2760)
 
 **🐛 Corrections**
 
 - Correction de l'affiche du nom de la page quand on revient à la page d'accueil (#2795)
 - [Synthèse] Correction du tri des colonnes dans la liste des observations (#1943)
-- Conservation de la géométrie existante lorsqu'on annule modification d'une géométrie (#2778)
+- [Synthèse] Correction de l'affichage du nom du taxon observé quand les profils de taxons sont désactivés (#2820)
+- [Carte] Conservation de la géométrie existante lorsqu'on annule la modification d'une géométrie (#2778)
 - [Métadonnées] Correction de l'affichage du type de financement sur les fiches détail des CA et JDD (#2840)
-- [Carte] L'annulation d'un géométrie retourne la géométrie précédente (#2779, #2930)
-- 
+- [Occhab] Correction des permissions avec portée limitée (#2909)
+- [Occtax] Correction de la suppression d'un champ additionnel (#2923)
 
 **💻 Développement**
 
-- Mise à jour vers SQLA 1.4 (#2751)
+- Mise à jour vers SQLAlchemy 1.4 (#2751)
 - Mise à jour vers Flask 3 (#2751)
 - Mise à jour de Black en version 24 (#2879)
 - Suppression des modules dépréciés : `utilsgeometry.py`, `utilssqlalchemy.py`, `config_manager.py` (#2751)
-- Intégration la documentation des composants Frontend (avec `compodoc`) et des fonctions et classes du backend (avec `sphinx-autoapi`) (#2765)
-- Abandon du système d'authentification par cookie. Le token d'authentification (JWT) est maintenant passé dans chaque appel à l'API dans le header HTTP "Authorization Bearer". Il est aussi fourni par la route de login du sous module d'authentification et stocké dans le localStorage (#2586 - Fix : #2161 #490 #2574)
+- Intégration la documentation automatique des composants Frontend (avec `compodoc`) et des fonctions et classes du backend (avec `sphinx-autoapi`) (#2765)
+- Abandon du système d'authentification par cookie, sauf pour le module Admin. Le token d'authentification (JWT) est maintenant passé dans chaque appel à l'API dans le header HTTP "Authorization Bearer". Il est aussi fourni par la route de login du sous-module d'authentification et stocké dans le localStorage (#2586, #2161, #490, #2574)
 - Suppression du fichier `app.config.ts` (#2747)
 - Passage du paramètre `--line-length` de Black de 99 à 100 caractères (#2847)
 - Modification de `TModules` pour éviter de lever l'erreur de polymorphisme de SQLAlchemy (#2792)
-- Fin du support de Debian 10 et de Python 3.7 (#2751)
+- Fin du support de Debian 10 et de Python 3.7 (#1787)
 * Changement de l'ensemble des requêtes SQLAlchemy au style 2.0 (#2751)
 * Augmentation du nombre de tests unitaires dans : `gn_meta`, `occtax`, `occhab`, `synthese` (#2751) 
 * Modification des `fixtures` : `datasets`, `stations` + `user`(#2751). Possibilité de créer des utilisateurs de tests avec des permissions plus fines (#2915)
-* 
 
 **📝 Merci aux contributeurs**
 
-@
+@amandine-sahl, @Pierre-Narcisi, @jacquesfize, @TheoLechemia, @bouttier, @mvergez, @andriacap, @edelclaux, @VincentCauchois, @MoulinZ, @pierre56, @camillemonchicourt
 
 2.13.4 (2023-12-15)
 -------------------
