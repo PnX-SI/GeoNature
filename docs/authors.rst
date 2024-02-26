@@ -75,3 +75,4 @@ Contributeurs
 * dece
 * Mathieu Roudaut (CREA Mont-Blanc)
 * Marie-Laure Séguin (CEN Normandie)
+* Zacharie Moulin (RNF)
