@@ -97,7 +97,7 @@ export class MetadataService {
         queryString
       )
       .subscribe((datasets) => {
-        af.t_datasets = datasets;
+        af.datasets = datasets;
       });
   }
 
