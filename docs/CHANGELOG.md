@@ -55,9 +55,9 @@ Elle intégre aussi plusieurs mises à jour des versions des librairies python u
 - Passage du paramètre `--line-length` de Black de 99 à 100 caractères (#2847)
 - Modification de `TModules` pour éviter de lever l'erreur de polymorphisme de SQLAlchemy (#2792)
 - Fin du support de Debian 10 et de Python 3.7 (#1787)
-* Changement de l'ensemble des requêtes SQLAlchemy au style 2.0 (#2751)
-* Augmentation du nombre de tests unitaires dans : `gn_meta`, `occtax`, `occhab`, `synthese` (#2751) 
-* Modification des `fixtures` : `datasets`, `stations` + `user`(#2751). Possibilité de créer des utilisateurs de tests avec des permissions plus fines (#2915)
+- Changement de l'ensemble des requêtes SQLAlchemy au style 2.0 (#2751)
+- Augmentation du nombre de tests unitaires dans : `gn_meta`, `occtax`, `occhab`, `synthese` (#2751) 
+- Modification des `fixtures` : `datasets`, `stations` + `user`(#2751). Possibilité de créer des utilisateurs de tests avec des permissions plus fines (#2915)
 
 **📝 Merci aux contributeurs**
 
