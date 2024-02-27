@@ -40,7 +40,7 @@ export class AfFormComponent implements OnInit {
       .pipe(
         switchMap((params) => {
           return params['id']
-            ? this.getAcquisitionFramework(params['id'], { exclude: ['datasets'] })
+            ? this.getAcquisitionFramework(params['id'], { exclude: ['t_datasets'] })
             : of(null);
         })
       )
