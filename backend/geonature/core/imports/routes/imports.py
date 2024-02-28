@@ -644,7 +644,15 @@ def export_pdf(scope, imprt):
     """
     if not imprt.has_instance_permission(scope):
         raise Forbidden
-    ctx = imprt.as_dict(fields=["errors", "errors.type", "errors.entity", "dataset.dataset_name"])
+    ctx = imprt.as_dict(
+        fields=[
+            "errors",
+            "errors.type",
+            "errors.entity",
+            "dataset.dataset_name",
+            "destination.statistics_labels",
+        ]
+    )
 
     ctx["map"] = request.form.get("map")
     ctx["chart"] = request.form.get("chart")
@@ -656,6 +664,14 @@ def export_pdf(scope, imprt):
         "report",
     ]
     ctx["url"] = "/".join(url_list)
+
+    ctx["statistics_formated"] = {}
+
+    for label_dict in ctx["destination"]["statistics_labels"]:
+        key = label_dict["value"]
+        if label_dict["key"] in ctx["statistics"]:
+            ctx["statistics_formated"][key] = ctx["statistics"][label_dict["key"]]
+
     pdf_file = generate_pdf_from_template("import_template_pdf.html", ctx)
     return send_file(
         BytesIO(pdf_file),
