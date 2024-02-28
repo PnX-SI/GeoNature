@@ -162,21 +162,22 @@ def create_app(with_external_mods=True):
         g._permissions_by_user = {}
         g._permissions = {}
 
-    if config.get("SENTRY_DSN"):
-        from sentry_sdk import set_tag, set_user
+    # FIXME : order of @app.before_request is random thus g.current_user can be empty...
+    # if config.get("SENTRY_DSN"):
+    #     from sentry_sdk import set_tag, set_user
 
-        @app.before_request
-        def set_sentry_context():
-            if "FLASK_REQUEST_ID" in request.environ:
-                set_tag("request.id", request.environ["FLASK_REQUEST_ID"])
-            if g.current_user:
-                set_user(
-                    {
-                        "id": g.current_user.id_role,
-                        "username": g.current_user.identifiant,
-                        "email": g.current_user.email,
-                    }
-                )
+    #     @app.before_request
+    #     def set_sentry_context():
+    #         if "FLASK_REQUEST_ID" in request.environ:
+    #             set_tag("request.id", request.environ["FLASK_REQUEST_ID"])
+    #         if g.current_user:
+    #             set_user(
+    #                 {
+    #                     "id": g.current_user.id_role,
+    #                     "username": g.current_user.identifiant,
+    #                     "email": g.current_user.email,
+    #                 }
+    #             )
 
     admin.init_app(app)
 
