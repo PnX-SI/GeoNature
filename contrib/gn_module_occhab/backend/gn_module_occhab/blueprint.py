@@ -2,7 +2,7 @@ import datetime
 import json
 import geojson
 from geonature.core.gn_meta.models.aframework import TAcquisitionFramework
-from geonature.core.gn_meta.models.commons import CorDatasetActor
+from geonature.core.gn_meta.models.commons import CorAcquisitionFrameworkActor, CorDatasetActor
 from geonature.core.gn_meta.models.datasets import TDatasets
 from marshmallow import EXCLUDE, INCLUDE
 
@@ -118,7 +118,7 @@ def get_station(id_station, scope):
         joinedload_when_scope = [
             joinedload(TDatasets.cor_dataset_actor).options(joinedload(CorDatasetActor.role)),
             joinedload(TDatasets.acquisition_framework).options(
-                joinedload(TAcquisitionFramework.cor_af_actor)
+                joinedload(TAcquisitionFramework.cor_af_actor).options(joinedload(CorAcquisitionFrameworkActor.role))
             ),
         ]
     station = (
