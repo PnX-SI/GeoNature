@@ -45,7 +45,7 @@ Elle intégre aussi plusieurs mises à jour des versions des librairies python u
 
 **💻 Développement**
 
-- Mise à jour vers SQLAlchemy 1.4 (#2751)
+- Mise à jour vers SQLAlchemy 1.4 (#1812)
 - Mise à jour vers Flask 3 (#2751)
 - Mise à jour de Black en version 24 (#2879)
 - Suppression des modules dépréciés : `utilsgeometry.py`, `utilssqlalchemy.py`, `config_manager.py` (#2751)
