@@ -118,7 +118,9 @@ def get_station(id_station, scope):
         joinedload_when_scope = [
             joinedload(TDatasets.cor_dataset_actor).options(joinedload(CorDatasetActor.role)),
             joinedload(TDatasets.acquisition_framework).options(
-                joinedload(TAcquisitionFramework.cor_af_actor).options(joinedload(CorAcquisitionFrameworkActor.role))
+                joinedload(TAcquisitionFramework.cor_af_actor).options(
+                    joinedload(CorAcquisitionFrameworkActor.role)
+                )
             ),
         ]
     station = (
