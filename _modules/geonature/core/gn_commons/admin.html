@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_commons.admin &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.gn_commons.admin</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.gn_commons.admin</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span><span class="p">,</span> <span class="n">flash</span><span class="p">,</span> <span class="n">request</span>
+<span class="kn">from</span> <span class="nn">flask_admin.contrib.sqla</span> <span class="kn">import</span> <span class="n">ModelView</span>
+<span class="kn">from</span> <span class="nn">flask_admin.form</span> <span class="kn">import</span> <span class="n">BaseForm</span>
+<span class="kn">from</span> <span class="nn">wtforms</span> <span class="kn">import</span> <span class="n">validators</span><span class="p">,</span> <span class="n">Form</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">select</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.admin.utils</span> <span class="kn">import</span> <span class="n">CruvedProtectedMixin</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.models</span> <span class="kn">import</span> <span class="n">TModules</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.models</span> <span class="kn">import</span> <span class="n">PermObject</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.schemas</span> <span class="kn">import</span> <span class="n">TAdditionalFieldsSchema</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">DB</span>
+
+
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+
+<div class="viewcode-block" id="log">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.log">[docs]</a>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="TAdditionalFieldsForm">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TAdditionalFieldsForm">[docs]</a>
+<span class="k">class</span> <span class="nc">TAdditionalFieldsForm</span><span class="p">(</span><span class="n">BaseForm</span><span class="p">):</span>
+<div class="viewcode-block" id="TAdditionalFieldsForm.validate">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TAdditionalFieldsForm.validate">[docs]</a>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extra_validators</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">request</span><span class="o">.</span><span class="n">endpoint</span> <span class="o">==</span> <span class="s2">&quot;tadditionalfields.delete_view&quot;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">TAdditionalFieldsSchema</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;additional field validation error&quot;</span><span class="p">)</span>
+                <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;The form has errors&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">field_values</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Value input must contain a list of dict with value/label key for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;type_widget&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> widget &quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">extra_validators</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BibFieldAdmin">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.BibFieldAdmin">[docs]</a>
+<span class="k">class</span> <span class="nc">BibFieldAdmin</span><span class="p">(</span><span class="n">CruvedProtectedMixin</span><span class="p">,</span> <span class="n">ModelView</span><span class="p">):</span>
+<div class="viewcode-block" id="BibFieldAdmin.module_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.BibFieldAdmin.module_code">[docs]</a>
+    <span class="n">module_code</span> <span class="o">=</span> <span class="s2">&quot;ADMIN&quot;</span></div>
+
+<div class="viewcode-block" id="BibFieldAdmin.object_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.BibFieldAdmin.object_code">[docs]</a>
+    <span class="n">object_code</span> <span class="o">=</span> <span class="s2">&quot;ADDITIONAL_FIELDS&quot;</span></div>
+
+
+<div class="viewcode-block" id="BibFieldAdmin.form_base_class">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.BibFieldAdmin.form_base_class">[docs]</a>
+    <span class="n">form_base_class</span> <span class="o">=</span> <span class="n">TAdditionalFieldsForm</span></div>
+
+<div class="viewcode-block" id="BibFieldAdmin.form_columns">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.BibFieldAdmin.form_columns">[docs]</a>
+    <span class="n">form_columns</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;field_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;field_label&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;type_widget&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;modules&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;objects&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;datasets&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;required&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;quantitative&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;unity&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;field_values&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;default_value&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;field_order&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;exportable&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bib_nomenclature_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;id_list&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;additional_attributes&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibFieldAdmin.column_exclude_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.BibFieldAdmin.column_exclude_list">[docs]</a>
+    <span class="n">column_exclude_list</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;field_values&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;additional_attributes&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;key_label&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;key_value&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;multiselect&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;api&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;id_list&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;unity&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BibFieldAdmin.column_display_all_relations">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.BibFieldAdmin.column_display_all_relations">[docs]</a>
+    <span class="n">column_display_all_relations</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="BibFieldAdmin.form_args">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.BibFieldAdmin.form_args">[docs]</a>
+    <span class="n">form_args</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;field_name&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Nom du champ&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;bib_nomenclature_type&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Type de nomenclature&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;field_label&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Label du champ&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Obligatoire&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;quantitative&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Quantitatif&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;unity&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Unité&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;field_values&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Valeurs&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;default_value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Valeur par défaut&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;field_order&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Ordre&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;additional_attributes&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Attribut additionnels&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;modules&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;query_factory&quot;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+                <span class="n">select</span><span class="p">(</span><span class="n">TModules</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                    <span class="n">TModules</span><span class="o">.</span><span class="n">module_code</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span>
+                        <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;ADDITIONAL_FIELDS&quot;</span><span class="p">][</span><span class="s2">&quot;IMPLEMENTED_MODULES&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;objects&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;query_factory&quot;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+                <span class="n">select</span><span class="p">(</span><span class="n">PermObject</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                    <span class="n">PermObject</span><span class="o">.</span><span class="n">code_object</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span>
+                        <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;ADDITIONAL_FIELDS&quot;</span><span class="p">][</span><span class="s2">&quot;IMPLEMENTED_OBJECTS&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="BibFieldAdmin.column_descriptions">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.BibFieldAdmin.column_descriptions">[docs]</a>
+    <span class="n">column_descriptions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;bib_nomenclature_type&quot;</span><span class="p">:</span> <span class="s2">&quot;Si Type widget = Nomenclature&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;field_label&quot;</span><span class="p">:</span> <span class="s2">&quot;Label du champ en interface&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;field_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Nom du champ en base de donnée&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;field_values&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;&quot;Obligatoire si widget = select/multiselect/checkbox,radio (Format JSON : tableau de &#39;value/label&#39;. Utilisez des doubles quotes pour les valeurs et les clés). </span>
+<span class="s2">            Exemple [{&quot;label&quot;: &quot;trois&quot;, &quot;value&quot;: 3}, {&quot;label&quot;: &quot;quatre&quot;, &quot;value&quot;: 4}]&quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;default_value&quot;</span><span class="p">:</span> <span class="s2">&quot;La valeur par défaut doit être une des valeurs du champs &#39;Valeurs&#39; ci-dessus. Pour les valeurs textuelles, il n&#39;est pas nécessaire de remettre la valeur entre guillement&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;id_list&quot;</span><span class="p">:</span> <span class="s2">&quot;Identifiant en BDD de la liste (pour Type widget = taxonomy/observers)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;field_order&quot;</span><span class="p">:</span> <span class="s2">&quot;Numéro d&#39;ordonnancement du champs (si plusieurs champs pour le même module/objet/JDD)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;modules&quot;</span><span class="p">:</span> <span class="s2">&quot;Module(s) auquel le champs est rattaché. *Obligatoire&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;objects&quot;</span><span class="p">:</span> <span class="s2">&quot;Objet(s) auquel le champs est rattaché. *Obligatoire&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;datasets&quot;</span><span class="p">:</span> <span class="s2">&quot;Jeu(x) de donnés auquel le champs est rattaché&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TMobileAppsAdmin">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TMobileAppsAdmin">[docs]</a>
+<span class="k">class</span> <span class="nc">TMobileAppsAdmin</span><span class="p">(</span><span class="n">CruvedProtectedMixin</span><span class="p">,</span> <span class="n">ModelView</span><span class="p">):</span>
+<div class="viewcode-block" id="TMobileAppsAdmin.module_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TMobileAppsAdmin.module_code">[docs]</a>
+    <span class="n">module_code</span> <span class="o">=</span> <span class="s2">&quot;ADMIN&quot;</span></div>
+
+<div class="viewcode-block" id="TMobileAppsAdmin.object_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TMobileAppsAdmin.object_code">[docs]</a>
+    <span class="n">object_code</span> <span class="o">=</span> <span class="s2">&quot;MOBILE_APPS&quot;</span></div>
+
+
+<div class="viewcode-block" id="TMobileAppsAdmin.column_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TMobileAppsAdmin.column_list">[docs]</a>
+    <span class="n">column_list</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;app_code&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;relative_path_apk&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;url_apk&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;package&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;version_code&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMobileAppsAdmin.column_labels">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TMobileAppsAdmin.column_labels">[docs]</a>
+    <span class="n">column_labels</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;app_code&quot;</span><span class="p">:</span> <span class="s2">&quot;Code application&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;relative_path_apk&quot;</span><span class="p">:</span> <span class="s2">&quot;Chemin relatif de l&#39;APK&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;url_apk&quot;</span><span class="p">:</span> <span class="s2">&quot;URL externe de l&#39;APK&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;package&quot;</span><span class="p">:</span> <span class="s2">&quot;Nom du paquet&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;version_code&quot;</span><span class="p">:</span> <span class="s2">&quot;Code de version&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="TMobileAppsAdmin.form_columns">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TMobileAppsAdmin.form_columns">[docs]</a>
+    <span class="n">form_columns</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;app_code&quot;</span><span class="p">,</span> <span class="s2">&quot;relative_path_apk&quot;</span><span class="p">,</span> <span class="s2">&quot;url_apk&quot;</span><span class="p">,</span> <span class="s2">&quot;package&quot;</span><span class="p">,</span> <span class="s2">&quot;version_code&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMobileAppsAdmin.column_exclude_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TMobileAppsAdmin.column_exclude_list">[docs]</a>
+    <span class="n">column_exclude_list</span> <span class="o">=</span> <span class="s2">&quot;id_mobile_app&quot;</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TModulesAdmin">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TModulesAdmin">[docs]</a>
+<span class="k">class</span> <span class="nc">TModulesAdmin</span><span class="p">(</span><span class="n">CruvedProtectedMixin</span><span class="p">,</span> <span class="n">ModelView</span><span class="p">):</span>
+<div class="viewcode-block" id="TModulesAdmin.module_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TModulesAdmin.module_code">[docs]</a>
+    <span class="n">module_code</span> <span class="o">=</span> <span class="s2">&quot;ADMIN&quot;</span></div>
+
+<div class="viewcode-block" id="TModulesAdmin.object_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TModulesAdmin.object_code">[docs]</a>
+    <span class="n">object_code</span> <span class="o">=</span> <span class="s2">&quot;MODULES&quot;</span></div>
+
+
+<div class="viewcode-block" id="TModulesAdmin.can_view_details">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TModulesAdmin.can_view_details">[docs]</a>
+    <span class="n">can_view_details</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="TModulesAdmin.action_disallowed_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TModulesAdmin.action_disallowed_list">[docs]</a>
+    <span class="n">action_disallowed_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;delete&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TModulesAdmin.can_create">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TModulesAdmin.can_create">[docs]</a>
+    <span class="n">can_create</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="TModulesAdmin.can_delete">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TModulesAdmin.can_delete">[docs]</a>
+    <span class="n">can_delete</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="TModulesAdmin.column_searchable_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TModulesAdmin.column_searchable_list">[docs]</a>
+    <span class="n">column_searchable_list</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;module_code&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_label&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModulesAdmin.column_default_sort">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TModulesAdmin.column_default_sort">[docs]</a>
+    <span class="n">column_default_sort</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;module_order&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;id_module&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+    <span class="p">]</span></div>
+
+<div class="viewcode-block" id="TModulesAdmin.column_sortable_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TModulesAdmin.column_sortable_list">[docs]</a>
+    <span class="n">column_sortable_list</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;module_order&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_code&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_label&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TModulesAdmin.column_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TModulesAdmin.column_list">[docs]</a>
+    <span class="n">column_list</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;module_code&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_label&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_picto&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_order&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModulesAdmin.column_details_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TModulesAdmin.column_details_list">[docs]</a>
+    <span class="n">column_details_list</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;module_code&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_label&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_desc&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_comment&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_picto&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_doc_url&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_order&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModulesAdmin.form_columns">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TModulesAdmin.form_columns">[docs]</a>
+    <span class="n">form_columns</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;module_label&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_desc&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_comment&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_picto&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_doc_url&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_order&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModulesAdmin.column_labels">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/admin/index.html#geonature.core.gn_commons.admin.TModulesAdmin.column_labels">[docs]</a>
+    <span class="n">column_labels</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;module_code&quot;</span><span class="p">:</span> <span class="s2">&quot;Code&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_label&quot;</span><span class="p">:</span> <span class="s2">&quot;Label&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_desc&quot;</span><span class="p">:</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_comment&quot;</span><span class="p">:</span> <span class="s2">&quot;Commentaire&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_picto&quot;</span><span class="p">:</span> <span class="s2">&quot;Pictogramme&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_doc_url&quot;</span><span class="p">:</span> <span class="s2">&quot;URL documentation&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_order&quot;</span><span class="p">:</span> <span class="s2">&quot;Ordre&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

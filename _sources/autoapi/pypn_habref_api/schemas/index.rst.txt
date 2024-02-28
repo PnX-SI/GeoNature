@@ -1,0 +1,86 @@
+:py:mod:`pypn_habref_api.schemas`
+=================================
+
+.. py:module:: pypn_habref_api.schemas
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   pypn_habref_api.schemas.TypoRefSchema
+   pypn_habref_api.schemas.HabrefSchema
+
+
+
+
+.. py:class:: TypoRefSchema(*args, **kwargs)
+
+
+   Bases: :py:obj:`pypn_habref_api.env.ma.SQLAlchemyAutoSchema`
+
+   SQLAlchemyAutoSchema that automatically generates marshmallow fields
+   from a SQLAlchemy model's or table's column.
+   Uses the scoped session from Flask-SQLAlchemy by default.
+
+   See `marshmallow_sqlalchemy.SQLAlchemyAutoSchema` for more details
+   on the `SQLAlchemyAutoSchema` API.
+
+   .. py:class:: Meta
+
+
+      .. py:attribute:: model
+
+         
+
+      .. py:attribute:: load_instance
+         :value: True
+
+         
+
+      .. py:attribute:: include_fk
+         :value: True
+
+         
+
+
+
+.. py:class:: HabrefSchema(*args, **kwargs)
+
+
+   Bases: :py:obj:`pypn_habref_api.env.ma.SQLAlchemyAutoSchema`
+
+   SQLAlchemyAutoSchema that automatically generates marshmallow fields
+   from a SQLAlchemy model's or table's column.
+   Uses the scoped session from Flask-SQLAlchemy by default.
+
+   See `marshmallow_sqlalchemy.SQLAlchemyAutoSchema` for more details
+   on the `SQLAlchemyAutoSchema` API.
+
+   .. py:class:: Meta
+
+
+      .. py:attribute:: model
+
+         
+
+      .. py:attribute:: load_instance
+         :value: True
+
+         
+
+      .. py:attribute:: include_fk
+         :value: True
+
+         
+
+
+   .. py:attribute:: typo_ref
+
+      
+
+

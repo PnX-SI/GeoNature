@@ -1,0 +1,36 @@
+:py:mod:`app.api.route`
+=======================
+
+.. py:module:: app.api.route
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   app.api.route.get_profils
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   app.api.route.route
+
+
+.. py:data:: route
+
+   
+
+.. py:function:: get_profils()
+
+   Return the profils
+
+

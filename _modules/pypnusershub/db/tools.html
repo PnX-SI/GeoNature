@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pypnusershub.db.tools &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+          <li class="breadcrumb-item"><a href="../../pypnusershub.html">pypnusershub</a></li>
+      <li class="breadcrumb-item active">pypnusershub.db.tools</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de pypnusershub.db.tools</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding: utf8</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    DB tools not related to any model in particular.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm.exc</span> <span class="kn">import</span> <span class="n">NoResultFound</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+<span class="kn">from</span> <span class="nn">authlib.jose</span> <span class="kn">import</span> <span class="n">JsonWebToken</span>
+<span class="kn">from</span> <span class="nn">authlib.jose.errors</span> <span class="kn">import</span> <span class="n">ExpiredTokenError</span><span class="p">,</span> <span class="n">JoseError</span>
+
+<span class="kn">from</span> <span class="nn">pypnusershub.db</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.utils</span> <span class="kn">import</span> <span class="n">text_resource_stream</span><span class="p">,</span> <span class="n">get_current_app_id</span>
+
+<span class="kn">from</span> <span class="nn">pypnusershub.env</span> <span class="kn">import</span> <span class="n">db</span>
+
+<div class="viewcode-block" id="log">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/tools/index.html#pypnusershub.db.log">[docs]</a>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="AccessRightsError">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/tools/index.html#pypnusershub.db.AccessRightsError">[docs]</a>
+<span class="k">class</span> <span class="nc">AccessRightsError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="InsufficientRightsError">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/tools/index.html#pypnusershub.db.InsufficientRightsError">[docs]</a>
+<span class="k">class</span> <span class="nc">InsufficientRightsError</span><span class="p">(</span><span class="n">AccessRightsError</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="AccessRightsExpiredError">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/tools/index.html#pypnusershub.db.AccessRightsExpiredError">[docs]</a>
+<span class="k">class</span> <span class="nc">AccessRightsExpiredError</span><span class="p">(</span><span class="n">AccessRightsError</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="UnreadableAccessRightsError">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/tools/index.html#pypnusershub.db.UnreadableAccessRightsError">[docs]</a>
+<span class="k">class</span> <span class="nc">UnreadableAccessRightsError</span><span class="p">(</span><span class="n">AccessRightsError</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="NoPasswordError">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/tools/index.html#pypnusershub.db.NoPasswordError">[docs]</a>
+<span class="k">class</span> <span class="nc">NoPasswordError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="DifferentPasswordError">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/tools/index.html#pypnusershub.db.DifferentPasswordError">[docs]</a>
+<span class="k">class</span> <span class="nc">DifferentPasswordError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+
+<span class="c1"># def init_schema(con_uri):</span>
+
+<span class="c1">#     with text_resource_stream(&#39;schema.sql&#39;, &#39;pypnusershub.db&#39;) as sql_file:</span>
+<span class="c1">#         sql = sql_file.read()</span>
+
+<span class="c1">#     engine = sa.create_engine(con_uri)</span>
+<span class="c1">#     with engine.connect():</span>
+<span class="c1">#         engine.execute(sql)</span>
+<span class="c1">#         engine.execute(&quot;COMMIT&quot;)</span>
+
+
+<span class="c1"># def delete_schema(con_uri):</span>
+
+<span class="c1">#     engine = sa.create_engine(con_uri)</span>
+<span class="c1">#     with engine.connect():</span>
+<span class="c1">#         engine.execute(&quot;DROP SCHEMA IF EXISTS utilisateurs CASCADE&quot;)</span>
+<span class="c1">#         engine.execute(&quot;COMMIT&quot;)</span>
+
+
+<span class="c1"># def reset_schema(con_uri):</span>
+<span class="c1">#     delete_schema(con_uri)</span>
+<span class="c1">#     init_schema(con_uri)</span>
+
+
+<div class="viewcode-block" id="load_fixtures">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/tools/index.html#pypnusershub.db.load_fixtures">[docs]</a>
+<span class="k">def</span> <span class="nf">load_fixtures</span><span class="p">(</span><span class="n">con_uri</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">text_resource_stream</span><span class="p">(</span><span class="s2">&quot;fixtures.sql&quot;</span><span class="p">,</span> <span class="s2">&quot;pypnusershub.db&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">sql_file</span><span class="p">:</span>
+        <span class="n">engine</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">create_engine</span><span class="p">(</span><span class="n">con_uri</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">engine</span><span class="o">.</span><span class="n">connect</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">sql_file</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                    <span class="n">engine</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">engine</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;COMMIT&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="encode_token">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/tools/index.html#pypnusershub.db.encode_token">[docs]</a>
+<span class="k">def</span> <span class="nf">encode_token</span><span class="p">(</span><span class="n">payload</span><span class="p">):</span>
+    <span class="n">expire</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;COOKIE_EXPIRATION&quot;</span><span class="p">])</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;alg&quot;</span><span class="p">:</span> <span class="s2">&quot;HS256&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;exp&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timestamp</span><span class="p">(</span><span class="n">expire</span><span class="p">)),</span>
+    <span class="p">}</span>
+    <span class="n">jwt</span> <span class="o">=</span> <span class="n">JsonWebToken</span><span class="p">([</span><span class="s2">&quot;HS256&quot;</span><span class="p">])</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;SECRET_KEY&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jwt</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="decode_token">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/tools/index.html#pypnusershub.db.decode_token">[docs]</a>
+<span class="k">def</span> <span class="nf">decode_token</span><span class="p">(</span><span class="n">payload</span><span class="p">):</span>
+    <span class="n">jwt</span> <span class="o">=</span> <span class="n">JsonWebToken</span><span class="p">([</span><span class="s2">&quot;HS256&quot;</span><span class="p">])</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;SECRET_KEY&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
+    <span class="n">claims</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+    <span class="n">claims</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">claims</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="user_to_token">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/tools/index.html#pypnusershub.db.user_to_token">[docs]</a>
+<span class="k">def</span> <span class="nf">user_to_token</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">encode_token</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="user_from_token">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/tools/index.html#pypnusershub.db.user_from_token">[docs]</a>
+<span class="k">def</span> <span class="nf">user_from_token</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">secret_key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Given a, authentification token, return the matching AppUser instance&quot;&quot;&quot;</span>
+
+    <span class="n">secret_key</span> <span class="o">=</span> <span class="n">secret_key</span> <span class="ow">or</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;SECRET_KEY&quot;</span><span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">decode_token</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+
+        <span class="n">id_role</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;id_role&quot;</span><span class="p">]</span>
+        <span class="n">id_app</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;id_application&quot;</span><span class="p">]</span>
+        <span class="n">id_app_from_config</span> <span class="o">=</span> <span class="n">get_current_app_id</span><span class="p">()</span>
+        <span class="c1"># check that the id_app from the token well corespond to the current_app id_application</span>
+        <span class="c1"># for prevent conflit of token between applications on the same domain</span>
+        <span class="c1"># if no ID_APP is passed to the app config, we don&#39;t check the conformiity of the token</span>
+        <span class="c1"># for retro-compatibility reasons</span>
+        <span class="k">if</span> <span class="n">id_app_from_config</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">id_app</span> <span class="o">!=</span> <span class="n">id_app_from_config</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Invalid token: the token not corespoding to the current app&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">UnreadableAccessRightsError</span><span class="p">(</span><span class="s2">&quot;Token BadSignature&quot;</span><span class="p">,</span> <span class="mi">403</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">AppUser</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">AppUser</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">id_role</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">AppUser</span><span class="o">.</span><span class="n">id_application</span> <span class="o">==</span> <span class="n">id_app</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+
+    <span class="k">except</span> <span class="n">NoResultFound</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">UnreadableAccessRightsError</span><span class="p">(</span>
+            <span class="s1">&#39;No user withd id &quot;</span><span class="si">{}</span><span class="s1">&quot; for app &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">id_role</span><span class="p">,</span> <span class="n">id_app</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="n">ExpiredTokenError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">AccessRightsExpiredError</span><span class="p">(</span><span class="s2">&quot;Token expired&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">JoseError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">UnreadableAccessRightsError</span><span class="p">(</span><span class="s2">&quot;Invalid token&quot;</span><span class="p">,</span> <span class="mi">403</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

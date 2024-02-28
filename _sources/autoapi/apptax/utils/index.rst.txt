@@ -1,0 +1,17 @@
+:py:mod:`apptax.utils`
+======================
+
+.. py:module:: apptax.utils
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   genericfunctions/index.rst
+   routesconfig/index.rst
+   utilssqlalchemy/index.rst
+
+

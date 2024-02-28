@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>apptax.taxonomie.routesbdcstatuts &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">apptax.taxonomie.routesbdcstatuts</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de apptax.taxonomie.routesbdcstatuts</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding: utf8</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">jsonify</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">current_app</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">func</span><span class="p">,</span> <span class="n">or_</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">joinedload</span>
+
+<span class="kn">from</span> <span class="nn">pypnusershub</span> <span class="kn">import</span> <span class="n">routes</span> <span class="k">as</span> <span class="n">fnauth</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">filemanager</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">..log</span> <span class="kn">import</span> <span class="n">logmanager</span>
+<span class="kn">from</span> <span class="nn">..utils.utilssqlalchemy</span> <span class="kn">import</span> <span class="n">json_resp</span><span class="p">,</span> <span class="n">csv_resp</span><span class="p">,</span> <span class="n">dict_merge</span>
+<span class="kn">from</span> <span class="nn">..utils.genericfunctions</span> <span class="kn">import</span> <span class="n">calculate_offset_page</span>
+<span class="kn">from</span> <span class="nn">.repositories</span> <span class="kn">import</span> <span class="n">BdcStatusRepository</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TaxrefBdcStatutCorTextValues</span><span class="p">,</span>
+    <span class="n">TaxrefBdcStatutText</span><span class="p">,</span>
+    <span class="n">TaxrefBdcStatutType</span><span class="p">,</span>
+    <span class="n">TaxrefBdcStatutValues</span><span class="p">,</span>
+    <span class="n">VBdcStatus</span><span class="p">,</span>
+<span class="p">)</span>
+
+<div class="viewcode-block" id="adresses">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbdcstatuts/index.html#apptax.taxonomie.routesbdcstatuts.adresses">[docs]</a>
+<span class="n">adresses</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s2">&quot;bdc_status&quot;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="logger">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbdcstatuts/index.html#apptax.taxonomie.routesbdcstatuts.logger">[docs]</a>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@adresses</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/list/&lt;int(signed=True):cd_ref&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_bdcstatus_list_for_one_taxon">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbdcstatuts/index.html#apptax.taxonomie.routesbdcstatuts.get_bdcstatus_list_for_one_taxon">[docs]</a>
+<span class="k">def</span> <span class="nf">get_bdcstatus_list_for_one_taxon</span><span class="p">(</span><span class="n">cd_ref</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retourne la liste des statuts associés à un taxon.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">VBdcStatus</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">cd_ref</span><span class="o">=</span><span class="n">cd_ref</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span></div>
+
+
+
+<span class="nd">@adresses</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/hierarchy/&lt;int(signed=True):cd_ref&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_bdcstatus_hierarchy">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbdcstatuts/index.html#apptax.taxonomie.routesbdcstatuts.get_bdcstatus_hierarchy">[docs]</a>
+<span class="k">def</span> <span class="nf">get_bdcstatus_hierarchy</span><span class="p">(</span><span class="n">cd_ref</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retourne la liste des statuts associés sous forme hiérarchique.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get parameters type:</span>
+    <span class="n">type_statut</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type_statut&quot;</span><span class="p">)</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="n">BdcStatusRepository</span><span class="p">()</span><span class="o">.</span><span class="n">get_status</span><span class="p">(</span>
+        <span class="n">cd_ref</span><span class="o">=</span><span class="n">cd_ref</span><span class="p">,</span> <span class="n">type_statut</span><span class="o">=</span><span class="n">type_statut</span><span class="p">,</span> <span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">results</span></div>
+
+
+
+<span class="nd">@adresses</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/status_values/&lt;status_type&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_status_lists_values">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbdcstatuts/index.html#apptax.taxonomie.routesbdcstatuts.get_status_lists_values">[docs]</a>
+<span class="k">def</span> <span class="nf">get_status_lists_values</span><span class="p">(</span><span class="n">status_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retourne les valeurs (code et intitulé) d&#39;un type de statut.</span>
+
+<span class="sd">    Params:</span>
+<span class="sd">    :param status_type: code d&#39;un type de statut de statuy. Obligatoire.</span>
+
+<span class="sd">    :returns: une liste de dictionnaires contenant les infos des valeurs</span>
+<span class="sd">    d&#39;un type de liste de rouge.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TaxrefBdcStatutValues</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">TaxrefBdcStatutCorTextValues</span><span class="p">,</span>
+            <span class="n">TaxrefBdcStatutValues</span><span class="o">.</span><span class="n">id_value</span> <span class="o">==</span> <span class="n">TaxrefBdcStatutCorTextValues</span><span class="o">.</span><span class="n">id_value</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">TaxrefBdcStatutText</span><span class="p">,</span>
+            <span class="n">TaxrefBdcStatutText</span><span class="o">.</span><span class="n">id_text</span> <span class="o">==</span> <span class="n">TaxrefBdcStatutCorTextValues</span><span class="o">.</span><span class="n">id_text</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">TaxrefBdcStatutText</span><span class="o">.</span><span class="n">cd_type_statut</span> <span class="o">==</span> <span class="n">status_type</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">TaxrefBdcStatutValues</span><span class="o">.</span><span class="n">code_statut</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">distinct</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;code_statut&quot;</span><span class="p">,</span> <span class="s2">&quot;label_statut&quot;</span><span class="p">,</span> <span class="s2">&quot;display&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span></div>
+
+
+
+<span class="nd">@adresses</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/status_types&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_status_types">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbdcstatuts/index.html#apptax.taxonomie.routesbdcstatuts.get_status_types">[docs]</a>
+<span class="k">def</span> <span class="nf">get_status_types</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retourne les types (code et intitulé) avec leur regroupement.</span>
+
+<span class="sd">    Params:</span>
+<span class="sd">    :query str codes: filtre sur une liste de codes de types de statuts</span>
+<span class="sd">    séparés par des virgules.</span>
+<span class="sd">    :query str gatherings: filtre sur une liste de type de regroupement</span>
+<span class="sd">    de types de statuts séparés par des virgules.</span>
+
+<span class="sd">    :returns: une liste de dictionnaires contenant les infos d&#39;un type de statuts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TaxrefBdcStatutType</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">TaxrefBdcStatutType</span><span class="o">.</span><span class="n">lb_type_statut</span><span class="p">)</span>
+
+    <span class="c1"># Use request parameters</span>
+    <span class="n">codes</span> <span class="o">=</span> <span class="n">extract_multi_values_request_param</span><span class="p">(</span><span class="s2">&quot;codes&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">codes</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">TaxrefBdcStatutType</span><span class="o">.</span><span class="n">cd_type_statut</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">codes</span><span class="p">))</span>
+
+    <span class="n">gatherings</span> <span class="o">=</span> <span class="n">extract_multi_values_request_param</span><span class="p">(</span><span class="s2">&quot;gatherings&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">gatherings</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">TaxrefBdcStatutType</span><span class="o">.</span><span class="n">regroupement_type</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">gatherings</span><span class="p">))</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;cd_type_statut&quot;</span><span class="p">,</span> <span class="s2">&quot;lb_type_statut&quot;</span><span class="p">,</span> <span class="s2">&quot;regroupement_type&quot;</span><span class="p">,</span> <span class="s2">&quot;display&quot;</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span>
+    <span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="extract_multi_values_request_param">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbdcstatuts/index.html#apptax.taxonomie.routesbdcstatuts.extract_multi_values_request_param">[docs]</a>
+<span class="k">def</span> <span class="nf">extract_multi_values_request_param</span><span class="p">(</span><span class="n">paramName</span><span class="p">):</span>
+    <span class="n">param_values</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">paramName</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+        <span class="n">param_values</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">paramName</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">param_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">param_values</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">strip</span><span class="p">,</span> <span class="n">param_values</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">param_values</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

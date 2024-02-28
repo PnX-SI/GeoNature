@@ -1,0 +1,47 @@
+:py:mod:`app.groupe.forms`
+==========================
+
+.. py:module:: app.groupe.forms
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   app.groupe.forms.Group
+
+
+
+
+.. py:class:: Group(formdata=_Auto, **kwargs)
+
+
+   Bases: :py:obj:`flask_wtf.FlaskForm`
+
+   Classe du formulaire des Groupes
+
+   .. py:attribute:: nom_role
+
+      
+
+   .. py:attribute:: desc_role
+
+      
+
+   .. py:attribute:: groupe
+
+      
+
+   .. py:attribute:: id_role
+
+      
+
+   .. py:attribute:: submit
+
+      
+
+

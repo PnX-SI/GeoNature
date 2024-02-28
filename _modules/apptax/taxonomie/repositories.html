@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>apptax.taxonomie.repositories &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">apptax.taxonomie.repositories</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de apptax.taxonomie.repositories</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.exc</span> <span class="kn">import</span> <span class="n">IntegrityError</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">joinedload</span>
+
+<span class="kn">from</span> <span class="nn">.filemanager</span> <span class="kn">import</span> <span class="n">FILEMANAGER</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">..log</span> <span class="kn">import</span> <span class="n">logmanager</span>
+<span class="kn">from</span> <span class="nn">..utils.utilssqlalchemy</span> <span class="kn">import</span> <span class="n">dict_merge</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TaxrefBdcStatutCorTextValues</span><span class="p">,</span>
+    <span class="n">TaxrefBdcStatutTaxon</span><span class="p">,</span>
+    <span class="n">TaxrefBdcStatutText</span><span class="p">,</span>
+    <span class="n">TaxrefBdcStatutType</span><span class="p">,</span>
+    <span class="n">TaxrefBdcStatutValues</span><span class="p">,</span>
+    <span class="n">VBdcStatus</span><span class="p">,</span>
+    <span class="n">TMedias</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ref_geo.models</span> <span class="kn">import</span> <span class="n">LAreas</span>
+
+
+<div class="viewcode-block" id="logger">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.logger">[docs]</a>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="MediaRepository">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.MediaRepository">[docs]</a>
+<span class="k">class</span> <span class="nc">MediaRepository</span><span class="p">:</span>
+<div class="viewcode-block" id="MediaRepository.s3_storage">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.MediaRepository.s3_storage">[docs]</a>
+    <span class="n">s3_storage</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DBSession</span><span class="p">,</span> <span class="n">s3_bucket_name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">DBSession</span>
+        <span class="k">if</span> <span class="n">s3_bucket_name</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">s3_storage</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="MediaRepository._format_media">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.MediaRepository._format_media">[docs]</a>
+    <span class="k">def</span> <span class="nf">_format_media</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">media</span><span class="p">,</span> <span class="n">force_path</span><span class="p">):</span>
+        <span class="n">f_media</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">media</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(),</span> <span class="o">**</span><span class="n">media</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_storage</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">force_path</span><span class="p">:</span>
+                <span class="n">f_media</span><span class="p">[</span><span class="s2">&quot;chemin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">f_media</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;S3_PUBLIC_URL&quot;</span><span class="p">],</span> <span class="n">media</span><span class="o">.</span><span class="n">chemin</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>  <span class="c1"># file is an URL</span>
+                <span class="n">f_media</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">media</span><span class="o">.</span><span class="n">url</span>
+        <span class="k">return</span> <span class="n">f_media</span></div>
+
+
+<div class="viewcode-block" id="MediaRepository._populate_data_media">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.MediaRepository._populate_data_media">[docs]</a>
+    <span class="k">def</span> <span class="nf">_populate_data_media</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">media</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="c1"># TODO Change add default value in DB</span>
+        <span class="k">if</span> <span class="s2">&quot;supprime&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;supprime&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;supprime&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;supprime&quot;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="s2">&quot;is_public&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;is_public&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;is_public&quot;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;chemin&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">TMedias</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;null&quot;</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">media</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">media</span></div>
+
+
+<div class="viewcode-block" id="MediaRepository.get_media_filter_by">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.MediaRepository.get_media_filter_by">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_media_filter_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TMedias</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">filters</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="o">**</span><span class="n">filters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">q</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MediaRepository.get_and_format_media_filter_by">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.MediaRepository.get_and_format_media_filter_by">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_and_format_media_filter_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">force_path</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_media_filter_by</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span>
+        <span class="n">medias</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">media</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">medias</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_format_media</span><span class="p">(</span><span class="n">media</span><span class="p">,</span> <span class="n">force_path</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">medias</span></div>
+
+
+<div class="viewcode-block" id="MediaRepository.get_one_media">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.MediaRepository.get_one_media">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_one_media</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TMedias</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MediaRepository.get_and_format_one_media">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.MediaRepository.get_and_format_one_media">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_and_format_one_media</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">force_path</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">media</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_one_media</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">media</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_media</span><span class="p">(</span><span class="n">media</span><span class="p">,</span> <span class="n">force_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="MediaRepository.import_media">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.MediaRepository.import_media">[docs]</a>
+    <span class="k">def</span> <span class="nf">import_media</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">upload_file</span><span class="p">,</span> <span class="n">id_media</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># case update</span>
+        <span class="k">if</span> <span class="n">id_media</span><span class="p">:</span>
+            <span class="c1"># Todo add test id media doesn&#39;t exists</span>
+            <span class="n">media</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_one_media</span><span class="p">(</span><span class="n">id_media</span><span class="p">)</span>
+            <span class="n">old_media</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_media_file</span><span class="p">(</span><span class="n">media</span><span class="p">)</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;UPDATE&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">media</span> <span class="o">=</span> <span class="n">TMedias</span><span class="p">()</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;INSERT&quot;</span>
+            <span class="n">old_media</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># update data media</span>
+        <span class="n">media</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_populate_data_media</span><span class="p">(</span><span class="n">media</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">media</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process_comit</span><span class="p">()</span>
+
+        <span class="c1"># Process file</span>
+        <span class="n">media</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_media_file</span><span class="p">(</span><span class="n">upload_file</span><span class="p">,</span> <span class="n">media</span><span class="p">,</span> <span class="nb">bool</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;isFile&quot;</span><span class="p">]),</span> <span class="n">old_media</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">media</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process_comit</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">media</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MediaRepository.process_media_file">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.MediaRepository.process_media_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">process_media_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">media</span><span class="p">,</span> <span class="n">is_file</span><span class="p">,</span> <span class="n">old_media_data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">file</span> <span class="ow">and</span> <span class="n">is_file</span><span class="p">:</span>
+            <span class="c1"># Cas 1 : upload media</span>
+            <span class="n">media</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">old_chemin</span> <span class="o">=</span> <span class="n">media</span><span class="o">.</span><span class="n">chemin</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="n">FILEMANAGER</span><span class="o">.</span><span class="n">upload_file</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">media</span><span class="o">.</span><span class="n">id_media</span><span class="p">,</span> <span class="n">media</span><span class="o">.</span><span class="n">cd_ref</span><span class="p">,</span> <span class="n">media</span><span class="o">.</span><span class="n">titre</span><span class="p">)</span>
+            <span class="n">media</span><span class="o">.</span><span class="n">chemin</span> <span class="o">=</span> <span class="n">filepath</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">old_chemin</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">old_chemin</span> <span class="o">!=</span> <span class="n">media</span><span class="o">.</span><span class="n">chemin</span><span class="p">):</span>
+                <span class="n">FILEMANAGER</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">old_chemin</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">media</span><span class="o">.</span><span class="n">chemin</span> <span class="ow">and</span> <span class="n">media</span><span class="o">.</span><span class="n">url</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_file</span><span class="p">:</span>
+            <span class="c1"># Cas 2 : URL</span>
+            <span class="k">if</span> <span class="n">media</span><span class="o">.</span><span class="n">chemin</span><span class="p">:</span>
+                <span class="n">FILEMANAGER</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">media</span><span class="o">.</span><span class="n">chemin</span><span class="p">)</span>
+                <span class="n">media</span><span class="o">.</span><span class="n">chemin</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">old_media_data</span><span class="p">[</span><span class="s2">&quot;titre&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">media</span><span class="o">.</span><span class="n">titre</span><span class="p">:</span>
+            <span class="c1"># Cas 3 : Changement du titre du média</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="n">FILEMANAGER</span><span class="o">.</span><span class="n">rename_file</span><span class="p">(</span><span class="n">media</span><span class="o">.</span><span class="n">chemin</span><span class="p">,</span> <span class="n">old_media_data</span><span class="p">[</span><span class="s2">&quot;titre&quot;</span><span class="p">],</span> <span class="n">media</span><span class="o">.</span><span class="n">titre</span><span class="p">)</span>
+            <span class="n">media</span><span class="o">.</span><span class="n">chemin</span> <span class="o">=</span> <span class="n">filepath</span>
+
+        <span class="k">return</span> <span class="n">media</span></div>
+
+
+<div class="viewcode-block" id="MediaRepository.update_media_file">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.MediaRepository.update_media_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_media_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">media</span><span class="p">):</span>
+        <span class="c1"># Keep old data</span>
+        <span class="n">old_media</span> <span class="o">=</span> <span class="n">media</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+        <span class="c1"># Remove thumb</span>
+        <span class="n">FILEMANAGER</span><span class="o">.</span><span class="n">remove_thumb</span><span class="p">(</span><span class="n">media</span><span class="o">.</span><span class="n">id_media</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">old_media</span></div>
+
+
+<div class="viewcode-block" id="MediaRepository.persist">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.MediaRepository.persist">[docs]</a>
+    <span class="k">def</span> <span class="nf">persist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">entity</span></div>
+
+
+<div class="viewcode-block" id="MediaRepository.delete">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.MediaRepository.delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="n">media</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_one_media</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+        <span class="n">chemin</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">media</span><span class="o">.</span><span class="n">chemin</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">chemin</span> <span class="o">=</span> <span class="n">media</span><span class="o">.</span><span class="n">chemin</span>
+
+        <span class="c1"># Suppression de l&#39;entrée en base</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">media</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+        <span class="c1"># Suppression des fichiers</span>
+        <span class="n">FILEMANAGER</span><span class="o">.</span><span class="n">remove_media_files</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">chemin</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">media</span></div>
+
+
+<div class="viewcode-block" id="MediaRepository._process_comit">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.MediaRepository._process_comit">[docs]</a>
+    <span class="k">def</span> <span class="nf">_process_comit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rollback</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">IntegrityError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">rollback</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">e</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">rollback</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">e</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BdcStatusRepository">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.BdcStatusRepository">[docs]</a>
+<span class="k">class</span> <span class="nc">BdcStatusRepository</span><span class="p">:</span>
+<div class="viewcode-block" id="BdcStatusRepository.get_status">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.BdcStatusRepository.get_status">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_status</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cd_ref</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">type_statut</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">areas</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">areas_code</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Retourne la liste des statuts associés à un taxon</span>
+<span class="sd">            sous forme hiérarchique</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cd_ref (int): cd_ref</span>
+<span class="sd">            type_statut (str): code du type de statut</span>
+<span class="sd">            areas (List[int], optional): limite les statuts renvoyés</span>
+<span class="sd">                aux identifiants de zones géographiques fournies.</span>
+<span class="sd">            areas_code (List[str], optional): limite les statuts renvoyés</span>
+<span class="sd">                aux codes de zones géographiques fournies.</span>
+<span class="sd">            enable (bool, optional): ne retourner que les statuts actifs Defaults to True.</span>
+<span class="sd">            format (bool, optional): retourne les données formatées. Defaults to False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            listes des statuts du taxon</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TaxrefBdcStatutTaxon</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TaxrefBdcStatutCorTextValues</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TaxrefBdcStatutText</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">TaxrefBdcStatutTaxon</span><span class="o">.</span><span class="n">cd_ref</span> <span class="o">==</span> <span class="n">cd_ref</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">TaxrefBdcStatutText</span><span class="o">.</span><span class="n">enable</span> <span class="o">==</span> <span class="n">enable</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">type_statut</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">TaxrefBdcStatutText</span><span class="o">.</span><span class="n">cd_type_statut</span> <span class="o">==</span> <span class="n">type_statut</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">areas</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">TaxrefBdcStatutText</span><span class="o">.</span><span class="n">areas</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">LAreas</span><span class="o">.</span><span class="n">id_area</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">areas</span><span class="p">)))</span>
+
+        <span class="k">if</span> <span class="n">areas_code</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">TaxrefBdcStatutText</span><span class="o">.</span><span class="n">areas</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">LAreas</span><span class="o">.</span><span class="n">area_code</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">areas_code</span><span class="p">)))</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">options</span><span class="p">(</span>
+            <span class="n">joinedload</span><span class="p">(</span><span class="n">TaxrefBdcStatutTaxon</span><span class="o">.</span><span class="n">value_text</span><span class="p">)</span><span class="o">.</span><span class="n">joinedload</span><span class="p">(</span>
+                <span class="n">TaxrefBdcStatutCorTextValues</span><span class="o">.</span><span class="n">value</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">options</span><span class="p">(</span>
+            <span class="n">joinedload</span><span class="p">(</span><span class="n">TaxrefBdcStatutTaxon</span><span class="o">.</span><span class="n">value_text</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">joinedload</span><span class="p">(</span><span class="n">TaxrefBdcStatutCorTextValues</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">joinedload</span><span class="p">(</span><span class="n">TaxrefBdcStatutText</span><span class="o">.</span><span class="n">type_statut</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+        <span class="c1"># Retour des données sous forme formatées ou pas</span>
+        <span class="k">if</span> <span class="nb">format</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_hierarchy_status</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="BdcStatusRepository.format_hierarchy_status">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/repositories/index.html#apptax.taxonomie.repositories.BdcStatusRepository.format_hierarchy_status">[docs]</a>
+    <span class="k">def</span> <span class="nf">format_hierarchy_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Formatage des données sous la forme d&#39;un dictionnaire</span>
+<span class="sd">            type de statut : {</span>
+<span class="sd">                [text : {</span>
+<span class="sd">                    [valeurs]</span>
+<span class="sd">                }]</span>
+<span class="sd">            }</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data ([resultProxy]): Données à formater</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [type]: [description]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">cd_type_statut</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">value_text</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">type_statut</span><span class="o">.</span><span class="n">cd_type_statut</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">d</span><span class="o">.</span><span class="n">value_text</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">type_statut</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(),</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">{}}}</span>
+            <span class="n">id_text</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">value_text</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">id_text</span>
+            <span class="n">res</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">][</span><span class="n">id_text</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">d</span><span class="o">.</span><span class="n">value_text</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(),</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">{}}}</span>
+
+            <span class="n">res</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">][</span><span class="n">id_text</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="n">d</span><span class="o">.</span><span class="n">value_text</span><span class="o">.</span><span class="n">id_value_text</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="o">**</span><span class="n">d</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(),</span>
+                <span class="o">**</span><span class="n">d</span><span class="o">.</span><span class="n">value_text</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(),</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="n">cd_type_statut</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+                <span class="n">dict_merge</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="n">cd_type_statut</span><span class="p">],</span> <span class="n">res</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">results</span><span class="p">[</span><span class="n">cd_type_statut</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

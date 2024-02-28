@@ -1,0 +1,35 @@
+:py:mod:`apptax.utils.genericfunctions`
+=======================================
+
+.. py:module:: apptax.utils.genericfunctions
+
+.. autoapi-nested-parse::
+
+   Fichier contenant des fonctions utilisées
+   par l'ensemble de l'application
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.utils.genericfunctions.calculate_offset_page
+
+
+
+.. py:function:: calculate_offset_page(limit, offset, page)
+
+   fonction qui calcul les paramètres
+       offset et page
+   Si un offset est défini
+       il prend le pas sur le paramètre page
+   Le paramètre page est seulement indicatif, il commence à 1 et ne peut être < 1
+   Le offset commence à 0 et ne peut pas être négatif
+
+

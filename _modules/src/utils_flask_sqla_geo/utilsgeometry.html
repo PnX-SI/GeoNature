@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.utils_flask_sqla_geo.utilsgeometry &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">src.utils_flask_sqla_geo.utilsgeometry</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de src.utils_flask_sqla_geo.utilsgeometry</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">ast</span>
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+
+<span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="kn">import</span> <span class="nn">fiona</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">from</span> <span class="nn">fiona.crs</span> <span class="kn">import</span> <span class="n">from_epsg</span>
+<span class="kn">from</span> <span class="nn">geoalchemy2.shape</span> <span class="kn">import</span> <span class="n">to_shape</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">mapping</span><span class="p">,</span>
+    <span class="n">shape</span><span class="p">,</span>
+    <span class="n">Point</span><span class="p">,</span>
+    <span class="n">MultiPoint</span><span class="p">,</span>
+    <span class="n">Polygon</span><span class="p">,</span>
+    <span class="n">MultiPolygon</span><span class="p">,</span>
+    <span class="n">LineString</span><span class="p">,</span>
+    <span class="n">MultiLineString</span><span class="p">,</span>
+    <span class="n">LinearRing</span><span class="p">,</span>
+    <span class="n">GeometryCollection</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.errors</span> <span class="kn">import</span> <span class="n">UtilsSqlaError</span>
+
+<span class="c1"># Creation des shapefiles avec la librairies fiona</span>
+
+<div class="viewcode-block" id="FIONA_MAPPING">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FIONA_MAPPING">[docs]</a>
+<span class="n">FIONA_MAPPING</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;datetime&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;unicode&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;varchar&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;char&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;integer&quot;</span><span class="p">:</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;bigint&quot;</span><span class="p">:</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;float&quot;</span><span class="p">:</span> <span class="s2">&quot;float&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;boolean&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;double_precision&quot;</span><span class="p">:</span> <span class="s2">&quot;float&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;jsonb&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;json&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="log">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.log">[docs]</a>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="FionaService">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaService">[docs]</a>
+<span class="k">class</span> <span class="nc">FionaService</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Abstract class to provide functions to create geofiles with Fiona</span>
+<span class="sd">    Class who inherite of this class must implement the following abstract methods:</span>
+<span class="sd">    - create_fiona_struct</span>
+<span class="sd">    - create_features_generic</span>
+<span class="sd">    - save-files</span>
+<span class="sd">    - close-files</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FionaService.supported_type">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaService.supported_type">[docs]</a>
+    <span class="n">supported_type</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;shp&quot;</span><span class="p">,</span> <span class="s2">&quot;gpkg&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FionaService.create_fiona_properties">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaService.create_fiona_properties">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_fiona_properties</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">db_cols</span><span class="p">,</span> <span class="n">srid</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">col_mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create three shapefiles (point, line, polygon) with the attributes give by db_cols</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            db_cols (list): columns from a SQLA model (model.__mapper__.c)</span>
+<span class="sd">            srid (int): epsg code</span>
+<span class="sd">            dir_path (str): directory path</span>
+<span class="sd">            file_name (str): file of the shapefiles</span>
+<span class="sd">            col_mapping (dict): mapping between SQLA class</span>
+<span class="sd">                            attributes and &#39;beatifiul&#39; columns name</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            void</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">db_cols</span> <span class="o">=</span> <span class="n">db_cols</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">source_crs</span> <span class="o">=</span> <span class="n">from_epsg</span><span class="p">(</span><span class="n">srid</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">dir_path</span> <span class="o">=</span> <span class="n">dir_path</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="n">file_name</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># if we want to change to columns name of the SQLA class</span>
+        <span class="c1"># in the export shapefiles structures</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">shp_properties</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">col_mapping</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">db_col</span> <span class="ow">in</span> <span class="n">db_cols</span><span class="p">:</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">add_fiona_col_mapping</span><span class="p">(</span><span class="n">col_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">db_col</span><span class="o">.</span><span class="n">key</span><span class="p">),</span> <span class="n">db_col</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">db_col</span> <span class="ow">in</span> <span class="n">db_cols</span><span class="p">:</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">add_fiona_col_mapping</span><span class="p">(</span><span class="n">db_col</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">db_col</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FionaService.add_fiona_col_mapping">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaService.add_fiona_col_mapping">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_fiona_col_mapping</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">db_col</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">db_col</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;Geometry&quot;</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">shp_properties</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">FIONA_MAPPING</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">db_col</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="s2">&quot;str&quot;</span><span class="p">)}</span>
+            <span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FionaService.create_features_generic">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaService.create_features_generic">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_features_generic</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">geom_col</span><span class="p">,</span> <span class="n">geojson_col</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the features of the shapefiles by serializing the datas from a GenericTable (non mapped table)</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            view (GenericTable): the GenericTable object</span>
+<span class="sd">            data (list): Array of SQLA model</span>
+<span class="sd">            geom_col (str): name of the WKB geometry column of the SQLA Model</span>
+<span class="sd">            geojson_col (str): name of the geojson column if present. If None create the geojson from geom_col with shapely</span>
+<span class="sd">                               for performance reason its better to use geojson_col rather than geom_col</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            void</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if the geojson col is not given</span>
+        <span class="c1"># build it with shapely via the WKB col</span>
+        <span class="k">if</span> <span class="n">geojson_col</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">is_geojson</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">geo_colname</span> <span class="o">=</span> <span class="n">geom_col</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">is_geojson</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">geo_colname</span> <span class="o">=</span> <span class="n">geojson_col</span>
+
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">build_feature</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">geo_colname</span><span class="p">,</span> <span class="n">is_geojson</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">UtilsSqlaError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can not build feature for geo column </span><span class="si">{</span><span class="n">geo_colname</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">close_files</span><span class="p">()</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FionaService.build_feature">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaService.build_feature">[docs]</a>
+    <span class="k">def</span> <span class="nf">build_feature</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">geo_colname</span><span class="p">,</span> <span class="n">is_geojson</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fonction qui créer une feature au sens de fiona</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            view (GenericTable): the GenericTable object</span>
+<span class="sd">            is_geojson (boolean): la geometrie est elle sous forme de geojson</span>
+<span class="sd">            data (Model) : SQLA model</span>
+<span class="sd">            geo_colname (string) : nom de la colonne contenant le geom</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Test if geom data exists</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">geo_colname</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">geo_colname</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UtilsSqlaError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot create a shapefile record whithout a geometry column or with an None geometry&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># Build geometry</span>
+        <span class="k">if</span> <span class="n">is_geojson</span><span class="p">:</span>
+            <span class="n">geom</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">geo_colname</span><span class="p">))</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">geom</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">geo_colname</span><span class="p">)</span>
+
+        <span class="c1"># Build feature</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">create_feature</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span> <span class="n">geom</span><span class="p">,</span> <span class="n">is_geojson</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FionaService.create_feature">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaService.create_feature">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_feature</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">geom</span><span class="p">,</span> <span class="n">is_geojson</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create and write feature (a record of the file) for WKB data</span>
+<span class="sd">        by serializing an SQLAlchemy object</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            data (dict): the SQLAlchemy model serialized as a dict</span>
+<span class="sd">            geom (WKB): the geom as WKB</span>
+
+
+<span class="sd">        Returns:</span>
+<span class="sd">            void</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_geojson</span><span class="p">:</span>
+                <span class="n">geom_wkt</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+                <span class="n">geom_geojson</span> <span class="o">=</span> <span class="n">geom</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">geom_wkt</span> <span class="o">=</span> <span class="n">to_shape</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+                <span class="n">geom_geojson</span> <span class="o">=</span> <span class="n">mapping</span><span class="p">(</span><span class="n">geom_wkt</span><span class="p">)</span>
+            <span class="n">feature</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="n">geom_geojson</span><span class="p">,</span> <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">write_a_feature</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">geom_wkt</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="c1"># TODO déplacer car le fichier est fermé à la moindre erreur</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">close_files</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">UtilsSqlaError</span><span class="p">(</span><span class="s2">&quot;Cannot create a shapefile record whithout a Geometry&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># TODO déplacer car le fichier est fermé à la moindre erreur</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">close_files</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">UtilsSqlaError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="FionaService.create_fiona_struct">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaService.create_fiona_struct">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_fiona_struct</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">db_cols</span><span class="p">,</span> <span class="n">srid</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">col_mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="FionaService.write_a_feature">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaService.write_a_feature">[docs]</a>
+    <span class="k">def</span> <span class="nf">write_a_feature</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">geom_wkt</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="FionaService.save_files">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaService.save_files">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_files</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="FionaService.close_files">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaService.close_files">[docs]</a>
+    <span class="k">def</span> <span class="nf">close_files</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FionaGpkgService">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaGpkgService">[docs]</a>
+<span class="k">class</span> <span class="nc">FionaGpkgService</span><span class="p">(</span><span class="n">FionaService</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Service to create gpkg from sqlalchemy models</span>
+
+<span class="sd">    How to use:</span>
+<span class="sd">    FionaShapeService.create_shapes_struct(**args)</span>
+<span class="sd">    FionaShapeService.create_features(**args)</span>
+<span class="sd">    FionaShapeService.save_and_zip_shapefiles()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FionaGpkgService.create_fiona_struct">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaGpkgService.create_fiona_struct">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_fiona_struct</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">db_cols</span><span class="p">,</span> <span class="n">srid</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">col_mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">export_type</span> <span class="o">=</span> <span class="s2">&quot;gpkg&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">create_fiona_properties</span><span class="p">(</span><span class="n">db_cols</span><span class="p">,</span> <span class="n">srid</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">col_mapping</span><span class="p">)</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">gpkg_schema</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="s2">&quot;Unknown&quot;</span><span class="p">,</span> <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">shp_properties</span><span class="p">}</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">filename_gpkg</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">dir_path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="n">file_name</span> <span class="o">+</span> <span class="s2">&quot;.gpkg&quot;</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">gpkg_file</span> <span class="o">=</span> <span class="n">fiona</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">filename_gpkg</span><span class="p">,</span>
+            <span class="s2">&quot;w&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;GPKG&quot;</span><span class="p">,</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">gpkg_schema</span><span class="p">,</span>
+            <span class="n">crs</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">source_crs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FionaGpkgService.write_a_feature">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaGpkgService.write_a_feature">[docs]</a>
+    <span class="k">def</span> <span class="nf">write_a_feature</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">geom_wkt</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        write a feature by checking the type of the shape given</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">gpkg_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FionaGpkgService.save_files">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaGpkgService.save_files">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_files</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save and zip the files</span>
+<span class="sd">        Only zip files where there is at least on feature</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            void</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">export_type</span> <span class="o">=</span> <span class="s2">&quot;gpkg&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">close_files</span><span class="p">()</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FionaGpkgService.close_files">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaGpkgService.close_files">[docs]</a>
+    <span class="k">def</span> <span class="nf">close_files</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the files</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">gpkg_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FionaShapeService">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaShapeService">[docs]</a>
+<span class="k">class</span> <span class="nc">FionaShapeService</span><span class="p">(</span><span class="n">FionaService</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Service to create shapefiles from sqlalchemy models</span>
+
+<span class="sd">    How to use:</span>
+<span class="sd">    FionaShapeService.create_fiona_struct(**args)</span>
+<span class="sd">    FionaShapeService.create_features(**args)</span>
+<span class="sd">    FionaShapeService.save_files()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FionaShapeService.create_fiona_struct">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaShapeService.create_fiona_struct">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_fiona_struct</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">db_cols</span><span class="p">,</span> <span class="n">srid</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">col_mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create three shapefiles (point, line, polygon) with the attributes give by db_cols</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            db_cols (list): columns from a SQLA model (model.__mapper__.c)</span>
+<span class="sd">            srid (int): epsg code</span>
+<span class="sd">            dir_path (str): directory path</span>
+<span class="sd">            file_name (str): file of the shapefiles</span>
+<span class="sd">            col_mapping (dict): mapping between SQLA class attributes and &#39;beatifiul&#39; columns name</span>
+<span class="sd">            encoding (str): define encoding of data to store in Shape. Default: utf-8.</span>
+
+
+<span class="sd">        Returns:</span>
+<span class="sd">            void</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">export_type</span> <span class="o">=</span> <span class="s2">&quot;shp&quot;</span>
+        <span class="c1"># Création structure des proprités fiona</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">create_fiona_properties</span><span class="p">(</span><span class="n">db_cols</span><span class="p">,</span> <span class="n">srid</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">col_mapping</span><span class="p">)</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">polygon_schema</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Polygon&quot;</span><span class="p">,</span> <span class="s2">&quot;MultiPolygon&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">shp_properties</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">point_schema</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Point&quot;</span><span class="p">,</span> <span class="s2">&quot;MultiPoint&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">shp_properties</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">polyline_schema</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;LineString&quot;</span><span class="p">,</span> <span class="s2">&quot;MultiLineString&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">shp_properties</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">file_point</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">dir_path</span> <span class="o">+</span> <span class="s2">&quot;/POINT_&quot;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="n">file_name</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">file_poly</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">dir_path</span> <span class="o">+</span> <span class="s2">&quot;/POLYGON_&quot;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="n">file_name</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">file_line</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">dir_path</span> <span class="o">+</span> <span class="s2">&quot;/POLYLINE_&quot;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="n">file_name</span>
+        <span class="c1"># boolean to check if features are register in the shapefile</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">point_feature</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">polygon_feature</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">polyline_feature</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">point_shape</span> <span class="o">=</span> <span class="n">fiona</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">file_point</span><span class="p">,</span>
+            <span class="s2">&quot;w&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ESRI Shapefile&quot;</span><span class="p">,</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">point_schema</span><span class="p">,</span>
+            <span class="n">crs</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">source_crs</span><span class="p">,</span>
+            <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">polygone_shape</span> <span class="o">=</span> <span class="n">fiona</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">file_poly</span><span class="p">,</span>
+            <span class="s2">&quot;w&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ESRI Shapefile&quot;</span><span class="p">,</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">polygon_schema</span><span class="p">,</span>
+            <span class="n">crs</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">source_crs</span><span class="p">,</span>
+            <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">polyline_shape</span> <span class="o">=</span> <span class="n">fiona</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">file_line</span><span class="p">,</span>
+            <span class="s2">&quot;w&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ESRI Shapefile&quot;</span><span class="p">,</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">polyline_schema</span><span class="p">,</span>
+            <span class="n">crs</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">source_crs</span><span class="p">,</span>
+            <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="c1"># TODO mark as deprecated</span>
+<div class="viewcode-block" id="FionaShapeService.create_shapes_struct">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaShapeService.create_shapes_struct">[docs]</a>
+    <span class="n">create_shapes_struct</span> <span class="o">=</span> <span class="n">create_fiona_struct</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FionaShapeService.write_a_feature">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaShapeService.write_a_feature">[docs]</a>
+    <span class="k">def</span> <span class="nf">write_a_feature</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">geom_wkt</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        write a feature by checking the type of the shape given</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom_wkt</span><span class="p">,</span> <span class="n">Point</span><span class="p">):</span>
+            <span class="c1"># Transform point as multipoint :</span>
+            <span class="c1">#   In shape file point and multipoint canot be mixed</span>
+            <span class="n">geom_geojson</span> <span class="o">=</span> <span class="n">mapping</span><span class="p">(</span><span class="n">MultiPoint</span><span class="p">([</span><span class="n">geom_wkt</span><span class="p">]))</span>
+            <span class="n">feature</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_geojson</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">point_shape</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">point_feature</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom_wkt</span><span class="p">,</span> <span class="n">MultiPoint</span><span class="p">):</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">point_shape</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">point_feature</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom_wkt</span><span class="p">,</span> <span class="n">Polygon</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom_wkt</span><span class="p">,</span> <span class="n">MultiPolygon</span><span class="p">):</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">polygone_shape</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">polygon_feature</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom_wkt</span><span class="p">,</span> <span class="n">LineString</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom_wkt</span><span class="p">,</span> <span class="n">MultiLineString</span><span class="p">):</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">polyline_shape</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">polyline_feature</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FionaShapeService.save_files">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaShapeService.save_files">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_files</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save and zip the files</span>
+<span class="sd">        Only zip files where there is at least on feature</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            void</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">export_type</span> <span class="o">=</span> <span class="s2">&quot;shp&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">close_files</span><span class="p">()</span>
+
+        <span class="n">format_to_save</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">point_feature</span><span class="p">:</span>
+            <span class="n">format_to_save</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;POINT&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">polygon_feature</span><span class="p">:</span>
+            <span class="n">format_to_save</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;POLYGON&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">polyline_feature</span><span class="p">:</span>
+            <span class="n">format_to_save</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;POLYLINE&quot;</span><span class="p">)</span>
+
+        <span class="n">zip_path</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">dir_path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="n">file_name</span> <span class="o">+</span> <span class="s2">&quot;.zip&quot;</span>
+        <span class="n">zp_file</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">zip_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">shape_format</span> <span class="ow">in</span> <span class="n">format_to_save</span><span class="p">:</span>
+            <span class="n">final_file_name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">dir_path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">shape_format</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="n">file_name</span>
+            <span class="n">final_file_name</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{dir_path}</span><span class="s2">/</span><span class="si">{shape_format}</span><span class="s2">_</span><span class="si">{file_name}</span><span class="s2">/</span><span class="si">{shape_format}</span><span class="s2">_</span><span class="si">{file_name}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">dir_path</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span>
+                    <span class="n">shape_format</span><span class="o">=</span><span class="n">shape_format</span><span class="p">,</span>
+                    <span class="n">file_name</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">file_name</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">extentions</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;dbf&quot;</span><span class="p">,</span> <span class="s2">&quot;shx&quot;</span><span class="p">,</span> <span class="s2">&quot;shp&quot;</span><span class="p">,</span> <span class="s2">&quot;prj&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">extentions</span><span class="p">:</span>
+                <span class="n">zp_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="n">final_file_name</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">ext</span><span class="p">,</span>
+                    <span class="n">shape_format</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="n">file_name</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">ext</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="n">zp_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+    <span class="c1"># TODO mark as deprecated</span>
+<div class="viewcode-block" id="FionaShapeService.save_and_zip_shapefiles">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaShapeService.save_and_zip_shapefiles">[docs]</a>
+    <span class="n">save_and_zip_shapefiles</span> <span class="o">=</span> <span class="n">save_files</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FionaShapeService.close_files">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.FionaShapeService.close_files">[docs]</a>
+    <span class="k">def</span> <span class="nf">close_files</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">point_shape</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">polygone_shape</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">polyline_shape</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="create_shapes_generic">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.create_shapes_generic">[docs]</a>
+<span class="k">def</span> <span class="nf">create_shapes_generic</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">srid</span><span class="p">,</span> <span class="n">db_cols</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">geom_col</span><span class="p">,</span> <span class="n">geojson_col</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Export data in shape files (separated bu geometry type)</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        srid (int): epsg code</span>
+<span class="sd">        db_cols (list): columns from a SQLA model (model.__mapper__.c)</span>
+<span class="sd">        data (list): Array of SQLA model</span>
+<span class="sd">        dir_path (str): directory path</span>
+<span class="sd">        file_name (str): file of the shapefiles</span>
+<span class="sd">        geom_col (str): name of the WKB geometry column of the SQLA Model</span>
+<span class="sd">        geojson_col (str): name of the geojson column if present. If None create the geojson from geom_col with shapely</span>
+<span class="sd">                           for performance reason its better to use geojson_col rather than geom_col</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">FionaShapeService</span><span class="o">.</span><span class="n">create_shapes_struct</span><span class="p">(</span><span class="n">db_cols</span><span class="p">,</span> <span class="n">srid</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+    <span class="n">FionaShapeService</span><span class="o">.</span><span class="n">create_features_generic</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">geom_col</span><span class="p">,</span> <span class="n">geojson_col</span><span class="p">)</span>
+    <span class="n">FionaShapeService</span><span class="o">.</span><span class="n">save_and_zip_shapefiles</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="create_gpkg_generic">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.create_gpkg_generic">[docs]</a>
+<span class="k">def</span> <span class="nf">create_gpkg_generic</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">srid</span><span class="p">,</span> <span class="n">db_cols</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">geom_col</span><span class="p">,</span> <span class="n">geojson_col</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Export data in gpkg file</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        srid (int): epsg code</span>
+<span class="sd">        db_cols (list): columns from a SQLA model (model.__mapper__.c)</span>
+<span class="sd">        data (list): Array of SQLA model</span>
+<span class="sd">        dir_path (str): directory path</span>
+<span class="sd">        file_name (str): file of the shapefiles</span>
+<span class="sd">        geom_col (str): name of the WKB geometry column of the SQLA Model</span>
+<span class="sd">        geojson_col (str): name of the geojson column if present. If None create the geojson from geom_col with shapely</span>
+<span class="sd">                           for performance reason its better to use geojson_col rather than geom_col</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">FionaGpkgService</span><span class="o">.</span><span class="n">create_fiona_struct</span><span class="p">(</span><span class="n">db_cols</span><span class="p">,</span> <span class="n">srid</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+    <span class="n">FionaGpkgService</span><span class="o">.</span><span class="n">create_features_generic</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">geom_col</span><span class="p">,</span> <span class="n">geojson_col</span><span class="p">)</span>
+    <span class="n">FionaGpkgService</span><span class="o">.</span><span class="n">save_files</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="export_geodata_as_file">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.export_geodata_as_file">[docs]</a>
+<span class="k">def</span> <span class="nf">export_geodata_as_file</span><span class="p">(</span>
+    <span class="n">view</span><span class="p">,</span>
+    <span class="n">srid</span><span class="p">,</span>
+    <span class="n">db_cols</span><span class="p">,</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">dir_path</span><span class="p">,</span>
+    <span class="n">file_name</span><span class="p">,</span>
+    <span class="n">geom_col</span><span class="p">,</span>
+    <span class="n">geojson_col</span><span class="p">,</span>
+    <span class="n">export_format</span><span class="o">=</span><span class="s2">&quot;gpkg&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generic export data</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        srid (int): epsg code</span>
+<span class="sd">        db_cols (list): columns from a SQLA model (model.__mapper__.c)</span>
+<span class="sd">        data (list): Array of SQLA model</span>
+<span class="sd">        dir_path (str): directory path</span>
+<span class="sd">        file_name (str): file of the shapefiles</span>
+<span class="sd">        geom_col (str): name of the WKB geometry column of the SQLA Model</span>
+<span class="sd">        geojson_col (str): name of the geojson column if present. If None create the geojson from geom_col with shapely</span>
+<span class="sd">                           for performance reason its better to use geojson_col rather than geom_col</span>
+<span class="sd">        export_format (str) : name of the exported format</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">export_format</span> <span class="o">==</span> <span class="s2">&quot;gpkg&quot;</span><span class="p">:</span>
+        <span class="n">create_gpkg_generic</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">srid</span><span class="p">,</span> <span class="n">db_cols</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">geom_col</span><span class="p">,</span> <span class="n">geojson_col</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">export_format</span> <span class="o">==</span> <span class="s2">&quot;shp&quot;</span><span class="p">:</span>
+        <span class="n">create_shapes_generic</span><span class="p">(</span>
+            <span class="n">view</span><span class="p">,</span> <span class="n">srid</span><span class="p">,</span> <span class="n">db_cols</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">geom_col</span><span class="p">,</span> <span class="n">geojson_col</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># TODO raise ERROR unsupported format</span>
+        <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="convert_to_2d">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.convert_to_2d">[docs]</a>
+<span class="k">def</span> <span class="nf">convert_to_2d</span><span class="p">(</span><span class="n">geojson</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a geojson 3d in 2d</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># if its a Linestring, Polygon etc...</span>
+    <span class="k">if</span> <span class="n">geojson</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="n">two_d_coordinates</span> <span class="o">=</span> <span class="p">[[</span><span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">geojson</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">two_d_coordinates</span> <span class="o">=</span> <span class="p">[</span><span class="n">geojson</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">geojson</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+
+    <span class="n">geojson</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">two_d_coordinates</span></div>
+
+
+
+<div class="viewcode-block" id="remove_third_dimension">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/utilsgeometry/index.html#src.utils_flask_sqla_geo.utilsgeometry.remove_third_dimension">[docs]</a>
+<span class="k">def</span> <span class="nf">remove_third_dimension</span><span class="p">(</span><span class="n">geom</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">geom</span><span class="o">.</span><span class="n">has_z</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">geom</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">Polygon</span><span class="p">):</span>
+        <span class="n">exterior</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">exterior</span>
+        <span class="n">new_exterior</span> <span class="o">=</span> <span class="n">remove_third_dimension</span><span class="p">(</span><span class="n">exterior</span><span class="p">)</span>
+
+        <span class="n">interiors</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">interiors</span>
+        <span class="n">new_interiors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="nb">int</span> <span class="ow">in</span> <span class="n">interiors</span><span class="p">:</span>
+            <span class="n">new_interiors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">remove_third_dimension</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">Polygon</span><span class="p">(</span><span class="n">new_exterior</span><span class="p">,</span> <span class="n">new_interiors</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">LinearRing</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">LinearRing</span><span class="p">([</span><span class="n">xy</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">xy</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">coords</span><span class="p">)])</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">LineString</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">LineString</span><span class="p">([</span><span class="n">xy</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">xy</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">coords</span><span class="p">)])</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">Point</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Point</span><span class="p">([</span><span class="n">xy</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">xy</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">coords</span><span class="p">)])</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">MultiPoint</span><span class="p">):</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">geoms</span><span class="p">)</span>
+        <span class="n">new_points</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+            <span class="n">new_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">remove_third_dimension</span><span class="p">(</span><span class="n">point</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">MultiPoint</span><span class="p">(</span><span class="n">new_points</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">MultiLineString</span><span class="p">):</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">geoms</span><span class="p">)</span>
+        <span class="n">new_lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">new_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">remove_third_dimension</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">MultiLineString</span><span class="p">(</span><span class="n">new_lines</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">MultiPolygon</span><span class="p">):</span>
+        <span class="n">pols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">geoms</span><span class="p">)</span>
+
+        <span class="n">new_pols</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">pol</span> <span class="ow">in</span> <span class="n">pols</span><span class="p">:</span>
+            <span class="n">new_pols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">remove_third_dimension</span><span class="p">(</span><span class="n">pol</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">MultiPolygon</span><span class="p">(</span><span class="n">new_pols</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">GeometryCollection</span><span class="p">):</span>
+        <span class="n">geoms</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">geoms</span><span class="p">)</span>
+
+        <span class="n">new_geoms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">geom</span> <span class="ow">in</span> <span class="n">geoms</span><span class="p">:</span>
+            <span class="n">new_geoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">remove_third_dimension</span><span class="p">(</span><span class="n">geom</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">GeometryCollection</span><span class="p">(</span><span class="n">new_geoms</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s2">&quot;Currently this type of geometry is not supported: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">geom</span><span class="p">))</span>
+        <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

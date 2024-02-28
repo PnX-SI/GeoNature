@@ -1,0 +1,86 @@
+:py:mod:`pypnusershub.routes_register`
+======================================
+
+.. py:module:: pypnusershub.routes_register
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   pypnusershub.routes_register.get_json_request
+   pypnusershub.routes_register.req_json_or_text
+   pypnusershub.routes_register.connect_admin
+   pypnusershub.routes_register.test
+   pypnusershub.routes_register.post_usershub
+   pypnusershub.routes_register.after_request
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   pypnusershub.routes_register.s
+   pypnusershub.routes_register.bp
+
+
+.. py:data:: s
+
+   
+
+.. py:data:: bp
+
+   
+
+.. py:function:: get_json_request(r)
+
+   r : retour de la requete requests
+
+   fonction pour recuperer la reponse json sans lever d'erreur
+
+
+.. py:function:: req_json_or_text(r, msg_pypn='')
+
+   r : retour de la requete requests
+   msg_pypn : message supplementaire rajouté a la reponse
+
+   revoie un tuple avec la réponse de la requete en json r.json si possible
+   {'msg': r.text} sinon
+   et status_code
+
+
+
+
+.. py:function:: connect_admin()
+
+   decorateur pour la connexion de l'admin a une appli
+   ici url config['URL_USERSHUB'] sans / à la fin
+
+
+.. py:function:: test()
+
+   route pour tester le décorateur connect_admin
+   ainsi que les paramètres de connexion à USERSHUB:
+       - config['ADMIN_APPLICATION_LOGIN']
+       - config['ADMIN_APPLICATION_PASSWORD']
+
+
+.. py:function:: post_usershub(type_action)
+
+   route generique pour appeler les routes UsersHub en tant qu'administrateur de l'appli en cours
+   ex : post_usershub/test_connexion appelle la route URL_USERSHUB/api_register/test_connexion
+
+
+.. py:function:: after_request(type_action, data, *args, **kwargs)
+
+   lorsqu'une fonction est definie dans REGISTER_POST_ACTION_FCT[type_action]
+   elle est executée avec les données fournies en retour de la requete USERSHUB
+
+

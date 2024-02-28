@@ -1,0 +1,22 @@
+:py:mod:`geonature.utils.sentry`
+================================
+
+.. py:module:: geonature.utils.sentry
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.utils.sentry.start_sentry_child
+
+
+
+.. py:function:: start_sentry_child(*args, **kwargs)
+
+

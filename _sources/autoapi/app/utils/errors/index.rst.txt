@@ -1,0 +1,30 @@
+:py:mod:`app.utils.errors`
+==========================
+
+.. py:module:: app.utils.errors
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   app.utils.errors.handle_unauthenticated_request
+
+
+
+.. py:function:: handle_unauthenticated_request()
+
+   To avoid returning the login page html when a route is used by geonature API
+   this function overrides `LoginManager.unauthorized()` from `flask-login` .
+
+   Returns
+   -------
+   flask.Response
+       response
+
+

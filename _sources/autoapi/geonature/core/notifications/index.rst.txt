@@ -1,0 +1,19 @@
+:py:mod:`geonature.core.notifications`
+======================================
+
+.. py:module:: geonature.core.notifications
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   admin/index.rst
+   models/index.rst
+   routes/index.rst
+   tasks/index.rst
+   utils/index.rst
+
+

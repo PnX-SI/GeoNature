@@ -1,0 +1,33 @@
+:py:mod:`apptax.docker_config`
+==============================
+
+.. py:module:: apptax.docker_config
+
+
+Module Contents
+---------------
+
+.. py:data:: UPLOAD_FOLDER
+   :value: 'medias'
+
+   
+
+.. py:data:: SQLALCHEMY_TRACK_MODIFICATIONS
+   :value: False
+
+   
+
+.. py:data:: COOKIE_EXPIRATION
+   :value: 3600
+
+   
+
+.. py:data:: SECRET_KEY
+
+   
+
+.. py:data:: PASS_METHOD
+   :value: 'hash'
+
+   
+

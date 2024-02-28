@@ -1,0 +1,106 @@
+:py:mod:`app.groupe.route`
+==========================
+
+.. py:module:: app.groupe.route
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   app.groupe.route.groups
+   app.groupe.route.addorupdate
+   app.groupe.route.membres
+   app.groupe.route.delete
+   app.groupe.route.info
+   app.groupe.route.pops
+   app.groupe.route.process
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   app.groupe.route.URL_REDIRECT
+   app.groupe.route.URL_APPLICATION
+   app.groupe.route.route
+
+
+.. py:data:: URL_REDIRECT
+
+   
+
+.. py:data:: URL_APPLICATION
+
+   
+
+.. py:data:: route
+
+   
+
+.. py:function:: groups()
+
+   Route qui affiche la liste des groupes
+   Retourne un template avec pour paramètres :
+                                           - une entête de tableau --> fLine
+                                           - le nom des colonnes de la base --> line
+                                           - le contenu du tableau --> table
+                                           - le chemin de mise à jour --> pathU
+                                           - le chemin de suppression --> pathD
+                                           - le chemin d'ajout --> pathA
+                                           - le chemin des membres du groupe --> pathP
+                                           - une clé (clé primaire dans la plupart des cas) --> key
+                                           - un nom (nom de la table) pour le bouton ajout --> name
+                                           - un nom de listes --> name_list
+                                           - ajoute une colonne de bouton ('True' doit être de type string)--> otherCol
+                                           - nom affiché sur le bouton --> Members
+
+
+.. py:function:: addorupdate(id_role=None)
+
+   Route affichant un formulaire vierge ou non (selon l'url) pour ajouter ou mettre à jour un groupe
+   L'envoie du formulaire permet l'ajout ou la maj du groupe dans la base
+   Retourne un template accompagné d'un formulaire pré-rempli ou non selon le paramètre id_role
+   Une fois le formulaire validé on retourne une redirection vers la liste de groupe
+
+
+.. py:function:: membres(id_groupe)
+
+   Route affichant la liste des roles n'appartenant pas au groupe vis à vis de ceux qui appartiennent à celui ci.
+   Avec pour paramètre un id de groupe (id_role)
+   Retourne un template avec pour paramètres:
+       - une entête des tableaux --> fLine
+       - le nom des colonnes de la base --> data
+       - liste des roles n'appartenant pas au groupe --> table
+       - liste des roles appartenant au groupe --> table2
+       - variable qui permet a jinja de colorer une ligne si celui-ci est un groupe --> group
+
+
+.. py:function:: delete(id_groupe)
+
+   Route qui supprime un groupe dont l'id est donné en paramètres dans l'url
+   Retourne une redirection vers la liste de groupe
+
+
+.. py:function:: info(id_role)
+
+
+.. py:function:: pops(form)
+
+   Methode qui supprime les éléments indésirables du formulaires
+   Avec pour paramètre un formulaire
+
+
+.. py:function:: process(form, group)
+
+   Methode qui rempli le formulaire par les données de l'éléments concerné
+   Avec pour paramètres un formulaire et un groupe
+
+

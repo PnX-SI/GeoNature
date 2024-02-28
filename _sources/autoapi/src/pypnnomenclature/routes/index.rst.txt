@@ -1,0 +1,65 @@
+:py:mod:`src.pypnnomenclature.routes`
+=====================================
+
+.. py:module:: src.pypnnomenclature.routes
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   src.pypnnomenclature.routes.get_nomenclature_by_type_and_taxonomy
+   src.pypnnomenclature.routes.get_nomenclature_by_mnemonique_and_taxonomy
+   src.pypnnomenclature.routes.get_nomenclature_by_type_list_and_taxonomy
+   src.pypnnomenclature.routes.get_nomenclature_with_taxonomy_list
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   src.pypnnomenclature.routes.routes
+
+
+.. py:data:: routes
+
+   
+
+.. py:function:: get_nomenclature_by_type_and_taxonomy(id_type)
+
+    => Déprécié pour des raisons de volatilité des identifiants en BD
+
+   .. :quickref: Nomenclatures;
+
+   Route : liste des termes d'une nomenclature basées sur les identifiants de nomenclature
+   Possibilité de filtrer par regne et group2Inpn
+
+
+
+.. py:function:: get_nomenclature_by_mnemonique_and_taxonomy(code_type)
+
+   Route : liste des termes d'une nomenclature
+   basées sur le code mnemonique du type de nomenclature
+   Possibilité de filtrer par regne et group2Inpn
+
+   .. :quickref: Nomenclatures;
+
+
+.. py:function:: get_nomenclature_by_type_list_and_taxonomy()
+
+   Route : liste des termes d'un ensemble de nomenclatures
+   Possibilité de filtrer par regne et group2Inpn
+
+   .. :quickref: Nomenclatures;
+
+
+.. py:function:: get_nomenclature_with_taxonomy_list()
+
+

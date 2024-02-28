@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_synthese.models &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../search.html" />
+    <link rel="next" title="geonature.core.gn_synthese.routes" href="../routes/index.html" />
+    <link rel="prev" title="geonature.core.gn_synthese.utils.query_select_sqla" href="../utils/query_select_sqla/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../../api-references.html">API REFERENCES</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../../../index.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../middlewares/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.middlewares</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../tasks/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.tasks</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../index.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../pypnusershub/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla_geo/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../frontend.html">Frontend</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../api-references.html">API REFERENCES</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core</span></code></a></li>
+          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_synthese</span></code></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_synthese.models</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/autoapi/geonature/core/gn_synthese/models/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-geonature.core.gn_synthese.models">
+<span id="geonature-core-gn-synthese-models"></span><h1><a class="reference internal" href="#module-geonature.core.gn_synthese.models" title="geonature.core.gn_synthese.models"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_synthese.models</span></code></a><a class="headerlink" href="#module-geonature.core.gn_synthese.models" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.TSources" title="geonature.core.gn_synthese.models.TSources"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TSources</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.CorObserverSynthese" title="geonature.core.gn_synthese.models.CorObserverSynthese"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CorObserverSynthese</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.SyntheseLogEntryQuery" title="geonature.core.gn_synthese.models.SyntheseLogEntryQuery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SyntheseLogEntryQuery</span></code></a></p></td>
+<td><p>SQLAlchemy <code class="xref py py-class docutils literal notranslate"><span class="pre">Query</span></code> subclass with some extra methods</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.SyntheseQuery" title="geonature.core.gn_synthese.models.SyntheseQuery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SyntheseQuery</span></code></a></p></td>
+<td><p>SQLAlchemy <code class="xref py py-class docutils literal notranslate"><span class="pre">Query</span></code> subclass with some extra methods</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.CorAreaSynthese" title="geonature.core.gn_synthese.models.CorAreaSynthese"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CorAreaSynthese</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.Synthese" title="geonature.core.gn_synthese.models.Synthese"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Synthese</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.DefaultsNomenclaturesValue" title="geonature.core.gn_synthese.models.DefaultsNomenclaturesValue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DefaultsNomenclaturesValue</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.BibReportsTypes" title="geonature.core.gn_synthese.models.BibReportsTypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibReportsTypes</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.TReport" title="geonature.core.gn_synthese.models.TReport"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TReport</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp" title="geonature.core.gn_synthese.models.VSyntheseForWebApp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VSyntheseForWebApp</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.VColorAreaTaxon" title="geonature.core.gn_synthese.models.VColorAreaTaxon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VColorAreaTaxon</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.SyntheseLogEntry" title="geonature.core.gn_synthese.models.SyntheseLogEntry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SyntheseLogEntry</span></code></a></p></td>
+<td><p>Log synthese table, populated with Delete Triggers on gn_synthes.synthese</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.synthese_export_serialization" title="geonature.core.gn_synthese.models.synthese_export_serialization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">synthese_export_serialization</span></code></a>(cls)</p></td>
+<td><p>Décorateur qui definit une serialisation particuliere pour la vue v_synthese_for_export</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.sortable_columns" title="geonature.core.gn_synthese.models.sortable_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sortable_columns</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.filterable_columns" title="geonature.core.gn_synthese.models.filterable_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filterable_columns</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.cor_observer_synthese" title="geonature.core.gn_synthese.models.cor_observer_synthese"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_observer_synthese</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.corAreaSynthese" title="geonature.core.gn_synthese.models.corAreaSynthese"><code class="xref py py-obj docutils literal notranslate"><span class="pre">corAreaSynthese</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.models.source_subquery" title="geonature.core.gn_synthese.models.source_subquery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">source_subquery</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.sortable_columns">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">sortable_columns</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['meta_last_action_date']</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#sortable_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.sortable_columns" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.filterable_columns">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">filterable_columns</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['id_synthese',</span> <span class="pre">'last_action',</span> <span class="pre">'meta_last_action_date']</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#filterable_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.filterable_columns" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TSources">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">TSources</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TSources"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TSources" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TSources.module_url">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">module_url</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TSources.module_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TSources.module_url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TSources.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_sources'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TSources.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TSources.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TSources.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TSources.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TSources.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TSources.id_source">
+<span class="sig-name descname"><span class="pre">id_source</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TSources.id_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TSources.id_source" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TSources.name_source">
+<span class="sig-name descname"><span class="pre">name_source</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TSources.name_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TSources.name_source" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TSources.desc_source">
+<span class="sig-name descname"><span class="pre">desc_source</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TSources.desc_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TSources.desc_source" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TSources.entity_source_pk_field">
+<span class="sig-name descname"><span class="pre">entity_source_pk_field</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TSources.entity_source_pk_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TSources.entity_source_pk_field" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TSources.url_source">
+<span class="sig-name descname"><span class="pre">url_source</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TSources.url_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TSources.url_source" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TSources.meta_create_date">
+<span class="sig-name descname"><span class="pre">meta_create_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TSources.meta_create_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TSources.meta_create_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TSources.meta_update_date">
+<span class="sig-name descname"><span class="pre">meta_update_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TSources.meta_update_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TSources.meta_update_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TSources.id_module">
+<span class="sig-name descname"><span class="pre">id_module</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TSources.id_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TSources.id_module" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TSources.module">
+<span class="sig-name descname"><span class="pre">module</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TSources.module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TSources.module" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.cor_observer_synthese">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">cor_observer_synthese</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#cor_observer_synthese"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.cor_observer_synthese" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.CorObserverSynthese">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">CorObserverSynthese</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#CorObserverSynthese"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.CorObserverSynthese" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.CorObserverSynthese.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cor_observer_synthese'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#CorObserverSynthese.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.CorObserverSynthese.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.CorObserverSynthese.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#CorObserverSynthese.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.CorObserverSynthese.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.CorObserverSynthese.id_synthese">
+<span class="sig-name descname"><span class="pre">id_synthese</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#CorObserverSynthese.id_synthese"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.CorObserverSynthese.id_synthese" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.CorObserverSynthese.id_role">
+<span class="sig-name descname"><span class="pre">id_role</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#CorObserverSynthese.id_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.CorObserverSynthese.id_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.corAreaSynthese">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">corAreaSynthese</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#corAreaSynthese"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.corAreaSynthese" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseLogEntryQuery">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">SyntheseLogEntryQuery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseLogEntryQuery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseLogEntryQuery" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_sqlalchemy.query.Query</span></code></p>
+<p>SQLAlchemy <code class="xref py py-class docutils literal notranslate"><span class="pre">Query</span></code> subclass with some extra methods
+useful for querying in a web application.</p>
+<p>This is the default query class for <code class="xref py py-attr docutils literal notranslate"><span class="pre">Model.query</span></code>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.0: </span>Renamed to <code class="docutils literal notranslate"><span class="pre">Query</span></code> from <code class="docutils literal notranslate"><span class="pre">BaseQuery</span></code>.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseLogEntryQuery.sortable_columns">
+<span class="sig-name descname"><span class="pre">sortable_columns</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['meta_last_action_date']</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseLogEntryQuery.sortable_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseLogEntryQuery.sortable_columns" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseLogEntryQuery.filterable_columns">
+<span class="sig-name descname"><span class="pre">filterable_columns</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['id_synthese',</span> <span class="pre">'last_action',</span> <span class="pre">'meta_last_action_date']</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseLogEntryQuery.filterable_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseLogEntryQuery.filterable_columns" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseLogEntryQuery.filter_by_params">
+<span class="sig-name descname"><span class="pre">filter_by_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseLogEntryQuery.filter_by_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseLogEntryQuery.filter_by_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseLogEntryQuery.filter_by_datetime">
+<span class="sig-name descname"><span class="pre">filter_by_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseLogEntryQuery.filter_by_datetime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseLogEntryQuery.filter_by_datetime" title="Link to this definition"></a></dt>
+<dd><p>Filter on date only with operator among « &lt;,&gt;,=&lt;,&gt;= »</p>
+<section id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>filters_with_operator<span class="classifier">dict</span></dt><dd><p>params filters from url only</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h4>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
+<p>Query</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseLogEntryQuery.sort">
+<span class="sig-name descname"><span class="pre">sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../../app/liste/forms/index.html#app.liste.forms.List" title="app.liste.forms.List"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseLogEntryQuery.sort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseLogEntryQuery.sort" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseQuery">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">SyntheseQuery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseQuery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseQuery" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">utils_flask_sqla_geo.mixins.GeoFeatureCollectionMixin</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_sqlalchemy.query.Query</span></code></p>
+<p>SQLAlchemy <code class="xref py py-class docutils literal notranslate"><span class="pre">Query</span></code> subclass with some extra methods
+useful for querying in a web application.</p>
+<p>This is the default query class for <code class="xref py py-attr docutils literal notranslate"><span class="pre">Model.query</span></code>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.0: </span>Renamed to <code class="docutils literal notranslate"><span class="pre">Query</span></code> from <code class="docutils literal notranslate"><span class="pre">BaseQuery</span></code>.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseQuery.join_nomenclatures">
+<span class="sig-name descname"><span class="pre">join_nomenclatures</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseQuery.join_nomenclatures"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseQuery.join_nomenclatures" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseQuery.lateraljoin_last_validation">
+<span class="sig-name descname"><span class="pre">lateraljoin_last_validation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseQuery.lateraljoin_last_validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseQuery.lateraljoin_last_validation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseQuery.filter_by_scope">
+<span class="sig-name descname"><span class="pre">filter_by_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseQuery.filter_by_scope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseQuery.filter_by_scope" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.CorAreaSynthese">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">CorAreaSynthese</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#CorAreaSynthese"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.CorAreaSynthese" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.CorAreaSynthese.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cor_area_synthese'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#CorAreaSynthese.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.CorAreaSynthese.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.CorAreaSynthese.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#CorAreaSynthese.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.CorAreaSynthese.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.CorAreaSynthese.id_synthese">
+<span class="sig-name descname"><span class="pre">id_synthese</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#CorAreaSynthese.id_synthese"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.CorAreaSynthese.id_synthese" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.CorAreaSynthese.id_area">
+<span class="sig-name descname"><span class="pre">id_area</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#CorAreaSynthese.id_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.CorAreaSynthese.id_area" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">Synthese</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'synthese'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.query_class">
+<span class="sig-name descname"><span class="pre">query_class</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.query_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.query_class" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_fields">
+<span class="sig-name descname"><span class="pre">nomenclature_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['nomenclature_geo_object_nature',</span> <span class="pre">'nomenclature_grp_typ',</span> <span class="pre">'nomenclature_obs_technique',...</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_fields" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_synthese">
+<span class="sig-name descname"><span class="pre">id_synthese</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_synthese"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_synthese" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.unique_id_sinp">
+<span class="sig-name descname"><span class="pre">unique_id_sinp</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.unique_id_sinp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.unique_id_sinp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.unique_id_sinp_grp">
+<span class="sig-name descname"><span class="pre">unique_id_sinp_grp</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.unique_id_sinp_grp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.unique_id_sinp_grp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_source">
+<span class="sig-name descname"><span class="pre">id_source</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_source" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.source">
+<span class="sig-name descname"><span class="pre">source</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.source" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_module">
+<span class="sig-name descname"><span class="pre">id_module</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_module" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.module">
+<span class="sig-name descname"><span class="pre">module</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.module" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.entity_source_pk_value">
+<span class="sig-name descname"><span class="pre">entity_source_pk_value</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.entity_source_pk_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.entity_source_pk_value" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_dataset">
+<span class="sig-name descname"><span class="pre">id_dataset</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_dataset" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.dataset">
+<span class="sig-name descname"><span class="pre">dataset</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.dataset" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.grp_method">
+<span class="sig-name descname"><span class="pre">grp_method</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.grp_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.grp_method" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_geo_object_nature">
+<span class="sig-name descname"><span class="pre">id_nomenclature_geo_object_nature</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_geo_object_nature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_geo_object_nature" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_geo_object_nature">
+<span class="sig-name descname"><span class="pre">nomenclature_geo_object_nature</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_geo_object_nature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_geo_object_nature" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_grp_typ">
+<span class="sig-name descname"><span class="pre">id_nomenclature_grp_typ</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_grp_typ"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_grp_typ" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_grp_typ">
+<span class="sig-name descname"><span class="pre">nomenclature_grp_typ</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_grp_typ"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_grp_typ" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_obs_technique">
+<span class="sig-name descname"><span class="pre">id_nomenclature_obs_technique</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_obs_technique"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_obs_technique" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_obs_technique">
+<span class="sig-name descname"><span class="pre">nomenclature_obs_technique</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_obs_technique"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_obs_technique" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_bio_status">
+<span class="sig-name descname"><span class="pre">id_nomenclature_bio_status</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_bio_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_bio_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_bio_status">
+<span class="sig-name descname"><span class="pre">nomenclature_bio_status</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_bio_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_bio_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_bio_condition">
+<span class="sig-name descname"><span class="pre">id_nomenclature_bio_condition</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_bio_condition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_bio_condition" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_bio_condition">
+<span class="sig-name descname"><span class="pre">nomenclature_bio_condition</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_bio_condition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_bio_condition" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_naturalness">
+<span class="sig-name descname"><span class="pre">id_nomenclature_naturalness</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_naturalness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_naturalness" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_naturalness">
+<span class="sig-name descname"><span class="pre">nomenclature_naturalness</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_naturalness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_naturalness" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_valid_status">
+<span class="sig-name descname"><span class="pre">id_nomenclature_valid_status</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_valid_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_valid_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_valid_status">
+<span class="sig-name descname"><span class="pre">nomenclature_valid_status</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_valid_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_valid_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_exist_proof">
+<span class="sig-name descname"><span class="pre">id_nomenclature_exist_proof</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_exist_proof"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_exist_proof" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_exist_proof">
+<span class="sig-name descname"><span class="pre">nomenclature_exist_proof</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_exist_proof"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_exist_proof" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_diffusion_level">
+<span class="sig-name descname"><span class="pre">id_nomenclature_diffusion_level</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_diffusion_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_diffusion_level" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_diffusion_level">
+<span class="sig-name descname"><span class="pre">nomenclature_diffusion_level</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_diffusion_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_diffusion_level" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_life_stage">
+<span class="sig-name descname"><span class="pre">id_nomenclature_life_stage</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_life_stage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_life_stage" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_life_stage">
+<span class="sig-name descname"><span class="pre">nomenclature_life_stage</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_life_stage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_life_stage" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_sex">
+<span class="sig-name descname"><span class="pre">id_nomenclature_sex</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_sex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_sex" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_sex">
+<span class="sig-name descname"><span class="pre">nomenclature_sex</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_sex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_sex" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_obj_count">
+<span class="sig-name descname"><span class="pre">id_nomenclature_obj_count</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_obj_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_obj_count" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_obj_count">
+<span class="sig-name descname"><span class="pre">nomenclature_obj_count</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_obj_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_obj_count" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_type_count">
+<span class="sig-name descname"><span class="pre">id_nomenclature_type_count</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_type_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_type_count" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_type_count">
+<span class="sig-name descname"><span class="pre">nomenclature_type_count</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_type_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_type_count" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_sensitivity">
+<span class="sig-name descname"><span class="pre">id_nomenclature_sensitivity</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_sensitivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_sensitivity" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_sensitivity">
+<span class="sig-name descname"><span class="pre">nomenclature_sensitivity</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_sensitivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_sensitivity" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_observation_status">
+<span class="sig-name descname"><span class="pre">id_nomenclature_observation_status</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_observation_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_observation_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_observation_status">
+<span class="sig-name descname"><span class="pre">nomenclature_observation_status</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_observation_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_observation_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_blurring">
+<span class="sig-name descname"><span class="pre">id_nomenclature_blurring</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_blurring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_blurring" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_blurring">
+<span class="sig-name descname"><span class="pre">nomenclature_blurring</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_blurring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_blurring" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_source_status">
+<span class="sig-name descname"><span class="pre">id_nomenclature_source_status</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_source_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_source_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_source_status">
+<span class="sig-name descname"><span class="pre">nomenclature_source_status</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_source_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_source_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_info_geo_type">
+<span class="sig-name descname"><span class="pre">id_nomenclature_info_geo_type</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_info_geo_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_info_geo_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_info_geo_type">
+<span class="sig-name descname"><span class="pre">nomenclature_info_geo_type</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_info_geo_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_info_geo_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_behaviour">
+<span class="sig-name descname"><span class="pre">id_nomenclature_behaviour</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_behaviour"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_behaviour" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_behaviour">
+<span class="sig-name descname"><span class="pre">nomenclature_behaviour</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_behaviour"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_behaviour" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_biogeo_status">
+<span class="sig-name descname"><span class="pre">id_nomenclature_biogeo_status</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_biogeo_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_biogeo_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_biogeo_status">
+<span class="sig-name descname"><span class="pre">nomenclature_biogeo_status</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_biogeo_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_biogeo_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_nomenclature_determination_method">
+<span class="sig-name descname"><span class="pre">id_nomenclature_determination_method</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_nomenclature_determination_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_nomenclature_determination_method" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nomenclature_determination_method">
+<span class="sig-name descname"><span class="pre">nomenclature_determination_method</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nomenclature_determination_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nomenclature_determination_method" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.reference_biblio">
+<span class="sig-name descname"><span class="pre">reference_biblio</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.reference_biblio"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.reference_biblio" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.count_min">
+<span class="sig-name descname"><span class="pre">count_min</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.count_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.count_min" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.count_max">
+<span class="sig-name descname"><span class="pre">count_max</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.count_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.count_max" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.cd_nom">
+<span class="sig-name descname"><span class="pre">cd_nom</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.cd_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.cd_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.taxref">
+<span class="sig-name descname"><span class="pre">taxref</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.taxref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.taxref" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.cd_hab">
+<span class="sig-name descname"><span class="pre">cd_hab</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.cd_hab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.cd_hab" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.habitat">
+<span class="sig-name descname"><span class="pre">habitat</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.habitat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.habitat" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.nom_cite">
+<span class="sig-name descname"><span class="pre">nom_cite</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.nom_cite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.nom_cite" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.meta_v_taxref">
+<span class="sig-name descname"><span class="pre">meta_v_taxref</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.meta_v_taxref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.meta_v_taxref" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.sample_number_proof">
+<span class="sig-name descname"><span class="pre">sample_number_proof</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.sample_number_proof"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.sample_number_proof" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.digital_proof">
+<span class="sig-name descname"><span class="pre">digital_proof</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.digital_proof"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.digital_proof" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.non_digital_proof">
+<span class="sig-name descname"><span class="pre">non_digital_proof</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.non_digital_proof"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.non_digital_proof" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.altitude_min">
+<span class="sig-name descname"><span class="pre">altitude_min</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.altitude_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.altitude_min" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.altitude_max">
+<span class="sig-name descname"><span class="pre">altitude_max</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.altitude_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.altitude_max" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.depth_min">
+<span class="sig-name descname"><span class="pre">depth_min</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.depth_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.depth_min" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.depth_max">
+<span class="sig-name descname"><span class="pre">depth_max</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.depth_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.depth_max" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.place_name">
+<span class="sig-name descname"><span class="pre">place_name</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.place_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.place_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.the_geom_4326">
+<span class="sig-name descname"><span class="pre">the_geom_4326</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.the_geom_4326"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.the_geom_4326" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.the_geom_4326_geojson">
+<span class="sig-name descname"><span class="pre">the_geom_4326_geojson</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.the_geom_4326_geojson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.the_geom_4326_geojson" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.the_geom_point">
+<span class="sig-name descname"><span class="pre">the_geom_point</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.the_geom_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.the_geom_point" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.the_geom_local">
+<span class="sig-name descname"><span class="pre">the_geom_local</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.the_geom_local"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.the_geom_local" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.the_geom_authorized">
+<span class="sig-name descname"><span class="pre">the_geom_authorized</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.the_geom_authorized"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.the_geom_authorized" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.precision">
+<span class="sig-name descname"><span class="pre">precision</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.precision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.precision" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_area_attachment">
+<span class="sig-name descname"><span class="pre">id_area_attachment</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_area_attachment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_area_attachment" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.date_min">
+<span class="sig-name descname"><span class="pre">date_min</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.date_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.date_min" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.date_max">
+<span class="sig-name descname"><span class="pre">date_max</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.date_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.date_max" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.validator">
+<span class="sig-name descname"><span class="pre">validator</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.validator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.validator" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.validation_comment">
+<span class="sig-name descname"><span class="pre">validation_comment</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.validation_comment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.validation_comment" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.observers">
+<span class="sig-name descname"><span class="pre">observers</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.observers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.observers" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.determiner">
+<span class="sig-name descname"><span class="pre">determiner</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.determiner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.determiner" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.id_digitiser">
+<span class="sig-name descname"><span class="pre">id_digitiser</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.id_digitiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.id_digitiser" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.digitiser">
+<span class="sig-name descname"><span class="pre">digitiser</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.digitiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.digitiser" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.comment_context">
+<span class="sig-name descname"><span class="pre">comment_context</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.comment_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.comment_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.comment_description">
+<span class="sig-name descname"><span class="pre">comment_description</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.comment_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.comment_description" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.additional_data">
+<span class="sig-name descname"><span class="pre">additional_data</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.additional_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.additional_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.meta_validation_date">
+<span class="sig-name descname"><span class="pre">meta_validation_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.meta_validation_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.meta_validation_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.meta_create_date">
+<span class="sig-name descname"><span class="pre">meta_create_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.meta_create_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.meta_create_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.meta_update_date">
+<span class="sig-name descname"><span class="pre">meta_update_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.meta_update_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.meta_update_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.last_action">
+<span class="sig-name descname"><span class="pre">last_action</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.last_action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.last_action" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.areas">
+<span class="sig-name descname"><span class="pre">areas</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.areas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.areas" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.area_attachment">
+<span class="sig-name descname"><span class="pre">area_attachment</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.area_attachment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.area_attachment" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.validations">
+<span class="sig-name descname"><span class="pre">validations</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.validations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.validations" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.last_validation">
+<span class="sig-name descname"><span class="pre">last_validation</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.last_validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.last_validation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.medias">
+<span class="sig-name descname"><span class="pre">medias</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.medias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.medias" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.cor_observers">
+<span class="sig-name descname"><span class="pre">cor_observers</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.cor_observers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.cor_observers" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese._has_scope_grant">
+<span class="sig-name descname"><span class="pre">_has_scope_grant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese._has_scope_grant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese._has_scope_grant" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese._has_permissions_grant">
+<span class="sig-name descname"><span class="pre">_has_permissions_grant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permissions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese._has_permissions_grant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese._has_permissions_grant" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.has_instance_permission">
+<span class="sig-name descname"><span class="pre">has_instance_permission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permissions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.has_instance_permission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.has_instance_permission" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.join_nomenclatures">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">join_nomenclatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.join_nomenclatures"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.join_nomenclatures" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.lateraljoin_last_validation">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lateraljoin_last_validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.lateraljoin_last_validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.lateraljoin_last_validation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.Synthese.filter_by_scope">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_by_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#Synthese.filter_by_scope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.Synthese.filter_by_scope" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.DefaultsNomenclaturesValue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">DefaultsNomenclaturesValue</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#DefaultsNomenclaturesValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.DefaultsNomenclaturesValue" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.DefaultsNomenclaturesValue.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'defaults_nomenclatures_value'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#DefaultsNomenclaturesValue.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.DefaultsNomenclaturesValue.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.DefaultsNomenclaturesValue.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#DefaultsNomenclaturesValue.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.DefaultsNomenclaturesValue.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.DefaultsNomenclaturesValue.mnemonique_type">
+<span class="sig-name descname"><span class="pre">mnemonique_type</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#DefaultsNomenclaturesValue.mnemonique_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.DefaultsNomenclaturesValue.mnemonique_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.DefaultsNomenclaturesValue.id_organism">
+<span class="sig-name descname"><span class="pre">id_organism</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#DefaultsNomenclaturesValue.id_organism"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.DefaultsNomenclaturesValue.id_organism" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.DefaultsNomenclaturesValue.regne">
+<span class="sig-name descname"><span class="pre">regne</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#DefaultsNomenclaturesValue.regne"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.DefaultsNomenclaturesValue.regne" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.DefaultsNomenclaturesValue.group2_inpn">
+<span class="sig-name descname"><span class="pre">group2_inpn</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#DefaultsNomenclaturesValue.group2_inpn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.DefaultsNomenclaturesValue.group2_inpn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.DefaultsNomenclaturesValue.id_nomenclature">
+<span class="sig-name descname"><span class="pre">id_nomenclature</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#DefaultsNomenclaturesValue.id_nomenclature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.DefaultsNomenclaturesValue.id_nomenclature" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.BibReportsTypes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">BibReportsTypes</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#BibReportsTypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.BibReportsTypes" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.BibReportsTypes.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_reports_types'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#BibReportsTypes.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.BibReportsTypes.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.BibReportsTypes.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#BibReportsTypes.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.BibReportsTypes.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.BibReportsTypes.id_type">
+<span class="sig-name descname"><span class="pre">id_type</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#BibReportsTypes.id_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.BibReportsTypes.id_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.BibReportsTypes.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#BibReportsTypes.type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.BibReportsTypes.type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TReport">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">TReport</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TReport"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TReport" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TReport.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_reports'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TReport.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TReport.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TReport.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TReport.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TReport.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TReport.id_report">
+<span class="sig-name descname"><span class="pre">id_report</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TReport.id_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TReport.id_report" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TReport.id_synthese">
+<span class="sig-name descname"><span class="pre">id_synthese</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TReport.id_synthese"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TReport.id_synthese" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TReport.id_role">
+<span class="sig-name descname"><span class="pre">id_role</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TReport.id_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TReport.id_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TReport.id_type">
+<span class="sig-name descname"><span class="pre">id_type</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TReport.id_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TReport.id_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TReport.content">
+<span class="sig-name descname"><span class="pre">content</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TReport.content"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TReport.content" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TReport.creation_date">
+<span class="sig-name descname"><span class="pre">creation_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TReport.creation_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TReport.creation_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TReport.deleted">
+<span class="sig-name descname"><span class="pre">deleted</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TReport.deleted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TReport.deleted" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TReport.synthese">
+<span class="sig-name descname"><span class="pre">synthese</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TReport.synthese"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TReport.synthese" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TReport.report_type">
+<span class="sig-name descname"><span class="pre">report_type</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TReport.report_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TReport.report_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.TReport.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#TReport.user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.TReport.user" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">VSyntheseForWebApp</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'v_synthese_for_web_app'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_synthese">
+<span class="sig-name descname"><span class="pre">id_synthese</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_synthese"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_synthese" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.unique_id_sinp">
+<span class="sig-name descname"><span class="pre">unique_id_sinp</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.unique_id_sinp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.unique_id_sinp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.unique_id_sinp_grp">
+<span class="sig-name descname"><span class="pre">unique_id_sinp_grp</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.unique_id_sinp_grp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.unique_id_sinp_grp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_source">
+<span class="sig-name descname"><span class="pre">id_source</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_source" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_module">
+<span class="sig-name descname"><span class="pre">id_module</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_module" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.entity_source_pk_value">
+<span class="sig-name descname"><span class="pre">entity_source_pk_value</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.entity_source_pk_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.entity_source_pk_value" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_dataset">
+<span class="sig-name descname"><span class="pre">id_dataset</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_dataset" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.dataset_name">
+<span class="sig-name descname"><span class="pre">dataset_name</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.dataset_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.dataset_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_acquisition_framework">
+<span class="sig-name descname"><span class="pre">id_acquisition_framework</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_acquisition_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_acquisition_framework" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.count_min">
+<span class="sig-name descname"><span class="pre">count_min</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.count_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.count_min" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.count_max">
+<span class="sig-name descname"><span class="pre">count_max</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.count_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.count_max" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.cd_nom">
+<span class="sig-name descname"><span class="pre">cd_nom</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.cd_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.cd_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.cd_ref">
+<span class="sig-name descname"><span class="pre">cd_ref</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.cd_ref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.cd_ref" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.nom_cite">
+<span class="sig-name descname"><span class="pre">nom_cite</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.nom_cite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.nom_cite" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.nom_valide">
+<span class="sig-name descname"><span class="pre">nom_valide</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.nom_valide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.nom_valide" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.nom_vern">
+<span class="sig-name descname"><span class="pre">nom_vern</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.nom_vern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.nom_vern" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.lb_nom">
+<span class="sig-name descname"><span class="pre">lb_nom</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.lb_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.lb_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.meta_v_taxref">
+<span class="sig-name descname"><span class="pre">meta_v_taxref</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.meta_v_taxref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.meta_v_taxref" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.group1_inpn">
+<span class="sig-name descname"><span class="pre">group1_inpn</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.group1_inpn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.group1_inpn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.group2_inpn">
+<span class="sig-name descname"><span class="pre">group2_inpn</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.group2_inpn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.group2_inpn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.group3_inpn">
+<span class="sig-name descname"><span class="pre">group3_inpn</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.group3_inpn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.group3_inpn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.sample_number_proof">
+<span class="sig-name descname"><span class="pre">sample_number_proof</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.sample_number_proof"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.sample_number_proof" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.digital_proof">
+<span class="sig-name descname"><span class="pre">digital_proof</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.digital_proof"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.digital_proof" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.non_digital_proof">
+<span class="sig-name descname"><span class="pre">non_digital_proof</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.non_digital_proof"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.non_digital_proof" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.altitude_min">
+<span class="sig-name descname"><span class="pre">altitude_min</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.altitude_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.altitude_min" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.altitude_max">
+<span class="sig-name descname"><span class="pre">altitude_max</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.altitude_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.altitude_max" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.depth_min">
+<span class="sig-name descname"><span class="pre">depth_min</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.depth_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.depth_min" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.depth_max">
+<span class="sig-name descname"><span class="pre">depth_max</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.depth_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.depth_max" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.place_name">
+<span class="sig-name descname"><span class="pre">place_name</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.place_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.place_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.precision">
+<span class="sig-name descname"><span class="pre">precision</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.precision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.precision" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.the_geom_4326">
+<span class="sig-name descname"><span class="pre">the_geom_4326</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.the_geom_4326"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.the_geom_4326" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.date_min">
+<span class="sig-name descname"><span class="pre">date_min</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.date_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.date_min" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.date_max">
+<span class="sig-name descname"><span class="pre">date_max</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.date_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.date_max" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.validator">
+<span class="sig-name descname"><span class="pre">validator</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.validator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.validator" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.validation_comment">
+<span class="sig-name descname"><span class="pre">validation_comment</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.validation_comment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.validation_comment" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.observers">
+<span class="sig-name descname"><span class="pre">observers</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.observers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.observers" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.determiner">
+<span class="sig-name descname"><span class="pre">determiner</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.determiner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.determiner" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_digitiser">
+<span class="sig-name descname"><span class="pre">id_digitiser</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_digitiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_digitiser" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.comment_context">
+<span class="sig-name descname"><span class="pre">comment_context</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.comment_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.comment_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.comment_description">
+<span class="sig-name descname"><span class="pre">comment_description</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.comment_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.comment_description" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.meta_validation_date">
+<span class="sig-name descname"><span class="pre">meta_validation_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.meta_validation_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.meta_validation_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.meta_create_date">
+<span class="sig-name descname"><span class="pre">meta_create_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.meta_create_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.meta_create_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.meta_update_date">
+<span class="sig-name descname"><span class="pre">meta_update_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.meta_update_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.meta_update_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.last_action">
+<span class="sig-name descname"><span class="pre">last_action</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.last_action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.last_action" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_geo_object_nature">
+<span class="sig-name descname"><span class="pre">id_nomenclature_geo_object_nature</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_geo_object_nature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_geo_object_nature" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_info_geo_type">
+<span class="sig-name descname"><span class="pre">id_nomenclature_info_geo_type</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_info_geo_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_info_geo_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_grp_typ">
+<span class="sig-name descname"><span class="pre">id_nomenclature_grp_typ</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_grp_typ"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_grp_typ" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.grp_method">
+<span class="sig-name descname"><span class="pre">grp_method</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.grp_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.grp_method" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_obs_technique">
+<span class="sig-name descname"><span class="pre">id_nomenclature_obs_technique</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_obs_technique"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_obs_technique" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_bio_status">
+<span class="sig-name descname"><span class="pre">id_nomenclature_bio_status</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_bio_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_bio_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_bio_condition">
+<span class="sig-name descname"><span class="pre">id_nomenclature_bio_condition</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_bio_condition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_bio_condition" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_naturalness">
+<span class="sig-name descname"><span class="pre">id_nomenclature_naturalness</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_naturalness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_naturalness" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_exist_proof">
+<span class="sig-name descname"><span class="pre">id_nomenclature_exist_proof</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_exist_proof"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_exist_proof" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_valid_status">
+<span class="sig-name descname"><span class="pre">id_nomenclature_valid_status</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_valid_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_valid_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_diffusion_level">
+<span class="sig-name descname"><span class="pre">id_nomenclature_diffusion_level</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_diffusion_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_diffusion_level" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_life_stage">
+<span class="sig-name descname"><span class="pre">id_nomenclature_life_stage</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_life_stage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_life_stage" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_sex">
+<span class="sig-name descname"><span class="pre">id_nomenclature_sex</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_sex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_sex" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_obj_count">
+<span class="sig-name descname"><span class="pre">id_nomenclature_obj_count</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_obj_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_obj_count" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_type_count">
+<span class="sig-name descname"><span class="pre">id_nomenclature_type_count</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_type_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_type_count" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_sensitivity">
+<span class="sig-name descname"><span class="pre">id_nomenclature_sensitivity</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_sensitivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_sensitivity" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_observation_status">
+<span class="sig-name descname"><span class="pre">id_nomenclature_observation_status</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_observation_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_observation_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_blurring">
+<span class="sig-name descname"><span class="pre">id_nomenclature_blurring</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_blurring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_blurring" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_source_status">
+<span class="sig-name descname"><span class="pre">id_nomenclature_source_status</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_source_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_source_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_determination_method">
+<span class="sig-name descname"><span class="pre">id_nomenclature_determination_method</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_determination_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_determination_method" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_behaviour">
+<span class="sig-name descname"><span class="pre">id_nomenclature_behaviour</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.id_nomenclature_behaviour"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.id_nomenclature_behaviour" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.reference_biblio">
+<span class="sig-name descname"><span class="pre">reference_biblio</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.reference_biblio"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.reference_biblio" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.name_source">
+<span class="sig-name descname"><span class="pre">name_source</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.name_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.name_source" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.url_source">
+<span class="sig-name descname"><span class="pre">url_source</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.url_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.url_source" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.st_asgeojson">
+<span class="sig-name descname"><span class="pre">st_asgeojson</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.st_asgeojson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.st_asgeojson" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.medias">
+<span class="sig-name descname"><span class="pre">medias</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.medias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.medias" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VSyntheseForWebApp.reports">
+<span class="sig-name descname"><span class="pre">reports</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VSyntheseForWebApp.reports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VSyntheseForWebApp.reports" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.synthese_export_serialization">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">synthese_export_serialization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#synthese_export_serialization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.synthese_export_serialization" title="Link to this definition"></a></dt>
+<dd><p>Décorateur qui definit une serialisation particuliere pour la vue v_synthese_for_export
+Il rajoute la fonction as_dict_ordered qui conserve l’ordre des attributs tel que definit dans le model
+(fonctions utilisees pour les exports) et qui redefinit le nom des colonnes tel qu’ils sont nommes en configuration</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VColorAreaTaxon">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">VColorAreaTaxon</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VColorAreaTaxon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VColorAreaTaxon" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VColorAreaTaxon.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'v_color_taxon_area'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VColorAreaTaxon.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VColorAreaTaxon.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VColorAreaTaxon.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VColorAreaTaxon.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VColorAreaTaxon.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VColorAreaTaxon.cd_nom">
+<span class="sig-name descname"><span class="pre">cd_nom</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VColorAreaTaxon.cd_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VColorAreaTaxon.cd_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VColorAreaTaxon.id_area">
+<span class="sig-name descname"><span class="pre">id_area</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VColorAreaTaxon.id_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VColorAreaTaxon.id_area" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VColorAreaTaxon.nb_obs">
+<span class="sig-name descname"><span class="pre">nb_obs</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VColorAreaTaxon.nb_obs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VColorAreaTaxon.nb_obs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VColorAreaTaxon.last_date">
+<span class="sig-name descname"><span class="pre">last_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VColorAreaTaxon.last_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VColorAreaTaxon.last_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.VColorAreaTaxon.color">
+<span class="sig-name descname"><span class="pre">color</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#VColorAreaTaxon.color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.VColorAreaTaxon.color" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseLogEntry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">SyntheseLogEntry</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseLogEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseLogEntry" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>Log synthese table, populated with Delete Triggers on gn_synthes.synthese
+Parameters
+———-
+DB:</p>
+<blockquote>
+<div><p>Flask SQLAlchemy controller</p>
+</div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseLogEntry.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_log_synthese'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseLogEntry.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseLogEntry.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseLogEntry.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseLogEntry.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseLogEntry.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseLogEntry.query_class">
+<span class="sig-name descname"><span class="pre">query_class</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseLogEntry.query_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseLogEntry.query_class" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseLogEntry.id_synthese">
+<span class="sig-name descname"><span class="pre">id_synthese</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseLogEntry.id_synthese"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseLogEntry.id_synthese" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseLogEntry.last_action">
+<span class="sig-name descname"><span class="pre">last_action</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseLogEntry.last_action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseLogEntry.last_action" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseLogEntry.meta_last_action_date">
+<span class="sig-name descname"><span class="pre">meta_last_action_date</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseLogEntry.meta_last_action_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseLogEntry.meta_last_action_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseLogEntry.filter_by_params">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_by_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseLogEntry.filter_by_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseLogEntry.filter_by_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseLogEntry.filter_by_datetime">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_by_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseLogEntry.filter_by_datetime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseLogEntry.filter_by_datetime" title="Link to this definition"></a></dt>
+<dd><p>Filter on date only with operator among « &lt;,&gt;,=&lt;,&gt;= »</p>
+<section id="id1">
+<h4>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>filters_with_operator<span class="classifier">dict</span></dt><dd><p>params filters from url only</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h4>Returns<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<p>Query</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.SyntheseLogEntry.sort">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../../app/liste/forms/index.html#app.liste.forms.List" title="app.liste.forms.List"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#SyntheseLogEntry.sort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.SyntheseLogEntry.sort" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.models.source_subquery">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.models.</span></span><span class="sig-name descname"><span class="pre">source_subquery</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/models.html#source_subquery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.models.source_subquery" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="../utils/query_select_sqla/index.html" class="btn btn-neutral float-left" title="geonature.core.gn_synthese.utils.query_select_sqla" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="../routes/index.html" class="btn btn-neutral float-right" title="geonature.core.gn_synthese.routes" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

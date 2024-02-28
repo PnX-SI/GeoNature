@@ -1,0 +1,29 @@
+:py:mod:`pypnusershub.env`
+==========================
+
+.. py:module:: pypnusershub.env
+
+
+Module Contents
+---------------
+
+.. py:data:: db_path
+
+   
+
+.. py:data:: db_module
+
+   
+
+.. py:data:: marsmallow_path
+
+   
+
+.. py:data:: ma_module
+
+   
+
+.. py:data:: REGISTER_POST_ACTION_FCT
+
+   
+

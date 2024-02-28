@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.pypnnomenclature.admin &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.pypnnomenclature.admin</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/autoapi/src/pypnnomenclature/admin/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-src.pypnnomenclature.admin">
+<span id="src-pypnnomenclature-admin"></span><h1><a class="reference internal" href="#module-src.pypnnomenclature.admin" title="src.pypnnomenclature.admin"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.pypnnomenclature.admin</span></code></a><a class="headerlink" href="#module-src.pypnnomenclature.admin" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.pypnnomenclature.admin.ReloadingIterator" title="src.pypnnomenclature.admin.ReloadingIterator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReloadingIterator</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.pypnnomenclature.admin.TNomenclatureFiltersType" title="src.pypnnomenclature.admin.TNomenclatureFiltersType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TNomenclatureFiltersType</span></code></a></p></td>
+<td><p>Base SQLAlchemy filter.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.pypnnomenclature.admin.TNomenclatureFiltersMnemonique" title="src.pypnnomenclature.admin.TNomenclatureFiltersMnemonique"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TNomenclatureFiltersMnemonique</span></code></a></p></td>
+<td><p>Base SQLAlchemy filter.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.pypnnomenclature.admin.TNomenclatureFiltersId" title="src.pypnnomenclature.admin.TNomenclatureFiltersId"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TNomenclatureFiltersId</span></code></a></p></td>
+<td><p>Base SQLAlchemy filter.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.pypnnomenclature.admin.TNomenclaturesAdmin" title="src.pypnnomenclature.admin.TNomenclaturesAdmin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TNomenclaturesAdmin</span></code></a></p></td>
+<td><p>SQLAlchemy model view</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.pypnnomenclature.admin.BibNomenclatureFiltersLabel" title="src.pypnnomenclature.admin.BibNomenclatureFiltersLabel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibNomenclatureFiltersLabel</span></code></a></p></td>
+<td><p>Base SQLAlchemy filter.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.pypnnomenclature.admin.BibNomenclatureFiltersID" title="src.pypnnomenclature.admin.BibNomenclatureFiltersID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibNomenclatureFiltersID</span></code></a></p></td>
+<td><p>Base SQLAlchemy filter.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.pypnnomenclature.admin.BibNomenclatureFiltersMnemonique" title="src.pypnnomenclature.admin.BibNomenclatureFiltersMnemonique"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibNomenclatureFiltersMnemonique</span></code></a></p></td>
+<td><p>Base SQLAlchemy filter.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.pypnnomenclature.admin.BibNomenclaturesTypesAdmin" title="src.pypnnomenclature.admin.BibNomenclaturesTypesAdmin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibNomenclaturesTypesAdmin</span></code></a></p></td>
+<td><p>SQLAlchemy model view</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.ReloadingIterator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.pypnnomenclature.admin.</span></span><span class="sig-name descname"><span class="pre">ReloadingIterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterator_factory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#ReloadingIterator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.ReloadingIterator" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.ReloadingIterator.__iter__">
+<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#ReloadingIterator.__iter__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.ReloadingIterator.__iter__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclatureFiltersType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.pypnnomenclature.admin.</span></span><span class="sig-name descname"><span class="pre">TNomenclatureFiltersType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclatureFiltersType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclatureFiltersType" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.filters.BaseSQLAFilter</span></code></p>
+<p>Base SQLAlchemy filter.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclatureFiltersType.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclatureFiltersType.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclatureFiltersType.apply" title="Link to this definition"></a></dt>
+<dd><p>Apply search criteria to the query and return new query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> – Query</p></li>
+<li><p><strong>value</strong> – Search criteria</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclatureFiltersType.operation">
+<span class="sig-name descname"><span class="pre">operation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclatureFiltersType.operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclatureFiltersType.operation" title="Link to this definition"></a></dt>
+<dd><p>Return readable operation name.</p>
+<p>For example: u’equals”</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclatureFiltersType.get_dynamic_options">
+<span class="sig-name descname"><span class="pre">get_dynamic_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclatureFiltersType.get_dynamic_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclatureFiltersType.get_dynamic_options" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclatureFiltersType.get_options">
+<span class="sig-name descname"><span class="pre">get_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclatureFiltersType.get_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclatureFiltersType.get_options" title="Link to this definition"></a></dt>
+<dd><p>Return list of predefined options.</p>
+<p>Override to customize behavior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>view</strong> – Associated administrative view class.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclatureFiltersMnemonique">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.pypnnomenclature.admin.</span></span><span class="sig-name descname"><span class="pre">TNomenclatureFiltersMnemonique</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclatureFiltersMnemonique"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclatureFiltersMnemonique" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.filters.BaseSQLAFilter</span></code></p>
+<p>Base SQLAlchemy filter.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclatureFiltersMnemonique.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclatureFiltersMnemonique.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclatureFiltersMnemonique.apply" title="Link to this definition"></a></dt>
+<dd><p>Apply search criteria to the query and return new query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> – Query</p></li>
+<li><p><strong>value</strong> – Search criteria</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclatureFiltersMnemonique.operation">
+<span class="sig-name descname"><span class="pre">operation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclatureFiltersMnemonique.operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclatureFiltersMnemonique.operation" title="Link to this definition"></a></dt>
+<dd><p>Return readable operation name.</p>
+<p>For example: u’equals”</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclatureFiltersMnemonique.get_dynamic_options">
+<span class="sig-name descname"><span class="pre">get_dynamic_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclatureFiltersMnemonique.get_dynamic_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclatureFiltersMnemonique.get_dynamic_options" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclatureFiltersMnemonique.get_options">
+<span class="sig-name descname"><span class="pre">get_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclatureFiltersMnemonique.get_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclatureFiltersMnemonique.get_options" title="Link to this definition"></a></dt>
+<dd><p>Return list of predefined options.</p>
+<p>Override to customize behavior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>view</strong> – Associated administrative view class.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclatureFiltersId">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.pypnnomenclature.admin.</span></span><span class="sig-name descname"><span class="pre">TNomenclatureFiltersId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclatureFiltersId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclatureFiltersId" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.filters.BaseSQLAFilter</span></code></p>
+<p>Base SQLAlchemy filter.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclatureFiltersId.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclatureFiltersId.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclatureFiltersId.apply" title="Link to this definition"></a></dt>
+<dd><p>Apply search criteria to the query and return new query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> – Query</p></li>
+<li><p><strong>value</strong> – Search criteria</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclatureFiltersId.operation">
+<span class="sig-name descname"><span class="pre">operation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclatureFiltersId.operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclatureFiltersId.operation" title="Link to this definition"></a></dt>
+<dd><p>Return readable operation name.</p>
+<p>For example: u’equals”</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclaturesAdmin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.pypnnomenclature.admin.</span></span><span class="sig-name descname"><span class="pre">TNomenclaturesAdmin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_class_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclaturesAdmin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclaturesAdmin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.ModelView</span></code></p>
+<p>SQLAlchemy model view</p>
+<p>Usage sample:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">admin</span> <span class="o">=</span> <span class="n">Admin</span><span class="p">()</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">ModelView</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclaturesAdmin.page_size">
+<span class="sig-name descname"><span class="pre">page_size</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclaturesAdmin.page_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclaturesAdmin.page_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclaturesAdmin.form_columns">
+<span class="sig-name descname"><span class="pre">form_columns</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['nomenclature_type',</span> <span class="pre">'cd_nomenclature',</span> <span class="pre">'mnemonique',</span> <span class="pre">'label_fr',</span> <span class="pre">'definition_fr',...</span></em><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclaturesAdmin.form_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclaturesAdmin.form_columns" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclaturesAdmin.column_list">
+<span class="sig-name descname"><span class="pre">column_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['id_nomenclature',</span> <span class="pre">'nomenclature_type',</span> <span class="pre">'mnemonique',</span> <span class="pre">'cd_nomenclature',</span> <span class="pre">'label_default',...</span></em><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclaturesAdmin.column_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclaturesAdmin.column_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">page_size</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">15</span></em><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclaturesAdmin.page_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.TNomenclaturesAdmin.column_filters">
+<span class="sig-name descname"><span class="pre">column_filters</span></span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#TNomenclaturesAdmin.column_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.TNomenclaturesAdmin.column_filters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclatureFiltersLabel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.pypnnomenclature.admin.</span></span><span class="sig-name descname"><span class="pre">BibNomenclatureFiltersLabel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclatureFiltersLabel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclatureFiltersLabel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.filters.BaseSQLAFilter</span></code></p>
+<p>Base SQLAlchemy filter.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclatureFiltersLabel.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclatureFiltersLabel.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclatureFiltersLabel.apply" title="Link to this definition"></a></dt>
+<dd><p>Apply search criteria to the query and return new query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> – Query</p></li>
+<li><p><strong>value</strong> – Search criteria</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclatureFiltersLabel.operation">
+<span class="sig-name descname"><span class="pre">operation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclatureFiltersLabel.operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclatureFiltersLabel.operation" title="Link to this definition"></a></dt>
+<dd><p>Return readable operation name.</p>
+<p>For example: u’equals”</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclatureFiltersLabel.get_dynamic_options">
+<span class="sig-name descname"><span class="pre">get_dynamic_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclatureFiltersLabel.get_dynamic_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclatureFiltersLabel.get_dynamic_options" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclatureFiltersLabel.get_options">
+<span class="sig-name descname"><span class="pre">get_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclatureFiltersLabel.get_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclatureFiltersLabel.get_options" title="Link to this definition"></a></dt>
+<dd><p>Return list of predefined options.</p>
+<p>Override to customize behavior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>view</strong> – Associated administrative view class.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclatureFiltersID">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.pypnnomenclature.admin.</span></span><span class="sig-name descname"><span class="pre">BibNomenclatureFiltersID</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclatureFiltersID"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclatureFiltersID" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.filters.BaseSQLAFilter</span></code></p>
+<p>Base SQLAlchemy filter.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclatureFiltersID.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclatureFiltersID.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclatureFiltersID.apply" title="Link to this definition"></a></dt>
+<dd><p>Apply search criteria to the query and return new query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> – Query</p></li>
+<li><p><strong>value</strong> – Search criteria</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclatureFiltersID.operation">
+<span class="sig-name descname"><span class="pre">operation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclatureFiltersID.operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclatureFiltersID.operation" title="Link to this definition"></a></dt>
+<dd><p>Return readable operation name.</p>
+<p>For example: u’equals”</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclatureFiltersMnemonique">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.pypnnomenclature.admin.</span></span><span class="sig-name descname"><span class="pre">BibNomenclatureFiltersMnemonique</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclatureFiltersMnemonique"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclatureFiltersMnemonique" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.filters.BaseSQLAFilter</span></code></p>
+<p>Base SQLAlchemy filter.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclatureFiltersMnemonique.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclatureFiltersMnemonique.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclatureFiltersMnemonique.apply" title="Link to this definition"></a></dt>
+<dd><p>Apply search criteria to the query and return new query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> – Query</p></li>
+<li><p><strong>value</strong> – Search criteria</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclatureFiltersMnemonique.get_dynamic_options">
+<span class="sig-name descname"><span class="pre">get_dynamic_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclatureFiltersMnemonique.get_dynamic_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclatureFiltersMnemonique.get_dynamic_options" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclatureFiltersMnemonique.get_options">
+<span class="sig-name descname"><span class="pre">get_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclatureFiltersMnemonique.get_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclatureFiltersMnemonique.get_options" title="Link to this definition"></a></dt>
+<dd><p>Return list of predefined options.</p>
+<p>Override to customize behavior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>view</strong> – Associated administrative view class.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclatureFiltersMnemonique.operation">
+<span class="sig-name descname"><span class="pre">operation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclatureFiltersMnemonique.operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclatureFiltersMnemonique.operation" title="Link to this definition"></a></dt>
+<dd><p>Return readable operation name.</p>
+<p>For example: u’equals”</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclaturesTypesAdmin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.pypnnomenclature.admin.</span></span><span class="sig-name descname"><span class="pre">BibNomenclaturesTypesAdmin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_class_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclaturesTypesAdmin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclaturesTypesAdmin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.ModelView</span></code></p>
+<p>SQLAlchemy model view</p>
+<p>Usage sample:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">admin</span> <span class="o">=</span> <span class="n">Admin</span><span class="p">()</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">ModelView</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclaturesTypesAdmin.page_size">
+<span class="sig-name descname"><span class="pre">page_size</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclaturesTypesAdmin.page_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclaturesTypesAdmin.page_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclaturesTypesAdmin.column_list">
+<span class="sig-name descname"><span class="pre">column_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['id_type',</span> <span class="pre">'mnemonique',</span> <span class="pre">'label_default',</span> <span class="pre">'definition_default',</span> <span class="pre">'label_fr',</span> <span class="pre">'source',</span> <span class="pre">'statut']</span></em><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclaturesTypesAdmin.column_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclaturesTypesAdmin.column_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclaturesTypesAdmin.column_display_pk">
+<span class="sig-name descname"><span class="pre">column_display_pk</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclaturesTypesAdmin.column_display_pk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclaturesTypesAdmin.column_display_pk" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclaturesTypesAdmin.form_columns">
+<span class="sig-name descname"><span class="pre">form_columns</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['mnemonique',</span> <span class="pre">'label_default',</span> <span class="pre">'definition_default',</span> <span class="pre">'label_fr',</span> <span class="pre">'definition_fr',</span> <span class="pre">'source',</span> <span class="pre">'statut']</span></em><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclaturesTypesAdmin.form_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclaturesTypesAdmin.form_columns" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.pypnnomenclature.admin.BibNomenclaturesTypesAdmin.column_filters">
+<span class="sig-name descname"><span class="pre">column_filters</span></span><a class="reference internal" href="../../../../_modules/src/pypnnomenclature/admin.html#BibNomenclaturesTypesAdmin.column_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pypnnomenclature.admin.BibNomenclaturesTypesAdmin.column_filters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

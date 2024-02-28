@@ -1,0 +1,26 @@
+:py:mod:`functions`
+===================
+
+.. py:module:: functions
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   functions.getLicence
+   functions.main
+
+
+
+.. py:function:: getLicence(licences)
+
+
+.. py:function:: main(dbconnexion, cd_refs, WD_MEDIA_PROP, TAXHUB_MEDIA_ID_TYPE, refreshAtlas=True, simulate=True)
+
+

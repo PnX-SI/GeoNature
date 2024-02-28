@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.utils_flask_sqla_geo.schema &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">src.utils_flask_sqla_geo.schema</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de src.utils_flask_sqla_geo.schema</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">RAISE</span><span class="p">,</span> <span class="n">EXCLUDE</span>
+<span class="kn">from</span> <span class="nn">marshmallow.decorators</span> <span class="kn">import</span> <span class="n">pre_load</span><span class="p">,</span> <span class="n">post_dump</span>
+<span class="kn">from</span> <span class="nn">marshmallow.validate</span> <span class="kn">import</span> <span class="n">OneOf</span><span class="p">,</span> <span class="n">Range</span>
+<span class="kn">from</span> <span class="nn">marshmallow.exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+
+<span class="kn">from</span> <span class="nn">geoalchemy2</span> <span class="kn">import</span> <span class="n">Geometry</span>
+<span class="kn">from</span> <span class="nn">geoalchemy2.shape</span> <span class="kn">import</span> <span class="n">to_shape</span><span class="p">,</span> <span class="n">from_shape</span>
+<span class="kn">from</span> <span class="nn">marshmallow_sqlalchemy.schema</span> <span class="kn">import</span> <span class="n">SQLAlchemyAutoSchema</span><span class="p">,</span> <span class="n">SQLAlchemyAutoSchemaOpts</span>
+<span class="kn">from</span> <span class="nn">marshmallow_sqlalchemy.convert</span> <span class="kn">import</span> <span class="n">ModelConverter</span>
+<span class="kn">from</span> <span class="nn">marshmallow_geojson</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GeometryType</span><span class="p">,</span>
+    <span class="n">PointSchema</span><span class="p">,</span>
+    <span class="n">MultiPointSchema</span><span class="p">,</span>
+    <span class="n">PolygonSchema</span><span class="p">,</span>
+    <span class="n">MultiPolygonSchema</span><span class="p">,</span>
+    <span class="n">LineStringSchema</span><span class="p">,</span>
+    <span class="n">MultiLineStringSchema</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">shape</span>
+<span class="kn">from</span> <span class="nn">shapely</span> <span class="kn">import</span> <span class="n">wkt</span>
+<span class="kn">from</span> <span class="nn">shapely.errors</span> <span class="kn">import</span> <span class="n">WKTReadingError</span>
+
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">JsonifiableGenerator</span><span class="p">,</span> <span class="n">GeneratorField</span>
+
+
+<div class="viewcode-block" id="GeometrySchema">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeometrySchema">[docs]</a>
+<span class="k">class</span> <span class="nc">GeometrySchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="GeometrySchema.schema_map">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeometrySchema.schema_map">[docs]</a>
+    <span class="n">schema_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">GeometryType</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="n">PointSchema</span><span class="p">,</span>
+        <span class="n">GeometryType</span><span class="o">.</span><span class="n">multi_point</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="n">MultiPointSchema</span><span class="p">,</span>
+        <span class="n">GeometryType</span><span class="o">.</span><span class="n">polygon</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="n">PolygonSchema</span><span class="p">,</span>
+        <span class="n">GeometryType</span><span class="o">.</span><span class="n">multi_polygon</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="n">MultiPolygonSchema</span><span class="p">,</span>
+        <span class="n">GeometryType</span><span class="o">.</span><span class="n">line_string</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="n">LineStringSchema</span><span class="p">,</span>
+        <span class="n">GeometryType</span><span class="o">.</span><span class="n">multi_line_string</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="n">MultiLineStringSchema</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="GeometrySchema.type">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeometrySchema.type">[docs]</a>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="n">OneOf</span><span class="p">(</span><span class="n">schema_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span></div>
+
+
+<div class="viewcode-block" id="GeometrySchema.load">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeometrySchema.load">[docs]</a>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">geometry_type</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="n">many</span><span class="p">,</span> <span class="n">unknown</span><span class="o">=</span><span class="n">EXCLUDE</span><span class="p">)[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
+        <span class="n">schema</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema_map</span><span class="p">[</span><span class="n">geometry_type</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">schema</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="n">many</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FeatureSchema">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.FeatureSchema">[docs]</a>
+<span class="k">class</span> <span class="nc">FeatureSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="FeatureSchema.id">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.FeatureSchema.id">[docs]</a>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Field</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="FeatureSchema.type">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.FeatureSchema.type">[docs]</a>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;Feature&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+    <span class="c1"># note: geometry validity done by GeometryField deserialization</span>
+<div class="viewcode-block" id="FeatureSchema.geometry">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.FeatureSchema.geometry">[docs]</a>
+    <span class="n">geometry</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Mapping</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FeatureSchema.properties">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.FeatureSchema.properties">[docs]</a>
+    <span class="n">properties</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Mapping</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FeatureCollectionSchema">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.FeatureCollectionSchema">[docs]</a>
+<span class="k">class</span> <span class="nc">FeatureCollectionSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="FeatureCollectionSchema.type">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.FeatureCollectionSchema.type">[docs]</a>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;FeatureCollection&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FeatureCollectionSchema.features">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.FeatureCollectionSchema.features">[docs]</a>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">GeneratorField</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">FeatureSchema</span><span class="p">),</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GeometryField">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeometryField">[docs]</a>
+<span class="k">class</span> <span class="nc">GeometryField</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">Field</span><span class="p">):</span>
+<div class="viewcode-block" id="GeometryField.geometry_schema">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeometryField.geometry_schema">[docs]</a>
+    <span class="n">geometry_schema</span> <span class="o">=</span> <span class="n">GeometrySchema</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="GeometryField._serialize_wkt">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeometryField._serialize_wkt">[docs]</a>
+    <span class="k">def</span> <span class="nf">_serialize_wkt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">to_shape</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">wkt</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="GeometryField._serialize_geojson">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeometryField._serialize_geojson">[docs]</a>
+    <span class="k">def</span> <span class="nf">_serialize_geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">to_shape</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">__geo_interface__</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="GeometryField._deserialize_wkt">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeometryField._deserialize_wkt">[docs]</a>
+    <span class="k">def</span> <span class="nf">_deserialize_wkt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">wkt</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">WKTReadingError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Invalid geometry.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span></div>
+
+
+<div class="viewcode-block" id="GeometryField._deserialize_geojson">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeometryField._deserialize_geojson">[docs]</a>
+    <span class="k">def</span> <span class="nf">_deserialize_geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">geom</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry_schema</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">geom</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Invalid geometry.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">geom</span><span class="o">.</span><span class="n">has_z</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Unexpected third dimension.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">from_shape</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">srid</span><span class="o">=</span><span class="mi">4326</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Invalid geometry.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span></div>
+
+
+<div class="viewcode-block" id="GeometryField._bind_to_schema">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeometryField._bind_to_schema">[docs]</a>
+    <span class="k">def</span> <span class="nf">_bind_to_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">schema</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_bind_to_schema</span>
+        <span class="k">if</span> <span class="n">schema</span><span class="o">.</span><span class="n">as_geojson</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_serialize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serialize_geojson</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_deserialize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deserialize_geojson</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_serialize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serialize_wkt</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_deserialize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deserialize_wkt</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GeoModelConverter">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeoModelConverter">[docs]</a>
+<span class="k">class</span> <span class="nc">GeoModelConverter</span><span class="p">(</span><span class="n">ModelConverter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model converter for models with geometric fields.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GeoModelConverter.SQLA_TYPE_MAPPING">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeoModelConverter.SQLA_TYPE_MAPPING">[docs]</a>
+    <span class="n">SQLA_TYPE_MAPPING</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="o">**</span><span class="n">ModelConverter</span><span class="o">.</span><span class="n">SQLA_TYPE_MAPPING</span><span class="p">,</span>
+        <span class="n">Geometry</span><span class="p">:</span> <span class="n">GeometryField</span><span class="p">,</span>
+    <span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GeoAlchemyAutoSchemaOpts">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchemaOpts">[docs]</a>
+<span class="k">class</span> <span class="nc">GeoAlchemyAutoSchemaOpts</span><span class="p">(</span><span class="n">SQLAlchemyAutoSchemaOpts</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Options class for ``GeoAlchemyAutoSchema``.</span>
+<span class="sd">    Adds the following options:</span>
+
+<span class="sd">    - ``geometry_fields``: List of Geometry columns.</span>
+<span class="sd">    - ``feature_id``: Identity field to use when generating features.</span>
+<span class="sd">    - ``feature_geometry``: Geometry field to use when generating features.</span>
+
+<span class="sd">    Thus, this options class define ``GeoModelConverter`` as default model converter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry_fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">__mapper__</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">geometry_fields</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+        <span class="c1"># TODO: if self.table: …</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_id</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="s2">&quot;feature_id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry_fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feature_geometry</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+                <span class="n">meta</span><span class="p">,</span> <span class="s2">&quot;feature_geometry&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry_fields</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feature_geometry</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="s2">&quot;feature_geometry&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_converter</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="s2">&quot;model_converter&quot;</span><span class="p">,</span> <span class="n">GeoModelConverter</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="GeoAlchemyAutoSchema">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema">[docs]</a>
+<span class="k">class</span> <span class="nc">GeoAlchemyAutoSchema</span><span class="p">(</span><span class="n">SQLAlchemyAutoSchema</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Auto schema with support for geometric fields and geojson generation.</span>
+
+<span class="sd">    :param as_geojson: If ``true``, serialize and deserialize geojson instead of json.</span>
+<span class="sd">    :param feature_id: Identity field to use when generating features.</span>
+<span class="sd">        If ``None``, use ``feature_id`` specified on ``class Meta`` if any, otherwise</span>
+<span class="sd">        features are generated without id.</span>
+<span class="sd">    :param feature_geometry: Geometry field to use when generating features.</span>
+<span class="sd">        If ``None``, use ``feature_geometry`` specified on ``class Meta``.</span>
+<span class="sd">        If not specified on ``class Meta`` either, auto-detect the geometry field.</span>
+<span class="sd">        If none or several geometric fields are detected, raise a ``TypeError``.</span>
+
+<span class="sd">    Geometric fields are automatically removed from serialization.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GeoAlchemyAutoSchema.OPTIONS_CLASS">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema.OPTIONS_CLASS">[docs]</a>
+    <span class="n">OPTIONS_CLASS</span> <span class="o">=</span> <span class="n">GeoAlchemyAutoSchemaOpts</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="n">as_geojson</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">feature_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">feature_geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">only</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">exclude</span><span class="o">=</span><span class="p">(),</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="n">excluded_geometry_fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">geometry_fields</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">only</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">only</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">only</span><span class="p">)</span>
+            <span class="n">excluded_geometry_fields</span> <span class="o">-=</span> <span class="nb">set</span><span class="p">(</span><span class="n">only</span><span class="p">)</span>
+        <span class="n">exclude</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span> <span class="o">|</span> <span class="n">excluded_geometry_fields</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">as_geojson</span> <span class="o">=</span> <span class="n">as_geojson</span>
+        <span class="k">if</span> <span class="n">as_geojson</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feature_id</span> <span class="o">=</span> <span class="n">feature_id</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">feature_id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feature_geometry</span> <span class="o">=</span> <span class="n">feature_geometry</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">feature_geometry</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_geometry</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Missing &#39;feature_geometry&#39;&quot;</span><span class="p">)</span>
+            <span class="c1"># Add feature geometry to serialized fields</span>
+            <span class="n">exclude</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_geometry</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">only</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">only</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">only</span><span class="p">)</span> <span class="o">|</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_geometry</span><span class="p">}</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="n">only</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GeoAlchemyAutoSchema.to_feature">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema.to_feature">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">properties</span><span class="p">):</span>
+        <span class="n">feature</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="n">properties</span><span class="p">,</span>
+            <span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="n">properties</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_geometry</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_id</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_id</span> <span class="ow">in</span> <span class="n">properties</span><span class="p">:</span>
+            <span class="n">feature</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">properties</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_id</span><span class="p">],</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">feature</span></div>
+
+
+<div class="viewcode-block" id="GeoAlchemyAutoSchema.from_feature">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema.from_feature">[docs]</a>
+    <span class="k">def</span> <span class="nf">from_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]</span>
+        <span class="n">properties</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">feature_geometry</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">properties</span></div>
+
+
+<div class="viewcode-block" id="GeoAlchemyAutoSchema._serialize">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema._serialize">[docs]</a>
+    <span class="k">def</span> <span class="nf">_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">many</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">o</span><span class="p">:</span> <span class="nb">super</span><span class="p">(</span><span class="n">GeoAlchemyAutoSchema</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_serialize</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">obj</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">result</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">GeoAlchemyAutoSchema</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_serialize</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="nd">@post_dump</span><span class="p">(</span><span class="n">pass_many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="GeoAlchemyAutoSchema.to_geojson">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema.to_geojson">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">many</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_geojson</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">many</span><span class="p">:</span>
+                <span class="n">features</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_feature</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">FeatureCollectionSchema</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">({</span><span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="n">features</span><span class="p">})</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">FeatureSchema</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_feature</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">many</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">JsonifiableGenerator</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">data</span></div>
+
+
+    <span class="nd">@pre_load</span><span class="p">(</span><span class="n">pass_many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="GeoAlchemyAutoSchema.from_geojson">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla_geo/schema/index.html#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema.from_geojson">[docs]</a>
+    <span class="k">def</span> <span class="nf">from_geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">many</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_geojson</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">if</span> <span class="n">many</span><span class="p">:</span>
+            <span class="n">collection</span> <span class="o">=</span> <span class="n">FeatureCollectionSchema</span><span class="p">(</span><span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unknown</span><span class="o">=</span><span class="n">RAISE</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">from_feature</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">collection</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">feature</span> <span class="o">=</span> <span class="n">FeatureSchema</span><span class="p">(</span><span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unknown</span><span class="o">=</span><span class="n">RAISE</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_feature</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

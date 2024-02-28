@@ -1,0 +1,18 @@
+:py:mod:`geonature.core.gn_synthese.utils`
+==========================================
+
+.. py:module:: geonature.core.gn_synthese.utils
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   blurring/index.rst
+   orm/index.rst
+   process/index.rst
+   query_select_sqla/index.rst
+
+

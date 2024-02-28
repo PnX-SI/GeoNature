@@ -1,0 +1,42 @@
+:py:mod:`apptax.app`
+====================
+
+.. py:module:: apptax.app
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.app.configure_alembic
+   apptax.app.create_app
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.app.migrate
+
+
+.. py:data:: migrate
+
+   
+
+.. py:function:: configure_alembic(alembic_config)
+
+   This function add to the 'version_locations' parameter of the alembic config the
+   'migrations' entry point value of the 'alembic' group for all packages having such entry point.
+   Thus, alembic will find migrations provided by all installed packages.
+
+
+.. py:function:: create_app()
+
+

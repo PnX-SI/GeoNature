@@ -1,0 +1,22 @@
+:py:mod:`src.utils_flask_sqla`
+==============================
+
+.. py:module:: src.utils_flask_sqla
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   commands/index.rst
+   errors/index.rst
+   generic/index.rst
+   models/index.rst
+   response/index.rst
+   schema/index.rst
+   serializers/index.rst
+   utils/index.rst
+
+

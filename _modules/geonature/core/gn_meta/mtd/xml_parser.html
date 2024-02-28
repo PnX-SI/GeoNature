@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_meta.mtd.xml_parser &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Code du module</a></li>
+          <li class="breadcrumb-item"><a href="../mtd.html">geonature.core.gn_meta.mtd</a></li>
+      <li class="breadcrumb-item active">geonature.core.gn_meta.mtd.xml_parser</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.gn_meta.mtd.xml_parser</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span>
+<span class="kn">from</span> <span class="nn">lxml</span> <span class="kn">import</span> <span class="n">etree</span> <span class="k">as</span> <span class="n">ET</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.config</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_meta.models</span> <span class="kn">import</span> <span class="n">TAcquisitionFramework</span>
+
+
+<div class="viewcode-block" id="namespace">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_meta/mtd/xml_parser/index.html#geonature.core.gn_meta.mtd.namespace">[docs]</a>
+<span class="n">namespace</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;XML_NAMESPACE&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="_xml_parser">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_meta/mtd/xml_parser/index.html#geonature.core.gn_meta.mtd._xml_parser">[docs]</a>
+<span class="n">_xml_parser</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">XMLParser</span><span class="p">(</span><span class="n">ns_clean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">recover</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_tag_content">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_meta/mtd/xml_parser/index.html#geonature.core.gn_meta.mtd.get_tag_content">[docs]</a>
+<span class="k">def</span> <span class="nf">get_tag_content</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the content of a xml tag</span>
+<span class="sd">    Check if the node exist or return a default value</span>
+<span class="sd">    Params:</span>
+<span class="sd">        parent (etree Element): the parent where find the tag</span>
+<span class="sd">        tag_name (str): the name of the tag</span>
+<span class="sd">        default_value (any): the default value f the tag doesn&#39;t exist</span>
+<span class="sd">    Return</span>
+<span class="sd">        any: the tag content or the default value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tag</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">namespace</span> <span class="o">+</span> <span class="n">tag_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">tag</span><span class="o">.</span><span class="n">text</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">text</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">tag</span><span class="o">.</span><span class="n">text</span>
+    <span class="k">return</span> <span class="n">default_value</span></div>
+
+
+
+<div class="viewcode-block" id="parse_actors_xml">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_meta/mtd/xml_parser/index.html#geonature.core.gn_meta.mtd.parse_actors_xml">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_actors_xml</span><span class="p">(</span><span class="n">actors</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse the parameters of the Actor provided as an XML node in the input variable &quot;actors&quot;</span>
+<span class="sd">    Param:</span>
+<span class="sd">        actors (etree Element): Node of an actor type containing from one to multiple actors</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionnary of the actors informations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">actor_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">actors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">actor_node</span> <span class="ow">in</span> <span class="n">actors</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">actor_node</span><span class="p">,</span> <span class="s2">&quot;nomPrenom&quot;</span><span class="p">)</span>
+            <span class="n">actor_role</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">actor_node</span><span class="p">,</span> <span class="s2">&quot;roleActeur&quot;</span><span class="p">)</span>
+            <span class="n">uuid_organism</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">actor_node</span><span class="p">,</span> <span class="s2">&quot;idOrganisme&quot;</span><span class="p">)</span>
+            <span class="n">organism</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">actor_node</span><span class="p">,</span> <span class="s2">&quot;organisme&quot;</span><span class="p">)</span>
+            <span class="n">email</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">actor_node</span><span class="p">,</span> <span class="s2">&quot;mail&quot;</span><span class="p">)</span>
+
+            <span class="n">actor_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                    <span class="s2">&quot;uuid_organism&quot;</span><span class="p">:</span> <span class="n">uuid_organism</span><span class="p">,</span>
+                    <span class="s2">&quot;organism&quot;</span><span class="p">:</span> <span class="n">organism</span><span class="p">,</span>
+                    <span class="s2">&quot;actor_role&quot;</span><span class="p">:</span> <span class="n">actor_role</span><span class="p">,</span>
+                    <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">actor_list</span></div>
+
+
+
+<div class="viewcode-block" id="parse_acquisition_framwork_xml">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_meta/mtd/xml_parser/index.html#geonature.core.gn_meta.mtd.parse_acquisition_framwork_xml">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_acquisition_framwork_xml</span><span class="p">(</span><span class="n">xml</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse an xml of AF from a string</span>
+<span class="sd">    Return:</span>
+<span class="sd">        dict: a dict of the parsed xml</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">xml</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="n">_xml_parser</span><span class="p">)</span>
+    <span class="n">ca</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;.//&quot;</span> <span class="o">+</span> <span class="n">namespace</span> <span class="o">+</span> <span class="s2">&quot;CadreAcquisition&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parse_acquisition_framework</span><span class="p">(</span><span class="n">ca</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="parse_acquisition_framework">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_meta/mtd/xml_parser/index.html#geonature.core.gn_meta.mtd.parse_acquisition_framework">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_acquisition_framework</span><span class="p">(</span><span class="n">ca</span><span class="p">):</span>
+    <span class="c1"># We extract all the required informations from the different tags of the XML file</span>
+    <span class="n">ca_uuid</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">ca</span><span class="p">,</span> <span class="s2">&quot;identifiantCadre&quot;</span><span class="p">)</span>
+    <span class="n">ca_name_max_length</span> <span class="o">=</span> <span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">acquisition_framework_name</span><span class="o">.</span><span class="n">property</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span>
+        <span class="mi">0</span>
+    <span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">length</span>
+    <span class="n">ca_name</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">ca</span><span class="p">,</span> <span class="s2">&quot;libelle&quot;</span><span class="p">)[:</span> <span class="n">ca_name_max_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">ca_desc</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">ca</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">date_info</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">namespace</span> <span class="o">+</span> <span class="s2">&quot;ReferenceTemporelle&quot;</span><span class="p">)</span>
+    <span class="n">ca_create_date</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">ca</span><span class="p">,</span> <span class="s2">&quot;dateCreationMtd&quot;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+    <span class="n">ca_update_date</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">ca</span><span class="p">,</span> <span class="s2">&quot;dateMiseAJourMtd&quot;</span><span class="p">)</span>
+    <span class="n">ca_start_date</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span>
+        <span class="n">date_info</span><span class="p">,</span> <span class="s2">&quot;dateLancement&quot;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="n">ca_end_date</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">date_info</span><span class="p">,</span> <span class="s2">&quot;dateCloture&quot;</span><span class="p">)</span>
+    <span class="n">ca_id_digitizer</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">attributs_additionnels_node</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">namespace</span> <span class="o">+</span> <span class="s2">&quot;attributsAdditionnels&quot;</span><span class="p">)</span>
+
+    <span class="c1"># We extract the ID of the user to assign it the JDD as an id_digitizer</span>
+    <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attributs_additionnels_node</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="s2">&quot;nomAttribut&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;ID_CREATEUR&quot;</span><span class="p">:</span>
+            <span class="n">ca_id_digitizer</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="s2">&quot;valeurAttribut&quot;</span><span class="p">)</span>
+
+    <span class="c1"># We search for all the Contact nodes :</span>
+    <span class="c1"># - Main contact in acteurPrincipal node</span>
+    <span class="c1"># - Funder in acteurAutre node</span>
+    <span class="c1"># - Project owner in acteurAutre node</span>
+    <span class="c1"># - Project manager in acteurAutre node</span>
+    <span class="n">list_contact_tags</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;acteurPrincipal&quot;</span><span class="p">,</span> <span class="s2">&quot;acteurAutre&quot;</span><span class="p">]</span>
+    <span class="n">all_actors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">contact_tag</span> <span class="ow">in</span> <span class="n">list_contact_tags</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">ca</span><span class="p">,</span> <span class="n">contact_tag</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">actor_node</span> <span class="ow">in</span> <span class="n">ca</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">namespace</span> <span class="o">+</span> <span class="n">contact_tag</span><span class="p">):</span>
+                <span class="n">actor</span> <span class="o">=</span> <span class="n">parse_actors_xml</span><span class="p">(</span><span class="n">actor_node</span><span class="p">)</span>
+                <span class="n">all_actors</span> <span class="o">=</span> <span class="n">all_actors</span> <span class="o">+</span> <span class="n">actor</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;unique_acquisition_framework_id&quot;</span><span class="p">:</span> <span class="n">ca_uuid</span><span class="p">,</span>
+        <span class="s2">&quot;acquisition_framework_name&quot;</span><span class="p">:</span> <span class="n">ca_name</span><span class="p">,</span>
+        <span class="s2">&quot;acquisition_framework_desc&quot;</span><span class="p">:</span> <span class="n">ca_desc</span><span class="p">,</span>
+        <span class="s2">&quot;acquisition_framework_start_date&quot;</span><span class="p">:</span> <span class="n">ca_start_date</span><span class="p">,</span>
+        <span class="s2">&quot;acquisition_framework_end_date&quot;</span><span class="p">:</span> <span class="n">ca_end_date</span><span class="p">,</span>
+        <span class="s2">&quot;meta_create_date&quot;</span><span class="p">:</span> <span class="n">ca_create_date</span><span class="p">,</span>
+        <span class="s2">&quot;meta_update_date&quot;</span><span class="p">:</span> <span class="n">ca_update_date</span><span class="p">,</span>
+        <span class="s2">&quot;id_digitizer&quot;</span><span class="p">:</span> <span class="n">ca_id_digitizer</span><span class="p">,</span>
+        <span class="s2">&quot;actors&quot;</span><span class="p">:</span> <span class="n">all_actors</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="parse_jdd_xml">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_meta/mtd/xml_parser/index.html#geonature.core.gn_meta.mtd.parse_jdd_xml">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_jdd_xml</span><span class="p">(</span><span class="n">xml</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse an xml of datasets from a string</span>
+<span class="sd">    Return:</span>
+<span class="sd">        list: a list of dict of the JDD in the xml</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">root</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">xml</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="n">_xml_parser</span><span class="p">)</span>
+    <span class="n">jdd_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">jdd</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;.//&quot;</span> <span class="o">+</span> <span class="n">namespace</span> <span class="o">+</span> <span class="s2">&quot;JeuDeDonnees&quot;</span><span class="p">):</span>
+        <span class="c1"># We extract all the required informations from the different tags of the XML file</span>
+        <span class="n">jdd_uuid</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">jdd</span><span class="p">,</span> <span class="s2">&quot;identifiantJdd&quot;</span><span class="p">)</span>
+        <span class="n">ca_uuid</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">jdd</span><span class="p">,</span> <span class="s2">&quot;identifiantCadre&quot;</span><span class="p">)</span>
+        <span class="n">dataset_name</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">jdd</span><span class="p">,</span> <span class="s2">&quot;libelle&quot;</span><span class="p">)</span>
+        <span class="n">dataset_shortname</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">jdd</span><span class="p">,</span> <span class="s2">&quot;libelleCourt&quot;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">dataset_desc</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">jdd</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">terrestrial_domain</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">jdd</span><span class="p">,</span> <span class="s2">&quot;domaineTerrestre&quot;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">marine_domain</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">jdd</span><span class="p">,</span> <span class="s2">&quot;domaineMarin&quot;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">data_type</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">jdd</span><span class="p">,</span> <span class="s2">&quot;typeDonnees&quot;</span><span class="p">)</span>
+        <span class="n">collect_data_type</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">jdd</span><span class="p">,</span> <span class="s2">&quot;typeDonneesCollectees&quot;</span><span class="p">)</span>
+        <span class="n">create_date</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">jdd</span><span class="p">,</span> <span class="s2">&quot;dateCreation&quot;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+        <span class="n">update_date</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">jdd</span><span class="p">,</span> <span class="s2">&quot;dateRevision&quot;</span><span class="p">)</span>
+        <span class="n">attributs_additionnels_node</span> <span class="o">=</span> <span class="n">jdd</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">namespace</span> <span class="o">+</span> <span class="s2">&quot;attributsAdditionnels&quot;</span><span class="p">)</span>
+
+        <span class="c1"># We extract the ID of the user to assign it the JDD as an id_digitizer</span>
+        <span class="n">id_digitizer</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">id_instance</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">code_statut_donnees_source</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attributs_additionnels_node</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="s2">&quot;nomAttribut&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;ID_CREATEUR&quot;</span><span class="p">:</span>
+                <span class="n">id_digitizer</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="s2">&quot;valeurAttribut&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="s2">&quot;nomAttribut&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;ID_INSTANCE&quot;</span><span class="p">:</span>
+                <span class="n">id_instance</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="s2">&quot;valeurAttribut&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="s2">&quot;nomAttribut&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;CODE_STATUT_DONNEES_SOURCE&quot;</span><span class="p">:</span>
+                <span class="n">code_statut_donnees_source</span> <span class="o">=</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="s2">&quot;valeurAttribut&quot;</span><span class="p">)</span>
+
+        <span class="c1"># We search for all the Contact nodes :</span>
+        <span class="c1"># - Main contact in pointContactPF node</span>
+        <span class="c1"># - JDD provider in pointContactJdd node</span>
+        <span class="c1"># - JDD builder in pointContactJdd node</span>
+        <span class="c1"># - Database contact in contactBaseProduction node</span>
+        <span class="n">list_contact_tags</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;pointContactPF&quot;</span><span class="p">,</span> <span class="s2">&quot;pointContactJdd&quot;</span><span class="p">,</span> <span class="s2">&quot;contactBaseProduction&quot;</span><span class="p">]</span>
+        <span class="n">all_actors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">contact_tag</span> <span class="ow">in</span> <span class="n">list_contact_tags</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">contact_tag</span> <span class="o">==</span> <span class="s2">&quot;contactBaseProduction&quot;</span><span class="p">:</span>
+                <span class="n">contact_node</span> <span class="o">=</span> <span class="n">jdd</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">namespace</span> <span class="o">+</span> <span class="s2">&quot;BaseProduction&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">contact_node</span> <span class="o">=</span> <span class="n">jdd</span>
+            <span class="k">if</span> <span class="n">get_tag_content</span><span class="p">(</span><span class="n">contact_node</span><span class="p">,</span> <span class="n">contact_tag</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">actor_node</span> <span class="ow">in</span> <span class="n">contact_node</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">namespace</span> <span class="o">+</span> <span class="n">contact_tag</span><span class="p">):</span>
+                    <span class="n">actor</span> <span class="o">=</span> <span class="n">parse_actors_xml</span><span class="p">(</span><span class="n">actor_node</span><span class="p">)</span>
+                    <span class="n">all_actors</span> <span class="o">=</span> <span class="n">all_actors</span> <span class="o">+</span> <span class="n">actor</span>
+
+        <span class="n">keywords</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># We build the JDD data from all the variables collected from the XML file</span>
+        <span class="n">current_jdd</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;unique_dataset_id&quot;</span><span class="p">:</span> <span class="n">jdd_uuid</span><span class="p">,</span>
+            <span class="s2">&quot;uuid_acquisition_framework&quot;</span><span class="p">:</span> <span class="n">ca_uuid</span><span class="p">,</span>
+            <span class="s2">&quot;dataset_name&quot;</span><span class="p">:</span> <span class="n">dataset_name</span><span class="p">,</span>
+            <span class="s2">&quot;dataset_shortname&quot;</span><span class="p">:</span> <span class="n">dataset_shortname</span><span class="p">,</span>
+            <span class="s2">&quot;dataset_desc&quot;</span><span class="p">:</span> <span class="n">dataset_desc</span><span class="p">,</span>
+            <span class="s2">&quot;keywords&quot;</span><span class="p">:</span> <span class="n">keywords</span><span class="p">,</span>
+            <span class="s2">&quot;terrestrial_domain&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">terrestrial_domain</span><span class="p">),</span>
+            <span class="s2">&quot;marine_domain&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">marine_domain</span><span class="p">),</span>
+            <span class="s2">&quot;id_nomenclature_data_type&quot;</span><span class="p">:</span> <span class="n">data_type</span><span class="p">,</span>
+            <span class="s2">&quot;id_digitizer&quot;</span><span class="p">:</span> <span class="n">id_digitizer</span><span class="p">,</span>
+            <span class="s2">&quot;id_nomenclature_data_origin&quot;</span><span class="p">:</span> <span class="n">code_statut_donnees_source</span><span class="p">,</span>
+            <span class="s2">&quot;actors&quot;</span><span class="p">:</span> <span class="n">all_actors</span><span class="p">,</span>
+            <span class="s2">&quot;meta_create_date&quot;</span><span class="p">:</span> <span class="n">create_date</span><span class="p">,</span>
+            <span class="s2">&quot;meta_update_date&quot;</span><span class="p">:</span> <span class="n">update_date</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># filter with id_instance</span>
+        <span class="k">if</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;MTD&quot;</span><span class="p">][</span><span class="s2">&quot;ID_INSTANCE_FILTER&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">id_instance</span> <span class="ow">and</span> <span class="n">id_instance</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;MTD&quot;</span><span class="p">][</span><span class="s2">&quot;ID_INSTANCE_FILTER&quot;</span><span class="p">]):</span>
+                <span class="n">jdd_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_jdd</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">jdd_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_jdd</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">jdd_list</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

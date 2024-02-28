@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" >
+<html class="writer-html5" lang="fr" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Priorités pour le référenciel &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/translations.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=e8570148"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=d99ca74e"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Recherche" href="search.html" /> 
@@ -27,15 +30,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="index.html" class="icon icon-home"> GeoNature
-            <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GeoNature
+              <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -49,6 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-references.html">API REFERENCES</a></li>
 </ul>
 
         </div>
@@ -64,8 +72,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Priorités pour le référenciel</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Priorités pour le référenciel</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/audit.md.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
@@ -76,7 +84,7 @@
            <div itemprop="articleBody">
              
   <section id="priorites-pour-le-referenciel">
-<h1>Priorités pour le référenciel<a class="headerlink" href="#priorites-pour-le-referenciel" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>Priorités pour le référenciel<a class="headerlink" href="#priorites-pour-le-referenciel" title="Link to this heading"></a></h1>
 <p>HTTPS</p>
 <p>HttpOnly cookies + Match cookie session avec adresse IP ou un certif ssl</p>
 <p>Sanitize</p>
@@ -100,7 +108,7 @@ Les id sont ils séquentiels ? Peut ont y accéder de sans avoir les droits ?
 </ul>
 </section>
 <section id="securite">
-<h1>Sécurité:<a class="headerlink" href="#securite" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>Sécurité:<a class="headerlink" href="#securite" title="Link to this heading"></a></h1>
 <p>HTTPS</p>
 <p>HttpOnly cookies + Match cookie session avec adresse IP ou un certif ssl</p>
 <p>Sanitize ticket in routes.py :</p>
@@ -125,7 +133,7 @@ Les id sont ils séquentiels ? Peut ont y accéder de sans avoir les droits ?
 <p>Documentation des ports et permissions recommandés pour l’application</p>
 </section>
 <section id="modularite">
-<h1>Modularité:<a class="headerlink" href="#modularite" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>Modularité:<a class="headerlink" href="#modularite" title="Link to this heading"></a></h1>
 <p>Définir les objectifs de la modularisation</p>
 <p>Versionner l’API et le schéma de base de donnée</p>
 <p>Fournir un processus, des conventions et outils de migration pour la base</p>
@@ -155,7 +163,7 @@ modules et protocoles</p></li>
 <p>Utilisation d’uuid à la place de d’id incrémentaux. Particulièrement pour : les données utilisateurs et les taxons.</p>
 </section>
 <section id="qualite-du-code">
-<h1>Qualité du code:<a class="headerlink" href="#qualite-du-code" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>Qualité du code:<a class="headerlink" href="#qualite-du-code" title="Link to this heading"></a></h1>
 <p>Ajout de linters (pylint, mypy, mccabe…)</p>
 <p>Ajouts de tests unitaires et suite de test (tox + pytest)</p>
 <p>.gitignore plus complet</p>
@@ -278,7 +286,7 @@ for n in data:
 <p>Gestion des erreurs réseau sur les appels Ajax</p>
 </section>
 <section id="aspect-legal">
-<h1>Aspect légal:<a class="headerlink" href="#aspect-legal" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>Aspect légal:<a class="headerlink" href="#aspect-legal" title="Link to this heading"></a></h1>
 <ul class="simple">
 <li><p>Déclaration à la CNIL;</p></li>
 <li><p>Fichier de LICENCE</p></li>
@@ -286,7 +294,7 @@ for n in data:
 </ul>
 </section>
 <section id="ergonomie">
-<h1>Ergonomie:<a class="headerlink" href="#ergonomie" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>Ergonomie:<a class="headerlink" href="#ergonomie" title="Link to this heading"></a></h1>
 <ul class="simple">
 <li><p>Faire bilan ergonomique</p></li>
 <li><p>Le menu pour changer la langue ne doit pas changer de langue lui-même.</p></li>
@@ -295,20 +303,20 @@ for n in data:
 </ul>
 </section>
 <section id="configuration">
-<h1>Configuration:<a class="headerlink" href="#configuration" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>Configuration:<a class="headerlink" href="#configuration" title="Link to this heading"></a></h1>
 <ul class="simple">
 <li><p>Une grande partie des valeurs devraient être centralisées, et overridable par variables d’environnement. E.G: conf.ts et conf.py doivent hériter du même fichier de conf.</p></li>
 <li><p>En mode dev, le make file pour runner gunicorn doit utiliser ces configs et env var.</p></li>
 </ul>
 </section>
 <section id="temps-de-chargement">
-<h1>Temps de chargement<a class="headerlink" href="#temps-de-chargement" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>Temps de chargement<a class="headerlink" href="#temps-de-chargement" title="Link to this heading"></a></h1>
 <p>Retirer les polyfills pour les ever greens browsers dans le production build</p>
 <p>Vérifier que l’import de rxj ne tue pas le tree shaking</p>
 <p>Préciser d’utiliser ng build –prod pour la mise en production pour profiter de l’AOT</p>
 </section>
 <section id="documentation">
-<h1>Documentation<a class="headerlink" href="#documentation" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h1>
 <ul class="simple">
 <li><p>Fournir un graphique du modele general de donnée</p></li>
 <li><p>Fournir une list des enpoints de l’API</p></li>
@@ -318,7 +326,7 @@ for n in data:
 </ul>
 </section>
 <section id="bons-points">
-<h1>Bons points<a class="headerlink" href="#bons-points" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>Bons points<a class="headerlink" href="#bons-points" title="Link to this heading"></a></h1>
 <p>Peu de requêts SQL pures. Lesquelles ont un échapement corrects des paramétres.</p>
 <p>Autoescape n’est pas désactivé</p>
 <p>Vérification de l’appartenance des relevés.</p>
@@ -329,7 +337,7 @@ for n in data:
 <p>Indice de MacAbe 5, à l’exception de 14 méthodes</p>
 </section>
 <section id="questions">
-<h1>Questions<a class="headerlink" href="#questions" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>Questions<a class="headerlink" href="#questions" title="Link to this heading"></a></h1>
 <p>Ou est le backoffice dont on parle dans https://github.com/PnX-SI/GeoNature/wiki/V2-:-Backoffice</p>
 </section>
 
@@ -341,7 +349,7 @@ for n in data:
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2018-2023, PnE, PnC.</p>
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
   </div>
 
   Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un

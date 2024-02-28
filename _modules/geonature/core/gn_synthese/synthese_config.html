@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_synthese.synthese_config &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.gn_synthese.synthese_config</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.gn_synthese.synthese_config</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Default columns for the export in synthese</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DEFAULT_EXPORT_COLUMNS">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_synthese/synthese_config/index.html#geonature.core.gn_synthese.synthese_config.DEFAULT_EXPORT_COLUMNS">[docs]</a>
+<span class="n">DEFAULT_EXPORT_COLUMNS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;date_debut&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;date_fin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;heure_debut&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;heure_fin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cd_nom&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cd_ref&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nom_valide&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nom_vernaculaire&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nom_cite&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;regne&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;group1_inpn&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;group2_inpn&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;group3_inpn&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;classe&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ordre&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;famille&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;rang_taxo&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nombre_min&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nombre_max&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;alti_min&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;alti_max&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;prof_min&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;prof_max&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;observateurs&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;determinateur&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;communes&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;x_centroid_4326&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;y_centroid_4326&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;geometrie_wkt_4326&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nom_lieu&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;comment_releve&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;comment_occurrence&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;validateur&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;niveau_validation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;date_validation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;comment_validation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;preuve_numerique_url&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;preuve_non_numerique&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;jdd_nom&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;jdd_uuid&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;jdd_id&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ca_nom&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ca_uuid&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ca_id&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cd_habref&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cd_habitat&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nom_habitat&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;precision_geographique&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nature_objet_geo&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;type_regroupement&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;methode_regroupement&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;technique_observation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;biologique_statut&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;etat_biologique&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;biogeographique_statut&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;naturalite&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;preuve_existante&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;niveau_precision_diffusion&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;stade_vie&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sexe&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;objet_denombrement&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;type_denombrement&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;niveau_sensibilite&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;statut_observation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;floutage_dee&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;statut_source&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;type_info_geo&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;methode_determination&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;comportement&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;reference_biblio&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_synthese&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_origine&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;uuid_perm_sinp&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;uuid_perm_grp_sinp&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;date_creation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;date_modification&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;champs_additionnels&quot;</span><span class="p">,</span>
+<span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="DEFAULT_COLUMNS_API_SYNTHESE">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_synthese/synthese_config/index.html#geonature.core.gn_synthese.synthese_config.DEFAULT_COLUMNS_API_SYNTHESE">[docs]</a>
+<span class="n">DEFAULT_COLUMNS_API_SYNTHESE</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;id_synthese&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;date_min&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;observers&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nom_valide&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dataset_name&quot;</span><span class="p">,</span>
+<span class="p">]</span></div>
+
+
+<span class="c1"># Mandatory columns for the frontend in Synthese API</span>
+<div class="viewcode-block" id="MANDATORY_COLUMNS">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_synthese/synthese_config/index.html#geonature.core.gn_synthese.synthese_config.MANDATORY_COLUMNS">[docs]</a>
+<span class="n">MANDATORY_COLUMNS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;entity_source_pk_value&quot;</span><span class="p">,</span> <span class="s2">&quot;url_source&quot;</span><span class="p">,</span> <span class="s2">&quot;cd_nom&quot;</span><span class="p">]</span></div>
+
+
+<span class="c1"># CONFIG MAP-LIST</span>
+<div class="viewcode-block" id="DEFAULT_LIST_COLUMN">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_synthese/synthese_config/index.html#geonature.core.gn_synthese.synthese_config.DEFAULT_LIST_COLUMN">[docs]</a>
+<span class="n">DEFAULT_LIST_COLUMN</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;prop&quot;</span><span class="p">:</span> <span class="s2">&quot;nom_vern_or_lb_nom&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Taxon&quot;</span><span class="p">,</span> <span class="s2">&quot;max_width&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;prop&quot;</span><span class="p">:</span> <span class="s2">&quot;date_min&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Date obs&quot;</span><span class="p">,</span> <span class="s2">&quot;max_width&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;prop&quot;</span><span class="p">:</span> <span class="s2">&quot;dataset_name&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;JDD&quot;</span><span class="p">,</span> <span class="s2">&quot;max_width&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;prop&quot;</span><span class="p">:</span> <span class="s2">&quot;observers&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;observateur&quot;</span><span class="p">,</span> <span class="s2">&quot;max_width&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">},</span>
+<span class="p">]</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

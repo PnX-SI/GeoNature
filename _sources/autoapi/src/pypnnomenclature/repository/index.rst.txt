@@ -1,0 +1,63 @@
+:py:mod:`src.pypnnomenclature.repository`
+=========================================
+
+.. py:module:: src.pypnnomenclature.repository
+
+.. autoapi-nested-parse::
+
+   Méthode permettant de manipuler les objets de la nomenclature
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   src.pypnnomenclature.repository.get_nomenclature_list
+   src.pypnnomenclature.repository.get_nomenclature_list_formated
+   src.pypnnomenclature.repository.get_nomenclature_with_taxonomy_list
+   src.pypnnomenclature.repository.get_nomenclature_id_term
+
+
+
+.. py:function:: get_nomenclature_list(id_type=None, code_type=None, regne=None, group2_inpn=None, group3_inpn=None, hierarchy=None, filter_params=None)
+
+   Récupération de la liste des termes d'un type de nomenclature
+
+
+.. py:function:: get_nomenclature_list_formated(nomenclature_params, mapping)
+
+   Permet de récupérer la liste des données d'une nomenclature et de la
+       formater de façon particulière
+   !! pour le momment ne traite que les objets de type nomenclature
+       et pas nomenclature api
+   exemple:
+   {
+       'id': {'object': 'nomenclature', 'field': 'id_nomenclature'},
+       'libelle': {'object': 'nomenclature', 'field': 'label_default'}
+   }
+
+
+.. py:function:: get_nomenclature_with_taxonomy_list()
+
+   Fetch nomenclature definition list with taxonomy
+
+
+.. py:function:: get_nomenclature_id_term(cd_type, cd_term, raise_exp=True)
+
+   Fonction retournant l'identifiant d'un term
+   à partir de ses codes mnemoniques
+
+   paramètres:
+   ----------
+       cd_type : code mnemonique du type de vocabulaire
+       cd_term : code du terme recherché
+       raise_exp : spécifie le comportement de la
+           fonction en cas d'exeception
+
+

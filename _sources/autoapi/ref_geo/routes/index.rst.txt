@@ -1,0 +1,106 @@
+:py:mod:`ref_geo.routes`
+========================
+
+.. py:module:: ref_geo.routes
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   ref_geo.routes.getGeoInfo
+   ref_geo.routes.getAltitude
+   ref_geo.routes.getAreasIntersection
+   ref_geo.routes.get_municipalities
+   ref_geo.routes.get_areas
+   ref_geo.routes.get_area_size
+   ref_geo.routes.get_area_types
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   ref_geo.routes.routes
+   ref_geo.routes.altitude_stmt
+   ref_geo.routes.geojson_intersect_filter
+   ref_geo.routes.area_size_func
+
+
+.. py:data:: routes
+
+   
+
+.. py:data:: altitude_stmt
+
+   
+
+.. py:data:: geojson_intersect_filter
+
+   
+
+.. py:data:: area_size_func
+
+   
+
+.. py:function:: getGeoInfo()
+
+   From a posted geojson, the route return the municipalities intersected
+   and the altitude min/max
+
+   .. :quickref: Ref Geo;
+
+
+.. py:function:: getAltitude()
+
+   From a posted geojson get the altitude min/max
+
+   .. :quickref: Ref Geo;
+
+
+.. py:function:: getAreasIntersection()
+
+   From a posted geojson, the route return all the area intersected
+   from l_areas
+   .. :quickref: Ref Geo;
+
+
+.. py:function:: get_municipalities()
+
+   Return the municipalities
+   .. :quickref: Ref Geo;
+
+
+.. py:function:: get_areas()
+
+   Return the areas of ref_geo.l_areas
+   .. :quickref: Ref Geo;
+
+
+.. py:function:: get_area_size()
+
+   Return the area size from a given geojson
+
+   .. :quickref: Ref Geo;
+
+   :returns: An area size (int)
+
+
+.. py:function:: get_area_types()
+
+   Get areas types list
+
+   .. :quickref: Areas;
+
+   :query str code: Type area code (ref_geo.bib_areas_types.type_code)
+   :query str name: Type area name (ref_geo.bib_areas_types.type_name)
+   :query str sort: sort value as ASC - DESC
+
+

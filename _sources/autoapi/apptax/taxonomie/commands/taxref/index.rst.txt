@@ -1,0 +1,34 @@
+:py:mod:`apptax.taxonomie.commands.taxref`
+==========================================
+
+.. py:module:: apptax.taxonomie.commands.taxref
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.commands.taxref.taxref
+   apptax.taxonomie.commands.taxref.info
+   apptax.taxonomie.commands.taxref.delete
+   apptax.taxonomie.commands.taxref.delete_bdc
+
+
+
+.. py:function:: taxref()
+
+
+.. py:function:: info()
+
+
+.. py:function:: delete()
+
+
+.. py:function:: delete_bdc()
+
+

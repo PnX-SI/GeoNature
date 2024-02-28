@@ -1,0 +1,58 @@
+:py:mod:`pypnusershub.__main__`
+===============================
+
+.. py:module:: pypnusershub.__main__
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   pypnusershub.__main__.run_db_cmd
+   pypnusershub.__main__.call_init_schema
+   pypnusershub.__main__.call_delete_schema
+   pypnusershub.__main__.call_reset_schema
+   pypnusershub.__main__.call_load_fixtures
+   pypnusershub.__main__.make_cmd_parser
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   pypnusershub.__main__.parser
+
+
+.. py:function:: run_db_cmd(func, db_uri, *args, **kwargs)
+
+   Run a function from pypnuserhub.db.tools with proper warnings
+
+
+.. py:function:: call_init_schema(args)
+
+
+.. py:function:: call_delete_schema(args)
+
+
+.. py:function:: call_reset_schema(args)
+
+
+.. py:function:: call_load_fixtures(args)
+
+
+.. py:function:: make_cmd_parser()
+
+   Create a CMD parser with subcommands for pypnuserhub.db.tools funcs
+
+
+.. py:data:: parser
+
+   
+

@@ -1,0 +1,162 @@
+:py:mod:`pypnusershub.db.models_register`
+=========================================
+
+.. py:module:: pypnusershub.db.models_register
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   pypnusershub.db.models_register.TempUser
+   pypnusershub.db.models_register.CorRoleToken
+
+
+
+
+.. py:class:: TempUser
+
+
+   Bases: :py:obj:`pypnusershub.db.models.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'temp_users'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_temp_user
+
+      
+
+   .. py:attribute:: token_role
+
+      
+
+   .. py:attribute:: organisme
+
+      
+
+   .. py:attribute:: id_application
+
+      
+
+   .. py:attribute:: confirmation_url
+
+      
+
+   .. py:attribute:: groupe
+
+      
+
+   .. py:attribute:: identifiant
+
+      
+
+   .. py:attribute:: nom_role
+
+      
+
+   .. py:attribute:: prenom_role
+
+      
+
+   .. py:attribute:: desc_role
+
+      
+
+   .. py:attribute:: password
+
+      
+
+   .. py:attribute:: pass_md5
+
+      
+
+   .. py:attribute:: email
+
+      
+
+   .. py:attribute:: id_organisme
+
+      
+
+   .. py:attribute:: remarques
+
+      
+
+   .. py:attribute:: champs_addi
+
+      
+
+   .. py:attribute:: date_insert
+
+      
+
+   .. py:attribute:: date_update
+
+      
+
+   .. py:method:: set_password(password, password_confirmation, md5)
+
+
+   .. py:method:: is_valid()
+
+
+   .. py:method:: as_dict(recursif=False, columns=(), depth=None)
+
+      The signature of the function must be the as same the as_dict func
+      from https://github.com/PnX-SI/Utils-Flask-SQLAlchemy
+
+
+
+.. py:class:: CorRoleToken
+
+
+   Bases: :py:obj:`pypnusershub.db.models.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_role_token'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_role
+
+      
+
+   .. py:attribute:: token
+
+      
+
+   .. py:method:: as_dict(recursif=False, columns=(), depth=None)
+
+      The signature of the function must be the as same the as_dict func
+      from https://github.com/PnX-SI/Utils-Flask-SQLAlchemy
+
+
+

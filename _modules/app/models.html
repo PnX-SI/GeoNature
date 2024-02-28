@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.models &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">app.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de app.models</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">hashlib</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span><span class="p">,</span> <span class="n">jsonify</span>
+<span class="kn">from</span> <span class="nn">flask_sqlalchemy</span> <span class="kn">import</span> <span class="n">SQLAlchemy</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">distinct</span><span class="p">,</span> <span class="n">or_</span><span class="p">,</span> <span class="n">desc</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="kn">import</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">JSONB</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">select</span><span class="p">,</span> <span class="n">func</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">synonym</span><span class="p">,</span> <span class="n">relationship</span><span class="p">,</span> <span class="n">backref</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db.models</span> <span class="kn">import</span> <span class="n">check_and_encrypt_password</span>
+
+<span class="kn">from</span> <span class="nn">app.env</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">app.utils.utilssqlalchemy</span> <span class="kn">import</span> <span class="n">serializable</span>
+<span class="kn">from</span> <span class="nn">app.genericRepository</span> <span class="kn">import</span> <span class="n">GenericRepository</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fichier contenant les models de la base de données</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="Bib_Organismes">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.Bib_Organismes">[docs]</a>
+<span class="k">class</span> <span class="nc">Bib_Organismes</span><span class="p">(</span><span class="n">GenericRepository</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model de la table Bib_Organismes</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Bib_Organismes.__tablename__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.Bib_Organismes.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_organismes&quot;</span></div>
+
+<div class="viewcode-block" id="Bib_Organismes.__table_args__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.Bib_Organismes.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">,</span> <span class="s2">&quot;extend_existing&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="Bib_Organismes.id_organisme">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.Bib_Organismes.id_organisme">[docs]</a>
+    <span class="n">id_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bib_Organismes.uuid_organisme">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.Bib_Organismes.uuid_organisme">[docs]</a>
+    <span class="n">uuid_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">UUID</span><span class="p">(</span><span class="n">as_uuid</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="n">select</span><span class="p">([</span><span class="n">func</span><span class="o">.</span><span class="n">uuid_generate_v4</span><span class="p">()])</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bib_Organismes.nom_organisme">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.Bib_Organismes.nom_organisme">[docs]</a>
+    <span class="n">nom_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bib_Organismes.adresse_organisme">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.Bib_Organismes.adresse_organisme">[docs]</a>
+    <span class="n">adresse_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bib_Organismes.cp_organisme">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.Bib_Organismes.cp_organisme">[docs]</a>
+    <span class="n">cp_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bib_Organismes.ville_organisme">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.Bib_Organismes.ville_organisme">[docs]</a>
+    <span class="n">ville_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bib_Organismes.tel_organisme">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.Bib_Organismes.tel_organisme">[docs]</a>
+    <span class="n">tel_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bib_Organismes.fax_organisme">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.Bib_Organismes.fax_organisme">[docs]</a>
+    <span class="n">fax_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bib_Organismes.email_organisme">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.Bib_Organismes.email_organisme">[docs]</a>
+    <span class="n">email_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bib_Organismes.url_organisme">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.Bib_Organismes.url_organisme">[docs]</a>
+    <span class="n">url_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bib_Organismes.url_logo">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.Bib_Organismes.url_logo">[docs]</a>
+    <span class="n">url_logo</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bib_Organismes.id_parent">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.Bib_Organismes.id_parent">[docs]</a>
+    <span class="n">id_parent</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TRoles">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles">[docs]</a>
+<span class="k">class</span> <span class="nc">TRoles</span><span class="p">(</span><span class="n">GenericRepository</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model de la table t_roles</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TRoles.__tablename__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_roles&quot;</span></div>
+
+<div class="viewcode-block" id="TRoles.__table_args__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">,</span> <span class="s2">&quot;extend_existing&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="TRoles.id_role">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.id_role">[docs]</a>
+    <span class="n">id_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TRoles.groupe">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.groupe">[docs]</a>
+    <span class="n">groupe</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TRoles.uuid_role">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.uuid_role">[docs]</a>
+    <span class="n">uuid_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">UUID</span><span class="p">(</span><span class="n">as_uuid</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="n">select</span><span class="p">([</span><span class="n">func</span><span class="o">.</span><span class="n">uuid_generate_v4</span><span class="p">()]))</span></div>
+
+<div class="viewcode-block" id="TRoles.identifiant">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.identifiant">[docs]</a>
+    <span class="n">identifiant</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TRoles.nom_role">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.nom_role">[docs]</a>
+    <span class="n">nom_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TRoles.prenom_role">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.prenom_role">[docs]</a>
+    <span class="n">prenom_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TRoles.desc_role">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.desc_role">[docs]</a>
+    <span class="n">desc_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TRoles.pass_md5">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.pass_md5">[docs]</a>
+    <span class="n">pass_md5</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;pass&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TRoles.pass_plus">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.pass_plus">[docs]</a>
+    <span class="n">pass_plus</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TRoles.email">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.email">[docs]</a>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TRoles.id_organisme">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.id_organisme">[docs]</a>
+    <span class="n">id_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.bib_organismes.id_organisme&quot;</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TRoles.organisme_rel">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.organisme_rel">[docs]</a>
+    <span class="n">organisme_rel</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;Bib_Organismes&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TRoles.remarques">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.remarques">[docs]</a>
+    <span class="n">remarques</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TRoles.active">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.active">[docs]</a>
+    <span class="n">active</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TRoles.pass5">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.pass5">[docs]</a>
+    <span class="n">pass5</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;pass&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+    <span class="n">pass_plus</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span>
+<div class="viewcode-block" id="TRoles.champs_addi">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.champs_addi">[docs]</a>
+    <span class="n">champs_addi</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">JSONB</span><span class="p">)</span></div>
+
+
+    <span class="c1"># Add synonym for column pass</span>
+    <span class="c1"># Hack because pass is an python reserved word</span>
+    <span class="n">pass_md5</span> <span class="o">=</span> <span class="n">synonym</span><span class="p">(</span><span class="s2">&quot;pass5&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TRoles.set_password">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.set_password">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_password</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">password_confirmation</span><span class="p">):</span>
+        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pass_plus</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pass_md5</span><span class="p">)</span> <span class="o">=</span> <span class="n">check_and_encrypt_password</span><span class="p">(</span>
+            <span class="n">password</span><span class="p">,</span>
+            <span class="n">password_confirmation</span><span class="p">,</span>
+            <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;PASS_METHOD&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;md5&quot;</span>
+            <span class="ow">or</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;FILL_MD5_PASS&quot;</span><span class="p">],</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TRoles.choixSelect">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.choixSelect">[docs]</a>
+    <span class="k">def</span> <span class="nf">choixSelect</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;id_role&quot;</span><span class="p">,</span> <span class="n">nom</span><span class="o">=</span><span class="s2">&quot;full_name&quot;</span><span class="p">,</span> <span class="n">aucun</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui retourne une tableau de tuples d&#39;id</span>
+<span class="sd">            de roles et de nom de roles ACTIF</span>
+<span class="sd">        Avec pour paramètres un id de role et un nom de role</span>
+<span class="sd">        Le paramètre aucun si il a une valeur permet</span>
+<span class="sd">            de rajouter le tuple (-1,Aucun) au tableau</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># recupère tous les role actif</span>
+        <span class="n">roles</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_all</span><span class="p">(</span><span class="n">as_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;col&quot;</span><span class="p">:</span> <span class="s2">&quot;active&quot;</span><span class="p">,</span> <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}])</span>
+
+        <span class="n">choices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">:</span>
+            <span class="n">role_as_dict</span> <span class="o">=</span> <span class="n">role</span><span class="o">.</span><span class="n">as_dict_full_name</span><span class="p">()</span>
+            <span class="n">choices</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">role_as_dict</span><span class="p">[</span><span class="nb">id</span><span class="p">],</span> <span class="n">role_as_dict</span><span class="p">[</span><span class="n">nom</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">aucun</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">choices</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Aucun&quot;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">choices</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TRoles.choix_group">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.choix_group">[docs]</a>
+    <span class="k">def</span> <span class="nf">choix_group</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">nom</span><span class="p">,</span> <span class="n">aucun</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui retourne une tableau de tuples d&#39;id</span>
+<span class="sd">            de groupes et de nom de goupes</span>
+<span class="sd">        Avec pour paramètres un id de groupe et un nom de groupe</span>
+<span class="sd">        Le paramètre aucun si il a une valeur permet</span>
+<span class="sd">            de rajouter le tuple (-1,Aucun) au tableau</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">identifiant</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">groupe</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">q</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
+        <span class="n">choices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">choices</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">d</span><span class="p">[</span><span class="nb">id</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="n">nom</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">aucun</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">choices</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Aucun&quot;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">choices</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TRoles.get_user_groups">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.get_user_groups">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_user_groups</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_role</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all groups of a user</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            id_role (int): the user&#39;s id</span>
+<span class="sd">        Return:</span>
+<span class="sd">            Array&lt;TRoles&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cor_role_query</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">CorRoles</span><span class="o">.</span><span class="n">id_role_groupe</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">CorRoles</span><span class="o">.</span><span class="n">id_role_utilisateur</span> <span class="o">==</span> <span class="n">id_role</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TRoles</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">TRoles</span><span class="o">.</span><span class="n">id_role</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">cor_role_query</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TRoles.get_user_lists">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.get_user_lists">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_user_lists</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_role</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all lists of a user</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            id_role (int): the user&#39;s id</span>
+<span class="sd">        Return:</span>
+<span class="sd">            Array&lt;TListes&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># get ids_role list from user and user groups</span>
+        <span class="n">ids_role</span> <span class="o">=</span> <span class="p">[</span><span class="n">id_role</span><span class="p">]</span>
+        <span class="n">ids_group</span> <span class="o">=</span> <span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">id_role</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_user_groups</span><span class="p">(</span><span class="n">id_role</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">ids_group</span><span class="p">:</span>
+            <span class="n">ids_role</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+        <span class="n">cor_role_list_query</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">CorRoleListe</span><span class="o">.</span><span class="n">id_liste</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">CorRoleListe</span><span class="o">.</span><span class="n">id_role</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">ids_role</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TListes</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">TListes</span><span class="o">.</span><span class="n">id_liste</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">cor_role_list_query</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TRoles.get_user_app_profils">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.get_user_app_profils">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_user_app_profils</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_role</span><span class="p">,</span> <span class="n">id_application</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all listapp profils of a user</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            id_role (int): the user&#39;s id</span>
+<span class="sd">            id_application optional (int): application id</span>
+<span class="sd">        Return:</span>
+<span class="sd">            Array&lt;CorRoleAppProfil&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># get ids_role list from user and user groups</span>
+        <span class="n">ids_role</span> <span class="o">=</span> <span class="p">[</span><span class="n">id_role</span><span class="p">]</span>
+        <span class="n">ids_group</span> <span class="o">=</span> <span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">id_role</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_user_groups</span><span class="p">(</span><span class="n">id_role</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">ids_group</span><span class="p">:</span>
+            <span class="n">ids_role</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+        <span class="c1"># get right rows in cor_role_app_profil</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">CorRoleAppProfil</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">id_application</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">id_role</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">ids_role</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">id_application</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">id_application</span> <span class="o">==</span> <span class="n">id_application</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">id_application</span><span class="p">)</span>
+        <span class="n">rights</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">rights</span></div>
+
+
+<div class="viewcode-block" id="TRoles.get_full_name">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.get_full_name">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_full_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui concatène le nom et prénom du role</span>
+<span class="sd">        retourne un nom complet</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([(</span><span class="bp">self</span><span class="o">.</span><span class="n">nom_role</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prenom_role</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)])</span></div>
+
+
+<div class="viewcode-block" id="TRoles.as_dict_full_name">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.as_dict_full_name">[docs]</a>
+    <span class="k">def</span> <span class="nf">as_dict_full_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui ajout le nom complet d&#39;un role au dictionnaire</span>
+<span class="sd">            qui le défini</span>
+<span class="sd">        retourne un dictionnaire d&#39;un utilisateur avec une nouvelle &#39;full_name&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">full_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_full_name</span><span class="p">()</span>
+        <span class="n">user_as_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+        <span class="n">user_as_dict</span><span class="p">[</span><span class="s2">&quot;full_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">full_name</span>
+        <span class="k">return</span> <span class="n">user_as_dict</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TRoles.test_group">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.test_group">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_group</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tab</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui test si le tableau contient un élement groupe = False,</span>
+<span class="sd">        Si c&#39;est le cas alors on remplace le boolean par un string du même nom</span>
+<span class="sd">        retourne un tableau avec le groupe sous forme de string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">table</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">tab</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;groupe&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="s2">&quot;groupe&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;False&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="s2">&quot;groupe&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;True&quot;</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">table</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TRoles.get_user_in_list">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.get_user_in_list">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_user_in_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_liste</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui retourne un dictionnaire des roles d&#39;une liste</span>
+<span class="sd">        Avec pour paramètre un id_liste</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">active</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">nom_role</span><span class="p">))</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CorRoleListe</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">id_liste</span> <span class="o">==</span> <span class="n">CorRoleListe</span><span class="o">.</span><span class="n">id_liste</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">as_dict_full_name</span><span class="p">()</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">q</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TRoles.get_user_out_list">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.get_user_out_list">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_user_out_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_liste</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui retourne un dictionnaire de roles n&#39;appartenant</span>
+<span class="sd">            pas à une liste</span>
+<span class="sd">        Avec pour paramètre un id_liste</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">nom_role</span><span class="p">))</span>
+        <span class="n">subquery</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">~</span><span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">CorRoleListe</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorRoleListe</span><span class="o">.</span><span class="n">id_liste</span> <span class="o">==</span> <span class="n">id_liste</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorRoleListe</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="bp">cls</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">subquery</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">active</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">as_dict_full_name</span><span class="p">()</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">q</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TRoles.get_user_in_group">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.get_user_in_group">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_user_in_group</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_groupe</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui retourne un dictionnaire de role appartenant à un groupe</span>
+<span class="sd">        Avec pour paramètres un id de role</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">active</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">groupe</span><span class="p">))</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CorRoles</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">id_groupe</span> <span class="o">==</span> <span class="n">CorRoles</span><span class="o">.</span><span class="n">id_role_groupe</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">as_dict_full_name</span><span class="p">()</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">q</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TRoles.get_user_out_group">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.get_user_out_group">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_user_out_group</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_groupe</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui retourne un dictionnaire de role n&#39;appartenant pas</span>
+<span class="sd">            à un groupe donné</span>
+<span class="sd">        Avec pour paramètre un id de role</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id_role</span> <span class="o">!=</span> <span class="n">id_groupe</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">groupe</span><span class="p">))</span>
+        <span class="n">subquery</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">CorRoles</span><span class="o">.</span><span class="n">id_role_utilisateur</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">CorRoles</span><span class="o">.</span><span class="n">id_role_groupe</span> <span class="o">==</span> <span class="n">id_groupe</span>
+        <span class="p">)</span>
+
+        <span class="n">subquery2</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">CorRoles</span><span class="o">.</span><span class="n">id_role_groupe</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">CorRoles</span><span class="o">.</span><span class="n">id_role_utilisateur</span> <span class="o">==</span> <span class="n">id_groupe</span>
+        <span class="p">)</span>  <span class="c1"># TODO a vérifier (problème de récursivité)</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id_role</span><span class="o">.</span><span class="n">notin_</span><span class="p">(</span><span class="n">subquery</span><span class="p">))</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id_role</span><span class="o">.</span><span class="n">notin_</span><span class="p">(</span><span class="n">subquery2</span><span class="p">))</span>
+        <span class="c1"># TODO filtrer les roles actifs</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">as_dict_full_name</span><span class="p">()</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">q</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TRoles.get_user_profil_in_app">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.get_user_profil_in_app">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_user_profil_in_app</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_application</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui retourne un dictionnaire de roles avec leur profil sur une application</span>
+<span class="sd">        Avec pour paramètre un id d&#39;application</span>
+<span class="sd">        Ne retourne que les utilisateurs actifs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># get the user</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">TProfils</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CorRoleAppProfil</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TProfils</span><span class="p">,</span> <span class="n">TProfils</span><span class="o">.</span><span class="n">id_profil</span> <span class="o">==</span> <span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">id_profil</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">active</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">id_application</span> <span class="o">==</span> <span class="n">id_application</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">groupe</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">user_with_profil</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">as_dict_full_name</span><span class="p">()</span>
+            <span class="n">user</span><span class="p">[</span><span class="s2">&quot;id_profil&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">id_profil</span>
+            <span class="n">user</span><span class="p">[</span><span class="s2">&quot;profil&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">nom_profil</span>
+            <span class="n">user_with_profil</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">user_with_profil</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TRoles.get_user_profil_out_app">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.get_user_profil_out_app">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_user_profil_out_app</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_application</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui retourne un dictionnaire de roles n&#39;ayant pas de droits</span>
+<span class="sd">            sur une application</span>
+<span class="sd">        Avec pour paramètre un id d&#39;application</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">groupe</span><span class="p">))</span>
+        <span class="n">subquery</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">distinct</span><span class="p">(</span><span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">id_role</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">id_application</span> <span class="o">==</span> <span class="n">id_application</span>
+        <span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id_role</span><span class="o">.</span><span class="n">notin_</span><span class="p">(</span><span class="n">subquery</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">as_dict_full_name</span><span class="p">()</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">q</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TRoles.get_groups">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TRoles.get_groups">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_groups</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui retourne une liste des roles</span>
+<span class="sd">            de type groupe</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">TRoles</span><span class="o">.</span><span class="n">groupe</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">q</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="CorRoles">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoles">[docs]</a>
+<span class="k">class</span> <span class="nc">CorRoles</span><span class="p">(</span><span class="n">GenericRepository</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Classe de correspondance entre un utilisateur et un groupe</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CorRoles.__tablename__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoles.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;cor_roles&quot;</span></div>
+
+<div class="viewcode-block" id="CorRoles.__table_args__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoles.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">,</span> <span class="s2">&quot;extend_existing&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="CorRoles.id_role_groupe">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoles.id_role_groupe">[docs]</a>
+    <span class="n">id_role_groupe</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorRoles.id_role_utilisateur">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoles.id_role_utilisateur">[docs]</a>
+    <span class="n">id_role_utilisateur</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_roles.id_role&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorRoles.t_roles">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoles.t_roles">[docs]</a>
+    <span class="n">t_roles</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;TRoles&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="CorRoles.test_role_in_grp">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoles.test_role_in_grp">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_role_in_grp</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_role</span><span class="p">,</span> <span class="n">id_group</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui retourne vrai si le role</span>
+<span class="sd">            appartient au groupe</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">in_grp</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">CorRoles</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorRoles</span><span class="o">.</span><span class="n">id_role_utilisateur</span> <span class="o">==</span> <span class="n">id_role</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorRoles</span><span class="o">.</span><span class="n">id_role_groupe</span> <span class="o">==</span> <span class="n">id_group</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">in_grp</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="CorRoles.add_cor">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoles.add_cor">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_cor</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_group</span><span class="p">,</span> <span class="n">ids_role</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui ajoute des relations roles &lt;-&gt; groupe</span>
+<span class="sd">        Avec pour paramètres un id de groupe(id_role)</span>
+<span class="sd">            et un tableau d&#39;id de roles</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">dict_add</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">dict_add</span><span class="p">[</span><span class="s2">&quot;id_role_groupe&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_group</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ids_role</span><span class="p">:</span>
+            <span class="n">dict_add</span><span class="p">[</span><span class="s2">&quot;id_role_utilisateur&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">dict_add</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="CorRoles.del_cor">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoles.del_cor">[docs]</a>
+    <span class="k">def</span> <span class="nf">del_cor</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_group</span><span class="p">,</span> <span class="n">ids_role</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui supprime des relations roles &lt;-&gt; groupe</span>
+<span class="sd">        Avec pour paramètres un id de groupe(id_role) et un tableau</span>
+<span class="sd">            d&#39;id de roles</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ids_role</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id_role_groupe</span> <span class="o">==</span> <span class="n">id_group</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">id_role_utilisateur</span> <span class="o">==</span> <span class="n">d</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TListes">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TListes">[docs]</a>
+<span class="k">class</span> <span class="nc">TListes</span><span class="p">(</span><span class="n">GenericRepository</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model de la table t_listes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TListes.__tablename__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TListes.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_listes&quot;</span></div>
+
+<div class="viewcode-block" id="TListes.__table_args__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TListes.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">,</span> <span class="s2">&quot;extend_existing&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TListes.id_liste">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TListes.id_liste">[docs]</a>
+    <span class="n">id_liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TListes.code_liste">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TListes.code_liste">[docs]</a>
+    <span class="n">code_liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TListes.nom_liste">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TListes.nom_liste">[docs]</a>
+    <span class="n">nom_liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TListes.desc_liste">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TListes.desc_liste">[docs]</a>
+    <span class="n">desc_liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="CorRoleListe">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleListe">[docs]</a>
+<span class="k">class</span> <span class="nc">CorRoleListe</span><span class="p">(</span><span class="n">GenericRepository</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Classe de correspondance entre la table t_roles et la table t_listes&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CorRoleListe.__tablename__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleListe.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;cor_role_liste&quot;</span></div>
+
+<div class="viewcode-block" id="CorRoleListe.__table_args__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleListe.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">,</span> <span class="s2">&quot;extend_existing&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="CorRoleListe.id_role">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleListe.id_role">[docs]</a>
+    <span class="n">id_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_roles.id_role&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorRoleListe.id_liste">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleListe.id_liste">[docs]</a>
+    <span class="n">id_liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_listes.id_liste&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorRoleListe.role_rel">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleListe.role_rel">[docs]</a>
+    <span class="n">role_rel</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;TRoles&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="CorRoleListe.add_cor">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleListe.add_cor">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_cor</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_liste</span><span class="p">,</span> <span class="n">ids_role</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui ajoute des relations roles &lt;-&gt; liste</span>
+
+<span class="sd">        Avec pour paramètres un id de liste et un tableau d&#39;id de roles</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">dict_add</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">dict_add</span><span class="p">[</span><span class="s2">&quot;id_liste&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_liste</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ids_role</span><span class="p">:</span>
+            <span class="n">dict_add</span><span class="p">[</span><span class="s2">&quot;id_role&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">dict_add</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="CorRoleListe.del_cor">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleListe.del_cor">[docs]</a>
+    <span class="k">def</span> <span class="nf">del_cor</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_liste</span><span class="p">,</span> <span class="n">ids_role</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui supprime des relations roles &lt;-&gt; liste</span>
+
+<span class="sd">        Avec pour paramètres un id de liste et un tableau d&#39;id de roles</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ids_role</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id_liste</span> <span class="o">==</span> <span class="n">id_liste</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TApplications">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TApplications">[docs]</a>
+<span class="k">class</span> <span class="nc">TApplications</span><span class="p">(</span><span class="n">GenericRepository</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model de la table t_applications</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TApplications.__tablename__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TApplications.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_applications&quot;</span></div>
+
+<div class="viewcode-block" id="TApplications.__table_args__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TApplications.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">,</span> <span class="s2">&quot;extend_existing&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TApplications.id_application">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TApplications.id_application">[docs]</a>
+    <span class="n">id_application</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TApplications.code_application">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TApplications.code_application">[docs]</a>
+    <span class="n">code_application</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TApplications.nom_application">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TApplications.nom_application">[docs]</a>
+    <span class="n">nom_application</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TApplications.desc_application">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TApplications.desc_application">[docs]</a>
+    <span class="n">desc_application</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TApplications.id_parent">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TApplications.id_parent">[docs]</a>
+    <span class="n">id_parent</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TProfils">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TProfils">[docs]</a>
+<span class="k">class</span> <span class="nc">TProfils</span><span class="p">(</span><span class="n">GenericRepository</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model de la classe t_profils</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TProfils.__tablename__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TProfils.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_profils&quot;</span></div>
+
+<div class="viewcode-block" id="TProfils.__table_args__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TProfils.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">,</span> <span class="s2">&quot;extend_existing&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TProfils.id_profil">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TProfils.id_profil">[docs]</a>
+    <span class="n">id_profil</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TProfils.code_profil">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TProfils.code_profil">[docs]</a>
+    <span class="n">code_profil</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TProfils.nom_profil">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TProfils.nom_profil">[docs]</a>
+    <span class="n">nom_profil</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TProfils.desc_profil">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TProfils.desc_profil">[docs]</a>
+    <span class="n">desc_profil</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TProfils.get_profils_in_app">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TProfils.get_profils_in_app">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_profils_in_app</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_application</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui retourne tous les profils autorisés dans une app</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            id_app (int): l&#39;id de l&#39;application</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Array&lt;TProfils&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TProfils</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CorProfilForApp</span><span class="p">,</span> <span class="n">CorProfilForApp</span><span class="o">.</span><span class="n">id_profil</span> <span class="o">==</span> <span class="n">TProfils</span><span class="o">.</span><span class="n">id_profil</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorProfilForApp</span><span class="o">.</span><span class="n">id_application</span> <span class="o">==</span> <span class="n">id_application</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">TProfils</span><span class="o">.</span><span class="n">code_profil</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TProfils.get_profil_in_app_with_code">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TProfils.get_profil_in_app_with_code">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_profil_in_app_with_code</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_application</span><span class="p">,</span> <span class="n">code_profil</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui retourne un profil à partir de son code</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TProfils</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CorProfilForApp</span><span class="p">,</span> <span class="n">CorProfilForApp</span><span class="o">.</span><span class="n">id_profil</span> <span class="o">==</span> <span class="n">TProfils</span><span class="o">.</span><span class="n">id_profil</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorProfilForApp</span><span class="o">.</span><span class="n">id_application</span> <span class="o">==</span> <span class="n">id_application</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">TProfils</span><span class="o">.</span><span class="n">code_profil</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">code_profil</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TProfils.get_profils_out_app">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TProfils.get_profils_out_app">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_profils_out_app</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_application</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui retourne un dictionnaire des profils non utilisés</span>
+<span class="sd">            pour une application</span>
+<span class="sd">        Avec pour paramètre un id application</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="n">subquery</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">CorProfilForApp</span><span class="o">.</span><span class="n">id_profil</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">CorProfilForApp</span><span class="o">.</span><span class="n">id_application</span> <span class="o">==</span> <span class="n">id_application</span>
+        <span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id_profil</span><span class="o">.</span><span class="n">notin_</span><span class="p">(</span><span class="n">subquery</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">q</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TProfils.choixSelect">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.TProfils.choixSelect">[docs]</a>
+    <span class="k">def</span> <span class="nf">choixSelect</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;id_profil&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;nom_profil&quot;</span><span class="p">,</span> <span class="n">id_application</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>  <span class="c1"># noqa</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui retourne un tableau de tuples d&#39;id profil et de</span>
+<span class="sd">            nom de profil</span>
+<span class="sd">        Ce que l&#39;on met en key et label sont paramétrable</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">id_application</span><span class="p">:</span>
+            <span class="n">profils</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_profils_in_app</span><span class="p">(</span><span class="n">id_application</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">label</span><span class="p">))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">profils</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">label</span><span class="p">))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_all</span><span class="p">()]</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="CorProfilForApp">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorProfilForApp">[docs]</a>
+<span class="k">class</span> <span class="nc">CorProfilForApp</span><span class="p">(</span><span class="n">GenericRepository</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Classe de correspondance entre la table t_applications et la table t_profils&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CorProfilForApp.__tablename__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorProfilForApp.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;cor_profil_for_app&quot;</span></div>
+
+<div class="viewcode-block" id="CorProfilForApp.__table_args__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorProfilForApp.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">,</span> <span class="s2">&quot;extend_existing&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="CorProfilForApp.id_application">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorProfilForApp.id_application">[docs]</a>
+    <span class="n">id_application</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_applications.id_application&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorProfilForApp.id_profil">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorProfilForApp.id_profil">[docs]</a>
+    <span class="n">id_profil</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_profils.id_profil&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorProfilForApp.profil_rel">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorProfilForApp.profil_rel">[docs]</a>
+    <span class="n">profil_rel</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;TProfils&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="CorProfilForApp.add_cor">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorProfilForApp.add_cor">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_cor</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_application</span><span class="p">,</span> <span class="n">ids_profil</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui ajoute des relations applications &lt;-&gt; profil</span>
+
+<span class="sd">        Avec pour paramètres un id profil et un tableau d&#39;id d&#39;applications</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">dict_add</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">dict_add</span><span class="p">[</span><span class="s2">&quot;id_application&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_application</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ids_profil</span><span class="p">:</span>
+            <span class="n">dict_add</span><span class="p">[</span><span class="s2">&quot;id_profil&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">dict_add</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="CorProfilForApp.del_cor">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorProfilForApp.del_cor">[docs]</a>
+    <span class="k">def</span> <span class="nf">del_cor</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_application</span><span class="p">,</span> <span class="n">ids_profil</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Methode qui supprime des relations applications &lt;-&gt; profil</span>
+
+<span class="sd">        Avec pour paramètres un id profil et un tableau d&#39;id d&#39;applications</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ids_profil</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id_application</span> <span class="o">==</span> <span class="n">id_application</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">id_profil</span> <span class="o">==</span> <span class="n">d</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="CorRoleAppProfil">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleAppProfil">[docs]</a>
+<span class="k">class</span> <span class="nc">CorRoleAppProfil</span><span class="p">(</span><span class="n">GenericRepository</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Classe de correspondance entre la table t_roles, t_profils et</span>
+<span class="sd">        t_applications</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CorRoleAppProfil.__tablename__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleAppProfil.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;cor_role_app_profil&quot;</span></div>
+
+<div class="viewcode-block" id="CorRoleAppProfil.__table_args__">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleAppProfil.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">,</span> <span class="s2">&quot;extend_existing&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="CorRoleAppProfil.id_role">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleAppProfil.id_role">[docs]</a>
+    <span class="n">id_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_roles.id_role&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorRoleAppProfil.id_profil">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleAppProfil.id_profil">[docs]</a>
+    <span class="n">id_profil</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_profils.id_profil&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorRoleAppProfil.id_application">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleAppProfil.id_application">[docs]</a>
+    <span class="n">id_application</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_applications.id_application&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorRoleAppProfil.is_default_group_for_app">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleAppProfil.is_default_group_for_app">[docs]</a>
+    <span class="n">is_default_group_for_app</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CorRoleAppProfil.role_rel">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleAppProfil.role_rel">[docs]</a>
+    <span class="n">role_rel</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;TRoles&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorRoleAppProfil.application_rel">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleAppProfil.application_rel">[docs]</a>
+    <span class="n">application_rel</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;TApplications&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorRoleAppProfil.profil_rel">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleAppProfil.profil_rel">[docs]</a>
+    <span class="n">profil_rel</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;TProfils&quot;</span><span class="p">)</span></div>
+
+
+    <span class="c1"># surchage de la méthode get_one</span>
+    <span class="c1"># car il n&#39;y a pas de clé primaire unique sur une cor</span>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="CorRoleAppProfil.get_one">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleAppProfil.get_one">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_one</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_role</span><span class="p">,</span> <span class="n">id_application</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">id_role</span><span class="o">=</span><span class="n">id_role</span><span class="p">,</span> <span class="n">id_application</span><span class="o">=</span><span class="n">id_application</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="CorRoleAppProfil.get_default_for_app">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleAppProfil.get_default_for_app">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_default_for_app</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_application</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">id_application</span><span class="o">=</span><span class="n">id_application</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">is_default_group_for_app</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+
+    <span class="c1"># surchage de la méthode delete car</span>
+    <span class="c1"># il n&#39;y a pas de clé primaire unique sur une cor</span>
+    <span class="c1"># TODO cette méthode supprime tous les profils</span>
+    <span class="c1"># pour une application et un role</span>
+    <span class="c1"># faire une méthode qui supprime seulement</span>
+    <span class="c1"># un enregistrement grace à une PK unique</span>
+    <span class="c1"># necessite ne pas utiliser le template</span>
+    <span class="c1"># table_database.html qui est trop génériqe</span>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="CorRoleAppProfil.delete">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleAppProfil.delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_role</span><span class="p">,</span> <span class="n">id_application</span><span class="p">):</span>
+        <span class="n">cors</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">id_role</span><span class="o">=</span><span class="n">id_role</span><span class="p">,</span> <span class="n">id_application</span><span class="o">=</span><span class="n">id_application</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">cor</span> <span class="ow">in</span> <span class="n">cors</span><span class="p">:</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">cor</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+            <span class="k">raise</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="CorRoleAppProfil.add_cor">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleAppProfil.add_cor">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_cor</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_app</span><span class="p">,</span> <span class="n">tab_profil</span><span class="p">):</span>
+        <span class="n">dict_add</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">tab_profil</span><span class="p">:</span>
+            <span class="n">dict_add</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;id_role&quot;</span><span class="p">:</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;id_role&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;id_profil&quot;</span><span class="p">:</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;id_profil&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;id_application&quot;</span><span class="p">:</span> <span class="n">id_app</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">dict_add</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="CorRoleAppProfil.del_cor">
+<a class="viewcode-back" href="../../autoapi/app/models/index.html#app.models.CorRoleAppProfil.del_cor">[docs]</a>
+    <span class="k">def</span> <span class="nf">del_cor</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">id_app</span><span class="p">,</span> <span class="n">tab_profil</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tab_profil</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">t</span><span class="p">[</span><span class="s2">&quot;id_role&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">id_profil</span> <span class="o">==</span> <span class="n">t</span><span class="p">[</span><span class="s2">&quot;id_profil&quot;</span><span class="p">]</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id_application</span> <span class="o">==</span> <span class="n">id_app</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

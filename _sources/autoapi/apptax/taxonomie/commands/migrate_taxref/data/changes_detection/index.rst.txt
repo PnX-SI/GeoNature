@@ -1,0 +1,6 @@
+:py:mod:`apptax.taxonomie.commands.migrate_taxref.data.changes_detection`
+=========================================================================
+
+.. py:module:: apptax.taxonomie.commands.migrate_taxref.data.changes_detection
+
+

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>apptax.taxonomie.commands.utils &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">apptax.taxonomie.commands.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de apptax.taxonomie.commands.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">importlib.resources</span>
+<span class="kn">from</span> <span class="nn">csv</span> <span class="kn">import</span> <span class="n">DictReader</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">TextIOWrapper</span>
+<span class="kn">from</span> <span class="nn">zipfile</span> <span class="kn">import</span> <span class="n">ZipFile</span>
+
+<span class="kn">from</span> <span class="nn">alembic</span> <span class="kn">import</span> <span class="n">op</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.schema</span> <span class="kn">import</span> <span class="n">Table</span><span class="p">,</span> <span class="n">MetaData</span>
+
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.migrations.utils</span> <span class="kn">import</span> <span class="n">open_remote_file</span>
+
+<span class="kn">from</span> <span class="nn">apptax.database</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">apptax.taxonomie.models</span> <span class="kn">import</span> <span class="n">TMetaTaxref</span>
+
+
+<div class="viewcode-block" id="import_bdc_statuts">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/utils/index.html#apptax.taxonomie.commands.utils.import_bdc_statuts">[docs]</a>
+<span class="k">def</span> <span class="nf">import_bdc_statuts</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">base_url</span><span class="p">,</span> <span class="n">zipfile</span><span class="p">,</span> <span class="n">status_types_file</span><span class="p">,</span> <span class="n">status_file</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">open_remote_file</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span> <span class="n">zipfile</span><span class="p">,</span> <span class="n">open_fct</span><span class="o">=</span><span class="n">ZipFile</span><span class="p">)</span> <span class="k">as</span> <span class="n">archive</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">archive</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">status_types_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Insert BDC statuts types…&quot;</span><span class="p">)</span>
+            <span class="n">copy_from_csv</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;bdc_statut_type&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">archive</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">status_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Insert BDC statuts…&quot;</span><span class="p">)</span>
+            <span class="n">copy_from_csv</span><span class="p">(</span>
+                <span class="n">f</span><span class="p">,</span>
+                <span class="s2">&quot;bdc_statut&quot;</span><span class="p">,</span>
+                <span class="n">dest_cols</span><span class="o">=</span><span class="p">(</span>
+                    <span class="s2">&quot;cd_nom&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;cd_ref&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;cd_sup&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;cd_type_statut&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;lb_type_statut&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;regroupement_type&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;code_statut&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;label_statut&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;rq_statut&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;cd_sig&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;cd_doc&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;lb_nom&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;lb_auteur&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;nom_complet_html&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;nom_valide_html&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;regne&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;phylum&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;classe&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;ordre&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;famille&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;group1_inpn&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;group2_inpn&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;lb_adm_tr&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;niveau_admin&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;cd_iso3166_1&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;cd_iso3166_2&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;full_citation&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;doc_url&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;thematique&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;type_value&quot;</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Populate BDC statuts…&quot;</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="s2">&quot;apptax.migrations.data&quot;</span><span class="p">,</span> <span class="s2">&quot;taxonomie_bdc_statuts.sql&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">populate_bdc_statut_cor_text_area</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span></div>
+
+
+    <span class="c1"># FIXME: pourquoi on installe cet index si c’est pour le supprimer ?</span>
+    <span class="c1"># db.session.execute(&quot;DROP INDEX taxonomie.bdc_statut_id_idx&quot;)</span>
+
+
+<div class="viewcode-block" id="populate_bdc_statut_cor_text_area">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/utils/index.html#apptax.taxonomie.commands.utils.populate_bdc_statut_cor_text_area">[docs]</a>
+<span class="k">def</span> <span class="nf">populate_bdc_statut_cor_text_area</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="c1"># Clean table before populate</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Populate Link BDC statuts with Areas…&quot;</span><span class="p">)</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TRUNCATE TABLE taxonomie.bdc_statut_cor_text_area;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="p">)</span>
+    <span class="c1"># Populate table</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        -- Champ terxfr = true = territoire intra-métropole. False = les DOM-TOM</span>
+<span class="sd">        WITH regions AS (</span>
+<span class="sd">            SELECT jsonb_array_elements(&#39;[</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;11&quot;, &quot;name&quot; :&quot;Île-de-France&quot;, &quot;deps&quot;: [&quot;75&quot;,&quot;77&quot;,&quot;78&quot;,&quot;91&quot;,&quot;92&quot;,&quot;93&quot;,&quot;94&quot;,&quot;95&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;21&quot;, &quot;name&quot; :&quot;Champagne-Ardenne&quot;, &quot;deps&quot;: [&quot;08&quot;,&quot;10&quot;,&quot;51&quot;,&quot;52&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;22&quot;, &quot;name&quot; :&quot;Picardie&quot;, &quot;deps&quot;: [&quot;02&quot;,&quot;60&quot;,&quot;80&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;23&quot;, &quot;name&quot; :&quot;Haute-Normandie&quot;, &quot;deps&quot;: [&quot;27&quot;, &quot;76&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;24&quot;, &quot;name&quot; :&quot;Centre&quot;, &quot;deps&quot;: [&quot;18&quot;,&quot;28&quot;,&quot;36&quot;,&quot;37&quot;,&quot;41&quot;,&quot;45&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;25&quot;, &quot;name&quot; :&quot;Basse-Normandie&quot;, &quot;deps&quot;: [&quot;14&quot;,&quot;50&quot;,&quot;61&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;26&quot;, &quot;name&quot; :&quot;Bourgogne&quot;, &quot;deps&quot;: [&quot;21&quot;,&quot;58&quot;,&quot;71&quot;,&quot;89&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;31&quot;, &quot;name&quot; :&quot;Nord-Pas-de-Calais&quot;, &quot;deps&quot;: [&quot;59&quot;, &quot;62&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;41&quot;, &quot;name&quot; :&quot;Lorraine&quot;, &quot;deps&quot;: [&quot;54&quot;,&quot;55&quot;,&quot;57&quot;,&quot;88&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;42&quot;, &quot;name&quot; :&quot;Alsace&quot;, &quot;deps&quot;: [&quot;67&quot;, &quot;68&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;43&quot;, &quot;name&quot; :&quot;Franche-Comté&quot;, &quot;deps&quot;: [&quot;25&quot;,&quot;39&quot;,&quot;70&quot;,&quot;90&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;52&quot;, &quot;name&quot; :&quot;Pays de la Loire&quot;, &quot;deps&quot;: [&quot;44&quot;,&quot;49&quot;,&quot;53&quot;,&quot;72&quot;,&quot;85&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;53&quot;, &quot;name&quot; :&quot;Bretagne&quot;, &quot;deps&quot;: [&quot;22&quot;,&quot;29&quot;,&quot;35&quot;,&quot;56&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;54&quot;, &quot;name&quot; :&quot;Poitou-Charentes&quot;, &quot;deps&quot;: [&quot;16&quot;,&quot;17&quot;,&quot;79&quot;,&quot;86&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;72&quot;, &quot;name&quot; :&quot;Aquitaine&quot;, &quot;deps&quot;: [&quot;24&quot;,&quot;33&quot;,&quot;40&quot;,&quot;47&quot;,&quot;64&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;73&quot;, &quot;name&quot; :&quot;Midi-Pyrénées&quot;, &quot;deps&quot;: [&quot;09&quot;,&quot;12&quot;,&quot;31&quot;,&quot;32&quot;,&quot;46&quot;,&quot;65&quot;,&quot;81&quot;,&quot;82&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;74&quot;, &quot;name&quot; :&quot;Limousin&quot;, &quot;deps&quot;: [&quot;19&quot;,&quot;23&quot;,&quot;87&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;82&quot;, &quot;name&quot; :&quot;Rhône-Alpes&quot;, &quot;deps&quot;: [&quot;01&quot;,&quot;07&quot;,&quot;26&quot;,&quot;38&quot;,&quot;42&quot;,&quot;69&quot;,&quot;73&quot;,&quot;74&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;83&quot;, &quot;name&quot; :&quot;Auvergne&quot;, &quot;deps&quot;: [&quot;03&quot;, &quot;15&quot;, &quot;43&quot;, &quot;63&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;91&quot;, &quot;name&quot; :&quot;Languedoc-Roussillon&quot;, &quot;deps&quot;: [&quot;11&quot;,&quot;30&quot;,&quot;34&quot;,&quot;48&quot;,&quot;66&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;93&quot;, &quot;name&quot; :&quot;Provence-Alpes-Côte d’Azur&quot;, &quot;deps&quot;: [&quot;04&quot;, &quot;05&quot;, &quot;06&quot;, &quot;13&quot;, &quot;83&quot;, &quot;84&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;old_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;94&quot;, &quot;name&quot; :&quot;Corse&quot;, &quot;deps&quot;: [&quot;2A&quot;, &quot;2B&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;11&quot;, &quot;name&quot; :&quot;Île-de-France&quot;, &quot;deps&quot;: [&quot;75&quot;,&quot;77&quot;,&quot;78&quot;,&quot;91&quot;,&quot;92&quot;,&quot;93&quot;,&quot;94&quot;,&quot;95&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;24&quot;, &quot;name&quot; :&quot;Centre-Val de Loire&quot;, &quot;deps&quot;: [&quot;18&quot;,&quot;28&quot;,&quot;36&quot;,&quot;37&quot;,&quot;41&quot;,&quot;45&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;27&quot;, &quot;name&quot; :&quot;Bourgogne-Franche-Comté&quot;, &quot;deps&quot;: [&quot;21&quot;,&quot;25&quot;,&quot;39&quot;,&quot;58&quot;,&quot;70&quot;,&quot;71&quot;,&quot;89&quot;,&quot;90&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;28&quot;, &quot;name&quot; :&quot;Normandie&quot;, &quot;deps&quot;: [&quot;14&quot;,&quot;27&quot;,&quot;50&quot;,&quot;61&quot;,&quot;76&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;32&quot;, &quot;name&quot; :&quot;Hauts-de-France&quot;, &quot;deps&quot;: [&quot;02&quot;, &quot;59&quot;, &quot;60&quot;, &quot;62&quot;, &quot;80&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;44&quot;, &quot;name&quot; :&quot;Grand Est&quot;, &quot;deps&quot;: [&quot;08&quot;,&quot;10&quot;,&quot;51&quot;,&quot;52&quot;,&quot;54&quot;,&quot;55&quot;,&quot;57&quot;,&quot;67&quot;,&quot;68&quot;,&quot;88&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;52&quot;, &quot;name&quot; :&quot;Pays de la Loire&quot;, &quot;deps&quot;: [&quot;44&quot;,&quot;49&quot;,&quot;53&quot;,&quot;72&quot;,&quot;85&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;53&quot;, &quot;name&quot; :&quot;Bretagne&quot;, &quot;deps&quot;: [&quot;22&quot;,&quot;29&quot;,&quot;35&quot;,&quot;56&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;75&quot;, &quot;name&quot; :&quot;Nouvelle-Aquitaine&quot;, &quot;deps&quot;: [&quot;16&quot;,&quot;17&quot;,&quot;19&quot;,&quot;23&quot;,&quot;24&quot;,&quot;33&quot;,&quot;40&quot;,&quot;47&quot;,&quot;64&quot;,&quot;79&quot;,&quot;86&quot;,&quot;87&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;76&quot;, &quot;name&quot; :&quot;Occitanie&quot;, &quot;deps&quot;: [&quot;09&quot;, &quot;11&quot;, &quot;12&quot;, &quot;30&quot;, &quot;31&quot;, &quot;32&quot;, &quot;34&quot;, &quot;46&quot;, &quot;48&quot;, &quot;65&quot;, &quot;66&quot;, &quot;81&quot;, &quot;82&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;84&quot;, &quot;name&quot; :&quot;Auvergne-Rhône-Alpes&quot;, &quot;deps&quot;: [&quot;01&quot;, &quot;03&quot;, &quot;07&quot;, &quot;15&quot;, &quot;26&quot;, &quot;38&quot;, &quot;42&quot;, &quot;43&quot;, &quot;63&quot;, &quot;69&quot;, &quot;73&quot;, &quot;74&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;93&quot;, &quot;name&quot; :&quot;Provence-Alpes-Côte d’Azur&quot;, &quot;deps&quot;: [&quot;04&quot;, &quot;05&quot;, &quot;06&quot;, &quot;13&quot;, &quot;83&quot;, &quot;84&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: true, &quot;code&quot; : &quot;94&quot;, &quot;name&quot; :&quot;Corse&quot;, &quot;deps&quot;: [&quot;2A&quot;, &quot;2B&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: false, &quot;code&quot; : &quot;971&quot;, &quot;name&quot; :&quot;Guadeloupe&quot;, &quot;deps&quot;: [&quot;971&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: false, &quot;code&quot; : &quot;972&quot;, &quot;name&quot; :&quot;Martinique&quot;, &quot;deps&quot;: [&quot;972&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: false, &quot;code&quot; : &quot;973&quot;, &quot;name&quot; :&quot;Guyane&quot;, &quot;deps&quot;: [&quot;973&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: false, &quot;code&quot; : &quot;974&quot;, &quot;name&quot; :&quot;La Réunion&quot;, &quot;deps&quot;: [&quot;974&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: false, &quot;code&quot; : &quot;975&quot;, &quot;name&quot; :&quot;Saint-Pierre-et-Miquelon&quot;, &quot;deps&quot;: [&quot;975&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: false, &quot;code&quot; : &quot;976&quot;, &quot;name&quot; :&quot;Mayotte&quot;, &quot;deps&quot;: [&quot;976&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: false, &quot;code&quot; : &quot;977&quot;, &quot;name&quot; :&quot;Saint-Barthélemy&quot;, &quot;deps&quot;: [&quot;977&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: false, &quot;code&quot; : &quot;978&quot;, &quot;name&quot; :&quot;Saint-Martin&quot;, &quot;deps&quot;: [&quot;978&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: false, &quot;code&quot; : &quot;984A&quot;, &quot;name&quot; :&quot;TAAF&quot;, &quot;deps&quot;: [&quot;984&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: false, &quot;code&quot; : &quot;984B&quot;, &quot;name&quot; :&quot;TAAF&quot;, &quot;deps&quot;: [&quot;984&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: false, &quot;code&quot; : &quot;984C&quot;, &quot;name&quot; :&quot;TAAF&quot;, &quot;deps&quot;: [&quot;984&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: false, &quot;code&quot; : &quot;986&quot;, &quot;name&quot; :&quot;Wallis-et-Futuna&quot;, &quot;deps&quot;: [&quot;986&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: false, &quot;code&quot; : &quot;987&quot;, &quot;name&quot; :&quot;Polynésie française&quot;, &quot;deps&quot;: [&quot;987&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: false, &quot;code&quot; : &quot;988&quot;, &quot;name&quot; :&quot;Nouvelle-Calédonie&quot;, &quot;deps&quot;: [&quot;9881&quot;, &quot;9882&quot;] },</span>
+<span class="sd">            { &quot;type&quot;: &quot;new_r&quot;, &quot;TERXFR&quot;: false, &quot;code&quot; : &quot;989&quot;, &quot;name&quot; :&quot;Île de Clipperton&quot;, &quot;deps&quot;: [&quot;989&quot;] }</span>
+<span class="sd">            ]&#39;::jsonb)AS d</span>
+<span class="sd">        ),</span>
+<span class="sd">        regions_dep AS (</span>
+<span class="sd">            SELECT jsonb_array_elements_text(d-&gt;&#39;deps&#39;) AS dep, d-&gt;&gt;&#39;code&#39;  AS code, d-&gt;&gt;&#39;type&#39; AS type, (d-&gt;&gt;&#39;TERXFR&#39;)::boolean as terxfr</span>
+<span class="sd">            FROM regions</span>
+<span class="sd">        )  , regions_dep_areas AS (</span>
+<span class="sd">            SELECT la.id_area, d.code, d.TYPE, d.terxfr</span>
+<span class="sd">            FROM ref_geo.l_areas la</span>
+<span class="sd">            JOIN regions_dep d ON d.dep = la.area_code</span>
+<span class="sd">            WHERE id_type = ref_geo.get_id_area_type(&#39;DEP&#39;)</span>
+<span class="sd">        ) ,</span>
+<span class="sd">        texts AS (</span>
+<span class="sd">            SELECT -- Si  &#39;ETATFRA&#39; insertion de tous les départements</span>
+<span class="sd">                bst.id_text,</span>
+<span class="sd">                la.id_area</span>
+<span class="sd">            FROM taxonomie.bdc_statut_text AS bst</span>
+<span class="sd">            JOIN regions_dep_areas AS la</span>
+<span class="sd">            ON  bst.cd_sig = &#39;ETATFRA&#39;</span>
+<span class="sd">            UNION</span>
+<span class="sd">            SELECT -- Si  &#39;TERFXFR&#39; insertion de tous les départements métropolitains</span>
+<span class="sd">                bst.id_text,</span>
+<span class="sd">                la.id_area</span>
+<span class="sd">            FROM taxonomie.bdc_statut_text AS bst</span>
+<span class="sd">            JOIN regions_dep_areas AS la</span>
+<span class="sd">            ON  la.terxfr = true AND bst.cd_sig = &#39;TERFXFR&#39;</span>
+<span class="sd">                AND length(la.code) = 2</span>
+<span class="sd">            UNION</span>
+<span class="sd">            SELECT DISTINCT -- Si département</span>
+<span class="sd">            bst.id_text,</span>
+<span class="sd">            (</span>
+<span class="sd">                SELECT id_area</span>
+<span class="sd">                FROM ref_geo.l_areas</span>
+<span class="sd">                WHERE area_code = REPLACE(cd_sig, &#39;INSEED&#39;, &#39;&#39;)</span>
+<span class="sd">                    AND id_type = ref_geo.get_id_area_type(&#39;DEP&#39;)</span>
+<span class="sd">            )</span>
+<span class="sd">            FROM taxonomie.bdc_statut_text AS bst</span>
+<span class="sd">            WHERE cd_sig ILIKE &#39;INSEED%&#39;</span>
+<span class="sd">            UNION</span>
+<span class="sd">            SELECT DISTINCT -- Si nouvelle région</span>
+<span class="sd">            bst.id_text,</span>
+<span class="sd">            nrs.id_area</span>
+<span class="sd">            FROM taxonomie.bdc_statut_text AS bst</span>
+<span class="sd">            JOIN regions_dep_areas AS nrs ON (REPLACE(cd_sig, &#39;INSEENR&#39;, &#39;&#39;) = nrs.code) AND nrs.TYPE= &#39;new_r&#39;</span>
+<span class="sd">            WHERE cd_sig ILIKE &#39;INSEENR%&#39;</span>
+<span class="sd">            UNION</span>
+<span class="sd">            SELECT DISTINCT -- Si ancienne région</span>
+<span class="sd">            bst.id_text,</span>
+<span class="sd">            ors.id_area</span>
+<span class="sd">            FROM taxonomie.bdc_statut_text AS bst</span>
+<span class="sd">            JOIN regions_dep_areas AS ors ON (REPLACE(cd_sig, &#39;INSEER&#39;, &#39;&#39;) = ors.code) AND ors.TYPE = &#39;old_r&#39;</span>
+<span class="sd">            WHERE cd_sig ILIKE &#39;INSEER%&#39;</span>
+<span class="sd">            UNION</span>
+<span class="sd">            SELECT DISTINCT -- Si territoire outre mer</span>
+<span class="sd">                bst.id_text,</span>
+<span class="sd">                ors.id_area</span>
+<span class="sd">            FROM taxonomie.bdc_statut_text AS bst</span>
+<span class="sd">            JOIN regions_dep_areas AS ors</span>
+<span class="sd">            ON ors.terxfr = false</span>
+<span class="sd">                AND (</span>
+<span class="sd">                    REPLACE(cd_sig, &#39;TER&#39;, &#39;&#39;) = ors.code OR REPLACE(cd_sig, &#39;INSEET&#39;, &#39;&#39;) = ors.code</span>
+<span class="sd">                )</span>
+<span class="sd">            WHERE cd_sig ILIKE &#39;INSEET%&#39; OR  cd_sig ILIKE &#39;TER%&#39;</span>
+<span class="sd">        )</span>
+<span class="sd">        INSERT INTO taxonomie.bdc_statut_cor_text_area (id_text, id_area)</span>
+<span class="sd">        SELECT id_text, id_area</span>
+<span class="sd">        FROM texts AS t</span>
+<span class="sd">        WHERE t.id_area IS NOT NULL</span>
+<span class="sd">        ORDER BY t.id_text, t.id_area ASC;</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="truncate_bdc_statuts">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/utils/index.html#apptax.taxonomie.commands.utils.truncate_bdc_statuts">[docs]</a>
+<span class="k">def</span> <span class="nf">truncate_bdc_statuts</span><span class="p">():</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TRUNCATE</span>
+<span class="sd">            taxonomie.bdc_statut,</span>
+<span class="sd">            taxonomie.bdc_statut_type,</span>
+<span class="sd">            taxonomie.bdc_statut_text,</span>
+<span class="sd">            taxonomie.bdc_statut_values,</span>
+<span class="sd">            taxonomie.bdc_statut_taxons,</span>
+<span class="sd">            taxonomie.bdc_statut_cor_text_values,</span>
+<span class="sd">            taxonomie.bdc_statut_cor_text_area</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="refresh_taxref_vm">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/utils/index.html#apptax.taxonomie.commands.utils.refresh_taxref_vm">[docs]</a>
+<span class="k">def</span> <span class="nf">refresh_taxref_vm</span><span class="p">():</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;REFRESH MATERIALIZED VIEW taxonomie.vm_classe&quot;</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;REFRESH MATERIALIZED VIEW taxonomie.vm_famille&quot;</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;REFRESH MATERIALIZED VIEW taxonomie.vm_group1_inpn&quot;</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;REFRESH MATERIALIZED VIEW taxonomie.vm_group2_inpn&quot;</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;REFRESH MATERIALIZED VIEW taxonomie.vm_ordre&quot;</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;REFRESH MATERIALIZED VIEW taxonomie.vm_phylum&quot;</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;REFRESH MATERIALIZED VIEW taxonomie.vm_regne&quot;</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;REFRESH MATERIALIZED VIEW taxonomie.vm_taxref_list_forautocomplete&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_csv_field_names">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/utils/index.html#apptax.taxonomie.commands.utils.get_csv_field_names">[docs]</a>
+<span class="k">def</span> <span class="nf">get_csv_field_names</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">encoding</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">encoding</span> <span class="o">==</span> <span class="s2">&quot;WIN1252&quot;</span><span class="p">:</span>  <span class="c1"># postgresql encoding</span>
+        <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;cp1252&quot;</span>  <span class="c1"># python encoding</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">TextIOWrapper</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">DictReader</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">delimiter</span><span class="p">)</span>
+    <span class="n">field_names</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">fieldnames</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>  <span class="c1"># avoid f to be closed on t garbage collection</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">field_names</span></div>
+
+
+
+<div class="viewcode-block" id="populate_enable_bdc_statut_text">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/utils/index.html#apptax.taxonomie.commands.utils.populate_enable_bdc_statut_text">[docs]</a>
+<span class="k">def</span> <span class="nf">populate_enable_bdc_statut_text</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">clean</span><span class="p">,</span> <span class="n">departements</span><span class="p">):</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Enable or disable texts of BDC statuts with Areas…&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">clean</span><span class="p">:</span>
+        <span class="c1"># Clean table before populate</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        UPDATE taxonomie.bdc_statut_text AS bst SET &quot;enable&quot; = FALSE</span>
+<span class="sd">        WHERE &quot;enable&quot; IS TRUE</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># enable text with departements</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        UPDATE taxonomie.bdc_statut_text s SET &quot;enable&quot; = TRUE</span>
+<span class="sd">        FROM taxonomie.bdc_statut_cor_text_area AS ct</span>
+<span class="sd">        JOIN ref_geo.l_areas AS la</span>
+<span class="sd">        ON ct.id_area = la.id_area</span>
+<span class="sd">        WHERE ct.id_text = s.id_text</span>
+<span class="sd">            AND id_type = ref_geo.get_id_area_type(&#39;DEP&#39;)</span>
+<span class="sd">            AND area_code IN :areas;</span>
+<span class="sd">     &quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="p">{</span><span class="s2">&quot;areas&quot;</span><span class="p">:</span> <span class="n">departements</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Insert CSV file into specified table.</span>
+<span class="sd">If source columns are specified, CSV file in copied in a temporary table,</span>
+<span class="sd">then data restricted to specified source columns are copied in final table.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="copy_from_csv">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/utils/index.html#apptax.taxonomie.commands.utils.copy_from_csv">[docs]</a>
+<span class="k">def</span> <span class="nf">copy_from_csv</span><span class="p">(</span>
+    <span class="n">f</span><span class="p">,</span>
+    <span class="n">table_name</span><span class="p">,</span>
+    <span class="n">dest_cols</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">source_cols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;taxonomie&quot;</span><span class="p">,</span>
+    <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">encoding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">delimiter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">bind</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">MetaData</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="n">bind</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dest_cols</span><span class="p">:</span>
+        <span class="n">dest_cols</span> <span class="o">=</span> <span class="s2">&quot; (&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dest_cols</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+    <span class="k">if</span> <span class="n">source_cols</span><span class="p">:</span>
+        <span class="n">final_table_name</span> <span class="o">=</span> <span class="n">table_name</span>
+        <span class="n">final_table_cols</span> <span class="o">=</span> <span class="n">dest_cols</span>
+        <span class="n">table_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;import_</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">dest_cols</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">field_names</span> <span class="o">=</span> <span class="n">get_csv_field_names</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">delimiter</span><span class="p">)</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+            <span class="n">table_name</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">[</span><span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">String</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span> <span class="n">field_names</span><span class="p">)],</span>
+            <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">connection</span><span class="p">())</span>
+
+    <span class="n">options</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;FORMAT CSV&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">header</span><span class="p">:</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;HEADER&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">encoding</span><span class="p">:</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ENCODING &#39;</span><span class="si">{</span><span class="n">encoding</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">delimiter</span><span class="p">:</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DELIMITER E&#39;</span><span class="si">{</span><span class="n">delimiter</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">copy_expert</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        COPY </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">table_name</span><span class="si">}{</span><span class="n">dest_cols</span><span class="si">}</span>
+<span class="s2">        FROM STDIN WITH (</span><span class="si">{</span><span class="n">options</span><span class="si">}</span><span class="s2">)</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="n">f</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">source_cols</span><span class="p">:</span>
+        <span class="n">source_cols</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">source_cols</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        INSERT INTO </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">final_table_name</span><span class="si">}{</span><span class="n">final_table_cols</span><span class="si">}</span>
+<span class="s2">          SELECT </span><span class="si">{</span><span class="n">source_cols</span><span class="si">}</span>
+<span class="s2">            FROM </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">connection</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="insert_taxref_numversion">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/utils/index.html#apptax.taxonomie.commands.utils.insert_taxref_numversion">[docs]</a>
+<span class="k">def</span> <span class="nf">insert_taxref_numversion</span><span class="p">(</span><span class="n">num_version</span><span class="p">):</span>
+    <span class="n">taxref_version</span> <span class="o">=</span> <span class="n">TMetaTaxref</span><span class="p">(</span><span class="n">referencial_name</span><span class="o">=</span><span class="s2">&quot;Taxref&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">num_version</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">taxref_version</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

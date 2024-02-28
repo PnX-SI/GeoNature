@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_monitoring.models &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.gn_monitoring.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.gn_monitoring.models</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Modèles du schéma gn_monitoring</span>
+<span class="sd">    Correspond a la centralisation des données de base</span>
+<span class="sd">        relatifs aux protocoles de suivis</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">geoalchemy2</span> <span class="kn">import</span> <span class="n">Geometry</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">ForeignKey</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">relationship</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="kn">import</span> <span class="n">UUID</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">select</span><span class="p">,</span> <span class="n">func</span>
+
+
+<span class="kn">from</span> <span class="nn">pypnusershub.db.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">ref_geo.models</span> <span class="kn">import</span> <span class="n">LAreas</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.serializers</span> <span class="kn">import</span> <span class="n">serializable</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla_geo.serializers</span> <span class="kn">import</span> <span class="n">geoserializable</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.models</span> <span class="kn">import</span> <span class="n">TModules</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_meta.models</span> <span class="kn">import</span> <span class="n">TDatasets</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">DB</span>
+
+
+<div class="viewcode-block" id="corVisitObserver">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.corVisitObserver">[docs]</a>
+<span class="n">corVisitObserver</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_visit_observer&quot;</span><span class="p">,</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_base_visit&quot;</span><span class="p">,</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_monitoring.t_base_visits.id_base_visit&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_role&quot;</span><span class="p">,</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_roles.id_role&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_monitoring&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="corSiteModule">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.corSiteModule">[docs]</a>
+<span class="n">corSiteModule</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_site_module&quot;</span><span class="p">,</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_base_site&quot;</span><span class="p">,</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_monitoring.t_base_sites.id_base_site&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_module&quot;</span><span class="p">,</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_commons.t_modules.id_module&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_monitoring&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="corSiteArea">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.corSiteArea">[docs]</a>
+<span class="n">corSiteArea</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_site_area&quot;</span><span class="p">,</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_base_site&quot;</span><span class="p">,</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_monitoring.t_base_sites.id_base_site&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id_area&quot;</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">LAreas</span><span class="o">.</span><span class="n">id_area</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_monitoring&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TBaseVisits">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits">[docs]</a>
+<span class="k">class</span> <span class="nc">TBaseVisits</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Table de centralisation des visites liées à un site</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TBaseVisits.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_base_visits&quot;</span></div>
+
+<div class="viewcode-block" id="TBaseVisits.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_monitoring&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TBaseVisits.id_base_visit">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.id_base_visit">[docs]</a>
+    <span class="n">id_base_visit</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseVisits.id_base_site">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.id_base_site">[docs]</a>
+    <span class="n">id_base_site</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_monitoring.t_base_sites.id_base_site&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TBaseVisits.id_digitiser">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.id_digitiser">[docs]</a>
+    <span class="n">id_digitiser</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_roles.id_role&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TBaseVisits.id_dataset">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.id_dataset">[docs]</a>
+    <span class="n">id_dataset</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_meta.t_datasets.id_dataset&quot;</span><span class="p">))</span></div>
+
+    <span class="c1"># Pour le moment non défini comme une clé étrangère</span>
+    <span class="c1">#   pour les questions de perfs</span>
+    <span class="c1">#   a voir en fonction des usage</span>
+<div class="viewcode-block" id="TBaseVisits.id_module">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.id_module">[docs]</a>
+    <span class="n">id_module</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TBaseVisits.visit_date_min">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.visit_date_min">[docs]</a>
+    <span class="n">visit_date_min</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseVisits.visit_date_max">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.visit_date_max">[docs]</a>
+    <span class="n">visit_date_max</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseVisits.id_nomenclature_tech_collect_campanule">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.id_nomenclature_tech_collect_campanule">[docs]</a>
+    <span class="n">id_nomenclature_tech_collect_campanule</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseVisits.id_nomenclature_grp_typ">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.id_nomenclature_grp_typ">[docs]</a>
+    <span class="n">id_nomenclature_grp_typ</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseVisits.comments">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.comments">[docs]</a>
+    <span class="n">comments</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseVisits.uuid_base_visit">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.uuid_base_visit">[docs]</a>
+    <span class="n">uuid_base_visit</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">UUID</span><span class="p">(</span><span class="n">as_uuid</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">uuid_generate_v4</span><span class="p">()))</span></div>
+
+
+<div class="viewcode-block" id="TBaseVisits.meta_create_date">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.meta_create_date">[docs]</a>
+    <span class="n">meta_create_date</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseVisits.meta_update_date">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.meta_update_date">[docs]</a>
+    <span class="n">meta_update_date</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TBaseVisits.digitiser">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.digitiser">[docs]</a>
+    <span class="n">digitiser</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span>
+        <span class="n">User</span><span class="p">,</span> <span class="n">primaryjoin</span><span class="o">=</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">id_digitiser</span><span class="p">),</span> <span class="n">foreign_keys</span><span class="o">=</span><span class="p">[</span><span class="n">id_digitiser</span><span class="p">]</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TBaseVisits.observers">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.observers">[docs]</a>
+    <span class="n">observers</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="n">User</span><span class="p">,</span>
+        <span class="n">secondary</span><span class="o">=</span><span class="n">corVisitObserver</span><span class="p">,</span>
+        <span class="n">primaryjoin</span><span class="o">=</span><span class="p">(</span><span class="n">corVisitObserver</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_base_visit</span> <span class="o">==</span> <span class="n">id_base_visit</span><span class="p">),</span>
+        <span class="n">secondaryjoin</span><span class="o">=</span><span class="p">(</span><span class="n">corVisitObserver</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">User</span><span class="o">.</span><span class="n">id_role</span><span class="p">),</span>
+        <span class="n">foreign_keys</span><span class="o">=</span><span class="p">[</span><span class="n">corVisitObserver</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_base_visit</span><span class="p">,</span> <span class="n">corVisitObserver</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_role</span><span class="p">],</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TBaseVisits.dataset">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseVisits.dataset">[docs]</a>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span>
+        <span class="n">TDatasets</span><span class="p">,</span>
+        <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;joined&quot;</span><span class="p">,</span>
+        <span class="n">primaryjoin</span><span class="o">=</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">id_dataset</span> <span class="o">==</span> <span class="n">id_dataset</span><span class="p">),</span>
+        <span class="n">foreign_keys</span><span class="o">=</span><span class="p">[</span><span class="n">id_dataset</span><span class="p">],</span>
+    <span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<span class="nd">@geoserializable</span><span class="p">(</span><span class="n">geoCol</span><span class="o">=</span><span class="s2">&quot;geom&quot;</span><span class="p">,</span> <span class="n">idCol</span><span class="o">=</span><span class="s2">&quot;id_base_site&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="TBaseSites">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites">[docs]</a>
+<span class="k">class</span> <span class="nc">TBaseSites</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Table centralisant les données élémentaire des sites</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TBaseSites.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_base_sites&quot;</span></div>
+
+<div class="viewcode-block" id="TBaseSites.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_monitoring&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TBaseSites.id_base_site">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.id_base_site">[docs]</a>
+    <span class="n">id_base_site</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseSites.id_inventor">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.id_inventor">[docs]</a>
+    <span class="n">id_inventor</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_roles.id_role&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TBaseSites.id_digitiser">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.id_digitiser">[docs]</a>
+    <span class="n">id_digitiser</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_roles.id_role&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TBaseSites.id_nomenclature_type_site">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.id_nomenclature_type_site">[docs]</a>
+    <span class="n">id_nomenclature_type_site</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseSites.base_site_name">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.base_site_name">[docs]</a>
+    <span class="n">base_site_name</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseSites.base_site_description">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.base_site_description">[docs]</a>
+    <span class="n">base_site_description</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseSites.base_site_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.base_site_code">[docs]</a>
+    <span class="n">base_site_code</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseSites.first_use_date">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.first_use_date">[docs]</a>
+    <span class="n">first_use_date</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseSites.geom">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.geom">[docs]</a>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">Geometry</span><span class="p">(</span><span class="s2">&quot;GEOMETRY&quot;</span><span class="p">,</span> <span class="mi">4326</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TBaseSites.uuid_base_site">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.uuid_base_site">[docs]</a>
+    <span class="n">uuid_base_site</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">UUID</span><span class="p">(</span><span class="n">as_uuid</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">uuid_generate_v4</span><span class="p">()))</span></div>
+
+
+<div class="viewcode-block" id="TBaseSites.meta_create_date">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.meta_create_date">[docs]</a>
+    <span class="n">meta_create_date</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseSites.meta_update_date">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.meta_update_date">[docs]</a>
+    <span class="n">meta_update_date</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseSites.altitude_min">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.altitude_min">[docs]</a>
+    <span class="n">altitude_min</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseSites.altitude_max">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.altitude_max">[docs]</a>
+    <span class="n">altitude_max</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseSites.digitiser">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.digitiser">[docs]</a>
+    <span class="n">digitiser</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span>
+        <span class="n">User</span><span class="p">,</span> <span class="n">primaryjoin</span><span class="o">=</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">id_digitiser</span><span class="p">),</span> <span class="n">foreign_keys</span><span class="o">=</span><span class="p">[</span><span class="n">id_digitiser</span><span class="p">]</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TBaseSites.inventor">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.inventor">[docs]</a>
+    <span class="n">inventor</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span>
+        <span class="n">User</span><span class="p">,</span> <span class="n">primaryjoin</span><span class="o">=</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">id_inventor</span><span class="p">),</span> <span class="n">foreign_keys</span><span class="o">=</span><span class="p">[</span><span class="n">id_inventor</span><span class="p">]</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TBaseSites.t_base_visits">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.t_base_visits">[docs]</a>
+    <span class="n">t_base_visits</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;TBaseVisits&quot;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="n">cascade</span><span class="o">=</span><span class="s2">&quot;all,delete-orphan&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TBaseSites.modules">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_monitoring/models/index.html#geonature.core.gn_monitoring.models.TBaseSites.modules">[docs]</a>
+    <span class="n">modules</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="s2">&quot;TModules&quot;</span><span class="p">,</span>
+        <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="p">,</span>
+        <span class="n">enable_typechecks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">secondary</span><span class="o">=</span><span class="n">corSiteModule</span><span class="p">,</span>
+        <span class="n">primaryjoin</span><span class="o">=</span><span class="p">(</span><span class="n">corSiteModule</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_base_site</span> <span class="o">==</span> <span class="n">id_base_site</span><span class="p">),</span>
+        <span class="n">secondaryjoin</span><span class="o">=</span><span class="p">(</span><span class="n">corSiteModule</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_module</span> <span class="o">==</span> <span class="n">TModules</span><span class="o">.</span><span class="n">id_module</span><span class="p">),</span>
+        <span class="n">foreign_keys</span><span class="o">=</span><span class="p">[</span><span class="n">corSiteModule</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_base_site</span><span class="p">,</span> <span class="n">corSiteModule</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_module</span><span class="p">],</span>
+    <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

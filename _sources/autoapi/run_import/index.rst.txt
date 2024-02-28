@@ -1,0 +1,27 @@
+:py:mod:`run_import`
+====================
+
+.. py:module:: run_import
+
+
+Module Contents
+---------------
+
+.. py:data:: WD_MEDIA_PROP
+   :value: 'P18'
+
+   
+
+.. py:data:: TAXHUB_MEDIA_ID_TYPE
+   :value: '2'
+
+   
+
+.. py:data:: conn
+
+   
+
+.. py:data:: cur
+
+   
+

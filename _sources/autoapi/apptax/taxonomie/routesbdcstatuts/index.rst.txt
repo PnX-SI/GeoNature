@@ -1,0 +1,77 @@
+:py:mod:`apptax.taxonomie.routesbdcstatuts`
+===========================================
+
+.. py:module:: apptax.taxonomie.routesbdcstatuts
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.routesbdcstatuts.get_bdcstatus_list_for_one_taxon
+   apptax.taxonomie.routesbdcstatuts.get_bdcstatus_hierarchy
+   apptax.taxonomie.routesbdcstatuts.get_status_lists_values
+   apptax.taxonomie.routesbdcstatuts.get_status_types
+   apptax.taxonomie.routesbdcstatuts.extract_multi_values_request_param
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.routesbdcstatuts.adresses
+   apptax.taxonomie.routesbdcstatuts.logger
+
+
+.. py:data:: adresses
+
+   
+
+.. py:data:: logger
+
+   
+
+.. py:function:: get_bdcstatus_list_for_one_taxon(cd_ref=None)
+
+   Retourne la liste des statuts associés à un taxon.
+
+
+.. py:function:: get_bdcstatus_hierarchy(cd_ref=None)
+
+   Retourne la liste des statuts associés sous forme hiérarchique.
+
+
+.. py:function:: get_status_lists_values(status_type=None)
+
+   Retourne les valeurs (code et intitulé) d'un type de statut.
+
+   Params:
+   :param status_type: code d'un type de statut de statuy. Obligatoire.
+
+   :returns: une liste de dictionnaires contenant les infos des valeurs
+   d'un type de liste de rouge.
+
+
+.. py:function:: get_status_types()
+
+   Retourne les types (code et intitulé) avec leur regroupement.
+
+   Params:
+   :query str codes: filtre sur une liste de codes de types de statuts
+   séparés par des virgules.
+   :query str gatherings: filtre sur une liste de type de regroupement
+   de types de statuts séparés par des virgules.
+
+   :returns: une liste de dictionnaires contenant les infos d'un type de statuts.
+
+
+.. py:function:: extract_multi_values_request_param(paramName)
+
+

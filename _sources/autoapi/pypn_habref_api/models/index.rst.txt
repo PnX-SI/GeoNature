@@ -1,0 +1,444 @@
+:py:mod:`pypn_habref_api.models`
+================================
+
+.. py:module:: pypn_habref_api.models
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   pypn_habref_api.models.BibHabrefTypoRel
+   pypn_habref_api.models.CorespHab
+   pypn_habref_api.models.TypoRef
+   pypn_habref_api.models.Habref
+   pypn_habref_api.models.BibListHabitat
+   pypn_habref_api.models.AutoCompleteHabitat
+
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   pypn_habref_api.models.cor_list_habitat
+
+
+.. py:class:: BibHabrefTypoRel
+
+
+   Bases: :py:obj:`pypn_habref_api.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_habref_typo_rel'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: cd_type_rel
+
+      
+
+   .. py:attribute:: lb_type_rel
+
+      
+
+   .. py:attribute:: lb_rel
+
+      
+
+   .. py:attribute:: corresp_hab
+
+      
+
+   .. py:attribute:: corresp_esp
+
+      
+
+   .. py:attribute:: corresp_syn
+
+      
+
+
+.. py:class:: CorespHab
+
+
+   Bases: :py:obj:`pypn_habref_api.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'habref_corresp_hab'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: cd_corresp_hab
+
+      
+
+   .. py:attribute:: cd_hab_entre
+
+      
+
+   .. py:attribute:: cd_hab_sortie
+
+      
+
+   .. py:attribute:: cd_type_relation
+
+      
+
+   .. py:attribute:: lb_condition
+
+      
+
+   .. py:attribute:: lb_remarques
+
+      
+
+   .. py:attribute:: validite
+
+      
+
+   .. py:attribute:: cd_typo_entre
+
+      
+
+   .. py:attribute:: cd_typo_sortie
+
+      
+
+   .. py:attribute:: date_crea
+
+      
+
+   .. py:attribute:: diffusion
+
+      
+
+   .. py:attribute:: type_rel
+
+      
+
+
+.. py:class:: TypoRef
+
+
+   Bases: :py:obj:`pypn_habref_api.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'typoref'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: cd_typo
+
+      
+
+   .. py:attribute:: cd_table
+
+      
+
+   .. py:attribute:: lb_nom_typo
+
+      
+
+   .. py:attribute:: nom_jeu_donnees
+
+      
+
+   .. py:attribute:: date_creation
+
+      
+
+   .. py:attribute:: date_mise_jour_table
+
+      
+
+   .. py:attribute:: date_mise_jour_metadonnees
+
+      
+
+   .. py:attribute:: auteur_typo
+
+      
+
+   .. py:attribute:: auteur_table
+
+      
+
+   .. py:attribute:: territoire
+
+      
+
+   .. py:attribute:: organisme
+
+      
+
+   .. py:attribute:: langue
+
+      
+
+   .. py:attribute:: presentation
+
+      
+
+   .. py:attribute:: description
+
+      
+
+   .. py:attribute:: origine
+
+      
+
+   .. py:attribute:: ref_biblio
+
+      
+
+   .. py:attribute:: mots_cles
+
+      
+
+   .. py:attribute:: referencement
+
+      
+
+   .. py:attribute:: diffusion
+
+      
+
+   .. py:attribute:: derniere_modif
+
+      
+
+   .. py:attribute:: type_table
+
+      
+
+   .. py:attribute:: cd_typo_entre
+
+      
+
+   .. py:attribute:: cd_typo_sortie
+
+      
+
+   .. py:attribute:: niveau_inpn
+
+      
+
+   .. py:attribute:: habitats
+
+      
+
+
+.. py:data:: cor_list_habitat
+
+   
+
+.. py:class:: Habref
+
+
+   Bases: :py:obj:`pypn_habref_api.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'habref'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: cd_hab
+
+      
+
+   .. py:attribute:: fg_validite
+
+      
+
+   .. py:attribute:: cd_typo
+
+      
+
+   .. py:attribute:: lb_code
+
+      
+
+   .. py:attribute:: lb_hab_fr
+
+      
+
+   .. py:attribute:: lb_hab_fr_complet
+
+      
+
+   .. py:attribute:: lb_hab_en
+
+      
+
+   .. py:attribute:: lb_auteur
+
+      
+
+   .. py:attribute:: niveau
+
+      
+
+   .. py:attribute:: lb_niveau
+
+      
+
+   .. py:attribute:: cd_hab_sup
+
+      
+
+   .. py:attribute:: path_cd_hab
+
+      
+
+   .. py:attribute:: france
+
+      
+
+   .. py:attribute:: lb_description
+
+      
+
+   .. py:attribute:: typo
+
+      
+
+   .. py:attribute:: correspondances
+
+      
+
+   .. py:attribute:: lists
+
+      
+
+
+.. py:class:: BibListHabitat
+
+
+   Bases: :py:obj:`pypn_habref_api.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_list_habitat'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_list
+
+      
+
+   .. py:attribute:: list_name
+
+      
+
+   .. py:attribute:: habitats
+
+      
+
+
+.. py:class:: AutoCompleteHabitat
+
+
+   Bases: :py:obj:`pypn_habref_api.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'autocomplete_habitat'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: cd_hab
+
+      
+
+   .. py:attribute:: cd_typo
+
+      
+
+   .. py:attribute:: lb_code
+
+      
+
+   .. py:attribute:: lb_nom_typo
+
+      
+
+   .. py:attribute:: search_name
+
+      
+
+   .. py:attribute:: lists
+
+      
+
+

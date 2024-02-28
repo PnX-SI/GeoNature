@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.sensitivity.utils &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.sensitivity.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.sensitivity.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
+
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+
+<span class="kn">from</span> <span class="nn">pypnnomenclature.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TNomenclatures</span> <span class="k">as</span> <span class="n">Nomenclature</span><span class="p">,</span>
+    <span class="n">BibNomenclaturesTypes</span> <span class="k">as</span> <span class="n">NomenclatureType</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">CorSensitivityCriteria</span><span class="p">,</span> <span class="n">SensitivityRule</span>
+
+
+<span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<div class="viewcode-block" id="get_nomenclature">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/sensitivity/utils/index.html#geonature.core.sensitivity.utils.get_nomenclature">[docs]</a>
+<span class="k">def</span> <span class="nf">get_nomenclature</span><span class="p">(</span><span class="n">type_mnemonique</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+    <span class="c1"># Retro-compatibility with freezed nomenclatures</span>
+    <span class="k">if</span> <span class="n">type_mnemonique</span> <span class="o">==</span> <span class="s2">&quot;STATUT_BIO&quot;</span> <span class="ow">and</span> <span class="n">code</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;6&quot;</span><span class="p">,</span> <span class="s2">&quot;7&quot;</span><span class="p">,</span> <span class="s2">&quot;8&quot;</span><span class="p">,</span> <span class="s2">&quot;10&quot;</span><span class="p">,</span> <span class="s2">&quot;11&quot;</span><span class="p">,</span> <span class="s2">&quot;12&quot;</span><span class="p">]:</span>
+        <span class="n">type_mnemonique</span> <span class="o">=</span> <span class="s2">&quot;OCC_COMPORTEMENT&quot;</span>
+    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">Nomenclature</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">Nomenclature</span><span class="o">.</span><span class="n">active</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># noqa: E712</span>
+            <span class="n">Nomenclature</span><span class="o">.</span><span class="n">nomenclature_type</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">NomenclatureType</span><span class="o">.</span><span class="n">mnemonique</span> <span class="o">==</span> <span class="n">type_mnemonique</span><span class="p">),</span>
+            <span class="n">Nomenclature</span><span class="o">.</span><span class="n">cd_nomenclature</span> <span class="o">==</span> <span class="n">code</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="insert_sensitivity_referential">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/sensitivity/utils/index.html#geonature.core.sensitivity.utils.insert_sensitivity_referential">[docs]</a>
+<span class="k">def</span> <span class="nf">insert_sensitivity_referential</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">csvfile</span><span class="p">):</span>
+    <span class="n">statut_biologique_nomenclature_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">NomenclatureType</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">mnemonique</span><span class="o">=</span><span class="s2">&quot;STATUT_BIO&quot;</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+    <span class="n">behaviour_nomenclature_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">NomenclatureType</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">mnemonique</span><span class="o">=</span><span class="s2">&quot;OCC_COMPORTEMENT&quot;</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+    <span class="n">defaults_nomenclatures</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">statut_biologique_nomenclature_type</span><span class="p">:</span> <span class="nb">set</span><span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+                <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">Nomenclature</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                    <span class="n">Nomenclature</span><span class="o">.</span><span class="n">nomenclature_type</span> <span class="o">==</span> <span class="n">statut_biologique_nomenclature_type</span><span class="p">,</span>
+                    <span class="n">Nomenclature</span><span class="o">.</span><span class="n">mnemonique</span><span class="o">.</span><span class="n">in_</span><span class="p">([</span><span class="s2">&quot;Inconnu&quot;</span><span class="p">,</span> <span class="s2">&quot;Non renseigné&quot;</span><span class="p">,</span> <span class="s2">&quot;Non Déterminé&quot;</span><span class="p">]),</span>
+                <span class="p">)</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="p">),</span>
+        <span class="n">behaviour_nomenclature_type</span><span class="p">:</span> <span class="nb">set</span><span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+                <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">Nomenclature</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                    <span class="n">Nomenclature</span><span class="o">.</span><span class="n">nomenclature_type</span> <span class="o">==</span> <span class="n">behaviour_nomenclature_type</span><span class="p">,</span>
+                    <span class="n">Nomenclature</span><span class="o">.</span><span class="n">mnemonique</span><span class="o">.</span><span class="n">in_</span><span class="p">([</span><span class="s2">&quot;NSP&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">]),</span>
+                <span class="p">)</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="n">rules</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">criterias</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">csvfile</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+    <span class="n">dep_col</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+        <span class="n">fieldname</span> <span class="k">for</span> <span class="n">fieldname</span> <span class="ow">in</span> <span class="n">reader</span><span class="o">.</span><span class="n">fieldnames</span> <span class="k">if</span> <span class="n">fieldname</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;CD_DEP&quot;</span><span class="p">,</span> <span class="s2">&quot;CD_DEPT&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+        <span class="n">sensi_nomenclature</span> <span class="o">=</span> <span class="n">get_nomenclature</span><span class="p">(</span><span class="s2">&quot;SENSIBILITE&quot;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;CD_SENSIBILITE&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">dep_col</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;D3&quot;</span><span class="p">:</span>
+            <span class="n">cd_dep</span> <span class="o">=</span> <span class="s2">&quot;973&quot;</span>
+        <span class="k">elif</span> <span class="n">row</span><span class="p">[</span><span class="n">dep_col</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;D4&quot;</span><span class="p">:</span>
+            <span class="n">cd_dep</span> <span class="o">=</span> <span class="s2">&quot;974&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cd_dep</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">dep_col</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;DUREE&quot;</span><span class="p">]:</span>
+            <span class="n">duration</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;DUREE&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">duration</span> <span class="o">=</span> <span class="mi">10000</span>
+        <span class="n">rule</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;cd_nom&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;CD_NOM&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;nom_cite&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;NOM_CITE&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;id_nomenclature_sensitivity&quot;</span><span class="p">:</span> <span class="n">sensi_nomenclature</span><span class="o">.</span><span class="n">id_nomenclature</span><span class="p">,</span>
+            <span class="s2">&quot;sensitivity_duration&quot;</span><span class="p">:</span> <span class="n">duration</span><span class="p">,</span>
+            <span class="s2">&quot;sensitivity_territory&quot;</span><span class="p">:</span> <span class="s2">&quot;Département&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;id_territory&quot;</span><span class="p">:</span> <span class="n">cd_dep</span><span class="p">,</span>
+            <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;comments&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;AUTRE&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">_criterias</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;STATUT_BIOLOGIQUE&quot;</span><span class="p">]:</span>
+            <span class="n">criteria</span> <span class="o">=</span> <span class="n">get_nomenclature</span><span class="p">(</span><span class="s2">&quot;STATUT_BIO&quot;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;STATUT_BIOLOGIQUE&quot;</span><span class="p">])</span>
+            <span class="n">_criterias</span> <span class="o">|=</span> <span class="p">{</span><span class="n">criteria</span><span class="p">}</span> <span class="o">|</span> <span class="n">defaults_nomenclatures</span><span class="p">[</span><span class="n">criteria</span><span class="o">.</span><span class="n">nomenclature_type</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;COMPORTEMENT&quot;</span><span class="p">]:</span>
+            <span class="n">criteria</span> <span class="o">=</span> <span class="n">get_nomenclature</span><span class="p">(</span><span class="s2">&quot;OCC_COMPORTEMENT&quot;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;COMPORTEMENT&quot;</span><span class="p">])</span>
+            <span class="n">_criterias</span> <span class="o">|=</span> <span class="p">{</span><span class="n">criteria</span><span class="p">}</span> <span class="o">|</span> <span class="n">defaults_nomenclatures</span><span class="p">[</span><span class="n">criteria</span><span class="o">.</span><span class="n">nomenclature_type</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">criteria</span> <span class="ow">in</span> <span class="n">_criterias</span><span class="p">:</span>
+            <span class="n">criterias</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">rules</span><span class="p">),</span> <span class="n">criteria</span><span class="p">))</span>
+        <span class="n">rules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">SensitivityRule</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span><span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="n">SensitivityRule</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">rules_indexes</span> <span class="o">=</span> <span class="p">[</span><span class="n">rule_index</span> <span class="k">for</span> <span class="n">rule_index</span><span class="p">,</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span>  <span class="c1"># flattening singleton results</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">CorSensitivityCriteria</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;id_sensitivity&quot;</span><span class="p">:</span> <span class="n">rules_indexes</span><span class="p">[</span><span class="n">rule_idx</span><span class="p">],</span>
+                    <span class="s2">&quot;id_type_nomenclature&quot;</span><span class="p">:</span> <span class="n">nomenclature</span><span class="o">.</span><span class="n">id_type</span><span class="p">,</span>
+                    <span class="s2">&quot;id_criteria&quot;</span><span class="p">:</span> <span class="n">nomenclature</span><span class="o">.</span><span class="n">id_nomenclature</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="k">for</span> <span class="n">rule_idx</span><span class="p">,</span> <span class="n">nomenclature</span> <span class="ow">in</span> <span class="n">criterias</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Populate cor_sensitivity_area</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    INSERT INTO gn_sensitivity.cor_sensitivity_area</span>
+<span class="sd">        SELECT DISTINCT id_sensitivity, id_area</span>
+<span class="sd">        FROM gn_sensitivity.t_sensitivity_rules s</span>
+<span class="sd">        JOIN ref_geo.l_areas a</span>
+<span class="sd">        ON</span>
+<span class="sd">                s.sensitivity_territory = &#39;Département&#39;</span>
+<span class="sd">            AND a.id_type = (SELECT id_type FROM ref_geo.bib_areas_types WHERE type_code =&#39;DEP&#39;)</span>
+<span class="sd">            AND regexp_replace(s.id_territory, &#39;^([0-9])$&#39;, &#39;0\\1&#39;) = a.area_code</span>
+<span class="sd">        WHERE s.source = :source</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+        <span class="p">),</span>
+        <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="remove_sensitivity_referential">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/sensitivity/utils/index.html#geonature.core.sensitivity.utils.remove_sensitivity_referential">[docs]</a>
+<span class="k">def</span> <span class="nf">remove_sensitivity_referential</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">SensitivityRule</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">SensitivityRule</span><span class="o">.</span><span class="n">source</span> <span class="o">==</span> <span class="n">source</span><span class="p">))</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

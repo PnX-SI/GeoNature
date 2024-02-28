@@ -1,0 +1,1612 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>geonature documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top d-block d-sm-none">
+            <a href="../" class="navbar-brand">geonature documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  DiscussionCardComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/shared/discussionCardModule/discussion-card.component.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                <code>OnInit</code>
+                <code>OnChanges</code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>pnx-discussion-card</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>discussion-card.component.scss</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>discussion-card.component.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#allow" >allow</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#commentForm" >commentForm</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#config" >config</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#currentUser" >currentUser</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#discussions" >discussions</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#open" >open</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#sort" >sort</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#deleteComment" >deleteComment</a>
+                            </li>
+                            <li>
+                                <a href="#formatDate" >formatDate</a>
+                            </li>
+                            <li>
+                                <a href="#getDiscussions" >getDiscussions</a>
+                            </li>
+                            <li>
+                                <a href="#handleSubmitComment" >handleSubmitComment</a>
+                            </li>
+                            <li>
+                                <a href="#isDeleted" >isDeleted</a>
+                            </li>
+                            <li>
+                                <a href="#isValid" >isValid</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnChanges" >ngOnChanges</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <a href="#openCloseComment" >openCloseComment</a>
+                            </li>
+                            <li>
+                                <a href="#orderData" >orderData</a>
+                            </li>
+                            <li>
+                                <a href="#setDiscussions" >setDiscussions</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Inputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#additionalData" >additionalData</a>
+                            </li>
+                            <li>
+                                <a href="#idSynthese" >idSynthese</a>
+                            </li>
+                            <li>
+                                <a href="#validationColor" >validationColor</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(_authService: <a href="../injectables/AuthService.html" target="_self">AuthService</a>, _formBuilder: UntypedFormBuilder, _commonService: <a href="../injectables/CommonService.html" target="_self">CommonService</a>, _syntheseDataService: <a href="../injectables/SyntheseDataService.html" target="_self">SyntheseDataService</a>, config: <a href="../injectables/ConfigService.html" target="_self">ConfigService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:24</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>_authService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/AuthService.html" target="_self" >AuthService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_formBuilder</td>
+                                                  
+                                                        <td>
+                                                                    <code>UntypedFormBuilder</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_commonService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/CommonService.html" target="_self" >CommonService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_syntheseDataService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SyntheseDataService.html" target="_self" >SyntheseDataService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>config</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/ConfigService.html" target="_self" >ConfigService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section data-compodoc="block-inputs">
+    <h3 id="inputs">Inputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="additionalData"></a>
+                        <b>additionalData</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="17" class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:17</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="idSynthese"></a>
+                        <b>idSynthese</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:16</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="validationColor"></a>
+                        <b>validationColor</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="18" class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:18</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="deleteComment"></a>
+                    <span class="name">
+                        <span ><b>deleteComment</b></span>
+                        <a href="#deleteComment"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>deleteComment(idReport)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="131"
+                                    class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:131</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>idReport</td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="formatDate"></a>
+                    <span class="name">
+                        <span ><b>formatDate</b></span>
+                        <a href="#formatDate"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>formatDate(d)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="99"
+                                    class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:99</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>From timestamp to readable value</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>d</td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getDiscussions"></a>
+                    <span class="name">
+                        <span ><b>getDiscussions</b></span>
+                        <a href="#getDiscussions"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getDiscussions()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="124"
+                                    class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:124</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>get all discussion by module and type</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="handleSubmitComment"></a>
+                    <span class="name">
+                        <span ><b>handleSubmitComment</b></span>
+                        <a href="#handleSubmitComment"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>handleSubmitComment()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="84"
+                                    class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:84</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Send comment</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isDeleted"></a>
+                    <span class="name">
+                        <span ><b>isDeleted</b></span>
+                        <a href="#isDeleted"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>isDeleted(c)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="137"
+                                    class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:137</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>c</td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isValid"></a>
+                    <span class="name">
+                        <span ><b>isValid</b></span>
+                        <a href="#isValid"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>isValid()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="74"
+                                    class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:74</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnChanges"></a>
+                    <span class="name">
+                        <span ><b>ngOnChanges</b></span>
+                        <a href="#ngOnChanges"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnChanges()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="60"
+                                    class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:60</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="41"
+                                    class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:41</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openCloseComment"></a>
+                    <span class="name">
+                        <span ><b>openCloseComment</b></span>
+                        <a href="#openCloseComment"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>openCloseComment()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="106"
+                                    class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:106</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Manage comment form visibility</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="orderData"></a>
+                    <span class="name">
+                        <span ><b>orderData</b></span>
+                        <a href="#orderData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>orderData(data)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="48"
+                                    class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:48</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>data</td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="setDiscussions"></a>
+                    <span class="name">
+                        <span ><b>setDiscussions</b></span>
+                        <a href="#setDiscussions"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>setDiscussions(data)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="113"
+                                    class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:113</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>data</td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="allow"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>allow</b></span>
+                        <a href="#allow"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="23" class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:23</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="commentForm"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>commentForm</b></span>
+                        <a href="#commentForm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>UntypedFormGroup</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="19" class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:19</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="config"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>config</b></span>
+                        <a href="#config"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/ConfigService.html" target="_self" >ConfigService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="30" class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:30</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentUser"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>currentUser</b></span>
+                        <a href="#currentUser"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/User.html" target="_self" >User</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="21" class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:21</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="discussions"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>discussions</b></span>
+                        <a href="#discussions"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="22" class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:22</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="open"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>open</b></span>
+                        <a href="#open"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:20</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sort"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>sort</b></span>
+                        <a href="#sort"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;desc&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/app/shared/discussionCardModule/discussion-card.component.ts:24</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit, Input, OnChanges } from &#x27;@angular/core&#x27;;
+import { AuthService, User } from &#x27;@geonature/components/auth/auth.service&#x27;;
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from &#x27;@angular/forms&#x27;;
+import { SyntheseDataService } from &#x27;@geonature_common/form/synthese-form/synthese-data.service&#x27;;
+import { CommonService } from &#x27;@geonature_common/service/common.service&#x27;;
+import { isEmpty, uniqueId } from &#x27;lodash&#x27;;
+import * as moment from &#x27;moment&#x27;;
+import { ConfigService } from &#x27;@geonature/services/config.service&#x27;;
+
+@Component({
+  selector: &#x27;pnx-discussion-card&#x27;,
+  templateUrl: &#x27;discussion-card.component.html&#x27;,
+  styleUrls: [&#x27;discussion-card.component.scss&#x27;],
+})
+export class DiscussionCardComponent implements OnInit, OnChanges {
+  @Input() idSynthese: number;
+  @Input() additionalData: any;
+  @Input() validationColor: any;
+  public commentForm: UntypedFormGroup;
+  public open &#x3D; false;
+  public currentUser: User;
+  public discussions: any;
+  public allow &#x3D; false;
+  public sort &#x3D; &#x27;desc&#x27;;
+  constructor(
+    private _authService: AuthService,
+    private _formBuilder: UntypedFormBuilder,
+    private _commonService: CommonService,
+    private _syntheseDataService: SyntheseDataService,
+    public config: ConfigService
+  ) {
+    this.commentForm &#x3D; this._formBuilder.group({
+      content: [&#x27;&#x27;, Validators.required],
+      item: [this.idSynthese],
+      type: [&#x27;discussion&#x27;],
+      idReport: [],
+      deleted: [false],
+    });
+  }
+
+  ngOnInit() {
+    this.open &#x3D; false;
+    // get current user required to save comment
+    this.currentUser &#x3D; this._authService.getCurrentUser();
+    this.getDiscussions();
+  }
+
+  orderData(data) {
+    const newarr &#x3D; data.sort((a, b) &#x3D;&gt; {
+      const aDate &#x3D; moment(a.creation_date ? a.creation_date : a.dateTime);
+      const bDate &#x3D; moment(b.creation_date ? b.creation_date : b.dateTime);
+      return moment(aDate).diff(bDate);
+    });
+    if (this.sort &#x3D;&#x3D;&#x3D; &#x27;desc&#x27;) {
+      newarr.reverse();
+    }
+    return newarr;
+  }
+
+  ngOnChanges() {
+    // reload list for next or previous item
+    if (this.additionalData &amp;&amp; this.additionalData.data) {
+      this.additionalData &#x3D; {
+        ...this.additionalData,
+        // insert spid to diff additionalData from reports data
+        data: this.additionalData.data.map((d) &#x3D;&gt; ({ ...d, spid: uniqueId() })),
+      };
+    }
+    if (isEmpty(this.discussions)) {
+      this.getDiscussions();
+    }
+  }
+
+  isValid() {
+    return (
+      this.commentForm.valid &amp;&amp;
+      this.commentForm.get(&#x27;content&#x27;).value.length &lt;&#x3D; this.config?.SYNTHESE?.DISCUSSION_MAX_LENGTH
+    );
+  }
+
+  /**
+   * Send comment
+   */
+  handleSubmitComment() {
+    // create new comment
+    this.commentForm.get(&#x27;item&#x27;).setValue(this.idSynthese);
+    this.commentForm.get(&#x27;type&#x27;).setValue(&#x27;discussion&#x27;);
+    this._syntheseDataService.createReport(this.commentForm.value).subscribe((data) &#x3D;&gt; {
+      this._commonService.regularToaster(&#x27;success&#x27;, &#x27;Commentaire sauvegardé !&#x27;);
+      // close add comment panel and refresh list
+      this.openCloseComment();
+      this.getDiscussions();
+    });
+  }
+
+  /**
+   * From timestamp to readable value
+   */
+  formatDate(d) {
+    return new Date(d).toLocaleString();
+  }
+
+  /**
+   * Manage comment form visibility
+   */
+  openCloseComment() {
+    this.open &#x3D; !this.open;
+    if (!this.open) {
+      this.commentForm.reset();
+    }
+  }
+
+  setDiscussions(data) {
+    let listEl &#x3D; data.length ? data : [];
+    if (!isEmpty(this.additionalData?.data) &amp;&amp; this.additionalData.dateField) {
+      listEl &#x3D; this.orderData([...listEl, ...this.additionalData.data]);
+    }
+    this.discussions &#x3D; listEl;
+  }
+
+  /**
+   * get all discussion by module and type
+   */
+  getDiscussions() {
+    const params &#x3D; &#x60;idSynthese&#x3D;${this.idSynthese}&amp;type&#x3D;discussion&amp;sort&#x3D;${this.sort}&#x60;;
+    this._syntheseDataService.getReports(params).subscribe((response) &#x3D;&gt; {
+      this.setDiscussions(response);
+    });
+  }
+
+  deleteComment(idReport) {
+    this._syntheseDataService.deleteReport(idReport).subscribe(() &#x3D;&gt; {
+      this.getDiscussions();
+    });
+  }
+
+  isDeleted(c) {
+    return c?.deleted;
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;pb-3&quot;&gt;
+  &lt;div class&#x3D;&quot;text-right&quot;&gt;
+    &lt;button
+      *ngIf&#x3D;&quot;!open&quot;
+      button&#x3D;&quot;submit&quot;
+      mat-mini-fab
+      color&#x3D;&quot;primary&quot;
+      class&#x3D;&quot;m-2 disccusion-action-btn&quot;
+      (click)&#x3D;&quot;openCloseComment()&quot;
+      ngbTooltip&#x3D;&quot;{{ &#x27;Synthese.AddComment&#x27; | translate }}&quot;
+      placement&#x3D;&quot;left&quot;
+      align&#x3D;&quot;end&quot;
+    &gt;
+      &lt;mat-icon&gt;add_comment&lt;/mat-icon&gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class&#x3D;&quot;blocks&quot; *ngIf&#x3D;&quot;open&quot;&gt;
+    &lt;mat-card class&#x3D;&quot;comment-card mb-2&quot;&gt;
+      &lt;mat-card-header&gt; &lt;/mat-card-header&gt;
+      &lt;mat-card-content class&#x3D;&quot;m-0&quot;&gt;
+        &lt;mat-form-field appearance&#x3D;&quot;fill&quot; class&#x3D;&quot;disccusion-field&quot; style&#x3D;&quot;width: 100%&quot;&gt;
+          &lt;mat-label class&#x3D;&quot;gn-color&quot;&gt;Commentaire :&lt;/mat-label&gt;
+          &lt;textarea
+            matInput
+            [maxlength]&#x3D;&quot;config.SYNTHESE?.DISCUSSION_MAX_LENGTH&quot;
+            placeholder&#x3D;&quot;Votre commentaire....&quot;
+            [formControl]&#x3D;&quot;commentForm.get(&#x27;content&#x27;)&quot;
+          &gt;&lt;/textarea&gt;
+          &lt;mat-error *ngIf&#x3D;&quot;!this.commentForm.valid&quot;&gt; Veuillez saisir un commentaire &lt;/mat-error&gt;
+        &lt;/mat-form-field&gt;
+      &lt;/mat-card-content&gt;
+      &lt;mat-card-actions class&#x3D;&quot;m-0 pt-0&quot; align&#x3D;&quot;end&quot;&gt;
+        &lt;button (click)&#x3D;&quot;openCloseComment()&quot; mat-stroked-button class&#x3D;&quot;cancelBtn link-infos&quot;&gt;
+          Annuler
+        &lt;/button&gt;
+        &lt;button
+          mat-stroked-button
+          [disabled]&#x3D;&quot;!isValid()&quot;
+          class&#x3D;&quot;saveBtn link-infos&quot;
+          (click)&#x3D;&quot;handleSubmitComment(commentForm.get(&#x27;content&#x27;).value)&quot;
+        &gt;
+          Envoyer
+        &lt;/button&gt;
+      &lt;/mat-card-actions&gt;
+    &lt;/mat-card&gt;
+  &lt;/div&gt;
+  &lt;div class&#x3D;&quot;blocks&quot;&gt;
+    &lt;span *ngFor&#x3D;&quot;let comment of discussions&quot;&gt;
+      &lt;mat-card class&#x3D;&quot;discussion-card my-3 mx-0 p-0&quot; *ngIf&#x3D;&quot;!comment.spid &amp;&amp; !comment?.deleted&quot;&gt;
+        &lt;mat-card-header class&#x3D;&quot;header-card p-2&quot;&gt;
+          &lt;mat-card-subtitle class&#x3D;&quot;mb-0 p-0 subtitle-card&quot;&gt;
+            &lt;strong
+              *ngIf&#x3D;&quot;comment.user.nom_role &amp;&amp; comment.user.prenom_role&quot;
+              [ngStyle]&#x3D;&quot;{ color: &#x27;black&#x27; }&quot;
+            &gt;
+              {{ comment.user.nom_role }}
+              {{ comment.user.prenom_role }}
+            &lt;/strong&gt;
+            {{ &#x27;Synthese.Commented&#x27; | translate }}
+            {{ formatDate(comment.creation_date) }}
+          &lt;/mat-card-subtitle&gt;
+          &lt;span
+            align&#x3D;&quot;end&quot;
+            color&#x3D;&quot;error&quot;
+            class&#x3D;&quot;deleteComment&quot;
+            ngbTooltip&#x3D;&quot;{{ &#x27;Synthese.DeleteComment&#x27; | translate }}&quot;
+            placement&#x3D;&quot;left&quot;
+            *ngIf&#x3D;&quot;currentUser.id_role &#x3D;&#x3D;&#x3D; comment.id_role&quot;
+            (click)&#x3D;&quot;deleteComment(comment.id_report, comment.report_type.type)&quot;
+          &gt;
+            &lt;mat-icon class&#x3D;&quot;rm-comment&quot; color&#x3D;&quot;primary&quot;&gt;delete&lt;/mat-icon&gt;
+          &lt;/span&gt;
+        &lt;/mat-card-header&gt;
+        &lt;mat-card-content class&#x3D;&quot;content-card p-2&quot;&gt;
+          &lt;p&gt;
+            {{ comment.content }}
+          &lt;/p&gt;
+        &lt;/mat-card-content&gt;
+      &lt;/mat-card&gt;
+      &lt;div *ngIf&#x3D;&quot;comment.spid&quot; class&#x3D;&quot;my-4 mx-2 fontComment&quot;&gt;
+        &lt;mat-icon class&#x3D;&quot;statusIcon mr-3&quot;&gt;sync&lt;/mat-icon&gt;
+        &lt;span class&#x3D;&quot;statusName&quot;&gt;
+          &lt;strong&gt;{{ comment.validator }}&lt;/strong&gt;
+          a changé le statut en
+          &lt;span
+            ngbTooltip&#x3D;&quot;{{ comment.comment }}&quot;
+            placement&#x3D;&quot;right&quot;
+            class&#x3D;&quot;py-1 px-2&quot;
+            [ngStyle]&#x3D;&quot;{
+              &#x27;background-color&#x27;: validationColor[comment.cd_nomenclature],
+              &#x27;border-radius&#x27;: &#x27;20px&#x27;,
+              color: [&#x27;0&#x27;, &#x27;6&#x27;].includes(comment.cd_nomenclature) ? &#x27;darkslategray&#x27; : &#x27;white&#x27;,
+              border: [&#x27;0&#x27;, &#x27;6&#x27;].includes(comment.cd_nomenclature)
+                ? &#x27;1px solid rgba(0,0,0,0.2)&#x27;
+                : &#x27;none&#x27;
+            }&quot;
+          &gt;
+            {{ comment.label_default }}
+            &lt;mat-icon inline *ngIf&#x3D;&quot;comment.comment&quot;&gt;chat&lt;/mat-icon&gt;
+          &lt;/span&gt;
+        &lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div *ngIf&#x3D;&quot;comment.deleted&quot; class&#x3D;&quot;my-4 mx-2 fontComment&quot;&gt;
+        &lt;mat-icon class&#x3D;&quot;statusIcon mr-3&quot; placement&#x3D;&quot;right&quot;&gt;visibility_off&lt;/mat-icon&gt;
+        &lt;span class&#x3D;&quot;statusName&quot;&gt;
+          &lt;strong *ngIf&#x3D;&quot;comment.user.nom_role &amp;&amp; comment.user.prenom_role&quot;&gt;
+            {{ comment.user.nom_role }}
+            {{ comment.user.prenom_role }}
+          &lt;/strong&gt;
+          a supprimé le commentaire du {{ formatDate(comment.creation_date) }}
+        &lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>discussion-card.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">.discussion-card {
+  border: 1px solid rgba(103, 58, 183, 0.8);
+}
+.comment-card {
+  border: 1px solid rgba(141, 137, 148, 0.8);
+}
+.link-infos {
+  border: 1px solid #673ab7;
+}
+.saveBtn {
+  background-color: #673ab7;
+  color: white;
+}
+.cancelBtn {
+  color: #673ab7;
+}
+
+.disccusion-field textarea {
+  border-left: 1px solid transparent !important;
+}
+
+.disccusion-field {
+  border: 1px solid transparent !important;
+}
+
+.link-infos.mat-button-disabled {
+  color: white;
+  background-color: rgba(104, 58, 183, 0.226);
+}
+
+.header-card {
+  background-color: #f6f8fa;
+  color: rgb(87, 96, 106);
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-bottom: 1px solid rgb(208, 215, 222);
+}
+
+::ng-deep .mat-card-header-text {
+  width: 100%;
+}
+::ng-deep .mat-card-content {
+  margin-bottom: 0px;
+}
+.discussion-card {
+  border: 1px solid rgba(103, 58, 183, 0.2);
+}
+
+.disccusion-action-btn {
+  outline-width: 0px;
+}
+
+::ng-deep .rm-comment:focus {
+  outline-width: 0px;
+}
+::ng-deep .rm-comment:hover {
+  color: rgba(104, 58, 183, 0.5);
+}
+
+.statusIcon {
+  vertical-align: middle;
+}
+
+.fontComment {
+  font-size: 15px;
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="pb-3">  <div class="text-right">    <button      *ngIf="!open"      button="submit"      mat-mini-fab      color="primary"      class="m-2 disccusion-action-btn"      (click)="openCloseComment()"      ngbTooltip="{{ \'Synthese.AddComment\' | translate }}"      placement="left"      align="end"    >      <mat-icon>add_comment</mat-icon>    </button>  </div>  <div class="blocks" *ngIf="open">    <mat-card class="comment-card mb-2">      <mat-card-header> </mat-card-header>      <mat-card-content class="m-0">        <mat-form-field appearance="fill" class="disccusion-field" style="width: 100%">          <mat-label class="gn-color">Commentaire :</mat-label>          <textarea            matInput            [maxlength]="config.SYNTHESE?.DISCUSSION_MAX_LENGTH"            placeholder="Votre commentaire...."            [formControl]="commentForm.get(\'content\')"          ></textarea>          <mat-error *ngIf="!this.commentForm.valid"> Veuillez saisir un commentaire </mat-error>        </mat-form-field>      </mat-card-content>      <mat-card-actions class="m-0 pt-0" align="end">        <button (click)="openCloseComment()" mat-stroked-button class="cancelBtn link-infos">          Annuler        </button>        <button          mat-stroked-button          [disabled]="!isValid()"          class="saveBtn link-infos"          (click)="handleSubmitComment(commentForm.get(\'content\').value)"        >          Envoyer        </button>      </mat-card-actions>    </mat-card>  </div>  <div class="blocks">    <span *ngFor="let comment of discussions">      <mat-card class="discussion-card my-3 mx-0 p-0" *ngIf="!comment.spid && !comment?.deleted">        <mat-card-header class="header-card p-2">          <mat-card-subtitle class="mb-0 p-0 subtitle-card">            <strong              *ngIf="comment.user.nom_role && comment.user.prenom_role"              [ngStyle]="{ color: \'black\' }"            >              {{ comment.user.nom_role }}              {{ comment.user.prenom_role }}            </strong>            {{ \'Synthese.Commented\' | translate }}            {{ formatDate(comment.creation_date) }}          </mat-card-subtitle>          <span            align="end"            color="error"            class="deleteComment"            ngbTooltip="{{ \'Synthese.DeleteComment\' | translate }}"            placement="left"            *ngIf="currentUser.id_role === comment.id_role"            (click)="deleteComment(comment.id_report, comment.report_type.type)"          >            <mat-icon class="rm-comment" color="primary">delete</mat-icon>          </span>        </mat-card-header>        <mat-card-content class="content-card p-2">          <p>            {{ comment.content }}          </p>        </mat-card-content>      </mat-card>      <div *ngIf="comment.spid" class="my-4 mx-2 fontComment">        <mat-icon class="statusIcon mr-3">sync</mat-icon>        <span class="statusName">          <strong>{{ comment.validator }}</strong>          a changé le statut en          <span            ngbTooltip="{{ comment.comment }}"            placement="right"            class="py-1 px-2"            [ngStyle]="{              \'background-color\': validationColor[comment.cd_nomenclature],              \'border-radius\': \'20px\',              color: [\'0\', \'6\'].includes(comment.cd_nomenclature) ? \'darkslategray\' : \'white\',              border: [\'0\', \'6\'].includes(comment.cd_nomenclature)                ? \'1px solid rgba(0,0,0,0.2)\'                : \'none\'            }"          >            {{ comment.label_default }}            <mat-icon inline *ngIf="comment.comment">chat</mat-icon>          </span>        </span>      </div>      <div *ngIf="comment.deleted" class="my-4 mx-2 fontComment">        <mat-icon class="statusIcon mr-3" placement="right">visibility_off</mat-icon>        <span class="statusName">          <strong *ngIf="comment.user.nom_role && comment.user.prenom_role">            {{ comment.user.nom_role }}            {{ comment.user.prenom_role }}          </strong>          a supprimé le commentaire du {{ formatDate(comment.creation_date) }}        </span>      </div>    </span>  </div></div></div>'
+    var COMPONENTS = [{'name': 'AcquisitionFrameworksComponent', 'selector': 'pnx-acquisition-frameworks'},{'name': 'ActorComponent', 'selector': 'pnx-metadata-actor'},{'name': 'AdminComponent', 'selector': 'pnx-admin'},{'name': 'AfCardComponent', 'selector': 'pnx-af-card'},{'name': 'AfFormComponent', 'selector': 'pnx-af-form'},{'name': 'AlertInfoComponent', 'selector': 'pnx-alert-info'},{'name': 'AppComponent', 'selector': 'pnx-root'},{'name': 'AreasComponent', 'selector': 'pnx-areas'},{'name': 'AreasIntersectedComponent', 'selector': 'pnx-areas-intersected-modal'},{'name': 'AutoCompleteComponent', 'selector': 'pnx-autocomplete'},{'name': 'BreadcrumbsComponent', 'selector': 'gn-breadcrumbs'},{'name': 'ConfirmationDialog', 'selector': 'gn-confirmation-dialog'},{'name': 'DatalistComponent', 'selector': 'pnx-datalist'},{'name': 'DatasetCardComponent', 'selector': 'pnx-datasets-card'},{'name': 'DatasetFormComponent', 'selector': 'pnx-datasets-form'},{'name': 'DatasetsComponent', 'selector': 'pnx-datasets'},{'name': 'DateComponent', 'selector': 'pnx-date'},{'name': 'DiscussionCardComponent', 'selector': 'pnx-discussion-card'},{'name': 'DisplayMediasComponent', 'selector': 'pnx-display-medias'},{'name': 'DumbSelectComponent', 'selector': 'pnx-dumb-select'},{'name': 'DynamicFormComponent', 'selector': 'pnx-dynamic-form'},{'name': 'FooterComponent', 'selector': 'pnx-footer'},{'name': 'GenericFormComponent', 'selector': 'pnx-generic-form'},{'name': 'GenericFormGeneratorComponent', 'selector': 'pnx-dynamic-form-generator'},{'name': 'GeojsonComponent', 'selector': 'pnx-geojson'},{'name': 'GeometryFormComponent', 'selector': 'pnx-geometry-form'},{'name': 'GNPanelComponent', 'selector': 'gn-panel'},{'name': 'GPSComponent', 'selector': 'pnx-gps'},{'name': 'HomeContentComponent', 'selector': 'pnx-home-content'},{'name': 'IntroductionComponent', 'selector': 'pnx-introduction'},{'name': 'LeafletDrawComponent', 'selector': 'pnx-leaflet-draw'},{'name': 'LeafletFileLayerComponent', 'selector': 'pnx-leaflet-filelayer'},{'name': 'LoginComponent', 'selector': 'pnx-login'},{'name': 'MapComponent', 'selector': 'pnx-map'},{'name': 'MapDataComponent', 'selector': 'pnx-map-data'},{'name': 'MapListComponent', 'selector': 'pnx-map-list'},{'name': 'MapListGenericFiltersComponent', 'selector': 'pnx-map-list-generic-filter'},{'name': 'MapOverLaysComponent', 'selector': 'pnx-map-overlays'},{'name': 'MarkerComponent', 'selector': 'pnx-marker'},{'name': 'MediaComponent', 'selector': 'pnx-media'},{'name': 'MediaDialog', 'selector': 'pnx-media-dialog'},{'name': 'MediasComponent', 'selector': 'pnx-medias'},{'name': 'MediasTestComponent', 'selector': 'pnx-medias-test'},{'name': 'MetadataComponent', 'selector': 'pnx-metadata'},{'name': 'MetadataDatasetComponent', 'selector': '[pnx-metadata-dataset]'},{'name': 'ModalDownloadComponent', 'selector': 'pnx-modal-download'},{'name': 'ModalInfoObsComponent', 'selector': 'pnx-synthese-modal-info-obs'},{'name': 'MultiSelectComponent', 'selector': 'pnx-multiselect'},{'name': 'MunicipalitiesComponent', 'selector': 'pnx-municipalities'},{'name': 'NavHomeComponent', 'selector': 'pnx-nav-home'},{'name': 'NewPasswordComponent', 'selector': 'pnx-new-password'},{'name': 'NomenclatureComponent', 'selector': 'pnx-nomenclature'},{'name': 'NotificationComponent', 'selector': 'pnx-notification'},{'name': 'ObserversComponent', 'selector': 'pnx-observers'},{'name': 'ObserversTextComponent', 'selector': 'pnx-observers-text'},{'name': 'PageNotFoundComponent', 'selector': 'pnx-page-not-found'},{'name': 'PasswordComponent', 'selector': 'pnx-user-password'},{'name': 'PeriodComponent', 'selector': 'pnx-period'},{'name': 'PlacesComponent', 'selector': 'pnx-places'},{'name': 'PlacesListComponent', 'selector': 'pnx-placesList'},{'name': 'RulesComponent', 'selector': 'pnx-rules'},{'name': 'SidenavItemsComponent', 'selector': 'pnx-sidenav-items'},{'name': 'SignUpComponent', 'selector': 'pnx-signup'},{'name': 'SyntheseCarteComponent', 'selector': 'pnx-synthese-carte'},{'name': 'SyntheseComponent', 'selector': 'pnx-synthese'},{'name': 'SyntheseInfoObsComponent', 'selector': 'pnx-synthese-info-obs'},{'name': 'SyntheseListComponent', 'selector': 'pnx-synthese-list'},{'name': 'SyntheseModalDownloadComponent', 'selector': 'pnx-synthese-modal-download'},{'name': 'SyntheseSearchComponent', 'selector': 'pnx-synthese-search'},{'name': 'TaxaComponent', 'selector': 'pnx-taxa'},{'name': 'TaxonAdvancedModalComponent', 'selector': 'pnx-validation-taxon-advanced'},{'name': 'TaxonomyComponent', 'selector': 'pnx-taxonomy'},{'name': 'TaxonSheetComponent', 'selector': 'pnx-taxon-sheet'},{'name': 'TaxonTreeComponent', 'selector': 'pnx-tree'},{'name': 'UserComponent', 'selector': 'pnx-user'}];
+    var DIRECTIVES = [{'name': 'DisableControlDirective', 'selector': '[disableControl]'},{'name': 'DisplayMouseOverDirective', 'selector': '[displayMouseOver]'}];
+    var ACTUAL_COMPONENT = {'name': 'DiscussionCardComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'DiscussionCardComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

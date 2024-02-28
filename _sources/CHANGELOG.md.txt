@@ -1,6 +1,71 @@
 CHANGELOG
 =========
 
+2.14.0 - Talpa europaea 👓 (2024-02-28)
+---------------------------------------
+
+Cette nouvelle version de GeoNature propose de nouvelles fonctionnalités comme le floutage de données sensibles dans le module Synthèse ainsi qu'un système de validation automatique des données basé sur les profils de taxons.  
+Elle intégre aussi plusieurs mises à jour des versions des librairies python utilisées comme Flask (3.0) et SQLAlchemy (1.4).
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+- Le support de Debian 10 a été arrêté, votre serveur doit être en Debian 11 ou 12
+- Mettre à jour TaxHub en version 1.13.3 (ou plus) et optionnellement UsersHub (2.4.0 ou plus)
+- Si vous les utilisez, mettez à jour les modules Import (version 2.3.0), Export (version 1.7.0), Monitoring (version 0.7.2) et Dashboard (version 1.5.0), avec la nouvelle procédure consistant uniquement à télécharger, dézipper et renommer les dossiers des modules
+- Si vous utilisez d'autres modules externes, vérifiez qu'ils disposent d'une version compatible avec GeoNature 2.14 (SQLAlchemy 1.4, Python 3.9 minimum, supression du fichier `app.config.ts`)
+- Suivez la procédure de mise à jour classique de GeoNature (<https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application>)
+- Si vous utilisez les fonds IGN, mettez à jour les URL des flux dans votre fichier de configuration `geonature_config.toml` (#2789)
+
+**🚀 Nouveautés**
+
+- [Synthèse] Floutage des données sensibles (#2558)
+  - Il est désormais possible de définir un filtre "Flouter les données sensibles" sur les actions _Lire_ et _Exporter_ du module Synthèse
+  - Pour les utilisateurs qui ont ce filtre de permission appliqué, les données sensibles seront floutées lors de leur affichage ou de leur export dans le module Synthèse, en fonction des mailles ou zonages définis dans les règles de sensibilité du SINP
+  - En mode Mailles, les données sensibles dont la géométrie floutée est plus grande que la maille affichée sont exclues
+  - Dans l'onglet "Zonage" des fiches des observations de la Synthèse, on affiche uniquement les zonages plus grands que la géométrie floutée des données sensibles
+  - Si un utilisateur dispose de permissions filtrées sur les données sensibles, alors les filtres par zonage s'appuie sur une intersection spatiale avec les géométries floutées pour ne pas renvoyer d'informations plus précises sur les données floutées
+  - La documentation sur le sensibilité des données a été complétée : https://docs.geonature.fr/admin-manual.html#gestion-de-la-sensibilite)
+  - Le paramètre `BLUR_SENSITIVE_OBSERVATIONS` permet de basculer sur l'exclusion des données sensibles plutôt que leur floutage, comme implémenté dans la version 2.13
+- [Validation] Fonction de validation automatique basée sur les profils de taxons (non activée par défaut et surcouchable avec une fonction spécifique) (#2600)
+- [Synthèse] Ajout des groupes 3 INPN dans les filtres et les exports de la Synthèse (#2621, #2637)
+- [Occtax] Ajout de la possibilité d'associer des nomenclatures à des groupes 3 INPN (#2684)
+- [Authentification] Possibilité d'ajouter des liens externes (#2917)
+- [Carte] Mise à jour des exemples d'URL de fonds de carte IGN (#2789)
+- [RefGeo] Répercussion du remplacement du champs `geojson_4326` par `geom_4326` dans la table `l_areas` (#2809)
+- [Documentation] Ajout de diagrammes d'architecture dans la documentation (#2760)
+
+**🐛 Corrections**
+
+- Correction de l'affichage du nom du module quand on revient à la page d'accueil (#2795)
+- [Synthèse] Correction de l'affichage du nom du taxon observé quand les profils de taxons sont désactivés (#2820)
+- [Carte] Conservation de la géométrie existante lorsqu'on annule la modification d'une géométrie (#2778)
+- [Métadonnées] Correction de l'affichage du type de financement sur les fiches détail des CA et JDD (#2840)
+- [Occhab] Correction des permissions avec portée limitée (#2909)
+- [Occtax] Correction de la suppression d'un champ additionnel (#2923)
+
+**💻 Développement**
+
+- Mise à jour vers SQLAlchemy 1.4 (#1812)
+- Mise à jour vers Flask 3 (#2751)
+- Mise à jour de Black en version 24 (#2879)
+- Suppression des modules dépréciés : `utilsgeometry.py`, `utilssqlalchemy.py`, `config_manager.py` (#2751)
+- Intégration de la documentation automatique des composants Frontend (avec `compodoc`) et des fonctions et classes du backend (avec `sphinx-autoapi`) (#2765)
+- Abandon du système d'authentification par cookie, sauf pour le module Admin. Le token d'authentification (JWT) est maintenant passé dans chaque appel à l'API dans le header HTTP "Authorization Bearer". Il est aussi fourni par la route de login du sous-module d'authentification et stocké dans le localStorage (#2586, #2161, #490, #2574)
+- Suppression du fichier `app.config.ts` (#2747)
+- Passage du paramètre `--line-length` de Black de 99 à 100 caractères (#2847)
+- Modification de `TModules` pour éviter de lever l'erreur de polymorphisme de SQLAlchemy (#2792)
+- Fin du support de Debian 10 et de Python 3.7 (#1787)
+- Changement de l'ensemble des requêtes SQLAlchemy au style 2.0 (#2751)
+- Augmentation du nombre de tests unitaires dans : `gn_meta`, `occtax`, `occhab`, `synthese` (#2751) 
+- Modification des `fixtures` : `datasets`, `stations` + `user`(#2751). Possibilité de créer des utilisateurs de tests avec des permissions plus fines (#2915)
+
+**📝 Merci aux contributeurs**
+
+@amandine-sahl, @Pierre-Narcisi, @jacquesfize, @TheoLechemia, @bouttier, @mvergez, @andriacap, @edelclaux, @VincentCauchois, @MoulinZ, @pierre56, @camillemonchicourt
+
+
 2.13.4 (2023-12-15)
 -------------------
 
@@ -36,6 +101,7 @@ CHANGELOG
 - Utilisation du fichier `requirements.txt` pour les tests automatiques des contributions dans la branche `master` (#2739, par @Pierre-Narcisi)
 - Déplacement des dépendances de développement des types Leaflet vers les dépendances de production (#2744, par @TheoLechemia)
 - Prise en compte du paramètre `creatableInModule` du composant `dataset` dans les dynamic forms (#2736, par @amandine-sahl)
+
 
 2.13.2 (2023-09-28)
 -------------------
@@ -170,6 +236,8 @@ Si vous mettez à jour GeoNature :
 - Les permissions existantes sur vos différents groupes et utilisateurs sont récupérées et remises à plat automatiquement sans système d'héritage. Vérifiez cependant les permissions après la mise à jour de vos groupes et utilisateurs.
 - Désormais, quand vous installerez un nouveau module (ou sous-module), pour le voir affiché dans le menu et y avoir accès, il faudra lui appliquer des permissions aux groupes ou utilisateurs qui doivent y accéder.
 
+✅ Exemple de procédure de mise à jour depuis une version 2.12 : https://geonature.fr/documents/procedures/2023-10-GN-212to213.txt
+
 **📝 Merci aux contributeurs**
 
 @bouttier / @TheoLechemia / @VincentCauchois / @Pierre-Narcisi / @joelclems / @andriacap / @mvergez / @JulienCorny / @MathRdt / @DonovanMaillard / @camillemonchicourt
@@ -199,6 +267,7 @@ Si vous utilisez la page de maintenance, celle-ci a été revue, [référez vous
 
 Si vous utilisiez des champs additionnels avec des checkbox, lors de leur changement de type (recommandé dans les notes de version de la 2.12.0) il est important que les valeurs du champ `field_values` continue à avoir des "string" dans la clé values : [{"label": "Un", "value": "1"}] sans quoi il y aura des problème à l'édition. Pour les nouveaux champs additionnels, il est cependant bien possible de mettre des entiers dans la clé `value` [{"label": "Un", "value": 1}]
 
+
 2.12.2 (2023-04-18)
 -------------------
 
@@ -221,7 +290,6 @@ Si vous utilisiez des champs additionnels avec des checkbox, lors de leur change
 - Admin : contrôle du R pour l’accès en lecture (#2491)
 - Admin : rajout de l’objet NOTIFICATIONS afin de pouvoir en définir ses permissions (#2490)
 - Login : désactivation du spinner après une tentative de login échouée
-
 
 
 2.12.1 (2023-04-11)

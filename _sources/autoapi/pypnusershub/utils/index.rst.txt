@@ -1,0 +1,59 @@
+:py:mod:`pypnusershub.utils`
+============================
+
+.. py:module:: pypnusershub.utils
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   pypnusershub.utils.binary_resource_stream
+   pypnusershub.utils.text_resource_stream
+   pypnusershub.utils.get_current_app_id
+   pypnusershub.utils.get_cookie_path
+   pypnusershub.utils.delete_cookie
+   pypnusershub.utils.set_cookie
+
+
+
+.. py:exception:: RessourceError(msg, errors)
+
+
+   Bases: :py:obj:`OSError`
+
+   Base class for I/O related errors.
+
+
+.. py:function:: binary_resource_stream(resource, locations)
+
+   Return a resource from this path or package
+
+
+.. py:function:: text_resource_stream(path, locations, encoding='utf8', errors=None, newline=None, line_buffering=False)
+
+   Return a resource from this path or package. Transparently decode the stream.
+
+
+.. py:function:: get_current_app_id()
+
+
+.. py:function:: get_cookie_path(application_url: Optional[str] = None) -> str
+
+   Returns the cookie path computed from the application_url
+
+
+.. py:function:: delete_cookie(response: flask.Response, application_url: Optional[str] = None, **kwargs)
+
+
+.. py:function:: set_cookie(response: flask.Response, application_url: Optional[str] = None, **kwargs)
+
+   Set automatically a Path on a cookie.
+   All kwargs are passed to Response.set_cookie()
+
+

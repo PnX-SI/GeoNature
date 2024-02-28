@@ -1,0 +1,16 @@
+:py:mod:`geonature.core.gn_monitoring`
+======================================
+
+.. py:module:: geonature.core.gn_monitoring
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   models/index.rst
+   routes/index.rst
+
+

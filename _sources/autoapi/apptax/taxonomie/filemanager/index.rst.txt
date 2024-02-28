@@ -1,0 +1,158 @@
+:py:mod:`apptax.taxonomie.filemanager`
+======================================
+
+.. py:module:: apptax.taxonomie.filemanager
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.filemanager.FileManagerServiceInterface
+   apptax.taxonomie.filemanager.LocalFileManagerService
+   apptax.taxonomie.filemanager.S3FileManagerService
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.filemanager.remove_dir
+   apptax.taxonomie.filemanager.removeDisallowedFilenameChars
+   apptax.taxonomie.filemanager.url_to_image
+   apptax.taxonomie.filemanager.add_border
+   apptax.taxonomie.filemanager.calculate_border
+   apptax.taxonomie.filemanager.resizeAndPad
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.filemanager.logger
+   apptax.taxonomie.filemanager.FILEMANAGER
+
+
+.. py:data:: logger
+
+   
+
+.. py:function:: remove_dir(dirpath)
+
+   Fonction de suppression d'un répertoire
+
+
+.. py:function:: removeDisallowedFilenameChars(uncleanString)
+
+
+.. py:class:: FileManagerServiceInterface
+
+
+   Bases: :py:obj:`abc.ABC`
+
+   Abstract class to media file manipulation functions
+   Class who inherite of this class must implement the following abstract methods:
+   - remove_file
+   - rename_file
+   - upload_file
+
+   .. py:method:: _get_new_chemin(old_chemin, old_title, new_title)
+
+
+   .. py:method:: _generate_file_name(file, id_media, cd_ref, titre)
+
+
+   .. py:method:: _get_media_path_from_db(filepath)
+
+      Suppression du prefix static contenu en base
+      et non nécessaire pour manipuler le fichier
+
+      Args:
+          filepath (string): Chemin relatif du fichier
+
+
+   .. py:method:: _get_image_object(media)
+
+
+   .. py:method:: remove_file(filepath)
+
+
+   .. py:method:: rename_file(old_chemin, old_title, new_title)
+
+
+   .. py:method:: upload_file(file, id_media, cd_ref, titre)
+
+
+   .. py:method:: remove_thumb(id_media)
+
+
+   .. py:method:: create_thumb(media, size, regenerate=False)
+
+
+   .. py:method:: remove_media_files(id_media, filepath)
+
+
+
+.. py:class:: LocalFileManagerService
+
+
+   Bases: :py:obj:`FileManagerServiceInterface`
+
+   Abstract class to media file manipulation functions
+   Class who inherite of this class must implement the following abstract methods:
+   - remove_file
+   - rename_file
+   - upload_file
+
+
+.. py:class:: S3FileManagerService
+
+
+   Bases: :py:obj:`FileManagerServiceInterface`
+
+   Class permettant de manipuler des fichiers stockés
+       dans un cloud S3 (AWS, OVH, etc..)
+
+   .. py:method:: _get_image_object(media)
+
+
+   .. py:method:: remove_file(filepath)
+
+
+   .. py:method:: rename_file(old_chemin, old_title, new_title)
+
+
+   .. py:method:: upload_file(file, id_media, cd_ref, titre)
+
+
+
+.. py:data:: FILEMANAGER
+
+   
+
+.. py:function:: url_to_image(url)
+
+   Récupération d'une image à partir d'une url
+
+
+.. py:function:: add_border(img, border, color=0)
+
+   Ajout d'une bordure à une image
+
+
+.. py:function:: calculate_border(initial_size, new_size, aspect)
+
+   Calcul de la taille de l'image et de ces bordures
+
+
+.. py:function:: resizeAndPad(img, new_size, pad=True, padColor=0)
+
+

@@ -1,0 +1,15 @@
+:py:mod:`geonature.core.gn_commons.medias`
+==========================================
+
+.. py:module:: geonature.core.gn_commons.medias
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   routes/index.rst
+
+

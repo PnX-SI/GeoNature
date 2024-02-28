@@ -1,0 +1,300 @@
+:py:mod:`src.utils_flask_sqla_geo.utilsgeometry`
+================================================
+
+.. py:module:: src.utils_flask_sqla_geo.utilsgeometry
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla_geo.utilsgeometry.FionaService
+   src.utils_flask_sqla_geo.utilsgeometry.FionaGpkgService
+   src.utils_flask_sqla_geo.utilsgeometry.FionaShapeService
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla_geo.utilsgeometry.create_shapes_generic
+   src.utils_flask_sqla_geo.utilsgeometry.create_gpkg_generic
+   src.utils_flask_sqla_geo.utilsgeometry.export_geodata_as_file
+   src.utils_flask_sqla_geo.utilsgeometry.convert_to_2d
+   src.utils_flask_sqla_geo.utilsgeometry.remove_third_dimension
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla_geo.utilsgeometry.FIONA_MAPPING
+   src.utils_flask_sqla_geo.utilsgeometry.log
+
+
+.. py:data:: FIONA_MAPPING
+
+   
+
+.. py:data:: log
+
+   
+
+.. py:class:: FionaService
+
+
+   Bases: :py:obj:`abc.ABC`
+
+   Abstract class to provide functions to create geofiles with Fiona
+   Class who inherite of this class must implement the following abstract methods:
+   - create_fiona_struct
+   - create_features_generic
+   - save-files
+   - close-files
+
+   .. py:attribute:: supported_type
+      :value: ('shp', 'gpkg')
+
+      
+
+   .. py:method:: create_fiona_properties(db_cols, srid, dir_path, file_name, col_mapping=None)
+      :classmethod:
+
+      Create three shapefiles (point, line, polygon) with the attributes give by db_cols
+      Parameters:
+          db_cols (list): columns from a SQLA model (model.__mapper__.c)
+          srid (int): epsg code
+          dir_path (str): directory path
+          file_name (str): file of the shapefiles
+          col_mapping (dict): mapping between SQLA class
+                          attributes and 'beatifiul' columns name
+
+      Returns:
+          void
+
+
+   .. py:method:: add_fiona_col_mapping(key, db_col)
+      :classmethod:
+
+
+   .. py:method:: create_features_generic(view, data, geom_col, geojson_col=None)
+      :classmethod:
+
+      Create the features of the shapefiles by serializing the datas from a GenericTable (non mapped table)
+
+      Parameters:
+          view (GenericTable): the GenericTable object
+          data (list): Array of SQLA model
+          geom_col (str): name of the WKB geometry column of the SQLA Model
+          geojson_col (str): name of the geojson column if present. If None create the geojson from geom_col with shapely
+                             for performance reason its better to use geojson_col rather than geom_col
+
+      Returns:
+          void
+
+
+
+   .. py:method:: build_feature(view, data, geo_colname, is_geojson)
+      :classmethod:
+
+      Fonction qui créer une feature au sens de fiona
+
+      Parameters:
+          view (GenericTable): the GenericTable object
+          is_geojson (boolean): la geometrie est elle sous forme de geojson
+          data (Model) : SQLA model
+          geo_colname (string) : nom de la colonne contenant le geom
+
+
+   .. py:method:: create_feature(data, geom, is_geojson=False)
+      :classmethod:
+
+      Create and write feature (a record of the file) for WKB data
+      by serializing an SQLAlchemy object
+
+      Parameters:
+          data (dict): the SQLAlchemy model serialized as a dict
+          geom (WKB): the geom as WKB
+
+
+      Returns:
+          void
+
+
+   .. py:method:: create_fiona_struct(db_cols, srid, dir_path, file_name, col_mapping=None)
+      :classmethod:
+      :abstractmethod:
+
+
+   .. py:method:: write_a_feature(feature, geom_wkt)
+      :classmethod:
+      :abstractmethod:
+
+
+   .. py:method:: save_files()
+      :classmethod:
+      :abstractmethod:
+
+
+   .. py:method:: close_files()
+      :classmethod:
+      :abstractmethod:
+
+
+
+.. py:class:: FionaGpkgService
+
+
+   Bases: :py:obj:`FionaService`
+
+   Service to create gpkg from sqlalchemy models
+
+   How to use:
+   FionaShapeService.create_shapes_struct(**args)
+   FionaShapeService.create_features(**args)
+   FionaShapeService.save_and_zip_shapefiles()
+
+   .. py:method:: create_fiona_struct(db_cols, srid, dir_path, file_name, col_mapping=None)
+      :classmethod:
+
+
+   .. py:method:: write_a_feature(feature, geom_wkt)
+      :classmethod:
+
+      write a feature by checking the type of the shape given
+
+
+   .. py:method:: save_files()
+      :classmethod:
+
+      Save and zip the files
+      Only zip files where there is at least on feature
+
+      Returns:
+          void
+
+
+   .. py:method:: close_files()
+      :classmethod:
+
+      Save the files
+
+
+
+.. py:class:: FionaShapeService
+
+
+   Bases: :py:obj:`FionaService`
+
+   Service to create shapefiles from sqlalchemy models
+
+   How to use:
+   FionaShapeService.create_fiona_struct(**args)
+   FionaShapeService.create_features(**args)
+   FionaShapeService.save_files()
+
+   .. py:attribute:: create_shapes_struct
+
+      
+
+   .. py:attribute:: save_and_zip_shapefiles
+
+      
+
+   .. py:method:: create_fiona_struct(db_cols, srid, dir_path, file_name, col_mapping=None, encoding='utf-8')
+      :classmethod:
+
+      Create three shapefiles (point, line, polygon) with the attributes give by db_cols
+      Parameters:
+          db_cols (list): columns from a SQLA model (model.__mapper__.c)
+          srid (int): epsg code
+          dir_path (str): directory path
+          file_name (str): file of the shapefiles
+          col_mapping (dict): mapping between SQLA class attributes and 'beatifiul' columns name
+          encoding (str): define encoding of data to store in Shape. Default: utf-8.
+
+
+      Returns:
+          void
+
+
+   .. py:method:: write_a_feature(feature, geom_wkt)
+      :classmethod:
+
+      write a feature by checking the type of the shape given
+
+
+   .. py:method:: save_files()
+      :classmethod:
+
+      Save and zip the files
+      Only zip files where there is at least on feature
+
+      Returns:
+          void
+
+
+   .. py:method:: close_files()
+      :classmethod:
+
+
+
+.. py:function:: create_shapes_generic(view, srid, db_cols, data, dir_path, file_name, geom_col, geojson_col)
+
+   Export data in shape files (separated bu geometry type)
+   Parameters:
+       srid (int): epsg code
+       db_cols (list): columns from a SQLA model (model.__mapper__.c)
+       data (list): Array of SQLA model
+       dir_path (str): directory path
+       file_name (str): file of the shapefiles
+       geom_col (str): name of the WKB geometry column of the SQLA Model
+       geojson_col (str): name of the geojson column if present. If None create the geojson from geom_col with shapely
+                          for performance reason its better to use geojson_col rather than geom_col
+
+
+.. py:function:: create_gpkg_generic(view, srid, db_cols, data, dir_path, file_name, geom_col, geojson_col)
+
+   Export data in gpkg file
+   Parameters:
+       srid (int): epsg code
+       db_cols (list): columns from a SQLA model (model.__mapper__.c)
+       data (list): Array of SQLA model
+       dir_path (str): directory path
+       file_name (str): file of the shapefiles
+       geom_col (str): name of the WKB geometry column of the SQLA Model
+       geojson_col (str): name of the geojson column if present. If None create the geojson from geom_col with shapely
+                          for performance reason its better to use geojson_col rather than geom_col
+
+
+.. py:function:: export_geodata_as_file(view, srid, db_cols, data, dir_path, file_name, geom_col, geojson_col, export_format='gpkg')
+
+   Generic export data
+   Parameters:
+       srid (int): epsg code
+       db_cols (list): columns from a SQLA model (model.__mapper__.c)
+       data (list): Array of SQLA model
+       dir_path (str): directory path
+       file_name (str): file of the shapefiles
+       geom_col (str): name of the WKB geometry column of the SQLA Model
+       geojson_col (str): name of the geojson column if present. If None create the geojson from geom_col with shapely
+                          for performance reason its better to use geojson_col rather than geom_col
+       export_format (str) : name of the exported format
+
+
+.. py:function:: convert_to_2d(geojson)
+
+   Convert a geojson 3d in 2d
+
+
+.. py:function:: remove_third_dimension(geom)
+
+

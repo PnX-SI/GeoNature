@@ -1,0 +1,33 @@
+:py:mod:`apptax.taxonomie`
+==========================
+
+.. py:module:: apptax.taxonomie
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   commands/index.rst
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   filemanager/index.rst
+   models/index.rst
+   repositories/index.rst
+   routesbdcstatuts/index.rst
+   routesbibattributs/index.rst
+   routesbiblistes/index.rst
+   routesbibnoms/index.rst
+   routesbibtypesmedia/index.rst
+   routestaxref/index.rst
+   routestmedias/index.rst
+
+

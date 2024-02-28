@@ -1,0 +1,71 @@
+:py:mod:`app.bib_organismes.forms`
+==================================
+
+.. py:module:: app.bib_organismes.forms
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   app.bib_organismes.forms.Organisme
+
+
+
+
+.. py:class:: Organisme(formdata=_Auto, **kwargs)
+
+
+   Bases: :py:obj:`flask_wtf.FlaskForm`
+
+   Classe du formulaire des Organismes
+
+   .. py:attribute:: nom_organisme
+
+      
+
+   .. py:attribute:: adresse_organisme
+
+      
+
+   .. py:attribute:: cp_organisme
+
+      
+
+   .. py:attribute:: ville_organisme
+
+      
+
+   .. py:attribute:: tel_organisme
+
+      
+
+   .. py:attribute:: fax_organisme
+
+      
+
+   .. py:attribute:: email_organisme
+
+      
+
+   .. py:attribute:: url_organisme
+
+      
+
+   .. py:attribute:: url_logo
+
+      
+
+   .. py:attribute:: id_organisme
+
+      
+
+   .. py:attribute:: submit
+
+      
+
+

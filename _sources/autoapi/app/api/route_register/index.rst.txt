@@ -1,0 +1,133 @@
+:py:mod:`app.api.route_register`
+================================
+
+.. py:module:: app.api.route_register
+
+.. autoapi-nested-parse::
+
+   Route permettant de manipuler les données de UsersHub via une API
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   app.api.route_register.get_one_t_roles
+   app.api.route_register.test_connexion
+   app.api.route_register.create_temp_user
+   app.api.route_register.valid_temp_user
+   app.api.route_register.set_cor_role_token
+   app.api.route_register.check_token
+   app.api.route_register.create_cor_role_token
+   app.api.route_register.change_password
+   app.api.route_register.change_application_right
+   app.api.route_register.add_application_right_to_role
+   app.api.route_register.login_recovery
+   app.api.route_register.update_user
+   app.api.route_register.check_token_validity
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   app.api.route_register.route
+
+
+.. py:data:: route
+
+   
+
+.. py:function:: get_one_t_roles(id_role)
+
+   Fonction qui retourne les données concernant un utilisateur.
+
+
+.. py:function:: test_connexion()
+
+   Route pour tester la connexion.
+
+
+.. py:function:: create_temp_user()
+
+   Route pour créer un compte temporaire en attendant la confirmation de
+   l'adresse mail.
+
+   Nous stockons :
+   1. Les infos qui seront utilisées par la création de compte. Dont les
+   mots de passe qui sont stockés cryptés.
+   2. Les infos permettant d'appeler l'appli source si la création du
+   compte est confirmée (Appel d'une URL de callaback => confirmation_url).
+
+
+.. py:function:: valid_temp_user()
+
+   Route pour valider un compte temporaire et en faire un utilisateur
+   (requete a usershub).
+
+
+.. py:function:: set_cor_role_token(email)
+
+   Fonction pour la création d'un token associé a un id_role
+   Parametres : email
+
+
+.. py:function:: check_token(token)
+
+   fonction permettant de vérifier la présence
+   d'un token et qui retourne l'id_role associé
+
+
+.. py:function:: create_cor_role_token()
+
+   route pour la creation d'un token associé a un id_role
+   fait un appel de la fonction set_cor_role_token(email)
+   parametres post : email
+
+
+.. py:function:: change_password()
+
+   Route permettant à un utilisateur de renouveller
+   son mot de passe
+
+
+.. py:function:: change_application_right()
+
+   Change les droits d'un utilisateur pour une application
+
+
+.. py:function:: add_application_right_to_role()
+
+   Route permettant de d'ajouter des droits
+   pour une application a un utilisateur
+   soit en l'associant à un groupe
+   soit en lui affectant le profil "1"
+
+
+.. py:function:: login_recovery()
+
+   route pour changer des paramètres d'utilisateur
+   FIXME : Route qui ne modifie rien du tout
+       devrait peut être transformée pour être plus générique
+       et retourner les informations d'un utilisateur donné
+
+
+.. py:function:: update_user()
+
+   route pour changer des paramètres d'utilisateur
+
+
+.. py:function:: check_token_validity()
+
+   route permettant de savoir si un token est toujours valide
+   parametres post : token
+
+

@@ -1,0 +1,73 @@
+:py:mod:`apptax.log.models`
+===========================
+
+.. py:module:: apptax.log.models
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   apptax.log.models.TaxhubAdminLog
+
+
+
+
+.. py:class:: TaxhubAdminLog
+
+
+   Bases: :py:obj:`apptax.log.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'taxhub_admin_log'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id
+
+      
+
+   .. py:attribute:: action_time
+
+      
+
+   .. py:attribute:: id_role
+
+      
+
+   .. py:attribute:: object_type
+
+      
+
+   .. py:attribute:: object_id
+
+      
+
+   .. py:attribute:: object_repr
+
+      
+
+   .. py:attribute:: change_type
+
+      
+
+   .. py:attribute:: change_message
+
+      
+
+

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pypnusershub.__main__ &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Code du module</a></li>
+          <li class="breadcrumb-item"><a href="../pypnusershub.html">pypnusershub</a></li>
+      <li class="breadcrumb-item active">pypnusershub.__main__</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de pypnusershub.__main__</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding: utf8</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Command line tools to initialize the database.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+
+<span class="kn">import</span> <span class="nn">sqlalchemy</span>
+
+<span class="kn">from</span> <span class="nn">pypnusershub.db.tools</span> <span class="kn">import</span> <span class="n">init_schema</span><span class="p">,</span> <span class="n">delete_schema</span><span class="p">,</span> <span class="n">load_fixtures</span>
+
+
+<div class="viewcode-block" id="run_db_cmd">
+<a class="viewcode-back" href="../../autoapi/pypnusershub/__main__/index.html#pypnusershub.__main__.run_db_cmd">[docs]</a>
+<span class="k">def</span> <span class="nf">run_db_cmd</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">db_uri</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run a function from pypnuserhub.db.tools with proper warnings&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">func</span><span class="p">(</span><span class="n">db_uri</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">ArgumentError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;Unable to use the passed URI strings: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">OperationalError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;authentication failed&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;Unable to authenticate to &#39;</span><span class="si">%s</span><span class="s2">&#39;. &quot;</span>
+                    <span class="s2">&quot;Make sure to either provide a proper user/password &quot;</span>
+                    <span class="s2">&quot;or execute this command as PostGreSQL &quot;</span>
+                    <span class="s2">&quot;admin user (E.G: &#39;postgres&#39;) &quot;</span>
+                <span class="p">)</span>
+                <span class="o">%</span> <span class="n">db_uri</span>
+            <span class="p">)</span>
+        <span class="k">raise</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># Wrap all calls to pypnuserhub.db.tools&#39;s function in run_db_cmd</span>
+<span class="c1"># to have good warning messages.</span>
+<div class="viewcode-block" id="call_init_schema">
+<a class="viewcode-back" href="../../autoapi/pypnusershub/__main__/index.html#pypnusershub.__main__.call_init_schema">[docs]</a>
+<span class="k">def</span> <span class="nf">call_init_schema</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initializing schema&quot;</span><span class="p">)</span>
+    <span class="n">run_db_cmd</span><span class="p">(</span><span class="n">init_schema</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">db_uri</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="call_delete_schema">
+<a class="viewcode-back" href="../../autoapi/pypnusershub/__main__/index.html#pypnusershub.__main__.call_delete_schema">[docs]</a>
+<span class="k">def</span> <span class="nf">call_delete_schema</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="n">confirm</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span>
+        <span class="s2">&quot;This will delete all the content of &quot;</span>
+        <span class="s2">&quot; the &#39;utilisateurs&#39; db. Are you sure ? [N/y] &quot;</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">confirm</span> <span class="o">!=</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Abort&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Deleting schema&quot;</span><span class="p">)</span>
+    <span class="n">run_db_cmd</span><span class="p">(</span><span class="n">delete_schema</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">db_uri</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="call_reset_schema">
+<a class="viewcode-back" href="../../autoapi/pypnusershub/__main__/index.html#pypnusershub.__main__.call_reset_schema">[docs]</a>
+<span class="k">def</span> <span class="nf">call_reset_schema</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="n">call_delete_schema</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">call_init_schema</span><span class="p">(</span><span class="n">args</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="call_load_fixtures">
+<a class="viewcode-back" href="../../autoapi/pypnusershub/__main__/index.html#pypnusershub.__main__.call_load_fixtures">[docs]</a>
+<span class="k">def</span> <span class="nf">call_load_fixtures</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading fixtures&quot;</span><span class="p">)</span>
+    <span class="n">run_db_cmd</span><span class="p">(</span><span class="n">load_fixtures</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">db_uri</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="make_cmd_parser">
+<a class="viewcode-back" href="../../autoapi/pypnusershub/__main__/index.html#pypnusershub.__main__.make_cmd_parser">[docs]</a>
+<span class="k">def</span> <span class="nf">make_cmd_parser</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a CMD parser with subcommands for pypnuserhub.db.tools funcs&quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="s2">&quot;python -m pypnuserhub&quot;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">parser</span><span class="o">.</span><span class="n">print_usage</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">))</span>
+
+    <span class="n">subparsers</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_subparsers</span><span class="p">()</span>
+
+    <span class="n">parser_init_schema</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;init_schema&quot;</span><span class="p">)</span>
+    <span class="n">parser_init_schema</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;db_uri&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">parser_init_schema</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">call_init_schema</span><span class="p">)</span>
+
+    <span class="n">parser_delete_schema</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;delete_schema&quot;</span><span class="p">)</span>
+    <span class="n">parser_delete_schema</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;db_uri&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">parser_delete_schema</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">call_delete_schema</span><span class="p">)</span>
+
+    <span class="n">parser_reset_schema</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;reset_schema&quot;</span><span class="p">)</span>
+    <span class="n">parser_reset_schema</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;db_uri&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">parser_reset_schema</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">call_reset_schema</span><span class="p">)</span>
+
+    <span class="n">parser_load_fixture</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;load_fixtures&quot;</span><span class="p">)</span>
+    <span class="n">parser_load_fixture</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;db_uri&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">parser_load_fixture</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">call_load_fixtures</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">parser</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="parser">
+<a class="viewcode-back" href="../../autoapi/pypnusershub/__main__/index.html#pypnusershub.__main__.parser">[docs]</a>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">make_cmd_parser</span><span class="p">()</span></div>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">args</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

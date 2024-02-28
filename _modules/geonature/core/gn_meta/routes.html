@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_meta.routes &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.gn_meta.routes</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.gn_meta.routes</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Routes for gn_meta </span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">lxml</span> <span class="kn">import</span> <span class="n">etree</span> <span class="k">as</span> <span class="n">ET</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">current_app</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">Response</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">render_template</span>
+
+<span class="kn">import</span> <span class="nn">click</span>
+
+<span class="kn">from</span> <span class="nn">flask.json</span> <span class="kn">import</span> <span class="n">jsonify</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">inspect</span><span class="p">,</span> <span class="n">and_</span><span class="p">,</span> <span class="n">or_</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">text</span><span class="p">,</span> <span class="n">exists</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">update</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql.functions</span> <span class="kn">import</span> <span class="n">func</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">Load</span><span class="p">,</span> <span class="n">joinedload</span><span class="p">,</span> <span class="n">raiseload</span><span class="p">,</span> <span class="n">undefer</span>
+<span class="kn">from</span> <span class="nn">werkzeug.exceptions</span> <span class="kn">import</span> <span class="n">Conflict</span><span class="p">,</span> <span class="n">BadRequest</span><span class="p">,</span> <span class="n">Forbidden</span><span class="p">,</span> <span class="n">NotFound</span>
+<span class="kn">from</span> <span class="nn">werkzeug.datastructures</span> <span class="kn">import</span> <span class="n">Headers</span><span class="p">,</span> <span class="n">MultiDict</span>
+<span class="kn">from</span> <span class="nn">werkzeug.utils</span> <span class="kn">import</span> <span class="n">secure_filename</span>
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">ValidationError</span><span class="p">,</span> <span class="n">EXCLUDE</span>
+
+
+<span class="kn">from</span> <span class="nn">geonature.utils.config</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">DB</span><span class="p">,</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_synthese.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Synthese</span><span class="p">,</span>
+    <span class="n">TSources</span><span class="p">,</span>
+    <span class="n">CorAreaSynthese</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.decorators</span> <span class="kn">import</span> <span class="n">login_required</span>
+
+<span class="kn">from</span> <span class="nn">.mtd</span> <span class="kn">import</span> <span class="n">sync_af_and_ds</span> <span class="k">as</span> <span class="n">mtd_sync_af_and_ds</span><span class="p">,</span> <span class="n">sync_af_and_ds_by_user</span>
+
+<span class="kn">from</span> <span class="nn">ref_geo.models</span> <span class="kn">import</span> <span class="n">LAreas</span>
+<span class="kn">from</span> <span class="nn">pypnnomenclature.models</span> <span class="kn">import</span> <span class="n">TNomenclatures</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db.tools</span> <span class="kn">import</span> <span class="n">InsufficientRightsError</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db.models</span> <span class="kn">import</span> <span class="n">User</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.gn_meta.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TDatasets</span><span class="p">,</span>
+    <span class="n">CorDatasetActor</span><span class="p">,</span>
+    <span class="n">TAcquisitionFramework</span><span class="p">,</span>
+    <span class="n">CorAcquisitionFrameworkActor</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_meta.repositories</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_metadata_list</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_meta.schemas</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AcquisitionFrameworkSchema</span><span class="p">,</span>
+    <span class="n">DatasetSchema</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.response</span> <span class="kn">import</span> <span class="n">json_resp</span><span class="p">,</span> <span class="n">to_csv_resp</span><span class="p">,</span> <span class="n">generate_csv_content</span>
+<span class="kn">from</span> <span class="nn">werkzeug.datastructures</span> <span class="kn">import</span> <span class="n">Headers</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions</span> <span class="kn">import</span> <span class="n">decorators</span> <span class="k">as</span> <span class="n">permissions</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.tools</span> <span class="kn">import</span> <span class="n">get_scopes_by_action</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.models</span> <span class="kn">import</span> <span class="n">TObjects</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_meta.mtd</span> <span class="kn">import</span> <span class="n">mtd_utils</span>
+<span class="kn">import</span> <span class="nn">geonature.utils.filemanager</span> <span class="k">as</span> <span class="nn">fm</span>
+<span class="kn">import</span> <span class="nn">geonature.utils.utilsmails</span> <span class="k">as</span> <span class="nn">mail</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.errors</span> <span class="kn">import</span> <span class="n">GeonatureApiError</span>
+<span class="kn">from</span> <span class="nn">.mtd</span> <span class="kn">import</span> <span class="n">sync_af_and_ds</span> <span class="k">as</span> <span class="n">mtd_sync_af_and_ds</span>
+
+<span class="kn">from</span> <span class="nn">ref_geo.models</span> <span class="kn">import</span> <span class="n">LAreas</span>
+
+<span class="c1"># FIXME: remove any reference to external modules from GeoNature core</span>
+<span class="k">if</span> <span class="s2">&quot;OCCHAB&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">gn_module_occhab.models</span> <span class="kn">import</span> <span class="n">OccurenceHabitat</span><span class="p">,</span> <span class="n">Station</span>
+
+
+<div class="viewcode-block" id="routes">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.routes">[docs]</a>
+<span class="n">routes</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s2">&quot;gn_meta&quot;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">,</span> <span class="n">cli_group</span><span class="o">=</span><span class="s2">&quot;metadata&quot;</span><span class="p">)</span></div>
+
+
+<span class="c1"># get the root logger</span>
+<div class="viewcode-block" id="log">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.log">[docs]</a>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span></div>
+
+
+
+<span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;CAS_PUBLIC&quot;</span><span class="p">][</span><span class="s2">&quot;CAS_AUTHENTIFICATION&quot;</span><span class="p">]:</span>
+
+    <span class="nd">@routes</span><span class="o">.</span><span class="n">before_request</span>
+<div class="viewcode-block" id="synchronize_mtd">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.synchronize_mtd">[docs]</a>
+    <span class="k">def</span> <span class="nf">synchronize_mtd</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">endpoint</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;gn_meta.get_datasets&quot;</span><span class="p">,</span> <span class="s2">&quot;gn_meta.get_acquisition_frameworks_list&quot;</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sync_af_and_ds_by_user</span><span class="p">(</span><span class="n">id_role</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Error while get JDD via MTD&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/datasets&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<div class="viewcode-block" id="get_datasets">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.get_datasets">[docs]</a>
+<span class="k">def</span> <span class="nf">get_datasets</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get datasets list</span>
+
+<span class="sd">    .. :quickref: Metadata;</span>
+
+<span class="sd">    :query boolean active: filter on active fiel</span>
+<span class="sd">    :query string create: filter on C permission for the module_code specified</span>
+<span class="sd">        (we can specify the object_code by adding a . between both)</span>
+<span class="sd">    :query int id_acquisition_framework: get only dataset of given AF</span>
+<span class="sd">    :returns:  `list&lt;TDatasets&gt;`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">MultiDict</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fields&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[])</span>
+
+    <span class="k">if</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">&quot;create&quot;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+        <span class="n">create</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;create&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">create</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">TDatasets</span><span class="o">.</span><span class="n">filter_by_creatable</span><span class="p">(</span><span class="n">module_code</span><span class="o">=</span><span class="n">create</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">object_code</span><span class="o">=</span><span class="n">create</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">TDatasets</span><span class="o">.</span><span class="n">filter_by_creatable</span><span class="p">(</span><span class="n">module_code</span><span class="o">=</span><span class="n">create</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">TDatasets</span><span class="o">.</span><span class="n">filter_by_readable</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">TDatasets</span><span class="o">.</span><span class="n">filter_by_params</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">&quot;orderby&quot;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+        <span class="n">table_columns</span> <span class="o">=</span> <span class="n">TDatasets</span><span class="o">.</span><span class="n">__table__</span><span class="o">.</span><span class="n">columns</span>
+        <span class="n">order_by_column</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;orderby&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">orderCol</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">table_columns</span><span class="p">,</span> <span class="n">order_by_column</span><span class="p">)</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">orderCol</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="s2">&quot;the attribute to order on does not exist&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">options</span><span class="p">(</span>
+        <span class="n">Load</span><span class="p">(</span><span class="n">TDatasets</span><span class="p">)</span><span class="o">.</span><span class="n">raiseload</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">),</span>
+        <span class="n">joinedload</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">cor_dataset_actor</span><span class="p">)</span><span class="o">.</span><span class="n">options</span><span class="p">(</span>
+            <span class="n">joinedload</span><span class="p">(</span><span class="n">CorDatasetActor</span><span class="o">.</span><span class="n">role</span><span class="p">),</span>
+            <span class="n">joinedload</span><span class="p">(</span><span class="n">CorDatasetActor</span><span class="o">.</span><span class="n">organism</span><span class="p">),</span>
+        <span class="p">),</span>
+        <span class="c1"># next relationships are joined for permission checks purpose:</span>
+        <span class="n">joinedload</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">acquisition_framework</span><span class="p">)</span><span class="o">.</span><span class="n">options</span><span class="p">(</span>
+            <span class="n">joinedload</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">cor_af_actor</span><span class="p">),</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">only</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;+cruved&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cor_dataset_actor&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cor_dataset_actor.nomenclature_actor_role&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cor_dataset_actor.organism&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cor_dataset_actor.role&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;synthese_records_count&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">undefer</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">synthese_records_count</span><span class="p">))</span>
+        <span class="n">only</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;+synthese_records_count&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">&quot;modules&quot;</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">joinedload</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">modules</span><span class="p">))</span>
+        <span class="n">only</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;modules&quot;</span><span class="p">)</span>
+
+    <span class="n">dataset_schema</span> <span class="o">=</span> <span class="n">DatasetSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="n">only</span><span class="p">)</span>
+
+    <span class="c1"># detect mobile app to enable retro-compatibility hacks</span>
+    <span class="n">user_agent</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;User-Agent&quot;</span><span class="p">)</span>
+    <span class="n">mobile_app</span> <span class="o">=</span> <span class="n">user_agent</span> <span class="ow">and</span> <span class="n">user_agent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;okhttp&quot;</span>
+    <span class="n">dataset_schema</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s2">&quot;mobile_app&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mobile_app</span>
+    <span class="n">datasets</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">dataset_schema</span><span class="o">.</span><span class="n">jsonify</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_af_from_id">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.get_af_from_id">[docs]</a>
+<span class="k">def</span> <span class="nf">get_af_from_id</span><span class="p">(</span><span class="n">id_af</span><span class="p">,</span> <span class="n">af_list</span><span class="p">):</span>
+    <span class="n">found_af</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">af</span> <span class="ow">in</span> <span class="n">af_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">af</span><span class="p">[</span><span class="s2">&quot;id_acquisition_framework&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">id_af</span><span class="p">:</span>
+            <span class="n">found_af</span> <span class="o">=</span> <span class="n">af</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">found_af</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/dataset/&lt;int:id_dataset&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="get_dataset">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.get_dataset">[docs]</a>
+<span class="k">def</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">id_dataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get one dataset</span>
+
+<span class="sd">    .. :quickref: Metadata;</span>
+
+<span class="sd">    :param id_dataset: the id_dataset</span>
+<span class="sd">    :param type: int</span>
+<span class="sd">    :returns: dict&lt;TDataset&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="n">TDatasets</span><span class="p">,</span> <span class="n">id_dataset</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="n">scope</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User </span><span class="si">{</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="si">}</span><span class="s2"> cannot read dataset </span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">id_dataset</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">dataset_schema</span> <span class="o">=</span> <span class="n">DatasetSchema</span><span class="p">(</span>
+        <span class="n">only</span><span class="o">=</span><span class="p">[</span>
+            <span class="s2">&quot;+cruved&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;creator&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;cor_dataset_actor&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;cor_dataset_actor.nomenclature_actor_role&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;cor_dataset_actor.organism&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;cor_dataset_actor.role&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;modules&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nomenclature_data_type&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nomenclature_dataset_objectif&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nomenclature_collecting_method&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nomenclature_data_origin&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nomenclature_source_status&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nomenclature_resource_type&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;cor_territories&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;acquisition_framework&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;acquisition_framework.creator&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;acquisition_framework.cor_af_actor&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;acquisition_framework.cor_af_actor.nomenclature_actor_role&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;acquisition_framework.cor_af_actor.organism&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;acquisition_framework.cor_af_actor.role&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sources&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">dataset_schema</span><span class="o">.</span><span class="n">jsonify</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/dataset/&lt;int:ds_id&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DELETE&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="delete_dataset">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.delete_dataset">[docs]</a>
+<span class="k">def</span> <span class="nf">delete_dataset</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">ds_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Delete a dataset</span>
+
+<span class="sd">    .. :quickref: Metadata;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="n">TDatasets</span><span class="p">,</span> <span class="n">ds_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="n">scope</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User </span><span class="si">{</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="si">}</span><span class="s2"> cannot delete dataset </span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">id_dataset</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset</span><span class="o">.</span><span class="n">is_deletable</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">Conflict</span><span class="p">(</span>
+            <span class="s2">&quot;La suppression du jeu de données n&#39;est pas possible &quot;</span>
+            <span class="s2">&quot;car des données y sont rattachées dans la Synthèse&quot;</span>
+        <span class="p">)</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">204</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/uuid_report&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="uuid_report">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.uuid_report">[docs]</a>
+<span class="k">def</span> <span class="nf">uuid_report</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get the UUID report of a dataset</span>
+
+<span class="sd">    .. :quickref: Metadata;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">params</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span>
+    <span class="n">ds_id</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_dataset&quot;</span><span class="p">)</span>
+    <span class="n">id_import</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_import&quot;</span><span class="p">)</span>
+    <span class="n">id_module</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_module&quot;</span><span class="p">)</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">Synthese</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_module</span> <span class="o">==</span> <span class="n">id_module</span> <span class="k">if</span> <span class="n">id_module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_dataset</span> <span class="o">==</span> <span class="n">ds_id</span> <span class="k">if</span> <span class="n">ds_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># TODO test in module import ?</span>
+    <span class="k">if</span> <span class="n">id_import</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span><span class="n">TSources</span><span class="p">,</span> <span class="n">TSources</span><span class="o">.</span><span class="n">id_source</span> <span class="o">==</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">id_source</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">TSources</span><span class="o">.</span><span class="n">name_source</span> <span class="o">==</span> <span class="sa">f</span><span class="s2">&quot;Import(id=</span><span class="si">{</span><span class="n">id_import</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;identifiantOrigine&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">entity_source_pk_value</span><span class="p">,</span>
+            <span class="s2">&quot;identifiant_gn&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">,</span>
+            <span class="s2">&quot;identifiantPermanent (SINP)&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">unique_id_sinp</span><span class="p">,</span>
+            <span class="s2">&quot;nomcite&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">nom_cite</span><span class="p">,</span>
+            <span class="s2">&quot;jourDateDebut&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">date_min</span><span class="p">,</span>
+            <span class="s2">&quot;jourDatefin&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">date_max</span><span class="p">,</span>
+            <span class="s2">&quot;observateurIdentite&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">observers</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">to_csv_resp</span><span class="p">(</span>
+        <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;filename&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+            <span class="s2">&quot;identifiantOrigine&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;identifiant_gn&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;identifiantPermanent (SINP)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nomcite&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;jourDateDebut&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;jourDatefin&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;observateurIdentite&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/sensi_report&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>  <span class="c1"># TODO remove later</span>
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/sensi_report/&lt;int:ds_id&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="sensi_report">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.sensi_report">[docs]</a>
+<span class="k">def</span> <span class="nf">sensi_report</span><span class="p">(</span><span class="n">ds_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get the UUID report of a dataset</span>
+
+<span class="sd">    .. :quickref: Metadata;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: put ds_id in /sensi_report/&lt;int: ds_id&gt;</span>
+
+    <span class="n">params</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ds_id</span><span class="p">:</span>
+        <span class="n">ds_id</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;id_dataset&quot;</span><span class="p">]</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="n">TDatasets</span><span class="p">,</span> <span class="n">ds_id</span><span class="p">)</span>
+    <span class="n">id_import</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_import&quot;</span><span class="p">)</span>
+    <span class="n">id_module</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_module&quot;</span><span class="p">)</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span>
+            <span class="n">Synthese</span><span class="p">,</span>
+            <span class="n">func</span><span class="o">.</span><span class="n">taxonomie</span><span class="o">.</span><span class="n">find_cdref</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;cd_ref&quot;</span><span class="p">),</span>
+            <span class="n">func</span><span class="o">.</span><span class="n">array_agg</span><span class="p">(</span><span class="n">LAreas</span><span class="o">.</span><span class="n">area_name</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;codeDepartementCalcule&quot;</span><span class="p">),</span>
+            <span class="n">func</span><span class="o">.</span><span class="n">ref_nomenclatures</span><span class="o">.</span><span class="n">get_cd_nomenclature</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_nomenclature_sensitivity</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span>
+                <span class="s2">&quot;cd_sensi&quot;</span>
+            <span class="p">),</span>
+            <span class="n">func</span><span class="o">.</span><span class="n">ref_nomenclatures</span><span class="o">.</span><span class="n">get_nomenclature_label</span><span class="p">(</span>
+                <span class="n">Synthese</span><span class="o">.</span><span class="n">id_nomenclature_bio_status</span><span class="p">,</span> <span class="s2">&quot;fr&quot;</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;occStatutBiologique&quot;</span><span class="p">),</span>
+            <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">cd_nomenclature</span><span class="p">,</span>
+            <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">label_fr</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">Synthese</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span><span class="n">CorAreaSynthese</span><span class="p">,</span> <span class="n">CorAreaSynthese</span><span class="o">.</span><span class="n">id_synthese</span> <span class="o">==</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span><span class="n">LAreas</span><span class="p">,</span> <span class="n">LAreas</span><span class="o">.</span><span class="n">id_area</span> <span class="o">==</span> <span class="n">CorAreaSynthese</span><span class="o">.</span><span class="n">id_area</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span>
+            <span class="n">TNomenclatures</span><span class="p">,</span> <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">id_nomenclature</span> <span class="o">==</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">id_nomenclature_sensitivity</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">LAreas</span><span class="o">.</span><span class="n">id_type</span> <span class="o">==</span> <span class="n">func</span><span class="o">.</span><span class="n">ref_geo</span><span class="o">.</span><span class="n">get_id_area_type</span><span class="p">(</span><span class="s2">&quot;DEP&quot;</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_module</span> <span class="o">==</span> <span class="n">id_module</span> <span class="k">if</span> <span class="n">id_module</span> <span class="k">else</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_dataset</span> <span class="o">==</span> <span class="n">ds_id</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">id_import</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span><span class="n">TSources</span><span class="p">,</span> <span class="n">TSources</span><span class="o">.</span><span class="n">id_source</span> <span class="o">==</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">id_source</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">TSources</span><span class="o">.</span><span class="n">name_source</span> <span class="o">==</span> <span class="s2">&quot;Import(id=</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">id_import</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span>
+        <span class="n">Synthese</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">,</span> <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">cd_nomenclature</span><span class="p">,</span> <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">label_fr</span>
+    <span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="n">str_productor</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">index_productor</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">cor_dataset_actor</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">actor</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">cor_dataset_actor</span><span class="p">):</span>
+                <span class="c1"># cd_nomenclature producteur = 6</span>
+                <span class="k">if</span> <span class="n">actor</span><span class="o">.</span><span class="n">nomenclature_actor_role</span><span class="o">.</span><span class="n">cd_nomenclature</span> <span class="o">==</span> <span class="s2">&quot;6&quot;</span><span class="p">:</span>
+                    <span class="n">index_productor</span> <span class="o">=</span> <span class="n">index</span>
+            <span class="n">productor</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">dataset</span><span class="o">.</span><span class="n">cor_dataset_actor</span><span class="p">[</span><span class="n">index_productor</span><span class="p">]</span> <span class="k">if</span> <span class="n">index_productor</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">productor</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">productor</span><span class="o">.</span><span class="n">organism</span><span class="p">:</span>
+                    <span class="n">str_productor</span> <span class="o">=</span> <span class="n">productor</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">nom_complet</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">str_productor</span> <span class="o">=</span> <span class="n">productor</span><span class="o">.</span><span class="n">organism</span><span class="o">.</span><span class="n">nom_organisme</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;cdNom&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">Synthese</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">,</span>
+            <span class="s2">&quot;cdRef&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">cd_ref</span><span class="p">,</span>
+            <span class="s2">&quot;codeDepartementCalcule&quot;</span><span class="p">:</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">codeDepartementCalcule</span><span class="p">),</span>
+            <span class="s2">&quot;identifiantOrigine&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">Synthese</span><span class="o">.</span><span class="n">entity_source_pk_value</span><span class="p">,</span>
+            <span class="s2">&quot;occStatutBiologique&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">occStatutBiologique</span><span class="p">,</span>
+            <span class="s2">&quot;identifiantPermanent&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">Synthese</span><span class="o">.</span><span class="n">unique_id_sinp</span><span class="p">,</span>
+            <span class="s2">&quot;sensible&quot;</span><span class="p">:</span> <span class="s2">&quot;Oui&quot;</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">cd_sensi</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span> <span class="k">else</span> <span class="s2">&quot;Non&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sensiNiveau&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">cd_nomenclature</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">label_fr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span>
+    <span class="p">]</span>
+    <span class="n">sensi_version</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">gn_commons</span><span class="o">.</span><span class="n">get_default_parameter</span><span class="p">(</span><span class="s2">&quot;ref_sensi_version&quot;</span><span class="p">))</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">one_or_none</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">sensi_version</span><span class="p">:</span>
+        <span class="n">sensi_version</span> <span class="o">=</span> <span class="n">sensi_version</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># set an header only if the rapport is on a dataset</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&quot;Rapport de sensibilité&quot;</span>
+<span class="s2">        &quot;Jeu de données&quot;;&quot;</span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="s2">        &quot;Identifiant interne&quot;;&quot;</span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">id_dataset</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="s2">        &quot;Identifiant SINP&quot;;&quot;</span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">unique_dataset_id</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="s2">        &quot;Organisme/personne fournisseur&quot;;&quot;</span><span class="si">{</span><span class="n">str_productor</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="s2">        &quot;Date de création du rapport&quot;;&quot;</span><span class="si">{</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y %Hh%M&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="s2">        &quot;Nombre de données sensibles&quot;;&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span><span class="w"> </span><span class="n">row</span><span class="p">:</span><span class="w"> </span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;sensible&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;Oui&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">)))</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="s2">        &quot;Nombre de données total dans le fichier&quot;;&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="s2">        &quot;sensiVersionReferentiel&quot;;&quot;</span><span class="si">{</span><span class="n">sensi_version</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">my_csv_resp</span><span class="p">(</span>
+        <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;filename&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+            <span class="s2">&quot;cdNom&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;cdRef&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;codeDepartementCalcule&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;identifiantOrigine&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;occStatutBiologique&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;identifiantPermanent&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sensible&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sensiNiveau&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="n">_header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="my_csv_resp">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.my_csv_resp">[docs]</a>
+<span class="k">def</span> <span class="nf">my_csv_resp</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">_header</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s2">&quot;;&quot;</span><span class="p">):</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="n">Headers</span><span class="p">()</span>
+    <span class="n">headers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">)</span>
+    <span class="n">headers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Content-Disposition&quot;</span><span class="p">,</span> <span class="s2">&quot;attachment&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;export_</span><span class="si">%s</span><span class="s2">.csv&quot;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">_header</span> <span class="o">+</span> <span class="n">generate_csv_content</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">separator</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="datasetHandler">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.datasetHandler">[docs]</a>
+<span class="k">def</span> <span class="nf">datasetHandler</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="n">datasetSchema</span> <span class="o">=</span> <span class="n">DatasetSchema</span><span class="p">(</span>
+        <span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cor_dataset_actor&quot;</span><span class="p">,</span> <span class="s2">&quot;modules&quot;</span><span class="p">,</span> <span class="s2">&quot;cor_territories&quot;</span><span class="p">],</span> <span class="n">unknown</span><span class="o">=</span><span class="n">EXCLUDE</span>
+    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">datasetSchema</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">dataset</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">messages</span><span class="p">)</span>
+
+    <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">dataset</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/dataset&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="create_dataset">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.create_dataset">[docs]</a>
+<span class="k">def</span> <span class="nf">create_dataset</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Post one Dataset data</span>
+<span class="sd">    .. :quickref: Metadata;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">DatasetSchema</span><span class="p">()</span><span class="o">.</span><span class="n">jsonify</span><span class="p">(</span>
+        <span class="n">datasetHandler</span><span class="p">(</span>
+            <span class="n">dataset</span><span class="o">=</span><span class="n">TDatasets</span><span class="p">(</span><span class="n">id_digitizer</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">id_role</span><span class="p">),</span> <span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+        <span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/dataset/&lt;int:id_dataset&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;PATCH&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;U&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="update_dataset">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.update_dataset">[docs]</a>
+<span class="k">def</span> <span class="nf">update_dataset</span><span class="p">(</span><span class="n">id_dataset</span><span class="p">,</span> <span class="n">scope</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Post one Dataset data for update dataset</span>
+<span class="sd">    .. :quickref: Metadata;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="n">TDatasets</span><span class="p">,</span> <span class="n">id_dataset</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User </span><span class="si">{</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="si">}</span><span class="s2"> cannot update dataset </span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">id_dataset</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># TODO: specify which fields may be updated</span>
+    <span class="k">return</span> <span class="n">DatasetSchema</span><span class="p">()</span><span class="o">.</span><span class="n">jsonify</span><span class="p">(</span><span class="n">datasetHandler</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()))</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/dataset/export_pdf/&lt;id_dataset&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="get_export_pdf_dataset">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.get_export_pdf_dataset">[docs]</a>
+<span class="k">def</span> <span class="nf">get_export_pdf_dataset</span><span class="p">(</span><span class="n">id_dataset</span><span class="p">,</span> <span class="n">scope</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a PDF export of one dataset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="n">TDatasets</span><span class="p">,</span> <span class="n">id_dataset</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="n">scope</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span><span class="s2">&quot;Vous n&#39;avez pas les droits d&#39;exporter ces informations&quot;</span><span class="p">)</span>
+    <span class="n">dataset_schema</span> <span class="o">=</span> <span class="n">DatasetSchema</span><span class="p">(</span>
+        <span class="n">only</span><span class="o">=</span><span class="p">[</span>
+            <span class="s2">&quot;nomenclature_data_type&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nomenclature_dataset_objectif&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nomenclature_collecting_method&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;acquisition_framework&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;cor_dataset_actor.nomenclature_actor_role&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;cor_dataset_actor.organism&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;cor_dataset_actor.role&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset_schema</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataset_desc&quot;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">240</span><span class="p">:</span>
+        <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;dataset_desc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataset_desc&quot;</span><span class="p">)[:</span><span class="mi">240</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span>
+
+    <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;css&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;logo&quot;</span><span class="p">:</span> <span class="s2">&quot;Logo_pdf.png&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bandeau&quot;</span><span class="p">:</span> <span class="s2">&quot;Bandeau_pdf.png&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;entite&quot;</span><span class="p">:</span> <span class="s2">&quot;sinp&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;METADATA&quot;</span><span class="p">][</span><span class="s2">&quot;DS_PDF_TITLE&quot;</span><span class="p">]</span>
+
+    <span class="n">date</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>
+
+    <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;footer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/#/metadata/dataset_detail/&quot;</span> <span class="o">+</span> <span class="n">id_dataset</span><span class="p">,</span>
+        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="c1"># chart</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">is_json</span> <span class="ow">and</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;chart&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;chart&quot;</span><span class="p">]</span>
+    <span class="c1"># create PDF file</span>
+    <span class="n">pdf_file</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">generate_pdf</span><span class="p">(</span><span class="s2">&quot;dataset_template_pdf.html&quot;</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">current_app</span><span class="o">.</span><span class="n">response_class</span><span class="p">(</span><span class="n">pdf_file</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;application/pdf&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/acquisition_frameworks&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<div class="viewcode-block" id="get_acquisition_frameworks">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.get_acquisition_frameworks">[docs]</a>
+<span class="k">def</span> <span class="nf">get_acquisition_frameworks</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a simple list of AF without any nested relationships</span>
+<span class="sd">    Use for AF select in form</span>
+<span class="sd">    Get the GeoNature CRUVED</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">only</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;+cruved&quot;</span><span class="p">]</span>
+    <span class="c1"># QUERY</span>
+    <span class="n">af_list</span> <span class="o">=</span> <span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">filter_by_readable</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">af_list</span> <span class="o">=</span> <span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">filter_by_params</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">af_list</span><span class="p">)</span>
+
+    <span class="n">af_list</span> <span class="o">=</span> <span class="n">af_list</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">acquisition_framework_name</span><span class="p">)</span><span class="o">.</span><span class="n">options</span><span class="p">(</span>
+        <span class="n">Load</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="p">)</span><span class="o">.</span><span class="n">raiseload</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">),</span>
+        <span class="c1"># for permission checks:</span>
+        <span class="n">joinedload</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">creator</span><span class="p">),</span>
+        <span class="n">joinedload</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">cor_af_actor</span><span class="p">)</span><span class="o">.</span><span class="n">options</span><span class="p">(</span>
+            <span class="n">joinedload</span><span class="p">(</span><span class="n">CorAcquisitionFrameworkActor</span><span class="o">.</span><span class="n">role</span><span class="p">),</span>
+            <span class="n">joinedload</span><span class="p">(</span><span class="n">CorAcquisitionFrameworkActor</span><span class="o">.</span><span class="n">organism</span><span class="p">),</span>
+        <span class="p">),</span>
+        <span class="n">joinedload</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">datasets</span><span class="p">)</span><span class="o">.</span><span class="n">options</span><span class="p">(</span>
+            <span class="n">joinedload</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">digitizer</span><span class="p">),</span>
+            <span class="n">joinedload</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">cor_dataset_actor</span><span class="p">)</span><span class="o">.</span><span class="n">options</span><span class="p">(</span>
+                <span class="n">joinedload</span><span class="p">(</span><span class="n">CorDatasetActor</span><span class="o">.</span><span class="n">role</span><span class="p">),</span>
+                <span class="n">joinedload</span><span class="p">(</span><span class="n">CorDatasetActor</span><span class="o">.</span><span class="n">organism</span><span class="p">),</span>
+            <span class="p">),</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;datasets&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">):</span>
+        <span class="n">only</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;datasets.+cruved&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;creator&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">):</span>
+        <span class="n">only</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;creator&quot;</span><span class="p">)</span>
+        <span class="n">af_list</span> <span class="o">=</span> <span class="n">af_list</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">joinedload</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">creator</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;actors&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">):</span>
+        <span class="n">only</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;cor_af_actor&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;cor_af_actor.nomenclature_actor_role&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;cor_af_actor.organism&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;cor_af_actor.role&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">af_list</span> <span class="o">=</span> <span class="n">af_list</span><span class="o">.</span><span class="n">options</span><span class="p">(</span>
+            <span class="n">joinedload</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">cor_af_actor</span><span class="p">)</span><span class="o">.</span><span class="n">options</span><span class="p">(</span>
+                <span class="n">joinedload</span><span class="p">(</span><span class="n">CorAcquisitionFrameworkActor</span><span class="o">.</span><span class="n">nomenclature_actor_role</span><span class="p">),</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;datasets&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">):</span>
+            <span class="n">only</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="s2">&quot;datasets.cor_dataset_actor&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;datasets.cor_dataset_actor.nomenclature_actor_role&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;datasets.cor_dataset_actor.organism&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;datasets.cor_dataset_actor.role&quot;</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">af_list</span> <span class="o">=</span> <span class="n">af_list</span><span class="o">.</span><span class="n">options</span><span class="p">(</span>
+                <span class="n">joinedload</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">datasets</span><span class="p">)</span><span class="o">.</span><span class="n">options</span><span class="p">(</span>
+                    <span class="n">joinedload</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">cor_dataset_actor</span><span class="p">)</span><span class="o">.</span><span class="n">options</span><span class="p">(</span>
+                        <span class="n">joinedload</span><span class="p">(</span><span class="n">CorDatasetActor</span><span class="o">.</span><span class="n">nomenclature_actor_role</span><span class="p">),</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+    <span class="n">af_schema</span> <span class="o">=</span> <span class="n">AcquisitionFrameworkSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="n">only</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">af_schema</span><span class="o">.</span><span class="n">jsonify</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">af_list</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/list/acquisition_frameworks&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="get_acquisition_frameworks_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.get_acquisition_frameworks_list">[docs]</a>
+<span class="k">def</span> <span class="nf">get_acquisition_frameworks_list</span><span class="p">(</span><span class="n">scope</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get all AF with their datasets</span>
+<span class="sd">    Use in metadata module for list of AF and DS</span>
+<span class="sd">    Add the CRUVED permission for each row (Dataset and AD)</span>
+
+<span class="sd">    DEPRECATED use get_acquisition_frameworks instead</span>
+
+<span class="sd">    .. :quickref: Metadata;</span>
+
+<span class="sd">    :qparam list excluded_fields: fields excluded from serialization</span>
+<span class="sd">    :qparam boolean nested: Default False - serialized relationships. If false: remove add all relationships in excluded_fields</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+    <span class="n">params</span><span class="p">[</span><span class="s2">&quot;orderby&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;acquisition_framework_name&quot;</span>
+
+    <span class="k">if</span> <span class="s2">&quot;selector&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;selector&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">nested_serialization</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nested&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">nested_serialization</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">nested_serialization</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span> <span class="k">else</span> <span class="kc">False</span>
+    <span class="n">exclude_fields</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="s2">&quot;excluded_fields&quot;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+        <span class="n">exclude_fields</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;excluded_fields&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">nested_serialization</span><span class="p">:</span>
+        <span class="c1"># exclude all relationships from serialization if nested = false</span>
+        <span class="n">exclude_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">db_rel</span><span class="o">.</span><span class="n">key</span> <span class="k">for</span> <span class="n">db_rel</span> <span class="ow">in</span> <span class="n">inspect</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="p">)</span><span class="o">.</span><span class="n">relationships</span><span class="p">]</span>
+
+    <span class="n">acquisitionFrameworkSchema</span> <span class="o">=</span> <span class="n">AcquisitionFrameworkSchema</span><span class="p">(</span>
+        <span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;+cruved&quot;</span><span class="p">],</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude_fields</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">acquisitionFrameworkSchema</span><span class="o">.</span><span class="n">jsonify</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">get_metadata_list</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">all</span><span class="p">(),</span>
+        <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
+    <span class="s2">&quot;/acquisition_frameworks/export_pdf/&lt;id_acquisition_framework&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="get_export_pdf_acquisition_frameworks">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.get_export_pdf_acquisition_frameworks">[docs]</a>
+<span class="k">def</span> <span class="nf">get_export_pdf_acquisition_frameworks</span><span class="p">(</span><span class="n">id_acquisition_framework</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a PDF export of one acquisition</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Recuperation des données</span>
+    <span class="n">af</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="p">,</span> <span class="n">id_acquisition_framework</span><span class="p">)</span>
+    <span class="n">acquisition_framework</span> <span class="o">=</span> <span class="n">af</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">dataset_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">id_dataset</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">af</span><span class="o">.</span><span class="n">datasets</span><span class="p">]</span>
+    <span class="n">nb_data</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset_ids</span><span class="p">)</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">Synthese</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_dataset</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">dataset_ids</span><span class="p">))</span>
+    <span class="p">)</span>
+    <span class="n">nb_taxons</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">distinct</span><span class="p">())</span>
+    <span class="n">nb_observations</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+    <span class="n">nb_habitat</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># Check if pr_occhab exist</span>
+    <span class="n">check_schema_query</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;schema_name&quot;</span><span class="p">)))</span>
+        <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;information_schema.schemata&quot;</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;schema_name = &#39;pr_occhab&#39;&quot;</span><span class="p">))</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">check_schema_query</span><span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">nb_data</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in </span><span class="se">\</span>
+<span class="s2">        (&quot;</span>
+            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dataset_ids</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;[]&quot;</span><span class="p">)</span>
+            <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">nb_habitat</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">query</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;stats&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;nb_data&quot;</span><span class="p">:</span> <span class="n">nb_data</span><span class="p">,</span>
+        <span class="s2">&quot;nb_taxons&quot;</span><span class="p">:</span> <span class="n">nb_taxons</span><span class="p">,</span>
+        <span class="s2">&quot;nb_observations&quot;</span><span class="p">:</span> <span class="n">nb_observations</span><span class="p">,</span>
+        <span class="s2">&quot;nb_habitats&quot;</span><span class="p">:</span> <span class="n">nb_habitat</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">is_json</span> <span class="ow">and</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;chart&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;chart&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">acquisition_framework</span><span class="p">:</span>
+        <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;nomenclature_territorial_level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">af</span><span class="o">.</span><span class="n">nomenclature_territorial_level</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;nomenclature_financing_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">af</span><span class="o">.</span><span class="n">nomenclature_financing_type</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;acquisition_framework_start_date&quot;</span><span class="p">]:</span>
+            <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;acquisition_framework_start_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">af</span><span class="o">.</span><span class="n">acquisition_framework_start_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;acquisition_framework_end_date&quot;</span><span class="p">]:</span>
+            <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;acquisition_framework_end_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">af</span><span class="o">.</span><span class="n">acquisition_framework_end_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;css&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;logo&quot;</span><span class="p">:</span> <span class="s2">&quot;Logo_pdf.png&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;bandeau&quot;</span><span class="p">:</span> <span class="s2">&quot;Bandeau_pdf.png&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;entite&quot;</span><span class="p">:</span> <span class="s2">&quot;sinp&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;pdf_title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;METADATA&quot;</span><span class="p">][</span><span class="s2">&quot;AF_PDF_TITLE&quot;</span><span class="p">]</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>
+        <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;footer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">]</span>
+            <span class="o">+</span> <span class="s2">&quot;/#/metadata/af-card/&quot;</span>
+            <span class="o">+</span> <span class="n">id_acquisition_framework</span><span class="p">,</span>
+            <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">render_template</span><span class="p">(</span>
+                <span class="s2">&quot;error.html&quot;</span><span class="p">,</span>
+                <span class="n">error</span><span class="o">=</span><span class="s2">&quot;Le dataset presente des erreurs&quot;</span><span class="p">,</span>
+                <span class="n">redirect</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/#/metadata&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="mi">404</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">af</span><span class="o">.</span><span class="n">initial_closing_date</span><span class="p">:</span>
+        <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;initial_closing_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">af</span><span class="o">.</span><span class="n">initial_closing_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%m-%Y %H:%M&quot;</span>
+        <span class="p">)</span>
+        <span class="n">acquisition_framework</span><span class="p">[</span><span class="s2">&quot;closed_title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;METADATA&quot;</span><span class="p">][</span><span class="s2">&quot;CLOSED_AF_TITLE&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Appel de la methode pour generer un pdf</span>
+    <span class="n">pdf_file</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">generate_pdf</span><span class="p">(</span><span class="s2">&quot;acquisition_framework_template_pdf.html&quot;</span><span class="p">,</span> <span class="n">acquisition_framework</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">current_app</span><span class="o">.</span><span class="n">response_class</span><span class="p">(</span><span class="n">pdf_file</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;application/pdf&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/acquisition_framework/&lt;id_acquisition_framework&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="get_acquisition_framework">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.get_acquisition_framework">[docs]</a>
+<span class="k">def</span> <span class="nf">get_acquisition_framework</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">id_acquisition_framework</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get one AF with nomenclatures</span>
+<span class="sd">    .. :quickref: Metadata;</span>
+
+<span class="sd">    :param id_acquisition_framework: the id_acquisition_framework</span>
+<span class="sd">    :param type: int</span>
+<span class="sd">    :returns: dict&lt;TAcquisitionFramework&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">af</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="p">,</span> <span class="n">id_acquisition_framework</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">af</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="n">scope</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;User </span><span class="si">{</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="si">}</span><span class="s2"> cannot read acquisition &quot;</span>
+            <span class="s2">&quot;framework </span><span class="si">{af.id_acquisition_framework}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">exclude</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">getlist</span><span class="p">(</span><span class="s2">&quot;exclude&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">af_schema</span> <span class="o">=</span> <span class="n">AcquisitionFrameworkSchema</span><span class="p">(</span>
+            <span class="n">only</span><span class="o">=</span><span class="p">[</span>
+                <span class="s2">&quot;+cruved&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;creator&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;nomenclature_territorial_level&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;nomenclature_financing_type&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;cor_af_actor&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;cor_af_actor.nomenclature_actor_role&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;cor_af_actor.organism&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;cor_af_actor.role&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;cor_volets_sinp&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;cor_objectifs&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;cor_territories&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;datasets&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;datasets.creator&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;datasets.nomenclature_data_type&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;datasets.cor_dataset_actor&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;datasets.cor_dataset_actor.nomenclature_actor_role&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;datasets.cor_dataset_actor.organism&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;datasets.cor_dataset_actor.role&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">af_schema</span><span class="o">.</span><span class="n">jsonify</span><span class="p">(</span><span class="n">af</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/acquisition_framework/&lt;int:af_id&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DELETE&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="delete_acquisition_framework">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.delete_acquisition_framework">[docs]</a>
+<span class="k">def</span> <span class="nf">delete_acquisition_framework</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">af_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Delete an acquisition framework</span>
+<span class="sd">    .. :quickref: Metadata;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">af</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="p">,</span> <span class="n">af_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">af</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;User </span><span class="si">{</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="si">}</span><span class="s2"> cannot delete acquisition framework </span><span class="si">{</span><span class="n">af</span><span class="o">.</span><span class="n">id_acquisition_framework</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">af</span><span class="o">.</span><span class="n">is_deletable</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">Conflict</span><span class="p">(</span>
+            <span class="s2">&quot;La suppression du cadre d’acquisition n&#39;est pas possible &quot;</span>
+            <span class="s2">&quot;car celui-ci contient des jeux de données.&quot;</span>
+        <span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">af</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">204</span></div>
+
+
+
+<div class="viewcode-block" id="acquisitionFrameworkHandler">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.acquisitionFrameworkHandler">[docs]</a>
+<span class="k">def</span> <span class="nf">acquisitionFrameworkHandler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">acquisition_framework</span><span class="p">):</span>
+    <span class="c1"># Test des droits d&#39;édition du acquisition framework si modification</span>
+    <span class="k">if</span> <span class="n">acquisition_framework</span><span class="o">.</span><span class="n">id_acquisition_framework</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">user_cruved</span> <span class="o">=</span> <span class="n">get_scopes_by_action</span><span class="p">(</span><span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+
+        <span class="c1"># verification des droits d&#39;édition pour le acquisition framework</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">acquisition_framework</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">user_cruved</span><span class="p">[</span><span class="s2">&quot;U&quot;</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span>
+                <span class="s2">&quot;User </span><span class="si">{}</span><span class="s2"> has no right in acquisition_framework </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="p">,</span> <span class="n">acquisition_framework</span><span class="o">.</span><span class="n">id_acquisition_framework</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">acquisition_framework</span><span class="o">.</span><span class="n">id_digitizer</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">id_role</span>
+
+    <span class="n">acquisitionFrameworkSchema</span> <span class="o">=</span> <span class="n">AcquisitionFrameworkSchema</span><span class="p">(</span>
+        <span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cor_af_actor&quot;</span><span class="p">,</span> <span class="s2">&quot;cor_volets_sinp&quot;</span><span class="p">,</span> <span class="s2">&quot;cor_objectifs&quot;</span><span class="p">,</span> <span class="s2">&quot;cor_territories&quot;</span><span class="p">],</span>
+        <span class="n">unknown</span><span class="o">=</span><span class="n">EXCLUDE</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">acquisition_framework</span> <span class="o">=</span> <span class="n">acquisitionFrameworkSchema</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">(),</span> <span class="n">instance</span><span class="o">=</span><span class="n">acquisition_framework</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">messages</span><span class="p">)</span>
+
+    <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">acquisition_framework</span><span class="p">)</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">acquisition_framework</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/acquisition_framework&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="create_acquisition_framework">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.create_acquisition_framework">[docs]</a>
+<span class="k">def</span> <span class="nf">create_acquisition_framework</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Post one AcquisitionFramework data</span>
+<span class="sd">    .. :quickref: Metadata;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: spécifier only</span>
+    <span class="c1"># create new acquisition_framework</span>
+    <span class="k">return</span> <span class="n">AcquisitionFrameworkSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[])</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
+        <span class="n">acquisitionFrameworkHandler</span><span class="p">(</span><span class="n">request</span><span class="o">=</span><span class="n">request</span><span class="p">,</span> <span class="n">acquisition_framework</span><span class="o">=</span><span class="n">TAcquisitionFramework</span><span class="p">())</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/acquisition_framework/&lt;int:id_acquisition_framework&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;U&quot;</span><span class="p">,</span> <span class="n">get_scope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="updateAcquisitionFramework">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.updateAcquisitionFramework">[docs]</a>
+<span class="k">def</span> <span class="nf">updateAcquisitionFramework</span><span class="p">(</span><span class="n">id_acquisition_framework</span><span class="p">,</span> <span class="n">scope</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Post one AcquisitionFramework data for update acquisition_framework</span>
+<span class="sd">    .. :quickref: Metadata;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">af</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="p">,</span> <span class="n">id_acquisition_framework</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">af</span><span class="o">.</span><span class="n">has_instance_permission</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="n">scope</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;User </span><span class="si">{</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="si">}</span><span class="s2"> cannot update &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;acquisition framework </span><span class="si">{</span><span class="n">af</span><span class="o">.</span><span class="n">id_acquisition_framework</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">AcquisitionFrameworkSchema</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
+        <span class="n">acquisitionFrameworkHandler</span><span class="p">(</span><span class="n">request</span><span class="o">=</span><span class="n">request</span><span class="p">,</span> <span class="n">acquisition_framework</span><span class="o">=</span><span class="n">af</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/acquisition_framework/&lt;id_acquisition_framework&gt;/stats&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_acquisition_framework_stats">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.get_acquisition_framework_stats">[docs]</a>
+<span class="k">def</span> <span class="nf">get_acquisition_framework_stats</span><span class="p">(</span><span class="n">id_acquisition_framework</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get stats from one AF</span>
+<span class="sd">    .. :quickref: Metadata;</span>
+<span class="sd">    :param id_acquisition_framework: the id_acquisition_framework</span>
+<span class="sd">    :param type: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dataset_ids</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">id_dataset</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">TDatasets</span><span class="o">.</span><span class="n">id_acquisition_framework</span> <span class="o">==</span> <span class="n">id_acquisition_framework</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="n">nb_datasets</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset_ids</span><span class="p">)</span>
+
+    <span class="n">nb_taxons</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">))</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_dataset</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">dataset_ids</span><span class="p">))</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+
+    <span class="n">nb_observations</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">Synthese</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">id_acquisition_framework</span> <span class="o">==</span> <span class="n">id_acquisition_framework</span><span class="p">))</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+
+    <span class="n">nb_habitats</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="s2">&quot;OCCHAB&quot;</span> <span class="ow">in</span> <span class="n">config</span> <span class="ow">and</span> <span class="n">nb_datasets</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">nb_habitats</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">OccurenceHabitat</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Station</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Station</span><span class="o">.</span><span class="n">id_dataset</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">dataset_ids</span><span class="p">))</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">nb_dataset</span><span class="o">=</span><span class="n">nb_datasets</span><span class="p">,</span>
+        <span class="n">nb_taxons</span><span class="o">=</span><span class="n">nb_taxons</span><span class="p">,</span>
+        <span class="n">nb_observations</span><span class="o">=</span><span class="n">nb_observations</span><span class="p">,</span>
+        <span class="n">nb_habitats</span><span class="o">=</span><span class="n">nb_habitats</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/acquisition_framework/&lt;id_acquisition_framework&gt;/bbox&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_acquisition_framework_bbox">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.get_acquisition_framework_bbox">[docs]</a>
+<span class="k">def</span> <span class="nf">get_acquisition_framework_bbox</span><span class="p">(</span><span class="n">id_acquisition_framework</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get BBOX from one AF</span>
+<span class="sd">    .. :quickref: Metadata;</span>
+<span class="sd">    :param id_acquisition_framework: the id_acquisition_framework</span>
+<span class="sd">    :param type: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dataset_ids</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">id_dataset</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">TDatasets</span><span class="o">.</span><span class="n">id_acquisition_framework</span> <span class="o">==</span> <span class="n">id_acquisition_framework</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="n">geojsonData</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">ST_AsGeoJSON</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">ST_Extent</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">the_geom_4326</span><span class="p">)))</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_dataset</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">dataset_ids</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="c1"># geojsonData will never be empty, if no entries matching the query condition(s), it will contains [(None,)]</span>
+    <span class="n">geojsonData</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">ST_AsGeoJSON</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">ST_Extent</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">the_geom_4326</span><span class="p">)))</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_dataset</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">dataset_ids</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">geojsonData</span><span class="p">)</span> <span class="k">if</span> <span class="n">geojsonData</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="publish_acquisition_framework_mail">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.publish_acquisition_framework_mail">[docs]</a>
+<span class="k">def</span> <span class="nf">publish_acquisition_framework_mail</span><span class="p">(</span><span class="n">af</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Method for sending a mail during the publication process</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Parsing the AF XML from MTD to get the idTPS parameter</span>
+    <span class="n">af_xml</span> <span class="o">=</span> <span class="n">mtd_utils</span><span class="o">.</span><span class="n">get_acquisition_framework</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">af</span><span class="o">.</span><span class="n">unique_acquisition_framework_id</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+    <span class="n">xml_parser</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">XMLParser</span><span class="p">(</span><span class="n">ns_clean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">recover</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+    <span class="n">namespace</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;XML_NAMESPACE&quot;</span><span class="p">]</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">af_xml</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="n">xml_parser</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ca</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;.//&quot;</span> <span class="o">+</span> <span class="n">namespace</span> <span class="o">+</span> <span class="s2">&quot;CadreAcquisition&quot;</span><span class="p">)</span>
+        <span class="n">ca_idtps</span> <span class="o">=</span> <span class="n">mtd_utils</span><span class="o">.</span><span class="n">get_tag_content</span><span class="p">(</span><span class="n">ca</span><span class="p">,</span> <span class="s2">&quot;idTPS&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">ca_idtps</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="c1"># Generate the links for the AF&#39;s deposite certificate and framework download</span>
+    <span class="n">pdf_url</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;API_ENDPOINT&quot;</span><span class="p">]</span>
+        <span class="o">+</span> <span class="s2">&quot;/meta/acquisition_frameworks/export_pdf/&quot;</span>
+        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">af</span><span class="o">.</span><span class="n">id_acquisition_framework</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Mail subject</span>
+    <span class="n">mail_subject</span> <span class="o">=</span> <span class="s2">&quot;Dépôt du cadre d&#39;acquisition &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">af</span><span class="o">.</span><span class="n">unique_acquisition_framework_id</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="n">mail_subject_base</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;METADATA&quot;</span><span class="p">][</span><span class="s2">&quot;MAIL_SUBJECT_AF_CLOSED_BASE&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">mail_subject_base</span><span class="p">:</span>
+        <span class="n">mail_subject</span> <span class="o">=</span> <span class="n">mail_subject_base</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">mail_subject</span>
+    <span class="k">if</span> <span class="n">ca_idtps</span><span class="p">:</span>
+        <span class="n">mail_subject</span> <span class="o">=</span> <span class="n">mail_subject</span> <span class="o">+</span> <span class="s2">&quot; pour le dossier </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ca_idtps</span><span class="p">)</span>
+
+    <span class="c1"># Mail content</span>
+    <span class="n">mail_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Bonjour,&lt;br&gt;</span>
+<span class="s2">    &lt;br&gt;</span>
+<span class="s2">    Le cadre d&#39;acquisition &lt;i&gt; &quot;</span><span class="si">{</span><span class="n">af</span><span class="o">.</span><span class="n">acquisition_framework_name</span><span class="si">}</span><span class="s2">&quot; &lt;/i&gt; dont l’identifiant est</span>
+<span class="s2">    &quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">af</span><span class="o">.</span><span class="n">unique_acquisition_framework_id</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot; que vous nous avez transmis a été déposé&quot;&quot;&quot;</span>
+
+    <span class="n">mail_content_additions</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;METADATA&quot;</span><span class="p">][</span><span class="s2">&quot;MAIL_CONTENT_AF_CLOSED_ADDITION&quot;</span><span class="p">]</span>
+    <span class="n">mail_content_pdf</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;METADATA&quot;</span><span class="p">][</span><span class="s2">&quot;MAIL_CONTENT_AF_CLOSED_PDF&quot;</span><span class="p">]</span>
+    <span class="n">mail_content_greetings</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;METADATA&quot;</span><span class="p">][</span><span class="s2">&quot;MAIL_CONTENT_AF_CLOSED_GREETINGS&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">ca_idtps</span><span class="p">:</span>
+        <span class="n">mail_content</span> <span class="o">=</span> <span class="n">mail_content</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;dans le cadre du dossier </span><span class="si">{</span><span class="n">ca_idtps</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">if</span> <span class="n">mail_content_additions</span><span class="p">:</span>
+        <span class="n">mail_content</span> <span class="o">=</span> <span class="n">mail_content</span> <span class="o">+</span> <span class="n">mail_content_additions</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mail_content</span> <span class="o">=</span> <span class="n">mail_content</span> <span class="o">+</span> <span class="s2">&quot;.&lt;br&gt;&quot;</span>
+
+    <span class="k">if</span> <span class="n">mail_content_pdf</span><span class="p">:</span>
+        <span class="n">mail_content</span> <span class="o">=</span> <span class="n">mail_content</span> <span class="o">+</span> <span class="n">mail_content_pdf</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pdf_url</span><span class="p">)</span> <span class="o">+</span> <span class="n">pdf_url</span> <span class="o">+</span> <span class="s2">&quot;&lt;br&gt;&quot;</span>
+
+    <span class="k">if</span> <span class="n">mail_content_greetings</span><span class="p">:</span>
+        <span class="n">mail_content</span> <span class="o">=</span> <span class="n">mail_content</span> <span class="o">+</span> <span class="n">mail_content_greetings</span>
+
+    <span class="c1"># Mail recipients : if the publisher is the the AF digitizer, we send a mail to both of them</span>
+    <span class="n">mail_recipients</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">cur_user</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span>
+    <span class="k">if</span> <span class="n">cur_user</span> <span class="ow">and</span> <span class="n">cur_user</span><span class="o">.</span><span class="n">email</span><span class="p">:</span>
+        <span class="n">mail_recipients</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cur_user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">af</span><span class="o">.</span><span class="n">id_digitizer</span><span class="p">:</span>
+        <span class="n">digitizer</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">af</span><span class="o">.</span><span class="n">id_digitizer</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">digitizer</span> <span class="ow">and</span> <span class="n">digitizer</span><span class="o">.</span><span class="n">email</span><span class="p">:</span>
+            <span class="n">mail_recipients</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">digitizer</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+    <span class="c1"># Mail sent</span>
+    <span class="k">if</span> <span class="n">mail_subject</span> <span class="ow">and</span> <span class="n">mail_content</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">mail_recipients</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">mail</span><span class="o">.</span><span class="n">send_mail</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">mail_recipients</span><span class="p">),</span> <span class="n">mail_subject</span><span class="p">,</span> <span class="n">mail_content</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/acquisition_framework/publish/&lt;int:af_id&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="publish_acquisition_framework">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.publish_acquisition_framework">[docs]</a>
+<span class="k">def</span> <span class="nf">publish_acquisition_framework</span><span class="p">(</span><span class="n">af_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Publish an acquisition framework</span>
+<span class="sd">    .. :quickref: Metadata;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># The AF must contain DS to be published</span>
+    <span class="n">datasets</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">TDatasets</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">id_acquisition_framework</span><span class="o">=</span><span class="n">af_id</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">datasets</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Conflict</span><span class="p">(</span><span class="s2">&quot;Le cadre doit contenir des jeux de données&quot;</span><span class="p">)</span>
+
+    <span class="n">af_count</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">id_acquisition_framework</span> <span class="o">==</span> <span class="n">af_id</span><span class="p">,</span>
+            <span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">synthese_records</span><span class="o">.</span><span class="n">any</span><span class="p">()),</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">af_count</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Conflict</span><span class="p">(</span><span class="s2">&quot;Tous les jeux de données du cadre d’acquisition sont vides&quot;</span><span class="p">)</span>
+
+    <span class="c1"># After publishing an AF, we set it as closed and all its DS as inactive</span>
+    <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">:</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># If the AF if closed for the first time, we set it an initial_closing_date as the actual time</span>
+    <span class="n">af</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="p">,</span> <span class="n">af_id</span><span class="p">)</span>
+    <span class="n">af</span><span class="o">.</span><span class="n">opened</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">af</span><span class="o">.</span><span class="n">initial_closing_date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">af</span><span class="o">.</span><span class="n">initial_closing_date</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="c1"># first commit before sending mail</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="c1"># We send a mail to notify the AF publication</span>
+    <span class="n">publish_acquisition_framework_mail</span><span class="p">(</span><span class="n">af</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">af</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;id_role&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class="viewcode-block" id="mtd_sync">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.mtd_sync">[docs]</a>
+<span class="k">def</span> <span class="nf">mtd_sync</span><span class="p">(</span><span class="n">id_role</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Trigger global sync or a sync for a given user only.</span>
+
+<span class="sd">    :param id_role: user id</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">id_role</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">sync_af_and_ds_by_user</span><span class="p">(</span><span class="n">id_role</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mtd_sync_af_and_ds</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

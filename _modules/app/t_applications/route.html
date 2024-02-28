@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.t_applications.route &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">app.t_applications.route</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de app.t_applications.route</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">redirect</span><span class="p">,</span>
+    <span class="n">url_for</span><span class="p">,</span>
+    <span class="n">render_template</span><span class="p">,</span>
+    <span class="n">Blueprint</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">,</span>
+    <span class="n">flash</span><span class="p">,</span>
+    <span class="n">jsonify</span><span class="p">,</span>
+    <span class="n">current_app</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">app.env</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">app.t_applications</span> <span class="kn">import</span> <span class="n">forms</span> <span class="k">as</span> <span class="n">t_applicationsforms</span>
+<span class="kn">from</span> <span class="nn">app.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TApplications</span><span class="p">,</span>
+    <span class="n">TRoles</span><span class="p">,</span>
+    <span class="n">TProfils</span><span class="p">,</span>
+    <span class="n">CorProfilForApp</span><span class="p">,</span>
+    <span class="n">CorRoleAppProfil</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">pypnusershub</span> <span class="kn">import</span> <span class="n">routes</span> <span class="k">as</span> <span class="n">fnauth</span>
+
+
+<div class="viewcode-block" id="URL_REDIRECT">
+<a class="viewcode-back" href="../../../autoapi/app/t_applications/route/index.html#app.t_applications.route.URL_REDIRECT">[docs]</a>
+<span class="n">URL_REDIRECT</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_REDIRECT&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="URL_APPLICATION">
+<a class="viewcode-back" href="../../../autoapi/app/t_applications/route/index.html#app.t_applications.route.URL_APPLICATION">[docs]</a>
+<span class="n">URL_APPLICATION</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="route">
+<a class="viewcode-back" href="../../../autoapi/app/t_applications/route/index.html#app.t_applications.route.route">[docs]</a>
+<span class="n">route</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s2">&quot;application&quot;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;applications/list&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span>
+    <span class="mi">3</span><span class="p">,</span>
+<span class="p">)</span>
+<div class="viewcode-block" id="applications">
+<a class="viewcode-back" href="../../../autoapi/app/t_applications/route/index.html#app.t_applications.route.applications">[docs]</a>
+<span class="k">def</span> <span class="nf">applications</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Route qui affiche la liste des applications</span>
+<span class="sd">    Retourne un template avec pour paramètres :</span>
+<span class="sd">                                            - une entête de tableau --&gt; fLine</span>
+<span class="sd">                                            - le nom des colonnes de la base --&gt; line</span>
+<span class="sd">                                            - le contenu du tableau --&gt; table</span>
+<span class="sd">                                            - le chemin de mise à jour --&gt; pathU</span>
+<span class="sd">                                            - le chemin de suppression --&gt; pathD</span>
+<span class="sd">                                            - le chemin d&#39;ajout --&gt; pathA</span>
+<span class="sd">                                            - une clé (clé primaire dans la plupart des cas) --&gt; key</span>
+<span class="sd">                                            - un nom (nom de la table) pour le bouton ajout --&gt; name</span>
+<span class="sd">                                            - un nom de liste --&gt; name_list</span>
+<span class="sd">                                            - ajoute une colonne de bouton (&#39;True doit être de type string) --&gt; permissions</span>
+<span class="sd">                                            - nom affiché sur le bouton --&gt; Members</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fLine</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="s2">&quot;Code&quot;</span><span class="p">,</span> <span class="s2">&quot;Nom&quot;</span><span class="p">,</span> <span class="s2">&quot;Description&quot;</span><span class="p">]</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;id_application&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;code_application&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nom_application&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;desc_application&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">contents</span> <span class="o">=</span> <span class="n">TApplications</span><span class="o">.</span><span class="n">get_all</span><span class="p">(</span><span class="n">order_by</span><span class="o">=</span><span class="s2">&quot;nom_application&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">contents</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;id_parent&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="n">TApplications</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;id_parent&quot;</span><span class="p">])</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;app_parent&quot;</span><span class="p">:</span> <span class="n">parent</span><span class="p">[</span><span class="s2">&quot;nom_application&quot;</span><span class="p">]})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;app_parent&quot;</span><span class="p">:</span> <span class="n">parent</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span>
+        <span class="s2">&quot;table_database.html&quot;</span><span class="p">,</span>
+        <span class="n">table</span><span class="o">=</span><span class="n">contents</span><span class="p">,</span>
+        <span class="n">fLine</span><span class="o">=</span><span class="n">fLine</span><span class="p">,</span>
+        <span class="n">line</span><span class="o">=</span><span class="n">columns</span><span class="p">,</span>
+        <span class="n">key</span><span class="o">=</span><span class="s2">&quot;id_application&quot;</span><span class="p">,</span>
+        <span class="n">pathU</span><span class="o">=</span><span class="n">URL_APPLICATION</span> <span class="o">+</span> <span class="s2">&quot;/application/update/&quot;</span><span class="p">,</span>
+        <span class="n">pathD</span><span class="o">=</span><span class="n">URL_APPLICATION</span> <span class="o">+</span> <span class="s2">&quot;/application/delete/&quot;</span><span class="p">,</span>
+        <span class="n">pathA</span><span class="o">=</span><span class="n">URL_APPLICATION</span> <span class="o">+</span> <span class="s2">&quot;/application/add/new&quot;</span><span class="p">,</span>
+        <span class="n">pathP</span><span class="o">=</span><span class="n">URL_APPLICATION</span> <span class="o">+</span> <span class="s2">&quot;/application_roles_profil/&quot;</span><span class="p">,</span>
+        <span class="n">pathR</span><span class="o">=</span><span class="n">URL_APPLICATION</span> <span class="o">+</span> <span class="s2">&quot;/application/profils/&quot;</span><span class="p">,</span>
+        <span class="n">pathI</span><span class="o">=</span><span class="n">URL_APPLICATION</span> <span class="o">+</span> <span class="s2">&quot;/application/info/&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;une application&quot;</span><span class="p">,</span>
+        <span class="n">name_list</span><span class="o">=</span><span class="s2">&quot;Applications&quot;</span><span class="p">,</span>
+        <span class="n">otherCol</span><span class="o">=</span><span class="s2">&quot;True&quot;</span><span class="p">,</span>
+        <span class="n">Members</span><span class="o">=</span><span class="s2">&quot;Gérer les utilisateurs&quot;</span><span class="p">,</span>
+        <span class="n">permissions</span><span class="o">=</span><span class="s2">&quot;True&quot;</span><span class="p">,</span>
+        <span class="n">Right</span><span class="o">=</span><span class="s2">&quot;Profils disponibles&quot;</span><span class="p">,</span>
+        <span class="n">see</span><span class="o">=</span><span class="s2">&quot;True&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;application/info/&lt;id_application&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<div class="viewcode-block" id="info">
+<a class="viewcode-back" href="../../../autoapi/app/t_applications/route/index.html#app.t_applications.route.info">[docs]</a>
+<span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="n">id_application</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Route qui retourne une fiche de l&#39;application</span>
+<span class="sd">    et des roles qui disposent de profils pour elle.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">application</span> <span class="o">=</span> <span class="n">TApplications</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="n">id_application</span><span class="p">)</span>
+    <span class="n">users</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">CorRoleAppProfil</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">id_application</span> <span class="o">==</span> <span class="n">id_application</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="n">profils</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">CorProfilForApp</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+        <span class="n">CorProfilForApp</span><span class="o">.</span><span class="n">id_application</span> <span class="o">==</span> <span class="n">id_application</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span>
+        <span class="s2">&quot;info_application.html&quot;</span><span class="p">,</span> <span class="n">application</span><span class="o">=</span><span class="n">application</span><span class="p">,</span> <span class="n">users</span><span class="o">=</span><span class="n">users</span><span class="p">,</span> <span class="n">profils</span><span class="o">=</span><span class="n">profils</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
+    <span class="s2">&quot;application/add/new&quot;</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id_application&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;application/update/&lt;id_application&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span>
+    <span class="mi">6</span><span class="p">,</span>
+<span class="p">)</span>
+<div class="viewcode-block" id="addorupdate">
+<a class="viewcode-back" href="../../../autoapi/app/t_applications/route/index.html#app.t_applications.route.addorupdate">[docs]</a>
+<span class="k">def</span> <span class="nf">addorupdate</span><span class="p">(</span><span class="n">id_application</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Route affichant un formulaire vierge ou non (selon l&#39;url) pour ajouter ou mettre à jour une application</span>
+<span class="sd">    L&#39;envoie du formulaire permet l&#39;ajout ou la maj d&#39;une application dans la base</span>
+<span class="sd">    Retourne un template accompagné d&#39;un formulaire pré-rempli ou non selon le paramètre id_application</span>
+<span class="sd">    Une fois le formulaire validé on retourne une redirection vers la liste d&#39;application</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">t_applicationsforms</span><span class="o">.</span><span class="n">Application</span><span class="p">()</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">id_parent</span><span class="o">.</span><span class="n">choices</span> <span class="o">=</span> <span class="n">TApplications</span><span class="o">.</span><span class="n">choixSelect</span><span class="p">(</span>
+        <span class="s2">&quot;id_application&quot;</span><span class="p">,</span> <span class="s2">&quot;nom_application&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="s2">&quot;nom_application&quot;</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">id_application</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">id_parent</span><span class="o">.</span><span class="n">process_data</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+                <span class="n">form_app</span> <span class="o">=</span> <span class="n">pops</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">id_parent</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">form_app</span><span class="p">[</span><span class="s2">&quot;id_parent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">form_app</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;id_application&quot;</span><span class="p">)</span>
+                <span class="n">TApplications</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">form_app</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;application.applications&quot;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span>
+            <span class="s2">&quot;application.html&quot;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Formulaire Application&quot;</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">application</span> <span class="o">=</span> <span class="n">TApplications</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="n">id_application</span><span class="p">)</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">id_parent</span><span class="o">.</span><span class="n">choices</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">application</span><span class="p">[</span><span class="s2">&quot;id_application&quot;</span><span class="p">],</span> <span class="n">application</span><span class="p">[</span><span class="s2">&quot;nom_application&quot;</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">application</span><span class="p">[</span><span class="s2">&quot;id_parent&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">form</span><span class="o">.</span><span class="n">id_parent</span><span class="o">.</span><span class="n">process_data</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">form</span><span class="o">.</span><span class="n">id_parent</span><span class="o">.</span><span class="n">process_data</span><span class="p">(</span><span class="n">application</span><span class="p">[</span><span class="s2">&quot;id_parent&quot;</span><span class="p">])</span>
+            <span class="n">form_app</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">application</span><span class="p">)</span>
+            <span class="n">profils_in_app</span> <span class="o">=</span> <span class="n">TProfils</span><span class="o">.</span><span class="n">get_profils_in_app</span><span class="p">(</span><span class="n">id_application</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">()</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+                <span class="n">form_app</span> <span class="o">=</span> <span class="n">pops</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">id_parent</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">form_app</span><span class="p">[</span><span class="s2">&quot;id_parent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">form_app</span><span class="p">[</span><span class="s2">&quot;id_application&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">application</span><span class="p">[</span><span class="s2">&quot;id_application&quot;</span><span class="p">]</span>
+                <span class="n">TApplications</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">form_app</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;application.applications&quot;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span>
+            <span class="s2">&quot;application.html&quot;</span><span class="p">,</span>
+            <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Formulaire Application&quot;</span><span class="p">,</span>
+            <span class="n">profils</span><span class="o">=</span><span class="n">profils_in_app</span><span class="p">,</span>
+            <span class="n">id_application</span><span class="o">=</span><span class="n">id_application</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;application/delete/&lt;id_application&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span>
+    <span class="mi">6</span><span class="p">,</span>
+<span class="p">)</span>
+<div class="viewcode-block" id="delete">
+<a class="viewcode-back" href="../../../autoapi/app/t_applications/route/index.html#app.t_applications.route.delete">[docs]</a>
+<span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="n">id_application</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Route qui supprime une application dont l&#39;id est donné en paramètres dans l&#39;URL</span>
+<span class="sd">    Retourne une redirection vers la liste de groupe</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TApplications</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">id_application</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;application.applications&quot;</span><span class="p">))</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;application/profils/&lt;id_application&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span>
+    <span class="mi">6</span><span class="p">,</span>
+<span class="p">)</span>
+<div class="viewcode-block" id="profils_for_app">
+<a class="viewcode-back" href="../../../autoapi/app/t_applications/route/index.html#app.t_applications.route.profils_for_app">[docs]</a>
+<span class="k">def</span> <span class="nf">profils_for_app</span><span class="p">(</span><span class="n">id_application</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Route affichant la liste des profils utilisables par l&#39;application et ceux disponibles.</span>
+<span class="sd">    Avec pour paramètre un id d&#39;application</span>
+<span class="sd">    Retourne un template avec pour paramètres:</span>
+<span class="sd">        - une entête des tableaux --&gt; fLine</span>
+<span class="sd">        - le nom des colonnes de la base --&gt; data</span>
+<span class="sd">        - liste des profils utilisables --&gt; table</span>
+<span class="sd">        - liste des profils non utilisables mais disponibles --&gt; table2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">profils_in_app</span> <span class="o">=</span> <span class="n">TProfils</span><span class="o">.</span><span class="n">get_profils_in_app</span><span class="p">(</span><span class="n">id_application</span><span class="p">)</span>
+    <span class="n">profils_out_app</span> <span class="o">=</span> <span class="n">TProfils</span><span class="o">.</span><span class="n">get_profils_out_app</span><span class="p">(</span><span class="n">id_application</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="s2">&quot;Profil&quot;</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id_profil&quot;</span><span class="p">,</span> <span class="s2">&quot;nom_profil&quot;</span><span class="p">]</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">TApplications</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="n">id_application</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+        <span class="n">new_profils</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;tab_add&quot;</span><span class="p">]</span>
+        <span class="n">delete_profils</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;tab_del&quot;</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">CorProfilForApp</span><span class="o">.</span><span class="n">add_cor</span><span class="p">(</span><span class="n">id_application</span><span class="p">,</span> <span class="n">new_profils</span><span class="p">)</span>
+            <span class="n">CorProfilForApp</span><span class="o">.</span><span class="n">del_cor</span><span class="p">(</span><span class="n">id_application</span><span class="p">,</span> <span class="n">delete_profils</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)),</span> <span class="mi">500</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;redirect&quot;</span><span class="p">:</span> <span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;application.applications&quot;</span><span class="p">)}),</span> <span class="mi">200</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span>
+        <span class="s2">&quot;app_profils.html&quot;</span><span class="p">,</span>
+        <span class="n">fLine</span><span class="o">=</span><span class="n">header</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">table</span><span class="o">=</span><span class="n">profils_out_app</span><span class="p">,</span>
+        <span class="n">table2</span><span class="o">=</span><span class="n">profils_in_app</span><span class="p">,</span>
+        <span class="n">info</span><span class="o">=</span><span class="s2">&quot;Profils utilisables dans l&#39;application &quot;</span> <span class="o">+</span> <span class="n">app</span><span class="p">[</span><span class="s2">&quot;nom_application&quot;</span><span class="p">],</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;application_roles_profil/&lt;int:id_application&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span>
+    <span class="mi">6</span><span class="p">,</span>
+<span class="p">)</span>
+<div class="viewcode-block" id="profils_in_app">
+<a class="viewcode-back" href="../../../autoapi/app/t_applications/route/index.html#app.t_applications.route.profils_in_app">[docs]</a>
+<span class="k">def</span> <span class="nf">profils_in_app</span><span class="p">(</span><span class="n">id_application</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Route affichant la liste des roles ayant un profil pour une application</span>
+<span class="sd">    Retourne un template avec pour paramètres :</span>
+<span class="sd">                                        - une entête de tableau --&gt; fLine</span>
+<span class="sd">                                        - le nom des colonnes de la base --&gt; line</span>
+<span class="sd">                                        - le contenu du tableau --&gt; table</span>
+<span class="sd">                                        - le chemin de mise à jour --&gt; pathU</span>
+<span class="sd">                                        - le chemin de suppression --&gt; pathD</span>
+<span class="sd">                                        - le chemin d&#39;ajout --&gt; pathA</span>
+<span class="sd">                                        - une clé (clé primaire dans la plupart des cas) --&gt; key</span>
+<span class="sd">                                        - l&#39;id_application pour construire l&#39;url de redirection -&gt; key2</span>
+<span class="sd">                                        - un nom (nom de la table) pour le bouton ajout --&gt; name</span>
+<span class="sd">                                        - un nom de liste --&gt; name_list</span>
+<span class="sd">                                        - ajoute une colonne de bouton (&#39;True doit être de type string) --&gt; permissions</span>
+<span class="sd">                                        - nom affiché sur le bouton --&gt; Members</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">users_in_app</span> <span class="o">=</span> <span class="n">TRoles</span><span class="o">.</span><span class="n">get_user_profil_in_app</span><span class="p">(</span><span class="n">id_application</span><span class="p">)</span>
+    <span class="n">application</span> <span class="o">=</span> <span class="n">TApplications</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="n">id_application</span><span class="p">)</span>
+
+    <span class="n">fLine</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Id&quot;</span><span class="p">,</span> <span class="s2">&quot;Role&quot;</span><span class="p">,</span> <span class="s2">&quot;Profil&quot;</span><span class="p">]</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id_role&quot;</span><span class="p">,</span> <span class="s2">&quot;full_name&quot;</span><span class="p">,</span> <span class="s2">&quot;profil&quot;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span>
+        <span class="s2">&quot;table_database.html&quot;</span><span class="p">,</span>
+        <span class="n">table</span><span class="o">=</span><span class="n">users_in_app</span><span class="p">,</span>
+        <span class="n">fLine</span><span class="o">=</span><span class="n">fLine</span><span class="p">,</span>
+        <span class="n">line</span><span class="o">=</span><span class="n">columns</span><span class="p">,</span>
+        <span class="n">key</span><span class="o">=</span><span class="s2">&quot;id_role&quot;</span><span class="p">,</span>
+        <span class="n">key2</span><span class="o">=</span><span class="n">id_application</span><span class="p">,</span>
+        <span class="n">pathU</span><span class="o">=</span><span class="n">URL_APPLICATION</span> <span class="o">+</span> <span class="s2">&quot;/application/update/role_profil/&quot;</span><span class="p">,</span>
+        <span class="n">pathD</span><span class="o">=</span><span class="n">URL_APPLICATION</span> <span class="o">+</span> <span class="s2">&quot;/application/delete/role_profil/&quot;</span><span class="p">,</span>
+        <span class="n">pathA</span><span class="o">=</span><span class="n">URL_APPLICATION</span> <span class="o">+</span> <span class="s2">&quot;/application/add/role_profil/&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;un role pour l&#39;application </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">application</span><span class="p">[</span><span class="s2">&quot;nom_application&quot;</span><span class="p">]),</span>
+        <span class="n">name_list</span><span class="o">=</span><span class="s2">&quot;Role(s) de l&#39;application </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">application</span><span class="p">[</span><span class="s2">&quot;nom_application&quot;</span><span class="p">]),</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
+    <span class="s2">&quot;application/add/role_profil/&lt;int:id_application&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
+    <span class="s2">&quot;application/update/role_profil/&lt;int:id_role&gt;/&lt;int:id_application&gt;&quot;</span><span class="p">,</span>
+    <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span>
+    <span class="mi">6</span><span class="p">,</span>
+<span class="p">)</span>
+<div class="viewcode-block" id="add_or_update_profil_for_role_in_app">
+<a class="viewcode-back" href="../../../autoapi/app/t_applications/route/index.html#app.t_applications.route.add_or_update_profil_for_role_in_app">[docs]</a>
+<span class="k">def</span> <span class="nf">add_or_update_profil_for_role_in_app</span><span class="p">(</span><span class="n">id_application</span><span class="p">,</span> <span class="n">id_role</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    add or update un profil sur une application</span>
+<span class="sd">    on part du principe qu&#39;un role ne peut avoir qu&#39;un profil dans une application</span>
+<span class="sd">    TODO: pour mettre plusieurs profil a un role dans une appli:</span>
+<span class="sd">    rajouter une clé primaire a cor_role_app_profil pour gérer l&#39;update</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">t_applicationsforms</span><span class="o">.</span><span class="n">AppProfil</span><span class="p">(</span><span class="n">id_application</span><span class="p">)</span>
+    <span class="n">application</span> <span class="o">=</span> <span class="n">TApplications</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="n">id_application</span><span class="p">)</span>
+    <span class="n">role</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Ajouter un profil l&#39;application </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">application</span><span class="p">[</span><span class="s2">&quot;nom_application&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">id_role</span><span class="p">:</span>
+        <span class="n">role</span> <span class="o">=</span> <span class="n">TRoles</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="n">id_role</span><span class="p">,</span> <span class="n">as_model</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">as_dict_full_name</span><span class="p">()</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Editer le profil de </span><span class="si">{}</span><span class="s2"> dans l&#39;application </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">role</span><span class="p">[</span><span class="s2">&quot;full_name&quot;</span><span class="p">],</span> <span class="n">application</span><span class="p">[</span><span class="s2">&quot;nom_application&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="c1"># preremplissage du formulaire</span>
+        <span class="n">profil_in_app</span> <span class="o">=</span> <span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="n">id_role</span><span class="p">,</span> <span class="n">id_application</span><span class="p">)</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">profil</span><span class="o">.</span><span class="n">process_data</span><span class="p">(</span><span class="n">profil_in_app</span><span class="o">.</span><span class="n">id_profil</span><span class="p">)</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">process_data</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">id_role</span><span class="p">))</span>
+        <span class="c1"># HACK ajout de l&#39;utilisateur courant dans la liste déroulante</span>
+        <span class="c1"># sinon le formulaire ne passe pas</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">choices</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">id_role</span><span class="p">,</span> <span class="n">role</span><span class="p">[</span><span class="s2">&quot;full_name&quot;</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+        <span class="c1"># set new id__profil</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">profil</span><span class="o">.</span><span class="n">process_data</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;profil&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">id_role</span><span class="p">:</span>
+                    <span class="c1"># on supprime d&#39;abbord le profil pour une app</span>
+                    <span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
+                        <span class="n">id_role</span><span class="o">=</span><span class="n">id_role</span><span class="p">,</span> <span class="n">id_application</span><span class="o">=</span><span class="n">id_application</span>
+                    <span class="p">)</span>
+                <span class="c1"># et on post</span>
+                <span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;id_role&quot;</span><span class="p">:</span> <span class="n">form</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;id_profil&quot;</span><span class="p">:</span> <span class="n">form</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;profil&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;id_application&quot;</span><span class="p">:</span> <span class="n">id_application</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">redirect</span><span class="p">(</span>
+                    <span class="n">url_for</span><span class="p">(</span>
+                        <span class="s2">&quot;application.add_or_update_profil_for_role_in_app&quot;</span><span class="p">,</span>
+                        <span class="n">id_application</span><span class="o">=</span><span class="n">id_application</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Une erreur s&#39;est produite, </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Profil ajouté/edité avec succès&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span>
+                <span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;application.profils_in_app&quot;</span><span class="p">,</span> <span class="n">id_application</span><span class="o">=</span><span class="n">id_application</span><span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span>
+        <span class="s2">&quot;application_role_profil_form.html&quot;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+        <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
+        <span class="n">application</span><span class="o">=</span><span class="n">application</span><span class="p">,</span>
+        <span class="n">id_role</span><span class="o">=</span><span class="n">id_role</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
+    <span class="s2">&quot;application/delete/role_profil/&lt;id_role&gt;/&lt;id_application&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span>
+    <span class="mi">6</span><span class="p">,</span>
+<span class="p">)</span>
+<div class="viewcode-block" id="delete_cor_role_app_profil">
+<a class="viewcode-back" href="../../../autoapi/app/t_applications/route/index.html#app.t_applications.route.delete_cor_role_app_profil">[docs]</a>
+<span class="k">def</span> <span class="nf">delete_cor_role_app_profil</span><span class="p">(</span><span class="n">id_role</span><span class="p">,</span> <span class="n">id_application</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">id_role</span><span class="p">,</span> <span class="n">id_application</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Une erreur s&#39;est produite&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+    <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Profil supprimé avec succès&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span>
+        <span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;application.profils_in_app&quot;</span><span class="p">,</span> <span class="n">id_application</span><span class="o">=</span><span class="n">id_application</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="pops">
+<a class="viewcode-back" href="../../../autoapi/app/t_applications/route/index.html#app.t_applications.route.pops">[docs]</a>
+<span class="k">def</span> <span class="nf">pops</span><span class="p">(</span><span class="n">form</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Methode qui supprime les éléments indésirables du formulaires</span>
+<span class="sd">    Avec pour paramètre un formulaire</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">form</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;csrf_token&quot;</span><span class="p">)</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;submit&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">form</span></div>
+
+
+
+<div class="viewcode-block" id="process">
+<a class="viewcode-back" href="../../../autoapi/app/t_applications/route/index.html#app.t_applications.route.process">[docs]</a>
+<span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">application</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Methode qui rempli le formulaire par les données de l&#39;éléments concerné</span>
+<span class="sd">    Avec pour paramètres un formulaire et une application</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">form</span><span class="o">.</span><span class="n">nom_application</span><span class="o">.</span><span class="n">process_data</span><span class="p">(</span><span class="n">application</span><span class="p">[</span><span class="s2">&quot;nom_application&quot;</span><span class="p">])</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">code_application</span><span class="o">.</span><span class="n">process_data</span><span class="p">(</span><span class="n">application</span><span class="p">[</span><span class="s2">&quot;code_application&quot;</span><span class="p">])</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">desc_application</span><span class="o">.</span><span class="n">process_data</span><span class="p">(</span><span class="n">application</span><span class="p">[</span><span class="s2">&quot;desc_application&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">form</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+:py:mod:`pypnusershub.db.tools`
+===============================
+
+.. py:module:: pypnusershub.db.tools
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   pypnusershub.db.tools.load_fixtures
+   pypnusershub.db.tools.encode_token
+   pypnusershub.db.tools.decode_token
+   pypnusershub.db.tools.user_to_token
+   pypnusershub.db.tools.user_from_token
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   pypnusershub.db.tools.log
+
+
+.. py:data:: log
+
+   
+
+.. py:exception:: AccessRightsError
+
+
+   Bases: :py:obj:`Exception`
+
+   Common base class for all non-exit exceptions.
+
+
+.. py:exception:: InsufficientRightsError
+
+
+   Bases: :py:obj:`AccessRightsError`
+
+   Common base class for all non-exit exceptions.
+
+
+.. py:exception:: AccessRightsExpiredError
+
+
+   Bases: :py:obj:`AccessRightsError`
+
+   Common base class for all non-exit exceptions.
+
+
+.. py:exception:: UnreadableAccessRightsError
+
+
+   Bases: :py:obj:`AccessRightsError`
+
+   Common base class for all non-exit exceptions.
+
+
+.. py:exception:: NoPasswordError
+
+
+   Bases: :py:obj:`Exception`
+
+   Common base class for all non-exit exceptions.
+
+
+.. py:exception:: DifferentPasswordError
+
+
+   Bases: :py:obj:`Exception`
+
+   Common base class for all non-exit exceptions.
+
+
+.. py:function:: load_fixtures(con_uri)
+
+
+.. py:function:: encode_token(payload)
+
+
+.. py:function:: decode_token(payload)
+
+
+.. py:function:: user_to_token(user)
+
+
+.. py:function:: user_from_token(token, secret_key=None)
+
+   Given a, authentification token, return the matching AppUser instance
+
+

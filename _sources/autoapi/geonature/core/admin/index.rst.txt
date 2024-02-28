@@ -1,0 +1,16 @@
+:py:mod:`geonature.core.admin`
+==============================
+
+.. py:module:: geonature.core.admin
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   admin/index.rst
+   utils/index.rst
+
+

@@ -1,0 +1,89 @@
+:py:mod:`app.genericRepository`
+===============================
+
+.. py:module:: app.genericRepository
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   app.genericRepository.GenericRepository
+
+
+
+
+.. py:class:: GenericRepository
+
+
+   Bases: :py:obj:`app.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __abstract__
+      :value: True
+
+      Classe abstraite contenant des méthodes générique d'ajout/suppression/lecture/mise à jour de la base
+
+
+   .. py:method:: get_one(id, as_model=False)
+      :classmethod:
+
+      Methode qui retourne un dictionnaire d'un élément d'un Model
+      Avec pour paramètres l'id de l'élément
+      Si as_model != False alors au lieu de retourner un dictionnaire on retourne l'object du modèle
+
+
+   .. py:method:: get_all(columns=None, params=None, recursif=True, as_model=False, order_by=None, order='asc')
+      :classmethod:
+
+      Methode qui retourne un dictionnaire de tout les éléments d'un Model
+      Avec pour paramètres:
+                          columns un tableau des colonnes que l'ont souhaite récupérer
+                          params un tableau contenant un dictionnaire de filtre [{'col': colonne à filtrer, 'filter': paramètre de filtrage}]
+                          si recursif != True on désactive la fonction récursive du as_dict()
+                          si as_model != False alors au lieu de retourner un dictionnaire on retourne une requête
+      Si as_model != False alors au lieu de retourner un dictionnaire on retourne un tableau d'objets du modèle
+
+
+   .. py:method:: post(entity_dict)
+      :classmethod:
+
+      Methode qui ajoute un élément à une table
+      Avec pour paramètres un dictionnaire de cet élément
+      Retourne le modèle nouvellement ajouté
+
+
+   .. py:method:: update(entity_dict)
+      :classmethod:
+
+      Methode qui met à jour un élément
+      Avec pour paramètre un dictionnaire de cet élément
+      Retourne le modèle mis à jour
+
+
+   .. py:method:: delete(id)
+      :classmethod:
+
+      Methode qui supprime un élement d'une table à partir d'un id donné
+      Avec pour paramètre un id (clé primaire)
+
+
+   .. py:method:: choixSelect(id, nom, aucun=None, order_by=None)
+      :classmethod:
+
+      Methode qui retourne un tableau de tuples d'id  et de nom
+      Avec pour paramètres un id et un nom
+      Le paramètre aucun si il a une valeur permet de rajouter le tuple (-1,Aucun) au tableau
+
+
+

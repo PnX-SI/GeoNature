@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_permissions.tools &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.gn_permissions.tools</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.gn_permissions.tools</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">permutations</span>
+
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">joinedload</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">g</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.models</span> <span class="kn">import</span> <span class="n">TModules</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">PermAction</span><span class="p">,</span>
+    <span class="n">PermObject</span><span class="p">,</span>
+    <span class="n">PermScope</span><span class="p">,</span>
+    <span class="n">Permission</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+
+<span class="kn">from</span> <span class="nn">pypnusershub.db.models</span> <span class="kn">import</span> <span class="n">User</span>
+
+<div class="viewcode-block" id="log">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/tools/index.html#geonature.core.gn_meta.models.log">[docs]</a>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="_get_user_permissions">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/tools/index.html#geonature.core.gn_meta.models._get_user_permissions">[docs]</a>
+<span class="k">def</span> <span class="nf">_get_user_permissions</span><span class="p">(</span><span class="n">id_role</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">Permission</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">options</span><span class="p">(</span>
+            <span class="n">joinedload</span><span class="p">(</span><span class="n">Permission</span><span class="o">.</span><span class="n">module</span><span class="p">),</span>
+            <span class="n">joinedload</span><span class="p">(</span><span class="n">Permission</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
+            <span class="n">joinedload</span><span class="p">(</span><span class="n">Permission</span><span class="o">.</span><span class="n">action</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">or_</span><span class="p">(</span>
+                <span class="c1"># direct permissions</span>
+                <span class="n">Permission</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">id_role</span><span class="p">,</span>
+                <span class="c1"># permissions through group</span>
+                <span class="c1"># FIXME : provoke a cartesian product warning (but )</span>
+                <span class="n">Permission</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">members</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">id_role</span><span class="p">)),</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">Permission</span><span class="o">.</span><span class="n">id_module</span><span class="p">,</span> <span class="n">Permission</span><span class="o">.</span><span class="n">id_object</span><span class="p">,</span> <span class="n">Permission</span><span class="o">.</span><span class="n">id_action</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">distinct</span><span class="p">(</span>
+            <span class="n">Permission</span><span class="o">.</span><span class="n">id_module</span><span class="p">,</span>
+            <span class="n">Permission</span><span class="o">.</span><span class="n">id_object</span><span class="p">,</span>
+            <span class="n">Permission</span><span class="o">.</span><span class="n">id_action</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">Permission</span><span class="o">.</span><span class="n">filters_fields</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="get_user_permissions">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/tools/index.html#geonature.core.gn_meta.models.get_user_permissions">[docs]</a>
+<span class="k">def</span> <span class="nf">get_user_permissions</span><span class="p">(</span><span class="n">id_role</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">id_role</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">id_role</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">id_role</span>
+    <span class="k">if</span> <span class="n">id_role</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">_permissions_by_user</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">_permissions_by_user</span><span class="p">[</span><span class="n">id_role</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_user_permissions</span><span class="p">(</span><span class="n">id_role</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">_permissions_by_user</span><span class="p">[</span><span class="n">id_role</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="_get_permissions">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/tools/index.html#geonature.core.gn_meta.models._get_permissions">[docs]</a>
+<span class="k">def</span> <span class="nf">_get_permissions</span><span class="p">(</span><span class="n">id_role</span><span class="p">,</span> <span class="n">module_code</span><span class="p">,</span> <span class="n">object_code</span><span class="p">,</span> <span class="n">action_code</span><span class="p">):</span>
+    <span class="n">permissions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">p</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">get_user_permissions</span><span class="p">(</span><span class="n">id_role</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">module_code</span> <span class="o">==</span> <span class="n">module_code</span>
+        <span class="ow">and</span> <span class="n">p</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">code_object</span> <span class="o">==</span> <span class="n">object_code</span>
+        <span class="ow">and</span> <span class="n">p</span><span class="o">.</span><span class="n">action</span><span class="o">.</span><span class="n">code_action</span> <span class="o">==</span> <span class="n">action_code</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Remove all permissions supersed by another permission</span>
+    <span class="k">for</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span> <span class="ow">in</span> <span class="n">permutations</span><span class="p">(</span><span class="n">permissions</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">p1</span> <span class="ow">in</span> <span class="n">permissions</span> <span class="ow">and</span> <span class="n">p1</span> <span class="o">&lt;=</span> <span class="n">p2</span><span class="p">:</span>
+            <span class="n">permissions</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">permissions</span></div>
+
+
+
+<div class="viewcode-block" id="get_permissions">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/tools/index.html#geonature.core.gn_meta.models.get_permissions">[docs]</a>
+<span class="k">def</span> <span class="nf">get_permissions</span><span class="p">(</span><span class="n">action_code</span><span class="p">,</span> <span class="n">id_role</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function returns a set of all the permissions that match (action_code, id_role, module_code, object_code).</span>
+<span class="sd">    If module_code is None, it is set as the code of the current module or as &quot;GEONATURE&quot; if no current module found.</span>
+<span class="sd">    If object_code is None, it is set as the code of the current object or as &quot;ALL&quot; if no current object found.</span>
+
+<span class="sd">    :returns : the list of permissions that match, and an empty list if no match</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">module_code</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="s2">&quot;current_module&quot;</span><span class="p">):</span>
+            <span class="n">module_code</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_module</span><span class="o">.</span><span class="n">module_code</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">module_code</span> <span class="o">=</span> <span class="s2">&quot;GEONATURE&quot;</span>
+
+    <span class="k">if</span> <span class="n">object_code</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="s2">&quot;current_object&quot;</span><span class="p">):</span>
+            <span class="n">object_code</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_object</span><span class="o">.</span><span class="n">code_object</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">object_code</span> <span class="o">=</span> <span class="s2">&quot;ALL&quot;</span>
+
+    <span class="n">ident</span> <span class="o">=</span> <span class="p">(</span><span class="n">id_role</span><span class="p">,</span> <span class="n">module_code</span><span class="p">,</span> <span class="n">object_code</span><span class="p">,</span> <span class="n">action_code</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ident</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">_permissions</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">_permissions</span><span class="p">[</span><span class="n">ident</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_permissions</span><span class="p">(</span><span class="o">*</span><span class="n">ident</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">_permissions</span><span class="p">[</span><span class="n">ident</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="get_scope">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/tools/index.html#geonature.core.gn_meta.models.get_scope">[docs]</a>
+<span class="k">def</span> <span class="nf">get_scope</span><span class="p">(</span><span class="n">action_code</span><span class="p">,</span> <span class="n">id_role</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bypass_warning</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function gets the final scope permission.</span>
+
+<span class="sd">    It takes the maximum for all the permissions that match (action_code, id_role, module_code, object_code) and with</span>
+<span class="sd">    of a &quot;SCOPE&quot; filter type.</span>
+
+<span class="sd">    :returns : (int) The scope computed for specified arguments</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">permissions</span> <span class="o">=</span> <span class="n">get_permissions</span><span class="p">(</span><span class="n">action_code</span><span class="p">,</span> <span class="n">id_role</span><span class="p">,</span> <span class="n">module_code</span><span class="p">,</span> <span class="n">object_code</span><span class="p">)</span>
+    <span class="n">max_scope</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">permission</span> <span class="ow">in</span> <span class="n">permissions</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">permission</span><span class="o">.</span><span class="n">has_other_filters_than</span><span class="p">(</span><span class="s2">&quot;SCOPE&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">bypass_warning</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;&quot;&quot;WARNING : You are trying to get scope permission for a module (</span><span class="si">{</span><span class="n">module_code</span><span class="si">}</span><span class="s2">) which implements other permissions type. Please use get_permission instead</span>
+<span class="s2">            &quot;&quot;&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">permission</span><span class="o">.</span><span class="n">scope_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">max_scope</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">max_scope</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_scope</span><span class="p">,</span> <span class="n">permission</span><span class="o">.</span><span class="n">scope_value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">max_scope</span></div>
+
+
+
+<div class="viewcode-block" id="get_scopes_by_action">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/tools/index.html#geonature.core.gn_meta.models.get_scopes_by_action">[docs]</a>
+<span class="k">def</span> <span class="nf">get_scopes_by_action</span><span class="p">(</span><span class="n">id_role</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function gets the scopes permissions for each one of the 6 actions in &quot;CRUVED&quot;,</span>
+<span class="sd">    that match (id_role, module_code, object_code)</span>
+
+<span class="sd">    :returns : (dict) A dict of the scope for each one of the 6 actions (the char in &quot;CRUVED&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">action_code</span><span class="p">:</span> <span class="n">get_scope</span><span class="p">(</span><span class="n">action_code</span><span class="p">,</span> <span class="n">id_role</span><span class="p">,</span> <span class="n">module_code</span><span class="p">,</span> <span class="n">object_code</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">action_code</span> <span class="ow">in</span> <span class="s2">&quot;CRUVED&quot;</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="has_any_permissions">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/tools/index.html#geonature.core.gn_meta.models.has_any_permissions">[docs]</a>
+<span class="k">def</span> <span class="nf">has_any_permissions</span><span class="p">(</span><span class="n">action_code</span><span class="p">,</span> <span class="n">id_role</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function return the scope for an action, a module and an object as a Boolean</span>
+<span class="sd">    Use for frontend</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">permissions</span> <span class="o">=</span> <span class="n">get_permissions</span><span class="p">(</span><span class="n">action_code</span><span class="p">,</span> <span class="n">id_role</span><span class="p">,</span> <span class="n">module_code</span><span class="p">,</span> <span class="n">object_code</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">permissions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+
+
+
+<div class="viewcode-block" id="has_any_permissions_by_action">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/tools/index.html#geonature.core.gn_meta.models.has_any_permissions_by_action">[docs]</a>
+<span class="k">def</span> <span class="nf">has_any_permissions_by_action</span><span class="p">(</span><span class="n">id_role</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">object_code</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function gets the scopes permissions for each one of the 6 actions in &quot;CRUVED&quot;,</span>
+<span class="sd">    that match (id_role, module_code, object_code)</span>
+
+<span class="sd">    :returns : (dict) A dict of the boolean for each one of the 6 actions (the char in &quot;CRUVED&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">action_code</span><span class="p">:</span> <span class="n">has_any_permissions</span><span class="p">(</span><span class="n">action_code</span><span class="p">,</span> <span class="n">id_role</span><span class="p">,</span> <span class="n">module_code</span><span class="p">,</span> <span class="n">object_code</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">action_code</span> <span class="ow">in</span> <span class="s2">&quot;CRUVED&quot;</span>
+    <span class="p">}</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

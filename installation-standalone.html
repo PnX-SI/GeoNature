@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" >
+<html class="writer-html5" lang="fr" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Installation de GeoNature uniquement &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/translations.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=e8570148"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=d99ca74e"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Recherche" href="search.html" /> 
@@ -27,15 +30,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="index.html" class="icon icon-home"> GeoNature
-            <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GeoNature
+              <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -49,6 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-references.html">API REFERENCES</a></li>
 </ul>
 
         </div>
@@ -64,8 +72,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Installation de GeoNature uniquement</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Installation de GeoNature uniquement</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/installation-standalone.rst.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
@@ -76,21 +84,21 @@
            <div itemprop="articleBody">
              
   <section id="installation-de-geonature-uniquement">
-<h1>Installation de GeoNature uniquement<a class="headerlink" href="#installation-de-geonature-uniquement" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>Installation de GeoNature uniquement<a class="headerlink" href="#installation-de-geonature-uniquement" title="Link to this heading"></a></h1>
 <p>Cette procédure détail l’installation de GeoNature seul, sans TaxHub et UsersHub.
 Si vous souhaitez installer GeoNature avec TaxHub et UsersHub, reportez-vous à la section <a class="reference internal" href="installation.html#installation-all"><span class="std std-ref">Installation globale</span></a>.</p>
 <section id="installation-des-dependances">
-<h2>Installation des dépendances<a class="headerlink" href="#installation-des-dependances" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Installation des dépendances<a class="headerlink" href="#installation-des-dependances" title="Link to this heading"></a></h2>
 <p>Installer les paquets suivants :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt install unzip git postgresql-postgis postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis
 </pre></div>
 </div>
 </section>
 <section id="recuperation-de-l-application">
-<h2>Récupération de l’application<a class="headerlink" href="#recuperation-de-l-application" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Récupération de l’application<a class="headerlink" href="#recuperation-de-l-application" title="Link to this heading"></a></h2>
 <ul>
 <li><p>Se placer dans le répertoire de l’utilisateur (<code class="docutils literal notranslate"><span class="pre">/home/geonatureadmin/</span></code> dans notre cas)</p></li>
-<li><p>Récupérer l’application (<code class="docutils literal notranslate"><span class="pre">X.Y.Z</span></code> à remplacer par le numéro de la <a class="reference external" href="https://github.com/PnEcrins/GeoNature/releases">dernière version stable de GeoNature</a>). Voir le <a class="reference external" href="versions-compatibility.rst">tableau de compatibilité</a> des versions de GeoNature avec ses dépendances.</p>
+<li><p>Récupérer l’application (<code class="docutils literal notranslate"><span class="pre">X.Y.Z</span></code> à remplacer par le numéro de la <a class="reference external" href="https://github.com/PnEcrins/GeoNature/releases">dernière version stable de GeoNature</a>).</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
 </pre></div>
 </div>
@@ -116,7 +124,7 @@ $ nano config/settings.ini
 </ul>
 </section>
 <section id="installation-de-l-application">
-<h2>Installation de l’application<a class="headerlink" href="#installation-de-l-application" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Installation de l’application<a class="headerlink" href="#installation-de-l-application" title="Link to this heading"></a></h2>
 <p>Rendez vous dans le dossier <code class="docutils literal notranslate"><span class="pre">install</span></code> et lancez successivement dans l’ordre les scripts suivants :</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">01_install_backend.sh</span></code> : Création du virtualenv python, installation des dépendances et du backend de GeoNature dans celui-ci.</p></li>
@@ -129,24 +137,24 @@ $ nano config/settings.ini
 <p>Vous pouvez alors démarrer le backend de GeoNature : <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">start</span> <span class="pre">geonature</span></code></p>
 </section>
 <section id="configuration-apache">
-<h2>Configuration Apache<a class="headerlink" href="#configuration-apache" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Configuration Apache<a class="headerlink" href="#configuration-apache" title="Link to this heading"></a></h2>
 <ul>
 <li><p>Le script <code class="docutils literal notranslate"><span class="pre">install/06_configure_apache.sh</span></code> copie le fichier de configuration de référence <code class="docutils literal notranslate"><span class="pre">install/assets/geonature_apache.conf</span></code>, le place dans <code class="docutils literal notranslate"><span class="pre">/etc/apache2/conf-available/geonature.conf</span></code> et remplace ses variables à partir de votre configuration de GeoNature.</p>
 <p>Relancez ce script si vous changez l’URL de votre GeoNature ou les paramètres liés aux chemins et URL des fichiers statiques et des médias.</p>
 </li>
 <li><p>Créez la configuration du vhost, incluant la configuration par défaut créée précédemment :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo cp install/assets/vhost_apache.conf /etc/apache2/sites-available/geonature.conf <span class="c1"># Copier le vhost</span>
-<span class="gp">$ </span>sudo nano /etc/apache2/sites-available/geonature.conf <span class="c1"># Modifier la variable ``${DOMAIN_NAME}``</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>cp<span class="w"> </span>install/assets/vhost_apache.conf<span class="w"> </span>/etc/apache2/sites-available/geonature.conf<span class="w"> </span><span class="c1"># Copier le vhost</span>
+<span class="gp">$ </span>sudo<span class="w"> </span>nano<span class="w"> </span>/etc/apache2/sites-available/geonature.conf<span class="w"> </span><span class="c1"># Modifier la variable ``${DOMAIN_NAME}``</span>
 </pre></div>
 </div>
 </li>
 <li><p>Activez la nouvelle configuration :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo a2ensite geonature.conf
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>a2ensite<span class="w"> </span>geonature.conf
 </pre></div>
 </div>
 </li>
 <li><p>et redémarrez Apache :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo systemctl reload apache2
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>systemctl<span class="w"> </span>reload<span class="w"> </span>apache2
 </pre></div>
 </div>
 </li>
@@ -154,22 +162,22 @@ $ nano config/settings.ini
 </ul>
 <p>Une page HTML de maintenance et un vhost dédié sont aussi disponibles. Pour les mettre en place :</p>
 <blockquote>
-<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo cp install/assets/vhost_apache_maintenance.conf /etc/apache2/sites-available/geonature_maintenance.conf <span class="c1"># Copier le vhost</span>
-<span class="gp">$ </span>sudo nano /etc/apache2/sites-available/geonature_maintenance.conf <span class="c1"># Modifier la variable ``${DOMAIN_NAME}``</span>
-<span class="gp">$ </span>sudo cp install/assets/maintenance.html /var/www/geonature_maintenance/index.html
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>cp<span class="w"> </span>install/assets/vhost_apache_maintenance.conf<span class="w"> </span>/etc/apache2/sites-available/geonature_maintenance.conf<span class="w"> </span><span class="c1"># Copier le vhost</span>
+<span class="gp">$ </span>sudo<span class="w"> </span>nano<span class="w"> </span>/etc/apache2/sites-available/geonature_maintenance.conf<span class="w"> </span><span class="c1"># Modifier la variable ``${DOMAIN_NAME}``</span>
+<span class="gp">$ </span>sudo<span class="w"> </span>cp<span class="w"> </span>install/assets/maintenance.html<span class="w"> </span>/var/www/geonature_maintenance/index.html
 </pre></div>
 </div>
 </div></blockquote>
 <p>Pour passer votre GeoNature en maintenance, vous pouvez alors désactiver le vhost de GeoNature et activer celui de la page de maintenance :</p>
 <blockquote>
-<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo a2dissite geonature.conf
-<span class="gp">$ </span>sudo a2ensite geonature_maintenance.conf
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>a2dissite<span class="w"> </span>geonature.conf
+<span class="gp">$ </span>sudo<span class="w"> </span>a2ensite<span class="w"> </span>geonature_maintenance.conf
 </pre></div>
 </div>
 </div></blockquote>
 </section>
 <section id="dependances">
-<h2>Dépendances<a class="headerlink" href="#dependances" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Dépendances<a class="headerlink" href="#dependances" title="Link to this heading"></a></h2>
 <p>Lors de l’installation de la BDD (<code class="docutils literal notranslate"><span class="pre">02_create_db.sh</span></code>), le schéma <code class="docutils literal notranslate"><span class="pre">utilisateurs</span></code> de UsersHub et le schéma <code class="docutils literal notranslate"><span class="pre">taxonomie</span></code> de TaxHub sont intégrés automatiquement dans la BDD de GeoNature.</p>
 <p>UsersHub n’est pas nécessaire au fonctionnement de GeoNature mais il sera utile pour avoir une interface de gestion des utilisateurs, des groupes et de leurs droits.</p>
 <p>Par contre il est nécessaire d’installer TaxHub (<a class="reference external" href="https://github.com/PnX-SI/TaxHub">https://github.com/PnX-SI/TaxHub</a>) pour que GeoNature fonctionne. En effet, GeoNature utilise l’API de TaxHub. Une fois GeoNature installé, il vous faut donc installer TaxHub en le connectant à la BDD de GeoNature, vu que son schéma <code class="docutils literal notranslate"><span class="pre">taxonomie</span></code> a déjà été installé par le script <code class="docutils literal notranslate"><span class="pre">02_create_db.sh</span></code> de GeoNature. Lors de l’installation de TaxHub, n’installez donc que l’application et pas la BDD.</p>
@@ -196,7 +204,7 @@ $ nano config/settings.ini
 <p>Voir la doc d’installation de UsersHub : <a class="reference external" href="https://usershub.readthedocs.io/">https://usershub.readthedocs.io/</a></p>
 </section>
 <section id="passer-en-mode-developpement">
-<h2>Passer en mode développement<a class="headerlink" href="#passer-en-mode-developpement" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Passer en mode développement<a class="headerlink" href="#passer-en-mode-developpement" title="Link to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Consultez le guide <a class="reference internal" href="development.html#mode-dev"><span class="std std-ref">Passer en mode développement</span></a> de GeoNature.</p>
@@ -212,7 +220,7 @@ $ nano config/settings.ini
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2018-2023, PnE, PnC.</p>
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
   </div>
 
   Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un

@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_commons.models.base &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.gn_commons.models.base</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.gn_commons.models.base</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Modèles du schéma gn_commons</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">text</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">relationship</span><span class="p">,</span> <span class="n">aliased</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">select</span><span class="p">,</span> <span class="n">func</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="kn">import</span> <span class="n">UUID</span>
+<span class="kn">from</span> <span class="nn">geoalchemy2</span> <span class="kn">import</span> <span class="n">Geometry</span>
+
+<span class="kn">from</span> <span class="nn">pypnnomenclature.models</span> <span class="kn">import</span> <span class="n">TNomenclatures</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.serializers</span> <span class="kn">import</span> <span class="n">serializable</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla_geo.serializers</span> <span class="kn">import</span> <span class="n">geoserializable</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">DB</span>
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibTablesLocation">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.BibTablesLocation">[docs]</a>
+<span class="k">class</span> <span class="nc">BibTablesLocation</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibTablesLocation.__tablename__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.BibTablesLocation.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_tables_location&quot;</span></div>
+
+<div class="viewcode-block" id="BibTablesLocation.__table_args__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.BibTablesLocation.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_commons&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BibTablesLocation.id_table_location">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.BibTablesLocation.id_table_location">[docs]</a>
+    <span class="n">id_table_location</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibTablesLocation.table_desc">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.BibTablesLocation.table_desc">[docs]</a>
+    <span class="n">table_desc</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibTablesLocation.schema_name">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.BibTablesLocation.schema_name">[docs]</a>
+    <span class="n">schema_name</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibTablesLocation.table_name">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.BibTablesLocation.table_name">[docs]</a>
+    <span class="n">table_name</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibTablesLocation.pk_field">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.BibTablesLocation.pk_field">[docs]</a>
+    <span class="n">pk_field</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibTablesLocation.uuid_field_name">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.BibTablesLocation.uuid_field_name">[docs]</a>
+    <span class="n">uuid_field_name</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="cor_module_dataset">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.cor_module_dataset">[docs]</a>
+<span class="n">cor_module_dataset</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_module_dataset&quot;</span><span class="p">,</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_module&quot;</span><span class="p">,</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_commons.t_modules.id_module&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_dataset&quot;</span><span class="p">,</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_meta.t_datasets.id_dataset&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_commons&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="CorModuleDataset">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.CorModuleDataset">[docs]</a>
+<span class="k">class</span> <span class="nc">CorModuleDataset</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="CorModuleDataset.__tablename__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.CorModuleDataset.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;cor_module_dataset&quot;</span></div>
+
+<div class="viewcode-block" id="CorModuleDataset.__table_args__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.CorModuleDataset.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_commons&quot;</span><span class="p">,</span> <span class="s2">&quot;extend_existing&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="CorModuleDataset.id_module">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.CorModuleDataset.id_module">[docs]</a>
+    <span class="n">id_module</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_commons.t_modules.id_module&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorModuleDataset.id_dataset">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.CorModuleDataset.id_dataset">[docs]</a>
+    <span class="n">id_dataset</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_meta.t_datasets.id_dataset&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1"># see https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html#late-evaluation-of-relationship-arguments</span>
+<div class="viewcode-block" id="_resolve_import_cor_object_module">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base._resolve_import_cor_object_module">[docs]</a>
+<span class="k">def</span> <span class="nf">_resolve_import_cor_object_module</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.models</span> <span class="kn">import</span> <span class="n">cor_object_module</span>
+
+    <span class="k">return</span> <span class="n">cor_object_module</span></div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TModules">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.TModules">[docs]</a>
+<span class="k">class</span> <span class="nc">TModules</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="TModules.__tablename__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_modules&quot;</span></div>
+
+<div class="viewcode-block" id="TModules.__table_args__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_commons&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="TModules.base_defaultdict">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.base_defaultdict">[docs]</a>
+    <span class="k">class</span> <span class="nc">base_defaultdict</span><span class="p">(</span><span class="n">defaultdict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Avoid polymorphic error when polymorphic identities are declared</span>
+<span class="sd">        in database but absent from venv: fallback on base identity.</span>
+<span class="sd">        Taken from CTFd.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TModules.base_defaultdict.__missing__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.base_defaultdict.__missing__">[docs]</a>
+        <span class="k">def</span> <span class="fm">__missing__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span></div>
+</div>
+
+
+<div class="viewcode-block" id="TModules.type">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.type">[docs]</a>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">server_default</span><span class="o">=</span><span class="s2">&quot;base&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModules.__mapper_args__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.__mapper_args__">[docs]</a>
+    <span class="n">__mapper_args__</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;polymorphic_on&quot;</span><span class="p">:</span> <span class="s2">&quot;type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;polymorphic_identity&quot;</span><span class="p">:</span> <span class="s2">&quot;base&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_polymorphic_map&quot;</span><span class="p">:</span> <span class="n">base_defaultdict</span><span class="p">(),</span>
+    <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="TModules.id_module">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.id_module">[docs]</a>
+    <span class="n">id_module</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModules.module_code">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.module_code">[docs]</a>
+    <span class="n">module_code</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModules.module_label">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.module_label">[docs]</a>
+    <span class="n">module_label</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModules.module_picto">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.module_picto">[docs]</a>
+    <span class="n">module_picto</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModules.module_desc">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.module_desc">[docs]</a>
+    <span class="n">module_desc</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModules.module_group">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.module_group">[docs]</a>
+    <span class="n">module_group</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModules.module_path">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.module_path">[docs]</a>
+    <span class="n">module_path</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModules.module_external_url">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.module_external_url">[docs]</a>
+    <span class="n">module_external_url</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModules.module_target">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.module_target">[docs]</a>
+    <span class="n">module_target</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModules.module_comment">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.module_comment">[docs]</a>
+    <span class="n">module_comment</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModules.active_frontend">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.active_frontend">[docs]</a>
+    <span class="n">active_frontend</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModules.active_backend">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.active_backend">[docs]</a>
+    <span class="n">active_backend</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModules.module_doc_url">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.module_doc_url">[docs]</a>
+    <span class="n">module_doc_url</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModules.module_order">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.module_order">[docs]</a>
+    <span class="n">module_order</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModules.ng_module">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.ng_module">[docs]</a>
+    <span class="n">ng_module</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">500</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TModules.meta_create_date">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.meta_create_date">[docs]</a>
+    <span class="n">meta_create_date</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TModules.meta_update_date">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.meta_update_date">[docs]</a>
+    <span class="n">meta_update_date</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TModules.objects">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TModules.objects">[docs]</a>
+    <span class="n">objects</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="s2">&quot;PermObject&quot;</span><span class="p">,</span> <span class="n">secondary</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">_resolve_import_cor_object_module</span><span class="p">(),</span> <span class="n">backref</span><span class="o">=</span><span class="s2">&quot;modules&quot;</span>
+    <span class="p">)</span></div>
+
+    <span class="c1"># relationship datasets add via backref</span>
+
+<div class="viewcode-block" id="TModules.__str__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.TModules.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module_label</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;base_dir&quot;</span><span class="p">])</span>
+<div class="viewcode-block" id="TMedias">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.TMedias">[docs]</a>
+<span class="k">class</span> <span class="nc">TMedias</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="TMedias.__tablename__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_medias&quot;</span></div>
+
+<div class="viewcode-block" id="TMedias.__table_args__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_commons&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TMedias.id_media">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.id_media">[docs]</a>
+    <span class="n">id_media</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.id_nomenclature_media_type">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.id_nomenclature_media_type">[docs]</a>
+    <span class="n">id_nomenclature_media_type</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;ref_nomenclatures.t_nomenclatures.id_nomenclature&quot;</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.id_table_location">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.id_table_location">[docs]</a>
+    <span class="n">id_table_location</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_commons.bib_tables_location.id_table_location&quot;</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.unique_id_media">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.unique_id_media">[docs]</a>
+    <span class="n">unique_id_media</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">UUID</span><span class="p">(</span><span class="n">as_uuid</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">uuid_generate_v4</span><span class="p">()))</span></div>
+
+<div class="viewcode-block" id="TMedias.uuid_attached_row">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.uuid_attached_row">[docs]</a>
+    <span class="n">uuid_attached_row</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">UUID</span><span class="p">(</span><span class="n">as_uuid</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TMedias.title_fr">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.title_fr">[docs]</a>
+    <span class="n">title_fr</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.title_en">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.title_en">[docs]</a>
+    <span class="n">title_en</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.title_it">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.title_it">[docs]</a>
+    <span class="n">title_it</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.title_es">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.title_es">[docs]</a>
+    <span class="n">title_es</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.title_de">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.title_de">[docs]</a>
+    <span class="n">title_de</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.media_url">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.media_url">[docs]</a>
+    <span class="n">media_url</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.media_path">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.media_path">[docs]</a>
+    <span class="n">media_path</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.author">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.author">[docs]</a>
+    <span class="n">author</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.description_fr">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.description_fr">[docs]</a>
+    <span class="n">description_fr</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.description_en">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.description_en">[docs]</a>
+    <span class="n">description_en</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.description_it">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.description_it">[docs]</a>
+    <span class="n">description_it</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.description_es">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.description_es">[docs]</a>
+    <span class="n">description_es</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.description_de">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.description_de">[docs]</a>
+    <span class="n">description_de</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.is_public">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.is_public">[docs]</a>
+    <span class="n">is_public</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.meta_create_date">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.meta_create_date">[docs]</a>
+    <span class="n">meta_create_date</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.meta_update_date">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMedias.meta_update_date">[docs]</a>
+    <span class="n">meta_update_date</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TMedias.base_dir">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.TMedias.base_dir">[docs]</a>
+    <span class="k">def</span> <span class="nf">base_dir</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;MEDIA_FOLDER&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="s2">&quot;attachments&quot;</span></div>
+
+
+<div class="viewcode-block" id="TMedias.__before_commit_delete__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.TMedias.__before_commit_delete__">[docs]</a>
+    <span class="k">def</span> <span class="nf">__before_commit_delete__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># déclenché sur un DELETE : on supprime le fichier</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">media_path</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">media_path</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="c1"># delete file</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_file</span><span class="p">()</span>
+            <span class="c1"># delete thumbnail</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_thumbnails</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TMedias.remove_file">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.TMedias.remove_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">media_path</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">media_path</span>
+        <span class="k">if</span> <span class="n">move</span><span class="p">:</span>
+            <span class="n">new_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;deleted_</span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">new_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">media_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">new_path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">()))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TMedias.remove_thumbnails">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.TMedias.remove_thumbnails">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_thumbnails</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># delete thumbnail test sur nom des fichiers avec id dans le dossier thumbnail</span>
+        <span class="n">dir_thumbnail</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">()),</span>
+            <span class="s2">&quot;thumbnails&quot;</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_table_location</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dir_thumbnail</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dir_thumbnail</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_media</span><span class="p">):</span>
+                <span class="n">abs_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_thumbnail</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">abs_path</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">abs_path</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TParameters">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.TParameters">[docs]</a>
+<span class="k">class</span> <span class="nc">TParameters</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="TParameters.__tablename__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TParameters.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_parameters&quot;</span></div>
+
+<div class="viewcode-block" id="TParameters.__table_args__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TParameters.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_commons&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TParameters.id_parameter">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TParameters.id_parameter">[docs]</a>
+    <span class="n">id_parameter</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TParameters.id_organism">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TParameters.id_organism">[docs]</a>
+    <span class="n">id_organism</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.bib_organismes.id_organisme&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TParameters.parameter_name">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TParameters.parameter_name">[docs]</a>
+    <span class="n">parameter_name</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TParameters.parameter_desc">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TParameters.parameter_desc">[docs]</a>
+    <span class="n">parameter_desc</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TParameters.parameter_value">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TParameters.parameter_value">[docs]</a>
+    <span class="n">parameter_value</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TParameters.parameter_extra_value">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TParameters.parameter_extra_value">[docs]</a>
+    <span class="n">parameter_extra_value</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TValidations">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.TValidations">[docs]</a>
+<span class="k">class</span> <span class="nc">TValidations</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="TValidations.__tablename__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TValidations.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_validations&quot;</span></div>
+
+<div class="viewcode-block" id="TValidations.__table_args__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TValidations.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_commons&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="TValidations.id_validation">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TValidations.id_validation">[docs]</a>
+    <span class="n">id_validation</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TValidations.uuid_attached_row">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TValidations.uuid_attached_row">[docs]</a>
+    <span class="n">uuid_attached_row</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">UUID</span><span class="p">(</span><span class="n">as_uuid</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_synthese.synthese.unique_id_sinp&quot;</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TValidations.id_nomenclature_valid_status">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TValidations.id_nomenclature_valid_status">[docs]</a>
+    <span class="n">id_nomenclature_valid_status</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="n">TNomenclatures</span><span class="o">.</span><span class="n">id_nomenclature</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TValidations.nomenclature_valid_status">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TValidations.nomenclature_valid_status">[docs]</a>
+    <span class="n">nomenclature_valid_status</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span>
+        <span class="n">TNomenclatures</span><span class="p">,</span>
+        <span class="n">foreign_keys</span><span class="o">=</span><span class="p">[</span><span class="n">id_nomenclature_valid_status</span><span class="p">],</span>
+        <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;joined&quot;</span><span class="p">,</span>  <span class="c1"># FIXME: remove and manually join when needed</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TValidations.id_validator">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TValidations.id_validator">[docs]</a>
+    <span class="n">id_validator</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">id_role</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TValidations.validator_role">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TValidations.validator_role">[docs]</a>
+    <span class="n">validator_role</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">User</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TValidations.validation_auto">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TValidations.validation_auto">[docs]</a>
+    <span class="n">validation_auto</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TValidations.validation_comment">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TValidations.validation_comment">[docs]</a>
+    <span class="n">validation_comment</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TValidations.validation_date">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TValidations.validation_date">[docs]</a>
+    <span class="n">validation_date</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">TIMESTAMP</span><span class="p">)</span></div>
+
+    <span class="n">validation_auto</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span>
+    <span class="c1"># FIXME: remove and use nomenclature_valid_status</span>
+<div class="viewcode-block" id="TValidations.validation_label">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TValidations.validation_label">[docs]</a>
+    <span class="n">validation_label</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="n">TNomenclatures</span><span class="p">,</span>
+        <span class="n">foreign_keys</span><span class="o">=</span><span class="p">[</span><span class="n">id_nomenclature_valid_status</span><span class="p">],</span>
+        <span class="n">overlaps</span><span class="o">=</span><span class="s2">&quot;nomenclature_valid_status&quot;</span><span class="p">,</span>  <span class="c1"># overlaps expected</span>
+    <span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TValidations.auto_validation">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.TValidations.auto_validation">[docs]</a>
+    <span class="k">def</span> <span class="nf">auto_validation</span><span class="p">(</span><span class="n">fct_auto_validation</span><span class="p">):</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">text</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            select routine_name, routine_schema </span>
+<span class="s2">            from information_schema.routines </span>
+<span class="s2">            where routine_name= &#39;</span><span class="si">{</span><span class="n">fct_auto_validation</span><span class="si">}</span><span class="s2">&#39;</span>
+<span class="s2">            and routine_type=&#39;FUNCTION&#39;;</span>
+<span class="s2">         &quot;&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">stmt_auto_validation</span> <span class="o">=</span> <span class="n">text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SELECT gn_profiles.</span><span class="si">{</span><span class="n">fct_auto_validation</span><span class="si">}</span><span class="s2">()&quot;</span><span class="p">)</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt_auto_validation</span><span class="p">)</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="last_validation_query">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.last_validation_query">[docs]</a>
+<span class="n">last_validation_query</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">select</span><span class="p">(</span><span class="n">TValidations</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">TValidations</span><span class="o">.</span><span class="n">validation_date</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;last_validation&quot;</span><span class="p">)</span>
+<span class="p">)</span></div>
+
+<div class="viewcode-block" id="last_validation">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.last_validation">[docs]</a>
+<span class="n">last_validation</span> <span class="o">=</span> <span class="n">aliased</span><span class="p">(</span><span class="n">TValidations</span><span class="p">,</span> <span class="n">last_validation_query</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@serializable</span>
+<span class="nd">@geoserializable</span>
+<div class="viewcode-block" id="VLatestValidations">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.VLatestValidations">[docs]</a>
+<span class="k">class</span> <span class="nc">VLatestValidations</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="VLatestValidations.__tablename__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.VLatestValidations.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;v_latest_validation&quot;</span></div>
+
+<div class="viewcode-block" id="VLatestValidations.__table_args__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.VLatestValidations.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_commons&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="VLatestValidations.id_validation">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.VLatestValidations.id_validation">[docs]</a>
+    <span class="n">id_validation</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VLatestValidations.uuid_attached_row">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.VLatestValidations.uuid_attached_row">[docs]</a>
+    <span class="n">uuid_attached_row</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">UUID</span><span class="p">(</span><span class="n">as_uuid</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="VLatestValidations.id_nomenclature_valid_status">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.VLatestValidations.id_nomenclature_valid_status">[docs]</a>
+    <span class="n">id_nomenclature_valid_status</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VLatestValidations.id_validator">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.VLatestValidations.id_validator">[docs]</a>
+    <span class="n">id_validator</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VLatestValidations.validation_comment">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.VLatestValidations.validation_comment">[docs]</a>
+    <span class="n">validation_comment</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VLatestValidations.validation_date">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.VLatestValidations.validation_date">[docs]</a>
+    <span class="n">validation_date</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="THistoryActions">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.THistoryActions">[docs]</a>
+<span class="k">class</span> <span class="nc">THistoryActions</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="THistoryActions.__tablename__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.THistoryActions.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_history_actions&quot;</span></div>
+
+<div class="viewcode-block" id="THistoryActions.__table_args__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.THistoryActions.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_commons&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="THistoryActions.id_history_action">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.THistoryActions.id_history_action">[docs]</a>
+    <span class="n">id_history_action</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="THistoryActions.id_table_location">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.THistoryActions.id_table_location">[docs]</a>
+    <span class="n">id_table_location</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="THistoryActions.uuid_attached_row">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.THistoryActions.uuid_attached_row">[docs]</a>
+    <span class="n">uuid_attached_row</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">UUID</span><span class="p">(</span><span class="n">as_uuid</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="THistoryActions.operation_type">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.THistoryActions.operation_type">[docs]</a>
+    <span class="n">operation_type</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="THistoryActions.operation_date">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.THistoryActions.operation_date">[docs]</a>
+    <span class="n">operation_date</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="THistoryActions.table_content">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.THistoryActions.table_content">[docs]</a>
+    <span class="n">table_content</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TMobileApps">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.TMobileApps">[docs]</a>
+<span class="k">class</span> <span class="nc">TMobileApps</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="TMobileApps.__tablename__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMobileApps.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_mobile_apps&quot;</span></div>
+
+<div class="viewcode-block" id="TMobileApps.__table_args__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMobileApps.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_commons&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TMobileApps.id_mobile_app">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMobileApps.id_mobile_app">[docs]</a>
+    <span class="n">id_mobile_app</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMobileApps.app_code">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMobileApps.app_code">[docs]</a>
+    <span class="n">app_code</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMobileApps.relative_path_apk">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMobileApps.relative_path_apk">[docs]</a>
+    <span class="n">relative_path_apk</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMobileApps.url_apk">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMobileApps.url_apk">[docs]</a>
+    <span class="n">url_apk</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMobileApps.url_settings">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMobileApps.url_settings">[docs]</a>
+    <span class="n">url_settings</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMobileApps.package">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMobileApps.package">[docs]</a>
+    <span class="n">package</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMobileApps.version_code">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TMobileApps.version_code">[docs]</a>
+    <span class="n">version_code</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<span class="nd">@geoserializable</span><span class="p">(</span><span class="n">geoCol</span><span class="o">=</span><span class="s2">&quot;place_geom&quot;</span><span class="p">,</span> <span class="n">idCol</span><span class="o">=</span><span class="s2">&quot;id_place&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="TPlaces">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.TPlaces">[docs]</a>
+<span class="k">class</span> <span class="nc">TPlaces</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="TPlaces.__tablename__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TPlaces.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_places&quot;</span></div>
+
+<div class="viewcode-block" id="TPlaces.__table_args__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TPlaces.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_commons&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TPlaces.id_place">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TPlaces.id_place">[docs]</a>
+    <span class="n">id_place</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TPlaces.id_role">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TPlaces.id_role">[docs]</a>
+    <span class="n">id_role</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_roles.id_role&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TPlaces.role">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TPlaces.role">[docs]</a>
+    <span class="n">role</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">User</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TPlaces.place_name">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TPlaces.place_name">[docs]</a>
+    <span class="n">place_name</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">String</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TPlaces.place_geom">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.TPlaces.place_geom">[docs]</a>
+    <span class="n">place_geom</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">Geometry</span><span class="p">(</span><span class="s2">&quot;GEOMETRY&quot;</span><span class="p">,</span> <span class="mi">4326</span><span class="p">))</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibWidgets">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.BibWidgets">[docs]</a>
+<span class="k">class</span> <span class="nc">BibWidgets</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibWidgets.__tablename__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.BibWidgets.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_widgets&quot;</span></div>
+
+<div class="viewcode-block" id="BibWidgets.__table_args__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.BibWidgets.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_commons&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BibWidgets.id_widget">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.BibWidgets.id_widget">[docs]</a>
+    <span class="n">id_widget</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibWidgets.widget_name">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/base/index.html#geonature.core.gn_commons.models.base.BibWidgets.widget_name">[docs]</a>
+    <span class="n">widget_name</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BibWidgets.__str__">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.BibWidgets.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget_name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="cor_field_object">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.cor_field_object">[docs]</a>
+<span class="n">cor_field_object</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_field_object&quot;</span><span class="p">,</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id_field&quot;</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_commons.t_additional_fields.id_field&quot;</span><span class="p">)),</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id_object&quot;</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_permissions.t_objects.id_object&quot;</span><span class="p">)),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_commons&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cor_field_module">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.cor_field_module">[docs]</a>
+<span class="n">cor_field_module</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_field_module&quot;</span><span class="p">,</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id_field&quot;</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_commons.t_additional_fields.id_field&quot;</span><span class="p">)),</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id_module&quot;</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_commons.t_modules.id_module&quot;</span><span class="p">)),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_commons&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cor_field_dataset">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_commons/models/index.html#geonature.core.gn_commons.models.base.cor_field_dataset">[docs]</a>
+<span class="n">cor_field_dataset</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_field_dataset&quot;</span><span class="p">,</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id_field&quot;</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_commons.t_additional_fields.id_field&quot;</span><span class="p">)),</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id_dataset&quot;</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_meta.t_datasets.id_dataset&quot;</span><span class="p">)),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_commons&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,132 @@
+:py:mod:`geonature.core.admin.admin`
+====================================
+
+.. py:module:: geonature.core.admin.admin
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.admin.admin.MyHomeView
+   geonature.core.admin.admin.ProtectedBibNomenclaturesTypesAdmin
+   geonature.core.admin.admin.ProtectedTNomenclaturesAdmin
+
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.admin.admin.admin
+   geonature.core.admin.admin.flask_admin
+
+
+.. py:class:: MyHomeView(name=None, category=None, endpoint=None, url=None, template='admin/index.html', menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
+
+
+   Bases: :py:obj:`flask_admin.AdminIndexView`
+
+   Default administrative interface index page when visiting the ``/admin/`` URL.
+
+   It can be overridden by passing your own view class to the ``Admin`` constructor::
+
+       class MyHomeView(AdminIndexView):
+           @expose('/')
+           def index(self):
+               arg1 = 'Hello'
+               return self.render('admin/myhome.html', arg1=arg1)
+
+       admin = Admin(index_view=MyHomeView())
+
+
+   Also, you can change the root url from /admin to / with the following::
+
+       admin = Admin(
+           app,
+           index_view=AdminIndexView(
+               name='Home',
+               template='admin/myhome.html',
+               url='/'
+           )
+       )
+
+   Default values for the index page are:
+
+   * If a name is not provided, 'Home' will be used.
+   * If an endpoint is not provided, will default to ``admin``
+   * Default URL route is ``/admin``.
+   * Automatically associates with static folder.
+   * Default template is ``admin/index.html``
+
+   .. py:method:: is_accessible()
+
+      Override this method to add permission checks.
+
+      Flask-Admin does not make any assumptions about the authentication system used in your application, so it is
+      up to you to implement it.
+
+      By default, it will allow access for everyone.
+
+
+
+.. py:class:: ProtectedBibNomenclaturesTypesAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
+
+
+   Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`pypnnomenclature.admin.BibNomenclaturesTypesAdmin`
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
+
+   .. py:attribute:: module_code
+      :value: 'ADMIN'
+
+      
+
+   .. py:attribute:: object_code
+      :value: 'NOMENCLATURES'
+
+      
+
+
+.. py:class:: ProtectedTNomenclaturesAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
+
+
+   Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`pypnnomenclature.admin.TNomenclaturesAdmin`
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
+
+   .. py:attribute:: module_code
+      :value: 'ADMIN'
+
+      
+
+   .. py:attribute:: object_code
+      :value: 'NOMENCLATURES'
+
+      
+
+
+.. py:data:: admin
+
+   
+
+.. py:data:: flask_admin
+
+   
+

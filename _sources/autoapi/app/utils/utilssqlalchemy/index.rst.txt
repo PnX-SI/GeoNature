@@ -1,0 +1,85 @@
+:py:mod:`app.utils.utilssqlalchemy`
+===================================
+
+.. py:module:: app.utils.utilssqlalchemy
+
+.. autoapi-nested-parse::
+
+   Fonctions utilitaires
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   app.utils.utilssqlalchemy.GenericTable
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   app.utils.utilssqlalchemy.serializeQuery
+   app.utils.utilssqlalchemy.serializeQueryTest
+   app.utils.utilssqlalchemy.serializeQueryOneResult
+   app.utils.utilssqlalchemy.serializable
+   app.utils.utilssqlalchemy.json_resp
+   app.utils.utilssqlalchemy.csv_resp
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   app.utils.utilssqlalchemy.SERIALIZERS
+
+
+.. py:data:: SERIALIZERS
+
+   
+
+.. py:class:: GenericTable(tableName, schemaName, geometry_field)
+
+
+   Classe permettant de créer à la volée un mapping
+       d'une vue avec la base de données par rétroingénierie
+
+   .. py:method:: as_dict(data)
+
+
+
+.. py:function:: serializeQuery(data, columnDef)
+
+
+.. py:function:: serializeQueryTest(data, columnDef)
+
+
+.. py:function:: serializeQueryOneResult(row, columnDef)
+
+
+.. py:function:: serializable(cls)
+
+   Décorateur de classe pour les DB.Models
+   Permet de rajouter la fonction as_dict qui est basée sur le mapping SQLAlchemy
+
+
+.. py:function:: json_resp(fn)
+
+   Décorateur transformant le résultat renvoyé par une vue
+   en objet JSON
+
+
+.. py:function:: csv_resp(fn)
+
+   Décorateur transformant le résultat renvoyé en un fichier csv
+
+

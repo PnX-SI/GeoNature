@@ -1,0 +1,219 @@
+:py:mod:`geonature.core.gn_monitoring.models`
+=============================================
+
+.. py:module:: geonature.core.gn_monitoring.models
+
+.. autoapi-nested-parse::
+
+   Modèles du schéma gn_monitoring
+   Correspond a la centralisation des données de base
+       relatifs aux protocoles de suivis
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_monitoring.models.TBaseVisits
+   geonature.core.gn_monitoring.models.TBaseSites
+
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_monitoring.models.corVisitObserver
+   geonature.core.gn_monitoring.models.corSiteModule
+   geonature.core.gn_monitoring.models.corSiteArea
+
+
+.. py:data:: corVisitObserver
+
+   
+
+.. py:data:: corSiteModule
+
+   
+
+.. py:data:: corSiteArea
+
+   
+
+.. py:class:: TBaseVisits
+
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+   Table de centralisation des visites liées à un site
+
+   .. py:attribute:: __tablename__
+      :value: 't_base_visits'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_base_visit
+
+      
+
+   .. py:attribute:: id_base_site
+
+      
+
+   .. py:attribute:: id_digitiser
+
+      
+
+   .. py:attribute:: id_dataset
+
+      
+
+   .. py:attribute:: id_module
+
+      
+
+   .. py:attribute:: visit_date_min
+
+      
+
+   .. py:attribute:: visit_date_max
+
+      
+
+   .. py:attribute:: id_nomenclature_tech_collect_campanule
+
+      
+
+   .. py:attribute:: id_nomenclature_grp_typ
+
+      
+
+   .. py:attribute:: comments
+
+      
+
+   .. py:attribute:: uuid_base_visit
+
+      
+
+   .. py:attribute:: meta_create_date
+
+      
+
+   .. py:attribute:: meta_update_date
+
+      
+
+   .. py:attribute:: digitiser
+
+      
+
+   .. py:attribute:: observers
+
+      
+
+   .. py:attribute:: dataset
+
+      
+
+
+.. py:class:: TBaseSites
+
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+   Table centralisant les données élémentaire des sites
+
+   .. py:attribute:: __tablename__
+      :value: 't_base_sites'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_base_site
+
+      
+
+   .. py:attribute:: id_inventor
+
+      
+
+   .. py:attribute:: id_digitiser
+
+      
+
+   .. py:attribute:: id_nomenclature_type_site
+
+      
+
+   .. py:attribute:: base_site_name
+
+      
+
+   .. py:attribute:: base_site_description
+
+      
+
+   .. py:attribute:: base_site_code
+
+      
+
+   .. py:attribute:: first_use_date
+
+      
+
+   .. py:attribute:: geom
+
+      
+
+   .. py:attribute:: uuid_base_site
+
+      
+
+   .. py:attribute:: meta_create_date
+
+      
+
+   .. py:attribute:: meta_update_date
+
+      
+
+   .. py:attribute:: altitude_min
+
+      
+
+   .. py:attribute:: altitude_max
+
+      
+
+   .. py:attribute:: digitiser
+
+      
+
+   .. py:attribute:: inventor
+
+      
+
+   .. py:attribute:: t_base_visits
+
+      
+
+   .. py:attribute:: modules
+
+      
+
+

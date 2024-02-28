@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" >
+<html class="writer-html5" lang="fr" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tests backend &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/translations.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=e8570148"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=d99ca74e"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Recherche" href="search.html" /> 
@@ -27,15 +30,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="index.html" class="icon icon-home"> GeoNature
-            <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GeoNature
+              <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -49,6 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-references.html">API REFERENCES</a></li>
 </ul>
 
         </div>
@@ -64,8 +72,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Tests backend</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Tests backend</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/tests_backend.rst.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
@@ -76,7 +84,7 @@
            <div itemprop="articleBody">
              
   <section id="tests-backend">
-<h1>Tests backend<a class="headerlink" href="#tests-backend" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>Tests backend<a class="headerlink" href="#tests-backend" title="Link to this heading"></a></h1>
 <p>Cette documentation a pour objectif d’expliquer comment écrire des tests pour
 le backend de GeoNature.</p>
 <p>Un test se décompose en général en 3 étapes :</p>
@@ -92,7 +100,7 @@ commentaire ou une séparation entre elles.</p>
 tester différentes configurations plutôt qu’un seul les testant toutes d’un
 coup. Cela permet d’identifier plus précisément le test qui n’a pas fonctionné.</p>
 <section id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
 <p>Comme spécifié dans la partie Développement, la librairie Python PyTest est
 utilisée pour rédiger des tests. Elle permet de :</p>
 <ul class="simple">
@@ -105,7 +113,7 @@ l’instruction <code class="docutils literal notranslate"><span class="pre">ass
 </ul>
 </section>
 <section id="utilisation">
-<h2>Utilisation<a class="headerlink" href="#utilisation" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Utilisation<a class="headerlink" href="#utilisation" title="Link to this heading"></a></h2>
 <p>Les tests sont des fonctions pouvant être regroupées dans des classes. La
 nomenclature est la suivante :</p>
 <ul class="simple">
@@ -120,7 +128,7 @@ pouvoir être détecté automatiquement par PyTest</p></li>
 </ul>
 </section>
 <section id="fixtures">
-<h2>Fixtures<a class="headerlink" href="#fixtures" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Fixtures<a class="headerlink" href="#fixtures" title="Link to this heading"></a></h2>
 <p>Les fixtures de PyTest peuvent permettre de nombreuses choses comme expliqué
 dans la documentation PyTest sur <a class="reference external" href="https://docs.pytest.org/explanation/fixtures.html#about-fixtures">les fixtures</a>.</p>
 <p>Dans GeoNature elles sont, en général, utilisées pour définir des objets
@@ -170,7 +178,7 @@ Python du test. Elles sont définies comme suit :</p>
 </div>
 </section>
 <section id="exemple">
-<h2>Exemple<a class="headerlink" href="#exemple" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Exemple<a class="headerlink" href="#exemple" title="Link to this heading"></a></h2>
 <p>Voici un exemple de test qui a été fait dans GeoNature</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_get_consistancy_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="n">synthese_record</span> <span class="o">=</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
@@ -192,7 +200,7 @@ l’attribut <code class="docutils literal notranslate"><span class="pre">client
 notamment.</p>
 </section>
 <section id="dans-github">
-<h2>Dans GitHub<a class="headerlink" href="#dans-github" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Dans GitHub<a class="headerlink" href="#dans-github" title="Link to this heading"></a></h2>
 <p>Dans le dépôt de GeoNature sur GitHub, tous ces tests sont exécutés
 automatiquement pour chaque commit d’une pull request grâce à PyTest et à
 GitHub Actions. Ils permettent donc de vérifier que les modifications apportées
@@ -202,7 +210,7 @@ request. Un coverage est aussi exécuté pour s’assurer que les nouveaux
 développements sont bien testés.</p>
 </section>
 <section id="coverage">
-<h2>Coverage<a class="headerlink" href="#coverage" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Coverage<a class="headerlink" href="#coverage" title="Link to this heading"></a></h2>
 <p>Le coverage est un système permettant de quantifier les lignes de code
 exécutées par le test. Exemple rapide :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Définition d&#39;une fonction quelconque</span>
@@ -236,23 +244,23 @@ d’être plus confiant dans la modification/refactorisation de lignes de code e
 </div>
 </section>
 <section id="dans-vscode">
-<h2>Dans VSCode<a class="headerlink" href="#dans-vscode" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Dans VSCode<a class="headerlink" href="#dans-vscode" title="Link to this heading"></a></h2>
 <p>Il est possible d’installer <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ms-python.python">l’extension Python</a> pour facilement lancer et
 debugger un ou plusieurs tests directement depuis VSCode. Il suffit juste de
 changer le fichier <code class="docutils literal notranslate"><span class="pre">settings.json</span></code> dans le dossier <code class="docutils literal notranslate"><span class="pre">.vscode</span></code> de votre
 projet avec le code suivant pour qu’il soit compatible avec GeoNature :</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;python.testing.pytestArgs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;/chemin/vers/geonature/backend/geonature/tests&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p">],</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;python.testing.unittestEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;python.testing.pytestEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;python.testing.pytestArgs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;/chemin/vers/geonature/backend/geonature/tests&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;python.testing.unittestEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;python.testing.pytestEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="executer-un-ou-plusieurs-test-s-en-ligne-de-commande">
-<h2>Exécuter un ou plusieurs test(s) en ligne de commande<a class="headerlink" href="#executer-un-ou-plusieurs-test-s-en-ligne-de-commande" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Exécuter un ou plusieurs test(s) en ligne de commande<a class="headerlink" href="#executer-un-ou-plusieurs-test-s-en-ligne-de-commande" title="Link to this heading"></a></h2>
 <p>Pour exécuter les tests de GeoNature placez vous à la racine du dossier où est
 installé GeoNature et exécutez la commande suivante :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span>
@@ -288,7 +296,7 @@ possible de générer le coverage au format html en remplaçant <code class="doc
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2018-2023, PnE, PnC.</p>
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
   </div>
 
   Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un

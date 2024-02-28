@@ -1,0 +1,34 @@
+:py:mod:`geonature.middlewares`
+===============================
+
+.. py:module:: geonature.middlewares
+
+
+Package Contents
+----------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   geonature.middlewares.RequestID
+   geonature.middlewares.SchemeFix
+
+
+
+
+.. py:class:: RequestID(app)
+
+
+   .. py:method:: __call__(environ, start_response)
+
+
+
+.. py:class:: SchemeFix(app, scheme=None)
+
+
+   .. py:method:: __call__(environ, start_response)
+
+
+

@@ -7,6 +7,7 @@ Parc national des Écrins
 * Gil Deluermoz
 * Théo Lechemia
 * Élie Bouttier
+* Jacques Fize
 * Camille Monchicourt
 
 .. image:: http://geonature.fr/img/logo-pne.jpg
@@ -54,6 +55,7 @@ Contributeurs
 * Judith Panijel (UMS Patrinat)
 * Alain Laupin (UMS Patrinat)
 * Vincent Cauchois (UMS Patrinat)
+* Pierre Narcisi (UMS Patrinat)
 * Ludovic Le Pontois (Parc national des Pyrénées)
 * Vincent Prunet (Parc national du Mercantour)
 * David Michallet (CEN 38)
@@ -65,9 +67,12 @@ Contributeurs
 * Julien Graziani (Natural Solutions)
 * Ophélie Da Silva (Natural Solutions)
 * Andria Capai (Natural Solutions)
+* Etienne Delclaux (Natural Solutions)
 * Gaëtan Bruel (JDev)
 * Pierre Jégo (JDev)
 * Pierre Le Dorze (Bretagne Vivante)
 * Bastien Alvez (Makina Corpus)
 * dece
 * Mathieu Roudaut (CREA Mont-Blanc)
+* Marie-Laure Séguin (CEN Normandie)
+* Zacharie Moulin (RNF)

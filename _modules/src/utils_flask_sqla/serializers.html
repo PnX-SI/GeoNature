@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.utils_flask_sqla.serializers &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">src.utils_flask_sqla.serializers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de src.utils_flask_sqla.serializers</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Serialize function for SQLAlchemy models</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span><span class="p">,</span> <span class="n">getattr_static</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">ChainMap</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">UUID</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">ColumnProperty</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">inspect</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.ext.hybrid</span> <span class="kn">import</span> <span class="n">hybrid_property</span><span class="p">,</span> <span class="n">HYBRID_PROPERTY</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.types</span> <span class="kn">import</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">,</span> <span class="n">Time</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql.base</span> <span class="kn">import</span> <span class="n">UUID</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of data type who need a particular serialization</span>
+<span class="sd">    @TODO MISSING FLOAT</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="SERIALIZERS">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/serializers/index.html#src.utils_flask_sqla.serializers.SERIALIZERS">[docs]</a>
+<span class="n">SERIALIZERS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;datetime&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;uuid&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;numeric&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="get_serializer">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/serializers/index.html#src.utils_flask_sqla.serializers.get_serializer">[docs]</a>
+<span class="k">def</span> <span class="nf">get_serializer</span><span class="p">(</span><span class="n">col</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">ColumnProperty</span><span class="p">):</span>
+        <span class="n">col_type</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">col_type</span><span class="p">,</span> <span class="n">UUID</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">str</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">col_type</span><span class="p">,</span> <span class="n">Date</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">str</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">col_type</span><span class="p">,</span> <span class="n">Time</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">str</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">col_type</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">str</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">hybrid_property</span><span class="p">):</span>
+        <span class="c1"># TODO Does some hybrid property need conversion?</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># TODO May be support CompositeProperty, …</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="get_serializable_decorator">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/serializers/index.html#src.utils_flask_sqla.serializers.get_serializable_decorator">[docs]</a>
+<span class="k">def</span> <span class="nf">get_serializable_decorator</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[],</span> <span class="n">exclude</span><span class="o">=</span><span class="p">[],</span> <span class="n">stringify</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="n">default_fields</span> <span class="o">=</span> <span class="n">fields</span>
+    <span class="n">default_exclude</span> <span class="o">=</span> <span class="n">exclude</span>
+    <span class="n">default_stringify</span> <span class="o">=</span> <span class="n">stringify</span>
+    <span class="n">firstlevel_default_fields</span> <span class="o">=</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">default_fields</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_serializable</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Décorateur de classe pour les DB.Models</span>
+<span class="sd">        Permet de rajouter la fonction as_dict</span>
+<span class="sd">        qui est basée sur le mapping SQLAlchemy</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">mapper</span> <span class="o">=</span> <span class="n">inspect</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">get_cls_db_columns</span><span class="p">():</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Liste des propriétés sérialisables de la classe</span>
+<span class="sd">            associées à leur sérializer en fonction de leur type</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">cls_db_columns</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__mapper__</span><span class="o">.</span><span class="n">column_attrs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="n">ColumnProperty</span><span class="p">):</span>  <span class="c1"># and len(prop.columns) == 1:</span>
+                    <span class="c1"># -1 : si on est dans le cas d&#39;un heritage on recupere le dernier element de prop</span>
+                    <span class="c1"># qui correspond à la derniere redefinition de cette colonne</span>
+                    <span class="n">db_col</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="c1"># HACK</span>
+                    <span class="c1">#  -&gt; Récupération du nom de l&#39;attribut sans la classe</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">db_col</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;Geometry&quot;</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">cls_db_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">(</span>
+                            <span class="n">name</span><span class="p">,</span>
+                            <span class="n">SERIALIZERS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">db_col</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">),</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Liste des propriétés synonymes</span>
+<span class="sd">                sérialisables de la classe</span>
+<span class="sd">                associées à leur sérializer en fonction de leur type</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">syn</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__mapper__</span><span class="o">.</span><span class="n">synonyms</span><span class="p">:</span>
+                <span class="n">col</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__mapper__</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">syn</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                <span class="c1"># if column type is geometry pass</span>
+                <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;Geometry&quot;</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+                <span class="c1"># else add synonyms in columns properties</span>
+                <span class="n">cls_db_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">syn</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">SERIALIZERS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">col</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">))</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">cls_db_columns</span>
+
+        <span class="k">def</span> <span class="nf">get_cls_db_relationships</span><span class="p">():</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Liste des propriétés de type relationship</span>
+<span class="sd">            uselist permet de savoir si c&#39;est une collection de sous objet</span>
+<span class="sd">            sa valeur est déduite du type de relation</span>
+<span class="sd">            (OneToMany, ManyToOne ou ManyToMany)</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="p">(</span><span class="n">db_rel</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">db_rel</span><span class="o">.</span><span class="n">uselist</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">db_rel</span><span class="o">.</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">class_</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">db_rel</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__mapper__</span><span class="o">.</span><span class="n">relationships</span>
+            <span class="p">]</span>
+
+        <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">get_columns_and_relationships</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="n">deferred_columns</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">key</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">props</span> <span class="ow">in</span> <span class="n">mapper</span><span class="o">.</span><span class="n">column_attrs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">props</span><span class="o">.</span><span class="n">deferred</span>
+            <span class="p">}</span>
+            <span class="n">_default_exclude</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">default_exclude</span><span class="p">)</span> <span class="o">|</span> <span class="n">deferred_columns</span>
+            <span class="n">additional_fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="n">default_fields</span>
+            <span class="k">elif</span> <span class="n">fields</span><span class="p">:</span>
+                <span class="n">base_fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+                <span class="n">relationship_fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">mapper</span><span class="o">.</span><span class="n">relationships</span><span class="p">:</span>
+                        <span class="n">relationship_fields</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">field</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">):</span>
+                        <span class="n">field</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">)</span>
+                        <span class="n">additional_fields</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">base_fields</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+                    <span class="c1"># We remove given fields from default_exclude!</span>
+                    <span class="n">_default_exclude</span> <span class="o">-=</span> <span class="p">{</span><span class="n">field</span><span class="p">}</span>
+                <span class="k">if</span> <span class="n">base_fields</span><span class="p">:</span>
+                    <span class="n">fields</span> <span class="o">=</span> <span class="n">base_fields</span> <span class="o">|</span> <span class="n">additional_fields</span> <span class="o">|</span> <span class="n">relationship_fields</span>
+                <span class="k">else</span><span class="p">:</span>  <span class="c1"># given fields are only relationships or additional fields, but no columns</span>
+                    <span class="c1"># if we have some columns in default fields, we add additional fields to these columns</span>
+                    <span class="k">if</span> <span class="n">firstlevel_default_fields</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">mapper</span><span class="o">.</span><span class="n">relationships</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                        <span class="n">fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">default_fields</span><span class="p">)</span> <span class="o">|</span> <span class="n">additional_fields</span> <span class="o">|</span> <span class="n">relationship_fields</span>
+                    <span class="c1"># else, we do not add additional fields as we want ALL columns (default behaviour), not only additional columns</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">default_fields</span><span class="p">)</span> <span class="o">|</span> <span class="n">relationship_fields</span>
+            <span class="k">if</span> <span class="n">exclude</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">exclude</span> <span class="o">=</span> <span class="n">_default_exclude</span>
+
+            <span class="c1"># take &#39;a&#39; instead of &#39;a.b&#39;</span>
+            <span class="n">firstlevel_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">rel</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">rel</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">]</span>
+
+            <span class="n">properties</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">getattr_static</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="nb">property</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="n">hybrid_properties</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">key</span><span class="p">:</span> <span class="n">attr</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">mapper</span><span class="o">.</span><span class="n">all_orm_descriptors</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">extension_type</span> <span class="o">==</span> <span class="n">HYBRID_PROPERTY</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span> <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span><span class="p">])</span> <span class="o">|</span> <span class="n">additional_fields</span><span class="p">)</span>
+                <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">mapper</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">hybrid_properties</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Field &#39;</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&#39; does not exist on </span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span> <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">f</span><span class="p">])</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span>
+                <span class="n">mapper</span><span class="o">.</span><span class="n">relationships</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Relationship &#39;</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&#39; does not exist on </span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+            <span class="n">_columns</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">key</span><span class="p">:</span> <span class="n">col</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">ChainMap</span><span class="p">(</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="n">mapper</span><span class="o">.</span><span class="n">column_attrs</span><span class="p">),</span> <span class="n">properties</span><span class="p">,</span> <span class="n">hybrid_properties</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">fields</span>
+            <span class="p">}</span>
+            <span class="n">_relationships</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">key</span><span class="p">:</span> <span class="n">rel</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">rel</span> <span class="ow">in</span> <span class="n">mapper</span><span class="o">.</span><span class="n">relationships</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">firstlevel_fields</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_columns</span><span class="p">:</span>
+                <span class="n">_columns</span> <span class="o">=</span> <span class="n">ChainMap</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">mapper</span><span class="o">.</span><span class="n">column_attrs</span><span class="p">),</span> <span class="n">properties</span><span class="p">,</span> <span class="n">hybrid_properties</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">exclude</span><span class="p">:</span>
+                <span class="n">_columns</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">col</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">_columns</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">}</span>
+                <span class="n">_relationships</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">key</span><span class="p">:</span> <span class="n">rel</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">rel</span> <span class="ow">in</span> <span class="n">_relationships</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude</span>
+                <span class="p">}</span>
+
+            <span class="n">_columns</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">get_serializer</span><span class="p">(</span><span class="n">col</span><span class="p">))</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">_columns</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+            <span class="k">return</span> <span class="n">fields</span><span class="p">,</span> <span class="n">exclude</span><span class="p">,</span> <span class="n">_columns</span><span class="p">,</span> <span class="n">_relationships</span>
+
+        <span class="k">def</span> <span class="nf">serializefn</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">recursif</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[],</span>
+            <span class="n">relationships</span><span class="o">=</span><span class="p">[],</span>
+            <span class="n">fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">stringify</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">unloaded</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">_excluded_mappers</span><span class="o">=</span><span class="p">[],</span>
+        <span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Méthode qui renvoie les données de l&#39;objet sous la forme d&#39;un dict</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">                fields: liste</span>
+<span class="sd">                    Liste des champs (colonne native ou relationship) à prendre en compte, e.g. :</span>
+<span class="sd">                        fields=[&#39;column1&#39;, &#39;column2&#39;, &#39;child1&#39;, &#39;child2&#39;]</span>
+<span class="sd">                    Si fields n’est pas spécifié, l’ensemble des colonnes sont sélectionnées.</span>
+<span class="sd">                    Les relationships doivent être explicitement spécifiées dans fields pour être</span>
+<span class="sd">                    prise en compte en plus des propres colonnes de l’objet, e.g. :</span>
+<span class="sd">                        fields=[&#39;child&#39;]</span>
+<span class="sd">                    Il est également possible de spécifier les champs d’une relationship</span>
+<span class="sd">                    à prendre en compte, sans limite de profondeur, avec un &#39;.&#39; :</span>
+<span class="sd">                        fields=[&#39;child.column1&#39;, &#39;child.otherchild.column2&#39;]</span>
+<span class="sd">                exclude: list</span>
+<span class="sd">                    Liste de champs à exclure.</span>
+<span class="sd">                    Les exclusions s’appliquent après la sélection des champs avec fields.</span>
+<span class="sd">                    Il est également possible d’utiliser la notation avec un &#39;.&#39;, e.g. :</span>
+<span class="sd">                        fields=[&#39;child&#39;],exclude=[&#39;child.column2&#39;]</span>
+
+<span class="sd">                Les arguments ci-après sont dépréciés en faveur de fields et exclude.</span>
+
+<span class="sd">                recursif: boolean</span>
+<span class="sd">                        Spécifie si on veut que les sous-objets (relationship)</span>
+<span class="sd">                depth: entier</span>
+<span class="sd">                    spécifie le niveau de niveau de récursion:</span>
+<span class="sd">                        0 juste l&#39;objet</span>
+<span class="sd">                        1 l&#39;objet et ses sous-objets</span>
+<span class="sd">                        2 ...</span>
+<span class="sd">                    si depth est spécifié :</span>
+<span class="sd">                        recursif prend la valeur True</span>
+<span class="sd">                    si depth n&#39;est pas spécifié et recursif est à True :</span>
+<span class="sd">                        il n&#39;y a pas de limite à la récursivité</span>
+<span class="sd">                columns: liste</span>
+<span class="sd">                    liste des colonnes qui doivent être prises en compte</span>
+<span class="sd">                relationships: liste</span>
+<span class="sd">                    liste des relationships qui doivent être prise en compte</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">stringify</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">stringify</span> <span class="o">=</span> <span class="n">default_stringify</span>
+
+            <span class="k">if</span> <span class="n">columns</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;columns&#39; argument is deprecated. Please add columns to serialize &quot;</span>
+                    <span class="s2">&quot;directly in &#39;fields&#39; argument.&quot;</span><span class="p">,</span>
+                    <span class="ne">DeprecationWarning</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="n">chain</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">columns</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">relationships</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;relationships&#39; argument is deprecated. Please add relationships to serialize &quot;</span>
+                    <span class="s2">&quot;directly in &#39;fields&#39; argument.&quot;</span><span class="p">,</span>
+                    <span class="ne">DeprecationWarning</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="n">chain</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">relationships</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">depth</span><span class="p">:</span>
+                <span class="n">recursif</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">recursif</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;recursif&#39; argument is deprecated. Please add relationships to serialize &quot;</span>
+                    <span class="s2">&quot;directly in &#39;fields&#39; argument.&quot;</span><span class="p">,</span>
+                    <span class="ne">DeprecationWarning</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">_excluded_mappers</span> <span class="o">=</span> <span class="n">_excluded_mappers</span> <span class="o">+</span> <span class="p">[</span><span class="n">mapper</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">depth</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">depth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">fields</span> <span class="o">=</span> <span class="n">chain</span><span class="p">(</span>
+                        <span class="n">fields</span><span class="p">,</span>
+                        <span class="p">[</span>
+                            <span class="n">rel</span><span class="o">.</span><span class="n">key</span>
+                            <span class="k">for</span> <span class="n">rel</span> <span class="ow">in</span> <span class="n">mapper</span><span class="o">.</span><span class="n">relationships</span>
+                            <span class="k">if</span> <span class="n">rel</span><span class="o">.</span><span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fields</span> <span class="ow">and</span> <span class="n">rel</span><span class="o">.</span><span class="n">mapper</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_excluded_mappers</span>
+                        <span class="p">],</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">depth</span><span class="p">:</span>
+                        <span class="n">depth</span> <span class="o">-=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">fields</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">exclude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">exclude</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span>
+
+            <span class="n">fields</span><span class="p">,</span> <span class="n">exclude</span><span class="p">,</span> <span class="n">_columns</span><span class="p">,</span> <span class="n">_relationships</span> <span class="o">=</span> <span class="n">get_columns_and_relationships</span><span class="p">(</span>
+                <span class="n">fields</span><span class="p">,</span> <span class="n">exclude</span>
+            <span class="p">)</span>
+
+            <span class="n">serialize_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;recursif&quot;</span><span class="p">:</span> <span class="n">recursif</span><span class="p">,</span>
+                <span class="s2">&quot;depth&quot;</span><span class="p">:</span> <span class="n">depth</span><span class="p">,</span>
+                <span class="s2">&quot;unloaded&quot;</span><span class="p">:</span> <span class="n">unloaded</span><span class="p">,</span>
+                <span class="s2">&quot;_excluded_mappers&quot;</span><span class="p">:</span> <span class="n">_excluded_mappers</span><span class="p">,</span>
+            <span class="p">}</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">props</span> <span class="ow">in</span> <span class="n">_columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">col</span><span class="p">,</span> <span class="n">serializer</span> <span class="o">=</span> <span class="n">props</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">stringify</span> <span class="ow">and</span> <span class="n">serializer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">serializer</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">rel</span> <span class="ow">in</span> <span class="n">_relationships</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">unloaded</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">m</span> <span class="o">=</span> <span class="n">inspect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">unloaded</span><span class="p">:</span>
+                        <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Relationship &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; on &#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">&#39; is not loaded&quot;</span>
+                        <span class="k">if</span> <span class="n">unloaded</span> <span class="o">==</span> <span class="s2">&quot;raise&quot;</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">unloaded</span> <span class="o">==</span> <span class="s2">&quot;warn&quot;</span><span class="p">:</span>
+                            <span class="n">warn</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                <span class="n">kwargs</span> <span class="o">=</span> <span class="n">serialize_kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">_fields</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span> <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="p">]</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;fields&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_fields</span> <span class="ow">or</span> <span class="kc">None</span>
+                <span class="n">_exclude</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">exclude</span> <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="p">]</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;exclude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_exclude</span> <span class="ow">or</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">rel</span><span class="o">.</span><span class="n">uselist</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">rel_object</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rel</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">rel_object</span><span class="p">:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">rel</span><span class="o">.</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">rel_object</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>  <span class="c1"># relationship may be null</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">rel</span><span class="o">.</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="n">data</span>
+
+        <span class="n">serializefn</span><span class="o">.</span><span class="n">__original_decorator</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">def</span> <span class="nf">populatefn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_in</span><span class="p">,</span> <span class="n">recursif</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Méthode qui initie les valeurs de l&#39;objet à partir d&#39;un dictionnaire</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">                dict_in : dictionnaire contenant les valeurs à passer à l&#39;objet</span>
+<span class="sd">                recursif: si on renseigne les relationships</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="n">cls_db_columns_key</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">get_cls_db_columns</span><span class="p">()))</span>
+
+            <span class="c1"># populate cls_db_columns</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dict_in</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">cls_db_columns_key</span><span class="p">:</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">dict_in</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+            <span class="c1"># si non recursif, on ne traite pas les relationship</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">recursif</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span>
+
+            <span class="c1"># gestion des relationships</span>
+            <span class="n">frel</span> <span class="o">=</span> <span class="n">get_cls_db_relationships</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">rel</span><span class="p">,</span> <span class="n">uselist</span><span class="p">,</span> <span class="n">Model</span> <span class="ow">in</span> <span class="n">frel</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">rel</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dict_in</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">values</span> <span class="o">=</span> <span class="n">dict_in</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rel</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
+                    <span class="c1"># check if None or {}</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rel</span><span class="p">,</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">uselist</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># pour pouvoir traiter les cas uselist et not uselist de la même manière</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">uselist</span><span class="p">:</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">values</span><span class="p">]</span>
+
+                <span class="c1"># get id_field_name</span>
+                <span class="n">id_field_name</span> <span class="o">=</span> <span class="n">inspect</span><span class="p">(</span><span class="n">Model</span><span class="p">)</span><span class="o">.</span><span class="n">primary_key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+                <span class="c1"># si on a pas une liste de dictionaires</span>
+                <span class="c1"># -&gt; on suppose qu&#39;on a une liste d&#39;id</span>
+                <span class="c1"># test sur le premier element de la liste</span>
+                <span class="c1"># on cree une liste [ ... { &lt;id_field_name&gt;: id_value } ... ]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="n">values_inter</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">id_value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">id_field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_value</span>
+                        <span class="n">values_inter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="n">values_inter</span>
+
+                <span class="c1"># preload with id</span>
+                <span class="c1"># pour faire une seule requête</span>
+                <span class="n">ids</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_field_name</span><span class="p">),</span> <span class="n">values</span><span class="p">))</span>
+                <span class="n">preload_res_with_ids</span> <span class="o">=</span> <span class="n">Model</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="n">Model</span><span class="p">,</span> <span class="n">id_field_name</span><span class="p">)</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+                <span class="c1"># resul</span>
+                <span class="n">v_obj</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+                    <span class="n">id_value</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">id_field_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+                    <span class="n">res</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="c1"># si on a une id -&gt; on recupère dans la liste preload_res_with_ids</span>
+                        <span class="c1"># TODO trouver un find plus propre ?</span>
+                        <span class="nb">list</span><span class="p">(</span>
+                            <span class="nb">filter</span><span class="p">(</span>
+                                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">id_field_name</span><span class="p">)</span> <span class="o">==</span> <span class="n">id_value</span><span class="p">,</span>
+                                <span class="n">preload_res_with_ids</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">id_value</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">preload_res_with_ids</span><span class="p">)</span>
+                        <span class="c1"># sinon on cree une nouvelle instance</span>
+                        <span class="k">else</span> <span class="n">Model</span><span class="p">()</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="s2">&quot;from_dict&quot;</span><span class="p">):</span>
+                        <span class="n">res</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">recursif</span><span class="p">)</span>
+
+                    <span class="n">v_obj</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+                <span class="c1"># attribution de la relation</span>
+                <span class="c1"># si uselist est à false -&gt; on prend le premier de la liste</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rel</span><span class="p">,</span> <span class="n">v_obj</span> <span class="k">if</span> <span class="n">uselist</span> <span class="k">else</span> <span class="n">v_obj</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;as_dict&quot;</span><span class="p">):</span>
+            <span class="c1"># the Model has a as_dict(self, data) method, which expects serialized data as argument</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">signature</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">as_dict</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">userfn</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">as_dict</span>
+
+                <span class="k">def</span> <span class="nf">chainedserializefn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">userfn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serializefn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+                <span class="bp">cls</span><span class="o">.</span><span class="n">as_dict</span> <span class="o">=</span> <span class="n">chainedserializefn</span>
+            <span class="c1"># the Model has its own as_dict method</span>
+            <span class="k">elif</span> <span class="s2">&quot;as_dict&quot;</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+                <span class="c1"># the serialize decorator is applied a second time with new default arguments</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">as_dict</span><span class="p">,</span> <span class="s2">&quot;__original_decorator&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+                    <span class="n">default_fields</span> <span class="ow">or</span> <span class="n">default_exclude</span>
+                <span class="p">):</span>
+                    <span class="bp">cls</span><span class="o">.</span><span class="n">as_dict</span> <span class="o">=</span> <span class="n">serializefn</span>
+                <span class="c1"># which will call super().as_dict() it-self</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="c1"># the Model has a as_dict method inherited, we replace-it with the serializer which will take child fields into account</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">as_dict</span> <span class="o">=</span> <span class="n">serializefn</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">as_dict</span> <span class="o">=</span> <span class="n">serializefn</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span> <span class="o">=</span> <span class="n">populatefn</span>
+
+        <span class="k">return</span> <span class="bp">cls</span>
+
+    <span class="k">return</span> <span class="n">_serializable</span></div>
+
+
+
+<div class="viewcode-block" id="serializable">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/serializers/index.html#src.utils_flask_sqla.serializers.serializable">[docs]</a>
+<span class="k">def</span> <span class="nf">serializable</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">type</span><span class="p">):</span>  <span class="c1"># e.g. @serializable</span>
+        <span class="k">return</span> <span class="n">get_serializable_decorator</span><span class="p">()(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">get_serializable_decorator</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># e.g. @serializable(exclude=[&#39;field&#39;])</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

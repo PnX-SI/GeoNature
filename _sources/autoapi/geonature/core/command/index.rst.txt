@@ -1,0 +1,33 @@
+:py:mod:`geonature.core.command`
+================================
+
+.. py:module:: geonature.core.command
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   __main__/index.rst
+   create_gn_module/index.rst
+   main/index.rst
+
+
+Package Contents
+----------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.command.main
+
+
+
+.. py:function:: main(ctx)
+
+

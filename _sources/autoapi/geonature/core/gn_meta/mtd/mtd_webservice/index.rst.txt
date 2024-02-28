@@ -1,0 +1,55 @@
+:py:mod:`geonature.core.gn_meta.mtd.mtd_webservice`
+===================================================
+
+.. py:module:: geonature.core.gn_meta.mtd.mtd_webservice
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_meta.mtd.mtd_webservice.get_acquisition_framework
+   geonature.core.gn_meta.mtd.mtd_webservice.get_jdd_by_user_id
+   geonature.core.gn_meta.mtd.mtd_webservice.get_jdd_by_uuid
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_meta.mtd.mtd_webservice.api_endpoint
+
+
+.. py:data:: api_endpoint
+
+   
+
+.. py:function:: get_acquisition_framework(uuid_af)
+
+   Fetch a AF from the MTD WS with the uuid of the AD
+
+   Parameters:
+       - uuid_af (str): the uuid of the AF
+   Returns:
+       byte: the xml of the AF as byte
+
+
+.. py:function:: get_jdd_by_user_id(id_user)
+
+   fetch the jdd(s) created by a user from the MTD web service
+   Parameters:
+       - id (int):  id_user from CAS
+   Return:
+       byte: a XML as byte
+
+
+.. py:function:: get_jdd_by_uuid(uuid)
+
+

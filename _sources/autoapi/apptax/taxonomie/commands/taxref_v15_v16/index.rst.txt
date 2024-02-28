@@ -1,0 +1,71 @@
+:py:mod:`apptax.taxonomie.commands.taxref_v15_v16`
+==================================================
+
+.. py:module:: apptax.taxonomie.commands.taxref_v15_v16
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.commands.taxref_v15_v16.import_bdc_statuts_v15
+   apptax.taxonomie.commands.taxref_v15_v16.import_bdc_statuts_v16
+   apptax.taxonomie.commands.taxref_v15_v16.import_taxref
+   apptax.taxonomie.commands.taxref_v15_v16.import_v15
+   apptax.taxonomie.commands.taxref_v15_v16.import_v16
+   apptax.taxonomie.commands.taxref_v15_v16.import_bdc_v15
+   apptax.taxonomie.commands.taxref_v15_v16.import_bdc_v16
+   apptax.taxonomie.commands.taxref_v15_v16.link_bdc_statut_to_areas
+   apptax.taxonomie.commands.taxref_v15_v16.enable_bdc_statut_text
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.commands.taxref_v15_v16.base_url
+
+
+.. py:data:: base_url
+   :value: 'http://geonature.fr/data/inpn/taxonomie/'
+
+   
+
+.. py:function:: import_bdc_statuts_v15(logger)
+
+
+.. py:function:: import_bdc_statuts_v16(logger)
+
+
+.. py:function:: import_taxref(logger, num_version, taxref_archive_name, taxref_file_name)
+
+
+.. py:function:: import_v15(skip_bdc_statuts)
+
+
+.. py:function:: import_v16(skip_bdc_statuts)
+
+
+.. py:function:: import_bdc_v15()
+
+
+.. py:function:: import_bdc_v16()
+
+
+.. py:function:: link_bdc_statut_to_areas()
+
+   Insert or update table bdc_statut_cor_text_area
+
+
+.. py:function:: enable_bdc_statut_text(clean, dept)
+
+   Enable texts of BDC Statuts for departements
+
+

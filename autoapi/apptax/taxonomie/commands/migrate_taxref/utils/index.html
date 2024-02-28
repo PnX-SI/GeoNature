@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>apptax.taxonomie.commands.migrate_taxref.utils &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">apptax.taxonomie.commands.migrate_taxref.utils</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../../_sources/autoapi/apptax/taxonomie/commands/migrate_taxref/utils/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-apptax.taxonomie.commands.migrate_taxref.utils">
+<span id="apptax-taxonomie-commands-migrate-taxref-utils"></span><h1><a class="reference internal" href="#module-apptax.taxonomie.commands.migrate_taxref.utils" title="apptax.taxonomie.commands.migrate_taxref.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">apptax.taxonomie.commands.migrate_taxref.utils</span></code></a><a class="headerlink" href="#module-apptax.taxonomie.commands.migrate_taxref.utils" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.commands.migrate_taxref.utils.analyse_taxref_changes" title="apptax.taxonomie.commands.migrate_taxref.utils.analyse_taxref_changes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyse_taxref_changes</span></code></a>([keep_missing_cd_nom, ...])</p></td>
+<td><p>Analyse des répercussions de changement de taxref</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.commands.migrate_taxref.utils.create_copy_bib_noms" title="apptax.taxonomie.commands.migrate_taxref.utils.create_copy_bib_noms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_copy_bib_noms</span></code></a>([keep_missing_cd_nom])</p></td>
+<td><p>Création d'une table copie de bib_noms</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.commands.migrate_taxref.utils.detect_changes" title="apptax.taxonomie.commands.migrate_taxref.utils.detect_changes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detect_changes</span></code></a>([script_predetection, script_postdetection])</p></td>
+<td><p>Detection des changements et de leur implication</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.commands.migrate_taxref.utils.save_data" title="apptax.taxonomie.commands.migrate_taxref.utils.save_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_data</span></code></a>(version, keep_taxref, keep_bdc)</p></td>
+<td><p>Sauvegarde des données de l'ancienne version de taxref</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.commands.migrate_taxref.utils.missing_cd_nom_query" title="apptax.taxonomie.commands.migrate_taxref.utils.missing_cd_nom_query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">missing_cd_nom_query</span></code></a>(query_name, export_file_name)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.commands.migrate_taxref.utils.test_missing_cd_nom" title="apptax.taxonomie.commands.migrate_taxref.utils.test_missing_cd_nom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_missing_cd_nom</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.commands.migrate_taxref.utils.export_as_csv" title="apptax.taxonomie.commands.migrate_taxref.utils.export_as_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_as_csv</span></code></a>(file_name, columns, data[, separator])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="apptax.taxonomie.commands.migrate_taxref.utils.analyse_taxref_changes">
+<span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.commands.migrate_taxref.utils.</span></span><span class="sig-name descname"><span class="pre">analyse_taxref_changes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_missing_cd_nom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">script_predetection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">script_postdetection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/apptax/taxonomie/commands/migrate_taxref/utils.html#analyse_taxref_changes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.commands.migrate_taxref.utils.analyse_taxref_changes" title="Link to this definition"></a></dt>
+<dd><p>Analyse des répercussions de changement de taxref</p>
+<dl class="simple">
+<dt>3 étapes :</dt><dd><ul class="simple">
+<li><p>Detection des cd_noms manquants</p></li>
+<li><p>Création d’une copie de travail de bib_noms</p></li>
+<li><dl class="simple">
+<dt>Analyse des modifications taxonomique (split, merge, …) et</dt><dd><p>de leur répercussion sur les attributs et medias de taxhub</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="apptax.taxonomie.commands.migrate_taxref.utils.create_copy_bib_noms">
+<span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.commands.migrate_taxref.utils.</span></span><span class="sig-name descname"><span class="pre">create_copy_bib_noms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_missing_cd_nom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/apptax/taxonomie/commands/migrate_taxref/utils.html#create_copy_bib_noms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.commands.migrate_taxref.utils.create_copy_bib_noms" title="Link to this definition"></a></dt>
+<dd><p>Création d’une table copie de bib_noms</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="apptax.taxonomie.commands.migrate_taxref.utils.detect_changes">
+<span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.commands.migrate_taxref.utils.</span></span><span class="sig-name descname"><span class="pre">detect_changes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script_predetection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">script_postdetection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/apptax/taxonomie/commands/migrate_taxref/utils.html#detect_changes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.commands.migrate_taxref.utils.detect_changes" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Detection des changements et de leur implication</dt><dd><p>sur bib_noms, les attributs et les médias</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Renvoie<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Nombre de conflit detecté</p>
+</dd>
+<dt class="field-even">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.12)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="apptax.taxonomie.commands.migrate_taxref.utils.save_data">
+<span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.commands.migrate_taxref.utils.</span></span><span class="sig-name descname"><span class="pre">save_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">version</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_taxref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_bdc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/apptax/taxonomie/commands/migrate_taxref/utils.html#save_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.commands.migrate_taxref.utils.save_data" title="Link to this definition"></a></dt>
+<dd><p>Sauvegarde des données de l’ancienne version de taxref</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>version</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.12)"><em>int</em></a>) – numéro de version de taxref</p></li>
+<li><p><strong>keep_taxref</strong> (<em>boolean</em>) – Indique si l’on souhaite concerver l’ancienne version du referentiel taxref</p></li>
+<li><p><strong>keep_bdc</strong> (<em>boolean</em>) – Indique si l’on souhaite concerver l’ancienne version du referentiel bdc_status</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="apptax.taxonomie.commands.migrate_taxref.utils.missing_cd_nom_query">
+<span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.commands.migrate_taxref.utils.</span></span><span class="sig-name descname"><span class="pre">missing_cd_nom_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">export_file_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/apptax/taxonomie/commands/migrate_taxref/utils.html#missing_cd_nom_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.commands.migrate_taxref.utils.missing_cd_nom_query" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="apptax.taxonomie.commands.migrate_taxref.utils.test_missing_cd_nom">
+<span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.commands.migrate_taxref.utils.</span></span><span class="sig-name descname"><span class="pre">test_missing_cd_nom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/apptax/taxonomie/commands/migrate_taxref/utils.html#test_missing_cd_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.commands.migrate_taxref.utils.test_missing_cd_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="apptax.taxonomie.commands.migrate_taxref.utils.export_as_csv">
+<span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.commands.migrate_taxref.utils.</span></span><span class="sig-name descname"><span class="pre">export_as_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/apptax/taxonomie/commands/migrate_taxref/utils.html#export_as_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.commands.migrate_taxref.utils.export_as_csv" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

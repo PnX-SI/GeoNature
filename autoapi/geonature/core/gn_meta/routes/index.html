@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_meta.routes &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../search.html" />
+    <link rel="next" title="geonature.core.gn_meta.schemas" href="../schemas/index.html" />
+    <link rel="prev" title="geonature.core.gn_meta.repositories" href="../repositories/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../../api-references.html">API REFERENCES</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../../../index.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../middlewares/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.middlewares</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../tasks/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.tasks</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../index.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../pypnusershub/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla_geo/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../frontend.html">Frontend</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../api-references.html">API REFERENCES</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core</span></code></a></li>
+          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_meta</span></code></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_meta.routes</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/autoapi/geonature/core/gn_meta/routes/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-geonature.core.gn_meta.routes">
+<span id="geonature-core-gn-meta-routes"></span><h1><a class="reference internal" href="#module-geonature.core.gn_meta.routes" title="geonature.core.gn_meta.routes"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_meta.routes</span></code></a><a class="headerlink" href="#module-geonature.core.gn_meta.routes" title="Link to this heading"></a></h1>
+<p>Routes for gn_meta</p>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.synchronize_mtd" title="geonature.core.gn_meta.routes.synchronize_mtd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">synchronize_mtd</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.get_datasets" title="geonature.core.gn_meta.routes.get_datasets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_datasets</span></code></a>()</p></td>
+<td><p>Get datasets list</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.get_af_from_id" title="geonature.core.gn_meta.routes.get_af_from_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_af_from_id</span></code></a>(id_af, af_list)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.get_dataset" title="geonature.core.gn_meta.routes.get_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataset</span></code></a>(scope, id_dataset)</p></td>
+<td><p>Get one dataset</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.delete_dataset" title="geonature.core.gn_meta.routes.delete_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_dataset</span></code></a>(scope, ds_id)</p></td>
+<td><p>Delete a dataset</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.uuid_report" title="geonature.core.gn_meta.routes.uuid_report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uuid_report</span></code></a>()</p></td>
+<td><p>get the UUID report of a dataset</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.sensi_report" title="geonature.core.gn_meta.routes.sensi_report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sensi_report</span></code></a>([ds_id])</p></td>
+<td><p>get the UUID report of a dataset</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.my_csv_resp" title="geonature.core.gn_meta.routes.my_csv_resp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">my_csv_resp</span></code></a>(filename, data, columns, _header[, separator])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.datasetHandler" title="geonature.core.gn_meta.routes.datasetHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datasetHandler</span></code></a>(dataset, data)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.create_dataset" title="geonature.core.gn_meta.routes.create_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_dataset</span></code></a>()</p></td>
+<td><p>Post one Dataset data</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.update_dataset" title="geonature.core.gn_meta.routes.update_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_dataset</span></code></a>(id_dataset, scope)</p></td>
+<td><p>Post one Dataset data for update dataset</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.get_export_pdf_dataset" title="geonature.core.gn_meta.routes.get_export_pdf_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_export_pdf_dataset</span></code></a>(id_dataset, scope)</p></td>
+<td><p>Get a PDF export of one dataset</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.get_acquisition_frameworks" title="geonature.core.gn_meta.routes.get_acquisition_frameworks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_acquisition_frameworks</span></code></a>()</p></td>
+<td><p>Get a simple list of AF without any nested relationships</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.get_acquisition_frameworks_list" title="geonature.core.gn_meta.routes.get_acquisition_frameworks_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_acquisition_frameworks_list</span></code></a>(scope)</p></td>
+<td><p>Get all AF with their datasets</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.get_export_pdf_acquisition_frameworks" title="geonature.core.gn_meta.routes.get_export_pdf_acquisition_frameworks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_export_pdf_acquisition_frameworks</span></code></a>(...)</p></td>
+<td><p>Get a PDF export of one acquisition</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.get_acquisition_framework" title="geonature.core.gn_meta.routes.get_acquisition_framework"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_acquisition_framework</span></code></a>(scope, id_acquisition_framework)</p></td>
+<td><p>Get one AF with nomenclatures</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.delete_acquisition_framework" title="geonature.core.gn_meta.routes.delete_acquisition_framework"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_acquisition_framework</span></code></a>(scope, af_id)</p></td>
+<td><p>Delete an acquisition framework</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.acquisitionFrameworkHandler" title="geonature.core.gn_meta.routes.acquisitionFrameworkHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">acquisitionFrameworkHandler</span></code></a>(request, *, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.create_acquisition_framework" title="geonature.core.gn_meta.routes.create_acquisition_framework"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_acquisition_framework</span></code></a>()</p></td>
+<td><p>Post one AcquisitionFramework data</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.updateAcquisitionFramework" title="geonature.core.gn_meta.routes.updateAcquisitionFramework"><code class="xref py py-obj docutils literal notranslate"><span class="pre">updateAcquisitionFramework</span></code></a>(id_acquisition_framework, scope)</p></td>
+<td><p>Post one AcquisitionFramework data for update acquisition_framework</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.get_acquisition_framework_stats" title="geonature.core.gn_meta.routes.get_acquisition_framework_stats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_acquisition_framework_stats</span></code></a>(id_acquisition_framework)</p></td>
+<td><p>Get stats from one AF</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.get_acquisition_framework_bbox" title="geonature.core.gn_meta.routes.get_acquisition_framework_bbox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_acquisition_framework_bbox</span></code></a>(id_acquisition_framework)</p></td>
+<td><p>Get BBOX from one AF</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.publish_acquisition_framework_mail" title="geonature.core.gn_meta.routes.publish_acquisition_framework_mail"><code class="xref py py-obj docutils literal notranslate"><span class="pre">publish_acquisition_framework_mail</span></code></a>(af)</p></td>
+<td><p>Method for sending a mail during the publication process</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.publish_acquisition_framework" title="geonature.core.gn_meta.routes.publish_acquisition_framework"><code class="xref py py-obj docutils literal notranslate"><span class="pre">publish_acquisition_framework</span></code></a>(af_id)</p></td>
+<td><p>Publish an acquisition framework</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.mtd_sync" title="geonature.core.gn_meta.routes.mtd_sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mtd_sync</span></code></a>(id_role)</p></td>
+<td><p>Trigger global sync or a sync for a given user only.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.routes" title="geonature.core.gn_meta.routes.routes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">routes</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.log" title="geonature.core.gn_meta.routes.log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.routes">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">routes</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#routes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.routes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.log">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">log</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.log" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.synchronize_mtd">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">synchronize_mtd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#synchronize_mtd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.synchronize_mtd" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.get_datasets">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">get_datasets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#get_datasets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.get_datasets" title="Link to this definition"></a></dt>
+<dd><p>Get datasets list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Query boolean active<span class="colon">:</span></dt>
+<dd class="field-odd"><p>filter on active fiel</p>
+</dd>
+<dt class="field-even">Query string create<span class="colon">:</span></dt>
+<dd class="field-even"><p>filter on C permission for the module_code specified
+(we can specify the object_code by adding a . between both)</p>
+</dd>
+<dt class="field-odd">Query int id_acquisition_framework<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get only dataset of given AF</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>list&lt;TDatasets&gt;</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.get_af_from_id">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">get_af_from_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_af</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">af_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#get_af_from_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.get_af_from_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.get_dataset">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">get_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_dataset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#get_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.get_dataset" title="Link to this definition"></a></dt>
+<dd><p>Get one dataset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id_dataset</strong> – the id_dataset</p></li>
+<li><p><strong>type</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict&lt;TDataset&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.delete_dataset">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">delete_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#delete_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.delete_dataset" title="Link to this definition"></a></dt>
+<dd><p>Delete a dataset</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.uuid_report">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">uuid_report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#uuid_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.uuid_report" title="Link to this definition"></a></dt>
+<dd><p>get the UUID report of a dataset</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.sensi_report">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">sensi_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#sensi_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.sensi_report" title="Link to this definition"></a></dt>
+<dd><p>get the UUID report of a dataset</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.my_csv_resp">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">my_csv_resp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">';'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#my_csv_resp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.my_csv_resp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.datasetHandler">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">datasetHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#datasetHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.datasetHandler" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.create_dataset">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">create_dataset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#create_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.create_dataset" title="Link to this definition"></a></dt>
+<dd><p>Post one Dataset data
+.. :quickref: Metadata;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.update_dataset">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">update_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scope</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#update_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.update_dataset" title="Link to this definition"></a></dt>
+<dd><p>Post one Dataset data for update dataset
+.. :quickref: Metadata;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.get_export_pdf_dataset">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">get_export_pdf_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scope</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#get_export_pdf_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.get_export_pdf_dataset" title="Link to this definition"></a></dt>
+<dd><p>Get a PDF export of one dataset</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.get_acquisition_frameworks">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">get_acquisition_frameworks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#get_acquisition_frameworks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.get_acquisition_frameworks" title="Link to this definition"></a></dt>
+<dd><p>Get a simple list of AF without any nested relationships
+Use for AF select in form
+Get the GeoNature CRUVED</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.get_acquisition_frameworks_list">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">get_acquisition_frameworks_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#get_acquisition_frameworks_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.get_acquisition_frameworks_list" title="Link to this definition"></a></dt>
+<dd><p>Get all AF with their datasets
+Use in metadata module for list of AF and DS
+Add the CRUVED permission for each row (Dataset and AD)</p>
+<p>DEPRECATED use get_acquisition_frameworks instead</p>
+<dl class="field-list simple">
+<dt class="field-odd">Qparam list excluded_fields<span class="colon">:</span></dt>
+<dd class="field-odd"><p>fields excluded from serialization</p>
+</dd>
+<dt class="field-even">Qparam boolean nested<span class="colon">:</span></dt>
+<dd class="field-even"><p>Default False - serialized relationships. If false: remove add all relationships in excluded_fields</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.get_export_pdf_acquisition_frameworks">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">get_export_pdf_acquisition_frameworks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_acquisition_framework</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#get_export_pdf_acquisition_frameworks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.get_export_pdf_acquisition_frameworks" title="Link to this definition"></a></dt>
+<dd><p>Get a PDF export of one acquisition</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.get_acquisition_framework">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">get_acquisition_framework</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_acquisition_framework</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#get_acquisition_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.get_acquisition_framework" title="Link to this definition"></a></dt>
+<dd><p>Get one AF with nomenclatures
+.. :quickref: Metadata;</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id_acquisition_framework</strong> – the id_acquisition_framework</p></li>
+<li><p><strong>type</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict&lt;TAcquisitionFramework&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.delete_acquisition_framework">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">delete_acquisition_framework</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">af_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#delete_acquisition_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.delete_acquisition_framework" title="Link to this definition"></a></dt>
+<dd><p>Delete an acquisition framework
+.. :quickref: Metadata;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.acquisitionFrameworkHandler">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">acquisitionFrameworkHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acquisition_framework</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#acquisitionFrameworkHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.acquisitionFrameworkHandler" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.create_acquisition_framework">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">create_acquisition_framework</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#create_acquisition_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.create_acquisition_framework" title="Link to this definition"></a></dt>
+<dd><p>Post one AcquisitionFramework data
+.. :quickref: Metadata;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.updateAcquisitionFramework">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">updateAcquisitionFramework</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_acquisition_framework</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scope</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#updateAcquisitionFramework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.updateAcquisitionFramework" title="Link to this definition"></a></dt>
+<dd><p>Post one AcquisitionFramework data for update acquisition_framework
+.. :quickref: Metadata;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.get_acquisition_framework_stats">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">get_acquisition_framework_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_acquisition_framework</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#get_acquisition_framework_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.get_acquisition_framework_stats" title="Link to this definition"></a></dt>
+<dd><p>Get stats from one AF
+.. :quickref: Metadata;
+:param id_acquisition_framework: the id_acquisition_framework
+:param type: int</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.get_acquisition_framework_bbox">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">get_acquisition_framework_bbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_acquisition_framework</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#get_acquisition_framework_bbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.get_acquisition_framework_bbox" title="Link to this definition"></a></dt>
+<dd><p>Get BBOX from one AF
+.. :quickref: Metadata;
+:param id_acquisition_framework: the id_acquisition_framework
+:param type: int</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.publish_acquisition_framework_mail">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">publish_acquisition_framework_mail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">af</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#publish_acquisition_framework_mail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.publish_acquisition_framework_mail" title="Link to this definition"></a></dt>
+<dd><p>Method for sending a mail during the publication process</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.publish_acquisition_framework">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">publish_acquisition_framework</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">af_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#publish_acquisition_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.publish_acquisition_framework" title="Link to this definition"></a></dt>
+<dd><p>Publish an acquisition framework
+.. :quickref: Metadata;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.mtd_sync">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">mtd_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#mtd_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.mtd_sync" title="Link to this definition"></a></dt>
+<dd><p>Trigger global sync or a sync for a given user only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id_role</strong> – user id</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="../repositories/index.html" class="btn btn-neutral float-left" title="geonature.core.gn_meta.repositories" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="../schemas/index.html" class="btn btn-neutral float-right" title="geonature.core.gn_meta.schemas" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+:py:mod:`ref_geo.utils`
+=======================
+
+.. py:module:: ref_geo.utils
+
+.. autoapi-nested-parse::
+
+   methodes pour ref_geo
+       - recupération du srid local
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   ref_geo.utils.get_local_srid
+
+
+
+.. py:function:: get_local_srid(bind)
+
+   permet de récupérer le srid local ( celui de ref_geo.l_areras.geom)
+
+

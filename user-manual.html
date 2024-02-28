@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" >
+<html class="writer-html5" lang="fr" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MANUEL UTILISATEUR &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/translations.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=e8570148"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=d99ca74e"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Recherche" href="search.html" />
@@ -29,15 +32,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="index.html" class="icon icon-home"> GeoNature
-            <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GeoNature
+              <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -79,6 +86,7 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-references.html">API REFERENCES</a></li>
 </ul>
 
         </div>
@@ -94,8 +102,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>MANUEL UTILISATEUR</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">MANUEL UTILISATEUR</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/user-manual.rst.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
@@ -106,14 +114,14 @@
            <div itemprop="articleBody">
              
   <section id="manuel-utilisateur">
-<h1>MANUEL UTILISATEUR<a class="headerlink" href="#manuel-utilisateur" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>MANUEL UTILISATEUR<a class="headerlink" href="#manuel-utilisateur" title="Link to this heading"></a></h1>
 <section id="authentification">
-<h2>Authentification<a class="headerlink" href="#authentification" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Authentification<a class="headerlink" href="#authentification" title="Link to this heading"></a></h2>
 <p>Accéder à l’application de démonstration à l’adresse <a class="reference external" href="https://demo.geonature.fr/geonature">https://demo.geonature.fr/geonature</a>.</p>
 <p>Connectez-vous avec l’utilisateur <code class="docutils literal notranslate"><span class="pre">admin</span></code> et le mot de passe <code class="docutils literal notranslate"><span class="pre">admin</span></code>.</p>
 </section>
 <section id="accueil">
-<h2>Accueil<a class="headerlink" href="#accueil" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Accueil<a class="headerlink" href="#accueil" title="Link to this heading"></a></h2>
 <p>Vous accédez alors à la page d’accueil de l’application GeoNature.</p>
 <img alt="https://geonature.fr/docs/img/user-manual/01-home-MTES.jpg" src="https://geonature.fr/docs/img/user-manual/01-home-MTES.jpg" />
 <p>Le Menu de navigation à gauche permet d’accéder aux différents modules de l’application.</p>
@@ -124,13 +132,13 @@
 <img alt="https://geonature.fr/docs/img/user-manual/01-home-logout.jpg" src="https://geonature.fr/docs/img/user-manual/01-home-logout.jpg" />
 </section>
 <section id="metadonnees">
-<h2>Metadonnées<a class="headerlink" href="#metadonnees" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Metadonnées<a class="headerlink" href="#metadonnees" title="Link to this heading"></a></h2>
 <p>Ce module permet de gérer les métadonnées (Cadres d’acquisition et jeux de données) de votre instance GeoNature, basées sur le standard Métadonnées du SINP (<a class="reference external" href="https://standards-sinp.mnhn.fr/category/standards/metadonnees/">https://standards-sinp.mnhn.fr/category/standards/metadonnees/</a>).</p>
 <p>Ces métadonnées permettent de décrire et d’organiser les données (occurrences de taxons, d’habitats, données protocolées…) au sein de lots de données cohérents et documentés. Les métadonnées ainsi créées sont propres à chaque instance de GeoNature, mais leur format standard permet de les diffuser vers d’autres outils ou dans le cadre du SINP.</p>
 <p>Pour les utilisateurs disposant des droits suffisants, le module Métadonnées est accessible depuis le menu gauche de GeoNature.</p>
 <img alt="https://geonature.fr/docs/img/user-manual/mtd/mtd_00_Acceder_au_module.png" src="https://geonature.fr/docs/img/user-manual/mtd/mtd_00_Acceder_au_module.png" />
 <section id="structure-des-metadonnees">
-<h3>Structure des métadonnées<a class="headerlink" href="#structure-des-metadonnees" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Structure des métadonnées<a class="headerlink" href="#structure-des-metadonnees" title="Link to this heading"></a></h3>
 <p>Les métadonnées comprennent deux niveaux distincts, comportant chacun un ensemble d’informations descriptives :</p>
 <ul class="simple">
 <li><p>Le cadre d’acquisition, qui permet de décrire le contexte ou le projet dans lequel les données ont été produites</p></li>
@@ -146,7 +154,7 @@
 <img alt="https://geonature.fr/docs/img/user-manual/mtd/mtd_01_Imbrication_notions.png" src="https://geonature.fr/docs/img/user-manual/mtd/mtd_01_Imbrication_notions.png" />
 </section>
 <section id="utilisation-des-metadonnees-dans-geonature">
-<h3>Utilisation des métadonnées dans GeoNature<a class="headerlink" href="#utilisation-des-metadonnees-dans-geonature" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Utilisation des métadonnées dans GeoNature<a class="headerlink" href="#utilisation-des-metadonnees-dans-geonature" title="Link to this heading"></a></h3>
 <p>Les métadonnées jouent un rôle central dans GeoNature, et sont nécessaires dans les différents modules de saisie ou de consultation des données. <strong>La gestion des métadonnées est donc la première étape à effectuer, avant de pouvoir produire ou exploiter les données de biodiversité en elles-mêmes</strong>. La notion de jeux de données intervient notamment pour les fonctionnalités suivantes :</p>
 <p><strong>- Saisie ou import de données</strong></p>
 <p>Lors de sa création dans GeoNature, chaque donnée doit être obligatoirement associée à un jeu de données préalablement créé. Ainsi le module d’import et la majorité des modules de saisie (Occtax, OccHab…) nécessitent de sélectionner le jeu de données auquel seront rattachées la ou les données en cours de création.
@@ -168,7 +176,7 @@ Ainsi les acteurs associés à chaque jeu de données permettront de définir le
 <p>GeoNature permet de configurer des champs additionnels « personnalisés » (<a class="reference external" href="https://docs.geonature.fr/admin-manual.html#administration-des-champs-additionnels">https://docs.geonature.fr/admin-manual.html#administration-des-champs-additionnels</a>), qui viennent compléter les champs du standard du sinp (sexe, stade de vie etc). Ces champs additionnels sont implémentés dans le module de saisie Occtax notamment, et peuvent être rendus disponibles uniquement pour certains jeux de données. Il devient ainsi possible, pour un jeu de données en particulier, de recueillir une variable ou une information supplémentaire qui n’apparaitrait pas dans les champs « standards ».</p>
 </section>
 <section id="fonctionnement-du-module-metadonnees">
-<h3>Fonctionnement du module Métadonnées<a class="headerlink" href="#fonctionnement-du-module-metadonnees" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Fonctionnement du module Métadonnées<a class="headerlink" href="#fonctionnement-du-module-metadonnees" title="Link to this heading"></a></h3>
 <p>Le module Métadonnées de GeoNature permet de consulter, rechercher et gérer ses cadres d’acquisitions et jeux de données, nécessaires à la gestion des données.</p>
 <p><strong>Consulter, rechercher ou modifier ses métadonnées</strong></p>
 <p>L’accueil du module Métadonnées liste l’ensemble des Cadres d’acquisition disponibles dans l’instance GeoNature. Chaque cadre d’acquisition peut être « déplié » pour afficher les jeux de données qu’il contient.</p>
@@ -204,7 +212,7 @@ Ainsi les acteurs associés à chaque jeu de données permettront de définir le
 </section>
 </section>
 <section id="occtax">
-<h2>OccTax<a class="headerlink" href="#occtax" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>OccTax<a class="headerlink" href="#occtax" title="Link to this heading"></a></h2>
 <p>Ce module permet de saisir des données selon le standard Occurrence de taxon du SINP
 (<a class="reference external" href="https://inpn.mnhn.fr/telechargement/standard-occurrence-taxon">https://inpn.mnhn.fr/telechargement/standard-occurrence-taxon</a>).</p>
 <img alt="https://geonature.fr/docs/img/user-manual/2018-09-geonature-occtax.gif" src="https://geonature.fr/docs/img/user-manual/2018-09-geonature-occtax.gif" />
@@ -237,7 +245,7 @@ préalable les jeux de données dans l’application Métadonnées (MTD) du SINP
 <img alt="https://geonature.fr/docs/img/user-manual/02-occtax-modify-columns.jpg" src="https://geonature.fr/docs/img/user-manual/02-occtax-modify-columns.jpg" />
 <img alt="https://geonature.fr/docs/img/user-manual/02-occtax-modify-columns-2.jpg" src="https://geonature.fr/docs/img/user-manual/02-occtax-modify-columns-2.jpg" />
 <section id="afficher-un-releve">
-<h3>Afficher un relevé<a class="headerlink" href="#afficher-un-releve" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Afficher un relevé<a class="headerlink" href="#afficher-un-releve" title="Link to this heading"></a></h3>
 <p>Si vous affichez un relevé, vous accéderez à sa fiche complète :</p>
 <img alt="https://geonature.fr/docs/img/user-manual/03-occtax-detail.jpg" src="https://geonature.fr/docs/img/user-manual/03-occtax-detail.jpg" />
 <p>Si vous cliquez sur un des taxons observés dans ce relevé, cela affichera le détail de l’observation du taxon :</p>
@@ -251,7 +259,7 @@ préalable les jeux de données dans l’application Métadonnées (MTD) du SINP
 <img alt="https://geonature.fr/docs/img/user-manual/03-occtax-detail-edit.jpg" src="https://geonature.fr/docs/img/user-manual/03-occtax-detail-edit.jpg" />
 </section>
 <section id="ajouter-un-releve">
-<h3>Ajouter un relevé<a class="headerlink" href="#ajouter-un-releve" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Ajouter un relevé<a class="headerlink" href="#ajouter-un-releve" title="Link to this heading"></a></h3>
 <p>Depuis la liste des relevés, cliquer sur le bouton de création d’un relevé :</p>
 <img alt="https://geonature.fr/docs/img/user-manual/05-occtax-create.jpg" src="https://geonature.fr/docs/img/user-manual/05-occtax-create.jpg" />
 <p>Vous accédez alors à un formulaire de saisie à compléter :</p>
@@ -302,7 +310,7 @@ du rang et du groupe du taxon selectionné :</p>
 <img alt="https://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-2.jpg" src="https://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-2.jpg" />
 </section>
 <section id="modifier-un-releve">
-<h3>Modifier un relevé<a class="headerlink" href="#modifier-un-releve" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Modifier un relevé<a class="headerlink" href="#modifier-un-releve" title="Link to this heading"></a></h3>
 <p>Si vous modifiez un relevé existant, vous accédez à sa fiche renseignée, sur laquelle vous pouvez modifier la localisation, les informations du relevé, les taxons observés et leurs dénombrements :</p>
 <img alt="https://geonature.fr/docs/img/user-manual/04-occtax-edit.jpg" src="https://geonature.fr/docs/img/user-manual/04-occtax-edit.jpg" />
 <p>Vous pouvez ajouter un taxon au relevé en cliquant sur <code class="docutils literal notranslate"><span class="pre">Ajouter</span> <span class="pre">un</span> <span class="pre">taxon</span> <span class="pre">sur</span> <span class="pre">ce</span> <span class="pre">relevé</span></code> :</p>
@@ -312,7 +320,7 @@ du rang et du groupe du taxon selectionné :</p>
 <img alt="https://geonature.fr/docs/img/user-manual/04-occtax-edit-taxon-2.jpg" src="https://geonature.fr/docs/img/user-manual/04-occtax-edit-taxon-2.jpg" />
 </section>
 <section id="exports">
-<h3>Exports<a class="headerlink" href="#exports" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Exports<a class="headerlink" href="#exports" title="Link to this heading"></a></h3>
 <p>Une fois que vous avez saisi vos relevés et observations depuis le formulaire, vous pouvez exporter ces données en CSV selon le standard Occurrence de taxon du SINP.</p>
 <p>Deux méthodes sont possibles pour exporter les données :</p>
 <ul class="simple">
@@ -336,17 +344,17 @@ du rang et du groupe du taxon selectionné :</p>
 </section>
 </section>
 <section id="synthese">
-<h2>Synthèse<a class="headerlink" href="#synthese" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Synthèse<a class="headerlink" href="#synthese" title="Link to this heading"></a></h2>
 <p>Ce module permet de consulter, rechercher et exporter les données provenant des différentes sources et protocoles avec leur tronc commun, basé sur le standard Occurrences de taxon du SINP (<a class="reference external" href="https://inpn.mnhn.fr/telechargement/standard-occurrence-taxon">https://inpn.mnhn.fr/telechargement/standard-occurrence-taxon</a>).</p>
 <p>Il permet aussi d’afficher la fiche détaillée de chaque occurrence et de revenir à sa fiche source si elle a été saisie dans un module de GeoNature.</p>
 <img alt="https://geonature.fr/docs/img/user-manual/2018-09-geonature-synthese.gif" src="https://geonature.fr/docs/img/user-manual/2018-09-geonature-synthese.gif" />
 <section id="acceder-a-la-synthese">
-<h3>Accéder à la synthèse<a class="headerlink" href="#acceder-a-la-synthese" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Accéder à la synthèse<a class="headerlink" href="#acceder-a-la-synthese" title="Link to this heading"></a></h3>
 <p>Cliquez sur le module Synthèse, dans le menu de navigation :</p>
 <img alt="https://geonature.fr/docs/img/user-manual/synthese/01-acces-synthese.jpg" src="https://geonature.fr/docs/img/user-manual/synthese/01-acces-synthese.jpg" />
 </section>
 <section id="presentation-de-la-synthese">
-<h3>Présentation de la synthèse<a class="headerlink" href="#presentation-de-la-synthese" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Présentation de la synthèse<a class="headerlink" href="#presentation-de-la-synthese" title="Link to this heading"></a></h3>
 <p>La page principale de la synthèse est composée de 3 blocs :</p>
 <ul class="simple">
 <li><p>Rechercher dans les résultats</p></li>
@@ -357,7 +365,7 @@ du rang et du groupe du taxon selectionné :</p>
 <p>Par défaut, la synthèse affiche les 100 observations les plus récentes. Il est possible d’accéder aux données souhaitées en appliquant un ensemble de filtres.</p>
 </section>
 <section id="detail-dune-observation">
-<h3>Détail d’une observation<a class="headerlink" href="#detail-dune-observation" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Détail d’une observation<a class="headerlink" href="#detail-dune-observation" title="Link to this heading"></a></h3>
 <p>Il est possible d’accéder au détail d’une observation en cliquant sur le symbole (i) à gauche d’une observation. Le détail d’une observation correspond à l’ensemble des informations contenues dans la synthèse pour cette observation.</p>
 <p>Une observation au sens de la synthèse ne correspond pas tout à fait à la donnée saisie initialement. C’est une représentation simplifiée et unifiée des données qui repose sur le standard SINP et qui répond aux questions suivantes :</p>
 <ul class="simple">
@@ -371,7 +379,7 @@ du rang et du groupe du taxon selectionné :</p>
 <img alt="https://geonature.fr/docs/img/user-manual/synthese/03-detail-synthese.jpg" src="https://geonature.fr/docs/img/user-manual/synthese/03-detail-synthese.jpg" />
 </section>
 <section id="rechercher-des-observations">
-<h3>Rechercher des observations<a class="headerlink" href="#rechercher-des-observations" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Rechercher des observations<a class="headerlink" href="#rechercher-des-observations" title="Link to this heading"></a></h3>
 <p><strong>1. Filtrer les données géographiquement :</strong></p>
 <p>Il y a 3 façons de filtrer géographiquement les données :</p>
 <ul class="simple">
@@ -451,11 +459,11 @@ du rang et du groupe du taxon selectionné :</p>
 </section>
 </section>
 <section id="admin">
-<h2>Admin<a class="headerlink" href="#admin" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Admin<a class="headerlink" href="#admin" title="Link to this heading"></a></h2>
 <p>C’est le module « backoffice » de GeoNature.
 Il permet notamment de gérer les permissions (CRUVED et autres filtres), les nomenclatures (typologies et vocabulaires) utilisées dans les différents modules de GeoNature ainsi que les champs additionnels.</p>
 <section id="gestion-des-permissions">
-<h3>Gestion des permissions<a class="headerlink" href="#gestion-des-permissions" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Gestion des permissions<a class="headerlink" href="#gestion-des-permissions" title="Link to this heading"></a></h3>
 <p>Depuis le version 2.13.0 de GeoNature, le système des permissions a été entièrement revu pour :
 - pouvoir leur associer d’autres types de filtres (sensibilité notamment),
 - les simplifier et clarifier en supprimant l’héritage et en définissant les permissions disponibles pour chaque module</p>
@@ -500,7 +508,7 @@ Une fois que l’on a sélectionné un groupe ou utilisateur, la liste des permi
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2018-2023, PnE, PnC.</p>
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
   </div>
 
   Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un

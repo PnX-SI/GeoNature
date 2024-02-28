@@ -1,0 +1,1391 @@
+:py:mod:`apptax.taxonomie.models`
+=================================
+
+.. py:module:: apptax.taxonomie.models
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.models.BibNoms
+   apptax.taxonomie.models.CorTaxonAttribut
+   apptax.taxonomie.models.BibThemes
+   apptax.taxonomie.models.BibAttributs
+   apptax.taxonomie.models.Taxref
+   apptax.taxonomie.models.CorNomListe
+   apptax.taxonomie.models.BibListes
+   apptax.taxonomie.models.BibTypesMedia
+   apptax.taxonomie.models.TMedias
+   apptax.taxonomie.models.VMTaxrefListForautocomplete
+   apptax.taxonomie.models.BibTaxrefHabitats
+   apptax.taxonomie.models.BibTaxrefRangs
+   apptax.taxonomie.models.BibTaxrefStatus
+   apptax.taxonomie.models.VMTaxrefHierarchie
+   apptax.taxonomie.models.VTaxrefHierarchieBibtaxons
+   apptax.taxonomie.models.TaxrefBdcStatutType
+   apptax.taxonomie.models.TaxrefBdcStatutText
+   apptax.taxonomie.models.TaxrefBdcStatutValues
+   apptax.taxonomie.models.TaxrefBdcStatutCorTextValues
+   apptax.taxonomie.models.TaxrefBdcStatutTaxon
+   apptax.taxonomie.models.VBdcStatus
+   apptax.taxonomie.models.TMetaTaxref
+
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.models.bdc_statut_cor_text_area
+
+
+.. py:class:: BibNoms
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_noms'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_nom
+
+      
+
+   .. py:attribute:: cd_nom
+
+      
+
+   .. py:attribute:: cd_ref
+
+      
+
+   .. py:attribute:: nom_francais
+
+      
+
+   .. py:attribute:: comments
+
+      
+
+   .. py:attribute:: taxref
+
+      
+
+   .. py:attribute:: attributs
+
+      
+
+   .. py:attribute:: listes
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: CorTaxonAttribut
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_taxon_attribut'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_attribut
+
+      
+
+   .. py:attribute:: cd_ref
+
+      
+
+   .. py:attribute:: valeur_attribut
+
+      
+
+   .. py:attribute:: bib_nom
+
+      
+
+   .. py:attribute:: bib_attribut
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: BibThemes
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_themes'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_theme
+
+      
+
+   .. py:attribute:: nom_theme
+
+      
+
+   .. py:attribute:: desc_theme
+
+      
+
+   .. py:attribute:: ordre
+
+      
+
+   .. py:attribute:: id_droit
+
+      
+
+   .. py:attribute:: attributs
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: BibAttributs
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_attributs'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_attribut
+
+      
+
+   .. py:attribute:: nom_attribut
+
+      
+
+   .. py:attribute:: label_attribut
+
+      
+
+   .. py:attribute:: liste_valeur_attribut
+
+      
+
+   .. py:attribute:: obligatoire
+
+      
+
+   .. py:attribute:: desc_attribut
+
+      
+
+   .. py:attribute:: type_attribut
+
+      
+
+   .. py:attribute:: type_widget
+
+      
+
+   .. py:attribute:: regne
+
+      
+
+   .. py:attribute:: group2_inpn
+
+      
+
+   .. py:attribute:: id_theme
+
+      
+
+   .. py:attribute:: ordre
+
+      
+
+   .. py:attribute:: theme
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: Taxref
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'taxref'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: cd_nom
+
+      
+
+   .. py:attribute:: id_statut
+
+      
+
+   .. py:attribute:: id_habitat
+
+      
+
+   .. py:attribute:: id_rang
+
+      
+
+   .. py:attribute:: regne
+
+      
+
+   .. py:attribute:: phylum
+
+      
+
+   .. py:attribute:: classe
+
+      
+
+   .. py:attribute:: regne
+
+      
+
+   .. py:attribute:: ordre
+
+      
+
+   .. py:attribute:: famille
+
+      
+
+   .. py:attribute:: sous_famille
+
+      
+
+   .. py:attribute:: tribu
+
+      
+
+   .. py:attribute:: cd_taxsup
+
+      
+
+   .. py:attribute:: cd_sup
+
+      
+
+   .. py:attribute:: cd_ref
+
+      
+
+   .. py:attribute:: lb_nom
+
+      
+
+   .. py:attribute:: lb_auteur
+
+      
+
+   .. py:attribute:: nom_complet
+
+      
+
+   .. py:attribute:: nom_complet_html
+
+      
+
+   .. py:attribute:: nom_vern
+
+      
+
+   .. py:attribute:: nom_valide
+
+      
+
+   .. py:attribute:: nom_vern_eng
+
+      
+
+   .. py:attribute:: group1_inpn
+
+      
+
+   .. py:attribute:: group2_inpn
+
+      
+
+   .. py:attribute:: group3_inpn
+
+      
+
+   .. py:attribute:: url
+
+      
+
+   .. py:attribute:: bib_nom
+
+      
+
+   .. py:method:: nom_vern_or_lb_nom()
+
+
+   .. py:method:: nom_vern_or_lb_nom()
+
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: CorNomListe
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_nom_liste'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_liste
+
+      
+
+   .. py:attribute:: id_nom
+
+      
+
+   .. py:attribute:: bib_nom
+
+      
+
+   .. py:attribute:: bib_liste
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: BibListes
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_listes'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_liste
+
+      
+
+   .. py:attribute:: code_liste
+
+      
+
+   .. py:attribute:: nom_liste
+
+      
+
+   .. py:attribute:: desc_liste
+
+      
+
+   .. py:attribute:: picto
+
+      
+
+   .. py:attribute:: regne
+
+      
+
+   .. py:attribute:: group2_inpn
+
+      
+
+   .. py:attribute:: cnl
+
+      
+
+   .. py:attribute:: noms
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: BibTypesMedia
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_types_media'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_type
+
+      
+
+   .. py:attribute:: nom_type_media
+
+      
+
+   .. py:attribute:: desc_type_media
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: TMedias
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 't_medias'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_media
+
+      
+
+   .. py:attribute:: cd_ref
+
+      
+
+   .. py:attribute:: titre
+
+      
+
+   .. py:attribute:: url
+
+      
+
+   .. py:attribute:: chemin
+
+      
+
+   .. py:attribute:: auteur
+
+      
+
+   .. py:attribute:: desc_media
+
+      
+
+   .. py:attribute:: source
+
+      
+
+   .. py:attribute:: licence
+
+      
+
+   .. py:attribute:: is_public
+
+      
+
+   .. py:attribute:: supprime
+
+      
+
+   .. py:attribute:: id_type
+
+      
+
+   .. py:attribute:: types
+
+      
+
+   .. py:attribute:: bib_nom
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: VMTaxrefListForautocomplete
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'vm_taxref_list_forautocomplete'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: gid
+
+      
+
+   .. py:attribute:: cd_nom
+
+      
+
+   .. py:attribute:: search_name
+
+      
+
+   .. py:attribute:: unaccent_search_name
+
+      
+
+   .. py:attribute:: cd_ref
+
+      
+
+   .. py:attribute:: nom_valide
+
+      
+
+   .. py:attribute:: lb_nom
+
+      
+
+   .. py:attribute:: nom_vern
+
+      
+
+   .. py:attribute:: regne
+
+      
+
+   .. py:attribute:: group2_inpn
+
+      
+
+   .. py:attribute:: group3_inpn
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: BibTaxrefHabitats
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_taxref_habitats'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_habitat
+
+      
+
+   .. py:attribute:: nom_habitat
+
+      
+
+   .. py:attribute:: desc_habitat
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: BibTaxrefRangs
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_taxref_rangs'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_rang
+
+      
+
+   .. py:attribute:: nom_rang
+
+      
+
+   .. py:attribute:: tri_rang
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: BibTaxrefStatus
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_taxref_statuts'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_statut
+
+      
+
+   .. py:attribute:: nom_statut
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: VMTaxrefHierarchie
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'vm_taxref_hierarchie'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: cd_nom
+
+      
+
+   .. py:attribute:: cd_ref
+
+      
+
+   .. py:attribute:: regne
+
+      
+
+   .. py:attribute:: phylum
+
+      
+
+   .. py:attribute:: classe
+
+      
+
+   .. py:attribute:: ordre
+
+      
+
+   .. py:attribute:: famille
+
+      
+
+   .. py:attribute:: lb_nom
+
+      
+
+   .. py:attribute:: id_rang
+
+      
+
+   .. py:attribute:: nb_tx_fm
+
+      
+
+   .. py:attribute:: nb_tx_or
+
+      
+
+   .. py:attribute:: nb_tx_cl
+
+      
+
+   .. py:attribute:: nb_tx_ph
+
+      
+
+   .. py:attribute:: nb_tx_kd
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: VTaxrefHierarchieBibtaxons
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'v_taxref_hierarchie_bibtaxons'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: cd_nom
+
+      
+
+   .. py:attribute:: cd_ref
+
+      
+
+   .. py:attribute:: regne
+
+      
+
+   .. py:attribute:: phylum
+
+      
+
+   .. py:attribute:: classe
+
+      
+
+   .. py:attribute:: ordre
+
+      
+
+   .. py:attribute:: lb_nom
+
+      
+
+   .. py:attribute:: id_rang
+
+      
+
+   .. py:attribute:: nb_tx_fm
+
+      
+
+   .. py:attribute:: nb_tx_or
+
+      
+
+   .. py:attribute:: nb_tx_cl
+
+      
+
+   .. py:attribute:: nb_tx_ph
+
+      
+
+   .. py:attribute:: nb_tx_kd
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: TaxrefBdcStatutType
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bdc_statut_type'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: cd_type_statut
+
+      
+
+   .. py:attribute:: lb_type_statut
+
+      
+
+   .. py:attribute:: regroupement_type
+
+      
+
+   .. py:attribute:: thematique
+
+      
+
+   .. py:attribute:: type_value
+
+      
+
+   .. py:attribute:: text
+
+      
+
+   .. py:method:: display()
+
+
+
+.. py:data:: bdc_statut_cor_text_area
+
+   
+
+.. py:class:: TaxrefBdcStatutText
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bdc_statut_text'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_text
+
+      
+
+   .. py:attribute:: cd_st_text
+
+      
+
+   .. py:attribute:: cd_type_statut
+
+      
+
+   .. py:attribute:: cd_sig
+
+      
+
+   .. py:attribute:: cd_doc
+
+      
+
+   .. py:attribute:: niveau_admin
+
+      
+
+   .. py:attribute:: cd_iso3166_1
+
+      
+
+   .. py:attribute:: cd_iso3166_2
+
+      
+
+   .. py:attribute:: lb_adm_tr
+
+      
+
+   .. py:attribute:: full_citation
+
+      
+
+   .. py:attribute:: doc_url
+
+      
+
+   .. py:attribute:: enable
+
+      
+
+   .. py:attribute:: type_statut
+
+      
+
+   .. py:attribute:: cor_text
+
+      
+
+   .. py:attribute:: areas
+
+      
+
+
+.. py:class:: TaxrefBdcStatutValues
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bdc_statut_values'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_value
+
+      
+
+   .. py:attribute:: code_statut
+
+      
+
+   .. py:attribute:: label_statut
+
+      
+
+   .. py:method:: display()
+
+
+
+.. py:class:: TaxrefBdcStatutCorTextValues
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bdc_statut_cor_text_values'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_value_text
+
+      
+
+   .. py:attribute:: id_value
+
+      
+
+   .. py:attribute:: id_text
+
+      
+
+   .. py:attribute:: text
+
+      
+
+   .. py:attribute:: value
+
+      
+
+   .. py:attribute:: taxon
+
+      
+
+
+.. py:class:: TaxrefBdcStatutTaxon
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bdc_statut_taxons'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id
+
+      
+
+   .. py:attribute:: id_value_text
+
+      
+
+   .. py:attribute:: cd_nom
+
+      
+
+   .. py:attribute:: cd_ref
+
+      
+
+   .. py:attribute:: rq_statut
+
+      
+
+   .. py:attribute:: value_text
+
+      
+
+
+.. py:class:: VBdcStatus
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'v_bdc_status'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: cd_nom
+
+      
+
+   .. py:attribute:: cd_ref
+
+      
+
+   .. py:attribute:: rq_statut
+
+      
+
+   .. py:attribute:: code_statut
+
+      
+
+   .. py:attribute:: label_statut
+
+      
+
+   .. py:attribute:: cd_type_statut
+
+      
+
+   .. py:attribute:: lb_type_statut
+
+      
+
+   .. py:attribute:: regroupement_type
+
+      
+
+   .. py:attribute:: thematique
+
+      
+
+   .. py:attribute:: cd_st_text
+
+      
+
+   .. py:attribute:: cd_sig
+
+      
+
+   .. py:attribute:: cd_doc
+
+      
+
+   .. py:attribute:: niveau_admin
+
+      
+
+   .. py:attribute:: cd_iso3166_1
+
+      
+
+   .. py:attribute:: cd_iso3166_2
+
+      
+
+   .. py:attribute:: full_citation
+
+      
+
+   .. py:attribute:: doc_url
+
+      
+
+   .. py:attribute:: type_value
+
+      
+
+
+.. py:class:: TMetaTaxref
+
+
+   Bases: :py:obj:`apptax.taxonomie.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 't_meta_taxref'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: referencial_name
+
+      
+
+   .. py:attribute:: version
+
+      
+
+   .. py:attribute:: update_date
+
+      
+
+

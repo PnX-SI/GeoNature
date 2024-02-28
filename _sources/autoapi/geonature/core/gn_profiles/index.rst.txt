@@ -1,0 +1,17 @@
+:py:mod:`geonature.core.gn_profiles`
+====================================
+
+.. py:module:: geonature.core.gn_profiles
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   models/index.rst
+   routes/index.rst
+   tasks/index.rst
+
+

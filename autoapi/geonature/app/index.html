@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.app &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" />
+    <link rel="next" title="geonature.celery_app" href="../celery_app/index.html" />
+    <link rel="prev" title="geonature.utils.utilstoml" href="../utils/utilstoml/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../index.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.app</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../celery_app/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.celery_app</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../pypnusershub/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../src/utils_flask_sqla/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../src/utils_flask_sqla_geo/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../frontend.html">Frontend</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../api-references.html">API REFERENCES</a></li>
+          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.app</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/geonature/app/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-geonature.app">
+<span id="geonature-app"></span><h1><a class="reference internal" href="#module-geonature.app" title="geonature.app"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.app</span></code></a><a class="headerlink" href="#module-geonature.app" title="Link to this heading"></a></h1>
+<p>Démarrage de l’application</p>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.app.MyJSONProvider" title="geonature.app.MyJSONProvider"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MyJSONProvider</span></code></a></p></td>
+<td><p>Provide JSON operations using Python's built-in <a class="reference external" href="https://docs.python.org/3/library/json.html#module-json" title="(disponible dans Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">json</span></code></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.app.configure_alembic" title="geonature.app.configure_alembic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configure_alembic</span></code></a>(alembic_config)</p></td>
+<td><p>This function add to the 'version_locations' parameter of the alembic config the</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.app.create_app" title="geonature.app.create_app"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_app</span></code></a>([with_external_mods])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.app.configure_alembic">
+<span class="sig-prename descclassname"><span class="pre">geonature.app.</span></span><span class="sig-name descname"><span class="pre">configure_alembic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alembic_config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/geonature/app.html#configure_alembic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.app.configure_alembic" title="Link to this definition"></a></dt>
+<dd><p>This function add to the “version_locations” parameter of the alembic config the
+“migrations” entry point value of the “gn_module” group for all modules having such entry point.
+Thus, alembic will find migrations of all installed geonature modules.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.app.MyJSONProvider">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.app.</span></span><span class="sig-name descname"><span class="pre">MyJSONProvider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flask.sansio.app.App</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/geonature/app.html#MyJSONProvider"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.app.MyJSONProvider" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask.json.provider.DefaultJSONProvider</span></code></p>
+<p>Provide JSON operations using Python’s built-in <a class="reference external" href="https://docs.python.org/3/library/json.html#module-json" title="(disponible dans Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">json</span></code></a>
+library. Serializes the following additional data types:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(disponible dans Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.datetime</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(disponible dans Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.date</span></code></a> are
+serialized to <span class="target" id="index-0"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc822.html"><strong>RFC 822</strong></a> strings. This is the same as the HTTP
+date format.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(disponible dans Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">uuid.UUID</span></code></a> is serialized to a string.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dataclasses.dataclass</span></code> is passed to
+<a class="reference external" href="https://docs.python.org/3/library/dataclasses.html#dataclasses.asdict" title="(disponible dans Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">dataclasses.asdict()</span></code></a>.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Markup</span></code> (or any object with a <code class="docutils literal notranslate"><span class="pre">__html__</span></code>
+method) will call the <code class="docutils literal notranslate"><span class="pre">__html__</span></code> method to get a string.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.app.MyJSONProvider.default">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/geonature/app.html#MyJSONProvider.default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.app.MyJSONProvider.default" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.app.create_app">
+<span class="sig-prename descclassname"><span class="pre">geonature.app.</span></span><span class="sig-name descname"><span class="pre">create_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">with_external_mods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/geonature/app.html#create_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.app.create_app" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="../utils/utilstoml/index.html" class="btn btn-neutral float-left" title="geonature.utils.utilstoml" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="../celery_app/index.html" class="btn btn-neutral float-right" title="geonature.celery_app" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

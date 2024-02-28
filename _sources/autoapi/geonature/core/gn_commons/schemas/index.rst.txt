@@ -1,0 +1,273 @@
+:py:mod:`geonature.core.gn_commons.schemas`
+===========================================
+
+.. py:module:: geonature.core.gn_commons.schemas
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_commons.schemas.ModuleSchema
+   geonature.core.gn_commons.schemas.MediaSchema
+   geonature.core.gn_commons.schemas.TValidationSchema
+   geonature.core.gn_commons.schemas.BibWidgetSchema
+   geonature.core.gn_commons.schemas.LabelValueDict
+   geonature.core.gn_commons.schemas.TAdditionalFieldsSchema
+
+
+
+
+.. py:class:: ModuleSchema(*args, **kwargs)
+
+
+   Bases: :py:obj:`geonature.utils.env.MA.SQLAlchemyAutoSchema`
+
+   SQLAlchemyAutoSchema that automatically generates marshmallow fields
+   from a SQLAlchemy model's or table's column.
+   Uses the scoped session from Flask-SQLAlchemy by default.
+
+   See `marshmallow_sqlalchemy.SQLAlchemyAutoSchema` for more details
+   on the `SQLAlchemyAutoSchema` API.
+
+   .. py:class:: Meta
+
+
+      .. py:attribute:: model
+
+         
+
+      .. py:attribute:: load_instance
+         :value: True
+
+         
+
+      .. py:attribute:: exclude
+         :value: ('module_picto', 'module_desc', 'module_group', 'module_external_url', 'module_target',...
+
+         
+
+
+
+.. py:class:: MediaSchema(*args, **kwargs)
+
+
+   Bases: :py:obj:`geonature.utils.env.MA.SQLAlchemyAutoSchema`
+
+   SQLAlchemyAutoSchema that automatically generates marshmallow fields
+   from a SQLAlchemy model's or table's column.
+   Uses the scoped session from Flask-SQLAlchemy by default.
+
+   See `marshmallow_sqlalchemy.SQLAlchemyAutoSchema` for more details
+   on the `SQLAlchemyAutoSchema` API.
+
+   .. py:class:: Meta
+
+
+      .. py:attribute:: model
+
+         
+
+      .. py:attribute:: load_instance
+         :value: True
+
+         
+
+      .. py:attribute:: include_fk
+         :value: True
+
+         
+
+      .. py:attribute:: unknown
+
+         
+
+
+   .. py:attribute:: meta_create_date
+
+      
+
+   .. py:attribute:: meta_update_date
+
+      
+
+   .. py:method:: make_media(data, **kwargs)
+
+
+
+.. py:class:: TValidationSchema(*args, **kwargs)
+
+
+   Bases: :py:obj:`geonature.utils.env.MA.SQLAlchemyAutoSchema`
+
+   SQLAlchemyAutoSchema that automatically generates marshmallow fields
+   from a SQLAlchemy model's or table's column.
+   Uses the scoped session from Flask-SQLAlchemy by default.
+
+   See `marshmallow_sqlalchemy.SQLAlchemyAutoSchema` for more details
+   on the `SQLAlchemyAutoSchema` API.
+
+   .. py:class:: Meta
+
+
+      .. py:attribute:: model
+
+         
+
+      .. py:attribute:: load_instance
+         :value: True
+
+         
+
+      .. py:attribute:: include_fk
+         :value: True
+
+         
+
+
+   .. py:attribute:: validation_label
+
+      
+
+   .. py:attribute:: validator_role
+
+      
+
+
+.. py:class:: BibWidgetSchema(*args, **kwargs)
+
+
+   Bases: :py:obj:`geonature.utils.env.MA.SQLAlchemyAutoSchema`
+
+   SQLAlchemyAutoSchema that automatically generates marshmallow fields
+   from a SQLAlchemy model's or table's column.
+   Uses the scoped session from Flask-SQLAlchemy by default.
+
+   See `marshmallow_sqlalchemy.SQLAlchemyAutoSchema` for more details
+   on the `SQLAlchemyAutoSchema` API.
+
+   .. py:class:: Meta
+
+
+      .. py:attribute:: model
+
+         
+
+      .. py:attribute:: load_instance
+         :value: True
+
+         
+
+
+
+.. py:class:: LabelValueDict(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: label
+
+      
+
+   .. py:attribute:: value
+
+      
+
+
+.. py:class:: TAdditionalFieldsSchema(*args, **kwargs)
+
+
+   Bases: :py:obj:`geonature.utils.env.MA.SQLAlchemyAutoSchema`
+
+   SQLAlchemyAutoSchema that automatically generates marshmallow fields
+   from a SQLAlchemy model's or table's column.
+   Uses the scoped session from Flask-SQLAlchemy by default.
+
+   See `marshmallow_sqlalchemy.SQLAlchemyAutoSchema` for more details
+   on the `SQLAlchemyAutoSchema` API.
+
+   .. py:class:: Meta
+
+
+      .. py:attribute:: model
+
+         
+
+      .. py:attribute:: load_instance
+         :value: True
+
+         
+
+
+   .. py:method:: load(data, *, many=None, **kwargs)
+
+      Deserialize data to internal representation.
+
+      :param session: Optional SQLAlchemy session.
+      :param instance: Optional existing instance to modify.
+      :param transient: Optional switch to allow transient instantiation.
+
+
+

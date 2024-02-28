@@ -1,0 +1,44 @@
+:py:mod:`geonature`
+===================
+
+.. py:module:: geonature
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   core/index.rst
+   middlewares/index.rst
+   tasks/index.rst
+   utils/index.rst
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   app/index.rst
+   celery_app/index.rst
+
+
+Package Contents
+----------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.create_app
+
+
+
+.. py:function:: create_app(with_external_mods=True)
+
+

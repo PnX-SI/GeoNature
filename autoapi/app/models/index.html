@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.models &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">app.models</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/app/models/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-app.models">
+<span id="app-models"></span><h1><a class="reference internal" href="#module-app.models" title="app.models"><code class="xref py py-mod docutils literal notranslate"><span class="pre">app.models</span></code></a><a class="headerlink" href="#module-app.models" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.models.Bib_Organismes" title="app.models.Bib_Organismes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Bib_Organismes</span></code></a></p></td>
+<td><p>Model de la table Bib_Organismes</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.models.TRoles" title="app.models.TRoles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TRoles</span></code></a></p></td>
+<td><p>Model de la table t_roles</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.models.CorRoles" title="app.models.CorRoles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CorRoles</span></code></a></p></td>
+<td><p>Classe de correspondance entre un utilisateur et un groupe</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.models.TListes" title="app.models.TListes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TListes</span></code></a></p></td>
+<td><p>Model de la table t_listes</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.models.CorRoleListe" title="app.models.CorRoleListe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CorRoleListe</span></code></a></p></td>
+<td><p>Classe de correspondance entre la table t_roles et la table t_listes</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.models.TApplications" title="app.models.TApplications"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TApplications</span></code></a></p></td>
+<td><p>Model de la table t_applications</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.models.TProfils" title="app.models.TProfils"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TProfils</span></code></a></p></td>
+<td><p>Model de la classe t_profils</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.models.CorProfilForApp" title="app.models.CorProfilForApp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CorProfilForApp</span></code></a></p></td>
+<td><p>Classe de correspondance entre la table t_applications et la table t_profils</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.models.CorRoleAppProfil" title="app.models.CorRoleAppProfil"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CorRoleAppProfil</span></code></a></p></td>
+<td><p>Classe de correspondance entre la table t_roles, t_profils et</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.Bib_Organismes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">Bib_Organismes</span></span><a class="reference internal" href="../../../_modules/app/models.html#Bib_Organismes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Bib_Organismes" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../genericRepository/index.html#app.genericRepository.GenericRepository" title="app.genericRepository.GenericRepository"><code class="xref py py-obj docutils literal notranslate"><span class="pre">app.genericRepository.GenericRepository</span></code></a></p>
+<p>Model de la table Bib_Organismes</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Bib_Organismes.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_organismes'</span></em><a class="reference internal" href="../../../_modules/app/models.html#Bib_Organismes.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Bib_Organismes.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Bib_Organismes.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/app/models.html#Bib_Organismes.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Bib_Organismes.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Bib_Organismes.id_organisme">
+<span class="sig-name descname"><span class="pre">id_organisme</span></span><a class="reference internal" href="../../../_modules/app/models.html#Bib_Organismes.id_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Bib_Organismes.id_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Bib_Organismes.uuid_organisme">
+<span class="sig-name descname"><span class="pre">uuid_organisme</span></span><a class="reference internal" href="../../../_modules/app/models.html#Bib_Organismes.uuid_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Bib_Organismes.uuid_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Bib_Organismes.nom_organisme">
+<span class="sig-name descname"><span class="pre">nom_organisme</span></span><a class="reference internal" href="../../../_modules/app/models.html#Bib_Organismes.nom_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Bib_Organismes.nom_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Bib_Organismes.adresse_organisme">
+<span class="sig-name descname"><span class="pre">adresse_organisme</span></span><a class="reference internal" href="../../../_modules/app/models.html#Bib_Organismes.adresse_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Bib_Organismes.adresse_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Bib_Organismes.cp_organisme">
+<span class="sig-name descname"><span class="pre">cp_organisme</span></span><a class="reference internal" href="../../../_modules/app/models.html#Bib_Organismes.cp_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Bib_Organismes.cp_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Bib_Organismes.ville_organisme">
+<span class="sig-name descname"><span class="pre">ville_organisme</span></span><a class="reference internal" href="../../../_modules/app/models.html#Bib_Organismes.ville_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Bib_Organismes.ville_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Bib_Organismes.tel_organisme">
+<span class="sig-name descname"><span class="pre">tel_organisme</span></span><a class="reference internal" href="../../../_modules/app/models.html#Bib_Organismes.tel_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Bib_Organismes.tel_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Bib_Organismes.fax_organisme">
+<span class="sig-name descname"><span class="pre">fax_organisme</span></span><a class="reference internal" href="../../../_modules/app/models.html#Bib_Organismes.fax_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Bib_Organismes.fax_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Bib_Organismes.email_organisme">
+<span class="sig-name descname"><span class="pre">email_organisme</span></span><a class="reference internal" href="../../../_modules/app/models.html#Bib_Organismes.email_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Bib_Organismes.email_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Bib_Organismes.url_organisme">
+<span class="sig-name descname"><span class="pre">url_organisme</span></span><a class="reference internal" href="../../../_modules/app/models.html#Bib_Organismes.url_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Bib_Organismes.url_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Bib_Organismes.url_logo">
+<span class="sig-name descname"><span class="pre">url_logo</span></span><a class="reference internal" href="../../../_modules/app/models.html#Bib_Organismes.url_logo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Bib_Organismes.url_logo" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Bib_Organismes.id_parent">
+<span class="sig-name descname"><span class="pre">id_parent</span></span><a class="reference internal" href="../../../_modules/app/models.html#Bib_Organismes.id_parent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Bib_Organismes.id_parent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.TRoles">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">TRoles</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../genericRepository/index.html#app.genericRepository.GenericRepository" title="app.genericRepository.GenericRepository"><code class="xref py py-obj docutils literal notranslate"><span class="pre">app.genericRepository.GenericRepository</span></code></a></p>
+<p>Model de la table t_roles</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_roles'</span></em><a class="reference internal" href="../../../_modules/app/models.html#TRoles.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.id_role">
+<span class="sig-name descname"><span class="pre">id_role</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.id_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.id_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.groupe">
+<span class="sig-name descname"><span class="pre">groupe</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.groupe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.groupe" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.uuid_role">
+<span class="sig-name descname"><span class="pre">uuid_role</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.uuid_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.uuid_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.identifiant">
+<span class="sig-name descname"><span class="pre">identifiant</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.identifiant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.identifiant" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.nom_role">
+<span class="sig-name descname"><span class="pre">nom_role</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.nom_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.nom_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.prenom_role">
+<span class="sig-name descname"><span class="pre">prenom_role</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.prenom_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.prenom_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.desc_role">
+<span class="sig-name descname"><span class="pre">desc_role</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.desc_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.desc_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.pass_md5">
+<span class="sig-name descname"><span class="pre">pass_md5</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.pass_md5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.pass_md5" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.pass_plus">
+<span class="sig-name descname"><span class="pre">pass_plus</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.pass_plus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.pass_plus" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.email">
+<span class="sig-name descname"><span class="pre">email</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.email"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.email" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.id_organisme">
+<span class="sig-name descname"><span class="pre">id_organisme</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.id_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.id_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.organisme_rel">
+<span class="sig-name descname"><span class="pre">organisme_rel</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.organisme_rel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.organisme_rel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.remarques">
+<span class="sig-name descname"><span class="pre">remarques</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.remarques"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.remarques" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.active">
+<span class="sig-name descname"><span class="pre">active</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.active"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.active" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.pass5">
+<span class="sig-name descname"><span class="pre">pass5</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.pass5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.pass5" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">pass_plus</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.pass_plus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TRoles.champs_addi">
+<span class="sig-name descname"><span class="pre">champs_addi</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.champs_addi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.champs_addi" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">pass_md5</span></span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.pass_md5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TRoles.set_password">
+<span class="sig-name descname"><span class="pre">set_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">password</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password_confirmation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.set_password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.set_password" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TRoles.choixSelect">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">choixSelect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id_role'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'full_name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aucun</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.choixSelect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.choixSelect" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Methode qui retourne une tableau de tuples d’id</dt><dd><p>de roles et de nom de roles ACTIF</p>
+</dd>
+</dl>
+<p>Avec pour paramètres un id de role et un nom de role
+Le paramètre aucun si il a une valeur permet</p>
+<blockquote>
+<div><p>de rajouter le tuple (-1,Aucun) au tableau</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TRoles.choix_group">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">choix_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aucun</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.choix_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.choix_group" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Methode qui retourne une tableau de tuples d’id</dt><dd><p>de groupes et de nom de goupes</p>
+</dd>
+</dl>
+<p>Avec pour paramètres un id de groupe et un nom de groupe
+Le paramètre aucun si il a une valeur permet</p>
+<blockquote>
+<div><p>de rajouter le tuple (-1,Aucun) au tableau</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TRoles.get_user_groups">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_user_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.get_user_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.get_user_groups" title="Link to this definition"></a></dt>
+<dd><p>Get all groups of a user
+Parameters:</p>
+<blockquote>
+<div><p>id_role (int): the user’s id</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Return:</dt><dd><p>Array&lt;TRoles&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TRoles.get_user_lists">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_user_lists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.get_user_lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.get_user_lists" title="Link to this definition"></a></dt>
+<dd><p>Get all lists of a user
+Parameters:</p>
+<blockquote>
+<div><p>id_role (int): the user’s id</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Return:</dt><dd><p>Array&lt;TListes&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TRoles.get_user_app_profils">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_user_app_profils</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_application</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.get_user_app_profils"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.get_user_app_profils" title="Link to this definition"></a></dt>
+<dd><p>Get all listapp profils of a user
+Parameters:</p>
+<blockquote>
+<div><p>id_role (int): the user’s id
+id_application optional (int): application id</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Return:</dt><dd><p>Array&lt;CorRoleAppProfil&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TRoles.get_full_name">
+<span class="sig-name descname"><span class="pre">get_full_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.get_full_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.get_full_name" title="Link to this definition"></a></dt>
+<dd><p>Methode qui concatène le nom et prénom du role
+retourne un nom complet</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TRoles.as_dict_full_name">
+<span class="sig-name descname"><span class="pre">as_dict_full_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.as_dict_full_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.as_dict_full_name" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Methode qui ajout le nom complet d’un role au dictionnaire</dt><dd><p>qui le défini</p>
+</dd>
+</dl>
+<p>retourne un dictionnaire d’un utilisateur avec une nouvelle “full_name”</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TRoles.test_group">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">test_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tab</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.test_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.test_group" title="Link to this definition"></a></dt>
+<dd><p>Methode qui test si le tableau contient un élement groupe = False,
+Si c’est le cas alors on remplace le boolean par un string du même nom
+retourne un tableau avec le groupe sous forme de string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TRoles.get_user_in_list">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_user_in_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_liste</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.get_user_in_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.get_user_in_list" title="Link to this definition"></a></dt>
+<dd><p>Methode qui retourne un dictionnaire des roles d’une liste
+Avec pour paramètre un id_liste</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TRoles.get_user_out_list">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_user_out_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_liste</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.get_user_out_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.get_user_out_list" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Methode qui retourne un dictionnaire de roles n’appartenant</dt><dd><p>pas à une liste</p>
+</dd>
+</dl>
+<p>Avec pour paramètre un id_liste</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TRoles.get_user_in_group">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_user_in_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_groupe</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.get_user_in_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.get_user_in_group" title="Link to this definition"></a></dt>
+<dd><p>Methode qui retourne un dictionnaire de role appartenant à un groupe
+Avec pour paramètres un id de role</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TRoles.get_user_out_group">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_user_out_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_groupe</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.get_user_out_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.get_user_out_group" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Methode qui retourne un dictionnaire de role n’appartenant pas</dt><dd><p>à un groupe donné</p>
+</dd>
+</dl>
+<p>Avec pour paramètre un id de role</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TRoles.get_user_profil_in_app">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_user_profil_in_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_application</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.get_user_profil_in_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.get_user_profil_in_app" title="Link to this definition"></a></dt>
+<dd><p>Methode qui retourne un dictionnaire de roles avec leur profil sur une application
+Avec pour paramètre un id d’application
+Ne retourne que les utilisateurs actifs</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TRoles.get_user_profil_out_app">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_user_profil_out_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_application</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.get_user_profil_out_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.get_user_profil_out_app" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Methode qui retourne un dictionnaire de roles n’ayant pas de droits</dt><dd><p>sur une application</p>
+</dd>
+</dl>
+<p>Avec pour paramètre un id d’application</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TRoles.get_groups">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_groups</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TRoles.get_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TRoles.get_groups" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Methode qui retourne une liste des roles</dt><dd><p>de type groupe</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.CorRoles">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">CorRoles</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoles" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../genericRepository/index.html#app.genericRepository.GenericRepository" title="app.genericRepository.GenericRepository"><code class="xref py py-obj docutils literal notranslate"><span class="pre">app.genericRepository.GenericRepository</span></code></a></p>
+<p>Classe de correspondance entre un utilisateur et un groupe</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoles.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cor_roles'</span></em><a class="reference internal" href="../../../_modules/app/models.html#CorRoles.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoles.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoles.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoles.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoles.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoles.id_role_groupe">
+<span class="sig-name descname"><span class="pre">id_role_groupe</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoles.id_role_groupe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoles.id_role_groupe" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoles.id_role_utilisateur">
+<span class="sig-name descname"><span class="pre">id_role_utilisateur</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoles.id_role_utilisateur"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoles.id_role_utilisateur" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoles.t_roles">
+<span class="sig-name descname"><span class="pre">t_roles</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoles.t_roles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoles.t_roles" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.CorRoles.test_role_in_grp">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">test_role_in_grp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_group</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#CorRoles.test_role_in_grp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoles.test_role_in_grp" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Methode qui retourne vrai si le role</dt><dd><p>appartient au groupe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.CorRoles.add_cor">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_cor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids_role</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#CorRoles.add_cor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoles.add_cor" title="Link to this definition"></a></dt>
+<dd><p>Methode qui ajoute des relations roles &lt;-&gt; groupe
+Avec pour paramètres un id de groupe(id_role)</p>
+<blockquote>
+<div><p>et un tableau d’id de roles</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.CorRoles.del_cor">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">del_cor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids_role</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#CorRoles.del_cor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoles.del_cor" title="Link to this definition"></a></dt>
+<dd><p>Methode qui supprime des relations roles &lt;-&gt; groupe
+Avec pour paramètres un id de groupe(id_role) et un tableau</p>
+<blockquote>
+<div><p>d’id de roles</p>
+</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.TListes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">TListes</span></span><a class="reference internal" href="../../../_modules/app/models.html#TListes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TListes" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../genericRepository/index.html#app.genericRepository.GenericRepository" title="app.genericRepository.GenericRepository"><code class="xref py py-obj docutils literal notranslate"><span class="pre">app.genericRepository.GenericRepository</span></code></a></p>
+<p>Model de la table t_listes</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TListes.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_listes'</span></em><a class="reference internal" href="../../../_modules/app/models.html#TListes.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TListes.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TListes.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/app/models.html#TListes.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TListes.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TListes.id_liste">
+<span class="sig-name descname"><span class="pre">id_liste</span></span><a class="reference internal" href="../../../_modules/app/models.html#TListes.id_liste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TListes.id_liste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TListes.code_liste">
+<span class="sig-name descname"><span class="pre">code_liste</span></span><a class="reference internal" href="../../../_modules/app/models.html#TListes.code_liste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TListes.code_liste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TListes.nom_liste">
+<span class="sig-name descname"><span class="pre">nom_liste</span></span><a class="reference internal" href="../../../_modules/app/models.html#TListes.nom_liste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TListes.nom_liste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TListes.desc_liste">
+<span class="sig-name descname"><span class="pre">desc_liste</span></span><a class="reference internal" href="../../../_modules/app/models.html#TListes.desc_liste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TListes.desc_liste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.CorRoleListe">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">CorRoleListe</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleListe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleListe" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../genericRepository/index.html#app.genericRepository.GenericRepository" title="app.genericRepository.GenericRepository"><code class="xref py py-obj docutils literal notranslate"><span class="pre">app.genericRepository.GenericRepository</span></code></a></p>
+<p>Classe de correspondance entre la table t_roles et la table t_listes</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoleListe.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cor_role_liste'</span></em><a class="reference internal" href="../../../_modules/app/models.html#CorRoleListe.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleListe.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoleListe.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleListe.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleListe.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoleListe.id_role">
+<span class="sig-name descname"><span class="pre">id_role</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleListe.id_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleListe.id_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoleListe.id_liste">
+<span class="sig-name descname"><span class="pre">id_liste</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleListe.id_liste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleListe.id_liste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoleListe.role_rel">
+<span class="sig-name descname"><span class="pre">role_rel</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleListe.role_rel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleListe.role_rel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.CorRoleListe.add_cor">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_cor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_liste</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids_role</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleListe.add_cor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleListe.add_cor" title="Link to this definition"></a></dt>
+<dd><p>Methode qui ajoute des relations roles &lt;-&gt; liste</p>
+<p>Avec pour paramètres un id de liste et un tableau d’id de roles</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.CorRoleListe.del_cor">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">del_cor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_liste</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids_role</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleListe.del_cor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleListe.del_cor" title="Link to this definition"></a></dt>
+<dd><p>Methode qui supprime des relations roles &lt;-&gt; liste</p>
+<p>Avec pour paramètres un id de liste et un tableau d’id de roles</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.TApplications">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">TApplications</span></span><a class="reference internal" href="../../../_modules/app/models.html#TApplications"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TApplications" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../genericRepository/index.html#app.genericRepository.GenericRepository" title="app.genericRepository.GenericRepository"><code class="xref py py-obj docutils literal notranslate"><span class="pre">app.genericRepository.GenericRepository</span></code></a></p>
+<p>Model de la table t_applications</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TApplications.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_applications'</span></em><a class="reference internal" href="../../../_modules/app/models.html#TApplications.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TApplications.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TApplications.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/app/models.html#TApplications.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TApplications.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TApplications.id_application">
+<span class="sig-name descname"><span class="pre">id_application</span></span><a class="reference internal" href="../../../_modules/app/models.html#TApplications.id_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TApplications.id_application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TApplications.code_application">
+<span class="sig-name descname"><span class="pre">code_application</span></span><a class="reference internal" href="../../../_modules/app/models.html#TApplications.code_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TApplications.code_application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TApplications.nom_application">
+<span class="sig-name descname"><span class="pre">nom_application</span></span><a class="reference internal" href="../../../_modules/app/models.html#TApplications.nom_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TApplications.nom_application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TApplications.desc_application">
+<span class="sig-name descname"><span class="pre">desc_application</span></span><a class="reference internal" href="../../../_modules/app/models.html#TApplications.desc_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TApplications.desc_application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TApplications.id_parent">
+<span class="sig-name descname"><span class="pre">id_parent</span></span><a class="reference internal" href="../../../_modules/app/models.html#TApplications.id_parent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TApplications.id_parent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.TProfils">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">TProfils</span></span><a class="reference internal" href="../../../_modules/app/models.html#TProfils"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TProfils" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../genericRepository/index.html#app.genericRepository.GenericRepository" title="app.genericRepository.GenericRepository"><code class="xref py py-obj docutils literal notranslate"><span class="pre">app.genericRepository.GenericRepository</span></code></a></p>
+<p>Model de la classe t_profils</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TProfils.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_profils'</span></em><a class="reference internal" href="../../../_modules/app/models.html#TProfils.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TProfils.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TProfils.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/app/models.html#TProfils.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TProfils.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TProfils.id_profil">
+<span class="sig-name descname"><span class="pre">id_profil</span></span><a class="reference internal" href="../../../_modules/app/models.html#TProfils.id_profil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TProfils.id_profil" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TProfils.code_profil">
+<span class="sig-name descname"><span class="pre">code_profil</span></span><a class="reference internal" href="../../../_modules/app/models.html#TProfils.code_profil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TProfils.code_profil" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TProfils.nom_profil">
+<span class="sig-name descname"><span class="pre">nom_profil</span></span><a class="reference internal" href="../../../_modules/app/models.html#TProfils.nom_profil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TProfils.nom_profil" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.TProfils.desc_profil">
+<span class="sig-name descname"><span class="pre">desc_profil</span></span><a class="reference internal" href="../../../_modules/app/models.html#TProfils.desc_profil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TProfils.desc_profil" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TProfils.get_profils_in_app">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_profils_in_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_application</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TProfils.get_profils_in_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TProfils.get_profils_in_app" title="Link to this definition"></a></dt>
+<dd><p>Methode qui retourne tous les profils autorisés dans une app
+Parameters:</p>
+<blockquote>
+<div><p>id_app (int): l’id de l’application</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Array&lt;TProfils&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TProfils.get_profil_in_app_with_code">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_profil_in_app_with_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_application</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_profil</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TProfils.get_profil_in_app_with_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TProfils.get_profil_in_app_with_code" title="Link to this definition"></a></dt>
+<dd><p>Methode qui retourne un profil à partir de son code</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TProfils.get_profils_out_app">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_profils_out_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_application</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TProfils.get_profils_out_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TProfils.get_profils_out_app" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Methode qui retourne un dictionnaire des profils non utilisés</dt><dd><p>pour une application</p>
+</dd>
+</dl>
+<p>Avec pour paramètre un id application</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.TProfils.choixSelect">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">choixSelect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id_profil'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nom_profil'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_application</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#TProfils.choixSelect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.TProfils.choixSelect" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Methode qui retourne un tableau de tuples d’id profil et de</dt><dd><p>nom de profil</p>
+</dd>
+</dl>
+<p>Ce que l’on met en key et label sont paramétrable</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.CorProfilForApp">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">CorProfilForApp</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorProfilForApp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorProfilForApp" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../genericRepository/index.html#app.genericRepository.GenericRepository" title="app.genericRepository.GenericRepository"><code class="xref py py-obj docutils literal notranslate"><span class="pre">app.genericRepository.GenericRepository</span></code></a></p>
+<p>Classe de correspondance entre la table t_applications et la table t_profils</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorProfilForApp.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cor_profil_for_app'</span></em><a class="reference internal" href="../../../_modules/app/models.html#CorProfilForApp.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorProfilForApp.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorProfilForApp.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorProfilForApp.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorProfilForApp.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorProfilForApp.id_application">
+<span class="sig-name descname"><span class="pre">id_application</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorProfilForApp.id_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorProfilForApp.id_application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorProfilForApp.id_profil">
+<span class="sig-name descname"><span class="pre">id_profil</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorProfilForApp.id_profil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorProfilForApp.id_profil" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorProfilForApp.profil_rel">
+<span class="sig-name descname"><span class="pre">profil_rel</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorProfilForApp.profil_rel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorProfilForApp.profil_rel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.CorProfilForApp.add_cor">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_cor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_application</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids_profil</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#CorProfilForApp.add_cor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorProfilForApp.add_cor" title="Link to this definition"></a></dt>
+<dd><p>Methode qui ajoute des relations applications &lt;-&gt; profil</p>
+<p>Avec pour paramètres un id profil et un tableau d’id d’applications</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.CorProfilForApp.del_cor">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">del_cor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_application</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids_profil</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#CorProfilForApp.del_cor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorProfilForApp.del_cor" title="Link to this definition"></a></dt>
+<dd><p>Methode qui supprime des relations applications &lt;-&gt; profil</p>
+<p>Avec pour paramètres un id profil et un tableau d’id d’applications</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.CorRoleAppProfil">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">CorRoleAppProfil</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleAppProfil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleAppProfil" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../genericRepository/index.html#app.genericRepository.GenericRepository" title="app.genericRepository.GenericRepository"><code class="xref py py-obj docutils literal notranslate"><span class="pre">app.genericRepository.GenericRepository</span></code></a></p>
+<dl class="simple">
+<dt>Classe de correspondance entre la table t_roles, t_profils et</dt><dd><p>t_applications</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoleAppProfil.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cor_role_app_profil'</span></em><a class="reference internal" href="../../../_modules/app/models.html#CorRoleAppProfil.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleAppProfil.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoleAppProfil.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleAppProfil.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleAppProfil.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoleAppProfil.id_role">
+<span class="sig-name descname"><span class="pre">id_role</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleAppProfil.id_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleAppProfil.id_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoleAppProfil.id_profil">
+<span class="sig-name descname"><span class="pre">id_profil</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleAppProfil.id_profil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleAppProfil.id_profil" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoleAppProfil.id_application">
+<span class="sig-name descname"><span class="pre">id_application</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleAppProfil.id_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleAppProfil.id_application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoleAppProfil.is_default_group_for_app">
+<span class="sig-name descname"><span class="pre">is_default_group_for_app</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleAppProfil.is_default_group_for_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleAppProfil.is_default_group_for_app" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoleAppProfil.role_rel">
+<span class="sig-name descname"><span class="pre">role_rel</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleAppProfil.role_rel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleAppProfil.role_rel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoleAppProfil.application_rel">
+<span class="sig-name descname"><span class="pre">application_rel</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleAppProfil.application_rel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleAppProfil.application_rel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CorRoleAppProfil.profil_rel">
+<span class="sig-name descname"><span class="pre">profil_rel</span></span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleAppProfil.profil_rel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleAppProfil.profil_rel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.CorRoleAppProfil.get_one">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_application</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleAppProfil.get_one"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleAppProfil.get_one" title="Link to this definition"></a></dt>
+<dd><p>Methode qui retourne un dictionnaire d’un élément d’un Model
+Avec pour paramètres l’id de l’élément
+Si as_model != False alors au lieu de retourner un dictionnaire on retourne l’object du modèle</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.CorRoleAppProfil.get_default_for_app">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_default_for_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_application</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleAppProfil.get_default_for_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleAppProfil.get_default_for_app" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.CorRoleAppProfil.delete">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_application</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleAppProfil.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleAppProfil.delete" title="Link to this definition"></a></dt>
+<dd><p>Methode qui supprime un élement d’une table à partir d’un id donné
+Avec pour paramètre un id (clé primaire)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.CorRoleAppProfil.add_cor">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_cor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_app</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tab_profil</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleAppProfil.add_cor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleAppProfil.add_cor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.CorRoleAppProfil.del_cor">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">del_cor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_app</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tab_profil</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/app/models.html#CorRoleAppProfil.del_cor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CorRoleAppProfil.del_cor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

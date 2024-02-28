@@ -1,0 +1,19 @@
+:py:mod:`test_settings`
+=======================
+
+.. py:module:: test_settings
+
+
+Module Contents
+---------------
+
+.. py:data:: SQLALCHEMY_DATABASE_URI
+   :value: 'postgresql://postgres:postgres@localhost/postgres'
+
+   
+
+.. py:data:: SQLALCHEMY_TRACK_MODIFICATIONS
+   :value: False
+
+   
+

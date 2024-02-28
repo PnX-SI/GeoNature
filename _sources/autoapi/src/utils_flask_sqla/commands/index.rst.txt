@@ -1,0 +1,38 @@
+:py:mod:`src.utils_flask_sqla.commands`
+=======================================
+
+.. py:module:: src.utils_flask_sqla.commands
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla.commands.box_drowing
+   src.utils_flask_sqla.commands.exec
+   src.utils_flask_sqla.commands.autoupgrade
+   src.utils_flask_sqla.commands.status
+
+
+
+.. py:function:: box_drowing(up, down, left, right, bold=True)
+
+
+.. py:function:: exec(command, commit, json_output)
+
+
+.. py:function:: autoupgrade(directory, sql, tag, x_arg)
+
+   Upgrade all branches to head.
+
+
+.. py:function:: status(directory, x_arg, show_dependencies, branches)
+
+   Show all revisions sorted by branches.
+
+

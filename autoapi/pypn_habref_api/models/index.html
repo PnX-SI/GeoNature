@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pypn_habref_api.models &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypn_habref_api.models</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/pypn_habref_api/models/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pypn_habref_api.models">
+<span id="pypn-habref-api-models"></span><h1><a class="reference internal" href="#module-pypn_habref_api.models" title="pypn_habref_api.models"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypn_habref_api.models</span></code></a><a class="headerlink" href="#module-pypn_habref_api.models" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypn_habref_api.models.BibHabrefTypoRel" title="pypn_habref_api.models.BibHabrefTypoRel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibHabrefTypoRel</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pypn_habref_api.models.CorespHab" title="pypn_habref_api.models.CorespHab"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CorespHab</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypn_habref_api.models.TypoRef" title="pypn_habref_api.models.TypoRef"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TypoRef</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pypn_habref_api.models.Habref" title="pypn_habref_api.models.Habref"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Habref</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypn_habref_api.models.BibListHabitat" title="pypn_habref_api.models.BibListHabitat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibListHabitat</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pypn_habref_api.models.AutoCompleteHabitat" title="pypn_habref_api.models.AutoCompleteHabitat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AutoCompleteHabitat</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypn_habref_api.models.cor_list_habitat" title="pypn_habref_api.models.cor_list_habitat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_list_habitat</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="pypn_habref_api.models.BibHabrefTypoRel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypn_habref_api.models.</span></span><span class="sig-name descname"><span class="pre">BibHabrefTypoRel</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#BibHabrefTypoRel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.BibHabrefTypoRel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypn_habref_api.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.BibHabrefTypoRel.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_habref_typo_rel'</span></em><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#BibHabrefTypoRel.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.BibHabrefTypoRel.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.BibHabrefTypoRel.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#BibHabrefTypoRel.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.BibHabrefTypoRel.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.BibHabrefTypoRel.cd_type_rel">
+<span class="sig-name descname"><span class="pre">cd_type_rel</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#BibHabrefTypoRel.cd_type_rel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.BibHabrefTypoRel.cd_type_rel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.BibHabrefTypoRel.lb_type_rel">
+<span class="sig-name descname"><span class="pre">lb_type_rel</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#BibHabrefTypoRel.lb_type_rel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.BibHabrefTypoRel.lb_type_rel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.BibHabrefTypoRel.lb_rel">
+<span class="sig-name descname"><span class="pre">lb_rel</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#BibHabrefTypoRel.lb_rel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.BibHabrefTypoRel.lb_rel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.BibHabrefTypoRel.corresp_hab">
+<span class="sig-name descname"><span class="pre">corresp_hab</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#BibHabrefTypoRel.corresp_hab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.BibHabrefTypoRel.corresp_hab" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.BibHabrefTypoRel.corresp_esp">
+<span class="sig-name descname"><span class="pre">corresp_esp</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#BibHabrefTypoRel.corresp_esp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.BibHabrefTypoRel.corresp_esp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.BibHabrefTypoRel.corresp_syn">
+<span class="sig-name descname"><span class="pre">corresp_syn</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#BibHabrefTypoRel.corresp_syn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.BibHabrefTypoRel.corresp_syn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypn_habref_api.models.CorespHab">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypn_habref_api.models.</span></span><span class="sig-name descname"><span class="pre">CorespHab</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#CorespHab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.CorespHab" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypn_habref_api.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.CorespHab.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'habref_corresp_hab'</span></em><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#CorespHab.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.CorespHab.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.CorespHab.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#CorespHab.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.CorespHab.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.CorespHab.cd_corresp_hab">
+<span class="sig-name descname"><span class="pre">cd_corresp_hab</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#CorespHab.cd_corresp_hab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.CorespHab.cd_corresp_hab" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.CorespHab.cd_hab_entre">
+<span class="sig-name descname"><span class="pre">cd_hab_entre</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#CorespHab.cd_hab_entre"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.CorespHab.cd_hab_entre" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.CorespHab.cd_hab_sortie">
+<span class="sig-name descname"><span class="pre">cd_hab_sortie</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#CorespHab.cd_hab_sortie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.CorespHab.cd_hab_sortie" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.CorespHab.cd_type_relation">
+<span class="sig-name descname"><span class="pre">cd_type_relation</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#CorespHab.cd_type_relation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.CorespHab.cd_type_relation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.CorespHab.lb_condition">
+<span class="sig-name descname"><span class="pre">lb_condition</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#CorespHab.lb_condition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.CorespHab.lb_condition" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.CorespHab.lb_remarques">
+<span class="sig-name descname"><span class="pre">lb_remarques</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#CorespHab.lb_remarques"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.CorespHab.lb_remarques" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.CorespHab.validite">
+<span class="sig-name descname"><span class="pre">validite</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#CorespHab.validite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.CorespHab.validite" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.CorespHab.cd_typo_entre">
+<span class="sig-name descname"><span class="pre">cd_typo_entre</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#CorespHab.cd_typo_entre"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.CorespHab.cd_typo_entre" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.CorespHab.cd_typo_sortie">
+<span class="sig-name descname"><span class="pre">cd_typo_sortie</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#CorespHab.cd_typo_sortie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.CorespHab.cd_typo_sortie" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.CorespHab.date_crea">
+<span class="sig-name descname"><span class="pre">date_crea</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#CorespHab.date_crea"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.CorespHab.date_crea" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.CorespHab.diffusion">
+<span class="sig-name descname"><span class="pre">diffusion</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#CorespHab.diffusion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.CorespHab.diffusion" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.CorespHab.type_rel">
+<span class="sig-name descname"><span class="pre">type_rel</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#CorespHab.type_rel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.CorespHab.type_rel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypn_habref_api.models.</span></span><span class="sig-name descname"><span class="pre">TypoRef</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypn_habref_api.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'typoref'</span></em><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.cd_typo">
+<span class="sig-name descname"><span class="pre">cd_typo</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.cd_typo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.cd_typo" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.cd_table">
+<span class="sig-name descname"><span class="pre">cd_table</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.cd_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.cd_table" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.lb_nom_typo">
+<span class="sig-name descname"><span class="pre">lb_nom_typo</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.lb_nom_typo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.lb_nom_typo" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.nom_jeu_donnees">
+<span class="sig-name descname"><span class="pre">nom_jeu_donnees</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.nom_jeu_donnees"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.nom_jeu_donnees" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.date_creation">
+<span class="sig-name descname"><span class="pre">date_creation</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.date_creation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.date_creation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.date_mise_jour_table">
+<span class="sig-name descname"><span class="pre">date_mise_jour_table</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.date_mise_jour_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.date_mise_jour_table" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.date_mise_jour_metadonnees">
+<span class="sig-name descname"><span class="pre">date_mise_jour_metadonnees</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.date_mise_jour_metadonnees"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.date_mise_jour_metadonnees" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.auteur_typo">
+<span class="sig-name descname"><span class="pre">auteur_typo</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.auteur_typo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.auteur_typo" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.auteur_table">
+<span class="sig-name descname"><span class="pre">auteur_table</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.auteur_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.auteur_table" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.territoire">
+<span class="sig-name descname"><span class="pre">territoire</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.territoire"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.territoire" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.organisme">
+<span class="sig-name descname"><span class="pre">organisme</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.langue">
+<span class="sig-name descname"><span class="pre">langue</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.langue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.langue" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.presentation">
+<span class="sig-name descname"><span class="pre">presentation</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.presentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.presentation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.description" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.origine">
+<span class="sig-name descname"><span class="pre">origine</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.origine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.origine" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.ref_biblio">
+<span class="sig-name descname"><span class="pre">ref_biblio</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.ref_biblio"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.ref_biblio" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.mots_cles">
+<span class="sig-name descname"><span class="pre">mots_cles</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.mots_cles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.mots_cles" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.referencement">
+<span class="sig-name descname"><span class="pre">referencement</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.referencement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.referencement" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.diffusion">
+<span class="sig-name descname"><span class="pre">diffusion</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.diffusion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.diffusion" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.derniere_modif">
+<span class="sig-name descname"><span class="pre">derniere_modif</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.derniere_modif"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.derniere_modif" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.type_table">
+<span class="sig-name descname"><span class="pre">type_table</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.type_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.type_table" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.cd_typo_entre">
+<span class="sig-name descname"><span class="pre">cd_typo_entre</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.cd_typo_entre"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.cd_typo_entre" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.cd_typo_sortie">
+<span class="sig-name descname"><span class="pre">cd_typo_sortie</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.cd_typo_sortie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.cd_typo_sortie" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.niveau_inpn">
+<span class="sig-name descname"><span class="pre">niveau_inpn</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.niveau_inpn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.niveau_inpn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.TypoRef.habitats">
+<span class="sig-name descname"><span class="pre">habitats</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#TypoRef.habitats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.TypoRef.habitats" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pypn_habref_api.models.cor_list_habitat">
+<span class="sig-prename descclassname"><span class="pre">pypn_habref_api.models.</span></span><span class="sig-name descname"><span class="pre">cor_list_habitat</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#cor_list_habitat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.cor_list_habitat" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypn_habref_api.models.</span></span><span class="sig-name descname"><span class="pre">Habref</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypn_habref_api.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'habref'</span></em><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.cd_hab">
+<span class="sig-name descname"><span class="pre">cd_hab</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.cd_hab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.cd_hab" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.fg_validite">
+<span class="sig-name descname"><span class="pre">fg_validite</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.fg_validite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.fg_validite" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.cd_typo">
+<span class="sig-name descname"><span class="pre">cd_typo</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.cd_typo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.cd_typo" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.lb_code">
+<span class="sig-name descname"><span class="pre">lb_code</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.lb_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.lb_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.lb_hab_fr">
+<span class="sig-name descname"><span class="pre">lb_hab_fr</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.lb_hab_fr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.lb_hab_fr" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.lb_hab_fr_complet">
+<span class="sig-name descname"><span class="pre">lb_hab_fr_complet</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.lb_hab_fr_complet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.lb_hab_fr_complet" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.lb_hab_en">
+<span class="sig-name descname"><span class="pre">lb_hab_en</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.lb_hab_en"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.lb_hab_en" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.lb_auteur">
+<span class="sig-name descname"><span class="pre">lb_auteur</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.lb_auteur"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.lb_auteur" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.niveau">
+<span class="sig-name descname"><span class="pre">niveau</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.niveau"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.niveau" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.lb_niveau">
+<span class="sig-name descname"><span class="pre">lb_niveau</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.lb_niveau"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.lb_niveau" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.cd_hab_sup">
+<span class="sig-name descname"><span class="pre">cd_hab_sup</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.cd_hab_sup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.cd_hab_sup" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.path_cd_hab">
+<span class="sig-name descname"><span class="pre">path_cd_hab</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.path_cd_hab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.path_cd_hab" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.france">
+<span class="sig-name descname"><span class="pre">france</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.france"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.france" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.lb_description">
+<span class="sig-name descname"><span class="pre">lb_description</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.lb_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.lb_description" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.typo">
+<span class="sig-name descname"><span class="pre">typo</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.typo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.typo" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.correspondances">
+<span class="sig-name descname"><span class="pre">correspondances</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.correspondances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.correspondances" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.Habref.lists">
+<span class="sig-name descname"><span class="pre">lists</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#Habref.lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.Habref.lists" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypn_habref_api.models.BibListHabitat">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypn_habref_api.models.</span></span><span class="sig-name descname"><span class="pre">BibListHabitat</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#BibListHabitat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.BibListHabitat" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypn_habref_api.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.BibListHabitat.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_list_habitat'</span></em><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#BibListHabitat.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.BibListHabitat.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.BibListHabitat.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#BibListHabitat.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.BibListHabitat.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.BibListHabitat.id_list">
+<span class="sig-name descname"><span class="pre">id_list</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#BibListHabitat.id_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.BibListHabitat.id_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.BibListHabitat.list_name">
+<span class="sig-name descname"><span class="pre">list_name</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#BibListHabitat.list_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.BibListHabitat.list_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.BibListHabitat.habitats">
+<span class="sig-name descname"><span class="pre">habitats</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#BibListHabitat.habitats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.BibListHabitat.habitats" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypn_habref_api.models.AutoCompleteHabitat">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypn_habref_api.models.</span></span><span class="sig-name descname"><span class="pre">AutoCompleteHabitat</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#AutoCompleteHabitat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.AutoCompleteHabitat" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypn_habref_api.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.AutoCompleteHabitat.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'autocomplete_habitat'</span></em><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#AutoCompleteHabitat.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.AutoCompleteHabitat.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.AutoCompleteHabitat.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#AutoCompleteHabitat.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.AutoCompleteHabitat.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.AutoCompleteHabitat.cd_hab">
+<span class="sig-name descname"><span class="pre">cd_hab</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#AutoCompleteHabitat.cd_hab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.AutoCompleteHabitat.cd_hab" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.AutoCompleteHabitat.cd_typo">
+<span class="sig-name descname"><span class="pre">cd_typo</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#AutoCompleteHabitat.cd_typo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.AutoCompleteHabitat.cd_typo" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.AutoCompleteHabitat.lb_code">
+<span class="sig-name descname"><span class="pre">lb_code</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#AutoCompleteHabitat.lb_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.AutoCompleteHabitat.lb_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.AutoCompleteHabitat.lb_nom_typo">
+<span class="sig-name descname"><span class="pre">lb_nom_typo</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#AutoCompleteHabitat.lb_nom_typo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.AutoCompleteHabitat.lb_nom_typo" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.AutoCompleteHabitat.search_name">
+<span class="sig-name descname"><span class="pre">search_name</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#AutoCompleteHabitat.search_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.AutoCompleteHabitat.search_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypn_habref_api.models.AutoCompleteHabitat.lists">
+<span class="sig-name descname"><span class="pre">lists</span></span><a class="reference internal" href="../../../_modules/pypn_habref_api/models.html#AutoCompleteHabitat.lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypn_habref_api.models.AutoCompleteHabitat.lists" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

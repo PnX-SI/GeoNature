@@ -1,0 +1,40 @@
+:py:mod:`src.pypnnomenclature.utils`
+====================================
+
+.. py:module:: src.pypnnomenclature.utils
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   src.pypnnomenclature.utils.NomenclaturesConverter
+   src.pypnnomenclature.utils.NomenclaturesMixin
+
+
+
+
+.. py:class:: NomenclaturesConverter(schema_cls=None)
+
+
+   Bases: :py:obj:`marshmallow_sqlalchemy.convert.ModelConverter`
+
+   Class that converts a SQLAlchemy model into a dictionary of corresponding
+   marshmallow `Fields <marshmallow.fields.Field>`.
+
+   .. py:method:: fields_for_model(model, **kwargs)
+
+
+
+.. py:class:: NomenclaturesMixin
+
+
+   .. py:method:: __declare_last__()
+      :classmethod:
+
+
+

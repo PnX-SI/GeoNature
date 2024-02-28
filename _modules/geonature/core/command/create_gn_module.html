@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.command.create_gn_module &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.command.create_gn_module</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.command.create_gn_module</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">site</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span> <span class="nn">pathlib</span>  <span class="c1"># For testing purposes</span>
+<span class="kn">import</span> <span class="nn">click</span>
+<span class="kn">import</span> <span class="nn">geonature.utils.config</span>
+<span class="kn">from</span> <span class="nn">click</span> <span class="kn">import</span> <span class="n">ClickException</span>
+<span class="kn">from</span> <span class="nn">geonature.core.command.main</span> <span class="kn">import</span> <span class="n">main</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.command</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">build_frontend</span><span class="p">,</span>
+    <span class="n">create_frontend_module_config</span><span class="p">,</span>
+    <span class="n">install_frontend_dependencies</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.config</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">ROOT_DIR</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.module</span> <span class="kn">import</span> <span class="n">get_dist_from_code</span><span class="p">,</span> <span class="n">iter_modules_dist</span><span class="p">,</span> <span class="n">module_db_upgrade</span>
+
+
+<span class="nd">@main</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;-x&quot;</span><span class="p">,</span> <span class="s2">&quot;--x-arg&quot;</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Additional arguments consumed by custom env.py scripts&quot;</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;module_path&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">file_okay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path_type</span><span class="o">=</span><span class="n">Path</span><span class="p">))</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;module_code&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--build&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--upgrade-db&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="install_gn_module">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/command/create_gn_module/index.html#geonature.core.command.create_gn_module.install_gn_module">[docs]</a>
+<span class="k">def</span> <span class="nf">install_gn_module</span><span class="p">(</span><span class="n">x_arg</span><span class="p">,</span> <span class="n">module_path</span><span class="p">,</span> <span class="n">module_code</span><span class="p">,</span> <span class="n">build</span><span class="p">,</span> <span class="n">upgrade_db</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Command definition to install a GeoNature module</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x_arg : list</span>
+<span class="sd">        additional arguments</span>
+<span class="sd">    module_path : str</span>
+<span class="sd">        path of the module directory</span>
+<span class="sd">    module_code : str</span>
+<span class="sd">        code of the module, deprecated in future release</span>
+<span class="sd">    build : boolean</span>
+<span class="sd">        is the frontend rebuild</span>
+<span class="sd">    upgrade_db : boolean</span>
+<span class="sd">        migrate the revision associated with the module</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ClickException</span>
+<span class="sd">        No module found with the given module code</span>
+<span class="sd">    ClickException</span>
+<span class="sd">        No module code was detected in the code</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;Installation du backend…&quot;</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;pip install -e &#39;</span><span class="si">{</span><span class="n">module_path</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># refresh list of entry points</span>
+    <span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">site</span><span class="p">)</span>
+    <span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">geonature</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">module_code</span><span class="p">:</span>
+        <span class="c1"># load python package</span>
+        <span class="n">module_dist</span> <span class="o">=</span> <span class="n">get_dist_from_code</span><span class="p">(</span><span class="n">module_code</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">module_dist</span><span class="p">:</span>  <span class="c1"># FIXME : technically can&#39;t go there...</span>
+            <span class="k">raise</span> <span class="n">ClickException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Aucun module ayant pour code </span><span class="si">{</span><span class="n">module_code</span><span class="si">}</span><span class="s2"> n’a été trouvé&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">module_dist</span> <span class="ow">in</span> <span class="n">iter_modules_dist</span><span class="p">():</span>
+            <span class="n">module</span> <span class="o">=</span> <span class="n">module_dist</span><span class="o">.</span><span class="n">entry_points</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">module</span>
+            <span class="k">if</span> <span class="n">module</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">module</span><span class="p">]</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">module_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+                <span class="n">module_code</span> <span class="o">=</span> <span class="n">module_dist</span><span class="o">.</span><span class="n">entry_points</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ClickException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Impossible de détecter le code du module, essayez de le spécifier.&quot;</span>
+            <span class="p">)</span>
+    <span class="c1"># symlink module in exernal module directory</span>
+    <span class="n">module_frontend_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">module_path</span> <span class="o">/</span> <span class="s2">&quot;frontend&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="n">module_symlink</span> <span class="o">=</span> <span class="n">ROOT_DIR</span> <span class="o">/</span> <span class="s2">&quot;frontend&quot;</span> <span class="o">/</span> <span class="s2">&quot;external_modules&quot;</span> <span class="o">/</span> <span class="n">module_code</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">module_symlink</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">module_frontend_path</span> <span class="o">!=</span> <span class="n">os</span><span class="o">.</span><span class="n">readlink</span><span class="p">(</span><span class="n">module_symlink</span><span class="p">):</span>
+            <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Correction du lien symbolique </span><span class="si">{</span><span class="n">module_symlink</span><span class="si">}</span><span class="s2"> → </span><span class="si">{</span><span class="n">module_frontend_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">module_symlink</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">symlink</span><span class="p">(</span><span class="n">module_frontend_path</span><span class="p">,</span> <span class="n">module_symlink</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Création du lien symbolique </span><span class="si">{</span><span class="n">module_symlink</span><span class="si">}</span><span class="s2"> → </span><span class="si">{</span><span class="n">module_frontend_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">symlink</span><span class="p">(</span><span class="n">module_frontend_path</span><span class="p">,</span> <span class="n">module_symlink</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">module_path</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;frontend&quot;</span> <span class="o">/</span> <span class="s2">&quot;package-lock.json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;Installation des dépendances frontend…&quot;</span><span class="p">)</span>
+        <span class="n">install_frontend_dependencies</span><span class="p">(</span><span class="n">module_frontend_path</span><span class="p">)</span>
+
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;Création de la configuration frontend…&quot;</span><span class="p">)</span>
+    <span class="n">create_frontend_module_config</span><span class="p">(</span><span class="n">module_code</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">build</span><span class="p">:</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;Rebuild du frontend …&quot;</span><span class="p">)</span>
+        <span class="n">build_frontend</span><span class="p">()</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">secho</span><span class="p">(</span><span class="s2">&quot;Rebuild du frontend terminé.&quot;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">upgrade_db</span><span class="p">:</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;Installation / mise à jour de la base de données…&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">module_db_upgrade</span><span class="p">(</span><span class="n">module_dist</span><span class="p">,</span> <span class="n">x_arg</span><span class="o">=</span><span class="n">x_arg</span><span class="p">):</span>
+            <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span>
+                <span class="s2">&quot;Le module est déjà déclaré en base. &quot;</span> <span class="s2">&quot;Installation de la base de données ignorée.&quot;</span>
+            <span class="p">)</span></div>
+
+
+
+<span class="nd">@main</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;--directory&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Migration script directory (default is &quot;migrations&quot;)&#39;</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--sql&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Don&#39;t emit SQL to database - dump to standard output &quot;</span> <span class="s2">&quot;instead&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--tag&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Arbitrary &quot;tag&quot; name - can be used by custom env.py &#39;</span> <span class="s2">&quot;scripts&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;-x&quot;</span><span class="p">,</span> <span class="s2">&quot;--x-arg&quot;</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Additional arguments consumed by custom env.py scripts&quot;</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;module_codes&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;[MODULE_CODE]...&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<div class="viewcode-block" id="upgrade_modules_db">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/command/create_gn_module/index.html#geonature.core.command.create_gn_module.upgrade_modules_db">[docs]</a>
+<span class="k">def</span> <span class="nf">upgrade_modules_db</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">sql</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">,</span> <span class="n">module_codes</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">module_dist</span> <span class="ow">in</span> <span class="n">iter_modules_dist</span><span class="p">():</span>
+        <span class="n">module_code</span> <span class="o">=</span> <span class="n">module_dist</span><span class="o">.</span><span class="n">entry_points</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">module_codes</span> <span class="ow">and</span> <span class="n">module_code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">module_codes</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">module_code</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;DISABLED_MODULES&quot;</span><span class="p">]:</span>
+            <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Omission du module </span><span class="si">{</span><span class="n">module_code</span><span class="si">}</span><span class="s2"> (déactivé)&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mise-à-jour du module </span><span class="si">{</span><span class="n">module_code</span><span class="si">}</span><span class="s2">…&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">module_db_upgrade</span><span class="p">(</span><span class="n">module_dist</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">sql</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">):</span>
+            <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span>
+                <span class="s2">&quot;Le module est déjà déclaré en base. &quot;</span> <span class="s2">&quot;Installation de la base de données ignorée.&quot;</span>
+            <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

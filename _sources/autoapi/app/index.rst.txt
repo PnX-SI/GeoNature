@@ -1,0 +1,36 @@
+:py:mod:`app`
+=============
+
+.. py:module:: app
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   api/index.rst
+   bib_organismes/index.rst
+   groupe/index.rst
+   liste/index.rst
+   login/index.rst
+   t_applications/index.rst
+   t_profils/index.rst
+   t_roles/index.rst
+   temp_users/index.rst
+   utils/index.rst
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   app/index.rst
+   env/index.rst
+   genericRepository/index.rst
+   models/index.rst
+
+

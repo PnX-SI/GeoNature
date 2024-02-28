@@ -1,0 +1,575 @@
+:py:mod:`ref_geo.models`
+========================
+
+.. py:module:: ref_geo.models
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   ref_geo.models.BibAreasTypes
+   ref_geo.models.LAreas
+   ref_geo.models.BibLinearsTypes
+   ref_geo.models.LLinears
+   ref_geo.models.TLinearGroups
+   ref_geo.models.BibPointsTypes
+   ref_geo.models.LPoints
+   ref_geo.models.LiMunicipalities
+
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   ref_geo.models.cor_areas
+   ref_geo.models.cor_linear_group
+   ref_geo.models.cor_linear_area
+
+
+.. py:class:: BibAreasTypes
+
+
+   Bases: :py:obj:`ref_geo.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_areas_types'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_type
+
+      
+
+   .. py:attribute:: type_name
+
+      
+
+   .. py:attribute:: type_code
+
+      
+
+   .. py:attribute:: type_desc
+
+      
+
+   .. py:attribute:: ref_name
+
+      
+
+   .. py:attribute:: ref_version
+
+      
+
+   .. py:attribute:: num_version
+
+      
+
+   .. py:attribute:: size_hierarchy
+
+      
+
+
+.. py:data:: cor_areas
+
+   
+
+.. py:class:: LAreas
+
+
+   Bases: :py:obj:`ref_geo.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'l_areas'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_area
+
+      
+
+   .. py:attribute:: id_type
+
+      
+
+   .. py:attribute:: area_name
+
+      
+
+   .. py:attribute:: area_code
+
+      
+
+   .. py:attribute:: geom
+
+      
+
+   .. py:attribute:: centroid
+
+      
+
+   .. py:attribute:: geom_4326
+
+      
+
+   .. py:attribute:: source
+
+      
+
+   .. py:attribute:: enable
+
+      
+
+   .. py:attribute:: meta_create_date
+
+      
+
+   .. py:attribute:: meta_update_date
+
+      
+
+   .. py:attribute:: area_type
+
+      
+
+   .. py:attribute:: parent_areas
+
+      
+
+
+.. py:class:: BibLinearsTypes
+
+
+   Bases: :py:obj:`ref_geo.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_linears_types'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_type
+
+      
+
+   .. py:attribute:: type_name
+
+      
+
+   .. py:attribute:: type_code
+
+      
+
+   .. py:attribute:: type_desc
+
+      
+
+   .. py:attribute:: ref_name
+
+      
+
+   .. py:attribute:: ref_version
+
+      
+
+   .. py:attribute:: num_version
+
+      
+
+
+.. py:data:: cor_linear_group
+
+   
+
+.. py:data:: cor_linear_area
+
+   
+
+.. py:class:: LLinears
+
+
+   Bases: :py:obj:`ref_geo.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'l_linears'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_linear
+
+      
+
+   .. py:attribute:: id_type
+
+      
+
+   .. py:attribute:: linear_name
+
+      
+
+   .. py:attribute:: linear_code
+
+      
+
+   .. py:attribute:: geom
+
+      
+
+   .. py:attribute:: source
+
+      
+
+   .. py:attribute:: enable
+
+      
+
+   .. py:attribute:: additional_data
+
+      
+
+   .. py:attribute:: meta_create_date
+
+      
+
+   .. py:attribute:: meta_update_date
+
+      
+
+   .. py:attribute:: type
+
+      
+
+   .. py:attribute:: groups
+
+      
+
+   .. py:attribute:: areas
+
+      
+
+
+.. py:class:: TLinearGroups
+
+
+   Bases: :py:obj:`ref_geo.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __table_name__
+      :value: 't_linear_groups'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_group
+
+      
+
+   .. py:attribute:: name
+
+      
+
+   .. py:attribute:: code
+
+      
+
+
+.. py:class:: BibPointsTypes
+
+
+   Bases: :py:obj:`ref_geo.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_points_types'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_type
+
+      
+
+   .. py:attribute:: type_name
+
+      
+
+   .. py:attribute:: type_code
+
+      
+
+   .. py:attribute:: type_desc
+
+      
+
+   .. py:attribute:: ref_name
+
+      
+
+   .. py:attribute:: ref_version
+
+      
+
+   .. py:attribute:: num_version
+
+      
+
+
+.. py:class:: LPoints
+
+
+   Bases: :py:obj:`ref_geo.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'l_points'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_point
+
+      
+
+   .. py:attribute:: id_type
+
+      
+
+   .. py:attribute:: point_name
+
+      
+
+   .. py:attribute:: point_code
+
+      
+
+   .. py:attribute:: geom
+
+      
+
+   .. py:attribute:: source
+
+      
+
+   .. py:attribute:: enable
+
+      
+
+   .. py:attribute:: additional_data
+
+      
+
+   .. py:attribute:: meta_create_date
+
+      
+
+   .. py:attribute:: meta_update_date
+
+      
+
+   .. py:attribute:: type
+
+      
+
+   .. py:attribute:: geom_4326
+
+      
+
+
+.. py:class:: LiMunicipalities
+
+
+   Bases: :py:obj:`ref_geo.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'li_municipalities'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_municipality
+
+      
+
+   .. py:attribute:: id_area
+
+      
+
+   .. py:attribute:: status
+
+      
+
+   .. py:attribute:: insee_com
+
+      
+
+   .. py:attribute:: nom_com
+
+      
+
+   .. py:attribute:: insee_arr
+
+      
+
+   .. py:attribute:: nom_dep
+
+      
+
+   .. py:attribute:: insee_dep
+
+      
+
+   .. py:attribute:: nom_reg
+
+      
+
+   .. py:attribute:: insee_reg
+
+      
+
+   .. py:attribute:: code_epci
+
+      
+
+   .. py:attribute:: plani_precision
+
+      
+
+   .. py:attribute:: siren_code
+
+      
+
+   .. py:attribute:: canton
+
+      
+
+   .. py:attribute:: population
+
+      
+
+   .. py:attribute:: multican
+
+      
+
+   .. py:attribute:: cc_nom
+
+      
+
+   .. py:attribute:: cc_siren
+
+      
+
+   .. py:attribute:: cc_nature
+
+      
+
+   .. py:attribute:: cc_date_creation
+
+      
+
+   .. py:attribute:: cc_date_effet
+
+      
+
+   .. py:attribute:: insee_commune_nouvelle
+
+      
+
+   .. py:attribute:: meta_create_date
+
+      
+
+   .. py:attribute:: meta_update_date
+
+      
+
+   .. py:method:: nom_com_dept()
+
+
+

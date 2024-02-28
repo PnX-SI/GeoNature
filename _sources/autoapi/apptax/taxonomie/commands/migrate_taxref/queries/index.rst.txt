@@ -1,0 +1,109 @@
+:py:mod:`apptax.taxonomie.commands.migrate_taxref.queries`
+==========================================================
+
+.. py:module:: apptax.taxonomie.commands.migrate_taxref.queries
+
+
+Module Contents
+---------------
+
+.. py:data:: EXPORT_QUERIES_MISSING_CD_NOMS_IN_DB
+   :value: Multiline-String
+
+    .. raw:: html
+
+        <details><summary>Show Value</summary>
+
+    .. code-block:: python
+
+        """
+            SELECT public.deps_test_fk_dependencies_cd_nom();
+        
+            SELECT
+                fk.table_name, t.cd_nom, t.nom_complet, count(*) AS nb_occurence ,
+                d.plus_recente_diffusion, d.cd_nom_remplacement, d.cd_raison_suppression
+            FROM tmp_taxref_changes.dps_fk_cd_nom fk
+            JOIN taxonomie.taxref t
+            ON t.cd_nom = fk.cd_nom
+            JOIN taxonomie.cdnom_disparu d
+            ON d.cd_nom = fk.cd_nom
+            WHERE NOT fk.table_name='taxonomie.bdc_statut_taxons'
+            GROUP BY fk.table_name, t.cd_nom, t.nom_complet,  d.plus_recente_diffusion, d.cd_nom_remplacement, d.cd_raison_suppression;
+        """
+
+    .. raw:: html
+
+        </details>
+
+   
+
+.. py:data:: EXPORT_QUERIES_MODIFICATION_NB
+   :value: Multiline-String
+
+    .. raw:: html
+
+        <details><summary>Show Value</summary>
+
+    .. code-block:: python
+
+        """
+            SELECT DISTINCT COALESCE(cas, 'no changes') AS cas, count(*)
+            FROM tmp_taxref_changes.comp_grap c
+            GROUP BY  cas
+            ORDER BY count
+        """
+
+    .. raw:: html
+
+        </details>
+
+   
+
+.. py:data:: EXPORT_QUERIES_MODIFICATION_LIST
+   :value: Multiline-String
+
+    .. raw:: html
+
+        <details><summary>Show Value</summary>
+
+    .. code-block:: python
+
+        """
+            SELECT
+                t.regne , t.group1_inpn , t.group2_inpn ,
+                c.i_cd_ref, c.i_array_agg AS i_cd_nom_list, t.nom_valide AS i_nom_valid, i_count AS i_nb_cd_nom,
+                f_cd_ref, f_array_agg AS f_cd_nom_list, it.nom_valide AS f_nom_valid, f_count AS f_nb_cd_nom,
+                att_list, att_nb, media_nb, grappe_change, "action", cas
+            FROM tmp_taxref_changes.comp_grap c
+            JOIN taxonomie.taxref t
+            ON t.cd_nom = c.i_cd_ref
+            JOIN taxonomie.import_taxref it
+            ON it.cd_nom = c.f_cd_ref
+            WHERE NOT action ='no changes';
+        """
+
+    .. raw:: html
+
+        </details>
+
+   
+
+.. py:data:: EXPORT_QUERIES_CONFLICTS
+   :value: Multiline-String
+
+    .. raw:: html
+
+        <details><summary>Show Value</summary>
+
+    .. code-block:: python
+
+        """
+            SELECT count(*) FROM tmp_taxref_changes.comp_grap WHERE action ilike '%Conflict%';
+        """
+
+    .. raw:: html
+
+        </details>
+
+   
+

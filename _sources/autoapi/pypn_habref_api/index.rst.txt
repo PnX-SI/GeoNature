@@ -1,0 +1,60 @@
+:py:mod:`pypn_habref_api`
+=========================
+
+.. py:module:: pypn_habref_api
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   data/index.rst
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   env/index.rst
+   models/index.rst
+   routes/index.rst
+   schemas/index.rst
+
+
+Package Contents
+----------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   pypn_habref_api.create_app
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   pypn_habref_api.routes
+   pypn_habref_api.migrate
+
+
+.. py:data:: routes
+
+   
+
+.. py:data:: migrate
+
+   
+
+.. py:function:: create_app()
+
+

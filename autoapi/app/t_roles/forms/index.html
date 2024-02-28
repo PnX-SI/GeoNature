@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.t_roles.forms &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">app.t_roles.forms</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/autoapi/app/t_roles/forms/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-app.t_roles.forms">
+<span id="app-t-roles-forms"></span><h1><a class="reference internal" href="#module-app.t_roles.forms" title="app.t_roles.forms"><code class="xref py py-mod docutils literal notranslate"><span class="pre">app.t_roles.forms</span></code></a><a class="headerlink" href="#module-app.t_roles.forms" title="Link to this heading"></a></h1>
+<p>Définition du formulaire : création/modification d’un role</p>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.t_roles.forms.MultiCheckboxField" title="app.t_roles.forms.MultiCheckboxField"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiCheckboxField</span></code></a></p></td>
+<td><p>No different from a normal select field, except this one can take (and</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.t_roles.forms.Utilisateur" title="app.t_roles.forms.Utilisateur"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Utilisateur</span></code></a></p></td>
+<td><p>Flask-specific subclass of WTForms <code class="xref py py-class docutils literal notranslate"><span class="pre">Form</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.t_roles.forms.UserPass" title="app.t_roles.forms.UserPass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UserPass</span></code></a></p></td>
+<td><p>Flask-specific subclass of WTForms <code class="xref py py-class docutils literal notranslate"><span class="pre">Form</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.t_roles.forms.MultiCheckboxField">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.t_roles.forms.</span></span><span class="sig-name descname"><span class="pre">MultiCheckboxField</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coerce</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_choice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#MultiCheckboxField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.MultiCheckboxField" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">wtforms.SelectMultipleField</span></code></p>
+<p>No different from a normal select field, except this one can take (and
+validate) multiple choices.  You’ll need to specify the HTML <cite>size</cite>
+attribute to the select field when rendering.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.MultiCheckboxField.widget">
+<span class="sig-name descname"><span class="pre">widget</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#MultiCheckboxField.widget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.MultiCheckboxField.widget" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.MultiCheckboxField.option_widget">
+<span class="sig-name descname"><span class="pre">option_widget</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#MultiCheckboxField.option_widget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.MultiCheckboxField.option_widget" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.t_roles.forms.Utilisateur">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.t_roles.forms.</span></span><span class="sig-name descname"><span class="pre">Utilisateur</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formdata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_Auto</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#Utilisateur"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.Utilisateur" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_wtf.FlaskForm</span></code></p>
+<p>Flask-specific subclass of WTForms <code class="xref py py-class docutils literal notranslate"><span class="pre">Form</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">formdata</span></code> is not specified, this will use <code class="xref py py-attr docutils literal notranslate"><span class="pre">flask.request.form</span></code>
+and <code class="xref py py-attr docutils literal notranslate"><span class="pre">flask.request.files</span></code>.  Explicitly pass <code class="docutils literal notranslate"><span class="pre">formdata=None</span></code> to
+prevent this.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.Utilisateur.active">
+<span class="sig-name descname"><span class="pre">active</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#Utilisateur.active"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.Utilisateur.active" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.Utilisateur.nom_role">
+<span class="sig-name descname"><span class="pre">nom_role</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#Utilisateur.nom_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.Utilisateur.nom_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.Utilisateur.prenom_role">
+<span class="sig-name descname"><span class="pre">prenom_role</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#Utilisateur.prenom_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.Utilisateur.prenom_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.Utilisateur.desc_role">
+<span class="sig-name descname"><span class="pre">desc_role</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#Utilisateur.desc_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.Utilisateur.desc_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.Utilisateur.id_organisme">
+<span class="sig-name descname"><span class="pre">id_organisme</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#Utilisateur.id_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.Utilisateur.id_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.Utilisateur.a_groupe">
+<span class="sig-name descname"><span class="pre">a_groupe</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#Utilisateur.a_groupe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.Utilisateur.a_groupe" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.Utilisateur.identifiant">
+<span class="sig-name descname"><span class="pre">identifiant</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#Utilisateur.identifiant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.Utilisateur.identifiant" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.Utilisateur.pass_plus">
+<span class="sig-name descname"><span class="pre">pass_plus</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#Utilisateur.pass_plus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.Utilisateur.pass_plus" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.Utilisateur.mdpconf">
+<span class="sig-name descname"><span class="pre">mdpconf</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#Utilisateur.mdpconf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.Utilisateur.mdpconf" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.Utilisateur.email">
+<span class="sig-name descname"><span class="pre">email</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#Utilisateur.email"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.Utilisateur.email" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.Utilisateur.groupe">
+<span class="sig-name descname"><span class="pre">groupe</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#Utilisateur.groupe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.Utilisateur.groupe" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.Utilisateur.remarques">
+<span class="sig-name descname"><span class="pre">remarques</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#Utilisateur.remarques"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.Utilisateur.remarques" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.Utilisateur.id_role">
+<span class="sig-name descname"><span class="pre">id_role</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#Utilisateur.id_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.Utilisateur.id_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.Utilisateur.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#Utilisateur.submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.Utilisateur.submit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.t_roles.forms.UserPass">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.t_roles.forms.</span></span><span class="sig-name descname"><span class="pre">UserPass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formdata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_Auto</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#UserPass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.UserPass" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_wtf.FlaskForm</span></code></p>
+<p>Flask-specific subclass of WTForms <code class="xref py py-class docutils literal notranslate"><span class="pre">Form</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">formdata</span></code> is not specified, this will use <code class="xref py py-attr docutils literal notranslate"><span class="pre">flask.request.form</span></code>
+and <code class="xref py py-attr docutils literal notranslate"><span class="pre">flask.request.files</span></code>.  Explicitly pass <code class="docutils literal notranslate"><span class="pre">formdata=None</span></code> to
+prevent this.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.UserPass.pass_plus">
+<span class="sig-name descname"><span class="pre">pass_plus</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#UserPass.pass_plus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.UserPass.pass_plus" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.UserPass.mdpconf">
+<span class="sig-name descname"><span class="pre">mdpconf</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#UserPass.mdpconf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.UserPass.mdpconf" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.UserPass.id_role">
+<span class="sig-name descname"><span class="pre">id_role</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#UserPass.id_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.UserPass.id_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.t_roles.forms.UserPass.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><a class="reference internal" href="../../../../_modules/app/t_roles/forms.html#UserPass.submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.t_roles.forms.UserPass.submit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

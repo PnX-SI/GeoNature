@@ -1,0 +1,34 @@
+:py:mod:`pypnusershub.test_settings`
+====================================
+
+.. py:module:: pypnusershub.test_settings
+
+
+Module Contents
+---------------
+
+.. py:data:: SQLALCHEMY_DATABASE_URI
+   :value: 'postgresql://postgres:postgres@localhost/postgres'
+
+   
+
+.. py:data:: CODE_APPLICATION
+   :value: 'APPLI_1'
+
+   
+
+.. py:data:: PASS_METHOD
+   :value: 'hash'
+
+   
+
+.. py:data:: SECRET_KEY
+   :value: '151VD61V6DF1V6F'
+
+   
+
+.. py:data:: COOKIE_EXPIRATION
+   :value: 3600
+
+   
+

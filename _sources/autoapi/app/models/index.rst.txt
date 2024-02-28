@@ -1,0 +1,661 @@
+:py:mod:`app.models`
+====================
+
+.. py:module:: app.models
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   app.models.Bib_Organismes
+   app.models.TRoles
+   app.models.CorRoles
+   app.models.TListes
+   app.models.CorRoleListe
+   app.models.TApplications
+   app.models.TProfils
+   app.models.CorProfilForApp
+   app.models.CorRoleAppProfil
+
+
+
+
+.. py:class:: Bib_Organismes
+
+
+   Bases: :py:obj:`app.genericRepository.GenericRepository`
+
+   Model de la table Bib_Organismes
+
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_organismes'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_organisme
+
+      
+
+   .. py:attribute:: uuid_organisme
+
+      
+
+   .. py:attribute:: nom_organisme
+
+      
+
+   .. py:attribute:: adresse_organisme
+
+      
+
+   .. py:attribute:: cp_organisme
+
+      
+
+   .. py:attribute:: ville_organisme
+
+      
+
+   .. py:attribute:: tel_organisme
+
+      
+
+   .. py:attribute:: fax_organisme
+
+      
+
+   .. py:attribute:: email_organisme
+
+      
+
+   .. py:attribute:: url_organisme
+
+      
+
+   .. py:attribute:: url_logo
+
+      
+
+   .. py:attribute:: id_parent
+
+      
+
+
+.. py:class:: TRoles
+
+
+   Bases: :py:obj:`app.genericRepository.GenericRepository`
+
+   Model de la table t_roles
+
+   .. py:attribute:: __tablename__
+      :value: 't_roles'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_role
+
+      
+
+   .. py:attribute:: groupe
+
+      
+
+   .. py:attribute:: uuid_role
+
+      
+
+   .. py:attribute:: identifiant
+
+      
+
+   .. py:attribute:: nom_role
+
+      
+
+   .. py:attribute:: prenom_role
+
+      
+
+   .. py:attribute:: desc_role
+
+      
+
+   .. py:attribute:: pass_md5
+
+      
+
+   .. py:attribute:: pass_plus
+
+      
+
+   .. py:attribute:: email
+
+      
+
+   .. py:attribute:: id_organisme
+
+      
+
+   .. py:attribute:: organisme_rel
+
+      
+
+   .. py:attribute:: remarques
+
+      
+
+   .. py:attribute:: active
+
+      
+
+   .. py:attribute:: pass5
+
+      
+
+   .. py:attribute:: pass_plus
+
+      
+
+   .. py:attribute:: champs_addi
+
+      
+
+   .. py:attribute:: pass_md5
+
+      
+
+   .. py:method:: set_password(password, password_confirmation)
+
+
+   .. py:method:: choixSelect(id='id_role', nom='full_name', aucun=None)
+      :classmethod:
+
+      Methode qui retourne une tableau de tuples d'id
+          de roles et de nom de roles ACTIF
+      Avec pour paramètres un id de role et un nom de role
+      Le paramètre aucun si il a une valeur permet
+          de rajouter le tuple (-1,Aucun) au tableau
+
+
+   .. py:method:: choix_group(id, nom, aucun=None)
+      :classmethod:
+
+      Methode qui retourne une tableau de tuples d'id
+          de groupes et de nom de goupes
+      Avec pour paramètres un id de groupe et un nom de groupe
+      Le paramètre aucun si il a une valeur permet
+          de rajouter le tuple (-1,Aucun) au tableau
+
+
+   .. py:method:: get_user_groups(id_role)
+      :classmethod:
+
+      Get all groups of a user
+      Parameters:
+          id_role (int): the user's id
+      Return:
+          Array<TRoles>
+
+
+   .. py:method:: get_user_lists(id_role)
+      :classmethod:
+
+      Get all lists of a user
+      Parameters:
+          id_role (int): the user's id
+      Return:
+          Array<TListes>
+
+
+   .. py:method:: get_user_app_profils(id_role, id_application=None)
+      :classmethod:
+
+      Get all listapp profils of a user
+      Parameters:
+          id_role (int): the user's id
+          id_application optional (int): application id
+      Return:
+          Array<CorRoleAppProfil>
+
+
+   .. py:method:: get_full_name()
+
+      Methode qui concatène le nom et prénom du role
+      retourne un nom complet
+
+
+   .. py:method:: as_dict_full_name()
+
+      Methode qui ajout le nom complet d'un role au dictionnaire
+          qui le défini
+      retourne un dictionnaire d'un utilisateur avec une nouvelle 'full_name'
+
+
+   .. py:method:: test_group(tab)
+      :classmethod:
+
+      Methode qui test si le tableau contient un élement groupe = False,
+      Si c'est le cas alors on remplace le boolean par un string du même nom
+      retourne un tableau avec le groupe sous forme de string
+
+
+   .. py:method:: get_user_in_list(id_liste)
+      :classmethod:
+
+      Methode qui retourne un dictionnaire des roles d'une liste
+      Avec pour paramètre un id_liste
+
+
+   .. py:method:: get_user_out_list(id_liste)
+      :classmethod:
+
+      Methode qui retourne un dictionnaire de roles n'appartenant
+          pas à une liste
+      Avec pour paramètre un id_liste
+
+
+   .. py:method:: get_user_in_group(id_groupe)
+      :classmethod:
+
+      Methode qui retourne un dictionnaire de role appartenant à un groupe
+      Avec pour paramètres un id de role
+
+
+   .. py:method:: get_user_out_group(id_groupe)
+      :classmethod:
+
+      Methode qui retourne un dictionnaire de role n'appartenant pas
+          à un groupe donné
+      Avec pour paramètre un id de role
+
+
+   .. py:method:: get_user_profil_in_app(id_application)
+      :classmethod:
+
+      Methode qui retourne un dictionnaire de roles avec leur profil sur une application
+      Avec pour paramètre un id d'application
+      Ne retourne que les utilisateurs actifs
+
+
+   .. py:method:: get_user_profil_out_app(id_application)
+      :classmethod:
+
+      Methode qui retourne un dictionnaire de roles n'ayant pas de droits
+          sur une application
+      Avec pour paramètre un id d'application
+
+
+   .. py:method:: get_groups()
+      :classmethod:
+
+      Methode qui retourne une liste des roles
+          de type groupe
+
+
+
+.. py:class:: CorRoles
+
+
+   Bases: :py:obj:`app.genericRepository.GenericRepository`
+
+   Classe de correspondance entre un utilisateur et un groupe
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_roles'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_role_groupe
+
+      
+
+   .. py:attribute:: id_role_utilisateur
+
+      
+
+   .. py:attribute:: t_roles
+
+      
+
+   .. py:method:: test_role_in_grp(id_role, id_group)
+      :classmethod:
+
+      Methode qui retourne vrai si le role
+          appartient au groupe
+
+
+   .. py:method:: add_cor(id_group, ids_role)
+      :classmethod:
+
+      Methode qui ajoute des relations roles <-> groupe
+      Avec pour paramètres un id de groupe(id_role)
+          et un tableau d'id de roles
+
+
+   .. py:method:: del_cor(id_group, ids_role)
+      :classmethod:
+
+      Methode qui supprime des relations roles <-> groupe
+      Avec pour paramètres un id de groupe(id_role) et un tableau
+          d'id de roles
+
+
+
+.. py:class:: TListes
+
+
+   Bases: :py:obj:`app.genericRepository.GenericRepository`
+
+   Model de la table t_listes
+
+   .. py:attribute:: __tablename__
+      :value: 't_listes'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_liste
+
+      
+
+   .. py:attribute:: code_liste
+
+      
+
+   .. py:attribute:: nom_liste
+
+      
+
+   .. py:attribute:: desc_liste
+
+      
+
+
+.. py:class:: CorRoleListe
+
+
+   Bases: :py:obj:`app.genericRepository.GenericRepository`
+
+   Classe de correspondance entre la table t_roles et la table t_listes
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_role_liste'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_role
+
+      
+
+   .. py:attribute:: id_liste
+
+      
+
+   .. py:attribute:: role_rel
+
+      
+
+   .. py:method:: add_cor(id_liste, ids_role)
+      :classmethod:
+
+      Methode qui ajoute des relations roles <-> liste
+
+      Avec pour paramètres un id de liste et un tableau d'id de roles
+
+
+   .. py:method:: del_cor(id_liste, ids_role)
+      :classmethod:
+
+      Methode qui supprime des relations roles <-> liste
+
+      Avec pour paramètres un id de liste et un tableau d'id de roles
+
+
+
+.. py:class:: TApplications
+
+
+   Bases: :py:obj:`app.genericRepository.GenericRepository`
+
+   Model de la table t_applications
+
+   .. py:attribute:: __tablename__
+      :value: 't_applications'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_application
+
+      
+
+   .. py:attribute:: code_application
+
+      
+
+   .. py:attribute:: nom_application
+
+      
+
+   .. py:attribute:: desc_application
+
+      
+
+   .. py:attribute:: id_parent
+
+      
+
+
+.. py:class:: TProfils
+
+
+   Bases: :py:obj:`app.genericRepository.GenericRepository`
+
+   Model de la classe t_profils
+
+   .. py:attribute:: __tablename__
+      :value: 't_profils'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_profil
+
+      
+
+   .. py:attribute:: code_profil
+
+      
+
+   .. py:attribute:: nom_profil
+
+      
+
+   .. py:attribute:: desc_profil
+
+      
+
+   .. py:method:: get_profils_in_app(id_application)
+      :classmethod:
+
+      Methode qui retourne tous les profils autorisés dans une app
+      Parameters:
+          id_app (int): l'id de l'application
+      Returns:
+          Array<TProfils>
+
+
+   .. py:method:: get_profil_in_app_with_code(id_application, code_profil)
+      :classmethod:
+
+      Methode qui retourne un profil à partir de son code
+
+
+   .. py:method:: get_profils_out_app(id_application)
+      :classmethod:
+
+      Methode qui retourne un dictionnaire des profils non utilisés
+          pour une application
+      Avec pour paramètre un id application
+
+
+   .. py:method:: choixSelect(key='id_profil', label='nom_profil', id_application=None)
+      :classmethod:
+
+      Methode qui retourne un tableau de tuples d'id profil et de
+          nom de profil
+      Ce que l'on met en key et label sont paramétrable
+
+
+
+
+.. py:class:: CorProfilForApp
+
+
+   Bases: :py:obj:`app.genericRepository.GenericRepository`
+
+   Classe de correspondance entre la table t_applications et la table t_profils
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_profil_for_app'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_application
+
+      
+
+   .. py:attribute:: id_profil
+
+      
+
+   .. py:attribute:: profil_rel
+
+      
+
+   .. py:method:: add_cor(id_application, ids_profil)
+      :classmethod:
+
+      Methode qui ajoute des relations applications <-> profil
+
+      Avec pour paramètres un id profil et un tableau d'id d'applications
+
+
+   .. py:method:: del_cor(id_application, ids_profil)
+      :classmethod:
+
+      Methode qui supprime des relations applications <-> profil
+
+      Avec pour paramètres un id profil et un tableau d'id d'applications
+
+
+
+.. py:class:: CorRoleAppProfil
+
+
+   Bases: :py:obj:`app.genericRepository.GenericRepository`
+
+   Classe de correspondance entre la table t_roles, t_profils et
+       t_applications
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_role_app_profil'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_role
+
+      
+
+   .. py:attribute:: id_profil
+
+      
+
+   .. py:attribute:: id_application
+
+      
+
+   .. py:attribute:: is_default_group_for_app
+
+      
+
+   .. py:attribute:: role_rel
+
+      
+
+   .. py:attribute:: application_rel
+
+      
+
+   .. py:attribute:: profil_rel
+
+      
+
+   .. py:method:: get_one(id_role, id_application)
+      :classmethod:
+
+      Methode qui retourne un dictionnaire d'un élément d'un Model
+      Avec pour paramètres l'id de l'élément
+      Si as_model != False alors au lieu de retourner un dictionnaire on retourne l'object du modèle
+
+
+   .. py:method:: get_default_for_app(id_application)
+      :classmethod:
+
+
+   .. py:method:: delete(id_role, id_application)
+      :classmethod:
+
+      Methode qui supprime un élement d'une table à partir d'un id donné
+      Avec pour paramètre un id (clé primaire)
+
+
+   .. py:method:: add_cor(id_app, tab_profil)
+      :classmethod:
+
+
+   .. py:method:: del_cor(id_app, tab_profil)
+      :classmethod:
+
+
+

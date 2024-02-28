@@ -1,0 +1,30 @@
+:py:mod:`geonature.core.gn_commons`
+===================================
+
+.. py:module:: geonature.core.gn_commons
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   medias/index.rst
+   models/index.rst
+   validation/index.rst
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   admin/index.rst
+   repositories/index.rst
+   routes/index.rst
+   schemas/index.rst
+   tasks/index.rst
+
+

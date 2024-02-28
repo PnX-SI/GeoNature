@@ -1,0 +1,90 @@
+:py:mod:`app.bib_organismes.route`
+==================================
+
+.. py:module:: app.bib_organismes.route
+
+.. autoapi-nested-parse::
+
+   Route des Organismes
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   app.bib_organismes.route.organisms
+   app.bib_organismes.route.addorupdate
+   app.bib_organismes.route.delete
+   app.bib_organismes.route.info
+   app.bib_organismes.route.pops
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   app.bib_organismes.route.URL_REDIRECT
+   app.bib_organismes.route.URL_APPLICATION
+   app.bib_organismes.route.route
+
+
+.. py:data:: URL_REDIRECT
+
+   
+
+.. py:data:: URL_APPLICATION
+
+   
+
+.. py:data:: route
+
+   
+
+.. py:function:: organisms()
+
+   Route qui affiche la liste des Organismes
+   Retourne un template avec pour paramètres :
+                                           - une entête de tableau --> fLine
+                                           - le nom des colonnes de la base --> line
+                                           - le contenu du tableau --> table
+                                           - le chemin de mise à jour --> pathU
+                                           - le chemin de suppression --> pathD
+                                           - le chemin d'ajout --> pathA
+                                           - le chemin de la page d'information --> pathI
+                                           - une clé (clé primaire dans la plupart des cas) --> key
+                                           - un nom (nom de la table) pour le bouton ajout --> name
+                                           - un nom de listes --> name_list
+                                           - ajoute une colonne pour accéder aux infos de l'utilisateur --> see
+
+
+.. py:function:: addorupdate(id_organisme)
+
+   Route affichant un formulaire vierge ou non (selon l'url) pour ajouter ou mettre à jour un organisme
+   L'envoie du formulaire permet l'ajout ou la mise à jour de l'éléments dans la base
+   Retourne un template accompagné du formulaire
+   Une fois le formulaire validé on retourne une redirection vers la liste d'organisme
+
+
+.. py:function:: delete(id_organisme)
+
+   Route qui supprime un organisme dont l'id est donné en paramètres dans l'url
+   Retourne une redirection vers la liste d'organismes
+
+
+.. py:function:: info(id_organisme)
+
+
+.. py:function:: pops(form)
+
+   Methode qui supprime les éléments indésirables du formulaires
+   Avec pour paramètre un formulaire
+
+

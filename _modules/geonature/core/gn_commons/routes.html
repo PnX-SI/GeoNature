@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_commons.routes &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.gn_commons.routes</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.gn_commons.routes</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">or_</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">current_app</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">url_for</span>
+<span class="kn">from</span> <span class="nn">flask.json</span> <span class="kn">import</span> <span class="n">jsonify</span>
+<span class="kn">from</span> <span class="nn">werkzeug.exceptions</span> <span class="kn">import</span> <span class="n">Forbidden</span><span class="p">,</span> <span class="n">Conflict</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">joinedload</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">select</span><span class="p">,</span> <span class="n">func</span>
+
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.response</span> <span class="kn">import</span> <span class="n">json_resp</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla_geo.utilsgeometry</span> <span class="kn">import</span> <span class="n">remove_third_dimension</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TModules</span><span class="p">,</span>
+    <span class="n">TParameters</span><span class="p">,</span>
+    <span class="n">TMobileApps</span><span class="p">,</span>
+    <span class="n">TPlaces</span><span class="p">,</span>
+    <span class="n">TAdditionalFields</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.repositories</span> <span class="kn">import</span> <span class="n">TMediaRepository</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.repositories</span> <span class="kn">import</span> <span class="n">get_table_location_id</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">DB</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">BACKEND_DIR</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.config</span> <span class="kn">import</span> <span class="n">config_frontend</span><span class="p">,</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions</span> <span class="kn">import</span> <span class="n">decorators</span> <span class="k">as</span> <span class="n">permissions</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.decorators</span> <span class="kn">import</span> <span class="n">login_required</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.tools</span> <span class="kn">import</span> <span class="n">get_scope</span>
+<span class="kn">import</span> <span class="nn">geonature.core.gn_commons.tasks</span>  <span class="c1"># noqa: F401</span>
+
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">shape</span>
+<span class="kn">from</span> <span class="nn">geoalchemy2.shape</span> <span class="kn">import</span> <span class="n">from_shape</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.errors</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GeonatureApiError</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="routes">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/routes/index.html#geonature.core.gn_commons.routes.routes">[docs]</a>
+<span class="n">routes</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s2">&quot;gn_commons&quot;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span></div>
+
+
+<span class="c1"># import routes sub folder</span>
+<span class="kn">from</span> <span class="nn">.validation.routes</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.medias.routes</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/config&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<div class="viewcode-block" id="config_route">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/routes/index.html#geonature.core.gn_commons.routes.config_route">[docs]</a>
+<span class="k">def</span> <span class="nf">config_route</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns geonature configuration</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">config_frontend</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/modules&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<div class="viewcode-block" id="list_modules">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/routes/index.html#geonature.core.gn_commons.routes.list_modules">[docs]</a>
+<span class="k">def</span> <span class="nf">list_modules</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the allowed modules of user from its cruved</span>
+<span class="sd">    .. :quickref: Commons;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span>
+
+    <span class="n">exclude</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;DISABLED_MODULES&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s2">&quot;exclude&quot;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+        <span class="n">exclude</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">getlist</span><span class="p">(</span><span class="s2">&quot;exclude&quot;</span><span class="p">))</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">TModules</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">joinedload</span><span class="p">(</span><span class="n">TModules</span><span class="o">.</span><span class="n">objects</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TModules</span><span class="o">.</span><span class="n">module_code</span><span class="o">.</span><span class="n">notin_</span><span class="p">(</span><span class="n">exclude</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">TModules</span><span class="o">.</span><span class="n">module_order</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span>
+        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">TModules</span><span class="o">.</span><span class="n">module_label</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span>
+    <span class="p">)</span>
+    <span class="n">modules</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="n">allowed_modules</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">:</span>
+        <span class="n">module_allowed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># HACK : on a besoin d&#39;avoir le module GeoNature en front pour l&#39;URL de la doc</span>
+        <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">module_code</span> <span class="o">==</span> <span class="s2">&quot;GEONATURE&quot;</span><span class="p">:</span>
+            <span class="n">module_allowed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">module_dict</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;objects&quot;</span><span class="p">])</span>
+        <span class="c1"># TODO : use has_any_permissions instead - must refactor the front</span>
+        <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;cruved&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">action</span><span class="p">:</span> <span class="n">get_scope</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="n">module</span><span class="o">.</span><span class="n">module_code</span><span class="p">,</span> <span class="n">bypass_warning</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="s2">&quot;CRUVED&quot;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;cruved&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+            <span class="n">module_allowed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">active_frontend</span><span class="p">:</span>
+            <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;module_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/#/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">],</span> <span class="n">module</span><span class="o">.</span><span class="n">module_path</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;module_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">module_external_url</span>
+        <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;module_objects&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># get cruved for each object</span>
+        <span class="k">for</span> <span class="n">obj_dict</span> <span class="ow">in</span> <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;objects&quot;</span><span class="p">]:</span>
+            <span class="n">obj_code</span> <span class="o">=</span> <span class="n">obj_dict</span><span class="p">[</span><span class="s2">&quot;code_object&quot;</span><span class="p">]</span>
+            <span class="n">obj_dict</span><span class="p">[</span><span class="s2">&quot;cruved&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">action</span><span class="p">:</span> <span class="n">get_scope</span><span class="p">(</span>
+                    <span class="n">action</span><span class="p">,</span>
+                    <span class="n">module_code</span><span class="o">=</span><span class="n">module</span><span class="o">.</span><span class="n">module_code</span><span class="p">,</span>
+                    <span class="n">object_code</span><span class="o">=</span><span class="n">obj_code</span><span class="p">,</span>
+                    <span class="n">bypass_warning</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="s2">&quot;CRUVED&quot;</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">obj_dict</span><span class="p">[</span><span class="s2">&quot;cruved&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+                <span class="n">module_allowed</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">module_dict</span><span class="p">[</span><span class="s2">&quot;module_objects&quot;</span><span class="p">][</span><span class="n">obj_code</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj_dict</span>
+        <span class="k">if</span> <span class="n">module_allowed</span><span class="p">:</span>
+            <span class="n">allowed_modules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">module_dict</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">allowed_modules</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/module/&lt;module_code&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<div class="viewcode-block" id="get_module">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/routes/index.html#geonature.core.gn_commons.routes.get_module">[docs]</a>
+<span class="k">def</span> <span class="nf">get_module</span><span class="p">(</span><span class="n">module_code</span><span class="p">):</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">one_or_404</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">TModules</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">module_code</span><span class="o">=</span><span class="n">module_code</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/list/parameters&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_parameters_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/routes/index.html#geonature.core.gn_commons.routes.get_parameters_list">[docs]</a>
+<span class="k">def</span> <span class="nf">get_parameters_list</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get all parameters from gn_commons.t_parameters</span>
+
+<span class="sd">    .. :quickref: Commons;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">TParameters</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/parameters/&lt;param_name&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/parameters/&lt;param_name&gt;/&lt;int:id_org&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_one_parameter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/routes/index.html#geonature.core.gn_commons.routes.get_one_parameter">[docs]</a>
+<span class="k">def</span> <span class="nf">get_one_parameter</span><span class="p">(</span><span class="n">param_name</span><span class="p">,</span> <span class="n">id_org</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">TParameters</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TParameters</span><span class="o">.</span><span class="n">parameter_name</span> <span class="o">==</span> <span class="n">param_name</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TParameters</span><span class="o">.</span><span class="n">id_organism</span> <span class="o">==</span> <span class="n">id_org</span> <span class="k">if</span> <span class="n">id_org</span> <span class="k">else</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()]</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/additional_fields&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<div class="viewcode-block" id="get_additional_fields">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/routes/index.html#geonature.core.gn_commons.routes.get_additional_fields">[docs]</a>
+<span class="k">def</span> <span class="nf">get_additional_fields</span><span class="p">():</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">TAdditionalFields</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">TAdditionalFields</span><span class="o">.</span><span class="n">field_order</span><span class="p">)</span>
+    <span class="n">parse_param_value</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">param</span><span class="p">:</span> <span class="n">param</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">param</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">param_key</span><span class="p">:</span> <span class="n">parse_param_value</span><span class="p">(</span><span class="n">param_values</span><span class="p">)</span> <span class="k">for</span> <span class="n">param_key</span><span class="p">,</span> <span class="n">param_values</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="s2">&quot;id_dataset&quot;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+        <span class="n">id_dataset</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;id_dataset&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">id_dataset</span> <span class="o">==</span> <span class="s2">&quot;null&quot;</span><span class="p">:</span>
+            <span class="c1"># ~ operator means NOT EXISTS</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">~</span><span class="n">TAdditionalFields</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">any</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">id_dataset</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_dataset</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">or_</span><span class="p">(</span>
+                    <span class="o">*</span><span class="p">[</span>
+                        <span class="n">TAdditionalFields</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">id_dataset</span><span class="o">=</span><span class="n">id_dastaset_i</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">id_dastaset_i</span> <span class="ow">in</span> <span class="n">id_dataset</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TAdditionalFields</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">id_dataset</span><span class="o">=</span><span class="n">id_dataset</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="s2">&quot;module_code&quot;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+        <span class="n">module_code</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;module_code&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module_code</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">module_code</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="o">*</span><span class="p">[</span>
+                    <span class="n">TAdditionalFields</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">module_code</span><span class="o">=</span><span class="n">module_code_i</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">module_code_i</span> <span class="ow">in</span> <span class="n">module_code</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TAdditionalFields</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">module_code</span><span class="o">=</span><span class="n">module_code</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="s2">&quot;object_code&quot;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+        <span class="n">object_code</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;object_code&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">object_code</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">object_code</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="o">*</span><span class="p">[</span>
+                    <span class="n">TAdditionalFields</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">code_object</span><span class="o">=</span><span class="n">object_code_i</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">object_code_i</span> <span class="ow">in</span> <span class="n">object_code</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TAdditionalFields</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">code_object</span><span class="o">=</span><span class="n">object_code</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span>
+                <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bib_nomenclature_type&quot;</span><span class="p">,</span> <span class="s2">&quot;modules&quot;</span><span class="p">,</span> <span class="s2">&quot;objects&quot;</span><span class="p">,</span> <span class="s2">&quot;datasets&quot;</span><span class="p">,</span> <span class="s2">&quot;type_widget&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="p">]</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/t_mobile_apps&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_t_mobile_apps">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/routes/index.html#geonature.core.gn_commons.routes.get_t_mobile_apps">[docs]</a>
+<span class="k">def</span> <span class="nf">get_t_mobile_apps</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get all mobile applications</span>
+
+<span class="sd">    .. :quickref: Commons;</span>
+
+<span class="sd">    :query str app_code: the app code</span>
+<span class="sd">    :returns: Array&lt;dict&lt;TMobileApps&gt;&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">TMobileApps</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;app_code&quot;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TMobileApps</span><span class="o">.</span><span class="n">app_code</span><span class="o">.</span><span class="n">ilike</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;app_code&quot;</span><span class="p">]))</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">mobile_apps</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">app</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">app_dict</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;relative_path_apk&quot;</span><span class="p">])</span>
+        <span class="n">app_dict</span><span class="p">[</span><span class="s2">&quot;settings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1">#  if local</span>
+        <span class="k">if</span> <span class="n">app</span><span class="o">.</span><span class="n">relative_path_apk</span><span class="p">:</span>
+            <span class="n">relative_apk_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;mobile&quot;</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">relative_path_apk</span><span class="p">)</span>
+            <span class="n">app_dict</span><span class="p">[</span><span class="s2">&quot;url_apk&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;media&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">relative_apk_path</span><span class="p">),</span> <span class="n">_external</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">relative_settings_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mobile/</span><span class="si">{</span><span class="n">app</span><span class="o">.</span><span class="n">app_code</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">/settings.json&quot;</span><span class="p">)</span>
+        <span class="n">app_dict</span><span class="p">[</span><span class="s2">&quot;url_settings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;media&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">relative_settings_path</span><span class="p">,</span> <span class="n">_external</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">settings_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;MEDIA_FOLDER&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="n">relative_settings_path</span>
+        <span class="k">with</span> <span class="n">settings_file</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">app_dict</span><span class="p">[</span><span class="s2">&quot;settings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="n">mobile_apps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">app_dict</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mobile_apps</span></div>
+
+
+
+<span class="c1"># Table Location</span>
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/get_id_table_location/&lt;string:schema_dot_table&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="api_get_id_table_location">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/routes/index.html#geonature.core.gn_commons.routes.api_get_id_table_location">[docs]</a>
+<span class="c1"># schema_dot_table gn_commons.t_modules</span>
+<span class="k">def</span> <span class="nf">api_get_id_table_location</span><span class="p">(</span><span class="n">schema_dot_table</span><span class="p">):</span>
+    <span class="n">schema_name</span> <span class="o">=</span> <span class="n">schema_dot_table</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">table_name</span> <span class="o">=</span> <span class="n">schema_dot_table</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">get_table_location_id</span><span class="p">(</span><span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">)</span></div>
+
+
+
+<span class="c1">##############################</span>
+<span class="c1"># Gestion des lieux (places) #</span>
+<span class="c1">##############################</span>
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/places&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<div class="viewcode-block" id="list_places">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/routes/index.html#geonature.core.gn_commons.routes.list_places">[docs]</a>
+<span class="k">def</span> <span class="nf">list_places</span><span class="p">():</span>
+    <span class="n">places</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">TPlaces</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">id_role</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">TPlaces</span><span class="o">.</span><span class="n">place_name</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">as_geofeature</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">places</span><span class="p">])</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/place&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>  <span class="c1">#  XXX best practices recommend plural nouns</span>
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/places&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<div class="viewcode-block" id="add_place">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/routes/index.html#geonature.core.gn_commons.routes.add_place">[docs]</a>
+<span class="k">def</span> <span class="nf">add_place</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="c1"># FIXME check data validity!</span>
+    <span class="n">place_name</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">][</span><span class="s2">&quot;place_name&quot;</span><span class="p">]</span>
+    <span class="n">place_exists</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">TPlaces</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TPlaces</span><span class="o">.</span><span class="n">place_name</span> <span class="o">==</span> <span class="n">place_name</span><span class="p">,</span> <span class="n">TPlaces</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">place_exists</span><span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Conflict</span><span class="p">(</span><span class="s2">&quot;Nom du lieu déjà existant&quot;</span><span class="p">)</span>
+
+    <span class="n">new_shape</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">])</span>
+    <span class="n">two_dimension_geom</span> <span class="o">=</span> <span class="n">remove_third_dimension</span><span class="p">(</span><span class="n">new_shape</span><span class="p">)</span>
+    <span class="n">place_geom</span> <span class="o">=</span> <span class="n">from_shape</span><span class="p">(</span><span class="n">two_dimension_geom</span><span class="p">,</span> <span class="n">srid</span><span class="o">=</span><span class="mi">4326</span><span class="p">)</span>
+
+    <span class="n">place</span> <span class="o">=</span> <span class="n">TPlaces</span><span class="p">(</span><span class="n">id_role</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">id_role</span><span class="p">,</span> <span class="n">place_name</span><span class="o">=</span><span class="n">place_name</span><span class="p">,</span> <span class="n">place_geom</span><span class="o">=</span><span class="n">place_geom</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">place</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">place</span><span class="o">.</span><span class="n">as_geofeature</span><span class="p">())</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/place/&lt;int:id_place&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DELETE&quot;</span><span class="p">])</span>
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/places/&lt;int:id_place&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DELETE&quot;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<div class="viewcode-block" id="delete_place">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/routes/index.html#geonature.core.gn_commons.routes.delete_place">[docs]</a>
+<span class="k">def</span> <span class="nf">delete_place</span><span class="p">(</span><span class="n">id_place</span><span class="p">):</span>
+    <span class="n">place</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="n">TPlaces</span><span class="p">,</span> <span class="n">id_place</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">id_role</span> <span class="o">!=</span> <span class="n">place</span><span class="o">.</span><span class="n">id_role</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span><span class="p">(</span><span class="s2">&quot;Vous n&#39;êtes pas l&#39;utilisateur propriétaire de ce lieu&quot;</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">place</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">204</span></div>
+
+
+
+<span class="c1">##############################</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

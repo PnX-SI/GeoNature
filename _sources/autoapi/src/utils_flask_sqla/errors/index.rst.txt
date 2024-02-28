@@ -1,0 +1,25 @@
+:py:mod:`src.utils_flask_sqla.errors`
+=====================================
+
+.. py:module:: src.utils_flask_sqla.errors
+
+
+Module Contents
+---------------
+
+.. py:exception:: UtilsSqlaError(message, status_code=500)
+
+
+   Bases: :py:obj:`Exception`
+
+   Common base class for all non-exit exceptions.
+
+   .. py:method:: to_dict()
+
+
+   .. py:method:: __str__()
+
+      Return str(self).
+
+
+

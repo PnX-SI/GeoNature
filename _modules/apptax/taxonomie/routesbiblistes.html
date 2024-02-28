@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>apptax.taxonomie.routesbiblistes &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">apptax.taxonomie.routesbiblistes</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de apptax.taxonomie.routesbiblistes</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding: utf8</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">current_app</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">func</span><span class="p">,</span> <span class="n">or_</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">joinedload</span>
+
+<span class="kn">from</span> <span class="nn">pypnusershub</span> <span class="kn">import</span> <span class="n">routes</span> <span class="k">as</span> <span class="n">fnauth</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">filemanager</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">..log</span> <span class="kn">import</span> <span class="n">logmanager</span>
+<span class="kn">from</span> <span class="nn">..utils.utilssqlalchemy</span> <span class="kn">import</span> <span class="n">json_resp</span><span class="p">,</span> <span class="n">csv_resp</span>
+<span class="kn">from</span> <span class="nn">..utils.genericfunctions</span> <span class="kn">import</span> <span class="n">calculate_offset_page</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">BibListes</span><span class="p">,</span> <span class="n">CorNomListe</span><span class="p">,</span> <span class="n">Taxref</span><span class="p">,</span> <span class="n">BibNoms</span>
+
+
+<div class="viewcode-block" id="adresses">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbiblistes/index.html#apptax.taxonomie.routesbiblistes.adresses">[docs]</a>
+<span class="n">adresses</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s2">&quot;bib_listes&quot;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="logger">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbiblistes/index.html#apptax.taxonomie.routesbiblistes.logger">[docs]</a>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@adresses</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_biblistes">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbiblistes/index.html#apptax.taxonomie.routesbiblistes.get_biblistes">[docs]</a>
+<span class="k">def</span> <span class="nf">get_biblistes</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    retourne les contenu de bib_listes dans &quot;data&quot;</span>
+<span class="sd">    et le nombre d&#39;enregistrements dans &quot;count&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">BibListes</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">CorNomListe</span><span class="o">.</span><span class="n">id_nom</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span><span class="n">CorNomListe</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="n">BibListes</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">BibListes</span><span class="o">.</span><span class="n">nom_liste</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="n">maliste</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+    <span class="n">maliste</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">BibListes</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+        <span class="n">d</span><span class="p">[</span><span class="s2">&quot;nb_taxons&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">c</span>
+        <span class="n">maliste</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">maliste</span></div>
+
+
+
+<span class="nd">@adresses</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;regne&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@adresses</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;regne&gt;/&lt;group2_inpn&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_biblistesbyTaxref">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbiblistes/index.html#apptax.taxonomie.routesbiblistes.get_biblistesbyTaxref">[docs]</a>
+<span class="k">def</span> <span class="nf">get_biblistesbyTaxref</span><span class="p">(</span><span class="n">regne</span><span class="p">,</span> <span class="n">group2_inpn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">BibListes</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">regne</span><span class="p">:</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">or_</span><span class="p">(</span><span class="n">BibListes</span><span class="o">.</span><span class="n">regne</span> <span class="o">==</span> <span class="n">regne</span><span class="p">,</span> <span class="n">BibListes</span><span class="o">.</span><span class="n">regne</span> <span class="o">==</span> <span class="kc">None</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">group2_inpn</span><span class="p">:</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">or_</span><span class="p">(</span><span class="n">BibListes</span><span class="o">.</span><span class="n">group2_inpn</span> <span class="o">==</span> <span class="n">group2_inpn</span><span class="p">,</span> <span class="n">BibListes</span><span class="o">.</span><span class="n">group2_inpn</span> <span class="o">==</span> <span class="kc">None</span><span class="p">))</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">liste</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">liste</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span></div>
+
+
+
+<span class="nd">@adresses</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/exportcsv/&lt;int:idliste&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@csv_resp</span>
+<div class="viewcode-block" id="getExporter_biblistesCSV">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbiblistes/index.html#apptax.taxonomie.routesbiblistes.getExporter_biblistesCSV">[docs]</a>
+<span class="k">def</span> <span class="nf">getExporter_biblistesCSV</span><span class="p">(</span><span class="n">idliste</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exporter les taxons d&#39;une liste dans un fichier csv</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">BibListes</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idliste</span><span class="p">)</span>
+    <span class="n">cleanNomliste</span> <span class="o">=</span> <span class="n">filemanager</span><span class="o">.</span><span class="n">removeDisallowedFilenameChars</span><span class="p">(</span><span class="n">liste</span><span class="o">.</span><span class="n">nom_liste</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Taxref</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">BibNoms</span><span class="o">.</span><span class="n">cd_nom</span> <span class="o">==</span> <span class="n">Taxref</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">BibNoms</span><span class="o">.</span><span class="n">id_nom</span> <span class="o">==</span> <span class="n">CorNomListe</span><span class="o">.</span><span class="n">id_nom</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorNomListe</span><span class="o">.</span><span class="n">id_liste</span> <span class="o">==</span> <span class="n">idliste</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">cleanNomliste</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">nom</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">nom</span> <span class="ow">in</span> <span class="n">data</span><span class="p">],</span>
+        <span class="n">Taxref</span><span class="o">.</span><span class="n">__table__</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
+        <span class="s2">&quot;,&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="c1"># ######## Route pour module edit and create biblistes ############</span>
+
+
+<span class="c1"># Get data of list by id</span>
+<span class="nd">@adresses</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;int:idliste&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="getOne_biblistes">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbiblistes/index.html#apptax.taxonomie.routesbiblistes.getOne_biblistes">[docs]</a>
+<span class="k">def</span> <span class="nf">getOne_biblistes</span><span class="p">(</span><span class="n">idliste</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">BibListes</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">id_liste</span><span class="o">=</span><span class="n">idliste</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># Get list of picto in repertory ./static/images/pictos</span>
+<span class="nd">@adresses</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/pictosprojet&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="getPictos_files">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbiblistes/index.html#apptax.taxonomie.routesbiblistes.getPictos_files">[docs]</a>
+<span class="k">def</span> <span class="nf">getPictos_files</span><span class="p">():</span>
+    <span class="n">pictos</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_app</span><span class="o">.</span><span class="n">static_folder</span><span class="p">,</span> <span class="s2">&quot;images/pictos&quot;</span><span class="p">))</span>
+
+    <span class="n">pictos</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">pictos</span></div>
+
+
+
+<span class="c1"># ######## PUT CREER/MODIFIER BIBLISTES ######################</span>
+<span class="nd">@adresses</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;PUT&quot;</span><span class="p">])</span>
+<span class="nd">@adresses</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;int:id_liste&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;PUT&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<div class="viewcode-block" id="insertUpdate_biblistes">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbiblistes/index.html#apptax.taxonomie.routesbiblistes.insertUpdate_biblistes">[docs]</a>
+<span class="k">def</span> <span class="nf">insertUpdate_biblistes</span><span class="p">(</span><span class="n">id_liste</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">(</span><span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="ow">or</span> <span class="kc">None</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">res</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+    <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;INSERT&quot;</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Liste créée&quot;</span>
+    <span class="k">if</span> <span class="n">id_liste</span><span class="p">:</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;UPDATE&quot;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Liste mise à jour&quot;</span>
+
+    <span class="n">bib_liste</span> <span class="o">=</span> <span class="n">BibListes</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">bib_liste</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">logmanager</span><span class="o">.</span><span class="n">log_action</span><span class="p">(</span><span class="s2">&quot;bib_liste&quot;</span><span class="p">,</span> <span class="n">bib_liste</span><span class="o">.</span><span class="n">id_liste</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">bib_liste</span><span class="p">),</span> <span class="n">action</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">bib_liste</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># ####### Route pour module ajouter noms à la liste ##########################</span>
+<span class="c1">#  Get Taxons + taxref in a liste with id_liste</span>
+<span class="nd">@adresses</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/taxons/&lt;int:idliste&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="getNoms_bibtaxons">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbiblistes/index.html#apptax.taxonomie.routesbiblistes.getNoms_bibtaxons">[docs]</a>
+<span class="k">def</span> <span class="nf">getNoms_bibtaxons</span><span class="p">(</span><span class="n">idliste</span><span class="p">):</span>
+    <span class="c1"># Traitement des parametres</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;limit&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;page&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;offset&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">page</span><span class="p">)</span> <span class="o">=</span> <span class="n">calculate_offset_page</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">page</span><span class="p">)</span>
+
+    <span class="c1"># Récupération du groupe de la liste</span>
+    <span class="p">(</span><span class="n">regne</span><span class="p">,</span> <span class="n">group2_inpn</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">BibListes</span><span class="o">.</span><span class="n">regne</span><span class="p">,</span> <span class="n">BibListes</span><span class="o">.</span><span class="n">group2_inpn</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">BibListes</span><span class="o">.</span><span class="n">id_liste</span> <span class="o">==</span> <span class="n">idliste</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">one</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="n">q</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+        <span class="n">BibNoms</span><span class="o">.</span><span class="n">id_nom</span><span class="p">,</span>
+        <span class="n">BibNoms</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">,</span>
+        <span class="n">BibNoms</span><span class="o">.</span><span class="n">cd_ref</span><span class="p">,</span>
+        <span class="n">BibNoms</span><span class="o">.</span><span class="n">nom_francais</span><span class="p">,</span>
+        <span class="n">Taxref</span><span class="o">.</span><span class="n">nom_complet</span><span class="p">,</span>
+        <span class="n">Taxref</span><span class="o">.</span><span class="n">regne</span><span class="p">,</span>
+        <span class="n">Taxref</span><span class="o">.</span><span class="n">group2_inpn</span><span class="p">,</span>
+        <span class="n">Taxref</span><span class="o">.</span><span class="n">id_rang</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">BibNoms</span><span class="o">.</span><span class="n">cd_nom</span> <span class="o">==</span> <span class="n">Taxref</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">regne</span><span class="p">:</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">or_</span><span class="p">(</span><span class="n">Taxref</span><span class="o">.</span><span class="n">regne</span> <span class="o">==</span> <span class="n">regne</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">group2_inpn</span><span class="p">:</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">or_</span><span class="p">(</span><span class="n">Taxref</span><span class="o">.</span><span class="n">group2_inpn</span> <span class="o">==</span> <span class="n">group2_inpn</span><span class="p">))</span>
+
+    <span class="n">subq</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">CorNomListe</span><span class="o">.</span><span class="n">id_nom</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorNomListe</span><span class="o">.</span><span class="n">id_liste</span> <span class="o">==</span> <span class="n">idliste</span><span class="p">)</span><span class="o">.</span><span class="n">subquery</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;existing&quot;</span><span class="p">):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subq</span><span class="p">,</span> <span class="n">subq</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_nom</span> <span class="o">==</span> <span class="n">BibNoms</span><span class="o">.</span><span class="n">id_nom</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span><span class="n">subq</span><span class="p">,</span> <span class="n">subq</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_nom</span> <span class="o">==</span> <span class="n">BibNoms</span><span class="o">.</span><span class="n">id_nom</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">subq</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_nom</span> <span class="o">==</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">nbResultsWithoutFilter</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cd_nom&quot;</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">BibNoms</span><span class="o">.</span><span class="n">cd_nom</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cd_nom&quot;</span><span class="p">)))</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nom_francais&quot;</span><span class="p">):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">BibNoms</span><span class="o">.</span><span class="n">nom_francais</span><span class="o">.</span><span class="n">ilike</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nom_francais&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;%&quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nom_complet&quot;</span><span class="p">):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Taxref</span><span class="o">.</span><span class="n">nom_complet</span><span class="o">.</span><span class="n">ilike</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nom_complet&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;%&quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_rang&quot;</span><span class="p">):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Taxref</span><span class="o">.</span><span class="n">id_rang</span><span class="o">.</span><span class="n">ilike</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_rang&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;%&quot;</span><span class="p">))</span>
+
+    <span class="c1"># Order by</span>
+    <span class="n">bibTaxonColumns</span> <span class="o">=</span> <span class="n">BibNoms</span><span class="o">.</span><span class="n">__table__</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">taxrefColumns</span> <span class="o">=</span> <span class="n">Taxref</span><span class="o">.</span><span class="n">__table__</span><span class="o">.</span><span class="n">columns</span>
+    <span class="k">if</span> <span class="s2">&quot;orderby&quot;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;orderby&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">taxrefColumns</span><span class="p">:</span>
+            <span class="n">orderCol</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">taxrefColumns</span><span class="p">,</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;orderby&quot;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;orderby&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">bibTaxonColumns</span><span class="p">:</span>
+            <span class="n">orderCol</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">bibTaxonColumns</span><span class="p">,</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;orderby&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">orderCol</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="s2">&quot;order&quot;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;order&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;desc&quot;</span><span class="p">:</span>
+                <span class="n">orderCol</span> <span class="o">=</span> <span class="n">orderCol</span><span class="o">.</span><span class="n">desc</span><span class="p">()</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">orderCol</span><span class="p">)</span>
+
+    <span class="n">nbResults</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">data_as_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">data_as_dict</span><span class="p">[</span><span class="s2">&quot;id_nom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">id_nom</span>
+        <span class="n">data_as_dict</span><span class="p">[</span><span class="s2">&quot;cd_nom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">cd_nom</span>
+        <span class="n">data_as_dict</span><span class="p">[</span><span class="s2">&quot;cd_ref&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">cd_ref</span>
+        <span class="n">data_as_dict</span><span class="p">[</span><span class="s2">&quot;nom_francais&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">nom_francais</span>
+        <span class="n">data_as_dict</span><span class="p">[</span><span class="s2">&quot;nom_complet&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">nom_complet</span>
+        <span class="n">data_as_dict</span><span class="p">[</span><span class="s2">&quot;regne&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">regne</span>
+        <span class="n">data_as_dict</span><span class="p">[</span><span class="s2">&quot;group2_inpn&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">group2_inpn</span>
+        <span class="n">data_as_dict</span><span class="p">[</span><span class="s2">&quot;id_rang&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">id_rang</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_as_dict</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="n">results</span><span class="p">,</span>
+        <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="n">nbResultsWithoutFilter</span><span class="p">,</span>
+        <span class="s2">&quot;total_filtered&quot;</span><span class="p">:</span> <span class="n">nbResults</span><span class="p">,</span>
+        <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+        <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="n">page</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<span class="c1"># POST - Ajouter les noms à une liste</span>
+<span class="nd">@adresses</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/addnoms/&lt;int:idliste&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<div class="viewcode-block" id="add_cornomliste">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbiblistes/index.html#apptax.taxonomie.routesbiblistes.add_cornomliste">[docs]</a>
+<span class="k">def</span> <span class="nf">add_cornomliste</span><span class="p">(</span><span class="n">idliste</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">ids_nom</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">(</span><span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># TODO add test if idlist exists</span>
+
+    <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">ids_nom</span><span class="p">:</span>
+        <span class="n">cornom</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id_nom&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span> <span class="s2">&quot;id_liste&quot;</span><span class="p">:</span> <span class="n">idliste</span><span class="p">}</span>
+        <span class="n">add_nom</span> <span class="o">=</span> <span class="n">CorNomListe</span><span class="p">(</span><span class="o">**</span><span class="n">cornom</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">add_nom</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="n">logmanager</span><span class="o">.</span><span class="n">log_action</span><span class="p">(</span><span class="s2">&quot;cor_nom_liste&quot;</span><span class="p">,</span> <span class="n">idliste</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;AJOUT NOM&quot;</span><span class="p">,</span> <span class="s2">&quot;Noms ajouté à la liste&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ids_nom</span></div>
+
+
+
+<span class="c1"># POST - Enlever les nom dans une liste</span>
+<span class="nd">@adresses</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/deletenoms/&lt;int:idliste&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<div class="viewcode-block" id="delete_cornomliste">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/routesbiblistes/index.html#apptax.taxonomie.routesbiblistes.delete_cornomliste">[docs]</a>
+<span class="k">def</span> <span class="nf">delete_cornomliste</span><span class="p">(</span><span class="n">idliste</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">ids_nom</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">(</span><span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">ids_nom</span><span class="p">:</span>
+        <span class="n">del_nom</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">CorNomListe</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorNomListe</span><span class="o">.</span><span class="n">id_liste</span> <span class="o">==</span> <span class="n">idliste</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorNomListe</span><span class="o">.</span><span class="n">id_nom</span> <span class="o">==</span> <span class="nb">id</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">del_nom</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">logmanager</span><span class="o">.</span><span class="n">log_action</span><span class="p">(</span>
+        <span class="s2">&quot;cor_nom_liste&quot;</span><span class="p">,</span>
+        <span class="n">idliste</span><span class="p">,</span>
+        <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SUPPRESSION NOM&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Noms supprimés de la liste&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">ids_nom</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

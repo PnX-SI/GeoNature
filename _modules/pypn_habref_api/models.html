@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pypn_habref_api.models &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Code du module</a></li>
+          <li class="breadcrumb-item"><a href="../pypn_habref_api.html">pypn_habref_api</a></li>
+      <li class="breadcrumb-item active">pypn_habref_api.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de pypn_habref_api.models</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding: utf8</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">ForeignKey</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.serializers</span> <span class="kn">import</span> <span class="n">serializable</span>
+
+<span class="kn">from</span> <span class="nn">pypn_habref_api.env</span> <span class="kn">import</span> <span class="n">db</span> <span class="k">as</span> <span class="n">DB</span>
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibHabrefTypoRel">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.BibHabrefTypoRel">[docs]</a>
+<span class="k">class</span> <span class="nc">BibHabrefTypoRel</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibHabrefTypoRel.__tablename__">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.BibHabrefTypoRel.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_habref_typo_rel&quot;</span></div>
+
+<div class="viewcode-block" id="BibHabrefTypoRel.__table_args__">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.BibHabrefTypoRel.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;ref_habitats&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BibHabrefTypoRel.cd_type_rel">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.BibHabrefTypoRel.cd_type_rel">[docs]</a>
+    <span class="n">cd_type_rel</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibHabrefTypoRel.lb_type_rel">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.BibHabrefTypoRel.lb_type_rel">[docs]</a>
+    <span class="n">lb_type_rel</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibHabrefTypoRel.lb_rel">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.BibHabrefTypoRel.lb_rel">[docs]</a>
+    <span class="n">lb_rel</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibHabrefTypoRel.corresp_hab">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.BibHabrefTypoRel.corresp_hab">[docs]</a>
+    <span class="n">corresp_hab</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibHabrefTypoRel.corresp_esp">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.BibHabrefTypoRel.corresp_esp">[docs]</a>
+    <span class="n">corresp_esp</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibHabrefTypoRel.corresp_syn">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.BibHabrefTypoRel.corresp_syn">[docs]</a>
+    <span class="n">corresp_syn</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="CorespHab">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.CorespHab">[docs]</a>
+<span class="k">class</span> <span class="nc">CorespHab</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="CorespHab.__tablename__">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.CorespHab.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;habref_corresp_hab&quot;</span></div>
+
+<div class="viewcode-block" id="CorespHab.__table_args__">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.CorespHab.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;ref_habitats&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="CorespHab.cd_corresp_hab">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.CorespHab.cd_corresp_hab">[docs]</a>
+    <span class="n">cd_corresp_hab</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorespHab.cd_hab_entre">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.CorespHab.cd_hab_entre">[docs]</a>
+    <span class="n">cd_hab_entre</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;ref_habitats.habref.cd_hab&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="CorespHab.cd_hab_sortie">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.CorespHab.cd_hab_sortie">[docs]</a>
+    <span class="n">cd_hab_sortie</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorespHab.cd_type_relation">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.CorespHab.cd_type_relation">[docs]</a>
+    <span class="n">cd_type_relation</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;ref_habitats.bib_habref_typo_rel.cd_type_rel&quot;</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorespHab.lb_condition">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.CorespHab.lb_condition">[docs]</a>
+    <span class="n">lb_condition</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorespHab.lb_remarques">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.CorespHab.lb_remarques">[docs]</a>
+    <span class="n">lb_remarques</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorespHab.validite">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.CorespHab.validite">[docs]</a>
+    <span class="n">validite</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorespHab.cd_typo_entre">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.CorespHab.cd_typo_entre">[docs]</a>
+    <span class="n">cd_typo_entre</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorespHab.cd_typo_sortie">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.CorespHab.cd_typo_sortie">[docs]</a>
+    <span class="n">cd_typo_sortie</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorespHab.date_crea">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.CorespHab.date_crea">[docs]</a>
+    <span class="n">date_crea</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorespHab.diffusion">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.CorespHab.diffusion">[docs]</a>
+    <span class="n">diffusion</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CorespHab.type_rel">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.CorespHab.type_rel">[docs]</a>
+    <span class="n">type_rel</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;BibHabrefTypoRel&quot;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TypoRef">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef">[docs]</a>
+<span class="k">class</span> <span class="nc">TypoRef</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="TypoRef.__tablename__">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;typoref&quot;</span></div>
+
+<div class="viewcode-block" id="TypoRef.__table_args__">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;ref_habitats&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TypoRef.cd_typo">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.cd_typo">[docs]</a>
+    <span class="n">cd_typo</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.cd_table">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.cd_table">[docs]</a>
+    <span class="n">cd_table</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.lb_nom_typo">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.lb_nom_typo">[docs]</a>
+    <span class="n">lb_nom_typo</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.nom_jeu_donnees">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.nom_jeu_donnees">[docs]</a>
+    <span class="n">nom_jeu_donnees</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.date_creation">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.date_creation">[docs]</a>
+    <span class="n">date_creation</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.date_mise_jour_table">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.date_mise_jour_table">[docs]</a>
+    <span class="n">date_mise_jour_table</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.date_mise_jour_metadonnees">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.date_mise_jour_metadonnees">[docs]</a>
+    <span class="n">date_mise_jour_metadonnees</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.auteur_typo">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.auteur_typo">[docs]</a>
+    <span class="n">auteur_typo</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.auteur_table">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.auteur_table">[docs]</a>
+    <span class="n">auteur_table</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.territoire">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.territoire">[docs]</a>
+    <span class="n">territoire</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.organisme">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.organisme">[docs]</a>
+    <span class="n">organisme</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.langue">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.langue">[docs]</a>
+    <span class="n">langue</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.presentation">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.presentation">[docs]</a>
+    <span class="n">presentation</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.description">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.description">[docs]</a>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.origine">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.origine">[docs]</a>
+    <span class="n">origine</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.ref_biblio">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.ref_biblio">[docs]</a>
+    <span class="n">ref_biblio</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.mots_cles">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.mots_cles">[docs]</a>
+    <span class="n">mots_cles</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.referencement">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.referencement">[docs]</a>
+    <span class="n">referencement</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.diffusion">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.diffusion">[docs]</a>
+    <span class="n">diffusion</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.derniere_modif">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.derniere_modif">[docs]</a>
+    <span class="n">derniere_modif</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.type_table">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.type_table">[docs]</a>
+    <span class="n">type_table</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.cd_typo_entre">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.cd_typo_entre">[docs]</a>
+    <span class="n">cd_typo_entre</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.cd_typo_sortie">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.cd_typo_sortie">[docs]</a>
+    <span class="n">cd_typo_sortie</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypoRef.niveau_inpn">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.niveau_inpn">[docs]</a>
+    <span class="n">niveau_inpn</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypoRef.habitats">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.TypoRef.habitats">[docs]</a>
+    <span class="n">habitats</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;Habref&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;typo&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="cor_list_habitat">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.cor_list_habitat">[docs]</a>
+<span class="n">cor_list_habitat</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_list_habitat&quot;</span><span class="p">,</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id_cor_list&quot;</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id_list&quot;</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;ref_habitats.bib_list_habitat.id_list&quot;</span><span class="p">)),</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;cd_hab&quot;</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;ref_habitats.habref.cd_hab&quot;</span><span class="p">)),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;ref_habitats&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="Habref">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref">[docs]</a>
+<span class="k">class</span> <span class="nc">Habref</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="Habref.__tablename__">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;habref&quot;</span></div>
+
+<div class="viewcode-block" id="Habref.__table_args__">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;ref_habitats&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="Habref.cd_hab">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.cd_hab">[docs]</a>
+    <span class="n">cd_hab</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Habref.fg_validite">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.fg_validite">[docs]</a>
+    <span class="n">fg_validite</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Habref.cd_typo">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.cd_typo">[docs]</a>
+    <span class="n">cd_typo</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;ref_habitats.typoref.cd_typo&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Habref.lb_code">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.lb_code">[docs]</a>
+    <span class="n">lb_code</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Habref.lb_hab_fr">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.lb_hab_fr">[docs]</a>
+    <span class="n">lb_hab_fr</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Habref.lb_hab_fr_complet">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.lb_hab_fr_complet">[docs]</a>
+    <span class="n">lb_hab_fr_complet</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Habref.lb_hab_en">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.lb_hab_en">[docs]</a>
+    <span class="n">lb_hab_en</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Habref.lb_auteur">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.lb_auteur">[docs]</a>
+    <span class="n">lb_auteur</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Habref.niveau">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.niveau">[docs]</a>
+    <span class="n">niveau</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Habref.lb_niveau">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.lb_niveau">[docs]</a>
+    <span class="n">lb_niveau</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Habref.cd_hab_sup">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.cd_hab_sup">[docs]</a>
+    <span class="n">cd_hab_sup</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Habref.path_cd_hab">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.path_cd_hab">[docs]</a>
+    <span class="n">path_cd_hab</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Habref.france">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.france">[docs]</a>
+    <span class="n">france</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Habref.lb_description">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.lb_description">[docs]</a>
+    <span class="n">lb_description</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Habref.typo">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.typo">[docs]</a>
+    <span class="n">typo</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;TypoRef&quot;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;joined&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;habitats&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Habref.correspondances">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.correspondances">[docs]</a>
+    <span class="n">correspondances</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;CorespHab&quot;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Habref.lists">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.Habref.lists">[docs]</a>
+    <span class="n">lists</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="s2">&quot;BibListHabitat&quot;</span><span class="p">,</span> <span class="n">secondary</span><span class="o">=</span><span class="n">cor_list_habitat</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;habitats&quot;</span>
+    <span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibListHabitat">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.BibListHabitat">[docs]</a>
+<span class="k">class</span> <span class="nc">BibListHabitat</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibListHabitat.__tablename__">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.BibListHabitat.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_list_habitat&quot;</span></div>
+
+<div class="viewcode-block" id="BibListHabitat.__table_args__">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.BibListHabitat.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;ref_habitats&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BibListHabitat.id_list">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.BibListHabitat.id_list">[docs]</a>
+    <span class="n">id_list</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibListHabitat.list_name">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.BibListHabitat.list_name">[docs]</a>
+    <span class="n">list_name</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibListHabitat.habitats">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.BibListHabitat.habitats">[docs]</a>
+    <span class="n">habitats</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;Habref&quot;</span><span class="p">,</span> <span class="n">secondary</span><span class="o">=</span><span class="n">cor_list_habitat</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;lists&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="AutoCompleteHabitat">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.AutoCompleteHabitat">[docs]</a>
+<span class="k">class</span> <span class="nc">AutoCompleteHabitat</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="AutoCompleteHabitat.__tablename__">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.AutoCompleteHabitat.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;autocomplete_habitat&quot;</span></div>
+
+<div class="viewcode-block" id="AutoCompleteHabitat.__table_args__">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.AutoCompleteHabitat.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;ref_habitats&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="AutoCompleteHabitat.cd_hab">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.AutoCompleteHabitat.cd_hab">[docs]</a>
+    <span class="n">cd_hab</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AutoCompleteHabitat.cd_typo">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.AutoCompleteHabitat.cd_typo">[docs]</a>
+    <span class="n">cd_typo</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AutoCompleteHabitat.lb_code">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.AutoCompleteHabitat.lb_code">[docs]</a>
+    <span class="n">lb_code</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AutoCompleteHabitat.lb_nom_typo">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.AutoCompleteHabitat.lb_nom_typo">[docs]</a>
+    <span class="n">lb_nom_typo</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AutoCompleteHabitat.search_name">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.AutoCompleteHabitat.search_name">[docs]</a>
+    <span class="n">search_name</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AutoCompleteHabitat.lists">
+<a class="viewcode-back" href="../../autoapi/pypn_habref_api/models/index.html#pypn_habref_api.models.AutoCompleteHabitat.lists">[docs]</a>
+    <span class="n">lists</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="n">BibListHabitat</span><span class="p">,</span>
+        <span class="n">primaryjoin</span><span class="o">=</span><span class="p">(</span><span class="n">cor_list_habitat</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">cd_hab</span> <span class="o">==</span> <span class="n">cd_hab</span><span class="p">),</span>
+        <span class="n">secondary</span><span class="o">=</span><span class="n">cor_list_habitat</span><span class="p">,</span>
+        <span class="n">viewonly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

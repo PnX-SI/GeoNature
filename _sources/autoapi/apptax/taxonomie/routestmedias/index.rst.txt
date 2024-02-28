@@ -1,0 +1,77 @@
+:py:mod:`apptax.taxonomie.routestmedias`
+========================================
+
+.. py:module:: apptax.taxonomie.routestmedias
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.routestmedias.get_tmedias
+   apptax.taxonomie.routestmedias.get_tmediasbyTaxon
+   apptax.taxonomie.routestmedias.get_tmediasbyType
+   apptax.taxonomie.routestmedias.insertUpdate_tmedias
+   apptax.taxonomie.routestmedias.delete_tmedias
+   apptax.taxonomie.routestmedias.getThumbnail_tmedias
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.routestmedias.adresses
+   apptax.taxonomie.routestmedias.logger
+   apptax.taxonomie.routestmedias.media_repo
+
+
+.. py:data:: adresses
+
+   
+
+.. py:data:: logger
+
+   
+
+.. py:data:: media_repo
+
+   
+
+.. py:function:: get_tmedias(id=None)
+
+
+.. py:function:: get_tmediasbyTaxon(cdref)
+
+
+.. py:function:: get_tmediasbyType(type)
+
+
+.. py:function:: insertUpdate_tmedias(id_media=None)
+
+
+.. py:function:: delete_tmedias(id_media)
+
+
+.. py:function:: getThumbnail_tmedias(id_media)
+
+   Fonction qui génère une vignette d'un média existants
+
+   Params
+   ------
+       id_media : identifiant du média
+       h : hauteur souhaitée
+       w : largeur souhaitée
+       regenerate : force la régénération du thumbnail
+
+   Return
+   ------
+       Image générée
+
+

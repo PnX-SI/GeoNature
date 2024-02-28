@@ -1,0 +1,76 @@
+:py:mod:`apptax.taxonomie.routesbiblistes`
+==========================================
+
+.. py:module:: apptax.taxonomie.routesbiblistes
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.routesbiblistes.get_biblistes
+   apptax.taxonomie.routesbiblistes.get_biblistesbyTaxref
+   apptax.taxonomie.routesbiblistes.getExporter_biblistesCSV
+   apptax.taxonomie.routesbiblistes.getOne_biblistes
+   apptax.taxonomie.routesbiblistes.getPictos_files
+   apptax.taxonomie.routesbiblistes.insertUpdate_biblistes
+   apptax.taxonomie.routesbiblistes.getNoms_bibtaxons
+   apptax.taxonomie.routesbiblistes.add_cornomliste
+   apptax.taxonomie.routesbiblistes.delete_cornomliste
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.routesbiblistes.adresses
+   apptax.taxonomie.routesbiblistes.logger
+
+
+.. py:data:: adresses
+
+   
+
+.. py:data:: logger
+
+   
+
+.. py:function:: get_biblistes(id=None)
+
+   retourne les contenu de bib_listes dans "data"
+   et le nombre d'enregistrements dans "count"
+
+
+.. py:function:: get_biblistesbyTaxref(regne, group2_inpn=None)
+
+
+.. py:function:: getExporter_biblistesCSV(idliste=None)
+
+   Exporter les taxons d'une liste dans un fichier csv
+
+
+.. py:function:: getOne_biblistes(idliste=None)
+
+
+.. py:function:: getPictos_files()
+
+
+.. py:function:: insertUpdate_biblistes(id_liste=None)
+
+
+.. py:function:: getNoms_bibtaxons(idliste)
+
+
+.. py:function:: add_cornomliste(idliste=None)
+
+
+.. py:function:: delete_cornomliste(idliste=None)
+
+

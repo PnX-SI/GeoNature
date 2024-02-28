@@ -1,0 +1,16 @@
+:py:mod:`app.t_roles`
+=====================
+
+.. py:module:: app.t_roles
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   forms/index.rst
+   route/index.rst
+
+

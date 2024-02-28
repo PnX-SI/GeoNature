@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" >
+<html class="writer-html5" lang="fr" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DEVELOPPEMENT &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/translations.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=e8570148"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=d99ca74e"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Recherche" href="search.html" />
@@ -29,15 +32,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="index.html" class="icon icon-home"> GeoNature
-            <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GeoNature
+              <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -159,6 +166,7 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-references.html">API REFERENCES</a></li>
 </ul>
 
         </div>
@@ -174,8 +182,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>DEVELOPPEMENT</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">DEVELOPPEMENT</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/development.rst.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
@@ -186,13 +194,16 @@
            <div itemprop="articleBody">
              
   <section id="developpement">
-<h1>DEVELOPPEMENT<a class="headerlink" href="#developpement" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>DEVELOPPEMENT<a class="headerlink" href="#developpement" title="Link to this heading"></a></h1>
 <section id="general">
-<h2>Général<a class="headerlink" href="#general" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Général<a class="headerlink" href="#general" title="Link to this heading"></a></h2>
 <p>GeoNature 1, créé en 2010, a été développé par Gil Deluermoz avec PHP/Symfony/ExtJS.</p>
 <p>GeoNature 2 est une refonte initiée en 2017 par les parcs nationaux français en Python/Flask/Angular.</p>
 <p>Mainteneurs actuels :</p>
 <ul class="simple">
+<li><p>Jacques FIZE (PnEcrins)</p></li>
+<li><p>Pierre NARCISI (Patrinat)</p></li>
+<li><p>Vincent CAUCHOIS (Patrinat)</p></li>
 <li><p>Élie BOUTTIER (PnEcrins)</p></li>
 <li><p>Théo LECHEMIA (PnEcrins)</p></li>
 <li><p>Amandine SAHL (PnCevennes)</p></li>
@@ -201,7 +212,7 @@
 <img alt="_images/geonature-techno.png" src="_images/geonature-techno.png" />
 </section>
 <section id="api">
-<span id="id1"></span><h2>API<a class="headerlink" href="#api" title="Lien permanent vers cette rubrique"></a></h2>
+<span id="id1"></span><h2>API<a class="headerlink" href="#api" title="Link to this heading"></a></h2>
 <p>GeoNature utilise :</p>
 <ul class="simple">
 <li><p>l’API de TaxHub (recherche taxon, règne et groupe d’un taxon…)</p></li>
@@ -211,24 +222,24 @@
 </ul>
 <img alt="_images/api_services.png" src="_images/api_services.png" />
 <section id="liste-des-routes">
-<h3>Liste des routes<a class="headerlink" href="#liste-des-routes" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Liste des routes<a class="headerlink" href="#liste-des-routes" title="Link to this heading"></a></h3>
 <p>Vous pouvez obtenir la liste des routes de GeoNature avec la commande suivante :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ geonature routes
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>geonature<span class="w"> </span>routes
 </pre></div>
 </div>
 </section>
 <section id="documentation-des-routes">
-<h3>Documentation des routes<a class="headerlink" href="#documentation-des-routes" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Documentation des routes<a class="headerlink" href="#documentation-des-routes" title="Link to this heading"></a></h3>
 <p>Génération automatique actuellement hors-service :-(</p>
 </section>
 </section>
 <section id="pratiques-et-regles-de-developpement">
-<h2>Pratiques et règles de developpement<a class="headerlink" href="#pratiques-et-regles-de-developpement" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Pratiques et règles de developpement<a class="headerlink" href="#pratiques-et-regles-de-developpement" title="Link to this heading"></a></h2>
 <p>Afin de partager des règles communes de développement et faciliter l’intégration de
 nouveau code, veuillez lire les recommandations et bonnes pratiques recommandées pour contribuer
 au projet GeoNature.</p>
 <section id="git">
-<h3>Git<a class="headerlink" href="#git" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Git<a class="headerlink" href="#git" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Assurez-vous d’avoir récupéré les dépendances dans les sous-modules git : <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">init</span> <span class="pre">&amp;&amp;</span> <span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span></code></p></li>
 <li><p>Après un <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span></code>, il faut mettre à jour les sous-modules : <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span></code></p></li>
@@ -242,7 +253,7 @@ au projet GeoNature.</p>
 </ul>
 </section>
 <section id="backend">
-<h3>Backend<a class="headerlink" href="#backend" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Backend<a class="headerlink" href="#backend" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Une fonction ou classe doit contenir une docstring en français. Les doctrings doivent suivre le modèle NumPy/SciPy (voir <a class="reference external" href="https://numpydoc.readthedocs.io/en/latest/format.html">https://numpydoc.readthedocs.io/en/latest/format.html</a> et <a class="reference external" href="https://realpython.com/documenting-python-code/#numpyscipy-docstrings-example">https://realpython.com/documenting-python-code/#numpyscipy-docstrings-example</a>)</p></li>
 <li><p>Les commentaires dans le codes doivent être en anglais (ne pas s’empêcher de mettre un commentaire en français sur une partie du code complexe !)</p></li>
@@ -260,7 +271,7 @@ au projet GeoNature.</p>
 </ul>
 </section>
 <section id="bdd">
-<h3>BDD<a class="headerlink" href="#bdd" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>BDD<a class="headerlink" href="#bdd" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Le noms des tables est préfixé par « t_ » pour une table de contenu, de « bib_ » pour les tables de « dictionnaires » et de « cor_ » pour les tables de correspondance (relations N-N)</p></li>
 <li><p>Les schémas du coeur de GeoNature sont préfixés de « gn_ »</p></li>
@@ -268,7 +279,7 @@ au projet GeoNature.</p>
 <li><p>Ne rien écrire dans le schéma <code class="docutils literal notranslate"><span class="pre">public</span></code></p></li>
 </ul>
 <section id="modele-python">
-<h4>Modèle Python<a class="headerlink" href="#modele-python" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Modèle Python<a class="headerlink" href="#modele-python" title="Link to this heading"></a></h4>
 <p>Les conventions précédentes concernent uniquement la BDD. Pour les modèles Python, on fera attention à :</p>
 <ul class="simple">
 <li><p>Nommer les modèles sans le préfixe « t_ », et à les écrire au singulier. Exemple : <code class="docutils literal notranslate"><span class="pre">class</span> <span class="pre">Observation:</span></code>.</p></li>
@@ -277,7 +288,7 @@ au projet GeoNature.</p>
 </section>
 </section>
 <section id="typescript">
-<h3>Typescript<a class="headerlink" href="#typescript" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Typescript<a class="headerlink" href="#typescript" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Documenter les fonctions et classes grâce au JSDoc en français (<a class="reference external" href="https://jsdoc.app/">https://jsdoc.app/</a>)</p></li>
 <li><p>Les commentaires dans le codes doivent être en anglais (ne pas s’empêcher de mettre un commentaire en français sur une partie du code complexe !)</p></li>
@@ -286,8 +297,8 @@ au projet GeoNature.</p>
 <li><p>Utiliser <em>prettier</em> comme formateur de texte et activer l’autoformatage dans son éditeur de texte (VsCode dispose d’une extension Prettier : <a class="reference external" href="https://github.com/prettier/prettier-vscode">https://github.com/prettier/prettier-vscode</a>)
 Pour lancer manuellement prettier depuis le dossier <code class="docutils literal notranslate"><span class="pre">frontend</span></code> :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nvm use
-npm run format
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nvm<span class="w"> </span>use
+npm<span class="w"> </span>run<span class="w"> </span>format
 </pre></div>
 </div>
 <ul class="simple">
@@ -295,7 +306,7 @@ npm run format
 </ul>
 </section>
 <section id="angular">
-<h3>Angular<a class="headerlink" href="#angular" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Angular<a class="headerlink" href="#angular" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Suivre les recommandations définies par le styleguide Angular: <a class="reference external" href="https://angular.io/guide/styleguide">https://angular.io/guide/styleguide</a>. C’est une ressources très fournie en cas de question sur les pratiques de développement (principe de séparation des principes, organisation des services et des composants)</p></li>
 <li><p>On privilégiera l’utilisation des reactive forms pour la construction des formulaires (<a class="reference external" href="https://angular.io/guide/reactive-forms">https://angular.io/guide/reactive-forms</a>). Ce sont des formulaires pilotés par le code, ce qui facilite la lisibilité et le contrôle de ceux-ci.</p></li>
@@ -303,7 +314,7 @@ npm run format
 </ul>
 </section>
 <section id="html">
-<h3>HTML<a class="headerlink" href="#html" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>HTML<a class="headerlink" href="#html" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>La longueur maximale pour une ligne de code est 100 caractères.</p></li>
 <li><p>Lorsqu’il y a plus d’un attribut sur une balise, revenir à la ligne et aligner les attributs :</p></li>
@@ -324,7 +335,7 @@ npm run format
 </ul>
 </section>
 <section id="style-et-ergonomie">
-<h3>Style et ergonomie<a class="headerlink" href="#style-et-ergonomie" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Style et ergonomie<a class="headerlink" href="#style-et-ergonomie" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Boutons :
 On utilise les boutons d’Angular Material (<a class="reference external" href="https://material.angular.io/components/button/overview">https://material.angular.io/components/button/overview</a>).</p>
@@ -360,49 +371,49 @@ On utilise les boutons d’Angular Material (<a class="reference external" href=
 </section>
 </section>
 <section id="passer-en-mode-developpement">
-<span id="mode-dev"></span><h2>Passer en mode développement<a class="headerlink" href="#passer-en-mode-developpement" title="Lien permanent vers cette rubrique"></a></h2>
+<span id="mode-dev"></span><h2>Passer en mode développement<a class="headerlink" href="#passer-en-mode-developpement" title="Link to this heading"></a></h2>
 <p>Cette section documente comment passer en mode développement une installation de GeoNature initialement faite en mode production.</p>
 <section id="recuperation-des-sources">
-<h3>Récupération des sources<a class="headerlink" href="#recuperation-des-sources" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Récupération des sources<a class="headerlink" href="#recuperation-des-sources" title="Link to this heading"></a></h3>
 <p>Si vous avez téléchargé GeoNature zippé (via la procédure d’installation globale <code class="docutils literal notranslate"><span class="pre">install_all.sh</span></code> ou en suivant la documentation d’installation standalone), il est nécessaire de rattacher votre répertoire au dépôt GitHub afin de pouvoir télécharger les dernières avancées du coeur en <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span></code>. Pour cela, suivez les commandes suivantes en vous placant à la racine du répertoire de GeoNature.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Se créer un répertoire .git</span>
-mkdir .git
+mkdir<span class="w"> </span>.git
 <span class="c1"># Récupérer l&#39;historique du dépôt</span>
-git clone --depth<span class="o">=</span><span class="m">2</span> --bare https://github.com/PnX-SI/GeoNature.git .git
+git<span class="w"> </span>clone<span class="w"> </span>--depth<span class="o">=</span><span class="m">2</span><span class="w"> </span>--bare<span class="w"> </span>https://github.com/PnX-SI/GeoNature.git<span class="w"> </span>.git
 <span class="c1"># Initialiser un dépôt git à partir de l&#39;historique téléchargé</span>
-git init
+git<span class="w"> </span>init
 <span class="c1"># Vérifier que le dépôt distant et le contenu local sont synchronisés</span>
-git pull
+git<span class="w"> </span>pull
 <span class="c1"># Reset sur HEAD pour mettre à jour les status</span>
-git reset HEAD
+git<span class="w"> </span>reset<span class="w"> </span>HEAD
 <span class="c1"># -&gt; vous êtes à jour sur la branche master</span>
 <span class="c1"># Cloner les sous-modules pour récupérer les dépendances</span>
-git submodule init
-git submodule update
+git<span class="w"> </span>submodule<span class="w"> </span>init
+git<span class="w"> </span>submodule<span class="w"> </span>update
 </pre></div>
 </div>
 </section>
 <section id="installation-du-venv-en-dev">
-<h3>Installation du venv en dev<a class="headerlink" href="#installation-du-venv-en-dev" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Installation du venv en dev<a class="headerlink" href="#installation-du-venv-en-dev" title="Link to this heading"></a></h3>
 <p>Il est nécessaire d’installer les dépendances (sous-modules Git présent dans <code class="docutils literal notranslate"><span class="pre">backend/dependencies</span></code>) en mode éditable afin de travailler avec la dernière version de celles-ci.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> backend
-<span class="gp">$ </span><span class="nb">source</span> venv/bin/activate
-<span class="gp">$ </span>pip install -e .. -r requirements-dev.txt
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>backend
+<span class="gp">$ </span><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+<span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>..<span class="w"> </span>-r<span class="w"> </span>requirements-dev.txt
 </pre></div>
 </div>
 </section>
 <section id="configuration-des-urls-de-developpement">
-<h3>Configuration des URLs de développement<a class="headerlink" href="#configuration-des-urls-de-developpement" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Configuration des URLs de développement<a class="headerlink" href="#configuration-des-urls-de-developpement" title="Link to this heading"></a></h3>
 <p>Il est nécessaire de changer la configuration du fichier <code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code> pour utiliser les adresses suivantes :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">URL_APPLICATION</span> <span class="o">=</span> <span class="s1">&#39;http://127.0.0.1:4200&#39;</span>
-<span class="nv">API_ENDPOINT</span> <span class="o">=</span> <span class="s1">&#39;http://127.0.0.1:8000&#39;</span>
-<span class="nv">API_TAXHUB</span> <span class="o">=</span>  <span class="s1">&#39;http://127.0.0.1:5000/api&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">URL_APPLICATION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;http://127.0.0.1:4200&#39;</span>
+<span class="nv">API_ENDPOINT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;http://127.0.0.1:8000&#39;</span>
+<span class="nv">API_TAXHUB</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="s1">&#39;http://127.0.0.1:5000/api&#39;</span>
 </pre></div>
 </div>
 <p>N’oubliez pas les <a class="reference internal" href="admin-manual.html#post-config-change"><span class="std std-ref">actions à effectuer après modification de la configuration</span></a>.</p>
 </section>
 <section id="autres-extensions-en-developpement">
-<h3>Autres extensions en développement<a class="headerlink" href="#autres-extensions-en-developpement" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Autres extensions en développement<a class="headerlink" href="#autres-extensions-en-developpement" title="Link to this heading"></a></h3>
 <p>Il n’est pas forcémment utile de passer toutes les extensions en mode dévelomment.
 Pour plus d’informations, référez-vous aux documentations dédiées :</p>
 <ul class="simple">
@@ -410,34 +421,29 @@ Pour plus d’informations, référez-vous aux documentations dédiées :</p>
 <li><p><a class="reference external" href="https://usershub.readthedocs.io/fr/latest/">https://usershub.readthedocs.io/fr/latest/</a></p></li>
 </ul>
 <p>Si toutefois TaxHub retourne une erreur 500 et ne répond pas sur l’URL <a class="reference external" href="http://127.0.0.1:5000">http://127.0.0.1:5000</a>, alors vous pouvez avoir besoin de passer TaxHub en mode développement :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> ~/taxhub/venv/bin/activate
-flask run
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/taxhub/venv/bin/activate
+flask<span class="w"> </span>run
 </pre></div>
 </div>
 </section>
 <section id="debugger-avec-un-navigateur">
-<h3>Debugger avec un navigateur<a class="headerlink" href="#debugger-avec-un-navigateur" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Debugger avec un navigateur<a class="headerlink" href="#debugger-avec-un-navigateur" title="Link to this heading"></a></h3>
 <p>L’extension <a class="reference external" href="https://angular.io/guide/devtools">Angular DevTools</a> permettra de debugger l’application dans la console du navigateur.
 Pour utiliser l’extension vous devez l’installer et passer obligatoirement en mode <code class="docutils literal notranslate"><span class="pre">development</span></code>.</p>
-<p>Ouvrez le fichier <code class="docutils literal notranslate"><span class="pre">frontend/src/conf/app.config.ts</span></code> et modifiez la valeur <code class="docutils literal notranslate"><span class="pre">PROD_MOD</span></code> pour avoir :</p>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="s2">&quot;PROD_MOD&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
-</pre></div>
-</div>
-<p>Si le mode production (PROD_MOD) est à true, alors vous n’êtes pas en mode production lors du lancement de la commande <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">run</span> <span class="pre">start</span></code>.</p>
 </section>
 </section>
 <section id="developpement-backend">
-<span id="dev-backend"></span><h2>Développement Backend<a class="headerlink" href="#developpement-backend" title="Lien permanent vers cette rubrique"></a></h2>
+<span id="dev-backend"></span><h2>Développement Backend<a class="headerlink" href="#developpement-backend" title="Link to this heading"></a></h2>
 <section id="demarrage-du-serveur-de-dev-backend">
-<h3>Démarrage du serveur de dev backend<a class="headerlink" href="#demarrage-du-serveur-de-dev-backend" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Démarrage du serveur de dev backend<a class="headerlink" href="#demarrage-du-serveur-de-dev-backend" title="Link to this heading"></a></h3>
 <p>La commande <code class="docutils literal notranslate"><span class="pre">geonature</span></code> fournit la sous-commande <code class="docutils literal notranslate"><span class="pre">dev-back</span></code> pour lancer un serveur de test :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(venv)</span><span class="gp">$ </span>geonature dev-back
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(venv)</span><span class="gp">$ </span>geonature<span class="w"> </span>dev-back
 </pre></div>
 </div>
 <p>L’API est alors accessible à l’adresse <a class="reference external" href="http://127.0.0.1:8000">http://127.0.0.1:8000</a>.</p>
 </section>
 <section id="base-de-donnees-avec-flask-sqlalchemy">
-<h3>Base de données avec Flask-SQLAlchemy<a class="headerlink" href="#base-de-donnees-avec-flask-sqlalchemy" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Base de données avec Flask-SQLAlchemy<a class="headerlink" href="#base-de-donnees-avec-flask-sqlalchemy" title="Link to this heading"></a></h3>
 <p>L’intégration de la base de données à GeoNature repose sur la bibliothèque <a class="reference external" href="https://flask-sqlalchemy.palletsprojects.com">Flask-SQLAlchemy</a>.</p>
 <p>Celle-ci fournit un objet <code class="docutils literal notranslate"><span class="pre">db</span></code> à importer comme ceci : <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">geonature.utils.env</span> <span class="pre">import</span> <span class="pre">db</span></code></p>
 <p>Cet objet permet d’accéder à la session SQLAlchemy ainsi :</p>
@@ -459,7 +465,7 @@ obj = MyModel.query.get(1)
 </div>
 <p>Ceci est typiquement la première ligne de toutes les routes travaillant sur une instance (route de type get/update/delete).</p>
 <section id="fonctions-de-filtrages">
-<h4>Fonctions de filtrages<a class="headerlink" href="#fonctions-de-filtrages" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Fonctions de filtrages<a class="headerlink" href="#fonctions-de-filtrages" title="Link to this heading"></a></h4>
 <p>L’attribut <code class="docutils literal notranslate"><span class="pre">query</span></code> est une instance de la classe <code class="docutils literal notranslate"><span class="pre">flask_sqlalchemy.BaseQuery</span></code> qui peut être surchargée afin de définir de nouvelles fonctions de filtrage.</p>
 <p>On pourra ainsi implémenter une fonction pour filtrer les objets auxquels l’utilisateur a accès, ou encore pour implémenter des filtres de recherche.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">g</span>
@@ -490,7 +496,7 @@ obj = MyModel.query.get(1)
 </section>
 </section>
 <section id="serialisation-des-modeles-avec-marshmallow">
-<h3>Serialisation des modèles avec Marshmallow<a class="headerlink" href="#serialisation-des-modeles-avec-marshmallow" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Serialisation des modèles avec Marshmallow<a class="headerlink" href="#serialisation-des-modeles-avec-marshmallow" title="Link to this heading"></a></h3>
 <p>La bibliothèque <a class="reference external" href="https://marshmallow.readthedocs.io/en/stable/">Marshmallow</a> fournit des outils de sérialisation et desérialisation.</p>
 <p>Elle est intégrée à GeoNature par la bibliothèque <a class="reference external" href="https://flask-marshmallow.readthedocs.io/en/latest/">Flask-Marshmallow</a> qui fournit l’objet <code class="docutils literal notranslate"><span class="pre">ma</span></code> à importer comme ceci : <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">geonature.utils.env</span> <span class="pre">import</span> <span class="pre">ma</span></code>.</p>
 <p>Cette bibliothèque ajoute notablement une méthode <code class="docutils literal notranslate"><span class="pre">jsonify</span></code> aux schémas.</p>
@@ -504,7 +510,7 @@ obj = MyModel.query.get(1)
 </pre></div>
 </div>
 <section id="gestion-des-relationships">
-<h4>Gestion des relationships<a class="headerlink" href="#gestion-des-relationships" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Gestion des relationships<a class="headerlink" href="#gestion-des-relationships" title="Link to this heading"></a></h4>
 <p>L’option <code class="docutils literal notranslate"><span class="pre">include_fk=True</span></code> concerne les champs de type <code class="docutils literal notranslate"><span class="pre">ForeignKey</span></code>, mais pas les <code class="docutils literal notranslate"><span class="pre">relationships</span></code> en elles-mêmes. Pour ces dernières, il est nécessaire d’ajouter manuellement des champs <code class="docutils literal notranslate"><span class="pre">Nested</span></code> à notre schéma :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ParentModelSchema</span><span class="p">(</span><span class="n">ma</span><span class="o">.</span><span class="n">SQLAlchemyAutoSchema</span><span class="p">):</span>
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
@@ -564,7 +570,7 @@ Pour demander la sérialisation d’un sous-schéma, il faut le spécifier avec 
 </div>
 </section>
 <section id="modeles-avec-nomenclatures">
-<h4>Modèles avec nomenclatures<a class="headerlink" href="#modeles-avec-nomenclatures" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Modèles avec nomenclatures<a class="headerlink" href="#modeles-avec-nomenclatures" title="Link to this heading"></a></h4>
 <p>Le convertisseur de modèle <code class="docutils literal notranslate"><span class="pre">NomenclaturesConverter</span></code> permet d’automatiquement ajouter un champs <code class="docutils literal notranslate"><span class="pre">Nested(NomenclatureSchema)</span></code> pour les relationships vers une nomenclature.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pypnnomenclature.models</span> <span class="kn">import</span> <span class="n">TNomenclatures</span> <span class="k">as</span> <span class="n">Nomenclature</span>
 <span class="kn">from</span> <span class="nn">pypnnomenclature.utils</span> <span class="kn">import</span> <span class="n">NomenclaturesConverter</span>
@@ -600,7 +606,7 @@ Cette propriété peut être utilisé pour facilement joindre et inclure lors de
 </div>
 </section>
 <section id="modeles-geographiques">
-<h4>Modèles géographiques<a class="headerlink" href="#modeles-geographiques" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Modèles géographiques<a class="headerlink" href="#modeles-geographiques" title="Link to this heading"></a></h4>
 <p>En utilisant <code class="docutils literal notranslate"><span class="pre">GeoAlchemyAutoSchema</span></code> à la place de <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAutoSchema</span></code>, il est facile de créer des schémas pour des modèles possédant des colonnes géométriques :</p>
 <ul class="simple">
 <li><p>Utilisation automatique de <code class="docutils literal notranslate"><span class="pre">model_converter</span> <span class="pre">=</span> <span class="pre">GeoModelConverter</span></code> afin de convertir les colonnes géométriques</p></li>
@@ -641,7 +647,7 @@ Déterminée automatiquement lorsque le modèle possède une unique colonne géo
 <p>Les schémas géographiques peuvent également être utilisé pour parser du geojson (<cite>Feature</cite> ou <cite>FeatureCollection</cite>).</p>
 </section>
 <section id="modeles-geographiques-avec-nomenclatures">
-<h4>Modèles géographiques avec nomenclatures<a class="headerlink" href="#modeles-geographiques-avec-nomenclatures" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Modèles géographiques avec nomenclatures<a class="headerlink" href="#modeles-geographiques-avec-nomenclatures" title="Link to this heading"></a></h4>
 <p>Si vous avez un modèle possédant à la fois des relations vers des nomenclatures et des colonnes géométriques,
 vous pouvez devoir créer votre propre convertisseur de modèle héritant à la fois de <code class="docutils literal notranslate"><span class="pre">NomenclaturesConverter</span></code> et de <code class="docutils literal notranslate"><span class="pre">GeoModelConverter</span></code> :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">NomenclaturesGeoModelConverter</span><span class="p">(</span><span class="n">NomenclaturesConverter</span><span class="p">,</span> <span class="n">GeoModelConverter</span><span class="p">):</span>
@@ -655,7 +661,7 @@ vous pouvez devoir créer votre propre convertisseur de modèle héritant à la 
 </div>
 </section>
 <section id="modeles-a-permission">
-<h4>Modèles à permission<a class="headerlink" href="#modeles-a-permission" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Modèles à permission<a class="headerlink" href="#modeles-a-permission" title="Link to this heading"></a></h4>
 <p>Le mixin <code class="docutils literal notranslate"><span class="pre">CruvedSchemaMixin</span></code> permet d’ajouter un champs <code class="docutils literal notranslate"><span class="pre">cruved</span></code> à la sérialisation qui contiendra un dictionnaire avec en clé les actions du cruved et en valeur des booléens indiquant si l’action est disponible.</p>
 <p>Pour l’utiliser, il faut :</p>
 <ul class="simple">
@@ -692,7 +698,7 @@ Le préfixe <code class="docutils literal notranslate"><span class="pre">+</span
 </div>
 </section>
 <section id="creation-dun-objet">
-<h4>Création d’un objet<a class="headerlink" href="#creation-dun-objet" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Création d’un objet<a class="headerlink" href="#creation-dun-objet" title="Link to this heading"></a></h4>
 <p>L’utilisation de <code class="docutils literal notranslate"><span class="pre">load_instance=True</span></code> permet, lors de l’appelle de la fonction <code class="docutils literal notranslate"><span class="pre">load</span></code>, de directement récupérer un objet pouvant être ajouté à la session SQLAlchemy.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyModelSchema</span><span class="p">(</span><span class="n">SmartRelationshipsMixin</span><span class="p">,</span> <span class="n">ma</span><span class="o">.</span><span class="n">SQLAlchemyAutoSchema</span><span class="p">):</span>
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
@@ -706,9 +712,9 @@ Le préfixe <code class="docutils literal notranslate"><span class="pre">+</span
 </pre></div>
 </div>
 <section id="id2">
-<h5>Gestion des relationships<a class="headerlink" href="#id2" title="Lien permanent vers cette rubrique"></a></h5>
+<h5>Gestion des relationships<a class="headerlink" href="#id2" title="Link to this heading"></a></h5>
 <section id="many-to-one">
-<h6>Many-to-One<a class="headerlink" href="#many-to-one" title="Lien permanent vers cette rubrique"></a></h6>
+<h6>Many-to-One<a class="headerlink" href="#many-to-one" title="Link to this heading"></a></h6>
 <p>Exemple d’une relation vers une nomenclature :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
     <span class="n">id_nomenclature_foo</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Nomenclature</span><span class="o">.</span><span class="n">id_nomenclature</span><span class="p">))</span>
@@ -726,7 +732,7 @@ Le préfixe <code class="docutils literal notranslate"><span class="pre">+</span
 </div>
 </section>
 <section id="many-to-many">
-<h6>Many-to-Many<a class="headerlink" href="#many-to-many" title="Lien permanent vers cette rubrique"></a></h6>
+<h6>Many-to-Many<a class="headerlink" href="#many-to-many" title="Link to this heading"></a></h6>
 <p>Exemple d’une relation vers plusieurs utilisateurs :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cor_mymodel_user</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 
@@ -750,7 +756,7 @@ Le préfixe <code class="docutils literal notranslate"><span class="pre">+</span
 </div>
 </section>
 <section id="one-to-many">
-<h6>One-to-Many<a class="headerlink" href="#one-to-many" title="Lien permanent vers cette rubrique"></a></h6>
+<h6>One-to-Many<a class="headerlink" href="#one-to-many" title="Link to this heading"></a></h6>
 <p>Exemple d’une relation vers des modèles enfants, qui sont rattaché à un unique parent :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
     <span class="n">id_parent</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
@@ -778,7 +784,7 @@ Le préfixe <code class="docutils literal notranslate"><span class="pre">+</span
 
     <span class="nd">@validates_schema</span>
     <span class="k">def</span> <span class="nf">validate_childs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Ensure this schema is not leveraged to retrieve childs from other parent</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;childs&quot;</span><span class="p">]:</span>
@@ -812,7 +818,7 @@ Le préfixe <code class="docutils literal notranslate"><span class="pre">+</span
 </section>
 </section>
 <section id="serialisation-des-modeles-avec-le-decorateur-serializable">
-<h3>Serialisation des modèles avec le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;serializable</span></code><a class="headerlink" href="#serialisation-des-modeles-avec-le-decorateur-serializable" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Serialisation des modèles avec le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;serializable</span></code><a class="headerlink" href="#serialisation-des-modeles-avec-le-decorateur-serializable" title="Link to this heading"></a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>L’utilisation des schémas Marshmallow est probablement plus performante.</p>
@@ -844,7 +850,7 @@ obj.as_dict()
 <li><p>problème n+1 (voir section dédiée)</p></li>
 </ul>
 <section id="id3">
-<h4>Modèles géographiques<a class="headerlink" href="#id3" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Modèles géographiques<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
 <p>La bibliothèque maison <a class="reference external" href="https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo">Utils-Flask-SQLAlchemy-Geo</a> fournit des décorateurs supplémentaires pour la sérialisation des modèles contenant des champs géographiques.</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">utils_flask_sqla_geo.serializers.geoserializable</span></code></p>
@@ -927,7 +933,7 @@ shapefiles qui ont au moins un enregistrement:</p>
 </section>
 </section>
 <section id="reponses">
-<h3>Réponses<a class="headerlink" href="#reponses" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Réponses<a class="headerlink" href="#reponses" title="Link to this heading"></a></h3>
 <p>Voici quelques conseils sur l’envoi de réponse dans vos routes.</p>
 <ul class="simple">
 <li><p>Privilégier l’envoi du modèle sérialisé (vues de type create/update), ou d’une liste de modèles sérialisés (vues de type list), plutôt que des structures de données non conventionnelles.</p></li>
@@ -1013,7 +1019,7 @@ shapefiles qui ont au moins un enregistrement:</p>
 </li>
 </ul>
 <section id="le-decorateur-json-resp">
-<h4>Le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;json_resp</span></code><a class="headerlink" href="#le-decorateur-json-resp" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;json_resp</span></code><a class="headerlink" href="#le-decorateur-json-resp" title="Link to this heading"></a></h4>
 <p>Historiquement, beaucoup de vues sont décorées avec le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;json_resp</span></code>.</p>
 <p>Celui-ci apparait aujourd’hui superflu par rapport à l’usage directement de la fonction <code class="docutils literal notranslate"><span class="pre">jsonify</span></code> fournie par Flask.</p>
 <ul>
@@ -1045,7 +1051,7 @@ données).</p>
 </section>
 </section>
 <section id="probleme-n-1">
-<h3>Problème « n+1 »<a class="headerlink" href="#probleme-n-1" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Problème « n+1 »<a class="headerlink" href="#probleme-n-1" title="Link to this heading"></a></h3>
 <p>Le problème « n+1 » est un anti-pattern courant des routes de type « liste » (par exemple, récupération de la liste des cadres d’acquisition).</p>
 <p>En effet, on souhaite par exemple afficher la liste des cadres d’acquisitions, et pour chacun d’entre eux, la liste des jeux de données :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">af_list</span> <span class="o">=</span> <span class="n">AcquisitionFramwork</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
@@ -1113,11 +1119,11 @@ données).</p>
 <p>L’utilisation de <code class="docutils literal notranslate"><span class="pre">raiseload</span></code>, appartenant au cœur de SQLAlchemy, reste à privilégier.</p>
 </section>
 <section id="export-des-donnees">
-<h3>Export des données<a class="headerlink" href="#export-des-donnees" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Export des données<a class="headerlink" href="#export-des-donnees" title="Link to this heading"></a></h3>
 <p>TODO</p>
 </section>
 <section id="utilisation-de-la-configuration">
-<h3>Utilisation de la configuration<a class="headerlink" href="#utilisation-de-la-configuration" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Utilisation de la configuration<a class="headerlink" href="#utilisation-de-la-configuration" title="Link to this heading"></a></h3>
 <p>La configuration globale de l’application est controlée par le fichier
 <code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code> qui contient un nombre limité de paramètres.
 Il est possible d’utiliser un autre fichier de configuration en spécifiant
@@ -1143,9 +1149,9 @@ utilisables via le dictionnaire <code class="docutils literal notranslate"><span
 </div>
 </section>
 <section id="authentification-et-autorisations">
-<h3>Authentification et autorisations<a class="headerlink" href="#authentification-et-autorisations" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Authentification et autorisations<a class="headerlink" href="#authentification-et-autorisations" title="Link to this heading"></a></h3>
 <section id="acceder-a-lutilisateur-courant">
-<h4>Accéder à l’utilisateur courant<a class="headerlink" href="#acceder-a-lutilisateur-courant" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Accéder à l’utilisateur courant<a class="headerlink" href="#acceder-a-lutilisateur-courant" title="Link to this heading"></a></h4>
 <p>L’utilisateur courant est stocké dans l’espace de nom <code class="docutils literal notranslate"><span class="pre">g</span></code> :</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">g</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="p">)</span>
@@ -1156,7 +1162,7 @@ utilisables via le dictionnaire <code class="docutils literal notranslate"><span
 Si l’utilisateur n’est pas connecté, <code class="docutils literal notranslate"><span class="pre">g.current_user</span></code> vaudra <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </section>
 <section id="restreindre-une-route-aux-utilisateurs-connectes">
-<h4>Restreindre une route aux utilisateurs connectés<a class="headerlink" href="#restreindre-une-route-aux-utilisateurs-connectes" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Restreindre une route aux utilisateurs connectés<a class="headerlink" href="#restreindre-une-route-aux-utilisateurs-connectes" title="Link to this heading"></a></h4>
 <p>Utiliser le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;login_required</span></code> :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.decorators</span> <span class="kn">import</span> <span class="n">login_required</span>
 
@@ -1168,13 +1174,13 @@ Si l’utilisateur n’est pas connecté, <code class="docutils literal notransl
 <p>Si l’utilisateur n’est pas authentifié, celui-ci est redirigé vers une page d’authentification, à moins que la requête contienne un header <code class="docutils literal notranslate"><span class="pre">Accept:</span> <span class="pre">application/json</span></code> (requête effectuée par le frontend) auquel cas une erreur 401 (Unauthorized) est levé.</p>
 </section>
 <section id="restreindre-une-route-aux-utilisateurs-avec-un-certain-scope">
-<h4>Restreindre une route aux utilisateurs avec un certain scope<a class="headerlink" href="#restreindre-une-route-aux-utilisateurs-avec-un-certain-scope" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Restreindre une route aux utilisateurs avec un certain scope<a class="headerlink" href="#restreindre-une-route-aux-utilisateurs-avec-un-certain-scope" title="Link to this heading"></a></h4>
 <p>Utiliser le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;check_cruved_scope</span></code> :</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="check_cruved_scope">
-<span class="sig-prename descclassname"><span class="pre">&#64;</span></span><span class="sig-name descname"><span class="pre">check_cruved_scope</span></span><a class="headerlink" href="#check_cruved_scope" title="Lien permanent vers cette définition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">&#64;</span></span><span class="sig-name descname"><span class="pre">check_cruved_scope</span></span><a class="headerlink" href="#check_cruved_scope" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Paramètres</dt>
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>action</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><em>str</em></a><em>[</em><em>&quot;C&quot;</em><em>, </em><em>&quot;R&quot;</em><em>, </em><em>&quot;U&quot;</em><em>, </em><em>&quot;V&quot;</em><em>, </em><em>&quot;E&quot;</em><em>, </em><em>&quot;D&quot;</em><em>]</em>) – Type d’action effectuée par la route
 (Create, Read, Update, Validate, Export, Delete)</p></li>
@@ -1211,14 +1217,14 @@ scope.</p>
 </div>
 </section>
 <section id="recuperation-manuelle-du-scope">
-<h4>Récupération manuelle du scope<a class="headerlink" href="#recuperation-manuelle-du-scope" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Récupération manuelle du scope<a class="headerlink" href="#recuperation-manuelle-du-scope" title="Link to this heading"></a></h4>
 <p>La fonction suivante permet de récupérer manuellement le scope pour un rôle, une action et un module donnés :</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="get_scope">
-<span class="sig-name descname"><span class="pre">get_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_code</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#get_scope" title="Lien permanent vers cette définition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_code</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#get_scope" title="Link to this definition"></a></dt>
 <dd><p>Retourne le scope de l’utilisateur donnée une action dans le module demandé.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Paramètres</dt>
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>action_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><em>str</em></a><em>[</em><em>&quot;C&quot;</em><em>, </em><em>&quot;R&quot;</em><em>, </em><em>&quot;U&quot;</em><em>, </em><em>&quot;V&quot;</em><em>, </em><em>&quot;E&quot;</em><em>, </em><em>&quot;D&quot;</em><em>]</em>) – Code de l’action.</p></li>
 <li><p><strong>id_role</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Identifiant du role. Utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_user</span></code> si non spécifié
@@ -1228,10 +1234,10 @@ scope.</p>
 <code class="docutils literal notranslate"><span class="pre">ALL</span></code> à défaut.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Renvoie</dt>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
 <dd class="field-even"><p>Valeur du scope</p>
 </dd>
-<dt class="field-odd">Type renvoyé</dt>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.12)">int</a>[0, 1, 2, 3]</p>
 </dd>
 </dl>
@@ -1240,11 +1246,11 @@ scope.</p>
 <p>Il est également possible de récupérer les scopes pour l’ensemble des actions possibles grâce à la fonction suivante :</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="get_scopes_by_action">
-<span class="sig-name descname"><span class="pre">get_scopes_by_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_code</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#get_scopes_by_action" title="Lien permanent vers cette définition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_scopes_by_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_code</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#get_scopes_by_action" title="Link to this definition"></a></dt>
 <dd><p>Retourne un dictionnaire avec pour clé les actions du CRUVED et pour valeur le scope associé
 pour un utilisateur et un module donné (et éventuellement un objet précis).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Paramètres</dt>
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>id_role</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.12)"><em>int</em></a>) – Identifiant du role. Utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_user</span></code> si non spécifié
 (nécessite de se trouver dans une route authentifiée).</p></li>
@@ -1253,10 +1259,10 @@ si définie, <code class="docutils literal notranslate"><span class="pre">GEONAT
 <li><p><strong>object_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><em>str</em></a>) – Code de l’objet. <code class="docutils literal notranslate"><span class="pre">ALL</span></code> si non précisé.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Renvoie</dt>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
 <dd class="field-even"><p>Dictionnaire de scope pour chaque action du CRUVED.</p>
 </dd>
-<dt class="field-odd">Type renvoyé</dt>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(disponible dans Python v3.12)">dict</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.12)">int</a>]</p>
 </dd>
 </dl>
@@ -1270,13 +1276,13 @@ si définie, <code class="docutils literal notranslate"><span class="pre">GEONAT
 </div>
 </section>
 <section id="restreindre-une-route-aux-utilisateurs-avec-des-permissions-avancees">
-<h4>Restreindre une route aux utilisateurs avec des permissions avancées<a class="headerlink" href="#restreindre-une-route-aux-utilisateurs-avec-des-permissions-avancees" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Restreindre une route aux utilisateurs avec des permissions avancées<a class="headerlink" href="#restreindre-une-route-aux-utilisateurs-avec-des-permissions-avancees" title="Link to this heading"></a></h4>
 <p>Utiliser le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;permissions_required</span></code> :</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="permissions_required">
-<span class="sig-prename descclassname"><span class="pre">&#64;</span></span><span class="sig-name descname"><span class="pre">permissions_required</span></span><a class="headerlink" href="#permissions_required" title="Lien permanent vers cette définition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">&#64;</span></span><span class="sig-name descname"><span class="pre">permissions_required</span></span><a class="headerlink" href="#permissions_required" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Paramètres</dt>
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>action</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><em>str</em></a><em>[</em><em>&quot;C&quot;</em><em>, </em><em>&quot;R&quot;</em><em>, </em><em>&quot;U&quot;</em><em>, </em><em>&quot;V&quot;</em><em>, </em><em>&quot;E&quot;</em><em>, </em><em>&quot;D&quot;</em><em>]</em>) – Type d’action effectuée par la route
 (Create, Read, Update, Validate, Export, Delete)</p></li>
@@ -1317,14 +1323,14 @@ celle-ci recevant le jeu de permissions en argument.</p>
 </div>
 </section>
 <section id="recuperation-manuelle-des-permissions-avancees">
-<h4>Récupération manuelle des permissions avancées<a class="headerlink" href="#recuperation-manuelle-des-permissions-avancees" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Récupération manuelle des permissions avancées<a class="headerlink" href="#recuperation-manuelle-des-permissions-avancees" title="Link to this heading"></a></h4>
 <p>Utiliser la fonction <code class="docutils literal notranslate"><span class="pre">get_permissions</span></code> :</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="get_permissions">
-<span class="sig-name descname"><span class="pre">get_permissions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_code</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#get_permissions" title="Lien permanent vers cette définition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_permissions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_code</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#get_permissions" title="Link to this definition"></a></dt>
 <dd><p>Retourne l’ensemble des permissions de l’utilisateur donnée pour l’action, le module et l’objet précisé.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Paramètres</dt>
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>action_code</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><em>str</em></a><em>[</em><em>&quot;C&quot;</em><em>, </em><em>&quot;R&quot;</em><em>, </em><em>&quot;U&quot;</em><em>, </em><em>&quot;V&quot;</em><em>, </em><em>&quot;E&quot;</em><em>, </em><em>&quot;D&quot;</em><em>]</em>) – Code de l’action.</p></li>
 <li><p><strong>id_role</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(disponible dans Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Identifiant du role. Utilisation de <code class="docutils literal notranslate"><span class="pre">g.current_user</span></code> si non spécifié
@@ -1334,18 +1340,18 @@ celle-ci recevant le jeu de permissions en argument.</p>
 <code class="docutils literal notranslate"><span class="pre">ALL</span></code> à défaut.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Renvoie</dt>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
 <dd class="field-even"><p>Liste de permissions</p>
 </dd>
-<dt class="field-odd">Type renvoyé</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(disponible dans Python v3.12)">list</a>[Permission]</p>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(disponible dans Python v3.12)">list</a>[<a class="reference internal" href="autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_permissions.models.Permission" title="geonature.core.gn_permissions.models.Permission">Permission</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="a-propos-de-lapi-scope">
-<h4>À propos de l’API « scope »<a class="headerlink" href="#a-propos-de-lapi-scope" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>À propos de l’API « scope »<a class="headerlink" href="#a-propos-de-lapi-scope" title="Link to this heading"></a></h4>
 <p>Certains modules supportent des permissions avec plusieurs types de filtres (par exemple, filtre d’appartenance et filtre de sensibilité), ce qui amène à devoir définir plusieurs permissions pour une même action dans un module donnée (par exemple, droit de lecteur des données de mon organisme sans restriction de sensibilité + droit de lecteur des données non sensible sans restriction d’appartenance).</p>
 <p>Cependant, cet usage est très peu répandu, la plupart des modules acceptant uniquement un filtre d’appartenance, voir aucun filtre.
 Ainsi, l’API « scope » (décorateur <code class="docutils literal notranslate"><span class="pre">&#64;check_cruved_scope</span></code>, fonctions <code class="docutils literal notranslate"><span class="pre">get_scope</span></code> et <code class="docutils literal notranslate"><span class="pre">get_scopes_by_action</span></code>) visent à simplifier l’usage des permissions dans ces modules en résumant les droits de l’utilisateur par un entier de 0 à 4 :</p>
@@ -1358,7 +1364,7 @@ Ainsi, l’API « scope » (décorateur <code class="docutils literal notranslat
 <p>L’utilisateur héritant des permissions des différents groupes auquel il appartient en plus de ses permissions personnelles, l’API « scope » s’occupe de calculer le scope maximal de l’utilisateur.</p>
 </section>
 <section id="rajouter-un-nouveau-type-de-filtre">
-<h4>Rajouter un nouveau type de filtre<a class="headerlink" href="#rajouter-un-nouveau-type-de-filtre" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Rajouter un nouveau type de filtre<a class="headerlink" href="#rajouter-un-nouveau-type-de-filtre" title="Link to this heading"></a></h4>
 <p>On suppose souhaiter l’ajout d’un nouveau type de filtre « foo ».</p>
 <ol class="arabic simple">
 <li><p>Rajouter une colonne dans la table <code class="docutils literal notranslate"><span class="pre">t_permissions</span></code> nommé <code class="docutils literal notranslate"><span class="pre">foo_filter</span></code> du type désiré (booléen, entier, …) avec éventuellement une contrainte de clé étrangère.
@@ -1382,26 +1388,26 @@ Attention, Flask-Admin utilise FontAwesome version <strong>4</strong>.</p></li>
 </section>
 </section>
 <section id="developpement-frontend">
-<h2>Développement Frontend<a class="headerlink" href="#developpement-frontend" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Développement Frontend<a class="headerlink" href="#developpement-frontend" title="Link to this heading"></a></h2>
 <section id="serveur-frontend-en-developpement">
-<h3>Serveur frontend en développement<a class="headerlink" href="#serveur-frontend-en-developpement" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Serveur frontend en développement<a class="headerlink" href="#serveur-frontend-en-developpement" title="Link to this heading"></a></h3>
 <p>Lancer le serveur frontent en développement :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> ~/geonature/frontend/
-nvm use
-npm run start
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/geonature/frontend/
+nvm<span class="w"> </span>use
+npm<span class="w"> </span>run<span class="w"> </span>start
 </pre></div>
 </div>
 <p>Le frontend est alors accessible à l’adresse <a class="reference external" href="http://127.0.0.1:4200">http://127.0.0.1:4200</a>.</p>
 </section>
 <section id="bonnes-pratiques">
-<h3>Bonnes pratiques<a class="headerlink" href="#bonnes-pratiques" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Bonnes pratiques<a class="headerlink" href="#bonnes-pratiques" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Chaque gn_module de GeoNature doit être un module Angular indépendant <a class="reference external" href="https://angular.io/guide/ngmodule">https://angular.io/guide/ngmodule</a>.</p></li>
 <li><p>Ce gn_module peut s’appuyer sur une série de composants génériques intégrés dans le module GN2CommonModule et décrit ci-dessous</p></li>
 </ul>
 </section>
 <section id="les-composants-generiques">
-<h3>Les composants génériques<a class="headerlink" href="#les-composants-generiques" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Les composants génériques<a class="headerlink" href="#les-composants-generiques" title="Link to this heading"></a></h3>
 <p>Un ensemble de composants décrits ci-dessous sont intégrés dans le coeur de GeoNature et permettent aux développeurs de simplifier la mise en place de formulaires ou de bloc cartographiques.</p>
 <p>Voir la <a class="reference external" href="http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html">DOCUMENTATION COMPLETE</a> sur les composants génériques.</p>
 <p>NB : les composants de type « formulaire » (balise <cite>input</cite> ou <cite>select</cite>) partagent une logique commune et ont des <code class="docutils literal notranslate"><span class="pre">Inputs</span></code> et des <code class="docutils literal notranslate"><span class="pre">Outputs</span></code> communs, décrits ci-dessous. (voir <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/frontend/src/app/GN2CommonModule/form/genericForm.component.ts">https://github.com/PnX-SI/GeoNature/blob/master/frontend/src/app/GN2CommonModule/form/genericForm.component.ts</a>).</p>
@@ -1439,7 +1445,7 @@ au composant parent qui l’accueille
 Leaflet sont disponibles. Notamment un composant « map-list » permettant de
 connecter une carte avec une liste d’objets décrits en détail ci-dessous.</p>
 <section id="maplistcomponent">
-<h4>MapListComponent<a class="headerlink" href="#maplistcomponent" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>MapListComponent<a class="headerlink" href="#maplistcomponent" title="Link to this heading"></a></h4>
 <p>Le composant MapList fournit une carte pouvant être synchronisée
 avec une liste. La liste, pouvant être spécifique à chaque module,
 elle n’est pas intégrée dans le composant et est laissée à la
@@ -1511,11 +1517,11 @@ Les paramètres <code class="docutils literal notranslate"><span class="pre">api
 <li><p>Selector : <code class="docutils literal notranslate"><span class="pre">pnx-map-list</span></code></p></li>
 <li><p>Inputs :</p>
 <dl class="field-list">
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">idName</span></code></dt>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">idName</span></code><span class="colon">:</span></dt>
 <dd class="field-odd"><p>Libellé de l’id du geojson (id_releve, id)</p>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">height</span></code></dt>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">height</span></code><span class="colon">:</span></dt>
 <dd class="field-even"><p>Taille de l’affichage de la carte Leaflet</p>
 <p>Type: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 </dd>
@@ -1539,20 +1545,20 @@ Les paramètres <code class="docutils literal notranslate"><span class="pre">api
 </section>
 </section>
 <section id="gestion-des-erreurs">
-<h3>Gestion des erreurs<a class="headerlink" href="#gestion-des-erreurs" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Gestion des erreurs<a class="headerlink" href="#gestion-des-erreurs" title="Link to this heading"></a></h3>
 <p>GeoNature utilise un intercepteur générique afin d’afficher un toaster en cas d’erreur lors d’une requête HTTP.
 Si vous souhaitez traiter l’erreur vous-même, et empêcher le toaster par défaut de s’afficher, vous pouvez définir un header <code class="docutils literal notranslate"><span class="pre">not-to-handle</span></code> à votre requête :</p>
-<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="k">this</span><span class="p">.</span><span class="nx">_http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/url&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;not-to-handle&quot;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">})</span><span class="w"></span>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="k">this</span><span class="p">.</span><span class="nx">_http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/url&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;not-to-handle&quot;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">})</span>
 </pre></div>
 </div>
 </section>
 <section id="tests">
-<h3>Tests<a class="headerlink" href="#tests" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Tests<a class="headerlink" href="#tests" title="Link to this heading"></a></h3>
 <p>Pour toute PR ou nouvelle fonctionnalité il est demandé d’écrire des tests. Voir la section dédiée sur l’<a class="reference internal" href="#tests-frontend"><span class="std std-ref">écriture des tests frontend</span></a>.</p>
 </section>
 </section>
 <section id="tests-backend">
-<span id="id4"></span><h2>Tests backend<a class="headerlink" href="#tests-backend" title="Lien permanent vers cette rubrique"></a></h2>
+<span id="id4"></span><h2>Tests backend<a class="headerlink" href="#tests-backend" title="Link to this heading"></a></h2>
 <p>Cette documentation a pour objectif d’expliquer comment écrire des tests pour
 le backend de GeoNature.</p>
 <p>Un test se décompose en général en 3 étapes :</p>
@@ -1568,7 +1574,7 @@ commentaire ou une séparation entre elles.</p>
 tester différentes configurations plutôt qu’un seul les testant toutes d’un
 coup. Cela permet d’identifier plus précisément le test qui n’a pas fonctionné.</p>
 <section id="introduction">
-<h3>Introduction<a class="headerlink" href="#introduction" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h3>
 <p>Comme spécifié dans la partie Développement, la librairie Python PyTest est
 utilisée pour rédiger des tests. Elle permet de :</p>
 <ul class="simple">
@@ -1581,7 +1587,7 @@ l’instruction <code class="docutils literal notranslate"><span class="pre">ass
 </ul>
 </section>
 <section id="utilisation">
-<h3>Utilisation<a class="headerlink" href="#utilisation" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Utilisation<a class="headerlink" href="#utilisation" title="Link to this heading"></a></h3>
 <p>Les tests sont des fonctions pouvant être regroupées dans des classes. La
 nomenclature est la suivante :</p>
 <ul class="simple">
@@ -1596,7 +1602,7 @@ pouvoir être détecté automatiquement par PyTest</p></li>
 </ul>
 </section>
 <section id="fixtures">
-<h3>Fixtures<a class="headerlink" href="#fixtures" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Fixtures<a class="headerlink" href="#fixtures" title="Link to this heading"></a></h3>
 <p>Les fixtures de PyTest peuvent permettre de nombreuses choses comme expliqué
 dans la documentation PyTest sur <a class="reference external" href="https://docs.pytest.org/explanation/fixtures.html#about-fixtures">les fixtures</a>.</p>
 <p>Dans GeoNature elles sont, en général, utilisées pour définir des objets
@@ -1646,7 +1652,7 @@ Python du test. Elles sont définies comme suit :</p>
 </div>
 </section>
 <section id="exemple">
-<h3>Exemple<a class="headerlink" href="#exemple" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Exemple<a class="headerlink" href="#exemple" title="Link to this heading"></a></h3>
 <p>Voici un exemple de test qui a été fait dans GeoNature</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_get_consistancy_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="n">synthese_record</span> <span class="o">=</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
@@ -1668,7 +1674,7 @@ l’attribut <code class="docutils literal notranslate"><span class="pre">client
 notamment.</p>
 </section>
 <section id="dans-github">
-<h3>Dans GitHub<a class="headerlink" href="#dans-github" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Dans GitHub<a class="headerlink" href="#dans-github" title="Link to this heading"></a></h3>
 <p>Dans le dépôt de GeoNature sur GitHub, tous ces tests sont exécutés
 automatiquement pour chaque commit d’une pull request grâce à PyTest et à
 GitHub Actions. Ils permettent donc de vérifier que les modifications apportées
@@ -1678,7 +1684,7 @@ request. Un coverage est aussi exécuté pour s’assurer que les nouveaux
 développements sont bien testés.</p>
 </section>
 <section id="coverage">
-<h3>Coverage<a class="headerlink" href="#coverage" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Coverage<a class="headerlink" href="#coverage" title="Link to this heading"></a></h3>
 <p>Le coverage est un système permettant de quantifier les lignes de code
 exécutées par le test. Exemple rapide :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Définition d&#39;une fonction quelconque</span>
@@ -1712,23 +1718,23 @@ d’être plus confiant dans la modification/refactorisation de lignes de code e
 </div>
 </section>
 <section id="dans-vscode">
-<h3>Dans VSCode<a class="headerlink" href="#dans-vscode" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Dans VSCode<a class="headerlink" href="#dans-vscode" title="Link to this heading"></a></h3>
 <p>Il est possible d’installer <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ms-python.python">l’extension Python</a> pour facilement lancer et
 debugger un ou plusieurs tests directement depuis VSCode. Il suffit juste de
 changer le fichier <code class="docutils literal notranslate"><span class="pre">settings.json</span></code> dans le dossier <code class="docutils literal notranslate"><span class="pre">.vscode</span></code> de votre
 projet avec le code suivant pour qu’il soit compatible avec GeoNature :</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;python.testing.pytestArgs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;/chemin/vers/geonature/backend/geonature/tests&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p">],</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;python.testing.unittestEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;python.testing.pytestEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;python.testing.pytestArgs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;/chemin/vers/geonature/backend/geonature/tests&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;python.testing.unittestEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;python.testing.pytestEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="executer-un-ou-plusieurs-test-s-en-ligne-de-commande">
-<h3>Exécuter un ou plusieurs test(s) en ligne de commande<a class="headerlink" href="#executer-un-ou-plusieurs-test-s-en-ligne-de-commande" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Exécuter un ou plusieurs test(s) en ligne de commande<a class="headerlink" href="#executer-un-ou-plusieurs-test-s-en-ligne-de-commande" title="Link to this heading"></a></h3>
 <p>Pour exécuter les tests de GeoNature placez vous à la racine du dossier où est
 installé GeoNature et exécutez la commande suivante :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span>
@@ -1756,18 +1762,19 @@ possible de générer le coverage au format html en remplaçant <code class="doc
 </section>
 </section>
 <section id="tests-frontend">
-<span id="id5"></span><h2>Tests frontend<a class="headerlink" href="#tests-frontend" title="Lien permanent vers cette rubrique"></a></h2>
+<span id="id5"></span><h2>Tests frontend<a class="headerlink" href="#tests-frontend" title="Link to this heading"></a></h2>
 <p>Cette documentation a pour objectif d’expliquer comment écrire des tests pour
 le frontend de GeoNature.</p>
 <p>L’écriture de tests frontend dans GeoNature se base sur l’outil <a class="reference external" href="https://www.cypress.io/">Cypress</a> dont il est necessaire de maitriser et comprendre le fonctionnement.</p>
+<p>Le lancement des tests cypress nécessite la présence de données en base. Les branches alembic suivantes doivent être montées : <cite>occtax-samples-test</cite>, <cite>occhab-samples</cite>. Le contenu du fichier <cite>config/test_config.toml</cite> doit également être utilisé.</p>
 <p>Principe de base ; Un test doit être concis.
 Il vaut mieux écrire plusieurs tests pour tester différentes configurations plutôt qu’un seul les testant toutes d’un coup.
 Cela permet d’identifier plus précisément le test qui n’a pas fonctionné.</p>
 <section id="redaction">
-<h3>Rédaction<a class="headerlink" href="#redaction" title="Lien permanent vers cette rubrique"></a></h3>
-<p>La rédaction des fichiers de tests se fait dans le dossier frontend/cypress/integration.</p>
+<h3>Rédaction<a class="headerlink" href="#redaction" title="Link to this heading"></a></h3>
+<p>La rédaction des fichiers de tests se fait dans le dossier frontend/cypress/e2e.</p>
 <section id="structure">
-<h4>Structure<a class="headerlink" href="#structure" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Structure<a class="headerlink" href="#structure" title="Link to this heading"></a></h4>
 <p>La nomenclature des fichiers de test est XXXXXXX-spec.js (XXXX correspondant au nom du module testé).</p>
 <p>Dans chaque fichier la structure des tests est de la forme</p>
 <ul class="simple">
@@ -1783,60 +1790,61 @@ Cela permet d’identifier plus précisément le test qui n’a pas fonctionné.
 </ul>
 </section>
 <section id="id6">
-<h4>Exemple<a class="headerlink" href="#id6" title="Lien permanent vers cette rubrique"></a></h4>
-<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;description général de la partie testée&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<h4>Exemple<a class="headerlink" href="#id6" title="Link to this heading"></a></h4>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;description général de la partie testée&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;description du test 1&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//contenu du test 1</span><span class="w"></span>
-<span class="w">    </span><span class="p">})</span><span class="w"></span>
+<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;description du test 1&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//contenu du test 1</span>
+<span class="w">    </span><span class="p">})</span>
 
-<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;description du test 2&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="c1">//contenu du test 2</span><span class="w"></span>
-<span class="w">    </span><span class="p">})</span><span class="w"></span>
+<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;description du test 2&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//contenu du test 2</span>
+<span class="w">    </span><span class="p">})</span>
 
-<span class="p">})</span><span class="w"></span>
+<span class="p">})</span>
 </pre></div>
 </div>
 <p>Afin d’homogénéiser les descriptions des tests il est établi que l’on nomme un test en anglais en commençant par should.</p>
 </section>
 <section id="id7">
-<h4>Exemple<a class="headerlink" href="#id7" title="Lien permanent vers cette rubrique"></a></h4>
-<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should change the state&#39;</span><span class="p">,()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">...</span><span class="w"></span>
+<h4>Exemple<a class="headerlink" href="#id7" title="Link to this heading"></a></h4>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should change the state&#39;</span><span class="p">,()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">...</span>
 </pre></div>
 </div>
 </section>
 <section id="implementation">
-<h4>Implémentation<a class="headerlink" href="#implementation" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Implémentation<a class="headerlink" href="#implementation" title="Link to this heading"></a></h4>
 <p>La réalisation des tests frontend passe par la sélection des objets HTML du DOM.
 A fin de rendre ces sélections plus propres, on peut ajouter des tags HTML dans le dom.
-Angular suggère l’ajout de tags de ce type:</p>
+Angular et Cypress suggèrent l’ajout de tags de ce type:</p>
 <ul class="simple">
 <li><p>data-qa</p></li>
 <li><p>test-qa</p></li>
 <li><p>data-test</p></li>
 </ul>
+<p>Voir <a class="reference external" href="https://docs.cypress.io/guides/references/best-practices#Selecting-Elements">https://docs.cypress.io/guides/references/best-practices#Selecting-Elements</a> pour les bonnes pratique de sélection d’éléments:</p>
 </section>
 <section id="id8">
-<h4>Exemple<a class="headerlink" href="#id8" title="Lien permanent vers cette rubrique"></a></h4>
+<h4>Exemple<a class="headerlink" href="#id8" title="Link to this heading"></a></h4>
 <div class="highlight-HTML notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">div</span> <span class="na">data-qa</span><span class="o">=</span><span class="s">&quot;text_de_selection&quot;</span><span class="p">&gt;</span>
 </pre></div>
 </div>
 </section>
 </section>
 <section id="lancement">
-<h3>Lancement<a class="headerlink" href="#lancement" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Lancement<a class="headerlink" href="#lancement" title="Link to this heading"></a></h3>
 <p>Pour lancer Cypress et executer les tests à la main il faut exécuter la commande (nécessite qu’une instance GeoNature fonctionne (backend+frontend)):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ npm run cypress:open
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>npm<span class="w"> </span>run<span class="w"> </span>cypress:open
 </pre></div>
 </div>
 <p>Pour lancer les test en mode automatique, il faut exécuter la commande (utilisée dans l’intégration continue (GitHub Action)):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ npm run e2e:ci <span class="o">&amp;&amp;</span> npm run e2e:coverage
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>npm<span class="w"> </span>run<span class="w"> </span>e2e:ci<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>npm<span class="w"> </span>run<span class="w"> </span>e2e:coverage
 </pre></div>
 </div>
 </section>
 </section>
 <section id="developper-un-module-externe">
-<h2>Développer un module externe<a class="headerlink" href="#developper-un-module-externe" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Développer un module externe<a class="headerlink" href="#developper-un-module-externe" title="Link to this heading"></a></h2>
 <p>GeoNature a été conçu pour fonctionner en briques modulaires.</p>
 <p>Chaque protocole, répondant à une question scientifique, est amené à avoir
 son propre module GeoNature comportant son modèle de base de données (dans un
@@ -1893,7 +1901,7 @@ l’intégration du module est à la charge du développeur.</p>
 </ul>
 <p>Pour l’installation du module, voir <a class="reference internal" href="installation.html#install-gn-module"><span class="std std-ref">Installation d’un module GeoNature</span></a>.</p>
 <section id="bonnes-pratiques-frontend">
-<h3>Bonnes pratiques Frontend<a class="headerlink" href="#bonnes-pratiques-frontend" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Bonnes pratiques Frontend<a class="headerlink" href="#bonnes-pratiques-frontend" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Pour l’ensemble des composants cartographiques et des formulaires (taxonomie, nomenclatures…), il est conseillé d’utiliser les composants présents dans le module “GN2CommonModule”.</p>
 <p>Importez ce module dans le module racine de la manière suivante</p>
@@ -1924,7 +1932,7 @@ de GeoNature</p>
 </section>
 </section>
 <section id="documentation">
-<h2>Documentation<a class="headerlink" href="#documentation" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h2>
 <p>La documentation se trouve dans le dossier <code class="docutils literal notranslate"><span class="pre">docs</span></code>.
 Elle est écrites en ReStructuredText et généré avec Sphinx.</p>
 <p>Pour générer la documentation HTML :</p>
@@ -1938,24 +1946,24 @@ Elle est écrites en ReStructuredText et généré avec Sphinx.</p>
 <p>La documentation générée se trouve dans le dossier <code class="docutils literal notranslate"><span class="pre">build/html/</span></code>.</p>
 </section>
 <section id="release">
-<h2>Release<a class="headerlink" href="#release" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Release<a class="headerlink" href="#release" title="Link to this heading"></a></h2>
 <p>Pour sortir une nouvelle version de GeoNature :</p>
-<ul class="simple">
+<ul>
 <li><p>Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, RefGeo, Utils-Flask-SQLAlchemy, Utils-Flask-SQLAlchemy-Geo)</p></li>
-<li><p>Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances et que le  <cite>requirements-dependencies.in</cite> a bien été MAJ.</p></li>
-<li><p>Regénérer les <cite>requirements.txt</cite> et <cite>requirements-dev.txt</cite> avec les commandes suivantes dans la plus petite version de python supportée par GeoNature</p></li>
-</ul>
+<li><p>Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances et que le <code class="docutils literal notranslate"><span class="pre">requirements-dependencies.in</span></code> a bien été mis à jour.</p></li>
+<li><p>Regénérer les fichiers <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> et <code class="docutils literal notranslate"><span class="pre">requirements-dev.txt</span></code> avec les commandes suivantes dans la plus petite version de python supportée par GeoNature</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span><span class="o">-</span><span class="nb">compile</span> <span class="n">requirements</span><span class="o">.</span><span class="ow">in</span> <span class="o">&gt;</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
 <span class="n">pip</span><span class="o">-</span><span class="nb">compile</span> <span class="n">requirements</span><span class="o">-</span><span class="n">dev</span><span class="o">.</span><span class="ow">in</span> <span class="o">&gt;</span> <span class="n">requirements</span><span class="o">-</span><span class="n">dev</span><span class="o">.</span><span class="n">txt</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>Mettez à jour la version de GeoNature et éventuellement des dépendances dans <code class="docutils literal notranslate"><span class="pre">install/install_all/install_all.ini</span></code>, <code class="docutils literal notranslate"><span class="pre">backend/requirements-dependencies.in</span></code> (puis regénérer <code class="docutils literal notranslate"><span class="pre">backend/requirements.txt</span></code> avec <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">compile</span></code>)</p></li>
+</li>
+<li><p>Mettez à jour la version de GeoNature et éventuellement des dépendances dans <code class="docutils literal notranslate"><span class="pre">install/install_all/install_all.ini</span></code></p></li>
 <li><p>Complétez le fichier <code class="docutils literal notranslate"><span class="pre">docs/CHANGELOG.md</span></code> (en comparant les branches <a class="reference external" href="https://github.com/PnX-SI/GeoNature/compare/develop">https://github.com/PnX-SI/GeoNature/compare/develop</a>) et dater la version à sortir</p></li>
 <li><p>Mettez à jour le fichier <code class="docutils literal notranslate"><span class="pre">VERSION</span></code></p></li>
 <li><p>Mergez la branche <code class="docutils literal notranslate"><span class="pre">develop</span></code> dans la branche <code class="docutils literal notranslate"><span class="pre">master</span></code></p></li>
 <li><p>Faites la release (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/releases">https://github.com/PnX-SI/GeoNature/releases</a>) en la taguant <code class="docutils literal notranslate"><span class="pre">X.Y.Z</span></code> (sans <code class="docutils literal notranslate"><span class="pre">v</span></code> devant) et en copiant le contenu du Changelog</p></li>
 <li><p>Dans la branche <code class="docutils literal notranslate"><span class="pre">develop</span></code>, modifiez le fichier <code class="docutils literal notranslate"><span class="pre">VERSION</span></code> en <code class="docutils literal notranslate"><span class="pre">X.Y.Z.dev0</span></code> et pareil dans le fichier <code class="docutils literal notranslate"><span class="pre">docs/CHANGELOG.md</span></code></p></li>
+<li><p>Faites la release de <a class="reference external" href="https://github.com/PnX-SI/GeoNature-Docker-services">GeoNature-Docker-services</a> avec la nouvelle version de GeoNature, et éventuellement des modules (Voir un <a class="reference external" href="https://github.com/PnX-SI/GeoNature-Docker-services/pull/19/files">exemple</a>)</p></li>
 </ul>
 </section>
 </section>
@@ -1971,7 +1979,7 @@ Elle est écrites en ReStructuredText et généré avec Sphinx.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2018-2023, PnE, PnC.</p>
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
   </div>
 
   Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un

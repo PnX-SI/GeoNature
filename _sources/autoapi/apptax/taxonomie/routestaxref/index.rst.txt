@@ -1,0 +1,133 @@
+:py:mod:`apptax.taxonomie.routestaxref`
+=======================================
+
+.. py:module:: apptax.taxonomie.routestaxref
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.routestaxref.getTaxrefList
+   apptax.taxonomie.routestaxref.getTaxrefVersion
+   apptax.taxonomie.routestaxref.getTaxrefBibtaxonList
+   apptax.taxonomie.routestaxref.getSearchInField
+   apptax.taxonomie.routestaxref.getTaxrefDetail
+   apptax.taxonomie.routestaxref.getDistinctField
+   apptax.taxonomie.routestaxref.getTaxrefHierarchie
+   apptax.taxonomie.routestaxref.getTaxrefHierarchieBibNoms
+   apptax.taxonomie.routestaxref.genericTaxrefList
+   apptax.taxonomie.routestaxref.genericHierarchieSelect
+   apptax.taxonomie.routestaxref.get_regneGroup2Inpn_taxref
+   apptax.taxonomie.routestaxref.get_group3_inpn_taxref
+   apptax.taxonomie.routestaxref.get_AllTaxrefNameByListe
+   apptax.taxonomie.routestaxref.get_bib_hab
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.routestaxref.adresses
+
+
+.. py:data:: adresses
+
+   
+
+.. py:function:: getTaxrefList()
+
+
+.. py:function:: getTaxrefVersion()
+
+   La table TMetaTaxref contient la liste des référentiels contenu dans la table taxref
+   Cette route renvoie le dernier référentiel qui a été MAJ
+   (utilisé pour le mobile pour retélécharger le référentiel lorsque celui ci à changé ou en MAJ)
+
+
+.. py:function:: getTaxrefBibtaxonList()
+
+
+.. py:function:: getSearchInField(field, ilike)
+
+   .. http:get:: /taxref/search/(str:field)/(str:ilike)
+   .. :quickref: Taxref;
+
+   Retourne les 20 premiers résultats de la table "taxref" pour une
+   requête sur le champ `field` avec ILIKE et la valeur `ilike` fournie.
+   L'algorithme Trigramme est utilisé pour établir la correspondance.
+
+   :query fields: Permet de récupérer des champs suplémentaires de la
+       table "taxref" dans la réponse. Séparer les noms des champs par
+       des virgules.
+   :query is_inbibnom: Ajoute une jointure sur la table "bib_noms".
+   :query add_rank: Ajoute une jointure sur la table "bib_taxref_rangs"
+       et la colonne nom_rang aux résultats.
+   :query rank_limit: Retourne seulement les taxons dont le rang est
+       supérieur ou égal au rang donné. Le rang passé doit être une
+       valeur de la colonne "id_rang" de la table "bib_taxref_rangs".
+
+   :statuscode 200: Tableau de dictionnaires correspondant aux résultats
+       de la recherche dans la table "taxref".
+   :statuscode 500: Aucun rang ne correspond à la valeur fournie.
+                    Aucune colonne ne correspond à la valeur fournie.
+
+
+.. py:function:: getTaxrefDetail(id)
+
+
+.. py:function:: getDistinctField(field)
+
+
+.. py:function:: getTaxrefHierarchie(rang)
+
+
+.. py:function:: getTaxrefHierarchieBibNoms(rang)
+
+
+.. py:function:: genericTaxrefList(inBibtaxon, parameters)
+
+
+.. py:function:: genericHierarchieSelect(tableHierarchy, rang, parameters)
+
+
+.. py:function:: get_regneGroup2Inpn_taxref()
+
+   Retourne la liste des règnes et groupes 2
+       définis par Taxref de façon hiérarchique
+   formatage : {'regne1':['grp1', 'grp2'], 'regne2':['grp3', 'grp4']}
+
+
+.. py:function:: get_group3_inpn_taxref()
+
+   Retourne la liste des groupes 3 inpn
+
+
+.. py:function:: get_AllTaxrefNameByListe(id_liste=None)
+
+   Route utilisée pour les autocompletes
+   Si le paramètre search_name est passé, la requête SQL utilise l'algorithme
+   des trigrammes pour améliorer la pertinence des résultats
+   Route utilisée par le mobile pour remonter la liste des taxons
+   params URL:
+       - id_liste : identifiant de la liste (si id_liste est null ou = à -1 on ne prend pas de liste)
+   params GET (facultatifs):
+       - code_liste : code de la liste à filtrer, n'est pris en compte que si aucune liste est spécifiée
+       - search_name : nom recherché. Recherche basée sur la fonction
+           ilike de SQL avec un remplacement des espaces par %
+       - regne : filtre sur le règne INPN
+       - group2_inpn : filtre sur le groupe 2 de l'INPN
+       - limit: nombre de résultats
+       - offset: numéro de la page
+
+
+.. py:function:: get_bib_hab()
+
+

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.utils_flask_sqla_geo.schema &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" />
+    <link rel="next" title="src.utils_flask_sqla_geo.serializers" href="../serializers/index.html" />
+    <link rel="prev" title="src.utils_flask_sqla_geo.mixins" href="../mixins/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../api-references.html">API REFERENCES</a></li>
+          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo</span></code></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo.schema</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/autoapi/src/utils_flask_sqla_geo/schema/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-src.utils_flask_sqla_geo.schema">
+<span id="src-utils-flask-sqla-geo-schema"></span><h1><a class="reference internal" href="#module-src.utils_flask_sqla_geo.schema" title="src.utils_flask_sqla_geo.schema"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo.schema</span></code></a><a class="headerlink" href="#module-src.utils_flask_sqla_geo.schema" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.utils_flask_sqla_geo.schema.GeometrySchema" title="src.utils_flask_sqla_geo.schema.GeometrySchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeometrySchema</span></code></a></p></td>
+<td><p>Base schema class with which to define custom schemas.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.utils_flask_sqla_geo.schema.FeatureSchema" title="src.utils_flask_sqla_geo.schema.FeatureSchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeatureSchema</span></code></a></p></td>
+<td><p>Base schema class with which to define custom schemas.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.utils_flask_sqla_geo.schema.FeatureCollectionSchema" title="src.utils_flask_sqla_geo.schema.FeatureCollectionSchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeatureCollectionSchema</span></code></a></p></td>
+<td><p>Base schema class with which to define custom schemas.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.utils_flask_sqla_geo.schema.GeometryField" title="src.utils_flask_sqla_geo.schema.GeometryField"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeometryField</span></code></a></p></td>
+<td><p>Basic field from which other fields should extend. It applies no</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.utils_flask_sqla_geo.schema.GeoModelConverter" title="src.utils_flask_sqla_geo.schema.GeoModelConverter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoModelConverter</span></code></a></p></td>
+<td><p>Model converter for models with geometric fields.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchemaOpts" title="src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchemaOpts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoAlchemyAutoSchemaOpts</span></code></a></p></td>
+<td><p>Options class for <code class="docutils literal notranslate"><span class="pre">GeoAlchemyAutoSchema</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema" title="src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoAlchemyAutoSchema</span></code></a></p></td>
+<td><p>Auto schema with support for geometric fields and geojson generation.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeometrySchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla_geo.schema.</span></span><span class="sig-name descname"><span class="pre">GeometrySchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">many</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(disponible dans Python v3.12)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.12)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">marshmallow.types.StrSequenceOrSet</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unknown</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeometrySchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeometrySchema" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">marshmallow.Schema</span></code></p>
+<p>Base schema class with which to define custom schemas.</p>
+<p>Example usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">fields</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Album</span><span class="p">:</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">release_date</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span>
+
+
+<span class="k">class</span> <span class="nc">AlbumSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">()</span>
+    <span class="n">release_date</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Date</span><span class="p">()</span>
+
+
+<span class="n">album</span> <span class="o">=</span> <span class="n">Album</span><span class="p">(</span><span class="s2">&quot;Beggars Banquet&quot;</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">1968</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="n">AlbumSchema</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">album</span><span class="p">)</span>
+<span class="n">data</span>  <span class="c1"># {&#39;release_date&#39;: &#39;1968-12-06&#39;, &#39;title&#39;: &#39;Beggars Banquet&#39;}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>only</strong> – Whitelist of the declared fields to select when
+instantiating the Schema. If None, all fields are used. Nested fields
+can be represented with dot delimiters.</p></li>
+<li><p><strong>exclude</strong> – Blacklist of the declared fields to exclude
+when instantiating the Schema. If a field appears in both <cite>only</cite> and
+<cite>exclude</cite>, it is not used. Nested fields can be represented with dot
+delimiters.</p></li>
+<li><p><strong>many</strong> – Should be set to <cite>True</cite> if <code class="docutils literal notranslate"><span class="pre">obj</span></code> is a collection
+so that the object will be serialized to a list.</p></li>
+<li><p><strong>context</strong> – Optional context passed to <code class="xref py py-class docutils literal notranslate"><span class="pre">fields.Method</span></code> and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">fields.Function</span></code> fields.</p></li>
+<li><p><strong>load_only</strong> – Fields to skip during serialization (write-only fields)</p></li>
+<li><p><strong>dump_only</strong> – Fields to skip during deserialization (read-only fields)</p></li>
+<li><p><strong>partial</strong> – Whether to ignore missing fields and not require
+any fields declared. Propagates down to <code class="docutils literal notranslate"><span class="pre">Nested</span></code> fields as well. If
+its value is an iterable, only missing fields listed in that iterable
+will be ignored. Use dot delimiters to specify nested fields.</p></li>
+<li><p><strong>unknown</strong> – Whether to exclude, include, or raise an error for unknown
+fields in the data. Use <cite>EXCLUDE</cite>, <cite>INCLUDE</cite> or <cite>RAISE</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.0.0: </span><cite>prefix</cite> parameter removed.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 2.0.0: </span><cite>__validators__</cite>, <cite>__preprocessors__</cite>, and <cite>__data_handlers__</cite> are removed in favor of
+<cite>marshmallow.decorators.validates_schema</cite>,
+<cite>marshmallow.decorators.pre_load</cite> and <cite>marshmallow.decorators.post_dump</cite>.
+<cite>__accessor__</cite> and <cite>__error_handler__</cite> are deprecated. Implement the
+<cite>handle_error</cite> and <cite>get_attribute</cite> methods instead.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeometrySchema.schema_map">
+<span class="sig-name descname"><span class="pre">schema_map</span></span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeometrySchema.schema_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeometrySchema.schema_map" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeometrySchema.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeometrySchema.type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeometrySchema.type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeometrySchema.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">many</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeometrySchema.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeometrySchema.load" title="Link to this definition"></a></dt>
+<dd><p>Deserialize a data structure to an object defined by this Schema’s fields.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – The data to deserialize.</p></li>
+<li><p><strong>many</strong> – Whether to deserialize <cite>data</cite> as a collection. If <cite>None</cite>, the
+value for <cite>self.many</cite> is used.</p></li>
+<li><p><strong>partial</strong> – Whether to ignore missing fields and not require
+any fields declared. Propagates down to <code class="docutils literal notranslate"><span class="pre">Nested</span></code> fields as well. If
+its value is an iterable, only missing fields listed in that iterable
+will be ignored. Use dot delimiters to specify nested fields.</p></li>
+<li><p><strong>unknown</strong> – Whether to exclude, include, or raise an error for unknown
+fields in the data. Use <cite>EXCLUDE</cite>, <cite>INCLUDE</cite> or <cite>RAISE</cite>.
+If <cite>None</cite>, the value for <cite>self.unknown</cite> is used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Deserialized data</p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 1.0.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.0.0b7: </span>This method returns the deserialized data rather than a <code class="docutils literal notranslate"><span class="pre">(data,</span> <span class="pre">errors)</span></code> duple.
+A <code class="xref py py-exc docutils literal notranslate"><span class="pre">ValidationError</span></code> is raised
+if invalid data are passed.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.FeatureSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla_geo.schema.</span></span><span class="sig-name descname"><span class="pre">FeatureSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">many</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(disponible dans Python v3.12)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.12)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">marshmallow.types.StrSequenceOrSet</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unknown</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#FeatureSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.FeatureSchema" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">marshmallow.Schema</span></code></p>
+<p>Base schema class with which to define custom schemas.</p>
+<p>Example usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">fields</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Album</span><span class="p">:</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">release_date</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span>
+
+
+<span class="k">class</span> <span class="nc">AlbumSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">()</span>
+    <span class="n">release_date</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Date</span><span class="p">()</span>
+
+
+<span class="n">album</span> <span class="o">=</span> <span class="n">Album</span><span class="p">(</span><span class="s2">&quot;Beggars Banquet&quot;</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">1968</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="n">AlbumSchema</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">album</span><span class="p">)</span>
+<span class="n">data</span>  <span class="c1"># {&#39;release_date&#39;: &#39;1968-12-06&#39;, &#39;title&#39;: &#39;Beggars Banquet&#39;}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>only</strong> – Whitelist of the declared fields to select when
+instantiating the Schema. If None, all fields are used. Nested fields
+can be represented with dot delimiters.</p></li>
+<li><p><strong>exclude</strong> – Blacklist of the declared fields to exclude
+when instantiating the Schema. If a field appears in both <cite>only</cite> and
+<cite>exclude</cite>, it is not used. Nested fields can be represented with dot
+delimiters.</p></li>
+<li><p><strong>many</strong> – Should be set to <cite>True</cite> if <code class="docutils literal notranslate"><span class="pre">obj</span></code> is a collection
+so that the object will be serialized to a list.</p></li>
+<li><p><strong>context</strong> – Optional context passed to <code class="xref py py-class docutils literal notranslate"><span class="pre">fields.Method</span></code> and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">fields.Function</span></code> fields.</p></li>
+<li><p><strong>load_only</strong> – Fields to skip during serialization (write-only fields)</p></li>
+<li><p><strong>dump_only</strong> – Fields to skip during deserialization (read-only fields)</p></li>
+<li><p><strong>partial</strong> – Whether to ignore missing fields and not require
+any fields declared. Propagates down to <code class="docutils literal notranslate"><span class="pre">Nested</span></code> fields as well. If
+its value is an iterable, only missing fields listed in that iterable
+will be ignored. Use dot delimiters to specify nested fields.</p></li>
+<li><p><strong>unknown</strong> – Whether to exclude, include, or raise an error for unknown
+fields in the data. Use <cite>EXCLUDE</cite>, <cite>INCLUDE</cite> or <cite>RAISE</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.0.0: </span><cite>prefix</cite> parameter removed.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 2.0.0: </span><cite>__validators__</cite>, <cite>__preprocessors__</cite>, and <cite>__data_handlers__</cite> are removed in favor of
+<cite>marshmallow.decorators.validates_schema</cite>,
+<cite>marshmallow.decorators.pre_load</cite> and <cite>marshmallow.decorators.post_dump</cite>.
+<cite>__accessor__</cite> and <cite>__error_handler__</cite> are deprecated. Implement the
+<cite>handle_error</cite> and <cite>get_attribute</cite> methods instead.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.FeatureSchema.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#FeatureSchema.id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.FeatureSchema.id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.FeatureSchema.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#FeatureSchema.type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.FeatureSchema.type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.FeatureSchema.geometry">
+<span class="sig-name descname"><span class="pre">geometry</span></span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#FeatureSchema.geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.FeatureSchema.geometry" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.FeatureSchema.properties">
+<span class="sig-name descname"><span class="pre">properties</span></span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#FeatureSchema.properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.FeatureSchema.properties" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.FeatureCollectionSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla_geo.schema.</span></span><span class="sig-name descname"><span class="pre">FeatureCollectionSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">many</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(disponible dans Python v3.12)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.12)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">marshmallow.types.StrSequenceOrSet</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unknown</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#FeatureCollectionSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.FeatureCollectionSchema" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">marshmallow.Schema</span></code></p>
+<p>Base schema class with which to define custom schemas.</p>
+<p>Example usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">fields</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Album</span><span class="p">:</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">release_date</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span>
+
+
+<span class="k">class</span> <span class="nc">AlbumSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">()</span>
+    <span class="n">release_date</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Date</span><span class="p">()</span>
+
+
+<span class="n">album</span> <span class="o">=</span> <span class="n">Album</span><span class="p">(</span><span class="s2">&quot;Beggars Banquet&quot;</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">1968</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="n">AlbumSchema</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">album</span><span class="p">)</span>
+<span class="n">data</span>  <span class="c1"># {&#39;release_date&#39;: &#39;1968-12-06&#39;, &#39;title&#39;: &#39;Beggars Banquet&#39;}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>only</strong> – Whitelist of the declared fields to select when
+instantiating the Schema. If None, all fields are used. Nested fields
+can be represented with dot delimiters.</p></li>
+<li><p><strong>exclude</strong> – Blacklist of the declared fields to exclude
+when instantiating the Schema. If a field appears in both <cite>only</cite> and
+<cite>exclude</cite>, it is not used. Nested fields can be represented with dot
+delimiters.</p></li>
+<li><p><strong>many</strong> – Should be set to <cite>True</cite> if <code class="docutils literal notranslate"><span class="pre">obj</span></code> is a collection
+so that the object will be serialized to a list.</p></li>
+<li><p><strong>context</strong> – Optional context passed to <code class="xref py py-class docutils literal notranslate"><span class="pre">fields.Method</span></code> and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">fields.Function</span></code> fields.</p></li>
+<li><p><strong>load_only</strong> – Fields to skip during serialization (write-only fields)</p></li>
+<li><p><strong>dump_only</strong> – Fields to skip during deserialization (read-only fields)</p></li>
+<li><p><strong>partial</strong> – Whether to ignore missing fields and not require
+any fields declared. Propagates down to <code class="docutils literal notranslate"><span class="pre">Nested</span></code> fields as well. If
+its value is an iterable, only missing fields listed in that iterable
+will be ignored. Use dot delimiters to specify nested fields.</p></li>
+<li><p><strong>unknown</strong> – Whether to exclude, include, or raise an error for unknown
+fields in the data. Use <cite>EXCLUDE</cite>, <cite>INCLUDE</cite> or <cite>RAISE</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.0.0: </span><cite>prefix</cite> parameter removed.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 2.0.0: </span><cite>__validators__</cite>, <cite>__preprocessors__</cite>, and <cite>__data_handlers__</cite> are removed in favor of
+<cite>marshmallow.decorators.validates_schema</cite>,
+<cite>marshmallow.decorators.pre_load</cite> and <cite>marshmallow.decorators.post_dump</cite>.
+<cite>__accessor__</cite> and <cite>__error_handler__</cite> are deprecated. Implement the
+<cite>handle_error</cite> and <cite>get_attribute</cite> methods instead.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.FeatureCollectionSchema.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#FeatureCollectionSchema.type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.FeatureCollectionSchema.type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.FeatureCollectionSchema.features">
+<span class="sig-name descname"><span class="pre">features</span></span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#FeatureCollectionSchema.features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.FeatureCollectionSchema.features" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeometryField">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla_geo.schema.</span></span><span class="sig-name descname"><span class="pre">GeometryField</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">missing_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">missing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">missing_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">missing_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">missing_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_none</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.12)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(disponible dans Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">additional_metadata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeometryField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeometryField" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">marshmallow.fields.Field</span></code></p>
+<p>Basic field from which other fields should extend. It applies no
+formatting by default, and should only be used in cases where
+data does not need to be formatted before being serialized or deserialized.
+On error, the name of the field will be returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dump_default</strong> – If set, this value will be used during serialization if the
+input value is missing. If not set, the field will be excluded from the
+serialized output if the input value is missing. May be a value or a callable.</p></li>
+<li><p><strong>load_default</strong> – Default deserialization value for the field if the field is not
+found in the input data. May be a value or a callable.</p></li>
+<li><p><strong>data_key</strong> – The name of the dict key in the external representation, i.e.
+the input of <cite>load</cite> and the output of <cite>dump</cite>.
+If <cite>None</cite>, the key will match the name of the field.</p></li>
+<li><p><strong>attribute</strong> – The name of the attribute to get the value from when serializing.
+If <cite>None</cite>, assumes the attribute has the same name as the field.
+Note: This should only be used for very specific use cases such as
+outputting multiple fields for a single attribute. In most cases,
+you should use <code class="docutils literal notranslate"><span class="pre">data_key</span></code> instead.</p></li>
+<li><p><strong>validate</strong> – Validator or collection of validators that are called
+during deserialization. Validator takes a field’s input value as
+its only parameter and returns a boolean.
+If it returns <cite>False</cite>, an <code class="xref py py-exc docutils literal notranslate"><span class="pre">ValidationError</span></code> is raised.</p></li>
+<li><p><strong>required</strong> – Raise a <code class="xref py py-exc docutils literal notranslate"><span class="pre">ValidationError</span></code> if the field value
+is not supplied during deserialization.</p></li>
+<li><p><strong>allow_none</strong> – Set this to <cite>True</cite> if <cite>None</cite> should be considered a valid value during
+validation/deserialization. If <code class="docutils literal notranslate"><span class="pre">load_default=None</span></code> and <code class="docutils literal notranslate"><span class="pre">allow_none</span></code> is unset,
+will default to <code class="docutils literal notranslate"><span class="pre">True</span></code>. Otherwise, the default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>load_only</strong> – If <cite>True</cite> skip this field during serialization, otherwise
+its value will be present in the serialized data.</p></li>
+<li><p><strong>dump_only</strong> – If <cite>True</cite> skip this field during deserialization, otherwise
+its value will be present in the deserialized object. In the context of an
+HTTP API, this effectively marks the field as « read-only ».</p></li>
+<li><p><strong>error_messages</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(disponible dans Python v3.12)"><em>dict</em></a>) – Overrides for <cite>Field.default_error_messages</cite>.</p></li>
+<li><p><strong>metadata</strong> – Extra information to be stored as field metadata.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 2.0.0: </span>Removed <cite>error</cite> parameter. Use <code class="docutils literal notranslate"><span class="pre">error_messages</span></code> instead.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 2.0.0: </span>Added <cite>allow_none</cite> parameter, which makes validation/deserialization of <cite>None</cite>
+consistent across fields.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 2.0.0: </span>Added <cite>load_only</cite> and <cite>dump_only</cite> parameters, which allow field skipping
+during the (de)serialization process.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 2.0.0: </span>Added <cite>missing</cite> parameter, which indicates the value for a field if the field
+is not found during deserialization.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 2.0.0: </span><code class="docutils literal notranslate"><span class="pre">default</span></code> value is only used if explicitly set. Otherwise, missing values
+inputs are excluded from serialized output.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.0.0b8: </span>Add <code class="docutils literal notranslate"><span class="pre">data_key</span></code> parameter for the specifying the key in the input and
+output data. This parameter replaced both <code class="docutils literal notranslate"><span class="pre">load_from</span></code> and <code class="docutils literal notranslate"><span class="pre">dump_to</span></code>.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeometryField.geometry_schema">
+<span class="sig-name descname"><span class="pre">geometry_schema</span></span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeometryField.geometry_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeometryField.geometry_schema" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeometryField._serialize_wkt">
+<span class="sig-name descname"><span class="pre">_serialize_wkt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeometryField._serialize_wkt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeometryField._serialize_wkt" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeometryField._serialize_geojson">
+<span class="sig-name descname"><span class="pre">_serialize_geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeometryField._serialize_geojson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeometryField._serialize_geojson" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeometryField._deserialize_wkt">
+<span class="sig-name descname"><span class="pre">_deserialize_wkt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeometryField._deserialize_wkt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeometryField._deserialize_wkt" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeometryField._deserialize_geojson">
+<span class="sig-name descname"><span class="pre">_deserialize_geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeometryField._deserialize_geojson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeometryField._deserialize_geojson" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeometryField._bind_to_schema">
+<span class="sig-name descname"><span class="pre">_bind_to_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeometryField._bind_to_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeometryField._bind_to_schema" title="Link to this definition"></a></dt>
+<dd><p>Update field with values from its parent schema. Called by
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">Schema._bind_field</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><em>str</em></a>) – Field name set in schema.</p></li>
+<li><p><strong>schema</strong> (<em>Schema</em><em>|</em><em>Field</em>) – Parent object.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeoModelConverter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla_geo.schema.</span></span><span class="sig-name descname"><span class="pre">GeoModelConverter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_cls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeoModelConverter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeoModelConverter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">marshmallow_sqlalchemy.convert.ModelConverter</span></code></p>
+<p>Model converter for models with geometric fields.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeoModelConverter.SQLA_TYPE_MAPPING">
+<span class="sig-name descname"><span class="pre">SQLA_TYPE_MAPPING</span></span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeoModelConverter.SQLA_TYPE_MAPPING"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeoModelConverter.SQLA_TYPE_MAPPING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchemaOpts">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla_geo.schema.</span></span><span class="sig-name descname"><span class="pre">GeoAlchemyAutoSchemaOpts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeoAlchemyAutoSchemaOpts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchemaOpts" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">marshmallow_sqlalchemy.schema.SQLAlchemyAutoSchemaOpts</span></code></p>
+<p>Options class for <code class="docutils literal notranslate"><span class="pre">GeoAlchemyAutoSchema</span></code>.
+Adds the following options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">geometry_fields</span></code>: List of Geometry columns.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">feature_id</span></code>: Identity field to use when generating features.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">feature_geometry</span></code>: Geometry field to use when generating features.</p></li>
+</ul>
+<p>Thus, this options class define <code class="docutils literal notranslate"><span class="pre">GeoModelConverter</span></code> as default model converter.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla_geo.schema.</span></span><span class="sig-name descname"><span class="pre">GeoAlchemyAutoSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_geojson</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeoAlchemyAutoSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">marshmallow_sqlalchemy.schema.SQLAlchemyAutoSchema</span></code></p>
+<p>Auto schema with support for geometric fields and geojson generation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>as_geojson</strong> – If <code class="docutils literal notranslate"><span class="pre">true</span></code>, serialize and deserialize geojson instead of json.</p></li>
+<li><p><strong>feature_id</strong> – Identity field to use when generating features.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, use <code class="docutils literal notranslate"><span class="pre">feature_id</span></code> specified on <code class="docutils literal notranslate"><span class="pre">class</span> <span class="pre">Meta</span></code> if any, otherwise
+features are generated without id.</p></li>
+<li><p><strong>feature_geometry</strong> – Geometry field to use when generating features.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, use <code class="docutils literal notranslate"><span class="pre">feature_geometry</span></code> specified on <code class="docutils literal notranslate"><span class="pre">class</span> <span class="pre">Meta</span></code>.
+If not specified on <code class="docutils literal notranslate"><span class="pre">class</span> <span class="pre">Meta</span></code> either, auto-detect the geometry field.
+If none or several geometric fields are detected, raise a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Geometric fields are automatically removed from serialization.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema.OPTIONS_CLASS">
+<span class="sig-name descname"><span class="pre">OPTIONS_CLASS</span></span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeoAlchemyAutoSchema.OPTIONS_CLASS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema.OPTIONS_CLASS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema.to_feature">
+<span class="sig-name descname"><span class="pre">to_feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">properties</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeoAlchemyAutoSchema.to_feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema.to_feature" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema.from_feature">
+<span class="sig-name descname"><span class="pre">from_feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeoAlchemyAutoSchema.from_feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema.from_feature" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema._serialize">
+<span class="sig-name descname"><span class="pre">_serialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">many</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeoAlchemyAutoSchema._serialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema._serialize" title="Link to this definition"></a></dt>
+<dd><p>Serialize <code class="docutils literal notranslate"><span class="pre">obj</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> – The object(s) to serialize.</p></li>
+<li><p><strong>many</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.12)"><em>bool</em></a>) – <cite>True</cite> if <code class="docutils literal notranslate"><span class="pre">data</span></code> should be serialized as a collection.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary of the serialized data</p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 1.0.0: </span>Renamed from <code class="docutils literal notranslate"><span class="pre">marshal</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema.to_geojson">
+<span class="sig-name descname"><span class="pre">to_geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">many</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeoAlchemyAutoSchema.to_geojson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema.to_geojson" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema.from_geojson">
+<span class="sig-name descname"><span class="pre">from_geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">many</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla_geo/schema.html#GeoAlchemyAutoSchema.from_geojson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema.from_geojson" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="../mixins/index.html" class="btn btn-neutral float-left" title="src.utils_flask_sqla_geo.mixins" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="../serializers/index.html" class="btn btn-neutral float-right" title="src.utils_flask_sqla_geo.serializers" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

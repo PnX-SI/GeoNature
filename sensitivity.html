@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" >
+<html class="writer-html5" lang="fr" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gestion de la sensibilité &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/translations.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=e8570148"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=d99ca74e"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Recherche" href="search.html" /> 
@@ -27,15 +30,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="index.html" class="icon icon-home"> GeoNature
-            <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GeoNature
+              <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -49,6 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-references.html">API REFERENCES</a></li>
 </ul>
 
         </div>
@@ -64,8 +72,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Gestion de la sensibilité</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Gestion de la sensibilité</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/sensitivity.rst.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
@@ -76,14 +84,14 @@
            <div itemprop="articleBody">
              
   <section id="gestion-de-la-sensibilite">
-<h1>Gestion de la sensibilité<a class="headerlink" href="#gestion-de-la-sensibilite" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>Gestion de la sensibilité<a class="headerlink" href="#gestion-de-la-sensibilite" title="Link to this heading"></a></h1>
 <section id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
 <p>Les régles de sensibilité définies par défaut sont issues des règles du SINP.
 Elles dépendent de l’espèce et de l’observation. C’est-à-dire que pour une espèce donnée,
 plusieurs niveaux de sensibilité sont possibles selon l’observation.</p>
 <section id="criteres-de-sensibilite">
-<h3>Critères de sensibilité<a class="headerlink" href="#criteres-de-sensibilite" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Critères de sensibilité<a class="headerlink" href="#criteres-de-sensibilite" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Taxon</p></li>
 <li><p>Emplacement</p></li>
@@ -96,7 +104,7 @@ plusieurs niveaux de sensibilité sont possibles selon l’observation.</p>
 rendant l’entiereté des observations d’une espèce (et donc une espèce) sensible.</p>
 </section>
 <section id="niveaux-de-sensibilite">
-<h3>Niveaux de sensibilité<a class="headerlink" href="#niveaux-de-sensibilite" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Niveaux de sensibilité<a class="headerlink" href="#niveaux-de-sensibilite" title="Link to this heading"></a></h3>
 <p>Voici les 5 niveaux de sensibilité définis par le SINP :</p>
 <ul class="simple">
 <li><p>Sensible - Aucune diffusion</p></li>
@@ -107,7 +115,7 @@ rendant l’entiereté des observations d’une espèce (et donc une espèce) se
 </ul>
 </section>
 <section id="pour-plus-d-informations">
-<h3>Pour plus d’informations<a class="headerlink" href="#pour-plus-d-informations" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Pour plus d’informations<a class="headerlink" href="#pour-plus-d-informations" title="Link to this heading"></a></h3>
 <p>Vous pouvez consulter :</p>
 <ul class="simple">
 <li><p>La page du site du <a class="reference external" href="https://inpn.mnhn.fr/programme/donnees-observations-especes/references/sensibilite">SINP traitant de la sensibilité</a>.</p></li>
@@ -122,9 +130,9 @@ régional et national et donc de ne pas ajouter de règles locales.</p>
 </section>
 </section>
 <section id="integration-dans-geonature">
-<h2>Intégration dans GeoNature<a class="headerlink" href="#integration-dans-geonature" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Intégration dans GeoNature<a class="headerlink" href="#integration-dans-geonature" title="Link to this heading"></a></h2>
 <section id="stockage-des-regles-en-base">
-<h3>Stockage des règles en base<a class="headerlink" href="#stockage-des-regles-en-base" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Stockage des règles en base<a class="headerlink" href="#stockage-des-regles-en-base" title="Link to this heading"></a></h3>
 <p>Les règles de sensibilité sont stockées dans le schéma <code class="docutils literal notranslate"><span class="pre">gn_sensitivity</span></code>
 qui contient 3 tables :</p>
 <ul class="simple">
@@ -149,7 +157,7 @@ Il est nécessaire de la rafraichir lors de l’évolution du référentiel
 de sensibilité.</p>
 </section>
 <section id="attribution-aux-observations-de-la-synthese">
-<h3>Attribution aux observations de la synthèse<a class="headerlink" href="#attribution-aux-observations-de-la-synthese" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Attribution aux observations de la synthèse<a class="headerlink" href="#attribution-aux-observations-de-la-synthese" title="Link to this heading"></a></h3>
 <p>La sensibilité des observations de la synthèse est stockée dans la
 colonne <code class="docutils literal notranslate"><span class="pre">id_nomenclature_sensitivity</span></code>.</p>
 <p>A chaque insertion d’une donnée dans la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code>,
@@ -159,7 +167,7 @@ elle-même la fonction <code class="docutils literal notranslate"><span class="p
 pour le calcul de la sensibilité.</p>
 </section>
 <section id="gestion-du-referentiel">
-<h3>Gestion du référentiel<a class="headerlink" href="#gestion-du-referentiel" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Gestion du référentiel<a class="headerlink" href="#gestion-du-referentiel" title="Link to this heading"></a></h3>
 <p>GeoNature fournit la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">sensitivity</span></code> pour gérer son référentiel
 de sensibilité :</p>
 <ul class="simple">
@@ -173,37 +181,37 @@ de sensibilité :</p>
 à GeoNature lors de son installation. Sinon, il peut être manuellement
 intégré avec l’une ou l’autre des commandes suivantes :</p>
 <p>TaxRef v16 :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity add-referential <span class="se">\</span>
-        --source-name <span class="s2">&quot;Référentiel sensibilité TAXREF v16 20230203&quot;</span> <span class="se">\</span>
-        --url https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip <span class="se">\</span>
-        --zipfile RefSensibiliteV16_20230203.zip <span class="se">\</span>
-        --csvfile RefSensibiliteV16_20230203/RefSensibilite_16.csv  <span class="se">\</span>
-        --encoding<span class="o">=</span>iso-8859-15
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v16 20230203&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--url<span class="w"> </span>https://geonature.fr/data/inpn/sensitivity/RefSensibiliteV16_20230203.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--zipfile<span class="w"> </span>RefSensibiliteV16_20230203.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--csvfile<span class="w"> </span>RefSensibiliteV16_20230203/RefSensibilite_16.csv<span class="w">  </span><span class="se">\</span>
+<span class="w">        </span>--encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
 <p>TaxRef v15 :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity add-referential <span class="se">\</span>
-        --source-name <span class="s2">&quot;Référentiel sensibilité TAXREF v15 20220331&quot;</span> <span class="se">\</span>
-        --url https://inpn.mnhn.fr/docs-web/docs/download/401875 <span class="se">\</span>
-        --zipfile RefSensibiliteV15_20220331.zip <span class="se">\</span>
-        --csvfile RefSensibilite_V15_31032022/RefSensibilite_15.csv  <span class="se">\</span>
-        --encoding<span class="o">=</span>iso-8859-15
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v15 20220331&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--url<span class="w"> </span>https://inpn.mnhn.fr/docs-web/docs/download/401875<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--zipfile<span class="w"> </span>RefSensibiliteV15_20220331.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--csvfile<span class="w"> </span>RefSensibilite_V15_31032022/RefSensibilite_15.csv<span class="w">  </span><span class="se">\</span>
+<span class="w">        </span>--encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
 <p>TaxRef v14 :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity add-referential <span class="se">\</span>
-        --source-name <span class="s2">&quot;Référentiel sensibilité TAXREF v14 20220331&quot;</span> <span class="se">\</span>
-        --url https://inpn.mnhn.fr/docs-web/docs/download/401876 <span class="se">\</span>
-        --zipfile RefSensibiliteV14_20220331.zip <span class="se">\</span>
-        --csvfile RefSensibilite_V14_31032022/RefSensibilite_14.csv  <span class="se">\</span>
-        --encoding<span class="o">=</span>iso-8859-15
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v14 20220331&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--url<span class="w"> </span>https://inpn.mnhn.fr/docs-web/docs/download/401876<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--zipfile<span class="w"> </span>RefSensibiliteV14_20220331.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--csvfile<span class="w"> </span>RefSensibilite_V14_31032022/RefSensibilite_14.csv<span class="w">  </span><span class="se">\</span>
+<span class="w">        </span>--encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
 <p>Le jeu de règles est fourni pour chaque version précise de TaxRef, certaines
 espèces sensibles pouvant voir leur <em>cd_nom</em> changé d’une version à l’autre.</p>
 </section>
 <section id="personnalisation">
-<h3>Personnalisation<a class="headerlink" href="#personnalisation" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Personnalisation<a class="headerlink" href="#personnalisation" title="Link to this heading"></a></h3>
 <p>Pour l’instant, seule la personnalisation de la sensibilité pour
 une espèce donnée (peu importe l’observation) est abordée ici.</p>
 <ol class="arabic">
@@ -214,17 +222,17 @@ valeur à renseigner, voir dans <code class="docutils literal notranslate"><span
 <li><p>Dans <code class="docutils literal notranslate"><span class="pre">cor_sensitivity_criteria</span></code> : s’il y a une correspondance
 d”<code class="docutils literal notranslate"><span class="pre">id_sensitivity</span></code> avec <code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules</span></code>, modifiez ou supprimez cette ligne.</p></li>
 <li><p>Rafraichissez le cache des règles extrapolées aux espèces :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity refresh-rules-cache
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>refresh-rules-cache
 </pre></div>
 </div>
 <p>Ceci est équivalent à lancer manuellement la commande SQL suivante :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">REFRESH</span><span class="w"> </span><span class="n">MATERIALIZED</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">gn_sensitivity</span><span class="p">.</span><span class="n">t_sensitivity_rules_cd_ref</span><span class="w"></span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">REFRESH</span><span class="w"> </span><span class="n">MATERIALIZED</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">gn_sensitivity</span><span class="p">.</span><span class="n">t_sensitivity_rules_cd_ref</span>
 </pre></div>
 </div>
 </li>
 <li><p>Il est maintenant nécessaire de mettre à jour la sensibilité de vos
 observations présentes dans la synthèse. Pour cela, lancez la commande suivante :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity update-synthese
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>update-synthese
 </pre></div>
 </div>
 </li>
@@ -235,10 +243,82 @@ changé. Vous pouvez le vérifier en navigant dans le module Synthèse
 puis dans les détails d’une observation de votre/vos espèce(s).</p>
 </section>
 <section id="utilisation">
-<h3>Utilisation<a class="headerlink" href="#utilisation" title="Lien permanent vers cette rubrique"></a></h3>
-<p>Actuellement, le niveau de sensibilité des observations n’est pas exploité par GeoNature.
-Le floutage des observations en fonction de leur niveau de sensibilité est une fonctionnalité
-souhaitée mais pas encore présente dans GeoNature.</p>
+<h3>Utilisation<a class="headerlink" href="#utilisation" title="Link to this heading"></a></h3>
+<p>Un lien entre la synthèse et la sensibilité a été mis en place : le floutage des données sensibles.</p>
+<p>L’objectif et de pouvoir donner accès aux utilisateurs à des données sensibles mais pas de façon précise.
+C’est à dire, en fonction du niveau de sensibilité de l’observation, un utilisateur pourra voir uniquement
+l’observation à la maille de 10km par exemple.</p>
+<p>Comme décrit ci-dessous, un paramètre en configuration a été ajoutée pour donner l’a possibilité d’exclure
+toutes les données sensibles plutôt que de les flouter.</p>
+<section id="implementation">
+<h4>Implementation<a class="headerlink" href="#implementation" title="Link to this heading"></a></h4>
+<p>Basée sur le nouveau système de permissions (v2.13), l’implémentation dans ce système se résout à
+l’ajout d’un filtre : exlure/flouter les données sensibles.
+Le choix entre l’exclusion et le floutage est décidé par le paramètre en configuration :</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[SYNTHESE]</span>
+<span class="n">BLUR_SENSITIVE_OBSERVATIONS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+</pre></div>
+</div>
+<p>Si <cite>BLUR_SENSITIVE_OBSERVATIONS=true</cite> alors les observations seront floutées. Sinon exclues.</p>
+<p>L’exclusion des données sensibles est simple : si le filtre « exclure les données sensibles » est coché,
+l’utilisateur n’aura pas accès (pour un scope défini) aux données sensibles quelque soit leur niveau
+de sensibilité soit :
+- Sensible - Diffusion à la Commune ou Znieff
+- Sensible - Diffusion à la maille 10km
+- Sensible - Diffusion au département
+- Sensible - Aucune diffusion</p>
+<p>Pour la suite de la documentation, le paramètre est considéré comme le suivant : <cite>BLUR_SENSITIVE_OBSERVATIONS=true</cite>.
+Donc toute donnée sensible avec restriction d’accès sera floutée.</p>
+<p>Si ce filtre n’est pas activé, la récupération des données de la synthèse en backend reste inchangée.
+En effet, l’ajout du floutage des données nuit forcément aux performances.</p>
+<p>S’il est activé, une requête SQL est construite comme suit :</p>
+<img alt="https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/blurring_query.svg" src="https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/blurring_query.svg" /><p>Le but est d’ajouter à la requête principale une sous-requête exécutant deux requêtes <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> dans
+la table de synthèse afin de séparer les données précises des données floutées. Ensuite un <code class="docutils literal notranslate"><span class="pre">UNION</span></code>
+est fait afin de rassembler les données avec priorité sur les données précises.</p>
+<p>Dans ces deux requêtes, les permissions ainsi que les filtres utilisateurs sont pris en comptes, donc
+l’utilisateur n’a pas obligatoirement accès à toutes les données, c’est à la charge de l’administrateur.
+Le fait de prendre en compte les filtres dans chacune des deux requêtes permet une cohérence dans les
+résultats renvoyés par ces deux requêtes (car un <code class="docutils literal notranslate"><span class="pre">LIMIT</span></code> est souvent présent).</p>
+<p>Ce floutage des données a été implémenté sur 3 routes de la synthèse :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/for_web</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/vsynthese/&lt;id_synthese&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/export_observations</span></code></p></li>
+</ul>
+<p>Des tests unitaires ont également été écrits.</p>
+</section>
+<section id="traitement-des-problematiques-lies-aux-zonages">
+<h4>Traitement des problématiques liés aux zonages<a class="headerlink" href="#traitement-des-problematiques-lies-aux-zonages" title="Link to this heading"></a></h4>
+<p><strong>Traitement de l’affichage en mode maille</strong></p>
+<p>Il a été décidé d’exclure les données sensibles dont la géométrie floutée est plus grande que la
+maille affichée en mode maille dans la synthèse.</p>
+<p>C’est à dire que si une observation est dégradée/floutée à la maille M10 (10km²) et que le mode maille
+affiche les observations regroupées dans les mailles de type M5 (5km), l’observation n’apparaitra dans
+aucune maille mais dans seulement dans la liste des observations.</p>
+<p>Pour rappel la maille de regroupement pour affichage dans le mode maille est définie par le paramètre
+suivant :</p>
+<p>Pour que ce filtrage soit effectué, il était nécessaire d’introduire une nouvelle colonne dans la table
+<code class="docutils literal notranslate"><span class="pre">ref_geo.bib_area_types</span></code> : <code class="docutils literal notranslate"><span class="pre">size_hierarchy</span></code> qui permet d’ordonner les types de zones par leur
+taille moyenne. Pour les mailles cela est simple, pour les départements et les communes notamment
+utilisées pour flouter la donnée, cela est plus complexe. Leur taille a donc été donnée arbitrairement.
+Le floutage des données est censé évoluer vers des zones de floutages basées exclusivement sur des
+mailles. Le problème de la taille arbitraire ne sera alors plus d’actualité.</p>
+<p><strong>Traitement des zonages associés</strong></p>
+<p>L’introduction de la nouvelle colone <code class="docutils literal notranslate"><span class="pre">size_hierarchy</span></code> permet également d’afficher uniquement les
+zonages plus grands que la géométrie floutée dans l’onglet Zonage des détails d’une observation en
+synthèse. Par exemple, les mailles M1 (1km²) et M5 (5km²) d’une observation floutée à la maille M10
+(10km²) n’apparaitront pas.</p>
+<p><strong>Traitement du filtre de type « zonage »</strong></p>
+<p>Pour rappel, ce filtre permet de rechercher si des observations intersectent des zones choisies par
+l’utilisateur. Ces zones sont disponibles dans la section « Où » dans le module Synthèse.</p>
+<p>En backend, quand l’utilisateur voit les données précisément, le filtre fonctionne grâce à la
+table <code class="docutils literal notranslate"><span class="pre">gn_synthese.cor_area_synthese</span></code>, évitant de procéder à l’appel de <code class="docutils literal notranslate"><span class="pre">ST_Intersects</span></code> plus lent.</p>
+<p>Ce filtre fonctionne différemment quand l’utilisateur dispose de permissions floutant les
+données. En effet, un <code class="docutils literal notranslate"><span class="pre">ST_Intersects</span></code> est effectué sur la géométrie floutée car l’utilisation de
+<code class="docutils literal notranslate"><span class="pre">gn_synthese.cor_area_synthese</span></code> pourrait donner trop d’informations à l’utilisateur et ce dernier
+pourrait obtenir des données plus précises que souhaité par recherche sur différentes communes alors
+que l’observation est floutée au département par exemple.</p>
+</section>
 </section>
 </section>
 </section>
@@ -251,7 +331,7 @@ souhaitée mais pas encore présente dans GeoNature.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2018-2023, PnE, PnC.</p>
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
   </div>
 
   Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un

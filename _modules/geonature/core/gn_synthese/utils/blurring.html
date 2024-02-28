@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_synthese.utils.blurring &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.gn_synthese.utils.blurring</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.gn_synthese.utils.blurring</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">g</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">aliased</span>
+<span class="kn">from</span> <span class="nn">pypnnomenclature.models</span> <span class="kn">import</span> <span class="n">BibNomenclaturesTypes</span><span class="p">,</span> <span class="n">TNomenclatures</span>
+<span class="kn">from</span> <span class="nn">ref_geo.models</span> <span class="kn">import</span> <span class="n">BibAreasTypes</span><span class="p">,</span> <span class="n">LAreas</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.gn_synthese.models</span> <span class="kn">import</span> <span class="n">CorAreaSynthese</span><span class="p">,</span> <span class="n">Synthese</span><span class="p">,</span> <span class="n">VSyntheseForWebApp</span>
+<span class="kn">from</span> <span class="nn">geonature.core.sensitivity.models</span> <span class="kn">import</span> <span class="n">cor_sensitivity_area_type</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_synthese.utils.query_select_sqla</span> <span class="kn">import</span> <span class="n">SyntheseQuery</span>
+
+
+<div class="viewcode-block" id="split_blurring_precise_permissions">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_synthese/utils/blurring/index.html#geonature.core.gn_synthese.utils.blurring.split_blurring_precise_permissions">[docs]</a>
+<span class="k">def</span> <span class="nf">split_blurring_precise_permissions</span><span class="p">(</span><span class="n">permissions</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return permissions respectively with and without sensitivity filter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">permissions</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">sensitivity_filter</span><span class="p">],</span> <span class="p">[</span>
+        <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">permissions</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">sensitivity_filter</span>
+    <span class="p">]</span></div>
+
+
+
+<span class="nd">@lru_cache</span><span class="p">()</span>  <span class="c1"># to retrive non sensitive nomenclature only on first call</span>
+<div class="viewcode-block" id="build_sensitive_unsensitive_filters">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_synthese/utils/blurring/index.html#geonature.core.gn_synthese.utils.blurring.build_sensitive_unsensitive_filters">[docs]</a>
+<span class="k">def</span> <span class="nf">build_sensitive_unsensitive_filters</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return where clauses for sensitive and non-sensitive observations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">non_sensitive_nomenc</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">with_entities</span><span class="p">(</span><span class="n">TNomenclatures</span><span class="o">.</span><span class="n">id_nomenclature</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">TNomenclatures</span><span class="o">.</span><span class="n">nomenclature_type</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">BibNomenclaturesTypes</span><span class="o">.</span><span class="n">mnemonique</span> <span class="o">==</span> <span class="s2">&quot;SENSIBILITE&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">TNomenclatures</span><span class="o">.</span><span class="n">cd_nomenclature</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">one</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">Synthese</span><span class="o">.</span><span class="n">id_nomenclature_sensitivity</span> <span class="o">!=</span> <span class="n">non_sensitive_nomenc</span><span class="o">.</span><span class="n">id_nomenclature</span><span class="p">,</span>
+        <span class="n">Synthese</span><span class="o">.</span><span class="n">id_nomenclature_sensitivity</span> <span class="o">==</span> <span class="n">non_sensitive_nomenc</span><span class="o">.</span><span class="n">id_nomenclature</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="build_blurred_precise_geom_queries">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_synthese/utils/blurring/index.html#geonature.core.gn_synthese.utils.blurring.build_blurred_precise_geom_queries">[docs]</a>
+<span class="k">def</span> <span class="nf">build_blurred_precise_geom_queries</span><span class="p">(</span>
+    <span class="n">filters</span><span class="p">,</span> <span class="n">where_clauses</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span> <span class="n">select_size_hierarchy</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">):</span>
+    <span class="c1"># Build 2 queries that will be UNIONed</span>
+    <span class="c1"># The where_clauses list enables to add more conditions to the base query</span>
+    <span class="c1"># Used in export query</span>
+    <span class="n">where_clauses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">the_geom_4326</span><span class="o">.</span><span class="n">isnot</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
+
+    <span class="c1"># Query precise geom, for use with unsensitive observations</span>
+    <span class="c1"># and sensitive observations with precise permission</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">literal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;priority&quot;</span><span class="p">),</span>
+        <span class="n">Synthese</span><span class="o">.</span><span class="n">id_synthese</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;id_synthese&quot;</span><span class="p">),</span>
+        <span class="n">Synthese</span><span class="o">.</span><span class="n">the_geom_4326</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;geom&quot;</span><span class="p">),</span>
+    <span class="p">]</span>
+    <span class="c1"># Size hierarchy can be used here to filter on it in</span>
+    <span class="c1"># a mesh mode scenario.</span>
+    <span class="k">if</span> <span class="n">select_size_hierarchy</span><span class="p">:</span>
+        <span class="c1"># 0 since no blurring geometry is associated here and a point have a 0 size</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">literal</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;size_hierarchy&quot;</span><span class="p">))</span>
+    <span class="n">precise_geom_query</span> <span class="o">=</span> <span class="n">SyntheseQuery</span><span class="p">(</span>
+        <span class="n">Synthese</span><span class="p">,</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span><span class="o">*</span><span class="n">where_clauses</span><span class="p">))</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_synthese</span><span class="o">.</span><span class="n">desc</span><span class="p">()),</span>
+        <span class="n">filters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">filters</span><span class="p">),</span>  <span class="c1"># not to edit the actual filter object</span>
+    <span class="p">)</span>
+
+    <span class="c1"># In both queries, we applied all filters so that we do not need to query the</span>
+    <span class="c1"># whole synthese table</span>
+    <span class="n">precise_geom_query</span><span class="o">.</span><span class="n">filter_taxonomy</span><span class="p">()</span>
+    <span class="n">precise_geom_query</span><span class="o">.</span><span class="n">filter_other_filters</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="p">)</span>
+    <span class="n">precise_geom_query</span><span class="o">.</span><span class="n">build_query</span><span class="p">()</span>
+
+    <span class="c1"># Query blurred geom, for use with sensitive observations</span>
+    <span class="n">CorAreaSyntheseAlias</span> <span class="o">=</span> <span class="n">aliased</span><span class="p">(</span><span class="n">CorAreaSynthese</span><span class="p">)</span>
+    <span class="n">LAreasAlias</span> <span class="o">=</span> <span class="n">aliased</span><span class="p">(</span><span class="n">LAreas</span><span class="p">)</span>
+    <span class="n">BibAreasTypesAlias</span> <span class="o">=</span> <span class="n">aliased</span><span class="p">(</span><span class="n">BibAreasTypes</span><span class="p">)</span>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">LAreasAlias</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">st_transform</span><span class="p">(</span><span class="mi">4326</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;geom&quot;</span><span class="p">)</span>
+    <span class="c1"># In SyntheseQuery below :</span>
+    <span class="c1"># - query_joins parameter is needed to bypass</span>
+    <span class="c1">#   &quot;self.query_joins is not None&quot; condition in the build_query() method below</span>
+    <span class="c1"># - priority is used to prevail non blurred geom over blurred geom if the user</span>
+    <span class="c1">#   can access to the non blurred geom</span>
+    <span class="c1"># - orderby needed to match the non blurred and the blurred observations</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">literal</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;priority&quot;</span><span class="p">),</span>
+        <span class="n">Synthese</span><span class="o">.</span><span class="n">id_synthese</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;id_synthese&quot;</span><span class="p">),</span>
+        <span class="n">geom</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="c1"># size hierarchy is the size of the joined blurring area</span>
+    <span class="k">if</span> <span class="n">select_size_hierarchy</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BibAreasTypes</span><span class="o">.</span><span class="n">size_hierarchy</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;size_hierarchy&quot;</span><span class="p">))</span>
+    <span class="n">blurred_geom_query</span> <span class="o">=</span> <span class="n">SyntheseQuery</span><span class="p">(</span>
+        <span class="n">Synthese</span><span class="p">,</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">columns</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">cor_sensitivity_area_type</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_nomenclature_sensitivity</span>
+            <span class="o">==</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">id_nomenclature_sensitivity</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span><span class="o">*</span><span class="n">where_clauses</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">Synthese</span><span class="o">.</span><span class="n">id_synthese</span><span class="o">.</span><span class="n">desc</span><span class="p">()),</span>
+        <span class="n">filters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">filters</span><span class="p">),</span>
+        <span class="n">query_joins</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">Synthese</span><span class="p">,</span>
+            <span class="n">CorAreaSyntheseAlias</span><span class="p">,</span>
+            <span class="n">CorAreaSyntheseAlias</span><span class="o">.</span><span class="n">id_synthese</span> <span class="o">==</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">geom_column</span><span class="o">=</span><span class="n">LAreas</span><span class="o">.</span><span class="n">geom_4326</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># Joins here are needed to retrieve the blurred geometry</span>
+    <span class="n">blurred_geom_query</span><span class="o">.</span><span class="n">add_join</span><span class="p">(</span><span class="n">LAreasAlias</span><span class="p">,</span> <span class="n">LAreasAlias</span><span class="o">.</span><span class="n">id_area</span><span class="p">,</span> <span class="n">CorAreaSyntheseAlias</span><span class="o">.</span><span class="n">id_area</span><span class="p">)</span>
+    <span class="n">blurred_geom_query</span><span class="o">.</span><span class="n">add_join</span><span class="p">(</span><span class="n">BibAreasTypesAlias</span><span class="p">,</span> <span class="n">BibAreasTypesAlias</span><span class="o">.</span><span class="n">id_type</span><span class="p">,</span> <span class="n">LAreasAlias</span><span class="o">.</span><span class="n">id_type</span><span class="p">)</span>
+    <span class="n">blurred_geom_query</span><span class="o">.</span><span class="n">add_join</span><span class="p">(</span>
+        <span class="n">cor_sensitivity_area_type</span><span class="p">,</span>
+        <span class="n">cor_sensitivity_area_type</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_area_type</span><span class="p">,</span>
+        <span class="n">BibAreasTypesAlias</span><span class="o">.</span><span class="n">id_type</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># Same for the first query =&gt; apply filter to avoid querying the whole table</span>
+    <span class="n">blurred_geom_query</span><span class="o">.</span><span class="n">filter_taxonomy</span><span class="p">()</span>
+    <span class="n">blurred_geom_query</span><span class="o">.</span><span class="n">filter_other_filters</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="p">)</span>
+    <span class="n">blurred_geom_query</span><span class="o">.</span><span class="n">build_query</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">blurred_geom_query</span><span class="p">,</span> <span class="n">precise_geom_query</span></div>
+
+
+
+<div class="viewcode-block" id="build_allowed_geom_cte">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_synthese/utils/blurring/index.html#geonature.core.gn_synthese.utils.blurring.build_allowed_geom_cte">[docs]</a>
+<span class="k">def</span> <span class="nf">build_allowed_geom_cte</span><span class="p">(</span>
+    <span class="n">blurring_permissions</span><span class="p">,</span>
+    <span class="n">precise_permissions</span><span class="p">,</span>
+    <span class="n">blurred_geom_query</span><span class="p">,</span>
+    <span class="n">precise_geom_query</span><span class="p">,</span>
+    <span class="n">limit</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+    <span class="c1"># The goal is to separate the blurring and precise permissions.</span>
+    <span class="c1"># But in sensitive permissions there can be unsensitive observations so we need</span>
+    <span class="c1"># to split them.</span>
+    <span class="c1"># sensitive_where_clause and unsensitive_where_clause represents this split</span>
+    <span class="c1"># See https://github.com/PnX-SI/GeoNature/issues/2558</span>
+
+    <span class="n">sensitive_obs_filter</span><span class="p">,</span> <span class="n">unsensitive_obs_filter</span> <span class="o">=</span> <span class="n">build_sensitive_unsensitive_filters</span><span class="p">()</span>
+
+    <span class="c1"># Note: the used query is not important here, as it is only used to select the right Synthese model</span>
+    <span class="n">precise_perms_filter</span> <span class="o">=</span> <span class="n">precise_geom_query</span><span class="o">.</span><span class="n">build_permissions_filter</span><span class="p">(</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="p">,</span>
+        <span class="n">precise_permissions</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">blurring_perms_filter</span> <span class="o">=</span> <span class="n">precise_geom_query</span><span class="o">.</span><span class="n">build_permissions_filter</span><span class="p">(</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="p">,</span>
+        <span class="n">blurring_permissions</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Access precise geom for obs with precise perm and for unsensitive obs with blurring perm</span>
+    <span class="n">precise_geom_query</span> <span class="o">=</span> <span class="n">precise_geom_query</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">or_</span><span class="p">(</span>
+            <span class="n">precise_perms_filter</span><span class="p">,</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+                <span class="n">blurring_perms_filter</span><span class="p">,</span>
+                <span class="n">unsensitive_obs_filter</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
+    <span class="c1"># Access blurred geom for sensitive obs with blurring perms</span>
+    <span class="n">blurred_geom_query</span> <span class="o">=</span> <span class="n">blurred_geom_query</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+            <span class="n">blurring_perms_filter</span><span class="p">,</span>
+            <span class="n">sensitive_obs_filter</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">precise_geom_query</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">blurred_geom_query</span><span class="p">)</span><span class="o">.</span><span class="n">cte</span><span class="p">(</span><span class="s2">&quot;allowed_geom&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="build_synthese_obs_query">
+<a class="viewcode-back" href="../../../../../autoapi/geonature/core/gn_synthese/utils/blurring/index.html#geonature.core.gn_synthese.utils.blurring.build_synthese_obs_query">[docs]</a>
+<span class="k">def</span> <span class="nf">build_synthese_obs_query</span><span class="p">(</span><span class="n">observations</span><span class="p">,</span> <span class="n">allowed_geom_cte</span><span class="p">,</span> <span class="n">limit</span><span class="p">):</span>
+    <span class="c1"># Final observation query</span>
+    <span class="c1"># orderby priority as explained in build_allowed_geom_cte()</span>
+    <span class="n">obs_query</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">observations</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">select_from</span><span class="p">(</span>
+            <span class="n">VSyntheseForWebApp</span><span class="o">.</span><span class="n">__table__</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">allowed_geom_cte</span><span class="p">,</span> <span class="n">allowed_geom_cte</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_synthese</span> <span class="o">==</span> <span class="n">VSyntheseForWebApp</span><span class="o">.</span><span class="n">id_synthese</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">VSyntheseForWebApp</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">,</span> <span class="n">allowed_geom_cte</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">priority</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="n">VSyntheseForWebApp</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">obs_query</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,90 @@
+:py:mod:`app.t_profils.route`
+=============================
+
+.. py:module:: app.t_profils.route
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   app.t_profils.route.profils
+   app.t_profils.route.delete
+   app.t_profils.route.addorupdate
+   app.t_profils.route.pops
+   app.t_profils.route.process
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   app.t_profils.route.URL_REDIRECT
+   app.t_profils.route.URL_APPLICATION
+   app.t_profils.route.route
+
+
+.. py:data:: URL_REDIRECT
+
+   
+
+.. py:data:: URL_APPLICATION
+
+   
+
+.. py:data:: route
+
+   Routes des profils
+
+
+.. py:function:: profils()
+
+   Route qui affiche la liste des profils
+   Retourne un template avec pour paramètres :
+                                           - une entête de tableau --> fLine
+                                           - le nom des colonnes de la base --> line
+                                           - le contenu du tableau --> table
+                                           - le chemin de mise à jour --> pathU
+                                           - le chemin de suppression --> pathD
+                                           - le chemin d'ajout --> pathA
+                                           - le chemin des roles du profil --> pathP
+                                           - une clé (clé primaire dans la plupart des cas) --> key
+                                           - un nom (nom de la table) pour le bouton ajout --> name
+                                           - un nom de listes --> name_list
+                                           - ajoute une colonne de bouton ('True' doit être de type string)--> otherCol
+                                           - nom affiché sur le bouton --> Members
+
+
+.. py:function:: delete(id_profil)
+
+   Route qui supprime un profil dont l'id est donné en paramètres dans l'url
+   Retourne une redirection vers la liste de profil
+
+
+.. py:function:: addorupdate(id_profil)
+
+   Route affichant un formulaire vierge ou non (selon l'url) pour ajouter ou mettre à jour un profil
+   L'envoie du formulaire permet l'ajout ou la maj du profil dans la base
+   Retourne un template accompagné d'un formulaire pré-rempli ou non selon le paramètre id_profil
+   Une fois le formulaire validé on retourne une redirection vers la liste de profil
+
+
+.. py:function:: pops(form)
+
+   Methode qui supprime les éléments indésirables du formulaires
+   Avec pour paramètre un formulaire
+
+
+.. py:function:: process(form, profil)
+
+   Methode qui rempli le formulaire par les données de l'éléments concerné
+   Avec pour paramètres un formulaire et un profil
+
+

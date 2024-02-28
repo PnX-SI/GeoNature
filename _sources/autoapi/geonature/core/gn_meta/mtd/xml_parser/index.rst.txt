@@ -1,0 +1,78 @@
+:py:mod:`geonature.core.gn_meta.mtd.xml_parser`
+===============================================
+
+.. py:module:: geonature.core.gn_meta.mtd.xml_parser
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_meta.mtd.xml_parser.get_tag_content
+   geonature.core.gn_meta.mtd.xml_parser.parse_actors_xml
+   geonature.core.gn_meta.mtd.xml_parser.parse_acquisition_framwork_xml
+   geonature.core.gn_meta.mtd.xml_parser.parse_acquisition_framework
+   geonature.core.gn_meta.mtd.xml_parser.parse_jdd_xml
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_meta.mtd.xml_parser.namespace
+   geonature.core.gn_meta.mtd.xml_parser._xml_parser
+
+
+.. py:data:: namespace
+
+   
+
+.. py:data:: _xml_parser
+
+   
+
+.. py:function:: get_tag_content(parent, tag_name, default_value=None)
+
+   Return the content of a xml tag
+   Check if the node exist or return a default value
+   Params:
+       parent (etree Element): the parent where find the tag
+       tag_name (str): the name of the tag
+       default_value (any): the default value f the tag doesn't exist
+   Return
+       any: the tag content or the default value
+
+
+.. py:function:: parse_actors_xml(actors)
+
+   Parse the parameters of the Actor provided as an XML node in the input variable "actors"
+   Param:
+       actors (etree Element): Node of an actor type containing from one to multiple actors
+   Returns:
+       dict: A dictionnary of the actors informations
+
+
+.. py:function:: parse_acquisition_framwork_xml(xml)
+
+   Parse an xml of AF from a string
+   Return:
+       dict: a dict of the parsed xml
+
+
+.. py:function:: parse_acquisition_framework(ca)
+
+
+.. py:function:: parse_jdd_xml(xml)
+
+   Parse an xml of datasets from a string
+   Return:
+       list: a list of dict of the JDD in the xml
+
+

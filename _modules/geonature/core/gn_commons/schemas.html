@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_commons.schemas &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.gn_commons.schemas</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.gn_commons.schemas</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">pre_load</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">EXCLUDE</span>
+
+<span class="kn">from</span> <span class="nn">pypnnomenclature.schemas</span> <span class="kn">import</span> <span class="n">NomenclatureSchema</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.schemas</span> <span class="kn">import</span> <span class="n">UserSchema</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">MA</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TModules</span><span class="p">,</span>
+    <span class="n">TMedias</span><span class="p">,</span>
+    <span class="n">TValidations</span><span class="p">,</span>
+    <span class="n">TAdditionalFields</span><span class="p">,</span>
+    <span class="n">BibWidgets</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="ModuleSchema">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.ModuleSchema">[docs]</a>
+<span class="k">class</span> <span class="nc">ModuleSchema</span><span class="p">(</span><span class="n">MA</span><span class="o">.</span><span class="n">SQLAlchemyAutoSchema</span><span class="p">):</span>
+<div class="viewcode-block" id="ModuleSchema.Meta">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.ModuleSchema.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+<div class="viewcode-block" id="ModuleSchema.Meta.model">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.ModuleSchema.Meta.model">[docs]</a>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">TModules</span></div>
+
+<div class="viewcode-block" id="ModuleSchema.Meta.load_instance">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.ModuleSchema.Meta.load_instance">[docs]</a>
+        <span class="n">load_instance</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ModuleSchema.Meta.exclude">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.ModuleSchema.Meta.exclude">[docs]</a>
+        <span class="n">exclude</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;module_picto&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;module_desc&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;module_group&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;module_external_url&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;module_target&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;module_comment&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;active_frontend&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;active_backend&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;module_doc_url&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;module_order&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+</div>
+
+
+
+<div class="viewcode-block" id="MediaSchema">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.MediaSchema">[docs]</a>
+<span class="k">class</span> <span class="nc">MediaSchema</span><span class="p">(</span><span class="n">MA</span><span class="o">.</span><span class="n">SQLAlchemyAutoSchema</span><span class="p">):</span>
+<div class="viewcode-block" id="MediaSchema.Meta">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.MediaSchema.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+<div class="viewcode-block" id="MediaSchema.Meta.model">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.MediaSchema.Meta.model">[docs]</a>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">TMedias</span></div>
+
+<div class="viewcode-block" id="MediaSchema.Meta.load_instance">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.MediaSchema.Meta.load_instance">[docs]</a>
+        <span class="n">load_instance</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="MediaSchema.Meta.include_fk">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.MediaSchema.Meta.include_fk">[docs]</a>
+        <span class="n">include_fk</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="MediaSchema.Meta.unknown">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.MediaSchema.Meta.unknown">[docs]</a>
+        <span class="n">unknown</span> <span class="o">=</span> <span class="n">EXCLUDE</span></div>
+</div>
+
+
+<div class="viewcode-block" id="MediaSchema.meta_create_date">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.MediaSchema.meta_create_date">[docs]</a>
+    <span class="n">meta_create_date</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">DateTime</span><span class="p">(</span><span class="n">dump_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MediaSchema.meta_update_date">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.MediaSchema.meta_update_date">[docs]</a>
+    <span class="n">meta_update_date</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">DateTime</span><span class="p">(</span><span class="n">dump_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+    <span class="nd">@pre_load</span>
+<div class="viewcode-block" id="MediaSchema.make_media">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.MediaSchema.make_media">[docs]</a>
+    <span class="k">def</span> <span class="nf">make_media</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_media&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;id_media&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TValidationSchema">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.TValidationSchema">[docs]</a>
+<span class="k">class</span> <span class="nc">TValidationSchema</span><span class="p">(</span><span class="n">MA</span><span class="o">.</span><span class="n">SQLAlchemyAutoSchema</span><span class="p">):</span>
+<div class="viewcode-block" id="TValidationSchema.Meta">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.TValidationSchema.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+<div class="viewcode-block" id="TValidationSchema.Meta.model">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.TValidationSchema.Meta.model">[docs]</a>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">TValidations</span></div>
+
+<div class="viewcode-block" id="TValidationSchema.Meta.load_instance">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.TValidationSchema.Meta.load_instance">[docs]</a>
+        <span class="n">load_instance</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="TValidationSchema.Meta.include_fk">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.TValidationSchema.Meta.include_fk">[docs]</a>
+        <span class="n">include_fk</span> <span class="o">=</span> <span class="kc">True</span></div>
+</div>
+
+
+<div class="viewcode-block" id="TValidationSchema.validation_label">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.TValidationSchema.validation_label">[docs]</a>
+    <span class="n">validation_label</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">NomenclatureSchema</span><span class="p">,</span> <span class="n">dump_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TValidationSchema.validator_role">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.TValidationSchema.validator_role">[docs]</a>
+    <span class="n">validator_role</span> <span class="o">=</span> <span class="n">MA</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">UserSchema</span><span class="p">,</span> <span class="n">dump_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BibWidgetSchema">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.BibWidgetSchema">[docs]</a>
+<span class="k">class</span> <span class="nc">BibWidgetSchema</span><span class="p">(</span><span class="n">MA</span><span class="o">.</span><span class="n">SQLAlchemyAutoSchema</span><span class="p">):</span>
+<div class="viewcode-block" id="BibWidgetSchema.Meta">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.BibWidgetSchema.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+<div class="viewcode-block" id="BibWidgetSchema.Meta.model">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.BibWidgetSchema.Meta.model">[docs]</a>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">BibWidgets</span></div>
+
+<div class="viewcode-block" id="BibWidgetSchema.Meta.load_instance">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.BibWidgetSchema.Meta.load_instance">[docs]</a>
+        <span class="n">load_instance</span> <span class="o">=</span> <span class="kc">True</span></div>
+</div>
+</div>
+
+
+
+<div class="viewcode-block" id="LabelValueDict">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.LabelValueDict">[docs]</a>
+<span class="k">class</span> <span class="nc">LabelValueDict</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="LabelValueDict.label">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.LabelValueDict.label">[docs]</a>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="LabelValueDict.value">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.LabelValueDict.value">[docs]</a>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Raw</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TAdditionalFieldsSchema">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.TAdditionalFieldsSchema">[docs]</a>
+<span class="k">class</span> <span class="nc">TAdditionalFieldsSchema</span><span class="p">(</span><span class="n">MA</span><span class="o">.</span><span class="n">SQLAlchemyAutoSchema</span><span class="p">):</span>
+<div class="viewcode-block" id="TAdditionalFieldsSchema.Meta">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.TAdditionalFieldsSchema.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+<div class="viewcode-block" id="TAdditionalFieldsSchema.Meta.model">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.TAdditionalFieldsSchema.Meta.model">[docs]</a>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">TAdditionalFields</span></div>
+
+<div class="viewcode-block" id="TAdditionalFieldsSchema.Meta.load_instance">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.TAdditionalFieldsSchema.Meta.load_instance">[docs]</a>
+        <span class="n">load_instance</span> <span class="o">=</span> <span class="kc">True</span></div>
+</div>
+
+
+<div class="viewcode-block" id="TAdditionalFieldsSchema.load">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_commons/schemas/index.html#geonature.core.gn_commons.schemas.TAdditionalFieldsSchema.load">[docs]</a>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;type_widget&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">widget_name</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="s2">&quot;select&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;checkbox&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;radio&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;multiselect&quot;</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="n">LabelValueDict</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;field_values&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="n">many</span><span class="p">,</span> <span class="n">unknown</span><span class="o">=</span><span class="n">EXCLUDE</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

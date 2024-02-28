@@ -1,0 +1,27 @@
+:py:mod:`geonature.core.gn_synthese`
+====================================
+
+.. py:module:: geonature.core.gn_synthese
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   utils/index.rst
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   models/index.rst
+   routes/index.rst
+   schemas/index.rst
+   synthese_config/index.rst
+
+

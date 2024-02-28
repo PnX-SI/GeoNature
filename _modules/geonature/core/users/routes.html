@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.users.routes &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.users.routes</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.users.routes</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">current_app</span><span class="p">,</span> <span class="n">Response</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">render_template</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">distinct</span><span class="p">,</span> <span class="n">and_</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">distinct</span><span class="p">,</span> <span class="n">and_</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">exists</span>
+<span class="kn">from</span> <span class="nn">werkzeug.exceptions</span> <span class="kn">import</span> <span class="n">NotFound</span><span class="p">,</span> <span class="n">BadRequest</span><span class="p">,</span> <span class="n">Forbidden</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">DB</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions</span> <span class="kn">import</span> <span class="n">decorators</span> <span class="k">as</span> <span class="n">permissions</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_meta.models</span> <span class="kn">import</span> <span class="n">CorDatasetActor</span><span class="p">,</span> <span class="n">TDatasets</span>
+<span class="kn">from</span> <span class="nn">geonature.core.users.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">VUserslistForallMenu</span><span class="p">,</span>
+    <span class="n">CorRole</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.config</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db.models</span> <span class="kn">import</span> <span class="n">Organisme</span><span class="p">,</span> <span class="n">User</span><span class="p">,</span> <span class="n">UserList</span>
+<span class="kn">from</span> <span class="nn">geonature.core.users.register_post_actions</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">validate_temp_user</span><span class="p">,</span>
+    <span class="n">execute_actions_after_validation</span><span class="p">,</span>
+    <span class="n">send_email_for_recovery</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">pypnusershub.env</span> <span class="kn">import</span> <span class="n">REGISTER_POST_ACTION_FCT</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db.models</span> <span class="kn">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">Application</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db.models_register</span> <span class="kn">import</span> <span class="n">TempUser</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.routes_register</span> <span class="kn">import</span> <span class="n">bp</span> <span class="k">as</span> <span class="n">user_api</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.response</span> <span class="kn">import</span> <span class="n">json_resp</span>
+
+
+<div class="viewcode-block" id="routes">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.routes">[docs]</a>
+<span class="n">routes</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s2">&quot;users&quot;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">,</span> <span class="n">template_folder</span><span class="o">=</span><span class="s2">&quot;templates&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="log">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.log">[docs]</a>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="s">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.s">[docs]</a>
+<span class="n">s</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="user_fields">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.user_fields">[docs]</a>
+<span class="n">user_fields</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;id_role&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;identifiant&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nom_role&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;prenom_role&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nom_complet&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id_organisme&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;groupe&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;active&quot;</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+<div class="viewcode-block" id="organism_fields">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.organism_fields">[docs]</a>
+<span class="n">organism_fields</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;id_organisme&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;uuid_organisme&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nom_organisme&quot;</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+
+<span class="c1"># configuration of post_request actions for registrations</span>
+<span class="n">REGISTER_POST_ACTION_FCT</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;create_temp_user&quot;</span><span class="p">:</span> <span class="n">validate_temp_user</span><span class="p">,</span>
+        <span class="s2">&quot;valid_temp_user&quot;</span><span class="p">:</span> <span class="n">execute_actions_after_validation</span><span class="p">,</span>
+        <span class="s2">&quot;create_cor_role_token&quot;</span><span class="p">:</span> <span class="n">send_email_for_recovery</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/menu/&lt;int:id_menu&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_roles_by_menu_id">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.get_roles_by_menu_id">[docs]</a>
+<span class="k">def</span> <span class="nf">get_roles_by_menu_id</span><span class="p">(</span><span class="n">id_menu</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retourne la liste des roles associés à un menu</span>
+
+<span class="sd">    .. :quickref: User;</span>
+
+<span class="sd">    :param id_menu: the id of user list (utilisateurs.bib_list)</span>
+<span class="sd">    :type id_menu: int</span>
+<span class="sd">    :query str nom_complet: begenning of complet name of the role</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">VUserslistForallMenu</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">id_menu</span><span class="o">=</span><span class="n">id_menu</span><span class="p">)</span>
+
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span>
+    <span class="n">nom_complet</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nom_complet&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nom_complet</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">VUserslistForallMenu</span><span class="o">.</span><span class="n">nom_complet</span><span class="o">.</span><span class="n">ilike</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">nom_complet</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">))</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">VUserslistForallMenu</span><span class="o">.</span><span class="n">nom_complet</span><span class="o">.</span><span class="n">asc</span><span class="p">()))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/menu_from_code/&lt;string:code_liste&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_roles_by_menu_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.get_roles_by_menu_code">[docs]</a>
+<span class="k">def</span> <span class="nf">get_roles_by_menu_code</span><span class="p">(</span><span class="n">code_liste</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retourne la liste des roles associés à une liste (identifiée par son code)</span>
+
+<span class="sd">    .. :quickref: User;</span>
+
+<span class="sd">    :param code_liste: the code of user list (utilisateurs.t_lists)</span>
+<span class="sd">    :type code_liste: string</span>
+<span class="sd">    :query str nom_complet: begenning of complet name of the role</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">VUserslistForallMenu</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">UserList</span><span class="p">,</span>
+        <span class="n">and_</span><span class="p">(</span>
+            <span class="n">UserList</span><span class="o">.</span><span class="n">id_liste</span> <span class="o">==</span> <span class="n">VUserslistForallMenu</span><span class="o">.</span><span class="n">id_menu</span><span class="p">,</span>
+            <span class="n">UserList</span><span class="o">.</span><span class="n">code_liste</span> <span class="o">==</span> <span class="n">code_liste</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span>
+    <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nom_complet&quot;</span><span class="p">):</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">VUserslistForallMenu</span><span class="o">.</span><span class="n">nom_complet</span><span class="o">.</span><span class="n">ilike</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nom_complet&quot;</span><span class="p">)))</span>
+        <span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">VUserslistForallMenu</span><span class="o">.</span><span class="n">nom_complet</span><span class="o">.</span><span class="n">asc</span><span class="p">()))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/listes&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_listes">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.get_listes">[docs]</a>
+<span class="k">def</span> <span class="nf">get_listes</span><span class="p">():</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">UserList</span><span class="p">)</span>
+    <span class="n">lists</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lists</span><span class="p">]</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/role/&lt;int:id_role&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">login_required</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_role">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.get_role">[docs]</a>
+<span class="k">def</span> <span class="nf">get_role</span><span class="p">(</span><span class="n">id_role</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get role detail</span>
+
+<span class="sd">    .. :quickref: User;</span>
+
+<span class="sd">    :param id_role: the id user</span>
+<span class="sd">    :type id_role: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">id_role</span><span class="p">)</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="n">user_fields</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span> <span class="o">==</span> <span class="n">user</span><span class="p">:</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="n">fields</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/roles&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">login_required</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_roles">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.get_roles">[docs]</a>
+<span class="k">def</span> <span class="nf">get_roles</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get all roles</span>
+
+<span class="sd">    .. :quickref: User;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;group&quot;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">groupe</span> <span class="o">==</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;group&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;orderby&quot;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">order_col</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">__table__</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;orderby&quot;</span><span class="p">))</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">order_col</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="s2">&quot;the attribute to order on does not exist&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="n">user_fields</span><span class="p">)</span> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/organisms&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">login_required</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_organismes">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.get_organismes">[docs]</a>
+<span class="k">def</span> <span class="nf">get_organismes</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get all organisms</span>
+
+<span class="sd">    .. :quickref: User;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">Organisme</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;orderby&quot;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">order_col</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Organisme</span><span class="o">.</span><span class="n">__table__</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;orderby&quot;</span><span class="p">))</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">order_col</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="s2">&quot;the attribute to order on does not exist&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">organism</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="n">organism_fields</span><span class="p">)</span> <span class="k">for</span> <span class="n">organism</span> <span class="ow">in</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/organisms_dataset_actor&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">login_required</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_organismes_jdd">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.get_organismes_jdd">[docs]</a>
+<span class="k">def</span> <span class="nf">get_organismes_jdd</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get all organisms and the JDD where there are actor and where</span>
+<span class="sd">    the current user hase autorization with its cruved</span>
+
+<span class="sd">    .. :quickref: User;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+    <span class="n">datasets</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">filter_by_readable</span><span class="p">())</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">datasets</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">id_dataset</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">]</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">Organisme</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CorDatasetActor</span><span class="p">,</span> <span class="n">Organisme</span><span class="o">.</span><span class="n">id_organisme</span> <span class="o">==</span> <span class="n">CorDatasetActor</span><span class="o">.</span><span class="n">id_organism</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">CorDatasetActor</span><span class="o">.</span><span class="n">id_dataset</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">datasets</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">distinct</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;orderby&quot;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">order_col</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Organisme</span><span class="o">.</span><span class="n">__table__</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;orderby&quot;</span><span class="p">))</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">order_col</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadRequest</span><span class="p">(</span><span class="s2">&quot;the attribute to order on does not exist&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">organism</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="n">organism_fields</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">organism</span> <span class="ow">in</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="p">]</span></div>
+
+
+
+<span class="c1">#########################</span>
+<span class="c1">### ACCOUNT_MANAGEMENT ROUTES #####</span>
+<span class="c1">#########################</span>
+
+
+<span class="c1"># TODO: let frontend call UsersHub directly?</span>
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/inscription&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<div class="viewcode-block" id="inscription">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.inscription">[docs]</a>
+<span class="k">def</span> <span class="nf">inscription</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ajoute un utilisateur à utilisateurs.temp_user à partir de l&#39;interface geonature</span>
+<span class="sd">    Fonctionne selon l&#39;autorisation &#39;ENABLE_SIGN_UP&#39; dans la config.</span>
+<span class="sd">    Fait appel à l&#39;API UsersHub</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># test des droits</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ENABLE_SIGN_UP&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Page introuvable&quot;</span><span class="p">},</span> <span class="mi">404</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="c1"># ajout des valeurs non présentes dans le form</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;id_application&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">select</span><span class="p">(</span><span class="n">Application</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">code_application</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;CODE_APPLICATION&quot;</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">id_application</span>
+    <span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;groupe&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;confirmation_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;API_ENDPOINT&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/users/after_confirmation&quot;</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="n">url</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;API_ENDPOINT&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/pypn/register/post_usershub/create_temp_user&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span></div>
+
+
+
+<span class="c1"># TODO supprimer si non utilisé</span>
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/login/recovery&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<div class="viewcode-block" id="login_recovery">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.login_recovery">[docs]</a>
+<span class="k">def</span> <span class="nf">login_recovery</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Call UsersHub API to create a TOKEN for a user</span>
+<span class="sd">    A post_action send an email with the user login and a link to reset its password</span>
+<span class="sd">    Work only if &#39;ENABLE_SIGN_UP&#39; is set to True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># test des droits</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ENABLE_USER_MANAGEMENT&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Page introuvable&quot;</span><span class="p">},</span> <span class="mi">404</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="n">url</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;API_ENDPOINT&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/pypn/register/post_usershub/create_cor_role_token&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/confirmation&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<div class="viewcode-block" id="confirmation">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.confirmation">[docs]</a>
+<span class="k">def</span> <span class="nf">confirmation</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate a account after a demande (this action is triggered by the link in the email)</span>
+<span class="sd">    Create a personnal JDD as post_action if the parameter AUTO_DATASET_CREATION is set to True</span>
+<span class="sd">    Fait appel à l&#39;API UsersHub</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># test des droits</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ENABLE_SIGN_UP&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Page introuvable&quot;</span><span class="p">},</span> <span class="mi">404</span>
+
+    <span class="n">token</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Token introuvable&quot;</span><span class="p">},</span> <span class="mi">404</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span>
+        <span class="s2">&quot;id_application&quot;</span><span class="p">:</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">select</span><span class="p">(</span><span class="n">Application</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">code_application</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;CODE_APPLICATION&quot;</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">id_application</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="n">url</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;API_ENDPOINT&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/pypn/register/post_usershub/valid_temp_user&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;msg&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;msg&quot;</span><span class="p">),</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
+
+    <span class="n">new_user</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span>
+        <span class="s2">&quot;account_created.html&quot;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">new_user</span><span class="p">,</span> <span class="n">redirect_url</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">]</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/after_confirmation&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<div class="viewcode-block" id="after_confirmation">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.after_confirmation">[docs]</a>
+<span class="k">def</span> <span class="nf">after_confirmation</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">())</span>
+    <span class="n">type_action</span> <span class="o">=</span> <span class="s2">&quot;valid_temp_user&quot;</span>
+    <span class="n">after_confirmation_fn</span> <span class="o">=</span> <span class="n">REGISTER_POST_ACTION_FCT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">type_action</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">after_confirmation_fn</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;ok&quot;</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Problem in GeoNature API after confirmation </span><span class="si">{</span><span class="n">type_action</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="p">}),</span> <span class="mi">500</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/role&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;PUT&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">login_required</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="update_role">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.update_role">[docs]</a>
+<span class="k">def</span> <span class="nf">update_role</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Modifie le role de l&#39;utilisateur du token en cours</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ENABLE_USER_MANAGEMENT&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Page introuvable&quot;</span><span class="p">},</span> <span class="mi">404</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">())</span>
+
+    <span class="n">user</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span>
+
+    <span class="c1"># Prevent public-access user from updating its own information</span>
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_public</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Forbidden</span>
+
+    <span class="n">attliste</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="n">attliste</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">att</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">att</span><span class="p">)</span>
+
+    <span class="c1"># liste des attributs qui ne doivent pas être modifiable par l&#39;user</span>
+    <span class="n">black_list_att_update</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;active&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;date_insert&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;date_update&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;groupe&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;id_organisme&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;id_role&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pass_plus&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pn&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;uuid_role&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">black_list_att_update</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/password/change&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;PUT&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">login_required</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="change_password">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.change_password">[docs]</a>
+<span class="k">def</span> <span class="nf">change_password</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Modifie le mot de passe de l&#39;utilisateur connecté et de son ancien mdp</span>
+<span class="sd">    Fait appel à l&#39;API UsersHub</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ENABLE_USER_MANAGEMENT&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Page introuvable&quot;</span><span class="p">},</span> <span class="mi">404</span>
+
+    <span class="n">user</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="n">init_password</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;init_password&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="c1"># if not init_passwork provided(passwork forgotten) -&gt; check if token exist</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">init_password</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Erreur serveur&quot;</span><span class="p">},</span> <span class="mi">500</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">check_password</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;init_password&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Le mot de passe initial est invalide&quot;</span><span class="p">},</span> <span class="mi">400</span>
+
+        <span class="c1"># recuperation du token usershub API</span>
+        <span class="c1"># send request to get the token (enable_post_action = False to NOT sent email)</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">url</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;API_ENDPOINT&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/pypn/register/post_usershub/create_cor_role_token&quot;</span><span class="p">,</span>
+            <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="s2">&quot;enable_post_action&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="c1"># comme concerne le password, on explicite pas le message</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Erreur lors de la génération du token&quot;</span><span class="p">},</span> <span class="mi">500</span>
+
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;token&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;token&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;password_confirmation&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Erreur serveur&quot;</span><span class="p">},</span> <span class="mi">500</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="n">url</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;API_ENDPOINT&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/pypn/register/post_usershub/change_password&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="c1"># comme concerne le password, on explicite pas le message</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Erreur serveur&quot;</span><span class="p">},</span> <span class="mi">500</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Mot de passe modifié avec succès&quot;</span><span class="p">},</span> <span class="mi">200</span></div>
+
+
+
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/password/new&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;PUT&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="new_password">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/users/routes/index.html#geonature.core.users.routes.new_password">[docs]</a>
+<span class="k">def</span> <span class="nf">new_password</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Modifie le mdp d&#39;un utilisateur apres que celui-ci ai demander un renouvelement</span>
+<span class="sd">    Necessite un token envoyer par mail a l&#39;utilisateur</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ENABLE_USER_MANAGEMENT&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Page introuvable&quot;</span><span class="p">},</span> <span class="mi">404</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">())</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Erreur serveur&quot;</span><span class="p">},</span> <span class="mi">500</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="n">url</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;API_ENDPOINT&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/pypn/register/post_usershub/change_password&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="c1"># comme concerne le password, on explicite pas le message</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Erreur serveur&quot;</span><span class="p">},</span> <span class="mi">500</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Mot de passe modifié avec succès&quot;</span><span class="p">},</span> <span class="mi">200</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

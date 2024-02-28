@@ -1,0 +1,47 @@
+:py:mod:`app.liste.forms`
+=========================
+
+.. py:module:: app.liste.forms
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   app.liste.forms.List
+
+
+
+
+.. py:class:: List(formdata=_Auto, **kwargs)
+
+
+   Bases: :py:obj:`flask_wtf.FlaskForm`
+
+   Classe du formulaire des listes
+
+   .. py:attribute:: nom_liste
+
+      
+
+   .. py:attribute:: code_liste
+
+      
+
+   .. py:attribute:: desc_liste
+
+      
+
+   .. py:attribute:: id_liste
+
+      
+
+   .. py:attribute:: submit
+
+      
+
+

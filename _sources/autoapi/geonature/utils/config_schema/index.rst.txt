@@ -1,0 +1,2312 @@
+:py:mod:`geonature.utils.config_schema`
+=======================================
+
+.. py:module:: geonature.utils.config_schema
+
+.. autoapi-nested-parse::
+
+   Description des options de configuration
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   geonature.utils.config_schema.EmailStrOrListOfEmailStrField
+   geonature.utils.config_schema.CasUserSchemaConf
+   geonature.utils.config_schema.CasFrontend
+   geonature.utils.config_schema.CasSchemaConf
+   geonature.utils.config_schema.MTDSchemaConf
+   geonature.utils.config_schema.BddConfig
+   geonature.utils.config_schema.RightsSchemaConf
+   geonature.utils.config_schema.MailConfig
+   geonature.utils.config_schema.CeleryConfig
+   geonature.utils.config_schema.AccountManagement
+   geonature.utils.config_schema.UsersHubConfig
+   geonature.utils.config_schema.ServerConfig
+   geonature.utils.config_schema.MediasConfig
+   geonature.utils.config_schema.AlembicConfig
+   geonature.utils.config_schema.AdditionalFields
+   geonature.utils.config_schema.HomeConfig
+   geonature.utils.config_schema.MetadataConfig
+   geonature.utils.config_schema.GnPySchemaConf
+   geonature.utils.config_schema.GnFrontEndConf
+   geonature.utils.config_schema.Synthese
+   geonature.utils.config_schema.MapConfig
+   geonature.utils.config_schema.TaxHub
+   geonature.utils.config_schema.GnGeneralSchemaConf
+
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.utils.config_schema.BASEMAP
+
+
+.. py:class:: EmailStrOrListOfEmailStrField(*, load_default: Any = missing_, missing: Any = missing_, dump_default: Any = missing_, default: Any = missing_, data_key: str | None = None, attribute: str | None = None, validate: None | Callable[[Any], Any] | Iterable[Callable[[Any], Any]] = None, required: bool = False, allow_none: bool | None = None, load_only: bool = False, dump_only: bool = False, error_messages: dict[str, str] | None = None, metadata: Mapping[str, Any] | None = None, **additional_metadata)
+
+
+   Bases: :py:obj:`marshmallow.fields.Field`
+
+   Basic field from which other fields should extend. It applies no
+   formatting by default, and should only be used in cases where
+   data does not need to be formatted before being serialized or deserialized.
+   On error, the name of the field will be returned.
+
+   :param dump_default: If set, this value will be used during serialization if the
+       input value is missing. If not set, the field will be excluded from the
+       serialized output if the input value is missing. May be a value or a callable.
+   :param load_default: Default deserialization value for the field if the field is not
+       found in the input data. May be a value or a callable.
+   :param data_key: The name of the dict key in the external representation, i.e.
+       the input of `load` and the output of `dump`.
+       If `None`, the key will match the name of the field.
+   :param attribute: The name of the attribute to get the value from when serializing.
+       If `None`, assumes the attribute has the same name as the field.
+       Note: This should only be used for very specific use cases such as
+       outputting multiple fields for a single attribute. In most cases,
+       you should use ``data_key`` instead.
+   :param validate: Validator or collection of validators that are called
+       during deserialization. Validator takes a field's input value as
+       its only parameter and returns a boolean.
+       If it returns `False`, an :exc:`ValidationError` is raised.
+   :param required: Raise a :exc:`ValidationError` if the field value
+       is not supplied during deserialization.
+   :param allow_none: Set this to `True` if `None` should be considered a valid value during
+       validation/deserialization. If ``load_default=None`` and ``allow_none`` is unset,
+       will default to ``True``. Otherwise, the default is ``False``.
+   :param load_only: If `True` skip this field during serialization, otherwise
+       its value will be present in the serialized data.
+   :param dump_only: If `True` skip this field during deserialization, otherwise
+       its value will be present in the deserialized object. In the context of an
+       HTTP API, this effectively marks the field as "read-only".
+   :param dict error_messages: Overrides for `Field.default_error_messages`.
+   :param metadata: Extra information to be stored as field metadata.
+
+   .. versionchanged:: 2.0.0
+       Removed `error` parameter. Use ``error_messages`` instead.
+
+   .. versionchanged:: 2.0.0
+       Added `allow_none` parameter, which makes validation/deserialization of `None`
+       consistent across fields.
+
+   .. versionchanged:: 2.0.0
+       Added `load_only` and `dump_only` parameters, which allow field skipping
+       during the (de)serialization process.
+
+   .. versionchanged:: 2.0.0
+       Added `missing` parameter, which indicates the value for a field if the field
+       is not found during deserialization.
+
+   .. versionchanged:: 2.0.0
+       ``default`` value is only used if explicitly set. Otherwise, missing values
+       inputs are excluded from serialized output.
+
+   .. versionchanged:: 3.0.0b8
+       Add ``data_key`` parameter for the specifying the key in the input and
+       output data. This parameter replaced both ``load_from`` and ``dump_to``.
+
+   .. py:method:: _deserialize(value, attr, data, **kwargs)
+
+      Deserialize value. Concrete :class:`Field` classes should implement this method.
+
+      :param value: The value to be deserialized.
+      :param attr: The attribute/key in `data` to be deserialized.
+      :param data: The raw input data passed to the `Schema.load`.
+      :param kwargs: Field-specific keyword arguments.
+      :raise ValidationError: In case of formatting or validation failure.
+      :return: The deserialized value.
+
+      .. versionchanged:: 2.0.0
+          Added ``attr`` and ``data`` parameters.
+
+      .. versionchanged:: 3.0.0
+          Added ``**kwargs`` to signature.
+
+
+   .. py:method:: _check_email(value)
+
+
+
+.. py:class:: CasUserSchemaConf(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: URL
+
+      
+
+   .. py:attribute:: BASE_URL
+
+      
+
+   .. py:attribute:: ID
+
+      
+
+   .. py:attribute:: PASSWORD
+
+      
+
+
+.. py:class:: CasFrontend(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: CAS_AUTHENTIFICATION
+
+      
+
+   .. py:attribute:: CAS_URL_LOGIN
+
+      
+
+   .. py:attribute:: CAS_URL_LOGOUT
+
+      
+
+
+.. py:class:: CasSchemaConf(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: CAS_URL_VALIDATION
+
+      
+
+   .. py:attribute:: CAS_USER_WS
+
+      
+
+   .. py:attribute:: USERS_CAN_SEE_ORGANISM_DATA
+
+      
+
+
+.. py:class:: MTDSchemaConf(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: JDD_MODULE_CODE_ASSOCIATION
+
+      
+
+   .. py:attribute:: ID_INSTANCE_FILTER
+
+      
+
+   .. py:attribute:: SYNC_LOG_LEVEL
+
+      
+
+
+.. py:class:: BddConfig(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: ID_USER_SOCLE_1
+
+      
+
+   .. py:attribute:: ID_USER_SOCLE_2
+
+      
+
+
+.. py:class:: RightsSchemaConf(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: NOTHING
+
+      
+
+   .. py:attribute:: MY_DATA
+
+      
+
+   .. py:attribute:: MY_ORGANISM_DATA
+
+      
+
+   .. py:attribute:: ALL_DATA
+
+      
+
+
+.. py:class:: MailConfig(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: MAIL_SERVER
+
+      
+
+   .. py:attribute:: MAIL_PORT
+
+      
+
+   .. py:attribute:: MAIL_USE_TLS
+
+      
+
+   .. py:attribute:: MAIL_USE_SSL
+
+      
+
+   .. py:attribute:: MAIL_USERNAME
+
+      
+
+   .. py:attribute:: MAIL_PASSWORD
+
+      
+
+   .. py:attribute:: MAIL_DEFAULT_SENDER
+
+      
+
+   .. py:attribute:: MAIL_MAX_EMAILS
+
+      
+
+   .. py:attribute:: MAIL_SUPPRESS_SEND
+
+      
+
+   .. py:attribute:: MAIL_ASCII_ATTACHMENTS
+
+      
+
+   .. py:attribute:: ERROR_MAIL_TO
+
+      
+
+
+.. py:class:: CeleryConfig(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: broker_url
+
+      
+
+   .. py:attribute:: result_backend
+
+      
+
+   .. py:attribute:: enable_utc
+
+      
+
+   .. py:attribute:: timezone
+
+      
+
+
+.. py:class:: AccountManagement(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: ENABLE_SIGN_UP
+
+      
+
+   .. py:attribute:: ENABLE_USER_MANAGEMENT
+
+      
+
+   .. py:attribute:: AUTO_ACCOUNT_CREATION
+
+      
+
+   .. py:attribute:: AUTO_DATASET_CREATION
+
+      
+
+   .. py:attribute:: VALIDATOR_EMAIL
+
+      
+
+   .. py:attribute:: ACCOUNT_FORM
+
+      
+
+   .. py:attribute:: ADDON_USER_EMAIL
+
+      
+
+   .. py:attribute:: DATASET_MODULES_ASSOCIATION
+
+      
+
+   .. py:attribute:: EXTERNAL_LINKS
+
+      
+
+
+.. py:class:: UsersHubConfig(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: ADMIN_APPLICATION_LOGIN
+
+      
+
+   .. py:attribute:: ADMIN_APPLICATION_PASSWORD
+
+      
+
+   .. py:attribute:: URL_USERSHUB
+
+      
+
+
+.. py:class:: ServerConfig(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: LOG_LEVEL
+
+      
+
+
+.. py:class:: MediasConfig(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: MEDIAS_SIZE_MAX
+
+      
+
+   .. py:attribute:: THUMBNAIL_SIZES
+
+      
+
+
+.. py:class:: AlembicConfig(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: VERSION_LOCATIONS
+
+      
+
+
+.. py:class:: AdditionalFields(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: IMPLEMENTED_MODULES
+
+      
+
+   .. py:attribute:: IMPLEMENTED_OBJECTS
+
+      
+
+
+.. py:class:: HomeConfig(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: TITLE
+
+      
+
+   .. py:attribute:: INTRODUCTION
+
+      
+
+   .. py:attribute:: FOOTER
+
+      
+
+
+.. py:class:: MetadataConfig(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: NB_AF_DISPLAYED
+
+      
+
+   .. py:attribute:: ENABLE_CLOSE_AF
+
+      
+
+   .. py:attribute:: AF_SHEET_CLOSED_LINK_NAME
+
+      
+
+   .. py:attribute:: CLOSED_AF_TITLE
+
+      
+
+   .. py:attribute:: AF_PDF_TITLE
+
+      
+
+   .. py:attribute:: DS_PDF_TITLE
+
+      
+
+   .. py:attribute:: MAIL_SUBJECT_AF_CLOSED_BASE
+
+      
+
+   .. py:attribute:: MAIL_CONTENT_AF_CLOSED_ADDITION
+
+      
+
+   .. py:attribute:: MAIL_CONTENT_AF_CLOSED_PDF
+
+      
+
+   .. py:attribute:: MAIL_CONTENT_AF_CLOSED_URL
+
+      
+
+   .. py:attribute:: MAIL_CONTENT_AF_CLOSED_GREETINGS
+
+      
+
+   .. py:attribute:: CLOSED_MODAL_LABEL
+
+      
+
+   .. py:attribute:: CLOSED_MODAL_CONTENT
+
+      
+
+   .. py:attribute:: CD_NOMENCLATURE_ROLE_TYPE_DS
+
+      
+
+   .. py:attribute:: CD_NOMENCLATURE_ROLE_TYPE_AF
+
+      
+
+   .. py:attribute:: METADATA_AREA_FILTERS
+
+      
+
+
+.. py:class:: GnPySchemaConf(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: SQLALCHEMY_DATABASE_URI
+
+      
+
+   .. py:attribute:: SQLALCHEMY_TRACK_MODIFICATIONS
+
+      
+
+   .. py:attribute:: SESSION_TYPE
+
+      
+
+   .. py:attribute:: SECRET_KEY
+
+      
+
+   .. py:attribute:: COOKIE_EXPIRATION
+
+      
+
+   .. py:attribute:: COOKIE_AUTORENEW
+
+      
+
+   .. py:attribute:: TRAP_ALL_EXCEPTIONS
+
+      
+
+   .. py:attribute:: SENTRY_DSN
+
+      
+
+   .. py:attribute:: ROOT_PATH
+
+      
+
+   .. py:attribute:: STATIC_FOLDER
+
+      
+
+   .. py:attribute:: CUSTOM_STATIC_FOLDER
+
+      
+
+   .. py:attribute:: MEDIA_FOLDER
+
+      
+
+   .. py:attribute:: CAS
+
+      
+
+   .. py:attribute:: MAIL_ON_ERROR
+
+      
+
+   .. py:attribute:: MAIL_CONFIG
+
+      
+
+   .. py:attribute:: CELERY
+
+      
+
+   .. py:attribute:: METADATA
+
+      
+
+   .. py:attribute:: ADMIN_APPLICATION_LOGIN
+
+      
+
+   .. py:attribute:: ACCOUNT_MANAGEMENT
+
+      
+
+   .. py:attribute:: BAD_LOGIN_STATUS_CODE
+
+      
+
+   .. py:attribute:: USERSHUB
+
+      
+
+   .. py:attribute:: SERVER
+
+      
+
+   .. py:attribute:: MEDIAS
+
+      
+
+   .. py:attribute:: ALEMBIC
+
+      
+
+   .. py:method:: folders(data, **kwargs)
+
+
+   .. py:method:: unwrap_usershub(data, **kwargs)
+
+      On met la section [USERSHUB] à la racine de la conf
+      pour compatibilité et simplicité ave le sous-module d'authentif
+
+
+   .. py:method:: validate_enable_usershub_and_mail(data, **kwargs)
+
+
+
+.. py:class:: GnFrontEndConf(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: PROD_MOD
+
+      
+
+   .. py:attribute:: DISPLAY_FOOTER
+
+      
+
+   .. py:attribute:: DISPLAY_STAT_BLOC
+
+      
+
+   .. py:attribute:: STAT_BLOC_TTL
+
+      
+
+   .. py:attribute:: DISPLAY_MAP_LAST_OBS
+
+      
+
+   .. py:attribute:: MULTILINGUAL
+
+      
+
+   .. py:attribute:: ENABLE_PROFILES
+
+      
+
+   .. py:attribute:: DISPLAY_EMAIL_INFO_OBS
+
+      
+
+   .. py:attribute:: DISPLAY_EMAIL_DISPLAY_INFO
+
+      
+
+
+.. py:class:: Synthese(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: AREA_FILTERS
+
+      
+
+   .. py:attribute:: TAXON_RESULT_NUMBER
+
+      
+
+   .. py:attribute:: DISPLAY_TAXON_TREE
+
+      
+
+   .. py:attribute:: SEARCH_OBSERVER_WITH_LIST
+
+      
+
+   .. py:attribute:: ID_SEARCH_OBSERVER_LIST
+
+      
+
+   .. py:attribute:: STATUS_FILTERS
+
+      
+
+   .. py:attribute:: RED_LISTS_FILTERS
+
+      
+
+   .. py:attribute:: DEFAULT_FILTERS
+
+      
+
+   .. py:attribute:: COLUMNS_API_SYNTHESE_WEB_APP
+
+      
+
+   .. py:attribute:: LIST_COLUMNS_FRONTEND
+
+      
+
+   .. py:attribute:: EXPORT_COLUMNS
+
+      
+
+   .. py:attribute:: EXPORT_ID_SYNTHESE_COL
+
+      
+
+   .. py:attribute:: EXPORT_ID_DATASET_COL
+
+      
+
+   .. py:attribute:: EXPORT_ID_DIGITISER_COL
+
+      
+
+   .. py:attribute:: EXPORT_OBSERVERS_COL
+
+      
+
+   .. py:attribute:: EXPORT_GEOJSON_4326_COL
+
+      
+
+   .. py:attribute:: EXPORT_GEOJSON_LOCAL_COL
+
+      
+
+   .. py:attribute:: EXPORT_METADATA_ID_DATASET_COL
+
+      
+
+   .. py:attribute:: EXPORT_METADATA_ACTOR_COL
+
+      
+
+   .. py:attribute:: EXPORT_FORMAT
+
+      
+
+   .. py:attribute:: NB_MAX_OBS_EXPORT
+
+      
+
+   .. py:attribute:: ID_ATTRIBUT_TAXHUB
+
+      
+
+   .. py:attribute:: DISPLAY_EMAIL
+
+      
+
+   .. py:attribute:: EXCLUDED_COLUMNS
+
+      
+
+   .. py:attribute:: NB_MAX_OBS_MAP
+
+      
+
+   .. py:attribute:: ENABLE_LEAFLET_CLUSTER
+
+      
+
+   .. py:attribute:: NB_LAST_OBS
+
+      
+
+   .. py:attribute:: DISPLAY_EMAIL
+
+      
+
+   .. py:attribute:: DISCUSSION_MAX_LENGTH
+
+      
+
+   .. py:attribute:: DISCUSSION_MODULES
+
+      
+
+   .. py:attribute:: ALERT_MODULES
+
+      
+
+   .. py:attribute:: PIN_MODULES
+
+      
+
+   .. py:attribute:: AREA_AGGREGATION_ENABLED
+
+      
+
+   .. py:attribute:: AREA_AGGREGATION_TYPE
+
+      
+
+   .. py:attribute:: AREA_AGGREGATION_BY_DEFAULT
+
+      
+
+   .. py:attribute:: AREA_AGGREGATION_LEGEND_CLASSES
+
+      
+
+   .. py:attribute:: BLUR_SENSITIVE_OBSERVATIONS
+
+      
+
+
+.. py:data:: BASEMAP
+
+   
+
+.. py:class:: MapConfig(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: BASEMAP
+
+      
+
+   .. py:attribute:: CENTER
+
+      
+
+   .. py:attribute:: ZOOM_LEVEL
+
+      
+
+   .. py:attribute:: ZOOM_LEVEL_RELEVE
+
+      
+
+   .. py:attribute:: GEOLOCATION
+
+      
+
+   .. py:attribute:: ZOOM_ON_CLICK
+
+      
+
+   .. py:attribute:: OSM_RESTRICT_COUNTRY_CODES
+
+      
+
+   .. py:attribute:: REF_LAYERS
+
+      
+
+   .. py:attribute:: REF_LAYERS_LEGEND
+
+      
+
+
+.. py:class:: TaxHub(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: ID_TYPE_MAIN_PHOTO
+
+      
+
+
+.. py:class:: GnGeneralSchemaConf(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: appName
+
+      
+
+   .. py:attribute:: GEONATURE_VERSION
+
+      
+
+   .. py:attribute:: DEFAULT_LANGUAGE
+
+      
+
+   .. py:attribute:: PASS_METHOD
+
+      
+
+   .. py:attribute:: DEBUG
+
+      
+
+   .. py:attribute:: URL_APPLICATION
+
+      
+
+   .. py:attribute:: API_ENDPOINT
+
+      
+
+   .. py:attribute:: API_TAXHUB
+
+      
+
+   .. py:attribute:: CODE_APPLICATION
+
+      
+
+   .. py:attribute:: XML_NAMESPACE
+
+      
+
+   .. py:attribute:: MTD_API_ENDPOINT
+
+      
+
+   .. py:attribute:: DISABLED_MODULES
+
+      
+
+   .. py:attribute:: CAS_PUBLIC
+
+      
+
+   .. py:attribute:: RIGHTS
+
+      
+
+   .. py:attribute:: FRONTEND
+
+      
+
+   .. py:attribute:: SYNTHESE
+
+      
+
+   .. py:attribute:: MAPCONFIG
+
+      
+
+   .. py:attribute:: ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS
+
+      
+
+   .. py:attribute:: BDD
+
+      
+
+   .. py:attribute:: URL_USERSHUB
+
+      
+
+   .. py:attribute:: ACCOUNT_MANAGEMENT
+
+      
+
+   .. py:attribute:: MEDIAS
+
+      
+
+   .. py:attribute:: STATIC_URL
+
+      
+
+   .. py:attribute:: MEDIA_URL
+
+      
+
+   .. py:attribute:: METADATA
+
+      
+
+   .. py:attribute:: MTD
+
+      
+
+   .. py:attribute:: NB_MAX_DATA_SENSITIVITY_REPORT
+
+      
+
+   .. py:attribute:: ADDITIONAL_FIELDS
+
+      
+
+   .. py:attribute:: PUBLIC_ACCESS_USERNAME
+
+      
+
+   .. py:attribute:: TAXHUB
+
+      
+
+   .. py:attribute:: HOME
+
+      
+
+   .. py:attribute:: NOTIFICATIONS_ENABLED
+
+      
+
+   .. py:attribute:: PROFILES_REFRESH_CRONTAB
+
+      
+
+   .. py:attribute:: MEDIA_CLEAN_CRONTAB
+
+      
+
+   .. py:method:: validate_enable_sign_up(data, **kwargs)
+
+
+   .. py:method:: validate_account_autovalidation(data, **kwargs)
+
+
+   .. py:method:: insert_module_config(data, **kwargs)
+
+
+

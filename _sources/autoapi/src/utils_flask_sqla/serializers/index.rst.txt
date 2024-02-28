@@ -1,0 +1,47 @@
+:py:mod:`src.utils_flask_sqla.serializers`
+==========================================
+
+.. py:module:: src.utils_flask_sqla.serializers
+
+.. autoapi-nested-parse::
+
+   Serialize function for SQLAlchemy models
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla.serializers.get_serializer
+   src.utils_flask_sqla.serializers.get_serializable_decorator
+   src.utils_flask_sqla.serializers.serializable
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla.serializers.SERIALIZERS
+
+
+.. py:data:: SERIALIZERS
+
+   
+
+.. py:function:: get_serializer(col)
+
+
+.. py:function:: get_serializable_decorator(fields=[], exclude=[], stringify=True)
+
+
+.. py:function:: serializable(*args, **kwargs)
+
+

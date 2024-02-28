@@ -1,0 +1,116 @@
+:py:mod:`apptax.taxonomie.repositories`
+=======================================
+
+.. py:module:: apptax.taxonomie.repositories
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.repositories.MediaRepository
+   apptax.taxonomie.repositories.BdcStatusRepository
+
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.repositories.logger
+
+
+.. py:data:: logger
+
+   
+
+.. py:class:: MediaRepository(DBSession, s3_bucket_name)
+
+
+   .. py:attribute:: s3_storage
+      :value: False
+
+      
+
+   .. py:method:: _format_media(media, force_path)
+
+
+   .. py:method:: _populate_data_media(media, data)
+
+
+   .. py:method:: get_media_filter_by(filters)
+
+
+   .. py:method:: get_and_format_media_filter_by(filters, force_path=False)
+
+
+   .. py:method:: get_one_media(id)
+
+
+   .. py:method:: get_and_format_one_media(id, force_path=False)
+
+
+   .. py:method:: import_media(data, upload_file, id_media=None)
+
+
+   .. py:method:: process_media_file(file, media, is_file, old_media_data)
+
+
+   .. py:method:: update_media_file(media)
+
+
+   .. py:method:: persist(entity)
+
+
+   .. py:method:: delete(id)
+
+
+   .. py:method:: _process_comit(rollback=True)
+
+
+
+.. py:class:: BdcStatusRepository
+
+
+   .. py:method:: get_status(cd_ref: int, type_statut: str, areas: List[int] = None, areas_code: List[str] = None, enable=True, format=False)
+
+          Retourne la liste des statuts associés à un taxon
+          sous forme hiérarchique
+
+      Args:
+          cd_ref (int): cd_ref
+          type_statut (str): code du type de statut
+          areas (List[int], optional): limite les statuts renvoyés
+              aux identifiants de zones géographiques fournies.
+          areas_code (List[str], optional): limite les statuts renvoyés
+              aux codes de zones géographiques fournies.
+          enable (bool, optional): ne retourner que les statuts actifs Defaults to True.
+          format (bool, optional): retourne les données formatées. Defaults to False.
+
+      Returns:
+          listes des statuts du taxon
+
+
+   .. py:method:: format_hierarchy_status(data)
+
+          Formatage des données sous la forme d'un dictionnaire
+          type de statut : {
+              [text : {
+                  [valeurs]
+              }]
+          }
+
+      Args:
+          data ([resultProxy]): Données à formater
+
+      Returns:
+          [type]: [description]
+
+
+

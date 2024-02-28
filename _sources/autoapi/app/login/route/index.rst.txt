@@ -1,0 +1,34 @@
+:py:mod:`app.login.route`
+=========================
+
+.. py:module:: app.login.route
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   app.login.route.login
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   app.login.route.route
+
+
+.. py:data:: route
+
+   
+
+.. py:function:: login()
+
+

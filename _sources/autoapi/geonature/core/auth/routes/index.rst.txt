@@ -1,0 +1,66 @@
+:py:mod:`geonature.core.auth.routes`
+====================================
+
+.. py:module:: geonature.core.auth.routes
+
+.. autoapi-nested-parse::
+
+   Module d'identificiation provisoire pour test du CAS INPN
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.auth.routes.loginCas
+   geonature.core.auth.routes.logout_cruved
+   geonature.core.auth.routes.get_user_from_id_inpn_ws
+   geonature.core.auth.routes.insert_user_and_org
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.auth.routes.routes
+   geonature.core.auth.routes.log
+
+
+.. py:data:: routes
+
+   
+
+.. py:data:: log
+
+   
+
+.. py:function:: loginCas()
+
+   Login route with the INPN CAS
+
+   .. :quickref: User;
+
+
+.. py:function:: logout_cruved()
+
+   Route to logout with cruved
+   To avoid multiples server call, we store the cruved in the session
+   when the user logout we need clear the session to get the new cruved session
+
+   .. :quickref: User;
+
+
+.. py:function:: get_user_from_id_inpn_ws(id_user)
+
+
+.. py:function:: insert_user_and_org(info_user)
+
+

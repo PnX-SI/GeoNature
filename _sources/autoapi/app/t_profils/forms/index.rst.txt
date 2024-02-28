@@ -1,0 +1,47 @@
+:py:mod:`app.t_profils.forms`
+=============================
+
+.. py:module:: app.t_profils.forms
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   app.t_profils.forms.Profil
+
+
+
+
+.. py:class:: Profil(formdata=_Auto, **kwargs)
+
+
+   Bases: :py:obj:`flask_wtf.FlaskForm`
+
+   Classe du formulaire des profils
+
+   .. py:attribute:: id_profil
+
+      
+
+   .. py:attribute:: nom_profil
+
+      
+
+   .. py:attribute:: code_profil
+
+      
+
+   .. py:attribute:: desc_profil
+
+      
+
+   .. py:attribute:: submit
+
+      
+
+

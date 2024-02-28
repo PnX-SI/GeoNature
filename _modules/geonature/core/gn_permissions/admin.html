@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_permissions.admin &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.gn_permissions.admin</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.gn_permissions.admin</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">url_for</span><span class="p">,</span> <span class="n">has_app_context</span><span class="p">,</span> <span class="n">request</span>
+<span class="kn">from</span> <span class="nn">flask_admin.contrib.sqla</span> <span class="kn">import</span> <span class="n">ModelView</span>
+<span class="kn">from</span> <span class="nn">flask_admin.contrib.sqla.filters</span> <span class="kn">import</span> <span class="n">FilterEqual</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+<span class="kn">from</span> <span class="nn">flask_admin.contrib.sqla.tools</span> <span class="kn">import</span> <span class="n">get_primary_key</span>
+<span class="kn">from</span> <span class="nn">flask_admin.contrib.sqla.fields</span> <span class="kn">import</span> <span class="n">QuerySelectField</span>
+<span class="kn">from</span> <span class="nn">flask_admin.contrib.sqla.ajax</span> <span class="kn">import</span> <span class="n">QueryAjaxModelLoader</span>
+<span class="kn">from</span> <span class="nn">flask_admin.form.widgets</span> <span class="kn">import</span> <span class="n">Select2Widget</span>
+<span class="kn">from</span> <span class="nn">markupsafe</span> <span class="kn">import</span> <span class="n">Markup</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">contains_eager</span><span class="p">,</span> <span class="n">joinedload</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">select</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.config</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">geonature.core.admin.admin</span> <span class="kn">import</span> <span class="n">admin</span>
+<span class="kn">from</span> <span class="nn">geonature.core.admin.utils</span> <span class="kn">import</span> <span class="n">CruvedProtectedMixin</span><span class="p">,</span> <span class="n">DynamicOptionsMixin</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">PermObject</span><span class="p">,</span>
+    <span class="n">PermAction</span><span class="p">,</span>
+    <span class="n">PermScope</span><span class="p">,</span>
+    <span class="n">Permission</span><span class="p">,</span>
+    <span class="n">PermissionAvailable</span><span class="p">,</span>
+    <span class="n">PermFilter</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.tools</span> <span class="kn">import</span> <span class="n">get_permissions</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.models.base</span> <span class="kn">import</span> <span class="n">TModules</span>
+
+<span class="kn">from</span> <span class="nn">pypnusershub.db.models</span> <span class="kn">import</span> <span class="n">User</span>
+
+
+<span class="c1">### Filters</span>
+
+
+<div class="viewcode-block" id="RoleFilter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.RoleFilter">[docs]</a>
+<span class="k">class</span> <span class="nc">RoleFilter</span><span class="p">(</span><span class="n">DynamicOptionsMixin</span><span class="p">,</span> <span class="n">FilterEqual</span><span class="p">):</span>
+<div class="viewcode-block" id="RoleFilter.get_dynamic_options">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.RoleFilter.get_dynamic_options">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_dynamic_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">has_app_context</span><span class="p">():</span>
+            <span class="k">yield from</span> <span class="p">[(</span><span class="n">u</span><span class="o">.</span><span class="n">id_role</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">nom_complet</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">User</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ModuleFilter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ModuleFilter">[docs]</a>
+<span class="k">class</span> <span class="nc">ModuleFilter</span><span class="p">(</span><span class="n">DynamicOptionsMixin</span><span class="p">,</span> <span class="n">FilterEqual</span><span class="p">):</span>
+<div class="viewcode-block" id="ModuleFilter.get_dynamic_options">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ModuleFilter.get_dynamic_options">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_dynamic_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">has_app_context</span><span class="p">():</span>
+            <span class="n">modules</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">TModules</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">TModules</span><span class="o">.</span><span class="n">module_code</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="k">yield from</span> <span class="p">[(</span><span class="n">module</span><span class="o">.</span><span class="n">id_module</span><span class="p">,</span> <span class="n">module</span><span class="o">.</span><span class="n">module_code</span><span class="p">)</span> <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ObjectFilter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ObjectFilter">[docs]</a>
+<span class="k">class</span> <span class="nc">ObjectFilter</span><span class="p">(</span><span class="n">DynamicOptionsMixin</span><span class="p">,</span> <span class="n">FilterEqual</span><span class="p">):</span>
+<div class="viewcode-block" id="ObjectFilter.get_dynamic_options">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ObjectFilter.get_dynamic_options">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_dynamic_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">has_app_context</span><span class="p">():</span>
+            <span class="n">objects</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">PermObject</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="k">yield from</span> <span class="p">[(</span><span class="nb">object</span><span class="o">.</span><span class="n">id_object</span><span class="p">,</span> <span class="nb">object</span><span class="o">.</span><span class="n">code_object</span><span class="p">)</span> <span class="k">for</span> <span class="nb">object</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ActionFilter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ActionFilter">[docs]</a>
+<span class="k">class</span> <span class="nc">ActionFilter</span><span class="p">(</span><span class="n">DynamicOptionsMixin</span><span class="p">,</span> <span class="n">FilterEqual</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionFilter.get_dynamic_options">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ActionFilter.get_dynamic_options">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_dynamic_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">has_app_context</span><span class="p">():</span>
+            <span class="n">actions</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">PermAction</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="k">yield from</span> <span class="p">[(</span><span class="n">action</span><span class="o">.</span><span class="n">id_action</span><span class="p">,</span> <span class="n">action</span><span class="o">.</span><span class="n">code_action</span><span class="p">)</span> <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ScopeFilter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ScopeFilter">[docs]</a>
+<span class="k">class</span> <span class="nc">ScopeFilter</span><span class="p">(</span><span class="n">DynamicOptionsMixin</span><span class="p">,</span> <span class="n">FilterEqual</span><span class="p">):</span>
+<div class="viewcode-block" id="ScopeFilter.apply">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ScopeFilter.apply">[docs]</a>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">alias</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">column</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="ScopeFilter.get_dynamic_options">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ScopeFilter.get_dynamic_options">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_dynamic_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">has_app_context</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Sans restriction&quot;</span><span class="p">)</span>
+            <span class="n">scopes</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">PermScope</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="k">yield from</span> <span class="p">[(</span><span class="n">scope</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">scope</span><span class="o">.</span><span class="n">label</span><span class="p">)</span> <span class="k">for</span> <span class="n">scope</span> <span class="ow">in</span> <span class="n">scopes</span><span class="p">]</span></div>
+</div>
+
+
+
+<span class="c1">### Formatters</span>
+
+
+<div class="viewcode-block" id="filters_formatter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.filters_formatter">[docs]</a>
+<span class="k">def</span> <span class="nf">filters_formatter</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">scope</span><span class="p">:</span>
+        <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">scope</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">sensitivity_filter</span><span class="p">:</span>
+        <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Données non sensibles&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Markup</span><span class="p">(</span><span class="s2">&quot;&lt;ul&gt;&quot;</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;&lt;li&gt;</span><span class="si">{}</span><span class="s2">&lt;/li&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filters</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;&lt;/ul&gt;&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="modules_formatter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.modules_formatter">[docs]</a>
+<span class="k">def</span> <span class="nf">modules_formatter</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="n">modules</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;&lt;a href=&quot;</span><span class="si">{}</span><span class="s1">&quot;&gt;</span><span class="si">{}</span><span class="s1">&lt;/a&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;tmodules.details_view&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">module</span><span class="o">.</span><span class="n">id_module</span><span class="p">),</span>
+            <span class="n">Markup</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">module_code</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">modules</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">Markup</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">modules</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="groups_formatter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.groups_formatter">[docs]</a>
+<span class="k">def</span> <span class="nf">groups_formatter</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;&lt;a href=&quot;</span><span class="si">{}</span><span class="s1">&quot;&gt;</span><span class="si">{}</span><span class="s1">&lt;/a&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;permissions/group.details_view&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">group</span><span class="o">.</span><span class="n">id_role</span><span class="p">),</span> <span class="n">Markup</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">groups</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">Markup</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">groups</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="role_formatter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.role_formatter">[docs]</a>
+<span class="k">def</span> <span class="nf">role_formatter</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="n">role</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">role</span>
+    <span class="k">if</span> <span class="n">role</span><span class="o">.</span><span class="n">groupe</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;permissions/group.details_view&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">role</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span>
+        <span class="n">nom</span> <span class="o">=</span> <span class="s2">&quot;&lt;b&gt;</span><span class="si">{}</span><span class="s2">&lt;/b&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Markup</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">role</span><span class="o">.</span><span class="n">nom_role</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;permissions/user.details_view&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">role</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span>
+        <span class="n">nom</span> <span class="o">=</span> <span class="n">Markup</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">role</span><span class="o">.</span><span class="n">nom_complet</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Markup</span><span class="p">(</span><span class="s1">&#39;&lt;a href=&quot;</span><span class="si">{}</span><span class="s1">&quot;&gt;</span><span class="si">{}</span><span class="s1">&lt;/a&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">nom</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="permissions_formatter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.permissions_formatter">[docs]</a>
+<span class="k">def</span> <span class="nf">permissions_formatter</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="n">available_permissions</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">PermissionAvailable</span><span class="o">.</span><span class="n">nice_order</span><span class="p">())</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="n">o</span> <span class="o">=</span> <span class="s2">&quot;&lt;table class=&#39;table&#39;&gt;&quot;</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Module&quot;</span><span class="p">,</span> <span class="s2">&quot;Object&quot;</span><span class="p">,</span> <span class="s2">&quot;Action&quot;</span><span class="p">,</span> <span class="s2">&quot;Label&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">groupe</span><span class="p">:</span>
+        <span class="n">return_url</span> <span class="o">=</span> <span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;permissions/group.details_view&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span>
+        <span class="n">columns</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;Permissions&quot;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">return_url</span> <span class="o">=</span> <span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;permissions/user.details_view&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span>
+        <span class="n">columns</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;Permissions personnelles&quot;</span><span class="p">,</span> <span class="s2">&quot;Permissions effectives&quot;</span><span class="p">]</span>
+    <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&lt;thead&gt;&lt;tr&gt;&quot;</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;&lt;th&gt;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&lt;/th&gt;&quot;</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;&lt;/tr&gt;&lt;/thead&gt;&quot;</span>
+    <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&lt;tbody&gt;&quot;</span>
+    <span class="k">for</span> <span class="n">ap</span> <span class="ow">in</span> <span class="n">available_permissions</span><span class="p">:</span>
+        <span class="n">own_permissions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="nb">filter</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">module</span> <span class="o">==</span> <span class="n">ap</span><span class="o">.</span><span class="n">module</span> <span class="ow">and</span> <span class="n">p</span><span class="o">.</span><span class="n">object</span> <span class="o">==</span> <span class="n">ap</span><span class="o">.</span><span class="n">object</span> <span class="ow">and</span> <span class="n">p</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="n">ap</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">permissions</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">permissions</span> <span class="o">=</span> <span class="p">[(</span><span class="n">own_permissions</span><span class="p">,</span> <span class="kc">True</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">model</span><span class="o">.</span><span class="n">groupe</span><span class="p">:</span>
+            <span class="n">effective_permissions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="n">get_permissions</span><span class="p">(</span>
+                    <span class="n">id_role</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">id_role</span><span class="p">,</span>
+                    <span class="n">module_code</span><span class="o">=</span><span class="n">ap</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">module_code</span><span class="p">,</span>
+                    <span class="n">object_code</span><span class="o">=</span><span class="n">ap</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">code_object</span><span class="p">,</span>
+                    <span class="n">action_code</span><span class="o">=</span><span class="n">ap</span><span class="o">.</span><span class="n">action</span><span class="o">.</span><span class="n">code_action</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">permissions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">effective_permissions</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+            <span class="n">o</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="s2">&quot;&lt;tr&gt;&quot;</span>
+                <span class="k">if</span> <span class="n">own_permissions</span> <span class="ow">or</span> <span class="n">effective_permissions</span>
+                <span class="k">else</span> <span class="s2">&quot;&lt;tr class=&#39;text-muted alert alert-danger&#39;&gt;&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&lt;tr&gt;&quot;</span> <span class="k">if</span> <span class="n">own_permissions</span> <span class="k">else</span> <span class="s2">&quot;&lt;tr class=&#39;text-muted alert alert-danger&#39;&gt;&quot;</span>
+
+        <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="sa">f</span><span class="s2">&quot;&lt;td&gt;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&lt;/td&gt;&quot;</span>
+                <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span>
+                    <span class="n">ap</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">module_code</span><span class="p">,</span>
+                    <span class="n">ap</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">code_object</span><span class="p">,</span>
+                    <span class="n">ap</span><span class="o">.</span><span class="n">action</span><span class="o">.</span><span class="n">code_action</span><span class="p">,</span>
+                    <span class="n">ap</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">perms</span><span class="p">,</span> <span class="n">managable</span> <span class="ow">in</span> <span class="n">permissions</span><span class="p">:</span>
+            <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&lt;td&gt;&quot;</span>
+            <span class="k">if</span> <span class="n">perms</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">perms</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">o</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">perms</span><span class="p">)</span><span class="si">}</span><span class="s2"> permissions :&quot;</span>
+                <span class="n">o</span> <span class="o">+=</span> <span class="s1">&#39;&lt;table class=&quot;table table-bordered table-sm&quot; style=&quot;border-collapse: separate; border-spacing:0 8px;&quot;&gt;&#39;</span>
+                <span class="k">for</span> <span class="n">perm</span> <span class="ow">in</span> <span class="n">perms</span><span class="p">:</span>
+                    <span class="n">flts</span> <span class="o">=</span> <span class="n">perm</span><span class="o">.</span><span class="n">filters</span>
+                    <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&lt;tr&gt;&quot;</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">flts</span><span class="p">:</span>
+                        <span class="n">o</span> <span class="o">+=</span> <span class="s1">&#39;&lt;td class=&quot;table-success&quot;&gt;&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">o</span> <span class="o">+=</span> <span class="s1">&#39;&lt;td class=&quot;table-info&quot;&gt;&#39;</span>
+                    <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;&lt;div class=&quot;row&quot;&gt;&lt;div class=&quot;col&quot;&gt;&quot;&quot;&quot;</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">flts</span><span class="p">:</span>
+                        <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;&lt;i class=&quot;fa fa-check&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&quot;&quot;&quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;&lt;ul class=&quot;list-group&quot;&gt;&quot;&quot;&quot;</span>
+                        <span class="k">for</span> <span class="n">flt_name</span> <span class="ow">in</span> <span class="n">perm</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">filters</span><span class="p">:</span>
+                            <span class="n">flt_field</span> <span class="o">=</span> <span class="n">Permission</span><span class="o">.</span><span class="n">filters_fields</span><span class="p">[</span><span class="n">flt_name</span><span class="p">]</span>
+                            <span class="n">flt</span> <span class="o">=</span> <span class="n">PermFilter</span><span class="p">(</span><span class="n">flt_name</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">perm</span><span class="p">,</span> <span class="n">flt_field</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                            <span class="n">o</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&lt;li class=&quot;list-group-item&quot;&gt;</span><span class="si">{</span><span class="n">flt</span><span class="si">}</span><span class="s2">&lt;/li&gt;&quot;&quot;&quot;</span>
+                        <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&lt;/ul&gt;&quot;</span>
+                    <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;&lt;/div&gt;&lt;/div&gt;&quot;&quot;&quot;</span>
+                    <span class="k">if</span> <span class="n">managable</span><span class="p">:</span>
+                        <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;&lt;div class=&quot;row&quot;&gt;&lt;div class=&quot;col text-right&quot;&gt;&quot;&quot;&quot;</span>
+                        <span class="n">edit_url</span> <span class="o">=</span> <span class="n">url_for</span><span class="p">(</span>
+                            <span class="s2">&quot;permissions/permission.edit_view&quot;</span><span class="p">,</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="n">perm</span><span class="o">.</span><span class="n">id_permission</span><span class="p">,</span>
+                            <span class="n">url</span><span class="o">=</span><span class="n">return_url</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">delete_url</span> <span class="o">=</span> <span class="n">url_for</span><span class="p">(</span>
+                            <span class="s2">&quot;permissions/permission.delete_view&quot;</span><span class="p">,</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="n">perm</span><span class="o">.</span><span class="n">id_permission</span><span class="p">,</span>
+                            <span class="n">url</span><span class="o">=</span><span class="n">return_url</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">o</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&lt;form method=&quot;post&quot; action=&quot;</span><span class="si">{</span><span class="n">delete_url</span><span class="si">}</span><span class="s2">&quot;&gt;&quot;&quot;&quot;</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ap</span><span class="o">.</span><span class="n">filters</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">o</span> <span class="o">+=</span> <span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&lt;a class=&quot;btn btn-primary btn-sm&quot; href=&quot;</span><span class="si">{</span><span class="n">edit_url</span><span class="si">}</span><span class="s2">&quot;&gt;&quot;&quot;&quot;</span>
+<span class="w">                                </span><span class="sd">&quot;&quot;&quot;&lt;i class=&quot;fa fa-pencil&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&quot;&quot;&quot;</span>
+<span class="w">                                </span><span class="sd">&quot;&quot;&quot;&lt;/a&gt;&quot;&quot;&quot;</span>
+                            <span class="p">)</span>
+                        <span class="n">o</span> <span class="o">+=</span> <span class="p">(</span>
+<span class="w">                            </span><span class="sd">&quot;&quot;&quot;&lt;button class=&quot;btn btn-danger btn-sm&quot; onclick=&quot;return faHelpers.safeConfirm(&#39;Supprimer cette permission ?&#39;);&quot;&gt;&quot;&quot;&quot;</span>
+<span class="w">                            </span><span class="sd">&quot;&quot;&quot;&lt;i class=&quot;fa fa-trash&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&quot;&quot;&quot;</span>
+                            <span class="s2">&quot;&lt;/button&gt;&quot;</span>
+                            <span class="s2">&quot;&lt;/form&gt;&quot;</span>
+                        <span class="p">)</span>
+                        <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;&lt;/div&gt;&lt;/div&gt;&quot;&quot;&quot;</span>
+                    <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&lt;/td&gt;&lt;/tr&gt;&quot;</span>
+                <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&lt;/table&gt;&quot;</span>
+            <span class="k">if</span> <span class="n">managable</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">perms</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">ap</span><span class="o">.</span><span class="n">filters</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">add_url</span> <span class="o">=</span> <span class="n">url_for</span><span class="p">(</span>
+                    <span class="s2">&quot;permissions/permission.create_view&quot;</span><span class="p">,</span>
+                    <span class="n">id_role</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">id_role</span><span class="p">,</span>
+                    <span class="n">module_code</span><span class="o">=</span><span class="n">ap</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">module_code</span><span class="p">,</span>
+                    <span class="n">code_object</span><span class="o">=</span><span class="n">ap</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">code_object</span><span class="p">,</span>
+                    <span class="n">code_action</span><span class="o">=</span><span class="n">ap</span><span class="o">.</span><span class="n">action</span><span class="o">.</span><span class="n">code_action</span><span class="p">,</span>
+                    <span class="n">url</span><span class="o">=</span><span class="n">return_url</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">o</span> <span class="o">+=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&lt;a class=&quot;btn btn-success btn-sm float-right&quot; href=&quot;</span><span class="si">{</span><span class="n">add_url</span><span class="si">}</span><span class="s2">&quot;&gt;&quot;&quot;&quot;</span>
+<span class="w">                    </span><span class="sd">&quot;&quot;&quot;&lt;i class=&quot;fa fa-plus&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&quot;&quot;&quot;</span>
+<span class="w">                    </span><span class="sd">&quot;&quot;&quot;&lt;/a&gt;&quot;&quot;&quot;</span>
+                <span class="p">)</span>
+            <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&lt;/td&gt;&quot;</span>
+        <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&lt;/tr&gt;&quot;</span>
+    <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&lt;/tbody&gt;&quot;</span>
+    <span class="n">o</span> <span class="o">+=</span> <span class="s2">&quot;&lt;/table&gt;&quot;</span>
+    <span class="k">return</span> <span class="n">Markup</span><span class="p">(</span><span class="n">o</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="permissions_count_formatter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.permissions_count_formatter">[docs]</a>
+<span class="k">def</span> <span class="nf">permissions_count_formatter</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;permissions/permission.index_view&quot;</span><span class="p">,</span> <span class="n">flt1_rle_equals</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Markup</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;a href=&quot;</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">permissions</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/a&gt;&#39;</span><span class="p">)</span></div>
+
+
+
+<span class="c1">### Widgets</span>
+
+
+<div class="viewcode-block" id="OptionSelect2Widget">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.OptionSelect2Widget">[docs]</a>
+<span class="k">class</span> <span class="nc">OptionSelect2Widget</span><span class="p">(</span><span class="n">Select2Widget</span><span class="p">):</span>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="OptionSelect2Widget.render_option">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.OptionSelect2Widget.render_option">[docs]</a>
+    <span class="k">def</span> <span class="nf">render_option</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">render_option</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;selected&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1">### Fields</span>
+
+
+<div class="viewcode-block" id="OptionQuerySelectField">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.OptionQuerySelectField">[docs]</a>
+<span class="k">class</span> <span class="nc">OptionQuerySelectField</span><span class="p">(</span><span class="n">QuerySelectField</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Overrides the QuerySelectField class from flask admin to allow</span>
+<span class="sd">    other attributes on a select option.</span>
+
+<span class="sd">    options_additional_values is added in form_args, it is a list of</span>
+<span class="sd">    strings, each element is the name of the attribute in the model</span>
+<span class="sd">    which will be added on the option</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="OptionQuerySelectField.widget">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.OptionQuerySelectField.widget">[docs]</a>
+    <span class="n">widget</span> <span class="o">=</span> <span class="n">OptionSelect2Widget</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options_additional_values</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;options_additional_values&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="OptionQuerySelectField.iter_choices">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.OptionQuerySelectField.iter_choices">[docs]</a>
+    <span class="k">def</span> <span class="nf">iter_choices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_blank</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="s2">&quot;__None&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blank_text</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;selected&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">})</span>
+        <span class="k">for</span> <span class="n">pk</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object_list</span><span class="p">():</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options_additional_values</span><span class="p">}</span>
+            <span class="n">options</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">pk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">options</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1">### ModelLoader</span>
+
+
+<div class="viewcode-block" id="UserAjaxModelLoader">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.UserAjaxModelLoader">[docs]</a>
+<span class="k">class</span> <span class="nc">UserAjaxModelLoader</span><span class="p">(</span><span class="n">QueryAjaxModelLoader</span><span class="p">):</span>
+<div class="viewcode-block" id="UserAjaxModelLoader.format">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.UserAjaxModelLoader.format">[docs]</a>
+    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">def</span> <span class="nf">format_availability</span><span class="p">(</span><span class="n">availability</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">availability</span><span class="p">,</span> <span class="n">attr</span><span class="p">))</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">get_primary_key</span><span class="p">(</span><span class="n">PermissionAvailable</span><span class="p">)]</span>
+            <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">filter_availability</span><span class="p">(</span><span class="n">availability</span><span class="p">):</span>
+            <span class="n">filters_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="n">availability</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">PermissionAvailable</span><span class="o">.</span><span class="n">filters_fields</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">filters_count</span> <span class="o">&lt;</span> <span class="mi">2</span>
+
+        <span class="n">availabilities</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span><span class="o">.</span><span class="n">availability</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">user</span><span class="o">.</span><span class="n">permissions</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">availability</span><span class="p">}</span>
+        <span class="n">excluded_availabilities</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="n">filter_availability</span><span class="p">,</span> <span class="n">availabilities</span><span class="p">)</span>
+        <span class="n">excluded_availabilities</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">format_availability</span><span class="p">,</span> <span class="n">excluded_availabilities</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">excluded_availabilities</span><span class="p">),)</span></div>
+
+
+<div class="viewcode-block" id="UserAjaxModelLoader.get_query">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.UserAjaxModelLoader.get_query">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="nb">super</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">get_query</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">joinedload</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">permissions</span><span class="p">)</span><span class="o">.</span><span class="n">joinedload</span><span class="p">(</span><span class="n">Permission</span><span class="o">.</span><span class="n">availability</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">groupe</span><span class="o">.</span><span class="n">desc</span><span class="p">(),</span> <span class="n">User</span><span class="o">.</span><span class="n">nom_role</span><span class="p">)</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1">### ModelViews</span>
+
+
+<div class="viewcode-block" id="ObjectAdmin">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ObjectAdmin">[docs]</a>
+<span class="k">class</span> <span class="nc">ObjectAdmin</span><span class="p">(</span><span class="n">CruvedProtectedMixin</span><span class="p">,</span> <span class="n">ModelView</span><span class="p">):</span>
+<div class="viewcode-block" id="ObjectAdmin.module_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ObjectAdmin.module_code">[docs]</a>
+    <span class="n">module_code</span> <span class="o">=</span> <span class="s2">&quot;ADMIN&quot;</span></div>
+
+<div class="viewcode-block" id="ObjectAdmin.object_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ObjectAdmin.object_code">[docs]</a>
+    <span class="n">object_code</span> <span class="o">=</span> <span class="s2">&quot;PERMISSIONS&quot;</span></div>
+
+
+<div class="viewcode-block" id="ObjectAdmin.can_create">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ObjectAdmin.can_create">[docs]</a>
+    <span class="n">can_create</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="ObjectAdmin.can_edit">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ObjectAdmin.can_edit">[docs]</a>
+    <span class="n">can_edit</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="ObjectAdmin.can_delete">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ObjectAdmin.can_delete">[docs]</a>
+    <span class="n">can_delete</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="ObjectAdmin.column_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ObjectAdmin.column_list">[docs]</a>
+    <span class="n">column_list</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;code_object&quot;</span><span class="p">,</span> <span class="s2">&quot;description_object&quot;</span><span class="p">,</span> <span class="s2">&quot;modules&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ObjectAdmin.column_labels">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ObjectAdmin.column_labels">[docs]</a>
+    <span class="n">column_labels</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;code_object&quot;</span><span class="p">:</span> <span class="s2">&quot;Code&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;description_object&quot;</span><span class="p">:</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="ObjectAdmin.column_default_sort">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ObjectAdmin.column_default_sort">[docs]</a>
+    <span class="n">column_default_sort</span> <span class="o">=</span> <span class="s2">&quot;id_object&quot;</span></div>
+
+<div class="viewcode-block" id="ObjectAdmin.column_formatters">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.ObjectAdmin.column_formatters">[docs]</a>
+    <span class="n">column_formatters</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;modules&quot;</span><span class="p">:</span> <span class="n">modules_formatter</span><span class="p">,</span>
+    <span class="p">}</span></div>
+</div>
+
+
+
+<span class="c1"># self.allow_blank = (True,)</span>
+<span class="c1"># self.blank_test = &quot;lalala&quot;</span>
+<div class="viewcode-block" id="PermissionAdmin">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin">[docs]</a>
+<span class="k">class</span> <span class="nc">PermissionAdmin</span><span class="p">(</span><span class="n">CruvedProtectedMixin</span><span class="p">,</span> <span class="n">ModelView</span><span class="p">):</span>
+<div class="viewcode-block" id="PermissionAdmin.module_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.module_code">[docs]</a>
+    <span class="n">module_code</span> <span class="o">=</span> <span class="s2">&quot;ADMIN&quot;</span></div>
+
+<div class="viewcode-block" id="PermissionAdmin.object_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.object_code">[docs]</a>
+    <span class="n">object_code</span> <span class="o">=</span> <span class="s2">&quot;PERMISSIONS&quot;</span></div>
+
+
+<div class="viewcode-block" id="PermissionAdmin.column_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.column_list">[docs]</a>
+    <span class="n">column_list</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;role&quot;</span><span class="p">,</span> <span class="s2">&quot;module&quot;</span><span class="p">,</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span> <span class="s2">&quot;action&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;filters&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermissionAdmin.column_labels">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.column_labels">[docs]</a>
+    <span class="n">column_labels</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;Rôle&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;filters&quot;</span><span class="p">:</span> <span class="s2">&quot;Restriction(s)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="s2">&quot;Objet&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;role.identifiant&quot;</span><span class="p">:</span> <span class="s2">&quot;identifiant du rôle&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;role.nom_complet&quot;</span><span class="p">:</span> <span class="s2">&quot;nom du rôle&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;availability&quot;</span><span class="p">:</span> <span class="s2">&quot;Permission&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;scope&quot;</span><span class="p">:</span> <span class="s2">&quot;Filtre sur l&#39;appartenance des données&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sensitivity_filter&quot;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">&quot;Flouter&quot;</span> <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;SYNTHESE&quot;</span><span class="p">][</span><span class="s2">&quot;BLUR_SENSITIVE_OBSERVATIONS&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="s2">&quot;Exclure&quot;</span>
+        <span class="p">)</span>
+        <span class="o">+</span> <span class="s2">&quot; les données sensibles&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="PermissionAdmin.column_select_related_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.column_select_related_list">[docs]</a>
+    <span class="n">column_select_related_list</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;availability&quot;</span><span class="p">,)</span></div>
+
+<div class="viewcode-block" id="PermissionAdmin.column_searchable_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.column_searchable_list">[docs]</a>
+    <span class="n">column_searchable_list</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;role.identifiant&quot;</span><span class="p">,</span> <span class="s2">&quot;role.nom_complet&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermissionAdmin.column_formatters">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.column_formatters">[docs]</a>
+    <span class="n">column_formatters</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="n">role_formatter</span><span class="p">,</span>
+        <span class="s2">&quot;module&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">module_code</span><span class="p">,</span>
+        <span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">code_object</span><span class="p">,</span>
+        <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">label</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">availability</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;filters&quot;</span><span class="p">:</span> <span class="n">filters_formatter</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="PermissionAdmin.column_filters">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.column_filters">[docs]</a>
+    <span class="n">column_filters</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">RoleFilter</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">Permission</span><span class="o">.</span><span class="n">id_role</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Rôle&quot;</span><span class="p">),</span>
+        <span class="n">ModuleFilter</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">Permission</span><span class="o">.</span><span class="n">id_module</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Module&quot;</span><span class="p">),</span>
+        <span class="n">ObjectFilter</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">Permission</span><span class="o">.</span><span class="n">id_object</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Objet&quot;</span><span class="p">),</span>
+        <span class="n">ActionFilter</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">Permission</span><span class="o">.</span><span class="n">id_action</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Action&quot;</span><span class="p">),</span>
+        <span class="n">ScopeFilter</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">Permission</span><span class="o">.</span><span class="n">scope_value</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Scope&quot;</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermissionAdmin.named_filter_urls">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.named_filter_urls">[docs]</a>
+    <span class="n">named_filter_urls</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="PermissionAdmin.column_sortable_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.column_sortable_list">[docs]</a>
+    <span class="n">column_sortable_list</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="s2">&quot;role&quot;</span><span class="p">,</span> <span class="s2">&quot;role.nom_complet&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;module&quot;</span><span class="p">,</span> <span class="s2">&quot;module.module_code&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">,</span> <span class="s2">&quot;object.code_object&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">,</span> <span class="s2">&quot;action.code_action&quot;</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermissionAdmin.column_default_sort">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.column_default_sort">[docs]</a>
+    <span class="n">column_default_sort</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;role.nom_complet&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;module.module_code&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;object.code_object&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;id_action&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+    <span class="p">]</span></div>
+
+<div class="viewcode-block" id="PermissionAdmin.form_columns">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.form_columns">[docs]</a>
+    <span class="n">form_columns</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;role&quot;</span><span class="p">,</span> <span class="s2">&quot;availability&quot;</span><span class="p">,</span> <span class="s2">&quot;scope&quot;</span><span class="p">,</span> <span class="s2">&quot;sensitivity_filter&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermissionAdmin.form_overrides">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.form_overrides">[docs]</a>
+    <span class="n">form_overrides</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">availability</span><span class="o">=</span><span class="n">OptionQuerySelectField</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermissionAdmin.form_args">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.form_args">[docs]</a>
+    <span class="n">form_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">availability</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">query_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">PermissionAvailable</span><span class="o">.</span><span class="n">nice_order</span><span class="p">(),</span>
+            <span class="n">options_additional_values</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sensitivity_filter&quot;</span><span class="p">,</span> <span class="s2">&quot;scope_filter&quot;</span><span class="p">],</span>
+        <span class="p">),</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermissionAdmin.create_template">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.create_template">[docs]</a>
+    <span class="n">create_template</span> <span class="o">=</span> <span class="s2">&quot;admin/hide_select2_options_create.html&quot;</span></div>
+
+<div class="viewcode-block" id="PermissionAdmin.edit_template">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.edit_template">[docs]</a>
+    <span class="n">edit_template</span> <span class="o">=</span> <span class="s2">&quot;admin/hide_select2_options_edit.html&quot;</span></div>
+
+<div class="viewcode-block" id="PermissionAdmin.form_ajax_refs">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.form_ajax_refs">[docs]</a>
+    <span class="n">form_ajax_refs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="n">UserAjaxModelLoader</span><span class="p">(</span>
+            <span class="s2">&quot;role&quot;</span><span class="p">,</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+            <span class="n">User</span><span class="p">,</span>
+            <span class="n">fields</span><span class="o">=</span><span class="p">(</span>
+                <span class="s2">&quot;identifiant&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;nom_role&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;prenom_role&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;Veuillez sélectionner un utilisateur ou un groupe&quot;</span><span class="p">,</span>
+            <span class="n">minimum_input_length</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="PermissionAdmin.render">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.render">[docs]</a>
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extra_js</span> <span class="o">=</span> <span class="p">[</span><span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;static&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;js/hide_unnecessary_filters.js&quot;</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PermissionAdmin.create_form">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAdmin.create_form">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_form</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">create_form</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
+            <span class="c1"># Set default values from request.args</span>
+            <span class="k">if</span> <span class="s2">&quot;id_role&quot;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+                <span class="n">form</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_role&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">))</span>
+            <span class="k">if</span> <span class="p">{</span><span class="s2">&quot;module_code&quot;</span><span class="p">,</span> <span class="s2">&quot;code_object&quot;</span><span class="p">,</span> <span class="s2">&quot;code_action&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="n">form</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                    <span class="n">select</span><span class="p">(</span><span class="n">PermissionAvailable</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PermissionAvailable</span><span class="o">.</span><span class="n">module</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PermissionAvailable</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PermissionAvailable</span><span class="o">.</span><span class="n">action</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                        <span class="n">TModules</span><span class="o">.</span><span class="n">module_code</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;module_code&quot;</span><span class="p">),</span>
+                        <span class="n">PermObject</span><span class="o">.</span><span class="n">code_object</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;code_object&quot;</span><span class="p">),</span>
+                        <span class="n">PermAction</span><span class="o">.</span><span class="n">code_action</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;code_action&quot;</span><span class="p">),</span>
+                    <span class="p">)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">scalar_one_or_none</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">form</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PermissionAvailableAdmin">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAvailableAdmin">[docs]</a>
+<span class="k">class</span> <span class="nc">PermissionAvailableAdmin</span><span class="p">(</span><span class="n">CruvedProtectedMixin</span><span class="p">,</span> <span class="n">ModelView</span><span class="p">):</span>
+<div class="viewcode-block" id="PermissionAvailableAdmin.module_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.module_code">[docs]</a>
+    <span class="n">module_code</span> <span class="o">=</span> <span class="s2">&quot;ADMIN&quot;</span></div>
+
+<div class="viewcode-block" id="PermissionAvailableAdmin.object_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.object_code">[docs]</a>
+    <span class="n">object_code</span> <span class="o">=</span> <span class="s2">&quot;PERMISSIONS&quot;</span></div>
+
+
+<div class="viewcode-block" id="PermissionAvailableAdmin.can_create">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.can_create">[docs]</a>
+    <span class="n">can_create</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="PermissionAvailableAdmin.can_delete">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.can_delete">[docs]</a>
+    <span class="n">can_delete</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="PermissionAvailableAdmin.can_export">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.can_export">[docs]</a>
+    <span class="n">can_export</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="PermissionAvailableAdmin.column_labels">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.column_labels">[docs]</a>
+    <span class="n">column_labels</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;scope&quot;</span><span class="p">:</span> <span class="s2">&quot;Portée&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="s2">&quot;Objet&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;scope_filter&quot;</span><span class="p">:</span> <span class="s2">&quot;Filtre appartenance&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sensitivity_filter&quot;</span><span class="p">:</span> <span class="s2">&quot;Filtre sensibilité&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="PermissionAvailableAdmin.column_formatters">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.column_formatters">[docs]</a>
+    <span class="n">column_formatters</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;module&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">module_code</span><span class="p">,</span>
+        <span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">code_object</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="PermissionAvailableAdmin.column_sortable_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.column_sortable_list">[docs]</a>
+    <span class="n">column_sortable_list</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="s2">&quot;module&quot;</span><span class="p">,</span> <span class="s2">&quot;module.module_code&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">,</span> <span class="s2">&quot;object.code_object&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">,</span> <span class="s2">&quot;action.code_action&quot;</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermissionAvailableAdmin.column_filters">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.column_filters">[docs]</a>
+    <span class="n">column_filters</span> <span class="o">=</span> <span class="p">(</span><span class="n">ModuleFilter</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">PermissionAvailable</span><span class="o">.</span><span class="n">id_module</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Module&quot;</span><span class="p">),)</span></div>
+
+<div class="viewcode-block" id="PermissionAvailableAdmin.column_default_sort">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.column_default_sort">[docs]</a>
+    <span class="n">column_default_sort</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;module.module_code&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;object.code_object&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;id_action&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+    <span class="p">]</span></div>
+
+<div class="viewcode-block" id="PermissionAvailableAdmin.form_columns">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.form_columns">[docs]</a>
+    <span class="n">form_columns</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;scope_filter&quot;</span><span class="p">,</span> <span class="s2">&quot;sensitivity_filter&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="RolePermAdmin">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.RolePermAdmin">[docs]</a>
+<span class="k">class</span> <span class="nc">RolePermAdmin</span><span class="p">(</span><span class="n">CruvedProtectedMixin</span><span class="p">,</span> <span class="n">ModelView</span><span class="p">):</span>
+<div class="viewcode-block" id="RolePermAdmin.module_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.RolePermAdmin.module_code">[docs]</a>
+    <span class="n">module_code</span> <span class="o">=</span> <span class="s2">&quot;ADMIN&quot;</span></div>
+
+<div class="viewcode-block" id="RolePermAdmin.object_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.RolePermAdmin.object_code">[docs]</a>
+    <span class="n">object_code</span> <span class="o">=</span> <span class="s2">&quot;PERMISSIONS&quot;</span></div>
+
+
+<div class="viewcode-block" id="RolePermAdmin.can_create">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.RolePermAdmin.can_create">[docs]</a>
+    <span class="n">can_create</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="RolePermAdmin.can_edit">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.RolePermAdmin.can_edit">[docs]</a>
+    <span class="n">can_edit</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="RolePermAdmin.can_delete">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.RolePermAdmin.can_delete">[docs]</a>
+    <span class="n">can_delete</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="RolePermAdmin.can_export">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.RolePermAdmin.can_export">[docs]</a>
+    <span class="n">can_export</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="RolePermAdmin.can_view_details">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.RolePermAdmin.can_view_details">[docs]</a>
+    <span class="n">can_view_details</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="RolePermAdmin.details_template">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.RolePermAdmin.details_template">[docs]</a>
+    <span class="n">details_template</span> <span class="o">=</span> <span class="s2">&quot;role_or_group_detail.html&quot;</span></div>
+
+<div class="viewcode-block" id="RolePermAdmin.column_select_related_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.RolePermAdmin.column_select_related_list">[docs]</a>
+    <span class="n">column_select_related_list</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;permissions&quot;</span><span class="p">,)</span></div>
+
+<div class="viewcode-block" id="RolePermAdmin.column_labels">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.RolePermAdmin.column_labels">[docs]</a>
+    <span class="n">column_labels</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;nom_role&quot;</span><span class="p">:</span> <span class="s2">&quot;Nom&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;prenom_role&quot;</span><span class="p">:</span> <span class="s2">&quot;Prénom&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;groups&quot;</span><span class="p">:</span> <span class="s2">&quot;Groupes&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;permissions&quot;</span><span class="p">:</span> <span class="s2">&quot;Permissions&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;permissions_count&quot;</span><span class="p">:</span> <span class="s2">&quot;Nombre de permissions&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="RolePermAdmin.column_searchable_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.RolePermAdmin.column_searchable_list">[docs]</a>
+    <span class="n">column_searchable_list</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;identifiant&quot;</span><span class="p">,</span> <span class="s2">&quot;nom_complet&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RolePermAdmin.column_formatters">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.RolePermAdmin.column_formatters">[docs]</a>
+    <span class="n">column_formatters</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;groups&quot;</span><span class="p">:</span> <span class="n">groups_formatter</span><span class="p">,</span>
+        <span class="s2">&quot;permissions_count&quot;</span><span class="p">:</span> <span class="n">permissions_count_formatter</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="RolePermAdmin.column_formatters_detail">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.RolePermAdmin.column_formatters_detail">[docs]</a>
+    <span class="n">column_formatters_detail</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;groups&quot;</span><span class="p">:</span> <span class="n">groups_formatter</span><span class="p">,</span>
+        <span class="s2">&quot;permissions&quot;</span><span class="p">:</span> <span class="n">permissions_formatter</span><span class="p">,</span>
+        <span class="s2">&quot;permissions_count&quot;</span><span class="p">:</span> <span class="n">permissions_count_formatter</span><span class="p">,</span>
+    <span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GroupPermAdmin">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.GroupPermAdmin">[docs]</a>
+<span class="k">class</span> <span class="nc">GroupPermAdmin</span><span class="p">(</span><span class="n">RolePermAdmin</span><span class="p">):</span>
+<div class="viewcode-block" id="GroupPermAdmin.column_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.GroupPermAdmin.column_list">[docs]</a>
+    <span class="n">column_list</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;nom_role&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;permissions_count&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="GroupPermAdmin.column_details_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.GroupPermAdmin.column_details_list">[docs]</a>
+    <span class="n">column_details_list</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;nom_role&quot;</span><span class="p">,</span> <span class="s2">&quot;permissions_count&quot;</span><span class="p">,</span> <span class="s2">&quot;permissions&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GroupPermAdmin.get_query">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.GroupPermAdmin.get_query">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO : change to sqla2.0 query when flask admin update to sqla2</span>
+        <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">User</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">groupe</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">filter_by_app</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="GroupPermAdmin.get_count_query">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.GroupPermAdmin.get_count_query">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_count_query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO : change to sqla2.0 query when flask admin update to sqla2</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">groupe</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">filter_by_app</span><span class="p">())</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="UserPermAdmin">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.UserPermAdmin">[docs]</a>
+<span class="k">class</span> <span class="nc">UserPermAdmin</span><span class="p">(</span><span class="n">RolePermAdmin</span><span class="p">):</span>
+<div class="viewcode-block" id="UserPermAdmin.column_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.UserPermAdmin.column_list">[docs]</a>
+    <span class="n">column_list</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;identifiant&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nom_role&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;prenom_role&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;groups&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;permissions_count&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="UserPermAdmin.column_labels">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.UserPermAdmin.column_labels">[docs]</a>
+    <span class="n">column_labels</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="o">**</span><span class="n">RolePermAdmin</span><span class="o">.</span><span class="n">column_labels</span><span class="p">,</span>
+        <span class="s2">&quot;permissions_count&quot;</span><span class="p">:</span> <span class="s2">&quot;Nombre de permissions non héritées&quot;</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="UserPermAdmin.column_details_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.UserPermAdmin.column_details_list">[docs]</a>
+    <span class="n">column_details_list</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;identifiant&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nom_role&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;prenom_role&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;groups&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;permissions_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;permissions&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UserPermAdmin.get_query">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.UserPermAdmin.get_query">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO : change to sqla2.0 query when flask admin update to sqla2</span>
+        <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">User</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">groupe</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">filter_by_app</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="UserPermAdmin.get_count_query">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/admin/index.html#geonature.core.gn_permissions.admin.UserPermAdmin.get_count_query">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_count_query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO : change to sqla2.0 query when flask admin update to sqla2</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">groupe</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">filter_by_app</span><span class="p">())</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span>
+    <span class="n">GroupPermAdmin</span><span class="p">(</span>
+        <span class="n">User</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Par groupes&quot;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Permissions&quot;</span><span class="p">,</span>
+        <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;permissions/group&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span>
+    <span class="n">UserPermAdmin</span><span class="p">(</span>
+        <span class="n">User</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Par utilisateurs&quot;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Permissions&quot;</span><span class="p">,</span>
+        <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;permissions/user&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Retirer pour plus de lisibilité de l&#39;interface des permissions</span>
+<span class="c1"># admin.add_view(</span>
+<span class="c1">#     ObjectAdmin(</span>
+<span class="c1">#         PermObject,</span>
+<span class="c1">#         db.session,</span>
+<span class="c1">#         name=&quot;Objets&quot;,</span>
+<span class="c1">#         category=&quot;Permissions&quot;,</span>
+<span class="c1">#         endpoint=&quot;permissions/object&quot;,</span>
+<span class="c1">#     )</span>
+<span class="c1"># )</span>
+
+
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span>
+    <span class="n">PermissionAdmin</span><span class="p">(</span>
+        <span class="n">Permission</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Permissions&quot;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Permissions&quot;</span><span class="p">,</span>
+        <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;permissions/permission&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Retirer pour plus de lisibilité de l&#39;interface des permissions</span>
+<span class="c1"># admin.add_view(</span>
+<span class="c1">#     PermissionAvailableAdmin(</span>
+<span class="c1">#         PermissionAvailable,</span>
+<span class="c1">#         db.session,</span>
+<span class="c1">#         name=&quot;Permissions disponibles&quot;,</span>
+<span class="c1">#         category=&quot;Permissions&quot;,</span>
+<span class="c1">#         endpoint=&quot;permissions/availablepermission&quot;,</span>
+<span class="c1">#     )</span>
+<span class="c1"># )</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

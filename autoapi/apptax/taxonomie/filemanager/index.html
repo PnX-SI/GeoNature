@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>apptax.taxonomie.filemanager &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">apptax.taxonomie.filemanager</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/autoapi/apptax/taxonomie/filemanager/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-apptax.taxonomie.filemanager">
+<span id="apptax-taxonomie-filemanager"></span><h1><a class="reference internal" href="#module-apptax.taxonomie.filemanager" title="apptax.taxonomie.filemanager"><code class="xref py py-mod docutils literal notranslate"><span class="pre">apptax.taxonomie.filemanager</span></code></a><a class="headerlink" href="#module-apptax.taxonomie.filemanager" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.filemanager.FileManagerServiceInterface" title="apptax.taxonomie.filemanager.FileManagerServiceInterface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FileManagerServiceInterface</span></code></a></p></td>
+<td><p>Abstract class to media file manipulation functions</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.filemanager.LocalFileManagerService" title="apptax.taxonomie.filemanager.LocalFileManagerService"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LocalFileManagerService</span></code></a></p></td>
+<td><p>Abstract class to media file manipulation functions</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.filemanager.S3FileManagerService" title="apptax.taxonomie.filemanager.S3FileManagerService"><code class="xref py py-obj docutils literal notranslate"><span class="pre">S3FileManagerService</span></code></a></p></td>
+<td><p>Class permettant de manipuler des fichiers stockés</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.filemanager.remove_dir" title="apptax.taxonomie.filemanager.remove_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_dir</span></code></a>(dirpath)</p></td>
+<td><p>Fonction de suppression d'un répertoire</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.filemanager.removeDisallowedFilenameChars" title="apptax.taxonomie.filemanager.removeDisallowedFilenameChars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">removeDisallowedFilenameChars</span></code></a>(uncleanString)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.filemanager.url_to_image" title="apptax.taxonomie.filemanager.url_to_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">url_to_image</span></code></a>(url)</p></td>
+<td><p>Récupération d'une image à partir d'une url</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.filemanager.add_border" title="apptax.taxonomie.filemanager.add_border"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_border</span></code></a>(img, border[, color])</p></td>
+<td><p>Ajout d'une bordure à une image</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.filemanager.calculate_border" title="apptax.taxonomie.filemanager.calculate_border"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_border</span></code></a>(initial_size, new_size, aspect)</p></td>
+<td><p>Calcul de la taille de l'image et de ces bordures</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.filemanager.resizeAndPad" title="apptax.taxonomie.filemanager.resizeAndPad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resizeAndPad</span></code></a>(img, new_size[, pad, padColor])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.filemanager.logger" title="apptax.taxonomie.filemanager.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.filemanager.FILEMANAGER" title="apptax.taxonomie.filemanager.FILEMANAGER"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FILEMANAGER</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.logger">
+<span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.filemanager.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.logger" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.remove_dir">
+<span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.filemanager.</span></span><span class="sig-name descname"><span class="pre">remove_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirpath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#remove_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.remove_dir" title="Link to this definition"></a></dt>
+<dd><p>Fonction de suppression d’un répertoire</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.removeDisallowedFilenameChars">
+<span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.filemanager.</span></span><span class="sig-name descname"><span class="pre">removeDisallowedFilenameChars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uncleanString</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#removeDisallowedFilenameChars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.removeDisallowedFilenameChars" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.FileManagerServiceInterface">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.filemanager.</span></span><span class="sig-name descname"><span class="pre">FileManagerServiceInterface</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#FileManagerServiceInterface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.FileManagerServiceInterface" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(disponible dans Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
+<p>Abstract class to media file manipulation functions
+Class who inherite of this class must implement the following abstract methods:
+- remove_file
+- rename_file
+- upload_file</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.FileManagerServiceInterface._get_new_chemin">
+<span class="sig-name descname"><span class="pre">_get_new_chemin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_chemin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_title</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#FileManagerServiceInterface._get_new_chemin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.FileManagerServiceInterface._get_new_chemin" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.FileManagerServiceInterface._generate_file_name">
+<span class="sig-name descname"><span class="pre">_generate_file_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_media</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cd_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">titre</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#FileManagerServiceInterface._generate_file_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.FileManagerServiceInterface._generate_file_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.FileManagerServiceInterface._get_media_path_from_db">
+<span class="sig-name descname"><span class="pre">_get_media_path_from_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#FileManagerServiceInterface._get_media_path_from_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.FileManagerServiceInterface._get_media_path_from_db" title="Link to this definition"></a></dt>
+<dd><p>Suppression du prefix static contenu en base
+et non nécessaire pour manipuler le fichier</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>filepath (string): Chemin relatif du fichier</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.FileManagerServiceInterface._get_image_object">
+<span class="sig-name descname"><span class="pre">_get_image_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">media</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#FileManagerServiceInterface._get_image_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.FileManagerServiceInterface._get_image_object" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.FileManagerServiceInterface.remove_file">
+<span class="sig-name descname"><span class="pre">remove_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#FileManagerServiceInterface.remove_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.FileManagerServiceInterface.remove_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.FileManagerServiceInterface.rename_file">
+<span class="sig-name descname"><span class="pre">rename_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_chemin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_title</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#FileManagerServiceInterface.rename_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.FileManagerServiceInterface.rename_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.FileManagerServiceInterface.upload_file">
+<span class="sig-name descname"><span class="pre">upload_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_media</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cd_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">titre</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#FileManagerServiceInterface.upload_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.FileManagerServiceInterface.upload_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.FileManagerServiceInterface.remove_thumb">
+<span class="sig-name descname"><span class="pre">remove_thumb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_media</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#FileManagerServiceInterface.remove_thumb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.FileManagerServiceInterface.remove_thumb" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.FileManagerServiceInterface.create_thumb">
+<span class="sig-name descname"><span class="pre">create_thumb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">media</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regenerate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#FileManagerServiceInterface.create_thumb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.FileManagerServiceInterface.create_thumb" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.FileManagerServiceInterface.remove_media_files">
+<span class="sig-name descname"><span class="pre">remove_media_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_media</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#FileManagerServiceInterface.remove_media_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.FileManagerServiceInterface.remove_media_files" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.LocalFileManagerService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.filemanager.</span></span><span class="sig-name descname"><span class="pre">LocalFileManagerService</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#LocalFileManagerService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.LocalFileManagerService" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#apptax.taxonomie.filemanager.FileManagerServiceInterface" title="apptax.taxonomie.filemanager.FileManagerServiceInterface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FileManagerServiceInterface</span></code></a></p>
+<p>Abstract class to media file manipulation functions
+Class who inherite of this class must implement the following abstract methods:
+- remove_file
+- rename_file
+- upload_file</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.S3FileManagerService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.filemanager.</span></span><span class="sig-name descname"><span class="pre">S3FileManagerService</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#S3FileManagerService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.S3FileManagerService" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#apptax.taxonomie.filemanager.FileManagerServiceInterface" title="apptax.taxonomie.filemanager.FileManagerServiceInterface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FileManagerServiceInterface</span></code></a></p>
+<dl class="simple">
+<dt>Class permettant de manipuler des fichiers stockés</dt><dd><p>dans un cloud S3 (AWS, OVH, etc..)</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.S3FileManagerService._get_image_object">
+<span class="sig-name descname"><span class="pre">_get_image_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">media</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#S3FileManagerService._get_image_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.S3FileManagerService._get_image_object" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.S3FileManagerService.remove_file">
+<span class="sig-name descname"><span class="pre">remove_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#S3FileManagerService.remove_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.S3FileManagerService.remove_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.S3FileManagerService.rename_file">
+<span class="sig-name descname"><span class="pre">rename_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_chemin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_title</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#S3FileManagerService.rename_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.S3FileManagerService.rename_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.S3FileManagerService.upload_file">
+<span class="sig-name descname"><span class="pre">upload_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_media</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cd_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">titre</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#S3FileManagerService.upload_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.S3FileManagerService.upload_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.FILEMANAGER">
+<span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.filemanager.</span></span><span class="sig-name descname"><span class="pre">FILEMANAGER</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#FILEMANAGER"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.FILEMANAGER" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.url_to_image">
+<span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.filemanager.</span></span><span class="sig-name descname"><span class="pre">url_to_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#url_to_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.url_to_image" title="Link to this definition"></a></dt>
+<dd><p>Récupération d’une image à partir d’une url</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.add_border">
+<span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.filemanager.</span></span><span class="sig-name descname"><span class="pre">add_border</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">border</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#add_border"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.add_border" title="Link to this definition"></a></dt>
+<dd><p>Ajout d’une bordure à une image</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.calculate_border">
+<span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.filemanager.</span></span><span class="sig-name descname"><span class="pre">calculate_border</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aspect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#calculate_border"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.calculate_border" title="Link to this definition"></a></dt>
+<dd><p>Calcul de la taille de l’image et de ces bordures</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="apptax.taxonomie.filemanager.resizeAndPad">
+<span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.filemanager.</span></span><span class="sig-name descname"><span class="pre">resizeAndPad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padColor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/filemanager.html#resizeAndPad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.filemanager.resizeAndPad" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

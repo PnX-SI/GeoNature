@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.admin.admin &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.admin.admin</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.admin.admin</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">g</span>
+<span class="kn">from</span> <span class="nn">werkzeug.exceptions</span> <span class="kn">import</span> <span class="n">Unauthorized</span>
+<span class="kn">from</span> <span class="nn">flask_admin</span> <span class="kn">import</span> <span class="n">Admin</span><span class="p">,</span> <span class="n">AdminIndexView</span><span class="p">,</span> <span class="n">expose</span>
+<span class="kn">from</span> <span class="nn">flask_admin.menu</span> <span class="kn">import</span> <span class="n">MenuLink</span>
+<span class="kn">from</span> <span class="nn">flask_admin.contrib.sqla</span> <span class="kn">import</span> <span class="n">ModelView</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.config</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.models</span> <span class="kn">import</span> <span class="n">TAdditionalFields</span><span class="p">,</span> <span class="n">TMobileApps</span><span class="p">,</span> <span class="n">TModules</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.admin</span> <span class="kn">import</span> <span class="n">BibFieldAdmin</span><span class="p">,</span> <span class="n">TMobileAppsAdmin</span><span class="p">,</span> <span class="n">TModulesAdmin</span>
+<span class="kn">from</span> <span class="nn">geonature.core.notifications.admin</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">NotificationTemplateAdmin</span><span class="p">,</span>
+    <span class="n">NotificationCategoryAdmin</span><span class="p">,</span>
+    <span class="n">NotificationMethodAdmin</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">geonature.core.notifications.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">NotificationTemplate</span><span class="p">,</span>
+    <span class="n">NotificationCategory</span><span class="p">,</span>
+    <span class="n">NotificationMethod</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">pypnnomenclature.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BibNomenclaturesTypes</span><span class="p">,</span>
+    <span class="n">TNomenclatures</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pypnnomenclature.admin</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BibNomenclaturesTypesAdmin</span><span class="p">,</span>
+    <span class="n">TNomenclaturesAdmin</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">CruvedProtectedMixin</span>
+
+
+<div class="viewcode-block" id="MyHomeView">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/admin/admin/index.html#geonature.core.admin.admin.MyHomeView">[docs]</a>
+<span class="k">class</span> <span class="nc">MyHomeView</span><span class="p">(</span><span class="n">AdminIndexView</span><span class="p">):</span>
+<div class="viewcode-block" id="MyHomeView.is_accessible">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/admin/admin/index.html#geonature.core.admin.admin.MyHomeView.is_accessible">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_accessible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Unauthorized</span>  <span class="c1"># return False leads to Forbidden which is different</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ProtectedBibNomenclaturesTypesAdmin">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/admin/admin/index.html#geonature.core.admin.admin.ProtectedBibNomenclaturesTypesAdmin">[docs]</a>
+<span class="k">class</span> <span class="nc">ProtectedBibNomenclaturesTypesAdmin</span><span class="p">(</span>
+    <span class="n">CruvedProtectedMixin</span><span class="p">,</span>
+    <span class="n">BibNomenclaturesTypesAdmin</span><span class="p">,</span>
+<span class="p">):</span>
+<div class="viewcode-block" id="ProtectedBibNomenclaturesTypesAdmin.module_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/admin/admin/index.html#geonature.core.admin.admin.ProtectedBibNomenclaturesTypesAdmin.module_code">[docs]</a>
+    <span class="n">module_code</span> <span class="o">=</span> <span class="s2">&quot;ADMIN&quot;</span></div>
+
+<div class="viewcode-block" id="ProtectedBibNomenclaturesTypesAdmin.object_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/admin/admin/index.html#geonature.core.admin.admin.ProtectedBibNomenclaturesTypesAdmin.object_code">[docs]</a>
+    <span class="n">object_code</span> <span class="o">=</span> <span class="s2">&quot;NOMENCLATURES&quot;</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ProtectedTNomenclaturesAdmin">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/admin/admin/index.html#geonature.core.admin.admin.ProtectedTNomenclaturesAdmin">[docs]</a>
+<span class="k">class</span> <span class="nc">ProtectedTNomenclaturesAdmin</span><span class="p">(</span>
+    <span class="n">CruvedProtectedMixin</span><span class="p">,</span>
+    <span class="n">TNomenclaturesAdmin</span><span class="p">,</span>
+<span class="p">):</span>
+<div class="viewcode-block" id="ProtectedTNomenclaturesAdmin.module_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/admin/admin/index.html#geonature.core.admin.admin.ProtectedTNomenclaturesAdmin.module_code">[docs]</a>
+    <span class="n">module_code</span> <span class="o">=</span> <span class="s2">&quot;ADMIN&quot;</span></div>
+
+<div class="viewcode-block" id="ProtectedTNomenclaturesAdmin.object_code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/admin/admin/index.html#geonature.core.admin.admin.ProtectedTNomenclaturesAdmin.object_code">[docs]</a>
+    <span class="n">object_code</span> <span class="o">=</span> <span class="s2">&quot;NOMENCLATURES&quot;</span></div>
+</div>
+
+
+
+<span class="c1">## déclaration de la page d&#39;admin</span>
+<div class="viewcode-block" id="admin">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/admin/admin/index.html#geonature.core.admin.admin.admin">[docs]</a>
+<span class="n">admin</span> <span class="o">=</span> <span class="n">Admin</span><span class="p">(</span>
+    <span class="n">template_mode</span><span class="o">=</span><span class="s2">&quot;bootstrap4&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Administration GeoNature&quot;</span><span class="p">,</span>
+    <span class="n">base_template</span><span class="o">=</span><span class="s2">&quot;layout.html&quot;</span><span class="p">,</span>
+    <span class="n">index_view</span><span class="o">=</span><span class="n">MyHomeView</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Accueil&quot;</span><span class="p">,</span>
+        <span class="n">menu_icon_type</span><span class="o">=</span><span class="s2">&quot;fa&quot;</span><span class="p">,</span>
+        <span class="n">menu_icon_value</span><span class="o">=</span><span class="s2">&quot;fa-home&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">)</span></div>
+
+
+<span class="c1">## ajout des liens</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span>
+    <span class="n">MenuLink</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Retourner à GeoNature&quot;</span><span class="p">,</span>
+        <span class="n">url</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">],</span>
+        <span class="n">icon_type</span><span class="o">=</span><span class="s2">&quot;fa&quot;</span><span class="p">,</span>
+        <span class="n">icon_value</span><span class="o">=</span><span class="s2">&quot;fa-sign-out&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1">## ajout des elements</span>
+
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span>
+    <span class="n">ProtectedBibNomenclaturesTypesAdmin</span><span class="p">(</span>
+        <span class="n">BibNomenclaturesTypes</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Type de nomenclatures&quot;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Nomenclatures&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span>
+    <span class="n">ProtectedTNomenclaturesAdmin</span><span class="p">(</span>
+        <span class="n">TNomenclatures</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Items de nomenclatures&quot;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Nomenclatures&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Ajout de la vue pour la gestion des templates de notifications</span>
+<span class="c1"># accès protegé par CruvedProtectedMixin</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span>
+    <span class="n">NotificationTemplateAdmin</span><span class="p">(</span>
+        <span class="n">NotificationTemplate</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Templates des notifications&quot;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Notifications&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span>
+    <span class="n">NotificationCategoryAdmin</span><span class="p">(</span>
+        <span class="n">NotificationCategory</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Catégories des notifications&quot;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Notifications&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span>
+    <span class="n">NotificationMethodAdmin</span><span class="p">(</span>
+        <span class="n">NotificationMethod</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Méthodes de notification&quot;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Notifications&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span>
+    <span class="n">BibFieldAdmin</span><span class="p">(</span>
+        <span class="n">TAdditionalFields</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Champs additionnels&quot;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Autres&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span>
+    <span class="n">TMobileAppsAdmin</span><span class="p">(</span>
+        <span class="n">TMobileApps</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Applications mobiles&quot;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Autres&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span>
+    <span class="n">TModulesAdmin</span><span class="p">(</span>
+        <span class="n">TModules</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Modules&quot;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Autres&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<div class="viewcode-block" id="flask_admin">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/admin/admin/index.html#geonature.core.admin.admin.flask_admin">[docs]</a>
+<span class="n">flask_admin</span> <span class="o">=</span> <span class="n">admin</span>  <span class="c1"># for retro-compatibility, usefull for export module for instance</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,435 @@
+:py:mod:`src.utils_flask_sqla_geo.schema`
+=========================================
+
+.. py:module:: src.utils_flask_sqla_geo.schema
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla_geo.schema.GeometrySchema
+   src.utils_flask_sqla_geo.schema.FeatureSchema
+   src.utils_flask_sqla_geo.schema.FeatureCollectionSchema
+   src.utils_flask_sqla_geo.schema.GeometryField
+   src.utils_flask_sqla_geo.schema.GeoModelConverter
+   src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchemaOpts
+   src.utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema
+
+
+
+
+.. py:class:: GeometrySchema(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: schema_map
+
+      
+
+   .. py:attribute:: type
+
+      
+
+   .. py:method:: load(data, *, many=None, **kwargs)
+
+      Deserialize a data structure to an object defined by this Schema's fields.
+
+      :param data: The data to deserialize.
+      :param many: Whether to deserialize `data` as a collection. If `None`, the
+          value for `self.many` is used.
+      :param partial: Whether to ignore missing fields and not require
+          any fields declared. Propagates down to ``Nested`` fields as well. If
+          its value is an iterable, only missing fields listed in that iterable
+          will be ignored. Use dot delimiters to specify nested fields.
+      :param unknown: Whether to exclude, include, or raise an error for unknown
+          fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+          If `None`, the value for `self.unknown` is used.
+      :return: Deserialized data
+
+      .. versionadded:: 1.0.0
+      .. versionchanged:: 3.0.0b7
+          This method returns the deserialized data rather than a ``(data, errors)`` duple.
+          A :exc:`ValidationError <marshmallow.exceptions.ValidationError>` is raised
+          if invalid data are passed.
+
+
+
+.. py:class:: FeatureSchema(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: id
+
+      
+
+   .. py:attribute:: type
+
+      
+
+   .. py:attribute:: geometry
+
+      
+
+   .. py:attribute:: properties
+
+      
+
+
+.. py:class:: FeatureCollectionSchema(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool = False, context: dict | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: str | None = None)
+
+
+   Bases: :py:obj:`marshmallow.Schema`
+
+   Base schema class with which to define custom schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param context: Optional context passed to :class:`fields.Method` and
+       :class:`fields.Function` fields.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       `prefix` parameter removed.
+
+   .. versionchanged:: 2.0.0
+       `__validators__`, `__preprocessors__`, and `__data_handlers__` are removed in favor of
+       `marshmallow.decorators.validates_schema`,
+       `marshmallow.decorators.pre_load` and `marshmallow.decorators.post_dump`.
+       `__accessor__` and `__error_handler__` are deprecated. Implement the
+       `handle_error` and `get_attribute` methods instead.
+
+   .. py:attribute:: type
+
+      
+
+   .. py:attribute:: features
+
+      
+
+
+.. py:class:: GeometryField(*, load_default: Any = missing_, missing: Any = missing_, dump_default: Any = missing_, default: Any = missing_, data_key: str | None = None, attribute: str | None = None, validate: None | Callable[[Any], Any] | Iterable[Callable[[Any], Any]] = None, required: bool = False, allow_none: bool | None = None, load_only: bool = False, dump_only: bool = False, error_messages: dict[str, str] | None = None, metadata: Mapping[str, Any] | None = None, **additional_metadata)
+
+
+   Bases: :py:obj:`marshmallow.fields.Field`
+
+   Basic field from which other fields should extend. It applies no
+   formatting by default, and should only be used in cases where
+   data does not need to be formatted before being serialized or deserialized.
+   On error, the name of the field will be returned.
+
+   :param dump_default: If set, this value will be used during serialization if the
+       input value is missing. If not set, the field will be excluded from the
+       serialized output if the input value is missing. May be a value or a callable.
+   :param load_default: Default deserialization value for the field if the field is not
+       found in the input data. May be a value or a callable.
+   :param data_key: The name of the dict key in the external representation, i.e.
+       the input of `load` and the output of `dump`.
+       If `None`, the key will match the name of the field.
+   :param attribute: The name of the attribute to get the value from when serializing.
+       If `None`, assumes the attribute has the same name as the field.
+       Note: This should only be used for very specific use cases such as
+       outputting multiple fields for a single attribute. In most cases,
+       you should use ``data_key`` instead.
+   :param validate: Validator or collection of validators that are called
+       during deserialization. Validator takes a field's input value as
+       its only parameter and returns a boolean.
+       If it returns `False`, an :exc:`ValidationError` is raised.
+   :param required: Raise a :exc:`ValidationError` if the field value
+       is not supplied during deserialization.
+   :param allow_none: Set this to `True` if `None` should be considered a valid value during
+       validation/deserialization. If ``load_default=None`` and ``allow_none`` is unset,
+       will default to ``True``. Otherwise, the default is ``False``.
+   :param load_only: If `True` skip this field during serialization, otherwise
+       its value will be present in the serialized data.
+   :param dump_only: If `True` skip this field during deserialization, otherwise
+       its value will be present in the deserialized object. In the context of an
+       HTTP API, this effectively marks the field as "read-only".
+   :param dict error_messages: Overrides for `Field.default_error_messages`.
+   :param metadata: Extra information to be stored as field metadata.
+
+   .. versionchanged:: 2.0.0
+       Removed `error` parameter. Use ``error_messages`` instead.
+
+   .. versionchanged:: 2.0.0
+       Added `allow_none` parameter, which makes validation/deserialization of `None`
+       consistent across fields.
+
+   .. versionchanged:: 2.0.0
+       Added `load_only` and `dump_only` parameters, which allow field skipping
+       during the (de)serialization process.
+
+   .. versionchanged:: 2.0.0
+       Added `missing` parameter, which indicates the value for a field if the field
+       is not found during deserialization.
+
+   .. versionchanged:: 2.0.0
+       ``default`` value is only used if explicitly set. Otherwise, missing values
+       inputs are excluded from serialized output.
+
+   .. versionchanged:: 3.0.0b8
+       Add ``data_key`` parameter for the specifying the key in the input and
+       output data. This parameter replaced both ``load_from`` and ``dump_to``.
+
+   .. py:attribute:: geometry_schema
+
+      
+
+   .. py:method:: _serialize_wkt(value, attr, obj)
+
+
+   .. py:method:: _serialize_geojson(value, attr, obj)
+
+
+   .. py:method:: _deserialize_wkt(value, attr, data, **kwargs)
+
+
+   .. py:method:: _deserialize_geojson(value, attr, data, **kwargs)
+
+
+   .. py:method:: _bind_to_schema(field_name, schema)
+
+      Update field with values from its parent schema. Called by
+      :meth:`Schema._bind_field <marshmallow.Schema._bind_field>`.
+
+      :param str field_name: Field name set in schema.
+      :param Schema|Field schema: Parent object.
+
+
+
+.. py:class:: GeoModelConverter(schema_cls=None)
+
+
+   Bases: :py:obj:`marshmallow_sqlalchemy.convert.ModelConverter`
+
+   Model converter for models with geometric fields.
+
+   .. py:attribute:: SQLA_TYPE_MAPPING
+
+      
+
+
+.. py:class:: GeoAlchemyAutoSchemaOpts(meta, *args, **kwargs)
+
+
+   Bases: :py:obj:`marshmallow_sqlalchemy.schema.SQLAlchemyAutoSchemaOpts`
+
+   Options class for ``GeoAlchemyAutoSchema``.
+   Adds the following options:
+
+   - ``geometry_fields``: List of Geometry columns.
+   - ``feature_id``: Identity field to use when generating features.
+   - ``feature_geometry``: Geometry field to use when generating features.
+
+   Thus, this options class define ``GeoModelConverter`` as default model converter.
+
+
+.. py:class:: GeoAlchemyAutoSchema(*args, as_geojson=False, feature_id=None, feature_geometry=None, only=None, exclude=(), **kwargs)
+
+
+   Bases: :py:obj:`marshmallow_sqlalchemy.schema.SQLAlchemyAutoSchema`
+
+   Auto schema with support for geometric fields and geojson generation.
+
+   :param as_geojson: If ``true``, serialize and deserialize geojson instead of json.
+   :param feature_id: Identity field to use when generating features.
+       If ``None``, use ``feature_id`` specified on ``class Meta`` if any, otherwise
+       features are generated without id.
+   :param feature_geometry: Geometry field to use when generating features.
+       If ``None``, use ``feature_geometry`` specified on ``class Meta``.
+       If not specified on ``class Meta`` either, auto-detect the geometry field.
+       If none or several geometric fields are detected, raise a ``TypeError``.
+
+   Geometric fields are automatically removed from serialization.
+
+   .. py:attribute:: OPTIONS_CLASS
+
+      
+
+   .. py:method:: to_feature(properties)
+
+
+   .. py:method:: from_feature(feature)
+
+
+   .. py:method:: _serialize(obj, *, many=None)
+
+      Serialize ``obj``.
+
+      :param obj: The object(s) to serialize.
+      :param bool many: `True` if ``data`` should be serialized as a collection.
+      :return: A dictionary of the serialized data
+
+      .. versionchanged:: 1.0.0
+          Renamed from ``marshal``.
+
+
+   .. py:method:: to_geojson(data, many, **kwargs)
+
+
+   .. py:method:: from_geojson(data, many, **kwargs)
+
+
+

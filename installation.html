@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" >
+<html class="writer-html5" lang="fr" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>INSTALLATION &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/translations.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=e8570148"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=d99ca74e"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Recherche" href="search.html" />
@@ -29,15 +32,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="index.html" class="icon icon-home"> GeoNature
-            <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GeoNature
+              <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -91,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-references.html">API REFERENCES</a></li>
 </ul>
 
         </div>
@@ -106,8 +114,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>INSTALLATION</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">INSTALLATION</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/installation.rst.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
@@ -118,7 +126,7 @@
            <div itemprop="articleBody">
              
   <section id="installation">
-<h1>INSTALLATION<a class="headerlink" href="#installation" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>INSTALLATION<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
 <p>GeoNature repose sur les composants suivants :</p>
 <ul class="simple">
 <li><p>PostgreSQL / PostGIS</p></li>
@@ -135,11 +143,11 @@
 <li><p><a class="reference internal" href="#installation-standalone"><span class="std std-ref">Installation de GeoNature uniquement</span></a> : TaxHub et UsersHub ne sont pas installés (mais leurs schémas sont tous de même créés dans la base de données).</p></li>
 </ul>
 <section id="prerequis">
-<h2>Prérequis<a class="headerlink" href="#prerequis" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Prérequis<a class="headerlink" href="#prerequis" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Ressources minimum serveur :</p>
 <ul>
-<li><p>Un serveur Debian 10, 11 ou 12, architecture 64-bits</p></li>
+<li><p>Un serveur Debian 11 ou 12, architecture 64-bits</p></li>
 <li><p>4 Go RAM</p></li>
 <li><p>20 Go d’espace disque</p></li>
 </ul>
@@ -153,18 +161,18 @@
 <li><p><a class="reference external" href="https://registry.npmjs.org">https://registry.npmjs.org</a></p></li>
 <li><p><a class="reference external" href="https://www.npmjs.com">https://www.npmjs.com</a></p></li>
 <li><p><a class="reference external" href="https://raw.githubusercontent.com/">https://raw.githubusercontent.com/</a></p></li>
-<li><p><a class="reference external" href="https://wxs.ign.fr/">https://wxs.ign.fr/</a></p></li>
+<li><p><a class="reference external" href="https://data.geopf.fr/">https://data.geopf.fr/</a></p></li>
 </ul>
 </li>
 </ul>
 </section>
 <section id="preparation-du-serveur">
-<span id="preparation-server"></span><h2>Préparation du serveur<a class="headerlink" href="#preparation-du-serveur" title="Lien permanent vers cette rubrique"></a></h2>
+<span id="preparation-server"></span><h2>Préparation du serveur<a class="headerlink" href="#preparation-du-serveur" title="Link to this heading"></a></h2>
 <p>Commencer la procédure en se connectant au serveur en SSH avec l’utilisateur linux <code class="docutils literal notranslate"><span class="pre">root</span></code>.</p>
 <ul>
 <li><p>Mettre à jour de la liste des dépôts Linux :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>apt update
-<span class="gp"># </span>apt upgrade
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>apt<span class="w"> </span>update
+<span class="gp"># </span>apt<span class="w"> </span>upgrade
 </pre></div>
 </div>
 </li>
@@ -191,31 +199,31 @@
 <p>Sinon exécuter la commande <code class="docutils literal notranslate"><span class="pre">dpkg-reconfigure</span> <span class="pre">locales</span></code>. Une fenêtre s’affiche dans votre console. Dans la liste déroulante, sélectionnez <code class="docutils literal notranslate"><span class="pre">fr_FR.UTF-8</span> <span class="pre">UTF-8</span></code> avec <code class="docutils literal notranslate"><span class="pre">Espace</span></code>, puis cliquez sur OK. Une 2ème fenêtre s’affiche avec une liste de locale activées (<code class="docutils literal notranslate"><span class="pre">fr_FR.UTF-8</span></code> doit être présent dans la liste), confirmez votre choix, en cliquant sur OK, puis attendez que la locale s’installe.</p>
 </li>
 <li><p>Installer l’utilitaire <code class="docutils literal notranslate"><span class="pre">sudo</span></code> :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>apt install sudo
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>apt<span class="w"> </span>install<span class="w"> </span>sudo
 </pre></div>
 </div>
 </li>
 <li><p>Créer un utilisateur Linux dédié (nommé <code class="docutils literal notranslate"><span class="pre">geonatureadmin</span></code> dans notre cas) pour ne pas travailler en <code class="docutils literal notranslate"><span class="pre">root</span></code> :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>adduser geonatureadmin
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>adduser<span class="w"> </span>geonatureadmin
 </pre></div>
 </div>
 </li>
 <li><p>Lui donner ensuite les droits administrateur en l’ajoutant au groupe <code class="docutils literal notranslate"><span class="pre">sudo</span></code> :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>adduser geonatureadmin sudo
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>adduser<span class="w"> </span>geonatureadmin<span class="w"> </span>sudo
 </pre></div>
 </div>
 </li>
 <li><p>Pour la suite du processus d’installation, on utilisera l’utilisateur non privilégié nouvellement créé. Si besoin d’éxecuter des commandes avec les droits d’administrateur, on les précèdera de <code class="docutils literal notranslate"><span class="pre">sudo</span></code>.</p>
 <p>Il est d’ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec <code class="docutils literal notranslate"><span class="pre">root</span></code>. Voir <a class="reference external" href="https://docs.ovh.com/fr/vps/conseils-securisation-vps/">https://docs.ovh.com/fr/vps/conseils-securisation-vps/</a> pour plus d’informations sur le sécurisation du serveur.</p>
 <p>Pour passer de l’utilisateur <code class="docutils literal notranslate"><span class="pre">root</span></code> à <code class="docutils literal notranslate"><span class="pre">geonatureadmin</span></code>, vous pouvez aussi utiliser la commande :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>su - geonatureadmin
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>su<span class="w"> </span>-<span class="w"> </span>geonatureadmin
 </pre></div>
 </div>
 </li>
 </ul>
 </section>
 <section id="installation-globale">
-<span id="installation-all"></span><h2>Installation globale<a class="headerlink" href="#installation-globale" title="Lien permanent vers cette rubrique"></a></h2>
+<span id="installation-all"></span><h2>Installation globale<a class="headerlink" href="#installation-globale" title="Link to this heading"></a></h2>
 <p>Ce document décrit une procédure d’installation packagée de GeoNature.</p>
 <p>En lançant le script d’installation ci-dessous, l’application GeoNature ainsi que ses dépendances seront installées sur un seul et même serveur au sein d’une seule base de données.</p>
 <p>Les applications suivantes seront installées :</p>
@@ -226,12 +234,12 @@
 </ul>
 <p>Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre la documentation <a class="reference internal" href="#installation-standalone"><span class="std std-ref">Installation de GeoNature uniquement</span></a>.</p>
 <section id="installation-des-applications">
-<h3>Installation des applications<a class="headerlink" href="#installation-des-applications" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Installation des applications<a class="headerlink" href="#installation-des-applications" title="Link to this heading"></a></h3>
 <p>Commencer la procédure en se connectant au serveur en SSH avec l’utilisateur dédié précédemment créé lors de l’étape de <a class="reference internal" href="#preparation-server"><span class="std std-ref">Préparation du serveur</span></a> (usuellement <code class="docutils literal notranslate"><span class="pre">geonatureadmin</span></code>).</p>
 <ul>
 <li><p>Se placer à la racine du <code class="docutils literal notranslate"><span class="pre">home</span></code> de l’utilisateur puis récupérer les scripts d’installation (X.Y.Z à remplacer par le numéro de la <a class="reference external" href="https://github.com/PnEcrins/GeoNature/releases">dernière version stable de GeoNature</a>). Ces scripts installent les applications GeoNature, TaxHub et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini
-<span class="gp">$ </span>wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wget<span class="w"> </span>https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini
+<span class="gp">$ </span>wget<span class="w"> </span>https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh
 </pre></div>
 </div>
 </li>
@@ -239,25 +247,25 @@
 <p><em>Attention</em> : l’installation globale fonctionne uniquement si les scripts sont placés à la racine du <code class="docutils literal notranslate"><span class="pre">home</span></code> de l’utilisateur courant.</p>
 <ul>
 <li><p>Configurez votre installation en adaptant le fichier <code class="docutils literal notranslate"><span class="pre">install_all.ini</span></code> :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>nano install_all.ini
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>nano<span class="w"> </span>install_all.ini
 </pre></div>
 </div>
 </li>
 </ul>
 <p>Renseignez à minima votre utilisateur linux, l’URL (ou IP) de votre serveur (avec un <code class="docutils literal notranslate"><span class="pre">/</span></code> à la fin) ainsi que l’utilisateur PostgreSQL que vous souhaitez et son mot de passe. Le script se chargera d’installer PostgreSQL et de créer l’utilisateur de base de données que vous avez renseigné. Pour une installation de développement, pensez à renseigner <code class="docutils literal notranslate"><span class="pre">mode=dev</span></code>.</p>
-<p>Pour la définition des numéros de version des dépendances, voir le <a class="reference external" href="versions-compatibility.rst">tableau de compatibilité</a> des versions de GeoNature avec ses dépendances. Il est déconseillé de modifier ces versions, chaque nouvelle version de GeoNature étant fournie avec les versions adaptées de ses dépendances.</p>
+<p>Il est déconseillé de modifier les numéros de version des dépendances, chaque nouvelle version de GeoNature étant fournie avec les versions adaptées de ses dépendances.</p>
 <ul>
 <li><p>Lancer l’installation :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>touch install_all.log
-<span class="gp">$ </span>chmod +x install_all.sh
-<span class="gp">$ </span>./install_all.sh <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">|</span> tee install_all.log
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>touch<span class="w"> </span>install_all.log
+<span class="gp">$ </span>chmod<span class="w"> </span>+x<span class="w"> </span>install_all.sh
+<span class="gp">$ </span>./install_all.sh<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>install_all.log
 </pre></div>
 </div>
 </li>
 </ul>
 <p>Une fois l’installation terminée, lancez la commande suivante:</p>
 <blockquote>
-<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">exec</span> bash
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">exec</span><span class="w"> </span>bash
 </pre></div>
 </div>
 </div></blockquote>
@@ -269,10 +277,10 @@
 </ul>
 <p>Vous pouvez vous connecter avec l’utilisateur intégré par défaut (admin/admin).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Note</dt>
+<dt class="field-odd">Note<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Pour en savoir plus TaxHub, sa configuration et son utilisation, reportez-vous à sa documentation : <a class="reference external" href="https://taxhub.readthedocs.io">https://taxhub.readthedocs.io</a>. Idem pour UsersHub et sa documentation : <a class="reference external" href="https://usershub.readthedocs.io">https://usershub.readthedocs.io</a></p>
 </dd>
-<dt class="field-even">Note</dt>
+<dt class="field-even">Note<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p>GeoNature-atlas compatible avec GeoNature V2 est disponible sur <a class="reference external" href="https://github.com/PnX-SI/GeoNature-atlas">https://github.com/PnX-SI/GeoNature-atlas</a></p></li>
 <li><p>Vous pouvez utiliser le schéma <code class="docutils literal notranslate"><span class="pre">ref_geo</span></code> de GeoNature pour votre territoire, les communes et les mailles.</p></li>
@@ -281,46 +289,46 @@
 </dl>
 <p>Si vous rencontrez une erreur, se reporter aux fichiers de logs <code class="docutils literal notranslate"><span class="pre">/home/`whoami`/install_all.log</span></code>.</p>
 <dl class="field-list">
-<dt class="field-odd">Note</dt>
+<dt class="field-odd">Note<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre adresse, editez le fichier de configuration Apache (<code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/geonature.conf</span></code>) en modifiant l’alias :</p>
 <ul class="simple">
 <li><p>Pour <code class="docutils literal notranslate"><span class="pre">/</span></code>: <code class="docutils literal notranslate"><span class="pre">Alias</span> <span class="pre">/</span> <span class="pre">/home/test/geonature/frontend/dist</span></code></p></li>
 <li><p>Pour <code class="docutils literal notranslate"><span class="pre">/saisie</span></code> : <code class="docutils literal notranslate"><span class="pre">Alias</span> <span class="pre">/saisie</span> <span class="pre">/home/test/geonature/frontend/dist</span></code></p></li>
 </ul>
 </dd>
-<dt class="field-even">Note</dt>
+<dt class="field-even">Note<span class="colon">:</span></dt>
 <dd class="field-even"><p>Par défaut et par mesure de sécurité, la base de données est accessible uniquement localement par la machine où elle est installée. Pour accéder à la BDD depuis une autre machine (pour s’y connecter avec QGIS, pgAdmin ou autre), vous pouvez consulter cette documentation <a class="reference external" href="https://github.com/PnX-SI/Ressources-techniques/blob/master/PostgreSQL/acces-bdd.rst">https://github.com/PnX-SI/Ressources-techniques/blob/master/PostgreSQL/acces-bdd.rst</a>.
 Attention, exposer la base de données sur internet n’est pas recommandé. Il est préférable de se connecter via un tunnel SSH. QGIS et la plupart des outils d’administration de base de données permettent d’établir une connexion à la base de cette manière.
 Attention si vous redémarrez PostgreSQL (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">service</span> <span class="pre">postgresql</span> <span class="pre">restart</span></code>), il faut ensuite redémarrer les API de GeoNature, UsersHub et TaxHub :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo systemctl restart geonature
-<span class="gp">$ </span>sudo systemctl restart geonature-worker
-<span class="gp">$ </span>sudo systemctl restart usershub
-<span class="gp">$ </span>sudo systemctl restart taxhub
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>geonature
+<span class="gp">$ </span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>geonature-worker
+<span class="gp">$ </span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>usershub
+<span class="gp">$ </span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>taxhub
 </pre></div>
 </div>
 </dd>
-<dt class="field-odd">Note</dt>
+<dt class="field-odd">Note<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Il est aussi important de configurer l’accès au serveur en HTTPS plutôt qu’en HTTP pour chiffrer le contenu des échanges entre le navigateur et le serveur (<a class="reference external" href="https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/">https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/</a>).</p>
 </dd>
 </dl>
 </section>
 </section>
 <section id="installation-de-geonature-uniquement">
-<span id="installation-standalone"></span><h2>Installation de GeoNature uniquement<a class="headerlink" href="#installation-de-geonature-uniquement" title="Lien permanent vers cette rubrique"></a></h2>
+<span id="installation-standalone"></span><h2>Installation de GeoNature uniquement<a class="headerlink" href="#installation-de-geonature-uniquement" title="Link to this heading"></a></h2>
 <p>Cette procédure détail l’installation de GeoNature seul, sans TaxHub et UsersHub.
 Si vous souhaitez installer GeoNature avec TaxHub et UsersHub, reportez-vous à la section <a class="reference internal" href="#installation-all"><span class="std std-ref">Installation globale</span></a>.</p>
 <section id="installation-des-dependances">
-<h3>Installation des dépendances<a class="headerlink" href="#installation-des-dependances" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Installation des dépendances<a class="headerlink" href="#installation-des-dependances" title="Link to this heading"></a></h3>
 <p>Installer les paquets suivants :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt install unzip git postgresql-postgis postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis
 </pre></div>
 </div>
 </section>
 <section id="recuperation-de-l-application">
-<h3>Récupération de l’application<a class="headerlink" href="#recuperation-de-l-application" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Récupération de l’application<a class="headerlink" href="#recuperation-de-l-application" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Se placer dans le répertoire de l’utilisateur (<code class="docutils literal notranslate"><span class="pre">/home/geonatureadmin/</span></code> dans notre cas)</p></li>
-<li><p>Récupérer l’application (<code class="docutils literal notranslate"><span class="pre">X.Y.Z</span></code> à remplacer par le numéro de la <a class="reference external" href="https://github.com/PnEcrins/GeoNature/releases">dernière version stable de GeoNature</a>). Voir le <a class="reference external" href="versions-compatibility.rst">tableau de compatibilité</a> des versions de GeoNature avec ses dépendances.</p>
+<li><p>Récupérer l’application (<code class="docutils literal notranslate"><span class="pre">X.Y.Z</span></code> à remplacer par le numéro de la <a class="reference external" href="https://github.com/PnEcrins/GeoNature/releases">dernière version stable de GeoNature</a>).</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
 </pre></div>
 </div>
@@ -346,7 +354,7 @@ $ nano config/settings.ini
 </ul>
 </section>
 <section id="installation-de-l-application">
-<h3>Installation de l’application<a class="headerlink" href="#installation-de-l-application" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Installation de l’application<a class="headerlink" href="#installation-de-l-application" title="Link to this heading"></a></h3>
 <p>Rendez vous dans le dossier <code class="docutils literal notranslate"><span class="pre">install</span></code> et lancez successivement dans l’ordre les scripts suivants :</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">01_install_backend.sh</span></code> : Création du virtualenv python, installation des dépendances et du backend de GeoNature dans celui-ci.</p></li>
@@ -359,24 +367,24 @@ $ nano config/settings.ini
 <p>Vous pouvez alors démarrer le backend de GeoNature : <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">start</span> <span class="pre">geonature</span></code></p>
 </section>
 <section id="configuration-apache">
-<h3>Configuration Apache<a class="headerlink" href="#configuration-apache" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Configuration Apache<a class="headerlink" href="#configuration-apache" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Le script <code class="docutils literal notranslate"><span class="pre">install/06_configure_apache.sh</span></code> copie le fichier de configuration de référence <code class="docutils literal notranslate"><span class="pre">install/assets/geonature_apache.conf</span></code>, le place dans <code class="docutils literal notranslate"><span class="pre">/etc/apache2/conf-available/geonature.conf</span></code> et remplace ses variables à partir de votre configuration de GeoNature.</p>
 <p>Relancez ce script si vous changez l’URL de votre GeoNature ou les paramètres liés aux chemins et URL des fichiers statiques et des médias.</p>
 </li>
 <li><p>Créez la configuration du vhost, incluant la configuration par défaut créée précédemment :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo cp install/assets/vhost_apache.conf /etc/apache2/sites-available/geonature.conf <span class="c1"># Copier le vhost</span>
-<span class="gp">$ </span>sudo nano /etc/apache2/sites-available/geonature.conf <span class="c1"># Modifier la variable ``${DOMAIN_NAME}``</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>cp<span class="w"> </span>install/assets/vhost_apache.conf<span class="w"> </span>/etc/apache2/sites-available/geonature.conf<span class="w"> </span><span class="c1"># Copier le vhost</span>
+<span class="gp">$ </span>sudo<span class="w"> </span>nano<span class="w"> </span>/etc/apache2/sites-available/geonature.conf<span class="w"> </span><span class="c1"># Modifier la variable ``${DOMAIN_NAME}``</span>
 </pre></div>
 </div>
 </li>
 <li><p>Activez la nouvelle configuration :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo a2ensite geonature.conf
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>a2ensite<span class="w"> </span>geonature.conf
 </pre></div>
 </div>
 </li>
 <li><p>et redémarrez Apache :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo systemctl reload apache2
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>systemctl<span class="w"> </span>reload<span class="w"> </span>apache2
 </pre></div>
 </div>
 </li>
@@ -384,22 +392,22 @@ $ nano config/settings.ini
 </ul>
 <p>Une page HTML de maintenance et un vhost dédié sont aussi disponibles. Pour les mettre en place :</p>
 <blockquote>
-<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo cp install/assets/vhost_apache_maintenance.conf /etc/apache2/sites-available/geonature_maintenance.conf <span class="c1"># Copier le vhost</span>
-<span class="gp">$ </span>sudo nano /etc/apache2/sites-available/geonature_maintenance.conf <span class="c1"># Modifier la variable ``${DOMAIN_NAME}``</span>
-<span class="gp">$ </span>sudo cp install/assets/maintenance.html /var/www/geonature_maintenance/index.html
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>cp<span class="w"> </span>install/assets/vhost_apache_maintenance.conf<span class="w"> </span>/etc/apache2/sites-available/geonature_maintenance.conf<span class="w"> </span><span class="c1"># Copier le vhost</span>
+<span class="gp">$ </span>sudo<span class="w"> </span>nano<span class="w"> </span>/etc/apache2/sites-available/geonature_maintenance.conf<span class="w"> </span><span class="c1"># Modifier la variable ``${DOMAIN_NAME}``</span>
+<span class="gp">$ </span>sudo<span class="w"> </span>cp<span class="w"> </span>install/assets/maintenance.html<span class="w"> </span>/var/www/geonature_maintenance/index.html
 </pre></div>
 </div>
 </div></blockquote>
 <p>Pour passer votre GeoNature en maintenance, vous pouvez alors désactiver le vhost de GeoNature et activer celui de la page de maintenance :</p>
 <blockquote>
-<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo a2dissite geonature.conf
-<span class="gp">$ </span>sudo a2ensite geonature_maintenance.conf
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>a2dissite<span class="w"> </span>geonature.conf
+<span class="gp">$ </span>sudo<span class="w"> </span>a2ensite<span class="w"> </span>geonature_maintenance.conf
 </pre></div>
 </div>
 </div></blockquote>
 </section>
 <section id="dependances">
-<h3>Dépendances<a class="headerlink" href="#dependances" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Dépendances<a class="headerlink" href="#dependances" title="Link to this heading"></a></h3>
 <p>Lors de l’installation de la BDD (<code class="docutils literal notranslate"><span class="pre">02_create_db.sh</span></code>), le schéma <code class="docutils literal notranslate"><span class="pre">utilisateurs</span></code> de UsersHub et le schéma <code class="docutils literal notranslate"><span class="pre">taxonomie</span></code> de TaxHub sont intégrés automatiquement dans la BDD de GeoNature.</p>
 <p>UsersHub n’est pas nécessaire au fonctionnement de GeoNature mais il sera utile pour avoir une interface de gestion des utilisateurs, des groupes et de leurs droits.</p>
 <p>Par contre il est nécessaire d’installer TaxHub (<a class="reference external" href="https://github.com/PnX-SI/TaxHub">https://github.com/PnX-SI/TaxHub</a>) pour que GeoNature fonctionne. En effet, GeoNature utilise l’API de TaxHub. Une fois GeoNature installé, il vous faut donc installer TaxHub en le connectant à la BDD de GeoNature, vu que son schéma <code class="docutils literal notranslate"><span class="pre">taxonomie</span></code> a déjà été installé par le script <code class="docutils literal notranslate"><span class="pre">02_create_db.sh</span></code> de GeoNature. Lors de l’installation de TaxHub, n’installez donc que l’application et pas la BDD.</p>
@@ -426,7 +434,7 @@ $ nano config/settings.ini
 <p>Voir la doc d’installation de UsersHub : <a class="reference external" href="https://usershub.readthedocs.io/">https://usershub.readthedocs.io/</a></p>
 </section>
 <section id="passer-en-mode-developpement">
-<h3>Passer en mode développement<a class="headerlink" href="#passer-en-mode-developpement" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Passer en mode développement<a class="headerlink" href="#passer-en-mode-developpement" title="Link to this heading"></a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Consultez le guide <a class="reference internal" href="development.html#mode-dev"><span class="std std-ref">Passer en mode développement</span></a> de GeoNature.</p>
@@ -434,24 +442,24 @@ $ nano config/settings.ini
 </section>
 </section>
 <section id="docker">
-<h2>Docker<a class="headerlink" href="#docker" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Docker<a class="headerlink" href="#docker" title="Link to this heading"></a></h2>
 <p>L’installation de GeoNature avec Docker est la manière la plus simple de déployer GeoNature, ses 4 modules externes principaux (Import, Export, Dashboard, Monitoring), TaxHub et UsersHub, mais aussi de les mettre à jour, avec seulement quelques lignes de commandes.</p>
 <p>Elle permet aussi d’installer GeoNature sur différents systèmes, et pas uniquement sur Debian, comme c’est le cas avec l’installation classique.</p>
 <p>Elle peut néanmoins nécessiter de connaitre le fonctionnement de Docker pour ceux qui souhaitent aller plus loin et mettre en place une installation plus spécifique.</p>
 <section id="docker-compose">
-<h3>Docker Compose<a class="headerlink" href="#docker-compose" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Docker Compose<a class="headerlink" href="#docker-compose" title="Link to this heading"></a></h3>
 <p>Pour déployer facilement GeoNature avec Docker, utilisez le Docker Compose proposé et documenté dans le dépôt <a class="reference external" href="https://github.com/PnX-SI/Geonature-Docker-services/">GeoNature-Docker-services</a>.</p>
 <p>Pour des déploiements Docker plus avancés et spécifiques, des images Docker des différents outils (GeoNature, TaxHub, UsersHub, GeoNature et ses 4 modules externes principaux) sont automatiquement construites et publiées à chaque nouvelle version publiée.</p>
 </section>
 <section id="image-backend">
-<h3>Image backend<a class="headerlink" href="#image-backend" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Image backend<a class="headerlink" href="#image-backend" title="Link to this heading"></a></h3>
 <p>Des images pré-construites automatiquement sont présentes sur <a class="reference external" href="https://github.com/PnX-SI/GeoNature/pkgs/container/geonature-backend/versions?filters%5Bversion_type%5D=tagged">Github</a>.</p>
 <p>Les images tagguées <cite>-wheels</cite> contiennent les wheels Python de GeoNature, de ses dépendances et modules contrib, de manière à pouvoir être enrichies avec vos wheels provenant de vos propres modules (images de type « builder »).</p>
 <p>Construction manuelle de l’image :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span> docker build . <span class="se">\</span>
-        -f backend/Dockerfile <span class="se">\</span>
-        --target<span class="o">=</span>prod <span class="se">\</span>
-        --tag<span class="o">=</span>ghcr.io/pnx-si/geonature-backend:develop
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>.<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-f<span class="w"> </span>backend/Dockerfile<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--target<span class="o">=</span>prod<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--tag<span class="o">=</span>ghcr.io/pnx-si/geonature-backend:develop
 </pre></div>
 </div>
 <p>Fonctionnement de l’image :</p>
@@ -468,14 +476,14 @@ Par exemple, pour définir le paramètre <code class="docutils literal notransla
 </ul>
 </section>
 <section id="image-frontend">
-<h3>Image frontend<a class="headerlink" href="#image-frontend" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Image frontend<a class="headerlink" href="#image-frontend" title="Link to this heading"></a></h3>
 <p>Des images pré-construites automatiquement sont présentes sur <a class="reference external" href="https://github.com/PnX-SI/GeoNature/pkgs/container/geonature-frontend/versions?filters%5Bversion_type%5D=tagged">Github</a>.</p>
 <p>Les images tagguées <cite>-source</cite> contiennent uniquement les sources de GeoNature et des modules contrib, et attendent d’être enrichies avec les sources de vos propres modules tandis que les images tagguées <cite>-nginx</cite> contiennent la configuration NGINX prête à l’emploi pour GeoNature (images de type « builder »).</p>
 <p>Construction manuelle de l’image :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span> docker build . <span class="se">\</span>
-        -f frontend/Dockerfile <span class="se">\</span>
-        --target<span class="o">=</span>prod <span class="se">\</span>
-        --tag<span class="o">=</span>ghcr.io/pnx-si/geonature-frontend:develop
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>.<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-f<span class="w"> </span>frontend/Dockerfile<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--target<span class="o">=</span>prod<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--tag<span class="o">=</span>ghcr.io/pnx-si/geonature-frontend:develop
 </pre></div>
 </div>
 <p>Fonctionnement de l’image :</p>
@@ -492,7 +500,7 @@ Par exemple, pour définir le paramètre <code class="docutils literal notransla
 </section>
 </section>
 <section id="https">
-<h2>HTTPS<a class="headerlink" href="#https" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>HTTPS<a class="headerlink" href="#https" title="Link to this heading"></a></h2>
 <p>La procédure décrit une méthode de certification HTTPS de votre domaine, grâce au service <a class="reference external" href="https://letsencrypt.org/">Let’s Encrypt</a>. Les manipulations ont été effectuées sur un serveur Debian 9 avec Apache2 installé, et un utilisateur bénéficiant des droits sudo.</p>
 <p>Cette documentation est indicative, car elle ne concerne pas GeoNature, mais la mise en place d’un certificat SSL pour une application web servie par Apache.</p>
 <p>Ressources :</p>
@@ -501,20 +509,20 @@ Par exemple, pour définir le paramètre <code class="docutils literal notransla
 <li><p><a class="reference external" href="https://korben.info/securiser-facilement-gratuitement-site-https.html">https://korben.info/securiser-facilement-gratuitement-site-https.html</a></p></li>
 </ul>
 <section id="installer-certbot">
-<h3>Installer certbot<a class="headerlink" href="#installer-certbot" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Installer certbot<a class="headerlink" href="#installer-certbot" title="Link to this heading"></a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">certbot</span><span class="o">-</span><span class="n">apache</span>
 </pre></div>
 </div>
 </section>
 <section id="lancer-la-commande-cerbot">
-<h3>Lancer la commande cerbot<a class="headerlink" href="#lancer-la-commande-cerbot" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Lancer la commande cerbot<a class="headerlink" href="#lancer-la-commande-cerbot" title="Link to this heading"></a></h3>
 <p>Lancer la commande suivante pour générer des certificats et des clés pour le nom de domaine que vous souhaitez mettre en HTTPS.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">certbot</span> <span class="o">--</span><span class="n">apache</span> <span class="o">--</span><span class="n">email</span> <span class="n">monemail</span><span class="nd">@mondomaine</span><span class="o">.</span><span class="n">fr</span>
 </pre></div>
 </div>
 </section>
 <section id="prise-en-compte-des-nouvelles-configurations-apache">
-<h3>Prise en compte des nouvelles configurations Apache<a class="headerlink" href="#prise-en-compte-des-nouvelles-configurations-apache" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Prise en compte des nouvelles configurations Apache<a class="headerlink" href="#prise-en-compte-des-nouvelles-configurations-apache" title="Link to this heading"></a></h3>
 <p>Activer les modules <code class="docutils literal notranslate"><span class="pre">ssl</span></code>, <code class="docutils literal notranslate"><span class="pre">headers</span></code> et <code class="docutils literal notranslate"><span class="pre">rewrite</span></code> puis redémarrer Apache :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">ssl</span>
 <span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">rewrite</span>
@@ -525,7 +533,7 @@ Par exemple, pour définir le paramètre <code class="docutils literal notransla
 <p>Les fichiers de configuration des sites TaxHub et UsersHub ne sont pas à modifier, ils seront automatiquement associés à la configuration HTTPS. En revanche, la configuration de GeoNature doit être mise à jour.</p>
 </section>
 <section id="configuration-de-l-application-geonature">
-<h3>Configuration de l’application GeoNature<a class="headerlink" href="#configuration-de-l-application-geonature" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Configuration de l’application GeoNature<a class="headerlink" href="#configuration-de-l-application-geonature" title="Link to this heading"></a></h3>
 <p>Il est nécessaire de mettre à jour le fichier de configuration <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code> situé dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/config</span></code> :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span><span class="o">/</span><span class="n">config</span>
 <span class="n">nano</span> <span class="n">geonature_config</span><span class="o">.</span><span class="n">toml</span>
@@ -542,47 +550,47 @@ Par exemple, pour définir le paramètre <code class="docutils literal notransla
 </section>
 </section>
 <section id="taches-planifiees">
-<span id="cron"></span><h2>Taches planifiées<a class="headerlink" href="#taches-planifiees" title="Lien permanent vers cette rubrique"></a></h2>
+<span id="cron"></span><h2>Taches planifiées<a class="headerlink" href="#taches-planifiees" title="Link to this heading"></a></h2>
 <p>Depuis sa version 2.12.0, les taches planifiées gérées par des crons ont été remplacées par des taches lancées automatiquement par Celery Beat, pour être mis en place automatiquement lors de l’installation de GeoNature et être plus facilement administrables.</p>
 </section>
 <section id="installation-d-un-module-geonature">
-<span id="install-gn-module"></span><h2>Installation d’un module GeoNature<a class="headerlink" href="#installation-d-un-module-geonature" title="Lien permanent vers cette rubrique"></a></h2>
+<span id="install-gn-module"></span><h2>Installation d’un module GeoNature<a class="headerlink" href="#installation-d-un-module-geonature" title="Link to this heading"></a></h2>
 <p>L’installation de GeoNature n’est livrée qu’avec les modules du coeur par défaut : Occtax, Occhab et Validation. Pour ajouter un module GeoNature externe, il est nécessaire de l’installer :</p>
 <section id="telechargement">
-<h3>Téléchargement<a class="headerlink" href="#telechargement" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Téléchargement<a class="headerlink" href="#telechargement" title="Link to this heading"></a></h3>
 <p>Téléchargez le module depuis son dépôt Github puis dézippez-le dans le repertoire utilisateur, au même niveau que le dossier de GeoNature.</p>
 </section>
 <section id="installation-automatique">
-<span id="install-gn-module-auto"></span><h3>Installation automatique<a class="headerlink" href="#installation-automatique" title="Lien permanent vers cette rubrique"></a></h3>
+<span id="install-gn-module-auto"></span><h3>Installation automatique<a class="headerlink" href="#installation-automatique" title="Link to this heading"></a></h3>
 <p>Installation avec la sous-commande <code class="docutils literal notranslate"><span class="pre">install-gn-module</span></code> :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> &lt;dossier GeoNature&gt;/backend/venv/bin/activate
-geonature install-gn-module &lt;dossier du module&gt; &lt;code du module&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>&lt;dossier<span class="w"> </span>GeoNature&gt;/backend/venv/bin/activate
+geonature<span class="w"> </span>install-gn-module<span class="w"> </span>&lt;dossier<span class="w"> </span>du<span class="w"> </span>module&gt;<span class="w"> </span>&lt;code<span class="w"> </span>du<span class="w"> </span>module&gt;
 </pre></div>
 </div>
 <p>Exemple pour le module Import :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> ~/GeoNature/backend/venv/bin/activate
-geonature install-gn-module ~/gn_module_import/ IMPORT
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/GeoNature/backend/venv/bin/activate
+geonature<span class="w"> </span>install-gn-module<span class="w"> </span>~/gn_module_import/<span class="w"> </span>IMPORT
 </pre></div>
 </div>
 <p>Puis relancer GeoNature et son worker :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo systemctl restart geonature
-sudo systemctl restart geonature-worker
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>geonature
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>geonature-worker
 </pre></div>
 </div>
 <p>Aucune permission n’est définie par défaut lors de l’installation d’un module. En tant qu’administrateur, vous pouvez exécuter une commande ajoutant tous les droits sur tous les modules à un groupe ou utilisateur. Cette commande peut être relancée après l’installation d’un module pour automatiquement attribuer toutes les permissions à un groupe ou utilisateur administrateur :</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># changer &quot;Grp_Admin&quot; par le nom de votre groupe d&#39;administrateur si vous l&#39;avez changé</span>
-geonature permissions supergrant --group --nom <span class="s2">&quot;Grp_admin&quot;</span>
+geonature<span class="w"> </span>permissions<span class="w"> </span>supergrant<span class="w"> </span>--group<span class="w"> </span>--nom<span class="w"> </span><span class="s2">&quot;Grp_admin&quot;</span>
 </pre></div>
 </div>
 <p>Vous devrez ensuite définir des droits à vos utilisateurs pour le nouveau module installé.</p>
 </section>
 <section id="installation-manuelle">
-<h3>Installation manuelle<a class="headerlink" href="#installation-manuelle" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Installation manuelle<a class="headerlink" href="#installation-manuelle" title="Link to this heading"></a></h3>
 <p><strong>Installation du backend</strong></p>
 <p>Installer le module avec <code class="docutils literal notranslate"><span class="pre">pip</span></code> en mode éditable après avoir activé le venv de GeoNature, puis relancer GeoNature :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> ~/geonature/backend/venv/bin/activate
-pip install --editable &lt;dossier du module&gt;
-sudo systemctl restart geonature
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/geonature/backend/venv/bin/activate
+pip<span class="w"> </span>install<span class="w"> </span>--editable<span class="w"> </span>&lt;dossier<span class="w"> </span>du<span class="w"> </span>module&gt;
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>geonature
 </pre></div>
 </div>
 <p id="module-install-frontend"><strong>Installation du frontend</strong></p>
@@ -590,46 +598,46 @@ sudo systemctl restart geonature
 <li><p>Créer un lien symbolique dans le dossier <code class="docutils literal notranslate"><span class="pre">frontend/external_modules</span></code> de GeoNature vers le dossier <code class="docutils literal notranslate"><span class="pre">frontend</span></code> du module.
 Le lien symbolique doit être nommé suivant le code du module en minuscule :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> ~/geonature/frontend/external_modules/
-ln -s &lt;dossier du module&gt;/frontend &lt;code du module en minuscule&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/geonature/frontend/external_modules/
+ln<span class="w"> </span>-s<span class="w"> </span>&lt;dossier<span class="w"> </span>du<span class="w"> </span>module&gt;/frontend<span class="w"> </span>&lt;code<span class="w"> </span>du<span class="w"> </span>module<span class="w"> </span>en<span class="w"> </span>minuscule&gt;
 </pre></div>
 </div>
 <p>Exemple pour le module Import :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> ~/geonature/frontend/external_modules/
-ln -s ~/gn_module_import/frontend import
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/geonature/frontend/external_modules/
+ln<span class="w"> </span>-s<span class="w"> </span>~/gn_module_import/frontend<span class="w"> </span>import
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>Re-builder le frontend :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> ~/geonature/frontend/
-nvm use
-npm run build
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/geonature/frontend/
+nvm<span class="w"> </span>use
+npm<span class="w"> </span>run<span class="w"> </span>build
 </pre></div>
 </div>
 <p><strong>Installation de la base de données</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> ~/geonature/backend/venv/bin/activate
-geonature upgrade-modules-db &lt;code du module&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/geonature/backend/venv/bin/activate
+geonature<span class="w"> </span>upgrade-modules-db<span class="w"> </span>&lt;code<span class="w"> </span>du<span class="w"> </span>module&gt;
 </pre></div>
 </div>
 </section>
 <section id="configuration-du-module">
-<span id="module-config"></span><h3>Configuration du module<a class="headerlink" href="#configuration-du-module" title="Lien permanent vers cette rubrique"></a></h3>
+<span id="module-config"></span><h3>Configuration du module<a class="headerlink" href="#configuration-du-module" title="Link to this heading"></a></h3>
 <p>De manière facultative, vous pouvez modifier la configuration du module.
 Pour cela, vous pouvez créer un fichier de configuration dans le dossier <code class="docutils literal notranslate"><span class="pre">config</span></code> de GeoNature en le nommant <code class="docutils literal notranslate"><span class="pre">&lt;code</span> <span class="pre">du</span> <span class="pre">module</span> <span class="pre">en</span> <span class="pre">minuscule&gt;_config.toml</span></code>.
 La plupart des modules fournissent un fichier d’exemple <code class="docutils literal notranslate"><span class="pre">&lt;module-code&gt;_config.toml.example</span></code> dans leur dossier racine dont vous pouvez vous inspirer.</p>
 <p>Après création de ce fichier, activez le rechargement automatique de GeoNature lors des modifications du fichier en lançant les commandes suivantes :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo systemctl daemon-reload
-sudo systemctl restart geonature
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>daemon-reload
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>geonature
 </pre></div>
 </div>
 <p>Avant la version 2.12.0 de GeoNature, après chaque modification de la configuration du module, vous devez recharger GeoNature manuellement :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo systemctl reload geonature
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>reload<span class="w"> </span>geonature
 </pre></div>
 </div>
 </section>
 <section id="mise-a-jour-du-module">
-<h3>Mise à jour du module<a class="headerlink" href="#mise-a-jour-du-module" title="Lien permanent vers cette rubrique"></a></h3>
+<h3>Mise à jour du module<a class="headerlink" href="#mise-a-jour-du-module" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Déplacer le code de l’ancienne version du module : <code class="docutils literal notranslate"><span class="pre">mv</span> <span class="pre">gn_module_xxx</span> <span class="pre">gn_module_xxx_old</span></code></p></li>
 <li><p>Télécharger et désarchiver la nouvelle version du module, et renommer son dossier afin qu’il porte le même nom qu’avant (<em>e.g.</em> <code class="docutils literal notranslate"><span class="pre">gn_module_xxx</span></code>)</p></li>
@@ -639,7 +647,7 @@ sudo systemctl restart geonature
 </section>
 </section>
 <section id="mise-a-jour-de-l-application">
-<h2>Mise à jour de l’application<a class="headerlink" href="#mise-a-jour-de-l-application" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Mise à jour de l’application<a class="headerlink" href="#mise-a-jour-de-l-application" title="Link to this heading"></a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <p>Avant chaque mise à jour de GeoNature, il est important de sauvegarder l’application et sa base de données, ou de faire un snapshot du serveur pour pouvoir revenir à son état antérieure avant mise à jour, en cas de problème.</p>
@@ -703,7 +711,7 @@ d’installer la nouvelle version du module.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2018-2023, PnE, PnC.</p>
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
   </div>
 
   Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un

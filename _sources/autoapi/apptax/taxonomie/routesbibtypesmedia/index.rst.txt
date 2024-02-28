@@ -1,0 +1,34 @@
+:py:mod:`apptax.taxonomie.routesbibtypesmedia`
+==============================================
+
+.. py:module:: apptax.taxonomie.routesbibtypesmedia
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.routesbibtypesmedia.get_bibtypesmedia
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.routesbibtypesmedia.adresses
+
+
+.. py:data:: adresses
+
+   
+
+.. py:function:: get_bibtypesmedia(id=None)
+
+

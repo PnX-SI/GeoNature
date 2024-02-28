@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_commons.models &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../search.html" />
+    <link rel="next" title="geonature.core.gn_commons.models.additional_fields" href="additional_fields/index.html" />
+    <link rel="prev" title="geonature.core.gn_commons.medias.routes" href="../medias/routes/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../../api-references.html">API REFERENCES</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../../../index.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../middlewares/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.middlewares</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../tasks/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.tasks</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../index.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../pypnusershub/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla_geo/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../frontend.html">Frontend</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../api-references.html">API REFERENCES</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core</span></code></a></li>
+          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_commons</span></code></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_commons.models</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/autoapi/geonature/core/gn_commons/models/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-geonature.core.gn_commons.models">
+<span id="geonature-core-gn-commons-models"></span><h1><a class="reference internal" href="#module-geonature.core.gn_commons.models" title="geonature.core.gn_commons.models"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_commons.models</span></code></a><a class="headerlink" href="#module-geonature.core.gn_commons.models" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="additional_fields/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_commons.models.additional_fields</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="base/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_commons.models.base</span></code></a></li>
+</ul>
+</div>
+</section>
+<section id="package-contents">
+<h2>Package Contents<a class="headerlink" href="#package-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.BibTablesLocation" title="geonature.core.gn_commons.models.BibTablesLocation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibTablesLocation</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.CorModuleDataset" title="geonature.core.gn_commons.models.CorModuleDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CorModuleDataset</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.TModules" title="geonature.core.gn_commons.models.TModules"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TModules</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.TMedias" title="geonature.core.gn_commons.models.TMedias"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TMedias</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.TParameters" title="geonature.core.gn_commons.models.TParameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TParameters</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.TValidations" title="geonature.core.gn_commons.models.TValidations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TValidations</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.VLatestValidations" title="geonature.core.gn_commons.models.VLatestValidations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLatestValidations</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.THistoryActions" title="geonature.core.gn_commons.models.THistoryActions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">THistoryActions</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.TMobileApps" title="geonature.core.gn_commons.models.TMobileApps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TMobileApps</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.TPlaces" title="geonature.core.gn_commons.models.TPlaces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TPlaces</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.BibWidgets" title="geonature.core.gn_commons.models.BibWidgets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibWidgets</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.TDatasets" title="geonature.core.gn_commons.models.TDatasets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TDatasets</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.PermObject" title="geonature.core.gn_commons.models.PermObject"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PermObject</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.TAdditionalFields" title="geonature.core.gn_commons.models.TAdditionalFields"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TAdditionalFields</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models._resolve_import_cor_object_module" title="geonature.core.gn_commons.models._resolve_import_cor_object_module"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_resolve_import_cor_object_module</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.cor_module_dataset" title="geonature.core.gn_commons.models.cor_module_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_module_dataset</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.last_validation_query" title="geonature.core.gn_commons.models.last_validation_query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">last_validation_query</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_commons.models.last_validation" title="geonature.core.gn_commons.models.last_validation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">last_validation</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id2" title="geonature.core.gn_commons.models.cor_field_object"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_field_object</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id1" title="geonature.core.gn_commons.models.cor_field_module"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_field_module</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id3" title="geonature.core.gn_commons.models.cor_field_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_field_dataset</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id1" title="geonature.core.gn_commons.models.cor_field_module"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_field_module</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id2" title="geonature.core.gn_commons.models.cor_field_object"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_field_object</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id3" title="geonature.core.gn_commons.models.cor_field_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_field_dataset</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.BibTablesLocation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">BibTablesLocation</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#BibTablesLocation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.BibTablesLocation" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.BibTablesLocation.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_tables_location'</span></em><a class="headerlink" href="#geonature.core.gn_commons.models.BibTablesLocation.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.BibTablesLocation.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.BibTablesLocation.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.BibTablesLocation.id_table_location">
+<span class="sig-name descname"><span class="pre">id_table_location</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.BibTablesLocation.id_table_location" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.BibTablesLocation.table_desc">
+<span class="sig-name descname"><span class="pre">table_desc</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.BibTablesLocation.table_desc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.BibTablesLocation.schema_name">
+<span class="sig-name descname"><span class="pre">schema_name</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.BibTablesLocation.schema_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.BibTablesLocation.table_name">
+<span class="sig-name descname"><span class="pre">table_name</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.BibTablesLocation.table_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.BibTablesLocation.pk_field">
+<span class="sig-name descname"><span class="pre">pk_field</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.BibTablesLocation.pk_field" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.BibTablesLocation.uuid_field_name">
+<span class="sig-name descname"><span class="pre">uuid_field_name</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.BibTablesLocation.uuid_field_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.cor_module_dataset">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">cor_module_dataset</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#cor_module_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.cor_module_dataset" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.CorModuleDataset">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">CorModuleDataset</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#CorModuleDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.CorModuleDataset" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.CorModuleDataset.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cor_module_dataset'</span></em><a class="headerlink" href="#geonature.core.gn_commons.models.CorModuleDataset.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.CorModuleDataset.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.CorModuleDataset.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.CorModuleDataset.id_module">
+<span class="sig-name descname"><span class="pre">id_module</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.CorModuleDataset.id_module" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.CorModuleDataset.id_dataset">
+<span class="sig-name descname"><span class="pre">id_dataset</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.CorModuleDataset.id_dataset" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models._resolve_import_cor_object_module">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">_resolve_import_cor_object_module</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#_resolve_import_cor_object_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models._resolve_import_cor_object_module" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">TModules</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#TModules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TModules" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.base_defaultdict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">base_defaultdict</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.base_defaultdict" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.defaultdict" title="(disponible dans Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">collections.defaultdict</span></code></a></p>
+<p>Avoid polymorphic error when polymorphic identities are declared
+in database but absent from venv: fallback on base identity.
+Taken from CTFd.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.base_defaultdict.__missing__">
+<span class="sig-name descname"><span class="pre">__missing__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.base_defaultdict.__missing__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_modules'</span></em><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.__mapper_args__">
+<span class="sig-name descname"><span class="pre">__mapper_args__</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.__mapper_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.id_module">
+<span class="sig-name descname"><span class="pre">id_module</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.id_module" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.module_code">
+<span class="sig-name descname"><span class="pre">module_code</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.module_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.module_label">
+<span class="sig-name descname"><span class="pre">module_label</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.module_label" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.module_picto">
+<span class="sig-name descname"><span class="pre">module_picto</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.module_picto" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.module_desc">
+<span class="sig-name descname"><span class="pre">module_desc</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.module_desc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.module_group">
+<span class="sig-name descname"><span class="pre">module_group</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.module_group" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.module_path">
+<span class="sig-name descname"><span class="pre">module_path</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.module_path" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.module_external_url">
+<span class="sig-name descname"><span class="pre">module_external_url</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.module_external_url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.module_target">
+<span class="sig-name descname"><span class="pre">module_target</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.module_target" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.module_comment">
+<span class="sig-name descname"><span class="pre">module_comment</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.module_comment" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.active_frontend">
+<span class="sig-name descname"><span class="pre">active_frontend</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.active_frontend" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.active_backend">
+<span class="sig-name descname"><span class="pre">active_backend</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.active_backend" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.module_doc_url">
+<span class="sig-name descname"><span class="pre">module_doc_url</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.module_doc_url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.module_order">
+<span class="sig-name descname"><span class="pre">module_order</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.module_order" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.ng_module">
+<span class="sig-name descname"><span class="pre">ng_module</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.ng_module" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.meta_create_date">
+<span class="sig-name descname"><span class="pre">meta_create_date</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.meta_create_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.meta_update_date">
+<span class="sig-name descname"><span class="pre">meta_update_date</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.meta_update_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.objects">
+<span class="sig-name descname"><span class="pre">objects</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.objects" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TModules.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#TModules.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TModules.__str__" title="Link to this definition"></a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">TMedias</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#TMedias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_medias'</span></em><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.id_media">
+<span class="sig-name descname"><span class="pre">id_media</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.id_media" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.id_nomenclature_media_type">
+<span class="sig-name descname"><span class="pre">id_nomenclature_media_type</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.id_nomenclature_media_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.id_table_location">
+<span class="sig-name descname"><span class="pre">id_table_location</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.id_table_location" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.unique_id_media">
+<span class="sig-name descname"><span class="pre">unique_id_media</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.unique_id_media" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.uuid_attached_row">
+<span class="sig-name descname"><span class="pre">uuid_attached_row</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.uuid_attached_row" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.title_fr">
+<span class="sig-name descname"><span class="pre">title_fr</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.title_fr" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.title_en">
+<span class="sig-name descname"><span class="pre">title_en</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.title_en" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.title_it">
+<span class="sig-name descname"><span class="pre">title_it</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.title_it" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.title_es">
+<span class="sig-name descname"><span class="pre">title_es</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.title_es" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.title_de">
+<span class="sig-name descname"><span class="pre">title_de</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.title_de" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.media_url">
+<span class="sig-name descname"><span class="pre">media_url</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.media_url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.media_path">
+<span class="sig-name descname"><span class="pre">media_path</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.media_path" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.author">
+<span class="sig-name descname"><span class="pre">author</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.author" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.description_fr">
+<span class="sig-name descname"><span class="pre">description_fr</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.description_fr" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.description_en">
+<span class="sig-name descname"><span class="pre">description_en</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.description_en" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.description_it">
+<span class="sig-name descname"><span class="pre">description_it</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.description_it" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.description_es">
+<span class="sig-name descname"><span class="pre">description_es</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.description_es" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.description_de">
+<span class="sig-name descname"><span class="pre">description_de</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.description_de" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.is_public">
+<span class="sig-name descname"><span class="pre">is_public</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.is_public" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.meta_create_date">
+<span class="sig-name descname"><span class="pre">meta_create_date</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.meta_create_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.meta_update_date">
+<span class="sig-name descname"><span class="pre">meta_update_date</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.meta_update_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.base_dir">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">base_dir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#TMedias.base_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.base_dir" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.__before_commit_delete__">
+<span class="sig-name descname"><span class="pre">__before_commit_delete__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#TMedias.__before_commit_delete__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.__before_commit_delete__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.remove_file">
+<span class="sig-name descname"><span class="pre">remove_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">move</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#TMedias.remove_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.remove_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMedias.remove_thumbnails">
+<span class="sig-name descname"><span class="pre">remove_thumbnails</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#TMedias.remove_thumbnails"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TMedias.remove_thumbnails" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TParameters">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">TParameters</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#TParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TParameters" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TParameters.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_parameters'</span></em><a class="headerlink" href="#geonature.core.gn_commons.models.TParameters.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TParameters.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TParameters.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TParameters.id_parameter">
+<span class="sig-name descname"><span class="pre">id_parameter</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TParameters.id_parameter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TParameters.id_organism">
+<span class="sig-name descname"><span class="pre">id_organism</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TParameters.id_organism" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TParameters.parameter_name">
+<span class="sig-name descname"><span class="pre">parameter_name</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TParameters.parameter_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TParameters.parameter_desc">
+<span class="sig-name descname"><span class="pre">parameter_desc</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TParameters.parameter_desc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TParameters.parameter_value">
+<span class="sig-name descname"><span class="pre">parameter_value</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TParameters.parameter_value" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TParameters.parameter_extra_value">
+<span class="sig-name descname"><span class="pre">parameter_extra_value</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TParameters.parameter_extra_value" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TValidations">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">TValidations</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#TValidations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TValidations" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TValidations.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_validations'</span></em><a class="headerlink" href="#geonature.core.gn_commons.models.TValidations.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TValidations.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TValidations.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TValidations.id_validation">
+<span class="sig-name descname"><span class="pre">id_validation</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TValidations.id_validation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TValidations.uuid_attached_row">
+<span class="sig-name descname"><span class="pre">uuid_attached_row</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TValidations.uuid_attached_row" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TValidations.id_nomenclature_valid_status">
+<span class="sig-name descname"><span class="pre">id_nomenclature_valid_status</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TValidations.id_nomenclature_valid_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TValidations.nomenclature_valid_status">
+<span class="sig-name descname"><span class="pre">nomenclature_valid_status</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TValidations.nomenclature_valid_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TValidations.id_validator">
+<span class="sig-name descname"><span class="pre">id_validator</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TValidations.id_validator" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TValidations.validator_role">
+<span class="sig-name descname"><span class="pre">validator_role</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TValidations.validator_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TValidations.validation_auto">
+<span class="sig-name descname"><span class="pre">validation_auto</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TValidations.validation_auto" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TValidations.validation_comment">
+<span class="sig-name descname"><span class="pre">validation_comment</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TValidations.validation_comment" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TValidations.validation_date">
+<span class="sig-name descname"><span class="pre">validation_date</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TValidations.validation_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">validation_auto</span></span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TValidations.validation_label">
+<span class="sig-name descname"><span class="pre">validation_label</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TValidations.validation_label" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TValidations.auto_validation">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">auto_validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fct_auto_validation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#TValidations.auto_validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TValidations.auto_validation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.last_validation_query">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">last_validation_query</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#last_validation_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.last_validation_query" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.last_validation">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">last_validation</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#last_validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.last_validation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.VLatestValidations">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">VLatestValidations</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#VLatestValidations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.VLatestValidations" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.VLatestValidations.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'v_latest_validation'</span></em><a class="headerlink" href="#geonature.core.gn_commons.models.VLatestValidations.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.VLatestValidations.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.VLatestValidations.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.VLatestValidations.id_validation">
+<span class="sig-name descname"><span class="pre">id_validation</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.VLatestValidations.id_validation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.VLatestValidations.uuid_attached_row">
+<span class="sig-name descname"><span class="pre">uuid_attached_row</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.VLatestValidations.uuid_attached_row" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.VLatestValidations.id_nomenclature_valid_status">
+<span class="sig-name descname"><span class="pre">id_nomenclature_valid_status</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.VLatestValidations.id_nomenclature_valid_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.VLatestValidations.id_validator">
+<span class="sig-name descname"><span class="pre">id_validator</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.VLatestValidations.id_validator" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.VLatestValidations.validation_comment">
+<span class="sig-name descname"><span class="pre">validation_comment</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.VLatestValidations.validation_comment" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.VLatestValidations.validation_date">
+<span class="sig-name descname"><span class="pre">validation_date</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.VLatestValidations.validation_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.THistoryActions">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">THistoryActions</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#THistoryActions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.THistoryActions" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.THistoryActions.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_history_actions'</span></em><a class="headerlink" href="#geonature.core.gn_commons.models.THistoryActions.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.THistoryActions.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.THistoryActions.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.THistoryActions.id_history_action">
+<span class="sig-name descname"><span class="pre">id_history_action</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.THistoryActions.id_history_action" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.THistoryActions.id_table_location">
+<span class="sig-name descname"><span class="pre">id_table_location</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.THistoryActions.id_table_location" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.THistoryActions.uuid_attached_row">
+<span class="sig-name descname"><span class="pre">uuid_attached_row</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.THistoryActions.uuid_attached_row" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.THistoryActions.operation_type">
+<span class="sig-name descname"><span class="pre">operation_type</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.THistoryActions.operation_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.THistoryActions.operation_date">
+<span class="sig-name descname"><span class="pre">operation_date</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.THistoryActions.operation_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.THistoryActions.table_content">
+<span class="sig-name descname"><span class="pre">table_content</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.THistoryActions.table_content" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMobileApps">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">TMobileApps</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#TMobileApps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TMobileApps" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMobileApps.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_mobile_apps'</span></em><a class="headerlink" href="#geonature.core.gn_commons.models.TMobileApps.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMobileApps.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMobileApps.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMobileApps.id_mobile_app">
+<span class="sig-name descname"><span class="pre">id_mobile_app</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMobileApps.id_mobile_app" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMobileApps.app_code">
+<span class="sig-name descname"><span class="pre">app_code</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMobileApps.app_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMobileApps.relative_path_apk">
+<span class="sig-name descname"><span class="pre">relative_path_apk</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMobileApps.relative_path_apk" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMobileApps.url_apk">
+<span class="sig-name descname"><span class="pre">url_apk</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMobileApps.url_apk" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMobileApps.url_settings">
+<span class="sig-name descname"><span class="pre">url_settings</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMobileApps.url_settings" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMobileApps.package">
+<span class="sig-name descname"><span class="pre">package</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMobileApps.package" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TMobileApps.version_code">
+<span class="sig-name descname"><span class="pre">version_code</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TMobileApps.version_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TPlaces">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">TPlaces</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#TPlaces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TPlaces" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TPlaces.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_places'</span></em><a class="headerlink" href="#geonature.core.gn_commons.models.TPlaces.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TPlaces.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TPlaces.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TPlaces.id_place">
+<span class="sig-name descname"><span class="pre">id_place</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TPlaces.id_place" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TPlaces.id_role">
+<span class="sig-name descname"><span class="pre">id_role</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TPlaces.id_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TPlaces.role">
+<span class="sig-name descname"><span class="pre">role</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TPlaces.role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TPlaces.place_name">
+<span class="sig-name descname"><span class="pre">place_name</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TPlaces.place_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TPlaces.place_geom">
+<span class="sig-name descname"><span class="pre">place_geom</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TPlaces.place_geom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.BibWidgets">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">BibWidgets</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#BibWidgets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.BibWidgets" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.BibWidgets.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_widgets'</span></em><a class="headerlink" href="#geonature.core.gn_commons.models.BibWidgets.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.BibWidgets.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.BibWidgets.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.BibWidgets.id_widget">
+<span class="sig-name descname"><span class="pre">id_widget</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.BibWidgets.id_widget" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.BibWidgets.widget_name">
+<span class="sig-name descname"><span class="pre">widget_name</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.BibWidgets.widget_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.BibWidgets.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#BibWidgets.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.BibWidgets.__str__" title="Link to this definition"></a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.cor_field_object">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">cor_field_object</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#cor_field_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.cor_field_object" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.cor_field_module">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">cor_field_module</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#cor_field_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.cor_field_module" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.cor_field_dataset">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">cor_field_dataset</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#cor_field_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.cor_field_dataset" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">cor_field_module</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#cor_field_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">cor_field_object</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#cor_field_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">cor_field_dataset</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/base.html#cor_field_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">TDatasets</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/datasets.html#TDatasets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.core.gn_meta.models.commons.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_datasets'</span></em><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.id_dataset">
+<span class="sig-name descname"><span class="pre">id_dataset</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.id_dataset" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.unique_dataset_id">
+<span class="sig-name descname"><span class="pre">unique_dataset_id</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.unique_dataset_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.id_acquisition_framework">
+<span class="sig-name descname"><span class="pre">id_acquisition_framework</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.id_acquisition_framework" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.acquisition_framework">
+<span class="sig-name descname"><span class="pre">acquisition_framework</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.acquisition_framework" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.dataset_name">
+<span class="sig-name descname"><span class="pre">dataset_name</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.dataset_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.dataset_shortname">
+<span class="sig-name descname"><span class="pre">dataset_shortname</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.dataset_shortname" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.dataset_desc">
+<span class="sig-name descname"><span class="pre">dataset_desc</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.dataset_desc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.id_nomenclature_data_type">
+<span class="sig-name descname"><span class="pre">id_nomenclature_data_type</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.id_nomenclature_data_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.keywords">
+<span class="sig-name descname"><span class="pre">keywords</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.keywords" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.marine_domain">
+<span class="sig-name descname"><span class="pre">marine_domain</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.marine_domain" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.terrestrial_domain">
+<span class="sig-name descname"><span class="pre">terrestrial_domain</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.terrestrial_domain" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.id_nomenclature_dataset_objectif">
+<span class="sig-name descname"><span class="pre">id_nomenclature_dataset_objectif</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.id_nomenclature_dataset_objectif" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.bbox_west">
+<span class="sig-name descname"><span class="pre">bbox_west</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.bbox_west" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.bbox_east">
+<span class="sig-name descname"><span class="pre">bbox_east</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.bbox_east" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.bbox_south">
+<span class="sig-name descname"><span class="pre">bbox_south</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.bbox_south" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.bbox_north">
+<span class="sig-name descname"><span class="pre">bbox_north</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.bbox_north" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.id_nomenclature_collecting_method">
+<span class="sig-name descname"><span class="pre">id_nomenclature_collecting_method</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.id_nomenclature_collecting_method" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.id_nomenclature_data_origin">
+<span class="sig-name descname"><span class="pre">id_nomenclature_data_origin</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.id_nomenclature_data_origin" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.id_nomenclature_source_status">
+<span class="sig-name descname"><span class="pre">id_nomenclature_source_status</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.id_nomenclature_source_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.id_nomenclature_resource_type">
+<span class="sig-name descname"><span class="pre">id_nomenclature_resource_type</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.id_nomenclature_resource_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.meta_create_date">
+<span class="sig-name descname"><span class="pre">meta_create_date</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.meta_create_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.meta_update_date">
+<span class="sig-name descname"><span class="pre">meta_update_date</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.meta_update_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.active">
+<span class="sig-name descname"><span class="pre">active</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.active" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.validable">
+<span class="sig-name descname"><span class="pre">validable</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.validable" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.id_digitizer">
+<span class="sig-name descname"><span class="pre">id_digitizer</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.id_digitizer" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.digitizer">
+<span class="sig-name descname"><span class="pre">digitizer</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.digitizer" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.creator">
+<span class="sig-name descname"><span class="pre">creator</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.creator" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.id_taxa_list">
+<span class="sig-name descname"><span class="pre">id_taxa_list</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.id_taxa_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.modules">
+<span class="sig-name descname"><span class="pre">modules</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.modules" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.nomenclature_data_type">
+<span class="sig-name descname"><span class="pre">nomenclature_data_type</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.nomenclature_data_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.nomenclature_dataset_objectif">
+<span class="sig-name descname"><span class="pre">nomenclature_dataset_objectif</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.nomenclature_dataset_objectif" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.nomenclature_collecting_method">
+<span class="sig-name descname"><span class="pre">nomenclature_collecting_method</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.nomenclature_collecting_method" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.nomenclature_data_origin">
+<span class="sig-name descname"><span class="pre">nomenclature_data_origin</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.nomenclature_data_origin" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.nomenclature_source_status">
+<span class="sig-name descname"><span class="pre">nomenclature_source_status</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.nomenclature_source_status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.nomenclature_resource_type">
+<span class="sig-name descname"><span class="pre">nomenclature_resource_type</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.nomenclature_resource_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.cor_territories">
+<span class="sig-name descname"><span class="pre">cor_territories</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.cor_territories" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.cor_dataset_actor">
+<span class="sig-name descname"><span class="pre">cor_dataset_actor</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.cor_dataset_actor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.additional_fields">
+<span class="sig-name descname"><span class="pre">additional_fields</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.additional_fields" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.user_actors">
+<span class="sig-name descname"><span class="pre">user_actors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/datasets.html#TDatasets.user_actors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.user_actors" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.organism_actors">
+<span class="sig-name descname"><span class="pre">organism_actors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/datasets.html#TDatasets.organism_actors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.organism_actors" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.is_deletable">
+<span class="sig-name descname"><span class="pre">is_deletable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/datasets.html#TDatasets.is_deletable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.is_deletable" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.has_instance_permission">
+<span class="sig-name descname"><span class="pre">has_instance_permission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_through_af</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/datasets.html#TDatasets.has_instance_permission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.has_instance_permission" title="Link to this definition"></a></dt>
+<dd><p>_through_af prevent infinite recursion</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/datasets.html#TDatasets.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.__str__" title="Link to this definition"></a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.get_id">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid_dataset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/datasets.html#TDatasets.get_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.get_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.get_uuid">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_uuid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_dataset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/datasets.html#TDatasets.get_uuid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.get_uuid" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets._get_read_scope">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_get_read_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/datasets.html#TDatasets._get_read_scope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets._get_read_scope" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets._get_create_scope">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_get_create_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/datasets.html#TDatasets._get_create_scope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets._get_create_scope" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.filter_by_scope">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_by_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/datasets.html#TDatasets.filter_by_scope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.filter_by_scope" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.filter_by_params">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_by_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_af_search</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/datasets.html#TDatasets.filter_by_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.filter_by_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.filter_by_readable">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_by_readable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/datasets.html#TDatasets.filter_by_readable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.filter_by_readable" title="Link to this definition"></a></dt>
+<dd><p>Return the datasets where the user has autorization via its CRUVED</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.filter_by_creatable">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_by_creatable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_code</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/datasets.html#TDatasets.filter_by_creatable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.filter_by_creatable" title="Link to this definition"></a></dt>
+<dd><p>Return all dataset where user have read rights minus those who user to not have
+create rigth</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TDatasets.filter_by_areas">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_by_areas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">areas</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/datasets.html#TDatasets.filter_by_areas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TDatasets.filter_by_areas" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.PermObject">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">PermObject</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/models.html#PermObject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.PermObject" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.PermObject.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_objects'</span></em><a class="headerlink" href="#geonature.core.gn_commons.models.PermObject.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.PermObject.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.PermObject.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.PermObject.id_object">
+<span class="sig-name descname"><span class="pre">id_object</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.PermObject.id_object" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.PermObject.code_object">
+<span class="sig-name descname"><span class="pre">code_object</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.PermObject.code_object" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.PermObject.description_object">
+<span class="sig-name descname"><span class="pre">description_object</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.PermObject.description_object" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.PermObject.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/models.html#PermObject.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.PermObject.__str__" title="Link to this definition"></a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.models.</span></span><span class="sig-name descname"><span class="pre">TAdditionalFields</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/additional_fields.html#TAdditionalFields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_additional_fields'</span></em><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.id_field">
+<span class="sig-name descname"><span class="pre">id_field</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.id_field" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.field_name">
+<span class="sig-name descname"><span class="pre">field_name</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.field_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.field_label">
+<span class="sig-name descname"><span class="pre">field_label</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.field_label" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.required">
+<span class="sig-name descname"><span class="pre">required</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.required" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.description" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.quantitative">
+<span class="sig-name descname"><span class="pre">quantitative</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.quantitative" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.unity">
+<span class="sig-name descname"><span class="pre">unity</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.unity" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.field_values">
+<span class="sig-name descname"><span class="pre">field_values</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.field_values" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.code_nomenclature_type">
+<span class="sig-name descname"><span class="pre">code_nomenclature_type</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.code_nomenclature_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.additional_attributes">
+<span class="sig-name descname"><span class="pre">additional_attributes</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.additional_attributes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.id_widget">
+<span class="sig-name descname"><span class="pre">id_widget</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.id_widget" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.id_list">
+<span class="sig-name descname"><span class="pre">id_list</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.id_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.exportable">
+<span class="sig-name descname"><span class="pre">exportable</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.exportable" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.field_order">
+<span class="sig-name descname"><span class="pre">field_order</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.field_order" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.type_widget">
+<span class="sig-name descname"><span class="pre">type_widget</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.type_widget" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.bib_nomenclature_type">
+<span class="sig-name descname"><span class="pre">bib_nomenclature_type</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.bib_nomenclature_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">additional_attributes</span></span><a class="headerlink" href="#id4" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.multiselect">
+<span class="sig-name descname"><span class="pre">multiselect</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.multiselect" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.api">
+<span class="sig-name descname"><span class="pre">api</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.api" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.default_value">
+<span class="sig-name descname"><span class="pre">default_value</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.default_value" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.modules">
+<span class="sig-name descname"><span class="pre">modules</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.modules" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.objects">
+<span class="sig-name descname"><span class="pre">objects</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.objects" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.datasets">
+<span class="sig-name descname"><span class="pre">datasets</span></span><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.datasets" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_commons.models.TAdditionalFields.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/models/additional_fields.html#TAdditionalFields.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.models.TAdditionalFields.__str__" title="Link to this definition"></a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="../medias/routes/index.html" class="btn btn-neutral float-left" title="geonature.core.gn_commons.medias.routes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="additional_fields/index.html" class="btn btn-neutral float-right" title="geonature.core.gn_commons.models.additional_fields" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pypnusershub.routes &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" />
+    <link rel="next" title="pypnusershub.routes_register" href="../routes_register/index.html" />
+    <link rel="prev" title="pypnusershub.login_manager" href="../login_manager/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../geonature/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../index.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../__main__/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.__main__</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../decorators/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.decorators</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../env/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.env</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../login_manager/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.login_manager</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.routes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../routes_register/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.routes_register</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.schemas</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../test_settings/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.test_settings</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../src/utils_flask_sqla/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../src/utils_flask_sqla_geo/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../frontend.html">Frontend</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../api-references.html">API REFERENCES</a></li>
+          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.routes</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/pypnusershub/routes/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pypnusershub.routes">
+<span id="pypnusershub-routes"></span><h1><a class="reference internal" href="#module-pypnusershub.routes" title="pypnusershub.routes"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.routes</span></code></a><a class="headerlink" href="#module-pypnusershub.routes" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypnusershub.routes.ConfigurableBlueprint" title="pypnusershub.routes.ConfigurableBlueprint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConfigurableBlueprint</span></code></a></p></td>
+<td><p>Represents a blueprint, a collection of routes and other</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypnusershub.routes.login" title="pypnusershub.routes.login"><code class="xref py py-obj docutils literal notranslate"><span class="pre">login</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pypnusershub.routes.public_login" title="pypnusershub.routes.public_login"><code class="xref py py-obj docutils literal notranslate"><span class="pre">public_login</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypnusershub.routes.logout" title="pypnusershub.routes.logout"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logout</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pypnusershub.routes.insert_or_update_organism" title="pypnusershub.routes.insert_or_update_organism"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_or_update_organism</span></code></a>(organism)</p></td>
+<td><p>Insert a organism</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypnusershub.routes.insert_or_update_role" title="pypnusershub.routes.insert_or_update_role"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_or_update_role</span></code></a>(data)</p></td>
+<td><p>Insert or update a role (also add groups if provided)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypnusershub.routes.log" title="pypnusershub.routes.log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pypnusershub.routes.routes" title="pypnusershub.routes.routes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">routes</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="pypnusershub.routes.log">
+<span class="sig-prename descclassname"><span class="pre">pypnusershub.routes.</span></span><span class="sig-name descname"><span class="pre">log</span></span><a class="reference internal" href="../../../_modules/pypnusershub/routes.html#log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.routes.log" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypnusershub.routes.ConfigurableBlueprint">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypnusershub.routes.</span></span><span class="sig-name descname"><span class="pre">ConfigurableBlueprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">import_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">static_folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(disponible dans Python v3.12)"><span class="pre">os.PathLike</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static_url_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template_folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(disponible dans Python v3.12)"><span class="pre">os.PathLike</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subdomain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url_defaults</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(disponible dans Python v3.12)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cli_group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">_sentinel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pypnusershub/routes.html#ConfigurableBlueprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.routes.ConfigurableBlueprint" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask.Blueprint</span></code></p>
+<p>Represents a blueprint, a collection of routes and other
+app-related functions that can be registered on a real application
+later.</p>
+<p>A blueprint is an object that allows defining application functions
+without requiring an application object ahead of time. It uses the
+same decorators as <code class="xref py py-class docutils literal notranslate"><span class="pre">Flask</span></code>, but defers the need for an
+application by recording them for later registration.</p>
+<p>Decorating a function with a blueprint creates a deferred function
+that is called with <code class="xref py py-class docutils literal notranslate"><span class="pre">BlueprintSetupState</span></code>
+when the blueprint is registered on an application.</p>
+<p>See <span class="xref std std-doc">/blueprints</span> for more information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – The name of the blueprint. Will be prepended to each
+endpoint name.</p></li>
+<li><p><strong>import_name</strong> – The name of the blueprint package, usually
+<code class="docutils literal notranslate"><span class="pre">__name__</span></code>. This helps locate the <code class="docutils literal notranslate"><span class="pre">root_path</span></code> for the
+blueprint.</p></li>
+<li><p><strong>static_folder</strong> – A folder with static files that should be
+served by the blueprint’s static route. The path is relative to
+the blueprint’s root path. Blueprint static files are disabled
+by default.</p></li>
+<li><p><strong>static_url_path</strong> – The url to serve static files from.
+Defaults to <code class="docutils literal notranslate"><span class="pre">static_folder</span></code>. If the blueprint does not have
+a <code class="docutils literal notranslate"><span class="pre">url_prefix</span></code>, the app’s static route will take precedence,
+and the blueprint’s static files won’t be accessible.</p></li>
+<li><p><strong>template_folder</strong> – A folder with templates that should be added
+to the app’s template search path. The path is relative to the
+blueprint’s root path. Blueprint templates are disabled by
+default. Blueprint templates have a lower precedence than those
+in the app’s templates folder.</p></li>
+<li><p><strong>url_prefix</strong> – A path to prepend to all of the blueprint’s URLs,
+to make them distinct from the rest of the app’s routes.</p></li>
+<li><p><strong>subdomain</strong> – A subdomain that blueprint routes will match on by
+default.</p></li>
+<li><p><strong>url_defaults</strong> – A dict of default values that blueprint routes
+will receive by default.</p></li>
+<li><p><strong>root_path</strong> – By default, the blueprint will automatically set
+this based on <code class="docutils literal notranslate"><span class="pre">import_name</span></code>. In certain situations this
+automatic detection can fail, so the path can be specified
+manually instead.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 1.1.0: </span>Blueprints have a <code class="docutils literal notranslate"><span class="pre">cli</span></code> group to register nested CLI commands.
+The <code class="docutils literal notranslate"><span class="pre">cli_group</span></code> parameter controls the name of the group under
+the <code class="docutils literal notranslate"><span class="pre">flask</span></code> command.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.7.</span></p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.routes.ConfigurableBlueprint.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pypnusershub/routes.html#ConfigurableBlueprint.register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.routes.ConfigurableBlueprint.register" title="Link to this definition"></a></dt>
+<dd><p>Called by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Flask.register_blueprint()</span></code> to register all
+views and callbacks registered on the blueprint with the
+application. Creates a <code class="xref py py-class docutils literal notranslate"><span class="pre">BlueprintSetupState</span></code> and calls
+each <code class="xref py py-meth docutils literal notranslate"><span class="pre">record()</span></code> callback with it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>app</strong> – The application this blueprint is being registered
+with.</p></li>
+<li><p><strong>options</strong> – Keyword arguments forwarded from
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">register_blueprint()</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 2.3: </span>Nested blueprints now correctly apply subdomains.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 2.1: </span>Registering the same blueprint with the same name multiple
+times is an error.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 2.0.1: </span>Nested blueprints are registered with their dotted name.
+This allows different blueprints with the same name to be
+nested at different locations.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 2.0.1: </span>The <code class="docutils literal notranslate"><span class="pre">name</span></code> option can be used to change the (pre-dotted)
+name the blueprint is registered with. This allows the same
+blueprint to be registered multiple times with unique names
+for <code class="docutils literal notranslate"><span class="pre">url_for</span></code>.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pypnusershub.routes.routes">
+<span class="sig-prename descclassname"><span class="pre">pypnusershub.routes.</span></span><span class="sig-name descname"><span class="pre">routes</span></span><a class="reference internal" href="../../../_modules/pypnusershub/routes.html#routes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.routes.routes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pypnusershub.routes.login">
+<span class="sig-prename descclassname"><span class="pre">pypnusershub.routes.</span></span><span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pypnusershub/routes.html#login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.routes.login" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pypnusershub.routes.public_login">
+<span class="sig-prename descclassname"><span class="pre">pypnusershub.routes.</span></span><span class="sig-name descname"><span class="pre">public_login</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pypnusershub/routes.html#public_login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.routes.public_login" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pypnusershub.routes.logout">
+<span class="sig-prename descclassname"><span class="pre">pypnusershub.routes.</span></span><span class="sig-name descname"><span class="pre">logout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pypnusershub/routes.html#logout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.routes.logout" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pypnusershub.routes.insert_or_update_organism">
+<span class="sig-prename descclassname"><span class="pre">pypnusershub.routes.</span></span><span class="sig-name descname"><span class="pre">insert_or_update_organism</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">organism</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pypnusershub/routes.html#insert_or_update_organism"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.routes.insert_or_update_organism" title="Link to this definition"></a></dt>
+<dd><p>Insert a organism</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pypnusershub.routes.insert_or_update_role">
+<span class="sig-prename descclassname"><span class="pre">pypnusershub.routes.</span></span><span class="sig-name descname"><span class="pre">insert_or_update_role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pypnusershub/routes.html#insert_or_update_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.routes.insert_or_update_role" title="Link to this definition"></a></dt>
+<dd><p>Insert or update a role (also add groups if provided)</p>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="../login_manager/index.html" class="btn btn-neutral float-left" title="pypnusershub.login_manager" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="../routes_register/index.html" class="btn btn-neutral float-right" title="pypnusershub.routes_register" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

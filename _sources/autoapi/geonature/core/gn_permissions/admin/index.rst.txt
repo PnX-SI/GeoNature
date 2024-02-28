@@ -1,0 +1,593 @@
+:py:mod:`geonature.core.gn_permissions.admin`
+=============================================
+
+.. py:module:: geonature.core.gn_permissions.admin
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_permissions.admin.RoleFilter
+   geonature.core.gn_permissions.admin.ModuleFilter
+   geonature.core.gn_permissions.admin.ObjectFilter
+   geonature.core.gn_permissions.admin.ActionFilter
+   geonature.core.gn_permissions.admin.ScopeFilter
+   geonature.core.gn_permissions.admin.OptionSelect2Widget
+   geonature.core.gn_permissions.admin.OptionQuerySelectField
+   geonature.core.gn_permissions.admin.UserAjaxModelLoader
+   geonature.core.gn_permissions.admin.ObjectAdmin
+   geonature.core.gn_permissions.admin.PermissionAdmin
+   geonature.core.gn_permissions.admin.PermissionAvailableAdmin
+   geonature.core.gn_permissions.admin.RolePermAdmin
+   geonature.core.gn_permissions.admin.GroupPermAdmin
+   geonature.core.gn_permissions.admin.UserPermAdmin
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_permissions.admin.filters_formatter
+   geonature.core.gn_permissions.admin.modules_formatter
+   geonature.core.gn_permissions.admin.groups_formatter
+   geonature.core.gn_permissions.admin.role_formatter
+   geonature.core.gn_permissions.admin.permissions_formatter
+   geonature.core.gn_permissions.admin.permissions_count_formatter
+
+
+
+.. py:class:: RoleFilter(column, name, options=None, data_type=None)
+
+
+   Bases: :py:obj:`geonature.core.admin.utils.DynamicOptionsMixin`, :py:obj:`flask_admin.contrib.sqla.filters.FilterEqual`
+
+   Base SQLAlchemy filter.
+
+   .. py:method:: get_dynamic_options(view)
+
+
+
+.. py:class:: ModuleFilter(column, name, options=None, data_type=None)
+
+
+   Bases: :py:obj:`geonature.core.admin.utils.DynamicOptionsMixin`, :py:obj:`flask_admin.contrib.sqla.filters.FilterEqual`
+
+   Base SQLAlchemy filter.
+
+   .. py:method:: get_dynamic_options(view)
+
+
+
+.. py:class:: ObjectFilter(column, name, options=None, data_type=None)
+
+
+   Bases: :py:obj:`geonature.core.admin.utils.DynamicOptionsMixin`, :py:obj:`flask_admin.contrib.sqla.filters.FilterEqual`
+
+   Base SQLAlchemy filter.
+
+   .. py:method:: get_dynamic_options(view)
+
+
+
+.. py:class:: ActionFilter(column, name, options=None, data_type=None)
+
+
+   Bases: :py:obj:`geonature.core.admin.utils.DynamicOptionsMixin`, :py:obj:`flask_admin.contrib.sqla.filters.FilterEqual`
+
+   Base SQLAlchemy filter.
+
+   .. py:method:: get_dynamic_options(view)
+
+
+
+.. py:class:: ScopeFilter(column, name, options=None, data_type=None)
+
+
+   Bases: :py:obj:`geonature.core.admin.utils.DynamicOptionsMixin`, :py:obj:`flask_admin.contrib.sqla.filters.FilterEqual`
+
+   Base SQLAlchemy filter.
+
+   .. py:method:: apply(query, value, alias=None)
+
+      Apply search criteria to the query and return new query.
+
+      :param query:
+          Query
+      :param value:
+          Search criteria
+
+
+   .. py:method:: get_dynamic_options(view)
+
+
+
+.. py:function:: filters_formatter(v, c, m, p)
+
+
+.. py:function:: modules_formatter(view, context, model, name)
+
+
+.. py:function:: groups_formatter(view, context, model, name)
+
+
+.. py:function:: role_formatter(view, context, model, name)
+
+
+.. py:function:: permissions_formatter(view, context, model, name)
+
+
+.. py:function:: permissions_count_formatter(view, context, model, name)
+
+
+.. py:class:: OptionSelect2Widget(multiple=False)
+
+
+   Bases: :py:obj:`flask_admin.form.widgets.Select2Widget`
+
+   `Select2 <https://github.com/ivaynberg/select2>`_ styled select widget.
+
+   You must include select2.js, form-x.x.x.js and select2 stylesheet for it to
+   work.
+
+   .. py:method:: render_option(value, label, options)
+      :classmethod:
+
+
+
+.. py:class:: OptionQuerySelectField(*args, **kwargs)
+
+
+   Bases: :py:obj:`flask_admin.contrib.sqla.fields.QuerySelectField`
+
+   Overrides the QuerySelectField class from flask admin to allow
+   other attributes on a select option.
+
+   options_additional_values is added in form_args, it is a list of
+   strings, each element is the name of the attribute in the model
+   which will be added on the option
+
+   .. py:attribute:: widget
+
+      
+
+   .. py:method:: iter_choices()
+
+      Provides data for choice widget rendering. Must return a sequence or
+      iterable of (value, label, selected, render_kw) tuples.
+
+
+
+.. py:class:: UserAjaxModelLoader(name, session, model, **options)
+
+
+   Bases: :py:obj:`flask_admin.contrib.sqla.ajax.QueryAjaxModelLoader`
+
+   Ajax related model loader. Override this to implement custom loading behavior.
+
+   .. py:method:: format(user)
+
+      Return (id, name) tuple from the model.
+
+
+   .. py:method:: get_query()
+
+
+
+.. py:class:: ObjectAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
+
+
+   Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
+
+   .. py:attribute:: module_code
+      :value: 'ADMIN'
+
+      
+
+   .. py:attribute:: object_code
+      :value: 'PERMISSIONS'
+
+      
+
+   .. py:attribute:: can_create
+      :value: False
+
+      
+
+   .. py:attribute:: can_edit
+      :value: False
+
+      
+
+   .. py:attribute:: can_delete
+      :value: False
+
+      
+
+   .. py:attribute:: column_list
+      :value: ('code_object', 'description_object', 'modules')
+
+      
+
+   .. py:attribute:: column_labels
+
+      
+
+   .. py:attribute:: column_default_sort
+      :value: 'id_object'
+
+      
+
+   .. py:attribute:: column_formatters
+
+      
+
+
+.. py:class:: PermissionAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
+
+
+   Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
+
+   .. py:attribute:: module_code
+      :value: 'ADMIN'
+
+      
+
+   .. py:attribute:: object_code
+      :value: 'PERMISSIONS'
+
+      
+
+   .. py:attribute:: column_list
+      :value: ('role', 'module', 'object', 'action', 'label', 'filters')
+
+      
+
+   .. py:attribute:: column_labels
+
+      
+
+   .. py:attribute:: column_select_related_list
+      :value: ('availability',)
+
+      
+
+   .. py:attribute:: column_searchable_list
+      :value: ('role.identifiant', 'role.nom_complet')
+
+      
+
+   .. py:attribute:: column_formatters
+
+      
+
+   .. py:attribute:: column_filters
+      :value: ()
+
+      
+
+   .. py:attribute:: named_filter_urls
+      :value: True
+
+      
+
+   .. py:attribute:: column_sortable_list
+      :value: (('role', 'role.nom_complet'), ('module', 'module.module_code'), ('object',...
+
+      
+
+   .. py:attribute:: column_default_sort
+      :value: [('role.nom_complet', False), ('module.module_code', False), ('object.code_object', False),...
+
+      
+
+   .. py:attribute:: form_columns
+      :value: ('role', 'availability', 'scope', 'sensitivity_filter')
+
+      
+
+   .. py:attribute:: form_overrides
+
+      
+
+   .. py:attribute:: form_args
+
+      
+
+   .. py:attribute:: create_template
+      :value: 'admin/hide_select2_options_create.html'
+
+      
+
+   .. py:attribute:: edit_template
+      :value: 'admin/hide_select2_options_edit.html'
+
+      
+
+   .. py:attribute:: form_ajax_refs
+
+      
+
+   .. py:method:: render(template, **kwargs)
+
+      Render template
+
+      :param template:
+          Template path to render
+      :param kwargs:
+          Template arguments
+
+
+   .. py:method:: create_form()
+
+      Instantiate model creation form and return it.
+
+      Override to implement custom behavior.
+
+
+
+.. py:class:: PermissionAvailableAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
+
+
+   Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
+
+   .. py:attribute:: module_code
+      :value: 'ADMIN'
+
+      
+
+   .. py:attribute:: object_code
+      :value: 'PERMISSIONS'
+
+      
+
+   .. py:attribute:: can_create
+      :value: False
+
+      
+
+   .. py:attribute:: can_delete
+      :value: False
+
+      
+
+   .. py:attribute:: can_export
+      :value: False
+
+      
+
+   .. py:attribute:: column_labels
+
+      
+
+   .. py:attribute:: column_formatters
+
+      
+
+   .. py:attribute:: column_sortable_list
+      :value: (('module', 'module.module_code'), ('object', 'object.code_object'), ('action', 'action.code_action'))
+
+      
+
+   .. py:attribute:: column_filters
+      :value: ()
+
+      
+
+   .. py:attribute:: column_default_sort
+      :value: [('module.module_code', False), ('object.code_object', False), ('id_action', False)]
+
+      
+
+   .. py:attribute:: form_columns
+      :value: ('scope_filter', 'sensitivity_filter')
+
+      
+
+
+.. py:class:: RolePermAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
+
+
+   Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
+
+   .. py:attribute:: module_code
+      :value: 'ADMIN'
+
+      
+
+   .. py:attribute:: object_code
+      :value: 'PERMISSIONS'
+
+      
+
+   .. py:attribute:: can_create
+      :value: False
+
+      
+
+   .. py:attribute:: can_edit
+      :value: False
+
+      
+
+   .. py:attribute:: can_delete
+      :value: False
+
+      
+
+   .. py:attribute:: can_export
+      :value: False
+
+      
+
+   .. py:attribute:: can_view_details
+      :value: True
+
+      
+
+   .. py:attribute:: details_template
+      :value: 'role_or_group_detail.html'
+
+      
+
+   .. py:attribute:: column_select_related_list
+      :value: ('permissions',)
+
+      
+
+   .. py:attribute:: column_labels
+
+      
+
+   .. py:attribute:: column_searchable_list
+      :value: ('identifiant', 'nom_complet')
+
+      
+
+   .. py:attribute:: column_formatters
+
+      
+
+   .. py:attribute:: column_formatters_detail
+
+      
+
+
+.. py:class:: GroupPermAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
+
+
+   Bases: :py:obj:`RolePermAdmin`
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
+
+   .. py:attribute:: column_list
+      :value: ('nom_role', 'permissions_count')
+
+      
+
+   .. py:attribute:: column_details_list
+      :value: ('nom_role', 'permissions_count', 'permissions')
+
+      
+
+   .. py:method:: get_query()
+
+      Return a query for the model type.
+
+      This method can be used to set a "persistent filter" on an index_view.
+
+      Example::
+
+          class MyView(ModelView):
+              def get_query(self):
+                  return super(MyView, self).get_query().filter(User.username == current_user.username)
+
+
+      If you override this method, don't forget to also override `get_count_query`, for displaying the correct
+      item count in the list view, and `get_one`, which is used when retrieving records for the edit view.
+
+
+   .. py:method:: get_count_query()
+
+      Return a the count query for the model type
+
+      A ``query(self.model).count()`` approach produces an excessive
+      subquery, so ``query(func.count('*'))`` should be used instead.
+
+      See commit ``#45a2723`` for details.
+
+
+
+.. py:class:: UserPermAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
+
+
+   Bases: :py:obj:`RolePermAdmin`
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
+
+   .. py:attribute:: column_list
+      :value: ('identifiant', 'nom_role', 'prenom_role', 'groups', 'permissions_count')
+
+      
+
+   .. py:attribute:: column_labels
+
+      
+
+   .. py:attribute:: column_details_list
+      :value: ('identifiant', 'nom_role', 'prenom_role', 'groups', 'permissions_count', 'permissions')
+
+      
+
+   .. py:method:: get_query()
+
+      Return a query for the model type.
+
+      This method can be used to set a "persistent filter" on an index_view.
+
+      Example::
+
+          class MyView(ModelView):
+              def get_query(self):
+                  return super(MyView, self).get_query().filter(User.username == current_user.username)
+
+
+      If you override this method, don't forget to also override `get_count_query`, for displaying the correct
+      item count in the list view, and `get_one`, which is used when retrieving records for the edit view.
+
+
+   .. py:method:: get_count_query()
+
+      Return a the count query for the model type
+
+      A ``query(self.model).count()`` approach produces an excessive
+      subquery, so ``query(func.count('*'))`` should be used instead.
+
+      See commit ``#45a2723`` for details.
+
+
+

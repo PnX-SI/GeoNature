@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pypnusershub.db.models &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+          <li class="breadcrumb-item"><a href="../../pypnusershub.html">pypnusershub</a></li>
+      <li class="breadcrumb-item active">pypnusershub.db.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de pypnusershub.db.models</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding: utf8</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
+
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.models</span> <span class="kn">import</span> <span class="n">qfilter</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">mappings applications et utilisateurs</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">bcrypt</span>
+<span class="kn">from</span> <span class="nn">bcrypt</span> <span class="kn">import</span> <span class="n">checkpw</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">environ</span>
+<span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
+<span class="kn">from</span> <span class="nn">packaging</span> <span class="kn">import</span> <span class="n">version</span>
+
+<span class="kn">from</span> <span class="nn">flask_sqlalchemy</span> <span class="kn">import</span> <span class="n">SQLAlchemy</span>
+<span class="kn">import</span> <span class="nn">flask_sqlalchemy</span>
+
+
+<span class="k">if</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">flask_sqlalchemy</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;3&quot;</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">flask_sqlalchemy.query</span> <span class="kn">import</span> <span class="n">Query</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">flask_sqlalchemy</span> <span class="kn">import</span> <span class="n">BaseQuery</span> <span class="k">as</span> <span class="n">Query</span>
+
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span>
+<span class="kn">from</span> <span class="nn">flask_login</span> <span class="kn">import</span> <span class="n">UserMixin</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy.ext.hybrid</span> <span class="kn">import</span> <span class="n">hybrid_property</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">relationship</span><span class="p">,</span> <span class="n">backref</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm.session</span> <span class="kn">import</span> <span class="n">object_session</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">or_</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">select</span><span class="p">,</span> <span class="n">func</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="kn">import</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">JSONB</span><span class="p">,</span> <span class="n">array</span>
+
+<span class="kn">from</span> <span class="nn">pypnusershub.db.tools</span> <span class="kn">import</span> <span class="n">NoPasswordError</span><span class="p">,</span> <span class="n">DifferentPasswordError</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.env</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.utils</span> <span class="kn">import</span> <span class="n">get_current_app_id</span>
+
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.serializers</span> <span class="kn">import</span> <span class="n">serializable</span>
+
+
+<div class="viewcode-block" id="check_and_encrypt_password">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.check_and_encrypt_password">[docs]</a>
+<span class="k">def</span> <span class="nf">check_and_encrypt_password</span><span class="p">(</span><span class="n">password</span><span class="p">,</span> <span class="n">password_confirmation</span><span class="p">,</span> <span class="n">md5</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">password</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">NoPasswordError</span>
+    <span class="k">if</span> <span class="n">password</span> <span class="o">!=</span> <span class="n">password_confirmation</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">DifferentPasswordError</span>
+    <span class="n">pass_plus</span> <span class="o">=</span> <span class="n">bcrypt</span><span class="o">.</span><span class="n">hashpw</span><span class="p">(</span><span class="n">password</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span> <span class="n">bcrypt</span><span class="o">.</span><span class="n">gensalt</span><span class="p">())</span>
+    <span class="n">pass_md5</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">md5</span><span class="p">:</span>
+        <span class="n">pass_md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">password</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">pass_plus</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span> <span class="n">pass_md5</span></div>
+
+
+
+<div class="viewcode-block" id="fn_check_password">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.fn_check_password">[docs]</a>
+<span class="k">def</span> <span class="nf">fn_check_password</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pwd</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;PASS_METHOD&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;md5&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_password</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;User </span><span class="si">%s</span><span class="s2"> has no password&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifiant</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_password</span> <span class="o">==</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">pwd</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;PASS_METHOD&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;hash&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_password_plus</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;User </span><span class="si">%s</span><span class="s2"> has no password&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifiant</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">checkpw</span><span class="p">(</span><span class="n">pwd</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_password_plus</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Undefine crypt method (PASS_METHOD)&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="cor_roles">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.cor_roles">[docs]</a>
+<span class="n">cor_roles</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_roles&quot;</span><span class="p">,</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_role_utilisateur&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_roles.id_role&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_role_groupe&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_roles.id_role&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;utilisateurs&quot;</span><span class="p">,</span>
+    <span class="n">extend_existing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="UserQuery">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserQuery">[docs]</a>
+<span class="k">class</span> <span class="nc">UserQuery</span><span class="p">(</span><span class="n">Query</span><span class="p">):</span>
+<div class="viewcode-block" id="UserQuery.filter_by_app">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserQuery.filter_by_app">[docs]</a>
+    <span class="k">def</span> <span class="nf">filter_by_app</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code_app</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">code_app</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">code_app</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;CODE_APPLICATION&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span><span class="n">cor_roles</span><span class="p">,</span> <span class="n">User</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">cor_roles</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_role_utilisateur</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span>
+                <span class="n">UserApplicationRight</span><span class="p">,</span>
+                <span class="n">or_</span><span class="p">(</span>
+                    <span class="n">UserApplicationRight</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">cor_roles</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_role_groupe</span><span class="p">,</span>
+                    <span class="n">UserApplicationRight</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">User</span><span class="o">.</span><span class="n">id_role</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">Application</span><span class="p">,</span>
+                <span class="n">Application</span><span class="o">.</span><span class="n">id_application</span> <span class="o">==</span> <span class="n">UserApplicationRight</span><span class="o">.</span><span class="n">id_application</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Application</span><span class="o">.</span><span class="n">code_application</span> <span class="o">==</span> <span class="n">code_app</span><span class="p">)</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;_password&quot;</span><span class="p">,</span> <span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="s2">&quot;_password_plus&quot;</span><span class="p">])</span>
+<div class="viewcode-block" id="User">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User">[docs]</a>
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">UserMixin</span><span class="p">):</span>
+<div class="viewcode-block" id="User.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_roles&quot;</span></div>
+
+<div class="viewcode-block" id="User.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="User.query_class">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.query_class">[docs]</a>
+    <span class="n">query_class</span> <span class="o">=</span> <span class="n">UserQuery</span></div>
+
+
+<div class="viewcode-block" id="User.groupe">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.groupe">[docs]</a>
+    <span class="n">groupe</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="User.id_role">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.id_role">[docs]</a>
+    <span class="n">id_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+    <span class="c1"># TODO: make that unique ?</span>
+<div class="viewcode-block" id="User.identifiant">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.identifiant">[docs]</a>
+    <span class="n">identifiant</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="User.nom_role">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.nom_role">[docs]</a>
+    <span class="n">nom_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="User.prenom_role">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.prenom_role">[docs]</a>
+    <span class="n">prenom_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="User.desc_role">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.desc_role">[docs]</a>
+    <span class="n">desc_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="User._password">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User._password">[docs]</a>
+    <span class="n">_password</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;pass&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="User._password_plus">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User._password_plus">[docs]</a>
+    <span class="n">_password_plus</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;pass_plus&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="User.email">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.email">[docs]</a>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="User.id_organisme">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.id_organisme">[docs]</a>
+    <span class="n">id_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.bib_organismes.id_organisme&quot;</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="User.remarques">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.remarques">[docs]</a>
+    <span class="n">remarques</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="User.champs_addi">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.champs_addi">[docs]</a>
+    <span class="n">champs_addi</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">JSONB</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="User.date_insert">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.date_insert">[docs]</a>
+    <span class="n">date_insert</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="User.date_update">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.date_update">[docs]</a>
+    <span class="n">date_update</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="User.active">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.active">[docs]</a>
+    <span class="n">active</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="User.groups">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.groups">[docs]</a>
+    <span class="n">groups</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="s2">&quot;User&quot;</span><span class="p">,</span>
+        <span class="n">secondary</span><span class="o">=</span><span class="n">cor_roles</span><span class="p">,</span>
+        <span class="n">primaryjoin</span><span class="o">=</span><span class="s2">&quot;User.id_role == utilisateurs.cor_roles.c.id_role_utilisateur&quot;</span><span class="p">,</span>
+        <span class="n">secondaryjoin</span><span class="o">=</span><span class="s2">&quot;User.id_role == utilisateurs.cor_roles.c.id_role_groupe&quot;</span><span class="p">,</span>
+        <span class="n">backref</span><span class="o">=</span><span class="n">backref</span><span class="p">(</span><span class="s2">&quot;members&quot;</span><span class="p">,</span> <span class="n">cascade_backrefs</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="User.max_level_profil">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.max_level_profil">[docs]</a>
+    <span class="k">def</span> <span class="nf">max_level_profil</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">object_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Profils</span><span class="o">.</span><span class="n">code_profil</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">UserApplicationRight</span><span class="p">,</span>
+                <span class="n">or_</span><span class="p">(</span>
+                    <span class="n">UserApplicationRight</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_role</span><span class="p">,</span>
+                    <span class="n">UserApplicationRight</span><span class="o">.</span><span class="n">id_role</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span>
+                        <span class="p">[</span><span class="n">role</span><span class="o">.</span><span class="n">id_role</span> <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">]</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Profils</span><span class="p">,</span> <span class="n">UserApplicationRight</span><span class="o">.</span><span class="n">id_profil</span> <span class="o">==</span> <span class="n">Profils</span><span class="o">.</span><span class="n">id_profil</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">UserApplicationRight</span><span class="o">.</span><span class="n">id_application</span> <span class="o">==</span> <span class="n">get_current_app_id</span><span class="p">())</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">q</span><span class="o">.</span><span class="n">scalar</span><span class="p">()</span> <span class="ow">or</span> <span class="mi">0</span></div>
+
+
+    <span class="nd">@hybrid_property</span>
+<div class="viewcode-block" id="User.nom_complet">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.nom_complet">[docs]</a>
+    <span class="k">def</span> <span class="nf">nom_complet</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nom_role</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prenom_role</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span><span class="p">])</span></div>
+
+
+    <span class="nd">@nom_complet</span><span class="o">.</span><span class="n">expression</span>
+    <span class="k">def</span> <span class="nf">nom_complet</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">array_to_string</span><span class="p">(</span><span class="n">array</span><span class="p">([</span><span class="bp">cls</span><span class="o">.</span><span class="n">nom_role</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">prenom_role</span><span class="p">]),</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+
+    <span class="c1"># applications_droits = db.relationship(&#39;AppUser&#39;, lazy=&#39;joined&#39;)</span>
+    <span class="c1"># for Flask-Admin</span>
+<div class="viewcode-block" id="User.get_id">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.get_id">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="User.password">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.password">[docs]</a>
+    <span class="k">def</span> <span class="nf">password</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;PASS_METHOD&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;md5&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_password</span>
+        <span class="k">elif</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;PASS_METHOD&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;hash&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_password_plus</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span></div>
+
+
+    <span class="c1"># TODO: change password digest algorithm for something stronger such</span>
+    <span class="c1"># as bcrypt. This need to be done at usershub level first.</span>
+    <span class="nd">@password</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">password</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pwd</span><span class="p">):</span>
+        <span class="n">pwd</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;PASS_METHOD&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;md5&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_password</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">pwd</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;PASS_METHOD&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;hash&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_password_plus</span> <span class="o">=</span> <span class="n">bcrypt</span><span class="o">.</span><span class="n">hashpw</span><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">bcrypt</span><span class="o">.</span><span class="n">gensalt</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Unknown pass method&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="User.check_password">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.check_password">[docs]</a>
+    <span class="n">check_password</span> <span class="o">=</span> <span class="n">fn_check_password</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="User.is_public">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.is_public">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_public</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PUBLIC_ACCESS_USERNAME&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PUBLIC_ACCESS_USERNAME&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifiant</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="User.__repr__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;User &#39;</span><span class="si">{!r}</span><span class="s2">&#39; id=&#39;</span><span class="si">{}</span><span class="s2">&#39;&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifiant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="User.__str__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifiant</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">nom_complet</span></div>
+
+
+    <span class="nd">@qfilter</span>
+<div class="viewcode-block" id="User.filter_by_app">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.User.filter_by_app">[docs]</a>
+    <span class="k">def</span> <span class="nf">filter_by_app</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">code_app</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">code_app</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">code_app</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;CODE_APPLICATION&quot;</span><span class="p">]</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">query</span><span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span><span class="n">cor_roles</span><span class="p">,</span> <span class="n">User</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">cor_roles</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_role_utilisateur</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span>
+                <span class="n">UserApplicationRight</span><span class="p">,</span>
+                <span class="n">or_</span><span class="p">(</span>
+                    <span class="n">UserApplicationRight</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">cor_roles</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_role_groupe</span><span class="p">,</span>
+                    <span class="n">UserApplicationRight</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">User</span><span class="o">.</span><span class="n">id_role</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">Application</span><span class="p">,</span>
+                <span class="n">Application</span><span class="o">.</span><span class="n">id_application</span> <span class="o">==</span> <span class="n">UserApplicationRight</span><span class="o">.</span><span class="n">id_application</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Application</span><span class="o">.</span><span class="n">code_application</span> <span class="o">==</span> <span class="n">code_app</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">whereclause</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="Organisme">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme">[docs]</a>
+<span class="k">class</span> <span class="nc">Organisme</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="Organisme.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_organismes&quot;</span></div>
+
+<div class="viewcode-block" id="Organisme.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Organisme.id_organisme">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.id_organisme">[docs]</a>
+    <span class="n">id_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Organisme.uuid_organisme">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.uuid_organisme">[docs]</a>
+    <span class="n">uuid_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">UUID</span><span class="p">(</span><span class="n">as_uuid</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">uuid_generate_v4</span><span class="p">())</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Organisme.nom_organisme">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.nom_organisme">[docs]</a>
+    <span class="n">nom_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Organisme.adresse_organisme">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.adresse_organisme">[docs]</a>
+    <span class="n">adresse_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Organisme.cp_organisme">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.cp_organisme">[docs]</a>
+    <span class="n">cp_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Organisme.ville_organisme">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.ville_organisme">[docs]</a>
+    <span class="n">ville_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Organisme.tel_organisme">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.tel_organisme">[docs]</a>
+    <span class="n">tel_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Organisme.fax_organisme">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.fax_organisme">[docs]</a>
+    <span class="n">fax_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Organisme.email_organisme">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.email_organisme">[docs]</a>
+    <span class="n">email_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Organisme.url_organisme">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.url_organisme">[docs]</a>
+    <span class="n">url_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Organisme.url_logo">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.url_logo">[docs]</a>
+    <span class="n">url_logo</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Organisme.id_parent">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.id_parent">[docs]</a>
+    <span class="n">id_parent</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.bib_organismes.id_organisme&quot;</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Organisme.additional_data">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.additional_data">[docs]</a>
+    <span class="n">additional_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">JSONB</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">server_default</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Organisme.members">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.members">[docs]</a>
+    <span class="n">members</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s2">&quot;organisme&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Organisme.__str__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Organisme.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nom_organisme</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="profils_for_app">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.profils_for_app">[docs]</a>
+<span class="n">profils_for_app</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_profil_for_app&quot;</span><span class="p">,</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_profil&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_profils.id_profil&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_application&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_applications.id_application&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;utilisateurs&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Profils">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Profils">[docs]</a>
+<span class="k">class</span> <span class="nc">Profils</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model de la classe t_profils</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Profils.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Profils.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_profils&quot;</span></div>
+
+<div class="viewcode-block" id="Profils.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Profils.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">,</span> <span class="s2">&quot;extend_existing&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="Profils.id_profil">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Profils.id_profil">[docs]</a>
+    <span class="n">id_profil</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Profils.code_profil">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Profils.code_profil">[docs]</a>
+    <span class="n">code_profil</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Profils.nom_profil">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Profils.nom_profil">[docs]</a>
+    <span class="n">nom_profil</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Profils.desc_profil">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Profils.desc_profil">[docs]</a>
+    <span class="n">desc_profil</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Profils.applications">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Profils.applications">[docs]</a>
+    <span class="n">applications</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span>
+        <span class="s2">&quot;Application&quot;</span><span class="p">,</span> <span class="n">secondary</span><span class="o">=</span><span class="n">profils_for_app</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;profils&quot;</span>
+    <span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="Application">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Application">[docs]</a>
+<span class="k">class</span> <span class="nc">Application</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Représente une application ou un module</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Application.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Application.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_applications&quot;</span></div>
+
+<div class="viewcode-block" id="Application.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Application.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="Application.id_application">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Application.id_application">[docs]</a>
+    <span class="n">id_application</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Application.code_application">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Application.code_application">[docs]</a>
+    <span class="n">code_application</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Application.nom_application">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Application.nom_application">[docs]</a>
+    <span class="n">nom_application</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Application.desc_application">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Application.desc_application">[docs]</a>
+    <span class="n">desc_application</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Application.id_parent">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Application.id_parent">[docs]</a>
+    <span class="n">id_parent</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Application.profils">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Application.profils">[docs]</a>
+    <span class="n">profils</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span>
+        <span class="n">Profils</span><span class="p">,</span> <span class="n">secondary</span><span class="o">=</span><span class="n">profils_for_app</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;applications&quot;</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Application.__repr__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Application.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;Application </span><span class="si">{!r}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nom_application</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Application.__str__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Application.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nom_application</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Application.get_application">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.Application.get_application">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_application</span><span class="p">(</span><span class="n">nom_application</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">select</span><span class="p">(</span><span class="n">Application</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Application</span><span class="o">.</span><span class="n">nom_application</span> <span class="o">==</span> <span class="n">nom_application</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ApplicationRight">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.ApplicationRight">[docs]</a>
+<span class="k">class</span> <span class="nc">ApplicationRight</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Droit d&#39;acces a une application</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ApplicationRight.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.ApplicationRight.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_droits&quot;</span></div>
+
+<div class="viewcode-block" id="ApplicationRight.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.ApplicationRight.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="ApplicationRight.id_droit">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.ApplicationRight.id_droit">[docs]</a>
+    <span class="n">id_droit</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ApplicationRight.nom_droit">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.ApplicationRight.nom_droit">[docs]</a>
+    <span class="n">nom_droit</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ApplicationRight.desc_droit">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.ApplicationRight.desc_droit">[docs]</a>
+    <span class="n">desc_droit</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">UnicodeText</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ApplicationRight.__repr__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.ApplicationRight.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;ApplicationRight </span><span class="si">{!r}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">desc_droit</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ApplicationRight.__str__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.ApplicationRight.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nom_droit</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="UserApplicationRight">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserApplicationRight">[docs]</a>
+<span class="k">class</span> <span class="nc">UserApplicationRight</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Droit d&#39;acces d&#39;un user particulier a une application particuliere</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="UserApplicationRight.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserApplicationRight.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;cor_role_app_profil&quot;</span></div>
+
+<div class="viewcode-block" id="UserApplicationRight.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserApplicationRight.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">}</span>  <span class="c1"># , &#39;extend_existing&#39;: True}</span></div>
+
+<div class="viewcode-block" id="UserApplicationRight.id_role">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserApplicationRight.id_role">[docs]</a>
+    <span class="n">id_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_roles.id_role&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="UserApplicationRight.id_profil">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserApplicationRight.id_profil">[docs]</a>
+    <span class="n">id_profil</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_profils.id_profil&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="UserApplicationRight.id_application">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserApplicationRight.id_application">[docs]</a>
+    <span class="n">id_application</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_applications.id_application&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UserApplicationRight.role">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserApplicationRight.role">[docs]</a>
+    <span class="n">role</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;User&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UserApplicationRight.profil">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserApplicationRight.profil">[docs]</a>
+    <span class="n">profil</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;Profils&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UserApplicationRight.application">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserApplicationRight.application">[docs]</a>
+    <span class="n">application</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;Application&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UserApplicationRight.__repr__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserApplicationRight.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;UserApplicationRight role=&#39;</span><span class="si">{}</span><span class="s2">&#39; profil=&#39;</span><span class="si">{}</span><span class="s2">&#39; app=&#39;</span><span class="si">{}</span><span class="s2">&#39;&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">id_role</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_profil</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_application</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="s2">&quot;_password_plus&quot;</span><span class="p">])</span>
+<div class="viewcode-block" id="AppUser">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser">[docs]</a>
+<span class="k">class</span> <span class="nc">AppUser</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Relations entre applications et utilisateurs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AppUser.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;v_userslist_forall_applications&quot;</span></div>
+
+<div class="viewcode-block" id="AppUser.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="AppUser.id_role">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser.id_role">[docs]</a>
+    <span class="n">id_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_roles.id_role&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppUser.role">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser.role">[docs]</a>
+    <span class="n">role</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s2">&quot;app_users&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppUser.nom_role">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser.nom_role">[docs]</a>
+    <span class="n">nom_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppUser.prenom_role">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser.prenom_role">[docs]</a>
+    <span class="n">prenom_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppUser.id_application">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser.id_application">[docs]</a>
+    <span class="n">id_application</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_applications.id_application&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppUser.id_organisme">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser.id_organisme">[docs]</a>
+    <span class="n">id_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppUser.application">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser.application">[docs]</a>
+    <span class="n">application</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;Application&quot;</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s2">&quot;app_users&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppUser.identifiant">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser.identifiant">[docs]</a>
+    <span class="n">identifiant</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppUser._password">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser._password">[docs]</a>
+    <span class="n">_password</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;pass&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppUser._password_plus">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser._password_plus">[docs]</a>
+    <span class="n">_password_plus</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;pass_plus&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppUser.id_droit_max">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser.id_droit_max">[docs]</a>
+    <span class="n">id_droit_max</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+    <span class="c1"># user = db.relationship(&#39;User&#39;, backref=&#39;relations&#39;, lazy=&#39;joined&#39;)</span>
+    <span class="c1"># application = db.relationship(&#39;Application&#39;,</span>
+    <span class="c1">#                               backref=&#39;relations&#39;, lazy=&#39;joined&#39;)</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="AppUser.password">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser.password">[docs]</a>
+    <span class="k">def</span> <span class="nf">password</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_password</span></div>
+
+
+<div class="viewcode-block" id="AppUser.check_password">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser.check_password">[docs]</a>
+    <span class="n">check_password</span> <span class="o">=</span> <span class="n">fn_check_password</span></div>
+
+
+<div class="viewcode-block" id="AppUser.__repr__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppUser.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;AppUser role=&#39;</span><span class="si">{}</span><span class="s2">&#39; app=&#39;</span><span class="si">{}</span><span class="s2">&#39;&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_role</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_application</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AppRole">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppRole">[docs]</a>
+<span class="k">class</span> <span class="nc">AppRole</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Relations entre applications et role</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AppRole.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppRole.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;v_roleslist_forall_applications&quot;</span></div>
+
+<div class="viewcode-block" id="AppRole.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppRole.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="AppRole.id_role">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppRole.id_role">[docs]</a>
+    <span class="n">id_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_roles.id_role&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppRole.groupe">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppRole.groupe">[docs]</a>
+    <span class="n">groupe</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppRole.nom_role">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppRole.nom_role">[docs]</a>
+    <span class="n">nom_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppRole.prenom_role">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppRole.prenom_role">[docs]</a>
+    <span class="n">prenom_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppRole.id_application">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppRole.id_application">[docs]</a>
+    <span class="n">id_application</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_applications.id_application&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppRole.id_organisme">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppRole.id_organisme">[docs]</a>
+    <span class="n">id_organisme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppRole.identifiant">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppRole.identifiant">[docs]</a>
+    <span class="n">identifiant</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AppRole.application">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppRole.application">[docs]</a>
+    <span class="n">application</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">Application</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AppRole.as_dict">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.AppRole.as_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">(</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__table__</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="cor_role_liste">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.cor_role_liste">[docs]</a>
+<span class="n">cor_role_liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_role_liste&quot;</span><span class="p">,</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_role&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_roles.id_role&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_liste&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_listes.id_liste&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;utilisateurs&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="UserList">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserList">[docs]</a>
+<span class="k">class</span> <span class="nc">UserList</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="UserList.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserList.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_listes&quot;</span></div>
+
+<div class="viewcode-block" id="UserList.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserList.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;utilisateurs&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="UserList.id_liste">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserList.id_liste">[docs]</a>
+    <span class="n">id_liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UserList.code_liste">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserList.code_liste">[docs]</a>
+    <span class="n">code_liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">20</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="UserList.nom_liste">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserList.nom_liste">[docs]</a>
+    <span class="n">nom_liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="UserList.desc_liste">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserList.desc_liste">[docs]</a>
+    <span class="n">desc_liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UserList.users">
+<a class="viewcode-back" href="../../../autoapi/pypnusershub/db/models/index.html#pypnusershub.db.UserList.users">[docs]</a>
+    <span class="n">users</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">secondary</span><span class="o">=</span><span class="n">cor_role_liste</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

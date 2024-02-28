@@ -1,0 +1,30 @@
+:py:mod:`apptax`
+================
+
+.. py:module:: apptax
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   log/index.rst
+   taxonomie/index.rst
+   utils/index.rst
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   app/index.rst
+   database/index.rst
+   docker_config/index.rst
+   index/index.rst
+   test_config/index.rst
+
+

@@ -1,0 +1,22 @@
+:py:mod:`geonature.core.gn_permissions.commands`
+================================================
+
+.. py:module:: geonature.core.gn_permissions.commands
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_permissions.commands.supergrant
+
+
+
+.. py:function:: supergrant(skip_existing, dry_run, yes, **filters)
+
+

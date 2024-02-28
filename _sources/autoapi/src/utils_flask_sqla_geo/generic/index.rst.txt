@@ -1,0 +1,102 @@
+:py:mod:`src.utils_flask_sqla_geo.generic`
+==========================================
+
+.. py:module:: src.utils_flask_sqla_geo.generic
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla_geo.generic.GenericTableGeo
+   src.utils_flask_sqla_geo.generic.GenericQueryGeo
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla_geo.generic.get_geojson_feature
+
+
+
+.. py:function:: get_geojson_feature(wkb)
+
+   retourne une feature geojson à partir d'un WKB
+
+
+.. py:class:: GenericTableGeo(tableName, schemaName, engine, geometry_field=None, srid=None)
+
+
+   Bases: :py:obj:`utils_flask_sqla.generic.GenericTable`
+
+   Classe permettant de créer à la volée un mapping
+       d'une vue avec la base de données par rétroingénierie
+       gère les géométries
+
+   .. py:method:: as_geofeature(data, columns=[], fields=[])
+
+
+   .. py:method:: as_shape(db_cols, geojson_col=None, data=[], dir_path=None, file_name=None)
+
+      # RMQ Pour le moment conservé pour des questions de rétrocompatibilité
+
+      Create shapefile for generic table
+      Parameters:
+          db_cols (list): columns from a SQLA model (model.__mapper__.c)
+          geojson_col (str): the geojson (from st_asgeojson()) column of the mapped table if exist
+                          if None, take the geom_col (WKB) to generate geometry with shapely
+          data (list<Model>): list of data of the shapefiles
+          dir_path (str): directory path
+          file_name (str): name of the file
+      Returns
+          Void (create a shapefile)
+
+
+   .. py:method:: as_geofile(export_format, db_cols, geojson_col=None, data=[], dir_path=None, file_name=None)
+
+      Create shapefile or geopackage for generic table
+      Parameters:
+          export_format (str): file format (shp or gpkg)
+          db_cols (list): columns from a SQLA model (model.__mapper__.c)
+          geojson_col (str): the geojson (from st_asgeojson()) column of the mapped table if exist
+                          if None, take the geom_col (WKB) to generate geometry with shapely
+          data (list<Model>): list of data of the shapefiles
+          dir_path (str): directory path
+          file_name (str): name of the file
+      Returns
+          Void (create a shapefile)
+
+
+
+.. py:class:: GenericQueryGeo(DB, tableName, schemaName, filters=[], limit=100, offset=0, geometry_field=None, srid=None)
+
+
+   Bases: :py:obj:`utils_flask_sqla.generic.GenericQuery`
+
+   Classe permettant de manipuler des objets GenericTable
+   gère les géométries
+
+   .. py:method:: as_geofeature()
+
+
+   .. py:method:: get_model(pk_name: Union[str, None] = None)
+
+      renvoie le modèle associé à la table
+
+
+   .. py:method:: get_marshmallow_schema(pk_name: Union[str, None] = None)
+
+      renvoie un marshmalow schema à partir d'un modèle
+      ce schema hérite des classes GeoAlchemyAutoSchema et SmartRelationshipsMixin
+
+      TODO (à déplacer dans les lib utils sqla)
+
+
+

@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>apptax.taxonomie.models &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">apptax.taxonomie.models</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/autoapi/apptax/taxonomie/models/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-apptax.taxonomie.models">
+<span id="apptax-taxonomie-models"></span><h1><a class="reference internal" href="#module-apptax.taxonomie.models" title="apptax.taxonomie.models"><code class="xref py py-mod docutils literal notranslate"><span class="pre">apptax.taxonomie.models</span></code></a><a class="headerlink" href="#module-apptax.taxonomie.models" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.models.BibNoms" title="apptax.taxonomie.models.BibNoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibNoms</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.models.CorTaxonAttribut" title="apptax.taxonomie.models.CorTaxonAttribut"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CorTaxonAttribut</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.models.BibThemes" title="apptax.taxonomie.models.BibThemes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibThemes</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.models.BibAttributs" title="apptax.taxonomie.models.BibAttributs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibAttributs</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.models.Taxref" title="apptax.taxonomie.models.Taxref"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Taxref</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.models.CorNomListe" title="apptax.taxonomie.models.CorNomListe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CorNomListe</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.models.BibListes" title="apptax.taxonomie.models.BibListes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibListes</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.models.BibTypesMedia" title="apptax.taxonomie.models.BibTypesMedia"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibTypesMedia</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.models.TMedias" title="apptax.taxonomie.models.TMedias"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TMedias</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.models.VMTaxrefListForautocomplete" title="apptax.taxonomie.models.VMTaxrefListForautocomplete"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VMTaxrefListForautocomplete</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.models.BibTaxrefHabitats" title="apptax.taxonomie.models.BibTaxrefHabitats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibTaxrefHabitats</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.models.BibTaxrefRangs" title="apptax.taxonomie.models.BibTaxrefRangs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibTaxrefRangs</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.models.BibTaxrefStatus" title="apptax.taxonomie.models.BibTaxrefStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibTaxrefStatus</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.models.VMTaxrefHierarchie" title="apptax.taxonomie.models.VMTaxrefHierarchie"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VMTaxrefHierarchie</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons" title="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VTaxrefHierarchieBibtaxons</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.models.TaxrefBdcStatutType" title="apptax.taxonomie.models.TaxrefBdcStatutType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaxrefBdcStatutType</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.models.TaxrefBdcStatutText" title="apptax.taxonomie.models.TaxrefBdcStatutText"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaxrefBdcStatutText</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.models.TaxrefBdcStatutValues" title="apptax.taxonomie.models.TaxrefBdcStatutValues"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaxrefBdcStatutValues</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues" title="apptax.taxonomie.models.TaxrefBdcStatutCorTextValues"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaxrefBdcStatutCorTextValues</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.models.TaxrefBdcStatutTaxon" title="apptax.taxonomie.models.TaxrefBdcStatutTaxon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaxrefBdcStatutTaxon</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.models.VBdcStatus" title="apptax.taxonomie.models.VBdcStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VBdcStatus</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#apptax.taxonomie.models.TMetaTaxref" title="apptax.taxonomie.models.TMetaTaxref"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TMetaTaxref</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#apptax.taxonomie.models.bdc_statut_cor_text_area" title="apptax.taxonomie.models.bdc_statut_cor_text_area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bdc_statut_cor_text_area</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibNoms">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">BibNoms</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibNoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibNoms" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibNoms.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_noms'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibNoms.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibNoms.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibNoms.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibNoms.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibNoms.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibNoms.id_nom">
+<span class="sig-name descname"><span class="pre">id_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibNoms.id_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibNoms.id_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibNoms.cd_nom">
+<span class="sig-name descname"><span class="pre">cd_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibNoms.cd_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibNoms.cd_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibNoms.cd_ref">
+<span class="sig-name descname"><span class="pre">cd_ref</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibNoms.cd_ref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibNoms.cd_ref" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibNoms.nom_francais">
+<span class="sig-name descname"><span class="pre">nom_francais</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibNoms.nom_francais"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibNoms.nom_francais" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibNoms.comments">
+<span class="sig-name descname"><span class="pre">comments</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibNoms.comments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibNoms.comments" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibNoms.taxref">
+<span class="sig-name descname"><span class="pre">taxref</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibNoms.taxref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibNoms.taxref" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibNoms.attributs">
+<span class="sig-name descname"><span class="pre">attributs</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibNoms.attributs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibNoms.attributs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibNoms.listes">
+<span class="sig-name descname"><span class="pre">listes</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibNoms.listes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibNoms.listes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibNoms.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibNoms.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibNoms.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorTaxonAttribut">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">CorTaxonAttribut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorTaxonAttribut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorTaxonAttribut" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorTaxonAttribut.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cor_taxon_attribut'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorTaxonAttribut.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorTaxonAttribut.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorTaxonAttribut.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorTaxonAttribut.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorTaxonAttribut.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorTaxonAttribut.id_attribut">
+<span class="sig-name descname"><span class="pre">id_attribut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorTaxonAttribut.id_attribut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorTaxonAttribut.id_attribut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorTaxonAttribut.cd_ref">
+<span class="sig-name descname"><span class="pre">cd_ref</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorTaxonAttribut.cd_ref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorTaxonAttribut.cd_ref" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorTaxonAttribut.valeur_attribut">
+<span class="sig-name descname"><span class="pre">valeur_attribut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorTaxonAttribut.valeur_attribut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorTaxonAttribut.valeur_attribut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorTaxonAttribut.bib_nom">
+<span class="sig-name descname"><span class="pre">bib_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorTaxonAttribut.bib_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorTaxonAttribut.bib_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorTaxonAttribut.bib_attribut">
+<span class="sig-name descname"><span class="pre">bib_attribut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorTaxonAttribut.bib_attribut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorTaxonAttribut.bib_attribut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorTaxonAttribut.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorTaxonAttribut.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorTaxonAttribut.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibThemes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">BibThemes</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibThemes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibThemes" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibThemes.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_themes'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibThemes.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibThemes.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibThemes.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibThemes.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibThemes.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibThemes.id_theme">
+<span class="sig-name descname"><span class="pre">id_theme</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibThemes.id_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibThemes.id_theme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibThemes.nom_theme">
+<span class="sig-name descname"><span class="pre">nom_theme</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibThemes.nom_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibThemes.nom_theme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibThemes.desc_theme">
+<span class="sig-name descname"><span class="pre">desc_theme</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibThemes.desc_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibThemes.desc_theme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibThemes.ordre">
+<span class="sig-name descname"><span class="pre">ordre</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibThemes.ordre"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibThemes.ordre" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibThemes.id_droit">
+<span class="sig-name descname"><span class="pre">id_droit</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibThemes.id_droit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibThemes.id_droit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibThemes.attributs">
+<span class="sig-name descname"><span class="pre">attributs</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibThemes.attributs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibThemes.attributs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibThemes.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibThemes.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibThemes.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">BibAttributs</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_attributs'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs.id_attribut">
+<span class="sig-name descname"><span class="pre">id_attribut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs.id_attribut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs.id_attribut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs.nom_attribut">
+<span class="sig-name descname"><span class="pre">nom_attribut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs.nom_attribut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs.nom_attribut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs.label_attribut">
+<span class="sig-name descname"><span class="pre">label_attribut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs.label_attribut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs.label_attribut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs.liste_valeur_attribut">
+<span class="sig-name descname"><span class="pre">liste_valeur_attribut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs.liste_valeur_attribut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs.liste_valeur_attribut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs.obligatoire">
+<span class="sig-name descname"><span class="pre">obligatoire</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs.obligatoire"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs.obligatoire" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs.desc_attribut">
+<span class="sig-name descname"><span class="pre">desc_attribut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs.desc_attribut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs.desc_attribut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs.type_attribut">
+<span class="sig-name descname"><span class="pre">type_attribut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs.type_attribut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs.type_attribut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs.type_widget">
+<span class="sig-name descname"><span class="pre">type_widget</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs.type_widget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs.type_widget" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs.regne">
+<span class="sig-name descname"><span class="pre">regne</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs.regne"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs.regne" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs.group2_inpn">
+<span class="sig-name descname"><span class="pre">group2_inpn</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs.group2_inpn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs.group2_inpn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs.id_theme">
+<span class="sig-name descname"><span class="pre">id_theme</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs.id_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs.id_theme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs.ordre">
+<span class="sig-name descname"><span class="pre">ordre</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs.ordre"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs.ordre" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs.theme">
+<span class="sig-name descname"><span class="pre">theme</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs.theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs.theme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibAttributs.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibAttributs.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibAttributs.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">Taxref</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'taxref'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.cd_nom">
+<span class="sig-name descname"><span class="pre">cd_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.cd_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.cd_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.id_statut">
+<span class="sig-name descname"><span class="pre">id_statut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.id_statut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.id_statut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.id_habitat">
+<span class="sig-name descname"><span class="pre">id_habitat</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.id_habitat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.id_habitat" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.id_rang">
+<span class="sig-name descname"><span class="pre">id_rang</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.id_rang"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.id_rang" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.regne">
+<span class="sig-name descname"><span class="pre">regne</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.regne"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.regne" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.phylum">
+<span class="sig-name descname"><span class="pre">phylum</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.phylum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.phylum" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.classe">
+<span class="sig-name descname"><span class="pre">classe</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.classe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.classe" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">regne</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.regne"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.ordre">
+<span class="sig-name descname"><span class="pre">ordre</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.ordre"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.ordre" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.famille">
+<span class="sig-name descname"><span class="pre">famille</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.famille"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.famille" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.sous_famille">
+<span class="sig-name descname"><span class="pre">sous_famille</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.sous_famille"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.sous_famille" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.tribu">
+<span class="sig-name descname"><span class="pre">tribu</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.tribu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.tribu" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.cd_taxsup">
+<span class="sig-name descname"><span class="pre">cd_taxsup</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.cd_taxsup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.cd_taxsup" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.cd_sup">
+<span class="sig-name descname"><span class="pre">cd_sup</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.cd_sup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.cd_sup" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.cd_ref">
+<span class="sig-name descname"><span class="pre">cd_ref</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.cd_ref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.cd_ref" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.lb_nom">
+<span class="sig-name descname"><span class="pre">lb_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.lb_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.lb_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.lb_auteur">
+<span class="sig-name descname"><span class="pre">lb_auteur</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.lb_auteur"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.lb_auteur" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.nom_complet">
+<span class="sig-name descname"><span class="pre">nom_complet</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.nom_complet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.nom_complet" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.nom_complet_html">
+<span class="sig-name descname"><span class="pre">nom_complet_html</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.nom_complet_html"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.nom_complet_html" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.nom_vern">
+<span class="sig-name descname"><span class="pre">nom_vern</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.nom_vern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.nom_vern" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.nom_valide">
+<span class="sig-name descname"><span class="pre">nom_valide</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.nom_valide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.nom_valide" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.nom_vern_eng">
+<span class="sig-name descname"><span class="pre">nom_vern_eng</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.nom_vern_eng"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.nom_vern_eng" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.group1_inpn">
+<span class="sig-name descname"><span class="pre">group1_inpn</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.group1_inpn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.group1_inpn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.group2_inpn">
+<span class="sig-name descname"><span class="pre">group2_inpn</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.group2_inpn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.group2_inpn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.group3_inpn">
+<span class="sig-name descname"><span class="pre">group3_inpn</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.group3_inpn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.group3_inpn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.url">
+<span class="sig-name descname"><span class="pre">url</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.bib_nom">
+<span class="sig-name descname"><span class="pre">bib_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.bib_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.bib_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.nom_vern_or_lb_nom">
+<span class="sig-name descname"><span class="pre">nom_vern_or_lb_nom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.nom_vern_or_lb_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.nom_vern_or_lb_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">nom_vern_or_lb_nom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.nom_vern_or_lb_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.Taxref.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#Taxref.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.Taxref.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorNomListe">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">CorNomListe</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorNomListe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorNomListe" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorNomListe.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cor_nom_liste'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorNomListe.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorNomListe.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorNomListe.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorNomListe.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorNomListe.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorNomListe.id_liste">
+<span class="sig-name descname"><span class="pre">id_liste</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorNomListe.id_liste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorNomListe.id_liste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorNomListe.id_nom">
+<span class="sig-name descname"><span class="pre">id_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorNomListe.id_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorNomListe.id_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorNomListe.bib_nom">
+<span class="sig-name descname"><span class="pre">bib_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorNomListe.bib_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorNomListe.bib_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorNomListe.bib_liste">
+<span class="sig-name descname"><span class="pre">bib_liste</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorNomListe.bib_liste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorNomListe.bib_liste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.CorNomListe.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#CorNomListe.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.CorNomListe.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibListes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">BibListes</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibListes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibListes" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibListes.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_listes'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibListes.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibListes.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibListes.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibListes.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibListes.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibListes.id_liste">
+<span class="sig-name descname"><span class="pre">id_liste</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibListes.id_liste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibListes.id_liste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibListes.code_liste">
+<span class="sig-name descname"><span class="pre">code_liste</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibListes.code_liste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibListes.code_liste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibListes.nom_liste">
+<span class="sig-name descname"><span class="pre">nom_liste</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibListes.nom_liste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibListes.nom_liste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibListes.desc_liste">
+<span class="sig-name descname"><span class="pre">desc_liste</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibListes.desc_liste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibListes.desc_liste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibListes.picto">
+<span class="sig-name descname"><span class="pre">picto</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibListes.picto"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibListes.picto" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibListes.regne">
+<span class="sig-name descname"><span class="pre">regne</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibListes.regne"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibListes.regne" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibListes.group2_inpn">
+<span class="sig-name descname"><span class="pre">group2_inpn</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibListes.group2_inpn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibListes.group2_inpn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibListes.cnl">
+<span class="sig-name descname"><span class="pre">cnl</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibListes.cnl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibListes.cnl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibListes.noms">
+<span class="sig-name descname"><span class="pre">noms</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibListes.noms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibListes.noms" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibListes.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibListes.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibListes.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTypesMedia">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">BibTypesMedia</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTypesMedia"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTypesMedia" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTypesMedia.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_types_media'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTypesMedia.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTypesMedia.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTypesMedia.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTypesMedia.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTypesMedia.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTypesMedia.id_type">
+<span class="sig-name descname"><span class="pre">id_type</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTypesMedia.id_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTypesMedia.id_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTypesMedia.nom_type_media">
+<span class="sig-name descname"><span class="pre">nom_type_media</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTypesMedia.nom_type_media"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTypesMedia.nom_type_media" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTypesMedia.desc_type_media">
+<span class="sig-name descname"><span class="pre">desc_type_media</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTypesMedia.desc_type_media"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTypesMedia.desc_type_media" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTypesMedia.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTypesMedia.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTypesMedia.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">TMedias</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_medias'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.id_media">
+<span class="sig-name descname"><span class="pre">id_media</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.id_media"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.id_media" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.cd_ref">
+<span class="sig-name descname"><span class="pre">cd_ref</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.cd_ref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.cd_ref" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.titre">
+<span class="sig-name descname"><span class="pre">titre</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.titre"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.titre" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.url">
+<span class="sig-name descname"><span class="pre">url</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.chemin">
+<span class="sig-name descname"><span class="pre">chemin</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.chemin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.chemin" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.auteur">
+<span class="sig-name descname"><span class="pre">auteur</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.auteur"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.auteur" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.desc_media">
+<span class="sig-name descname"><span class="pre">desc_media</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.desc_media"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.desc_media" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.source">
+<span class="sig-name descname"><span class="pre">source</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.source" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.licence">
+<span class="sig-name descname"><span class="pre">licence</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.licence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.licence" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.is_public">
+<span class="sig-name descname"><span class="pre">is_public</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.is_public"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.is_public" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.supprime">
+<span class="sig-name descname"><span class="pre">supprime</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.supprime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.supprime" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.id_type">
+<span class="sig-name descname"><span class="pre">id_type</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.id_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.id_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.types">
+<span class="sig-name descname"><span class="pre">types</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.types" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.bib_nom">
+<span class="sig-name descname"><span class="pre">bib_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.bib_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.bib_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMedias.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMedias.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMedias.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefListForautocomplete">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">VMTaxrefListForautocomplete</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefListForautocomplete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefListForautocomplete" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefListForautocomplete.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'vm_taxref_list_forautocomplete'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefListForautocomplete.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefListForautocomplete.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefListForautocomplete.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefListForautocomplete.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefListForautocomplete.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefListForautocomplete.gid">
+<span class="sig-name descname"><span class="pre">gid</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefListForautocomplete.gid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefListForautocomplete.gid" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefListForautocomplete.cd_nom">
+<span class="sig-name descname"><span class="pre">cd_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefListForautocomplete.cd_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefListForautocomplete.cd_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefListForautocomplete.search_name">
+<span class="sig-name descname"><span class="pre">search_name</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefListForautocomplete.search_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefListForautocomplete.search_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefListForautocomplete.unaccent_search_name">
+<span class="sig-name descname"><span class="pre">unaccent_search_name</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefListForautocomplete.unaccent_search_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefListForautocomplete.unaccent_search_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefListForautocomplete.cd_ref">
+<span class="sig-name descname"><span class="pre">cd_ref</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefListForautocomplete.cd_ref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefListForautocomplete.cd_ref" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefListForautocomplete.nom_valide">
+<span class="sig-name descname"><span class="pre">nom_valide</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefListForautocomplete.nom_valide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefListForautocomplete.nom_valide" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefListForautocomplete.lb_nom">
+<span class="sig-name descname"><span class="pre">lb_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefListForautocomplete.lb_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefListForautocomplete.lb_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefListForautocomplete.nom_vern">
+<span class="sig-name descname"><span class="pre">nom_vern</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefListForautocomplete.nom_vern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefListForautocomplete.nom_vern" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefListForautocomplete.regne">
+<span class="sig-name descname"><span class="pre">regne</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefListForautocomplete.regne"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefListForautocomplete.regne" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefListForautocomplete.group2_inpn">
+<span class="sig-name descname"><span class="pre">group2_inpn</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefListForautocomplete.group2_inpn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefListForautocomplete.group2_inpn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefListForautocomplete.group3_inpn">
+<span class="sig-name descname"><span class="pre">group3_inpn</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefListForautocomplete.group3_inpn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefListForautocomplete.group3_inpn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefListForautocomplete.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefListForautocomplete.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefListForautocomplete.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefHabitats">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">BibTaxrefHabitats</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefHabitats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefHabitats" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefHabitats.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_taxref_habitats'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefHabitats.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefHabitats.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefHabitats.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefHabitats.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefHabitats.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefHabitats.id_habitat">
+<span class="sig-name descname"><span class="pre">id_habitat</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefHabitats.id_habitat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefHabitats.id_habitat" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefHabitats.nom_habitat">
+<span class="sig-name descname"><span class="pre">nom_habitat</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefHabitats.nom_habitat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefHabitats.nom_habitat" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefHabitats.desc_habitat">
+<span class="sig-name descname"><span class="pre">desc_habitat</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefHabitats.desc_habitat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefHabitats.desc_habitat" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefHabitats.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefHabitats.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefHabitats.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefRangs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">BibTaxrefRangs</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefRangs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefRangs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefRangs.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_taxref_rangs'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefRangs.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefRangs.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefRangs.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefRangs.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefRangs.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefRangs.id_rang">
+<span class="sig-name descname"><span class="pre">id_rang</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefRangs.id_rang"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefRangs.id_rang" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefRangs.nom_rang">
+<span class="sig-name descname"><span class="pre">nom_rang</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefRangs.nom_rang"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefRangs.nom_rang" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefRangs.tri_rang">
+<span class="sig-name descname"><span class="pre">tri_rang</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefRangs.tri_rang"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefRangs.tri_rang" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefRangs.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefRangs.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefRangs.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefStatus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">BibTaxrefStatus</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefStatus" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefStatus.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_taxref_statuts'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefStatus.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefStatus.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefStatus.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefStatus.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefStatus.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefStatus.id_statut">
+<span class="sig-name descname"><span class="pre">id_statut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefStatus.id_statut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefStatus.id_statut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefStatus.nom_statut">
+<span class="sig-name descname"><span class="pre">nom_statut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefStatus.nom_statut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefStatus.nom_statut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.BibTaxrefStatus.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#BibTaxrefStatus.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.BibTaxrefStatus.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">VMTaxrefHierarchie</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'vm_taxref_hierarchie'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.cd_nom">
+<span class="sig-name descname"><span class="pre">cd_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.cd_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.cd_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.cd_ref">
+<span class="sig-name descname"><span class="pre">cd_ref</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.cd_ref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.cd_ref" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.regne">
+<span class="sig-name descname"><span class="pre">regne</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.regne"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.regne" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.phylum">
+<span class="sig-name descname"><span class="pre">phylum</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.phylum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.phylum" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.classe">
+<span class="sig-name descname"><span class="pre">classe</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.classe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.classe" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.ordre">
+<span class="sig-name descname"><span class="pre">ordre</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.ordre"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.ordre" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.famille">
+<span class="sig-name descname"><span class="pre">famille</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.famille"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.famille" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.lb_nom">
+<span class="sig-name descname"><span class="pre">lb_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.lb_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.lb_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.id_rang">
+<span class="sig-name descname"><span class="pre">id_rang</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.id_rang"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.id_rang" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.nb_tx_fm">
+<span class="sig-name descname"><span class="pre">nb_tx_fm</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.nb_tx_fm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.nb_tx_fm" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.nb_tx_or">
+<span class="sig-name descname"><span class="pre">nb_tx_or</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.nb_tx_or"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.nb_tx_or" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.nb_tx_cl">
+<span class="sig-name descname"><span class="pre">nb_tx_cl</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.nb_tx_cl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.nb_tx_cl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.nb_tx_ph">
+<span class="sig-name descname"><span class="pre">nb_tx_ph</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.nb_tx_ph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.nb_tx_ph" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.nb_tx_kd">
+<span class="sig-name descname"><span class="pre">nb_tx_kd</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.nb_tx_kd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.nb_tx_kd" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VMTaxrefHierarchie.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VMTaxrefHierarchie.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VMTaxrefHierarchie.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">VTaxrefHierarchieBibtaxons</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'v_taxref_hierarchie_bibtaxons'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.cd_nom">
+<span class="sig-name descname"><span class="pre">cd_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons.cd_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.cd_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.cd_ref">
+<span class="sig-name descname"><span class="pre">cd_ref</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons.cd_ref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.cd_ref" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.regne">
+<span class="sig-name descname"><span class="pre">regne</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons.regne"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.regne" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.phylum">
+<span class="sig-name descname"><span class="pre">phylum</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons.phylum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.phylum" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.classe">
+<span class="sig-name descname"><span class="pre">classe</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons.classe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.classe" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.ordre">
+<span class="sig-name descname"><span class="pre">ordre</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons.ordre"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.ordre" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.lb_nom">
+<span class="sig-name descname"><span class="pre">lb_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons.lb_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.lb_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.id_rang">
+<span class="sig-name descname"><span class="pre">id_rang</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons.id_rang"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.id_rang" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.nb_tx_fm">
+<span class="sig-name descname"><span class="pre">nb_tx_fm</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons.nb_tx_fm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.nb_tx_fm" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.nb_tx_or">
+<span class="sig-name descname"><span class="pre">nb_tx_or</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons.nb_tx_or"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.nb_tx_or" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.nb_tx_cl">
+<span class="sig-name descname"><span class="pre">nb_tx_cl</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons.nb_tx_cl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.nb_tx_cl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.nb_tx_ph">
+<span class="sig-name descname"><span class="pre">nb_tx_ph</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons.nb_tx_ph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.nb_tx_ph" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.nb_tx_kd">
+<span class="sig-name descname"><span class="pre">nb_tx_kd</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons.nb_tx_kd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.nb_tx_kd" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VTaxrefHierarchieBibtaxons.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">TaxrefBdcStatutType</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutType" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutType.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bdc_statut_type'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutType.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutType.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutType.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutType.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutType.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutType.cd_type_statut">
+<span class="sig-name descname"><span class="pre">cd_type_statut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutType.cd_type_statut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutType.cd_type_statut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutType.lb_type_statut">
+<span class="sig-name descname"><span class="pre">lb_type_statut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutType.lb_type_statut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutType.lb_type_statut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutType.regroupement_type">
+<span class="sig-name descname"><span class="pre">regroupement_type</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutType.regroupement_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutType.regroupement_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutType.thematique">
+<span class="sig-name descname"><span class="pre">thematique</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutType.thematique"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutType.thematique" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutType.type_value">
+<span class="sig-name descname"><span class="pre">type_value</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutType.type_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutType.type_value" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutType.text">
+<span class="sig-name descname"><span class="pre">text</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutType.text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutType.text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutType.display">
+<span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutType.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutType.display" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.bdc_statut_cor_text_area">
+<span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">bdc_statut_cor_text_area</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#bdc_statut_cor_text_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.bdc_statut_cor_text_area" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">TaxrefBdcStatutText</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bdc_statut_text'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.id_text">
+<span class="sig-name descname"><span class="pre">id_text</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.id_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.id_text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.cd_st_text">
+<span class="sig-name descname"><span class="pre">cd_st_text</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.cd_st_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.cd_st_text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.cd_type_statut">
+<span class="sig-name descname"><span class="pre">cd_type_statut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.cd_type_statut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.cd_type_statut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.cd_sig">
+<span class="sig-name descname"><span class="pre">cd_sig</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.cd_sig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.cd_sig" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.cd_doc">
+<span class="sig-name descname"><span class="pre">cd_doc</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.cd_doc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.cd_doc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.niveau_admin">
+<span class="sig-name descname"><span class="pre">niveau_admin</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.niveau_admin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.niveau_admin" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.cd_iso3166_1">
+<span class="sig-name descname"><span class="pre">cd_iso3166_1</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.cd_iso3166_1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.cd_iso3166_1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.cd_iso3166_2">
+<span class="sig-name descname"><span class="pre">cd_iso3166_2</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.cd_iso3166_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.cd_iso3166_2" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.lb_adm_tr">
+<span class="sig-name descname"><span class="pre">lb_adm_tr</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.lb_adm_tr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.lb_adm_tr" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.full_citation">
+<span class="sig-name descname"><span class="pre">full_citation</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.full_citation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.full_citation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.doc_url">
+<span class="sig-name descname"><span class="pre">doc_url</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.doc_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.doc_url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.enable">
+<span class="sig-name descname"><span class="pre">enable</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.enable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.enable" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.type_statut">
+<span class="sig-name descname"><span class="pre">type_statut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.type_statut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.type_statut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.cor_text">
+<span class="sig-name descname"><span class="pre">cor_text</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.cor_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.cor_text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutText.areas">
+<span class="sig-name descname"><span class="pre">areas</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutText.areas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutText.areas" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutValues">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">TaxrefBdcStatutValues</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutValues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutValues" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutValues.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bdc_statut_values'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutValues.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutValues.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutValues.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutValues.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutValues.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutValues.id_value">
+<span class="sig-name descname"><span class="pre">id_value</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutValues.id_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutValues.id_value" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutValues.code_statut">
+<span class="sig-name descname"><span class="pre">code_statut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutValues.code_statut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutValues.code_statut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutValues.label_statut">
+<span class="sig-name descname"><span class="pre">label_statut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutValues.label_statut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutValues.label_statut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutValues.display">
+<span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutValues.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutValues.display" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutCorTextValues">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">TaxrefBdcStatutCorTextValues</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutCorTextValues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bdc_statut_cor_text_values'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutCorTextValues.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutCorTextValues.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.id_value_text">
+<span class="sig-name descname"><span class="pre">id_value_text</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutCorTextValues.id_value_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.id_value_text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.id_value">
+<span class="sig-name descname"><span class="pre">id_value</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutCorTextValues.id_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.id_value" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.id_text">
+<span class="sig-name descname"><span class="pre">id_text</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutCorTextValues.id_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.id_text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.text">
+<span class="sig-name descname"><span class="pre">text</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutCorTextValues.text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.value">
+<span class="sig-name descname"><span class="pre">value</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutCorTextValues.value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.value" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.taxon">
+<span class="sig-name descname"><span class="pre">taxon</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutCorTextValues.taxon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.taxon" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutTaxon">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">TaxrefBdcStatutTaxon</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutTaxon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutTaxon" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutTaxon.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bdc_statut_taxons'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutTaxon.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutTaxon.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutTaxon.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutTaxon.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutTaxon.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutTaxon.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutTaxon.id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutTaxon.id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutTaxon.id_value_text">
+<span class="sig-name descname"><span class="pre">id_value_text</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutTaxon.id_value_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutTaxon.id_value_text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutTaxon.cd_nom">
+<span class="sig-name descname"><span class="pre">cd_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutTaxon.cd_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutTaxon.cd_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutTaxon.cd_ref">
+<span class="sig-name descname"><span class="pre">cd_ref</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutTaxon.cd_ref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutTaxon.cd_ref" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutTaxon.rq_statut">
+<span class="sig-name descname"><span class="pre">rq_statut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutTaxon.rq_statut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutTaxon.rq_statut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TaxrefBdcStatutTaxon.value_text">
+<span class="sig-name descname"><span class="pre">value_text</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TaxrefBdcStatutTaxon.value_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TaxrefBdcStatutTaxon.value_text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">VBdcStatus</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'v_bdc_status'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.cd_nom">
+<span class="sig-name descname"><span class="pre">cd_nom</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.cd_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.cd_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.cd_ref">
+<span class="sig-name descname"><span class="pre">cd_ref</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.cd_ref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.cd_ref" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.rq_statut">
+<span class="sig-name descname"><span class="pre">rq_statut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.rq_statut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.rq_statut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.code_statut">
+<span class="sig-name descname"><span class="pre">code_statut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.code_statut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.code_statut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.label_statut">
+<span class="sig-name descname"><span class="pre">label_statut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.label_statut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.label_statut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.cd_type_statut">
+<span class="sig-name descname"><span class="pre">cd_type_statut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.cd_type_statut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.cd_type_statut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.lb_type_statut">
+<span class="sig-name descname"><span class="pre">lb_type_statut</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.lb_type_statut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.lb_type_statut" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.regroupement_type">
+<span class="sig-name descname"><span class="pre">regroupement_type</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.regroupement_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.regroupement_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.thematique">
+<span class="sig-name descname"><span class="pre">thematique</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.thematique"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.thematique" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.cd_st_text">
+<span class="sig-name descname"><span class="pre">cd_st_text</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.cd_st_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.cd_st_text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.cd_sig">
+<span class="sig-name descname"><span class="pre">cd_sig</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.cd_sig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.cd_sig" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.cd_doc">
+<span class="sig-name descname"><span class="pre">cd_doc</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.cd_doc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.cd_doc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.niveau_admin">
+<span class="sig-name descname"><span class="pre">niveau_admin</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.niveau_admin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.niveau_admin" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.cd_iso3166_1">
+<span class="sig-name descname"><span class="pre">cd_iso3166_1</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.cd_iso3166_1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.cd_iso3166_1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.cd_iso3166_2">
+<span class="sig-name descname"><span class="pre">cd_iso3166_2</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.cd_iso3166_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.cd_iso3166_2" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.full_citation">
+<span class="sig-name descname"><span class="pre">full_citation</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.full_citation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.full_citation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.doc_url">
+<span class="sig-name descname"><span class="pre">doc_url</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.doc_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.doc_url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.VBdcStatus.type_value">
+<span class="sig-name descname"><span class="pre">type_value</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#VBdcStatus.type_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.VBdcStatus.type_value" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMetaTaxref">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apptax.taxonomie.models.</span></span><span class="sig-name descname"><span class="pre">TMetaTaxref</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMetaTaxref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMetaTaxref" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apptax.taxonomie.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMetaTaxref.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_meta_taxref'</span></em><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMetaTaxref.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMetaTaxref.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMetaTaxref.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMetaTaxref.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMetaTaxref.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMetaTaxref.referencial_name">
+<span class="sig-name descname"><span class="pre">referencial_name</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMetaTaxref.referencial_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMetaTaxref.referencial_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMetaTaxref.version">
+<span class="sig-name descname"><span class="pre">version</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMetaTaxref.version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMetaTaxref.version" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apptax.taxonomie.models.TMetaTaxref.update_date">
+<span class="sig-name descname"><span class="pre">update_date</span></span><a class="reference internal" href="../../../../_modules/apptax/taxonomie/models.html#TMetaTaxref.update_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#apptax.taxonomie.models.TMetaTaxref.update_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

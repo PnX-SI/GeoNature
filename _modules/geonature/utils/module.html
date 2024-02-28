@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.utils.module &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.utils.module</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.utils.module</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">importlib_metadata</span> <span class="kn">import</span> <span class="n">entry_points</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">importlib.metadata</span> <span class="kn">import</span> <span class="n">entry_points</span>
+
+<span class="kn">from</span> <span class="nn">alembic.script</span> <span class="kn">import</span> <span class="n">ScriptDirectory</span>
+<span class="kn">from</span> <span class="nn">alembic.migration</span> <span class="kn">import</span> <span class="n">MigrationContext</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span>
+<span class="kn">from</span> <span class="nn">flask_migrate</span> <span class="kn">import</span> <span class="n">upgrade</span> <span class="k">as</span> <span class="n">db_upgrade</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.utilstoml</span> <span class="kn">import</span> <span class="n">load_and_validate_toml</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span><span class="p">,</span> <span class="n">CONFIG_FILE</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.models</span> <span class="kn">import</span> <span class="n">TModules</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">select</span>
+
+
+<div class="viewcode-block" id="iter_modules_dist">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.iter_modules_dist">[docs]</a>
+<span class="k">def</span> <span class="nf">iter_modules_dist</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">module_code_entry</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">entry_points</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="s2">&quot;gn_module&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;code&quot;</span><span class="p">)):</span>
+        <span class="k">yield</span> <span class="n">module_code_entry</span><span class="o">.</span><span class="n">dist</span></div>
+
+
+
+<div class="viewcode-block" id="get_module_config_path">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.get_module_config_path">[docs]</a>
+<span class="k">def</span> <span class="nf">get_module_config_path</span><span class="p">(</span><span class="n">module_code</span><span class="p">):</span>
+    <span class="n">config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GEONATURE_</span><span class="si">{</span><span class="n">module_code</span><span class="si">}</span><span class="s2">_CONFIG_FILE&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">config_path</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span>
+    <span class="n">config_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">CONFIG_FILE</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">module_code</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">_config.toml&quot;</span>
+    <span class="k">if</span> <span class="n">config_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">config_path</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">get_dist_from_code</span><span class="p">(</span><span class="n">module_code</span><span class="p">)</span>
+    <span class="n">module_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">dist</span><span class="o">.</span><span class="n">entry_points</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">module</span><span class="p">]</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+    <span class="c1"># module_path is commonly backend/gn_module_XXX/ but config dir is at package root</span>
+    <span class="n">config_path</span> <span class="o">=</span> <span class="n">module_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;config&quot;</span> <span class="o">/</span> <span class="s2">&quot;conf_gn_module.toml&quot;</span>
+    <span class="k">if</span> <span class="n">config_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">config_path</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="get_module_config">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.get_module_config">[docs]</a>
+<span class="k">def</span> <span class="nf">get_module_config</span><span class="p">(</span><span class="n">module_dist</span><span class="p">):</span>
+    <span class="n">module_code</span> <span class="o">=</span> <span class="n">module_dist</span><span class="o">.</span><span class="n">entry_points</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+    <span class="n">config_schema</span> <span class="o">=</span> <span class="n">module_dist</span><span class="o">.</span><span class="n">entry_points</span><span class="p">[</span><span class="s2">&quot;config_schema&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;MODULE_CODE&quot;</span><span class="p">:</span> <span class="n">module_code</span><span class="p">,</span> <span class="s2">&quot;MODULE_URL&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">module_code</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">load_and_validate_toml</span><span class="p">(</span><span class="n">get_module_config_path</span><span class="p">(</span><span class="n">module_code</span><span class="p">),</span> <span class="n">config_schema</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">config</span></div>
+
+
+
+<div class="viewcode-block" id="get_dist_from_code">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.get_dist_from_code">[docs]</a>
+<span class="k">def</span> <span class="nf">get_dist_from_code</span><span class="p">(</span><span class="n">module_code</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">dist</span> <span class="ow">in</span> <span class="n">iter_modules_dist</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">module_code</span> <span class="o">==</span> <span class="n">dist</span><span class="o">.</span><span class="n">entry_points</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">dist</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Module with code </span><span class="si">{</span><span class="n">module_code</span><span class="si">}</span><span class="s2"> not installed in venv&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="iterate_revisions">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.iterate_revisions">[docs]</a>
+<span class="k">def</span> <span class="nf">iterate_revisions</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="n">base_revision</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Iterate revisions without following depends_on directive.</span>
+<span class="sd">    Useful to find all revisions of a given branch.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yelded</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">todo</span> <span class="o">=</span> <span class="p">{</span><span class="n">base_revision</span><span class="p">}</span>
+    <span class="k">while</span> <span class="n">todo</span><span class="p">:</span>
+        <span class="n">rev</span> <span class="o">=</span> <span class="n">todo</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">yield</span> <span class="n">rev</span>
+        <span class="n">yelded</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rev</span><span class="p">)</span>
+        <span class="n">rev</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">get_revision</span><span class="p">(</span><span class="n">rev</span><span class="p">)</span>
+        <span class="n">todo</span> <span class="o">|=</span> <span class="n">rev</span><span class="o">.</span><span class="n">nextrev</span> <span class="o">-</span> <span class="n">yelded</span></div>
+
+
+
+<div class="viewcode-block" id="alembic_branch_in_use">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.alembic_branch_in_use">[docs]</a>
+<span class="k">def</span> <span class="nf">alembic_branch_in_use</span><span class="p">(</span><span class="n">branch_name</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return true if at least one revision of the given branch is applied.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">extensions</span><span class="p">[</span><span class="s2">&quot;sqlalchemy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">db</span>
+    <span class="n">migrate</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">extensions</span><span class="p">[</span><span class="s2">&quot;migrate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">migrate</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">migrate</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">)</span>
+    <span class="n">script</span> <span class="o">=</span> <span class="n">ScriptDirectory</span><span class="o">.</span><span class="n">from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="n">base_revision</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">get_revision</span><span class="p">(</span><span class="n">script</span><span class="o">.</span><span class="n">as_revision_number</span><span class="p">(</span><span class="n">branch_name</span><span class="p">))</span>
+    <span class="n">branch_revisions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">iterate_revisions</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="n">base_revision</span><span class="o">.</span><span class="n">revision</span><span class="p">))</span>
+    <span class="n">migration_context</span> <span class="o">=</span> <span class="n">MigrationContext</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">connection</span><span class="p">())</span>
+    <span class="n">current_heads</span> <span class="o">=</span> <span class="n">migration_context</span><span class="o">.</span><span class="n">get_current_heads</span><span class="p">()</span>
+    <span class="c1"># get_current_heads does not return implicit revision through dependencies, get_all_current does</span>
+    <span class="n">current_heads</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">rev</span><span class="p">:</span> <span class="n">rev</span><span class="o">.</span><span class="n">revision</span><span class="p">,</span> <span class="n">script</span><span class="o">.</span><span class="n">get_all_current</span><span class="p">(</span><span class="n">current_heads</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="n">branch_revisions</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">current_heads</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="module_db_upgrade">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/module/index.html#geonature.utils.module.module_db_upgrade">[docs]</a>
+<span class="k">def</span> <span class="nf">module_db_upgrade</span><span class="p">(</span><span class="n">module_dist</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sql</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_arg</span><span class="o">=</span><span class="p">[]):</span>
+    <span class="n">module_code</span> <span class="o">=</span> <span class="n">module_dist</span><span class="o">.</span><span class="n">entry_points</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+    <span class="n">module_blueprint</span> <span class="o">=</span> <span class="n">module_dist</span><span class="o">.</span><span class="n">entry_points</span><span class="p">[</span><span class="s2">&quot;blueprint&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>  <span class="c1"># force discovery of models</span>
+    <span class="k">if</span> <span class="n">module_dist</span><span class="o">.</span><span class="n">entry_points</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;migrations&quot;</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">alembic_branch</span> <span class="o">=</span> <span class="n">module_dist</span><span class="o">.</span><span class="n">entry_points</span><span class="p">[</span><span class="s2">&quot;alembic_branch&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">alembic_branch</span> <span class="o">=</span> <span class="n">module_code</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">alembic_branch</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">TModules</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">module_code</span><span class="o">=</span><span class="n">module_code</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">scalar_one_or_none</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">module</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># add module to database</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">module_picto</span> <span class="o">=</span> <span class="n">module_dist</span><span class="o">.</span><span class="n">entry_points</span><span class="p">[</span><span class="s2">&quot;picto&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">module_picto</span> <span class="o">=</span> <span class="s2">&quot;fa-puzzle-piece&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">module_type</span> <span class="o">=</span> <span class="n">module_dist</span><span class="o">.</span><span class="n">entry_points</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">module_type</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">module_doc_url</span> <span class="o">=</span> <span class="n">module_dist</span><span class="o">.</span><span class="n">entry_points</span><span class="p">[</span><span class="s2">&quot;doc_url&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">module_doc_url</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">TModules</span><span class="p">(</span>
+            <span class="nb">type</span><span class="o">=</span><span class="n">module_type</span><span class="p">,</span>
+            <span class="n">module_code</span><span class="o">=</span><span class="n">module_code</span><span class="p">,</span>
+            <span class="n">module_label</span><span class="o">=</span><span class="n">module_code</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span>
+            <span class="n">module_path</span><span class="o">=</span><span class="n">module_code</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+            <span class="n">module_target</span><span class="o">=</span><span class="s2">&quot;_self&quot;</span><span class="p">,</span>
+            <span class="n">module_picto</span><span class="o">=</span><span class="n">module_picto</span><span class="p">,</span>
+            <span class="n">module_doc_url</span><span class="o">=</span><span class="n">module_doc_url</span><span class="p">,</span>
+            <span class="n">active_frontend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">active_backend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">ng_module</span><span class="o">=</span><span class="n">module_code</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+        <span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">alembic_branch</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">alembic_branch_in_use</span><span class="p">(</span><span class="n">alembic_branch</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The module branch is not known to be applied by Alembic,</span>
+<span class="sd">        but the module is present in gn_commons.t_modules table.</span>
+<span class="sd">        Refusing to upgrade the Alembic branch.</span>
+<span class="sd">        Upgrading of old module requiring manual stamp?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">alembic_branch</span><span class="p">:</span>
+        <span class="n">revision</span> <span class="o">=</span> <span class="n">alembic_branch</span> <span class="o">+</span> <span class="s2">&quot;@head&quot;</span>
+        <span class="n">db_upgrade</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">revision</span><span class="p">,</span> <span class="n">sql</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">x_arg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

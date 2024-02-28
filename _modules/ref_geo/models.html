@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ref_geo.models &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Code du module</a></li>
+          <li class="breadcrumb-item"><a href="../ref_geo.html">ref_geo</a></li>
+      <li class="breadcrumb-item active">ref_geo.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de ref_geo.models</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">geoalchemy2</span> <span class="kn">import</span> <span class="n">Geometry</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">ForeignKey</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">deferred</span><span class="p">,</span> <span class="n">column_property</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">func</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="kn">import</span> <span class="n">JSONB</span>
+
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.serializers</span> <span class="kn">import</span> <span class="n">serializable</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla_geo.serializers</span> <span class="kn">import</span> <span class="n">geoserializable</span>
+
+<span class="kn">from</span> <span class="nn">.env</span> <span class="kn">import</span> <span class="n">db</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy.ext.hybrid</span> <span class="kn">import</span> <span class="n">hybrid_property</span>
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibAreasTypes">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibAreasTypes">[docs]</a>
+<span class="k">class</span> <span class="nc">BibAreasTypes</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibAreasTypes.__tablename__">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibAreasTypes.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_areas_types&quot;</span></div>
+
+<div class="viewcode-block" id="BibAreasTypes.__table_args__">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibAreasTypes.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;ref_geo&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BibAreasTypes.id_type">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibAreasTypes.id_type">[docs]</a>
+    <span class="n">id_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAreasTypes.type_name">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibAreasTypes.type_name">[docs]</a>
+    <span class="n">type_name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAreasTypes.type_code">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibAreasTypes.type_code">[docs]</a>
+    <span class="n">type_code</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAreasTypes.type_desc">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibAreasTypes.type_desc">[docs]</a>
+    <span class="n">type_desc</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAreasTypes.ref_name">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibAreasTypes.ref_name">[docs]</a>
+    <span class="n">ref_name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAreasTypes.ref_version">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibAreasTypes.ref_version">[docs]</a>
+    <span class="n">ref_version</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAreasTypes.num_version">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibAreasTypes.num_version">[docs]</a>
+    <span class="n">num_version</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAreasTypes.size_hierarchy">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibAreasTypes.size_hierarchy">[docs]</a>
+    <span class="n">size_hierarchy</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="cor_areas">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.cor_areas">[docs]</a>
+<span class="n">cor_areas</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_areas&quot;</span><span class="p">,</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_area_group&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;ref_geo.l_areas.id_area&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_area&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;ref_geo.l_areas.id_area&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;ref_geo&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+
+<span class="nd">@geoserializable</span>
+<div class="viewcode-block" id="LAreas">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LAreas">[docs]</a>
+<span class="k">class</span> <span class="nc">LAreas</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="LAreas.__tablename__">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LAreas.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;l_areas&quot;</span></div>
+
+<div class="viewcode-block" id="LAreas.__table_args__">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LAreas.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;ref_geo&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="LAreas.id_area">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LAreas.id_area">[docs]</a>
+    <span class="n">id_area</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LAreas.id_type">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LAreas.id_type">[docs]</a>
+    <span class="n">id_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;ref_geo.bib_areas_types.id_type&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LAreas.area_name">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LAreas.area_name">[docs]</a>
+    <span class="n">area_name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LAreas.area_code">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LAreas.area_code">[docs]</a>
+    <span class="n">area_code</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LAreas.geom">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LAreas.geom">[docs]</a>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">Geometry</span><span class="p">(</span><span class="s2">&quot;MULTIPOLYGON&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LAreas.centroid">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LAreas.centroid">[docs]</a>
+    <span class="n">centroid</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">Geometry</span><span class="p">(</span><span class="s2">&quot;POINT&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LAreas.geom_4326">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LAreas.geom_4326">[docs]</a>
+    <span class="n">geom_4326</span> <span class="o">=</span> <span class="n">deferred</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">Geometry</span><span class="p">(</span><span class="s2">&quot;MULTIPOLYGON&quot;</span><span class="p">,</span> <span class="mi">4326</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="LAreas.source">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LAreas.source">[docs]</a>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LAreas.enable">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LAreas.enable">[docs]</a>
+    <span class="n">enable</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LAreas.meta_create_date">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LAreas.meta_create_date">[docs]</a>
+    <span class="n">meta_create_date</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LAreas.meta_update_date">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LAreas.meta_update_date">[docs]</a>
+    <span class="n">meta_update_date</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">onupdate</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LAreas.area_type">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LAreas.area_type">[docs]</a>
+    <span class="n">area_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;BibAreasTypes&quot;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LAreas.parent_areas">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LAreas.parent_areas">[docs]</a>
+    <span class="n">parent_areas</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="s2">&quot;LAreas&quot;</span><span class="p">,</span>
+        <span class="n">secondary</span><span class="o">=</span><span class="n">cor_areas</span><span class="p">,</span>
+        <span class="n">primaryjoin</span><span class="o">=</span><span class="n">id_area</span> <span class="o">==</span> <span class="n">cor_areas</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_area</span><span class="p">,</span>
+        <span class="n">secondaryjoin</span><span class="o">=</span><span class="n">cor_areas</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id_area_group</span> <span class="o">==</span> <span class="n">id_area</span><span class="p">,</span>
+        <span class="n">backref</span><span class="o">=</span><span class="s2">&quot;child_areas&quot;</span><span class="p">,</span>
+        <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibLinearsTypes">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibLinearsTypes">[docs]</a>
+<span class="k">class</span> <span class="nc">BibLinearsTypes</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibLinearsTypes.__tablename__">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibLinearsTypes.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_linears_types&quot;</span></div>
+
+<div class="viewcode-block" id="BibLinearsTypes.__table_args__">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibLinearsTypes.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;ref_geo&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BibLinearsTypes.id_type">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibLinearsTypes.id_type">[docs]</a>
+    <span class="n">id_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibLinearsTypes.type_name">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibLinearsTypes.type_name">[docs]</a>
+    <span class="n">type_name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">200</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibLinearsTypes.type_code">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibLinearsTypes.type_code">[docs]</a>
+    <span class="n">type_code</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">25</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibLinearsTypes.type_desc">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibLinearsTypes.type_desc">[docs]</a>
+    <span class="n">type_desc</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibLinearsTypes.ref_name">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibLinearsTypes.ref_name">[docs]</a>
+    <span class="n">ref_name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">200</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="BibLinearsTypes.ref_version">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibLinearsTypes.ref_version">[docs]</a>
+    <span class="n">ref_version</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibLinearsTypes.num_version">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibLinearsTypes.num_version">[docs]</a>
+    <span class="n">num_version</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="cor_linear_group">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.cor_linear_group">[docs]</a>
+<span class="n">cor_linear_group</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_linear_group&quot;</span><span class="p">,</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_group&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;ref_geo.t_linear_groups.id_group&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_linear&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;ref_geo.l_linears.id_linear&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;ref_geo&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="cor_linear_area">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.cor_linear_area">[docs]</a>
+<span class="n">cor_linear_area</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_linear_area&quot;</span><span class="p">,</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_area&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;ref_geo.l_areas.id_area&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_linear&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;ref_geo.l_linears.id_linear&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;ref_geo&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+
+<span class="nd">@geoserializable</span>
+<div class="viewcode-block" id="LLinears">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LLinears">[docs]</a>
+<span class="k">class</span> <span class="nc">LLinears</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="LLinears.__tablename__">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LLinears.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;l_linears&quot;</span></div>
+
+<div class="viewcode-block" id="LLinears.__table_args__">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LLinears.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;ref_geo&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="LLinears.id_linear">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LLinears.id_linear">[docs]</a>
+    <span class="n">id_linear</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LLinears.id_type">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LLinears.id_type">[docs]</a>
+    <span class="n">id_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;ref_geo.bib_linears_types.id_type&quot;</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="LLinears.linear_name">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LLinears.linear_name">[docs]</a>
+    <span class="n">linear_name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">250</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LLinears.linear_code">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LLinears.linear_code">[docs]</a>
+    <span class="n">linear_code</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">25</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LLinears.geom">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LLinears.geom">[docs]</a>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">Geometry</span><span class="p">(</span><span class="s2">&quot;GEOMETRY&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LLinears.source">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LLinears.source">[docs]</a>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">250</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LLinears.enable">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LLinears.enable">[docs]</a>
+    <span class="n">enable</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LLinears.additional_data">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LLinears.additional_data">[docs]</a>
+    <span class="n">additional_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">JSONB</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LLinears.meta_create_date">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LLinears.meta_create_date">[docs]</a>
+    <span class="n">meta_create_date</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LLinears.meta_update_date">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LLinears.meta_update_date">[docs]</a>
+    <span class="n">meta_update_date</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">onupdate</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LLinears.type">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LLinears.type">[docs]</a>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;BibLinearsTypes&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LLinears.groups">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LLinears.groups">[docs]</a>
+    <span class="n">groups</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="s2">&quot;TLinearGroups&quot;</span><span class="p">,</span> <span class="n">secondary</span><span class="o">=</span><span class="n">cor_linear_group</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s2">&quot;linears&quot;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="LLinears.areas">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LLinears.areas">[docs]</a>
+    <span class="n">areas</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;LAreas&quot;</span><span class="p">,</span> <span class="n">secondary</span><span class="o">=</span><span class="n">cor_linear_area</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s2">&quot;linears&quot;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TLinearGroups">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.TLinearGroups">[docs]</a>
+<span class="k">class</span> <span class="nc">TLinearGroups</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="TLinearGroups.__table_name__">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.TLinearGroups.__table_name__">[docs]</a>
+    <span class="n">__table_name__</span> <span class="o">=</span> <span class="s2">&quot;t_linear_groups&quot;</span></div>
+
+<div class="viewcode-block" id="TLinearGroups.__table_args__">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.TLinearGroups.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;ref_geo&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TLinearGroups.id_group">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.TLinearGroups.id_group">[docs]</a>
+    <span class="n">id_group</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TLinearGroups.name">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.TLinearGroups.name">[docs]</a>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">250</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TLinearGroups.code">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.TLinearGroups.code">[docs]</a>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">25</span><span class="p">),</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibPointsTypes">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibPointsTypes">[docs]</a>
+<span class="k">class</span> <span class="nc">BibPointsTypes</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibPointsTypes.__tablename__">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibPointsTypes.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_points_types&quot;</span></div>
+
+<div class="viewcode-block" id="BibPointsTypes.__table_args__">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibPointsTypes.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;ref_geo&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BibPointsTypes.id_type">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibPointsTypes.id_type">[docs]</a>
+    <span class="n">id_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibPointsTypes.type_name">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibPointsTypes.type_name">[docs]</a>
+    <span class="n">type_name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">200</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibPointsTypes.type_code">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibPointsTypes.type_code">[docs]</a>
+    <span class="n">type_code</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">25</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibPointsTypes.type_desc">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibPointsTypes.type_desc">[docs]</a>
+    <span class="n">type_desc</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibPointsTypes.ref_name">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibPointsTypes.ref_name">[docs]</a>
+    <span class="n">ref_name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">200</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="BibPointsTypes.ref_version">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibPointsTypes.ref_version">[docs]</a>
+    <span class="n">ref_version</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibPointsTypes.num_version">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.BibPointsTypes.num_version">[docs]</a>
+    <span class="n">num_version</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span></div>
+</div>
+
+
+
+<span class="nd">@geoserializable</span>
+<div class="viewcode-block" id="LPoints">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LPoints">[docs]</a>
+<span class="k">class</span> <span class="nc">LPoints</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="LPoints.__tablename__">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LPoints.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;l_points&quot;</span></div>
+
+<div class="viewcode-block" id="LPoints.__table_args__">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LPoints.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;ref_geo&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="LPoints.id_point">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LPoints.id_point">[docs]</a>
+    <span class="n">id_point</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LPoints.id_type">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LPoints.id_type">[docs]</a>
+    <span class="n">id_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;ref_geo.bib_points_types.id_type&quot;</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LPoints.point_name">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LPoints.point_name">[docs]</a>
+    <span class="n">point_name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">250</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LPoints.point_code">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LPoints.point_code">[docs]</a>
+    <span class="n">point_code</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">25</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LPoints.geom">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LPoints.geom">[docs]</a>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">Geometry</span><span class="p">(</span><span class="s2">&quot;GEOMETRY&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LPoints.source">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LPoints.source">[docs]</a>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">250</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LPoints.enable">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LPoints.enable">[docs]</a>
+    <span class="n">enable</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LPoints.additional_data">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LPoints.additional_data">[docs]</a>
+    <span class="n">additional_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">JSONB</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LPoints.meta_create_date">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LPoints.meta_create_date">[docs]</a>
+    <span class="n">meta_create_date</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LPoints.meta_update_date">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LPoints.meta_update_date">[docs]</a>
+    <span class="n">meta_update_date</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">onupdate</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LPoints.type">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LPoints.type">[docs]</a>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;BibPointsTypes&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LPoints.geom_4326">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LPoints.geom_4326">[docs]</a>
+    <span class="n">geom_4326</span> <span class="o">=</span> <span class="n">column_property</span><span class="p">(</span>
+        <span class="n">func</span><span class="o">.</span><span class="n">ST_TRANSFORM</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="mi">4326</span><span class="p">),</span>
+        <span class="n">deferred</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="LiMunicipalities">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities">[docs]</a>
+<span class="k">class</span> <span class="nc">LiMunicipalities</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="LiMunicipalities.__tablename__">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;li_municipalities&quot;</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.__table_args__">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;ref_geo&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.id_municipality">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.id_municipality">[docs]</a>
+    <span class="n">id_municipality</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">25</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.id_area">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.id_area">[docs]</a>
+    <span class="n">id_area</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.status">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.status">[docs]</a>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.insee_com">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.insee_com">[docs]</a>
+    <span class="n">insee_com</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.nom_com">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.nom_com">[docs]</a>
+    <span class="n">nom_com</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.insee_arr">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.insee_arr">[docs]</a>
+    <span class="n">insee_arr</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.nom_dep">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.nom_dep">[docs]</a>
+    <span class="n">nom_dep</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.insee_dep">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.insee_dep">[docs]</a>
+    <span class="n">insee_dep</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.nom_reg">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.nom_reg">[docs]</a>
+    <span class="n">nom_reg</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.insee_reg">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.insee_reg">[docs]</a>
+    <span class="n">insee_reg</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.code_epci">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.code_epci">[docs]</a>
+    <span class="n">code_epci</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.plani_precision">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.plani_precision">[docs]</a>
+    <span class="n">plani_precision</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Float</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.siren_code">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.siren_code">[docs]</a>
+    <span class="n">siren_code</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.canton">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.canton">[docs]</a>
+    <span class="n">canton</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.population">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.population">[docs]</a>
+    <span class="n">population</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.multican">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.multican">[docs]</a>
+    <span class="n">multican</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.cc_nom">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.cc_nom">[docs]</a>
+    <span class="n">cc_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.cc_siren">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.cc_siren">[docs]</a>
+    <span class="n">cc_siren</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">BigInteger</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.cc_nature">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.cc_nature">[docs]</a>
+    <span class="n">cc_nature</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.cc_date_creation">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.cc_date_creation">[docs]</a>
+    <span class="n">cc_date_creation</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.cc_date_effet">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.cc_date_effet">[docs]</a>
+    <span class="n">cc_date_effet</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.insee_commune_nouvelle">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.insee_commune_nouvelle">[docs]</a>
+    <span class="n">insee_commune_nouvelle</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.meta_create_date">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.meta_create_date">[docs]</a>
+    <span class="n">meta_create_date</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LiMunicipalities.meta_update_date">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.meta_update_date">[docs]</a>
+    <span class="n">meta_update_date</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span></div>
+
+
+    <span class="nd">@hybrid_property</span>
+<div class="viewcode-block" id="LiMunicipalities.nom_com_dept">
+<a class="viewcode-back" href="../../autoapi/ref_geo/models/index.html#ref_geo.models.LiMunicipalities.nom_com_dept">[docs]</a>
+    <span class="k">def</span> <span class="nf">nom_com_dept</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nom_com</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">insee_dep</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

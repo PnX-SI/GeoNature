@@ -1,0 +1,87 @@
+:py:mod:`apptax.utils.utilssqlalchemy`
+======================================
+
+.. py:module:: apptax.utils.utilssqlalchemy
+
+.. autoapi-nested-parse::
+
+   Fonctions utilitaires
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   apptax.utils.utilssqlalchemy.GenericTable
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.utils.utilssqlalchemy.serializeQuery
+   apptax.utils.utilssqlalchemy.serializeQueryOneResult
+   apptax.utils.utilssqlalchemy._normalize
+   apptax.utils.utilssqlalchemy.normalize
+   apptax.utils.utilssqlalchemy.json_resp
+   apptax.utils.utilssqlalchemy.csv_resp
+   apptax.utils.utilssqlalchemy.dict_merge
+
+
+
+.. py:class:: GenericTable(tableName, schemaName)
+
+
+   .. py:method:: serialize(data)
+
+
+
+.. py:function:: serializeQuery(data, columnDef)
+
+
+.. py:function:: serializeQueryOneResult(row, columnDef)
+
+
+.. py:function:: _normalize(obj, columns)
+
+   Retourne un dictionnaire dont les clés sont le tableau de colonnes
+   fourni (`columns`) et les valeurs sont issues de l'objet `obj` fourni.
+
+
+.. py:function:: normalize(obj, *parents)
+
+   Prend un objet mappé SQLAlchemy et le transforme en dictionnaire pour
+   être sérialisé en JSON.
+   Le second paramêtre `parents` permet de compléter la normalisation
+   avec les données des tables liées par une relation d'héritage.
+
+
+.. py:function:: json_resp(fn)
+
+   Décorateur transformant le résultat renvoyé par une vue
+   en objet JSON
+
+
+.. py:function:: csv_resp(fn)
+
+   Décorateur transformant le résultat renvoyé en un fichier csv
+
+
+.. py:function:: dict_merge(dct, merge_dct)
+
+   Recursive dict merge. Inspired by :meth:``dict.update()``, instead of
+   updating only top-level keys, dict_merge recurses down into dicts nested
+   to an arbitrary depth, updating keys. The ``merge_dct`` is merged into
+   ``dct``.
+   :param dct: dict onto which the merge is executed
+   :param merge_dct: dct merged into dct
+   :return: None
+
+

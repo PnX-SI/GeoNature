@@ -1,0 +1,47 @@
+:py:mod:`app.app`
+=================
+
+.. py:module:: app.app
+
+.. autoapi-nested-parse::
+
+   Serveur de l'application UsersHub
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   app.app.configure_alembic
+   app.app.create_app
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   app.app.migrate
+
+
+.. py:data:: migrate
+
+   
+
+.. py:function:: configure_alembic(alembic_config)
+
+   This function add to the 'version_locations' parameter of the alembic config the
+   'migrations' entry point value of the 'gn_module' group for all modules having such entry point.
+   Thus, alembic will find migrations of all installed geonature modules.
+
+
+.. py:function:: create_app()
+
+

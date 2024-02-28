@@ -1,0 +1,38 @@
+:py:mod:`apptax.taxonomie.routesbibattributs`
+=============================================
+
+.. py:module:: apptax.taxonomie.routesbibattributs
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.routesbibattributs.get_bibattributs
+   apptax.taxonomie.routesbibattributs.get_bibattributsbyTaxref
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.routesbibattributs.adresses
+
+
+.. py:data:: adresses
+
+   
+
+.. py:function:: get_bibattributs(id=None)
+
+
+.. py:function:: get_bibattributsbyTaxref(regne, group2_inpn=None)
+
+

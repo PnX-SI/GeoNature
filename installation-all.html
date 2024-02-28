@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" >
+<html class="writer-html5" lang="fr" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Installation globale &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/translations.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=e8570148"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=d99ca74e"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Recherche" href="search.html" /> 
@@ -27,15 +30,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="index.html" class="icon icon-home"> GeoNature
-            <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GeoNature
+              <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -49,6 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-references.html">API REFERENCES</a></li>
 </ul>
 
         </div>
@@ -64,8 +72,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Installation globale</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Installation globale</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/installation-all.rst.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
@@ -76,7 +84,7 @@
            <div itemprop="articleBody">
              
   <section id="installation-globale">
-<h1>Installation globale<a class="headerlink" href="#installation-globale" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>Installation globale<a class="headerlink" href="#installation-globale" title="Link to this heading"></a></h1>
 <p>Ce document décrit une procédure d’installation packagée de GeoNature.</p>
 <p>En lançant le script d’installation ci-dessous, l’application GeoNature ainsi que ses dépendances seront installées sur un seul et même serveur au sein d’une seule base de données.</p>
 <p>Les applications suivantes seront installées :</p>
@@ -87,12 +95,12 @@
 </ul>
 <p>Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre la documentation <a class="reference internal" href="installation.html#installation-standalone"><span class="std std-ref">Installation de GeoNature uniquement</span></a>.</p>
 <section id="installation-des-applications">
-<h2>Installation des applications<a class="headerlink" href="#installation-des-applications" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Installation des applications<a class="headerlink" href="#installation-des-applications" title="Link to this heading"></a></h2>
 <p>Commencer la procédure en se connectant au serveur en SSH avec l’utilisateur dédié précédemment créé lors de l’étape de <a class="reference internal" href="installation.html#preparation-server"><span class="std std-ref">Préparation du serveur</span></a> (usuellement <code class="docutils literal notranslate"><span class="pre">geonatureadmin</span></code>).</p>
 <ul>
 <li><p>Se placer à la racine du <code class="docutils literal notranslate"><span class="pre">home</span></code> de l’utilisateur puis récupérer les scripts d’installation (X.Y.Z à remplacer par le numéro de la <a class="reference external" href="https://github.com/PnEcrins/GeoNature/releases">dernière version stable de GeoNature</a>). Ces scripts installent les applications GeoNature, TaxHub et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini
-<span class="gp">$ </span>wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wget<span class="w"> </span>https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini
+<span class="gp">$ </span>wget<span class="w"> </span>https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh
 </pre></div>
 </div>
 </li>
@@ -100,25 +108,25 @@
 <p><em>Attention</em> : l’installation globale fonctionne uniquement si les scripts sont placés à la racine du <code class="docutils literal notranslate"><span class="pre">home</span></code> de l’utilisateur courant.</p>
 <ul>
 <li><p>Configurez votre installation en adaptant le fichier <code class="docutils literal notranslate"><span class="pre">install_all.ini</span></code> :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>nano install_all.ini
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>nano<span class="w"> </span>install_all.ini
 </pre></div>
 </div>
 </li>
 </ul>
 <p>Renseignez à minima votre utilisateur linux, l’URL (ou IP) de votre serveur (avec un <code class="docutils literal notranslate"><span class="pre">/</span></code> à la fin) ainsi que l’utilisateur PostgreSQL que vous souhaitez et son mot de passe. Le script se chargera d’installer PostgreSQL et de créer l’utilisateur de base de données que vous avez renseigné. Pour une installation de développement, pensez à renseigner <code class="docutils literal notranslate"><span class="pre">mode=dev</span></code>.</p>
-<p>Pour la définition des numéros de version des dépendances, voir le <a class="reference external" href="versions-compatibility.rst">tableau de compatibilité</a> des versions de GeoNature avec ses dépendances. Il est déconseillé de modifier ces versions, chaque nouvelle version de GeoNature étant fournie avec les versions adaptées de ses dépendances.</p>
+<p>Il est déconseillé de modifier les numéros de version des dépendances, chaque nouvelle version de GeoNature étant fournie avec les versions adaptées de ses dépendances.</p>
 <ul>
 <li><p>Lancer l’installation :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>touch install_all.log
-<span class="gp">$ </span>chmod +x install_all.sh
-<span class="gp">$ </span>./install_all.sh <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">|</span> tee install_all.log
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>touch<span class="w"> </span>install_all.log
+<span class="gp">$ </span>chmod<span class="w"> </span>+x<span class="w"> </span>install_all.sh
+<span class="gp">$ </span>./install_all.sh<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>install_all.log
 </pre></div>
 </div>
 </li>
 </ul>
 <p>Une fois l’installation terminée, lancez la commande suivante:</p>
 <blockquote>
-<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">exec</span> bash
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">exec</span><span class="w"> </span>bash
 </pre></div>
 </div>
 </div></blockquote>
@@ -130,10 +138,10 @@
 </ul>
 <p>Vous pouvez vous connecter avec l’utilisateur intégré par défaut (admin/admin).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Note</dt>
+<dt class="field-odd">Note<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Pour en savoir plus TaxHub, sa configuration et son utilisation, reportez-vous à sa documentation : <a class="reference external" href="https://taxhub.readthedocs.io">https://taxhub.readthedocs.io</a>. Idem pour UsersHub et sa documentation : <a class="reference external" href="https://usershub.readthedocs.io">https://usershub.readthedocs.io</a></p>
 </dd>
-<dt class="field-even">Note</dt>
+<dt class="field-even">Note<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p>GeoNature-atlas compatible avec GeoNature V2 est disponible sur <a class="reference external" href="https://github.com/PnX-SI/GeoNature-atlas">https://github.com/PnX-SI/GeoNature-atlas</a></p></li>
 <li><p>Vous pouvez utiliser le schéma <code class="docutils literal notranslate"><span class="pre">ref_geo</span></code> de GeoNature pour votre territoire, les communes et les mailles.</p></li>
@@ -142,25 +150,25 @@
 </dl>
 <p>Si vous rencontrez une erreur, se reporter aux fichiers de logs <code class="docutils literal notranslate"><span class="pre">/home/`whoami`/install_all.log</span></code>.</p>
 <dl class="field-list">
-<dt class="field-odd">Note</dt>
+<dt class="field-odd">Note<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre adresse, editez le fichier de configuration Apache (<code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/geonature.conf</span></code>) en modifiant l’alias :</p>
 <ul class="simple">
 <li><p>Pour <code class="docutils literal notranslate"><span class="pre">/</span></code>: <code class="docutils literal notranslate"><span class="pre">Alias</span> <span class="pre">/</span> <span class="pre">/home/test/geonature/frontend/dist</span></code></p></li>
 <li><p>Pour <code class="docutils literal notranslate"><span class="pre">/saisie</span></code> : <code class="docutils literal notranslate"><span class="pre">Alias</span> <span class="pre">/saisie</span> <span class="pre">/home/test/geonature/frontend/dist</span></code></p></li>
 </ul>
 </dd>
-<dt class="field-even">Note</dt>
+<dt class="field-even">Note<span class="colon">:</span></dt>
 <dd class="field-even"><p>Par défaut et par mesure de sécurité, la base de données est accessible uniquement localement par la machine où elle est installée. Pour accéder à la BDD depuis une autre machine (pour s’y connecter avec QGIS, pgAdmin ou autre), vous pouvez consulter cette documentation <a class="reference external" href="https://github.com/PnX-SI/Ressources-techniques/blob/master/PostgreSQL/acces-bdd.rst">https://github.com/PnX-SI/Ressources-techniques/blob/master/PostgreSQL/acces-bdd.rst</a>.
 Attention, exposer la base de données sur internet n’est pas recommandé. Il est préférable de se connecter via un tunnel SSH. QGIS et la plupart des outils d’administration de base de données permettent d’établir une connexion à la base de cette manière.
 Attention si vous redémarrez PostgreSQL (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">service</span> <span class="pre">postgresql</span> <span class="pre">restart</span></code>), il faut ensuite redémarrer les API de GeoNature, UsersHub et TaxHub :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo systemctl restart geonature
-<span class="gp">$ </span>sudo systemctl restart geonature-worker
-<span class="gp">$ </span>sudo systemctl restart usershub
-<span class="gp">$ </span>sudo systemctl restart taxhub
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>geonature
+<span class="gp">$ </span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>geonature-worker
+<span class="gp">$ </span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>usershub
+<span class="gp">$ </span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>taxhub
 </pre></div>
 </div>
 </dd>
-<dt class="field-odd">Note</dt>
+<dt class="field-odd">Note<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Il est aussi important de configurer l’accès au serveur en HTTPS plutôt qu’en HTTP pour chiffrer le contenu des échanges entre le navigateur et le serveur (<a class="reference external" href="https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/">https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/</a>).</p>
 </dd>
 </dl>
@@ -175,7 +183,7 @@ Attention si vous redémarrez PostgreSQL (<code class="docutils literal notransl
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2018-2023, PnE, PnC.</p>
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
   </div>
 
   Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>apptax.taxonomie.commands.taxref_v15_v16 &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">apptax.taxonomie.commands.taxref_v15_v16</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de apptax.taxonomie.commands.taxref_v15_v16</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">zipfile</span> <span class="kn">import</span> <span class="n">ZipFile</span>
+
+<span class="kn">import</span> <span class="nn">click</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.schema</span> <span class="kn">import</span> <span class="n">MetaData</span>
+<span class="kn">from</span> <span class="nn">flask.cli</span> <span class="kn">import</span> <span class="n">with_appcontext</span>
+
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.migrations.utils</span> <span class="kn">import</span> <span class="n">open_remote_file</span>
+
+<span class="kn">from</span> <span class="nn">ref_geo.models</span> <span class="kn">import</span> <span class="n">LAreas</span><span class="p">,</span> <span class="n">BibAreasTypes</span>
+
+<span class="kn">from</span> <span class="nn">apptax.database</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">apptax.taxonomie.commands.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">copy_from_csv</span><span class="p">,</span>
+    <span class="n">refresh_taxref_vm</span><span class="p">,</span>
+    <span class="n">import_bdc_statuts</span><span class="p">,</span>
+    <span class="n">populate_bdc_statut_cor_text_area</span><span class="p">,</span>
+    <span class="n">populate_enable_bdc_statut_text</span><span class="p">,</span>
+    <span class="n">insert_taxref_numversion</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">apptax.taxonomie.models</span> <span class="kn">import</span> <span class="n">Taxref</span><span class="p">,</span> <span class="n">TMetaTaxref</span>
+
+
+<div class="viewcode-block" id="base_url">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/taxref_v15_v16/index.html#apptax.taxonomie.commands.taxref_v15_v16.base_url">[docs]</a>
+<span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;http://geonature.fr/data/inpn/taxonomie/&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="import_bdc_statuts_v15">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/taxref_v15_v16/index.html#apptax.taxonomie.commands.taxref_v15_v16.import_bdc_statuts_v15">[docs]</a>
+<span class="k">def</span> <span class="nf">import_bdc_statuts_v15</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="n">import_bdc_statuts</span><span class="p">(</span>
+        <span class="n">logger</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="p">,</span>
+        <span class="s2">&quot;BDC-statuts-15.zip&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;BDC_STATUTS_TYPES_15.csv&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;BDC_STATUTS_15.csv&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="import_bdc_statuts_v16">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/taxref_v15_v16/index.html#apptax.taxonomie.commands.taxref_v15_v16.import_bdc_statuts_v16">[docs]</a>
+<span class="k">def</span> <span class="nf">import_bdc_statuts_v16</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="n">import_bdc_statuts</span><span class="p">(</span>
+        <span class="n">logger</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="p">,</span>
+        <span class="s2">&quot;BDC-Statuts-v16.zip&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;BDC_STATUTS_TYPES_16.csv&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;BDC_STATUTS_16.csv&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="import_taxref">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/taxref_v15_v16/index.html#apptax.taxonomie.commands.taxref_v15_v16.import_taxref">[docs]</a>
+<span class="k">def</span> <span class="nf">import_taxref</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">num_version</span><span class="p">,</span> <span class="n">taxref_archive_name</span><span class="p">,</span> <span class="n">taxref_file_name</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">open_remote_file</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span> <span class="n">taxref_archive_name</span><span class="p">,</span> <span class="n">open_fct</span><span class="o">=</span><span class="n">ZipFile</span><span class="p">)</span> <span class="k">as</span> <span class="n">archive</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">archive</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;habitats_note.csv&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Insert TAXREF v</span><span class="si">{</span><span class="n">num_version</span><span class="si">}</span><span class="s2"> habitats…&quot;</span><span class="p">)</span>
+            <span class="n">copy_from_csv</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;bib_taxref_habitats&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;WIN1252&quot;</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">archive</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;rangs_note.csv&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Insert TAXREF v</span><span class="si">{</span><span class="n">num_version</span><span class="si">}</span><span class="s2"> rangs…&quot;</span><span class="p">)</span>
+            <span class="n">copy_from_csv</span><span class="p">(</span>
+                <span class="n">f</span><span class="p">,</span>
+                <span class="s2">&quot;bib_taxref_rangs&quot;</span><span class="p">,</span>
+                <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;WIN1252&quot;</span><span class="p">,</span>
+                <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;;&quot;</span><span class="p">,</span>
+                <span class="n">dest_cols</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;tri_rang&quot;</span><span class="p">,</span> <span class="s2">&quot;id_rang&quot;</span><span class="p">,</span> <span class="s2">&quot;nom_rang&quot;</span><span class="p">,</span> <span class="s2">&quot;nom_rang_en&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">with</span> <span class="n">archive</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;statuts_note.csv&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Insert TAXREF v</span><span class="si">{</span><span class="n">num_version</span><span class="si">}</span><span class="s2"> statuts…&quot;</span><span class="p">)</span>
+            <span class="n">copy_from_csv</span><span class="p">(</span>
+                <span class="n">f</span><span class="p">,</span>
+                <span class="s2">&quot;bib_taxref_statuts&quot;</span><span class="p">,</span>
+                <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;WIN1252&quot;</span><span class="p">,</span>
+                <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;;&quot;</span><span class="p">,</span>
+                <span class="n">dest_cols</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;id_statut&quot;</span><span class="p">,</span> <span class="s2">&quot;nom_statut&quot;</span><span class="p">),</span>
+                <span class="n">source_cols</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;statut&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">with</span> <span class="n">archive</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">taxref_file_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Insert TAXREF v</span><span class="si">{</span><span class="n">num_version</span><span class="si">}</span><span class="s2"> referentiel…&quot;</span><span class="p">)</span>
+            <span class="n">copy_from_csv</span><span class="p">(</span>
+                <span class="n">f</span><span class="p">,</span>
+                <span class="s2">&quot;taxref&quot;</span><span class="p">,</span>
+                <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">dest_cols</span><span class="o">=</span><span class="p">(</span>
+                    <span class="s2">&quot;cd_nom&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;id_statut&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;id_habitat&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;id_rang&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;regne&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;phylum&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;classe&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;ordre&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;famille&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;sous_famille&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;tribu&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;cd_taxsup&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;cd_sup&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;cd_ref&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;lb_nom&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;lb_auteur&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;nom_complet&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;nom_complet_html&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;nom_valide&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;nom_vern&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;nom_vern_eng&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;group1_inpn&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;group2_inpn&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;group3_inpn&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;url&quot;</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">source_cols</span><span class="o">=</span><span class="p">(</span>
+                    <span class="s2">&quot;cd_nom::int&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;NULLIF(fr, &#39;&#39;) as id_statut&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;habitat::int as id_habitat&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;rang as id_rang&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;regne&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;phylum&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;classe&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;ordre&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;famille&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;sous_famille&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;tribu&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;cd_taxsup::int&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;cd_sup::int&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;cd_ref::int&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;lb_nom&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;substring(lb_auteur, 1, 250)&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;nom_complet&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;nom_complet_html&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;nom_valide&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;substring(nom_vern,1,1000)&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;nom_vern_eng&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;group1_inpn&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;group2_inpn&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;group3_inpn&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;url&quot;</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+    <span class="n">insert_taxref_numversion</span><span class="p">(</span><span class="n">num_version</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--skip-bdc-statuts&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Skip import of BDC Statuts&quot;</span><span class="p">)</span>
+<span class="nd">@with_appcontext</span>
+<div class="viewcode-block" id="import_v15">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/taxref_v15_v16/index.html#apptax.taxonomie.commands.taxref_v15_v16.import_v15">[docs]</a>
+<span class="k">def</span> <span class="nf">import_v15</span><span class="p">(</span><span class="n">skip_bdc_statuts</span><span class="p">):</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+
+    <span class="n">import_taxref</span><span class="p">(</span>
+        <span class="n">logger</span><span class="p">,</span>
+        <span class="n">num_version</span><span class="o">=</span><span class="s2">&quot;15&quot;</span><span class="p">,</span>
+        <span class="n">taxref_archive_name</span><span class="o">=</span><span class="s2">&quot;TAXREF_v15_2021.zip&quot;</span><span class="p">,</span>
+        <span class="n">taxref_file_name</span><span class="o">=</span><span class="s2">&quot;TAXREFv15.txt&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_bdc_statuts</span><span class="p">:</span>
+        <span class="n">import_bdc_statuts_v15</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Skipping BDC statuts.&quot;</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Refresh materialized views…&quot;</span><span class="p">)</span>
+    <span class="n">refresh_taxref_vm</span><span class="p">()</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Committing…&quot;</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--skip-bdc-statuts&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Skip import of BDC Statuts&quot;</span><span class="p">)</span>
+<span class="nd">@with_appcontext</span>
+<div class="viewcode-block" id="import_v16">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/taxref_v15_v16/index.html#apptax.taxonomie.commands.taxref_v15_v16.import_v16">[docs]</a>
+<span class="k">def</span> <span class="nf">import_v16</span><span class="p">(</span><span class="n">skip_bdc_statuts</span><span class="p">):</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+
+    <span class="n">import_taxref</span><span class="p">(</span>
+        <span class="n">logger</span><span class="p">,</span>
+        <span class="n">num_version</span><span class="o">=</span><span class="s2">&quot;16&quot;</span><span class="p">,</span>
+        <span class="n">taxref_archive_name</span><span class="o">=</span><span class="s2">&quot;TAXREF_v16_2022.zip&quot;</span><span class="p">,</span>
+        <span class="n">taxref_file_name</span><span class="o">=</span><span class="s2">&quot;TAXREFv16.txt&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_bdc_statuts</span><span class="p">:</span>
+        <span class="n">import_bdc_statuts_v16</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Skipping BDC statuts.&quot;</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Refresh materialized views…&quot;</span><span class="p">)</span>
+    <span class="n">refresh_taxref_vm</span><span class="p">()</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Committing…&quot;</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@with_appcontext</span>
+<div class="viewcode-block" id="import_bdc_v15">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/taxref_v15_v16/index.html#apptax.taxonomie.commands.taxref_v15_v16.import_bdc_v15">[docs]</a>
+<span class="k">def</span> <span class="nf">import_bdc_v15</span><span class="p">():</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+    <span class="n">import_bdc_statuts_v15</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@with_appcontext</span>
+<div class="viewcode-block" id="import_bdc_v16">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/taxref_v15_v16/index.html#apptax.taxonomie.commands.taxref_v15_v16.import_bdc_v16">[docs]</a>
+<span class="k">def</span> <span class="nf">import_bdc_v16</span><span class="p">():</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+    <span class="n">import_bdc_statuts_v16</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@with_appcontext</span>
+<div class="viewcode-block" id="link_bdc_statut_to_areas">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/taxref_v15_v16/index.html#apptax.taxonomie.commands.taxref_v15_v16.link_bdc_statut_to_areas">[docs]</a>
+<span class="k">def</span> <span class="nf">link_bdc_statut_to_areas</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Insert or update table bdc_statut_cor_text_area&quot;&quot;&quot;</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+    <span class="c1"># test ref_geo.l_areas departements is populated</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+        <span class="n">LAreas</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">LAreas</span><span class="o">.</span><span class="n">area_type</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">BibAreasTypes</span><span class="o">.</span><span class="n">type_code</span> <span class="o">==</span> <span class="s2">&quot;DEP&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="n">deps_present</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">scalar</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">deps_present</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="s2">&quot;Departements is not populated run &#39;flask db upgrade ref_geo_fr_departments@head&#39; before…&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span>
+    <span class="c1"># test taxonomie.taxref is populated</span>
+    <span class="n">nb_taxref</span> <span class="o">=</span> <span class="n">Taxref</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">nb_taxref</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Taxref is not populated run &#39;flask taxref import-v16&#39; before…&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="c1"># Populate bdc_statut_cor_text_area</span>
+    <span class="n">populate_bdc_statut_cor_text_area</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--clean&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Disable all text of BDC Statuts before&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--dept&quot;</span><span class="p">,</span> <span class="s2">&quot;-d&quot;</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Code of departement. You can set multiple departments&quot;</span>
+<span class="p">)</span>
+<span class="nd">@with_appcontext</span>
+<div class="viewcode-block" id="enable_bdc_statut_text">
+<a class="viewcode-back" href="../../../../autoapi/apptax/taxonomie/commands/taxref_v15_v16/index.html#apptax.taxonomie.commands.taxref_v15_v16.enable_bdc_statut_text">[docs]</a>
+<span class="k">def</span> <span class="nf">enable_bdc_statut_text</span><span class="p">(</span><span class="n">clean</span><span class="p">,</span> <span class="n">dept</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enable texts of BDC Statuts for departements&quot;&quot;&quot;</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+    <span class="n">populate_enable_bdc_statut_text</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">clean</span><span class="p">,</span> <span class="n">dept</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

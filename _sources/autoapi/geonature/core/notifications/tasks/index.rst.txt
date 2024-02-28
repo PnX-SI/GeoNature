@@ -1,0 +1,34 @@
+:py:mod:`geonature.core.notifications.tasks`
+============================================
+
+.. py:module:: geonature.core.notifications.tasks
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.notifications.tasks.send_notification_mail
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.notifications.tasks.logger
+
+
+.. py:data:: logger
+
+   
+
+.. py:function:: send_notification_mail(self, subject, content, recipient)
+
+

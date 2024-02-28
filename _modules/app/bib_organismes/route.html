@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.bib_organismes.route &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">app.bib_organismes.route</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de app.bib_organismes.route</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Route des Organismes</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Blueprint</span><span class="p">,</span>
+    <span class="n">redirect</span><span class="p">,</span>
+    <span class="n">url_for</span><span class="p">,</span>
+    <span class="n">render_template</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">,</span>
+    <span class="n">flash</span><span class="p">,</span>
+    <span class="n">current_app</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">pypnusershub</span> <span class="kn">import</span> <span class="n">routes</span> <span class="k">as</span> <span class="n">fnauth</span>
+
+<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">genericRepository</span>
+<span class="kn">from</span> <span class="nn">app.bib_organismes</span> <span class="kn">import</span> <span class="n">forms</span> <span class="k">as</span> <span class="n">bib_organismeforms</span>
+<span class="kn">from</span> <span class="nn">app.models</span> <span class="kn">import</span> <span class="n">Bib_Organismes</span><span class="p">,</span> <span class="n">TRoles</span>
+<span class="kn">from</span> <span class="nn">app.utils.utils_all</span> <span class="kn">import</span> <span class="n">strigify_dict</span>
+
+
+<div class="viewcode-block" id="URL_REDIRECT">
+<a class="viewcode-back" href="../../../autoapi/app/bib_organismes/route/index.html#app.bib_organismes.route.URL_REDIRECT">[docs]</a>
+<span class="n">URL_REDIRECT</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_REDIRECT&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="URL_APPLICATION">
+<a class="viewcode-back" href="../../../autoapi/app/bib_organismes/route/index.html#app.bib_organismes.route.URL_APPLICATION">[docs]</a>
+<span class="n">URL_APPLICATION</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;URL_APPLICATION&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="route">
+<a class="viewcode-back" href="../../../autoapi/app/bib_organismes/route/index.html#app.bib_organismes.route.route">[docs]</a>
+<span class="n">route</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s2">&quot;organisme&quot;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;organisms/list&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span>
+    <span class="mi">3</span><span class="p">,</span>
+<span class="p">)</span>
+<div class="viewcode-block" id="organisms">
+<a class="viewcode-back" href="../../../autoapi/app/bib_organismes/route/index.html#app.bib_organismes.route.organisms">[docs]</a>
+<span class="k">def</span> <span class="nf">organisms</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Route qui affiche la liste des Organismes</span>
+<span class="sd">    Retourne un template avec pour paramètres :</span>
+<span class="sd">                                            - une entête de tableau --&gt; fLine</span>
+<span class="sd">                                            - le nom des colonnes de la base --&gt; line</span>
+<span class="sd">                                            - le contenu du tableau --&gt; table</span>
+<span class="sd">                                            - le chemin de mise à jour --&gt; pathU</span>
+<span class="sd">                                            - le chemin de suppression --&gt; pathD</span>
+<span class="sd">                                            - le chemin d&#39;ajout --&gt; pathA</span>
+<span class="sd">                                            - le chemin de la page d&#39;information --&gt; pathI</span>
+<span class="sd">                                            - une clé (clé primaire dans la plupart des cas) --&gt; key</span>
+<span class="sd">                                            - un nom (nom de la table) pour le bouton ajout --&gt; name</span>
+<span class="sd">                                            - un nom de listes --&gt; name_list</span>
+<span class="sd">                                            - ajoute une colonne pour accéder aux infos de l&#39;utilisateur --&gt; see</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fLine</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;ID&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Nom&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Adresse&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Code postal&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ville&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Telephone&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Fax&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Email&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;id_organisme&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nom_organisme&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;adresse_organisme&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cp_organisme&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ville_organisme&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tel_organisme&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;fax_organisme&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;email_organisme&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">contents</span> <span class="o">=</span> <span class="n">Bib_Organismes</span><span class="o">.</span><span class="n">get_all</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="s2">&quot;nom_organisme&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span>
+        <span class="s2">&quot;table_database.html&quot;</span><span class="p">,</span>
+        <span class="n">table</span><span class="o">=</span><span class="n">contents</span><span class="p">,</span>
+        <span class="n">fLine</span><span class="o">=</span><span class="n">fLine</span><span class="p">,</span>
+        <span class="n">line</span><span class="o">=</span><span class="n">columns</span><span class="p">,</span>
+        <span class="n">key</span><span class="o">=</span><span class="s2">&quot;id_organisme&quot;</span><span class="p">,</span>
+        <span class="n">pathI</span><span class="o">=</span><span class="n">URL_APPLICATION</span> <span class="o">+</span> <span class="s2">&quot;/organism/info/&quot;</span><span class="p">,</span>
+        <span class="n">pathU</span><span class="o">=</span><span class="n">URL_APPLICATION</span> <span class="o">+</span> <span class="s2">&quot;/organism/update/&quot;</span><span class="p">,</span>
+        <span class="n">pathD</span><span class="o">=</span><span class="n">URL_APPLICATION</span> <span class="o">+</span> <span class="s2">&quot;/organisms/delete/&quot;</span><span class="p">,</span>
+        <span class="n">pathA</span><span class="o">=</span><span class="n">URL_APPLICATION</span> <span class="o">+</span> <span class="s2">&quot;/organism/add/new&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;un organisme&quot;</span><span class="p">,</span>
+        <span class="n">name_list</span><span class="o">=</span><span class="s2">&quot;Organismes&quot;</span><span class="p">,</span>
+        <span class="n">see</span><span class="o">=</span><span class="s2">&quot;True&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
+    <span class="s2">&quot;organism/add/new&quot;</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id_organisme&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;organism/update/&lt;id_organisme&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span>
+    <span class="mi">6</span><span class="p">,</span>
+<span class="p">)</span>
+<div class="viewcode-block" id="addorupdate">
+<a class="viewcode-back" href="../../../autoapi/app/bib_organismes/route/index.html#app.bib_organismes.route.addorupdate">[docs]</a>
+<span class="k">def</span> <span class="nf">addorupdate</span><span class="p">(</span><span class="n">id_organisme</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Route affichant un formulaire vierge ou non (selon l&#39;url) pour ajouter ou mettre à jour un organisme</span>
+<span class="sd">    L&#39;envoie du formulaire permet l&#39;ajout ou la mise à jour de l&#39;éléments dans la base</span>
+<span class="sd">    Retourne un template accompagné du formulaire</span>
+<span class="sd">    Une fois le formulaire validé on retourne une redirection vers la liste d&#39;organisme</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">form</span> <span class="o">=</span> <span class="n">bib_organismeforms</span><span class="o">.</span><span class="n">Organisme</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">id_organisme</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">()</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+                <span class="n">form_org</span> <span class="o">=</span> <span class="n">pops</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                <span class="n">form_org</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;id_organisme&quot;</span><span class="p">)</span>
+                <span class="n">Bib_Organismes</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">form_org</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;organisme.organisms&quot;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flash</span><span class="p">(</span><span class="n">strigify_dict</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">),</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">org</span> <span class="o">=</span> <span class="n">Bib_Organismes</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="n">id_organisme</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
+            <span class="n">form</span> <span class="o">=</span> <span class="n">bib_organismeforms</span><span class="o">.</span><span class="n">Organisme</span><span class="p">(</span><span class="o">**</span><span class="n">org</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">()</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+                <span class="n">form_org</span> <span class="o">=</span> <span class="n">pops</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                <span class="n">form_org</span><span class="p">[</span><span class="s2">&quot;id_organisme&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">org</span><span class="p">[</span><span class="s2">&quot;id_organisme&quot;</span><span class="p">]</span>
+                <span class="n">Bib_Organismes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">form_org</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;organisme.organisms&quot;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flash</span><span class="p">(</span><span class="n">strigify_dict</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">),</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;organism.html&quot;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Formulaire Organisme&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;organisms/delete/&lt;id_organisme&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span>
+    <span class="mi">6</span><span class="p">,</span>
+<span class="p">)</span>
+<div class="viewcode-block" id="delete">
+<a class="viewcode-back" href="../../../autoapi/app/bib_organismes/route/index.html#app.bib_organismes.route.delete">[docs]</a>
+<span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="n">id_organisme</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Route qui supprime un organisme dont l&#39;id est donné en paramètres dans l&#39;url</span>
+<span class="sd">    Retourne une redirection vers la liste d&#39;organismes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">Bib_Organismes</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">id_organisme</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;organisme.organisms&quot;</span><span class="p">))</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;organism/info/&lt;id_organisme&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span>
+    <span class="mi">3</span><span class="p">,</span>
+<span class="p">)</span>
+<div class="viewcode-block" id="info">
+<a class="viewcode-back" href="../../../autoapi/app/bib_organismes/route/index.html#app.bib_organismes.route.info">[docs]</a>
+<span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="n">id_organisme</span><span class="p">):</span>
+    <span class="n">org</span> <span class="o">=</span> <span class="n">Bib_Organismes</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="n">id_organisme</span><span class="p">)</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">TRoles</span><span class="o">.</span><span class="n">get_all</span><span class="p">(</span>
+        <span class="n">as_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">params</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span><span class="s2">&quot;col&quot;</span><span class="p">:</span> <span class="s2">&quot;active&quot;</span><span class="p">,</span> <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">&quot;col&quot;</span><span class="p">:</span> <span class="s2">&quot;id_organisme&quot;</span><span class="p">,</span> <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="n">id_organisme</span><span class="p">},</span>
+        <span class="p">],</span>
+        <span class="n">order_by</span><span class="o">=</span><span class="s2">&quot;nom_role&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">users</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">as_dict_full_name</span><span class="p">()</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">q</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;info_organisme.html&quot;</span><span class="p">,</span> <span class="n">org</span><span class="o">=</span><span class="n">org</span><span class="p">,</span> <span class="n">users</span><span class="o">=</span><span class="n">users</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="pops">
+<a class="viewcode-back" href="../../../autoapi/app/bib_organismes/route/index.html#app.bib_organismes.route.pops">[docs]</a>
+<span class="k">def</span> <span class="nf">pops</span><span class="p">(</span><span class="n">form</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Methode qui supprime les éléments indésirables du formulaires</span>
+<span class="sd">    Avec pour paramètre un formulaire</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;submit&quot;</span><span class="p">)</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;csrf_token&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">form</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+:py:mod:`apptax.utils.routesconfig`
+===================================
+
+.. py:module:: apptax.utils.routesconfig
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.utils.routesconfig.get_config
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.utils.routesconfig.adresses
+
+
+.. py:data:: adresses
+
+   
+
+.. py:function:: get_config(id=None)
+
+   Route générant la configuration utile au frontend
+
+

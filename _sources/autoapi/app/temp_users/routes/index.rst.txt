@@ -1,0 +1,53 @@
+:py:mod:`app.temp_users.routes`
+===============================
+
+.. py:module:: app.temp_users.routes
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   app.temp_users.routes.temp_users_list
+   app.temp_users.routes.validate
+   app.temp_users.routes.delete
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   app.temp_users.routes.routes
+   app.temp_users.routes.log
+
+
+.. py:data:: routes
+
+   
+
+.. py:data:: log
+
+   
+
+.. py:function:: temp_users_list()
+
+   Get all temp_users
+
+
+.. py:function:: validate(token, id_application)
+
+   Call the API to validate a temp user
+
+
+.. py:function:: delete(token)
+
+   DELETE a temp_user
+
+

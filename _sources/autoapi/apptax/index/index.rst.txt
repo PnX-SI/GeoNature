@@ -1,0 +1,34 @@
+:py:mod:`apptax.index`
+======================
+
+.. py:module:: apptax.index
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.index.index
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.index.routes
+
+
+.. py:data:: routes
+
+   
+
+.. py:function:: index()
+
+

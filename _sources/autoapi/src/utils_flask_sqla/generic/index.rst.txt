@@ -1,0 +1,139 @@
+:py:mod:`src.utils_flask_sqla.generic`
+======================================
+
+.. py:module:: src.utils_flask_sqla.generic
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla.generic.GenericTable
+   src.utils_flask_sqla.generic.GenericQuery
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla.generic.testDataType
+   src.utils_flask_sqla.generic.test_type_and_generate_query
+   src.utils_flask_sqla.generic.serializeQuery
+   src.utils_flask_sqla.generic.serializeQueryOneResult
+   src.utils_flask_sqla.generic.serializeQueryTest
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla.generic.SERIALIZERS
+
+
+.. py:function:: testDataType(value, sqlType, paramName)
+
+   Test the type of a filter
+   #TODO: antipatern: should raise something which can be exect by the function which use it
+   # and not return the error
+
+
+.. py:function:: test_type_and_generate_query(param_name, value, model, q)
+
+   Generate a query with the filter given, checking the params is the good type of the columns, and formmatting it
+   Params:
+       - param_name (str): the name of the column
+       - value (any): the value of the filter
+       - model (SQLA model)
+       - q (SQLA Query)
+
+
+.. py:data:: SERIALIZERS
+
+   
+
+.. py:class:: GenericTable(tableName, schemaName, engine)
+
+
+   Classe permettant de créer à la volée un mapping
+       d'une vue avec la base de données par rétroingénierie
+
+   .. py:method:: get_serialized_columns(serializers=SERIALIZERS)
+
+      Return a tuple of serialize_columns, and db_cols
+      from the generic table
+
+
+   .. py:method:: as_dict(data, columns=[], fields=[])
+
+
+
+.. py:class:: GenericQuery(DB, tableName, schemaName, filters=[], limit=100, offset=0)
+
+
+   Classe permettant de manipuler des objets GenericTable
+
+   params:
+       - DB: sqlalchemy instantce (DB if DB = Sqlalchemy())
+       - tableName
+       - schemaName
+       - filters: array of filter of the query
+       - engine : sqlalchemy instance engine
+           for exemple : DB.engine if DB = Sqlalchemy()
+       - limit
+       - offset
+
+   .. py:attribute:: as_dict
+
+      
+
+   .. py:method:: build_query_filters(query, parameters)
+
+      Construction des filtres
+
+
+   .. py:method:: build_query_filter(query, param_name, param_value)
+
+
+   .. py:method:: build_query_order(query, parameters)
+
+
+   .. py:method:: set_limit(q)
+
+
+   .. py:method:: raw_query(process_filter=True, with_limit=True)
+
+      Renvoie la requete 'brute' (sans .all)
+      - process_filter: application des filtres (et du sort)
+      - with_limit: application de la limite sur la query
+
+
+   .. py:method:: query()
+
+      Lance la requete et retourne l'objet sqlalchemy
+
+
+   .. py:method:: return_query()
+
+      Lance la requete (execute self.query())
+          et retourne les résutats dans un format standard
+
+
+
+
+.. py:function:: serializeQuery(data, columnDef)
+
+
+.. py:function:: serializeQueryOneResult(row, column_def)
+
+
+.. py:function:: serializeQueryTest(data, column_def)
+
+

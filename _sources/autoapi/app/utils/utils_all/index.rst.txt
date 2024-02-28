@@ -1,0 +1,27 @@
+:py:mod:`app.utils.utils_all`
+=============================
+
+.. py:module:: app.utils.utils_all
+
+.. autoapi-nested-parse::
+
+   General utils
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   app.utils.utils_all.strigify_dict
+
+
+
+.. py:function:: strigify_dict(my_dict)
+
+

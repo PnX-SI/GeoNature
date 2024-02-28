@@ -1,0 +1,94 @@
+:py:mod:`pypn_habref_api.routes`
+================================
+
+.. py:module:: pypn_habref_api.routes
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   pypn_habref_api.routes.getSearchInField
+   pypn_habref_api.routes.get_hab
+   pypn_habref_api.routes.get_habref_autocomplete
+   pypn_habref_api.routes.get_typo
+   pypn_habref_api.routes.get_coresp
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   pypn_habref_api.routes.routes
+
+
+.. py:data:: routes
+
+   
+
+.. py:function:: getSearchInField(field, ilike)
+
+   Get the first 20 result of Habref table for a given field with an ilike query
+   Use trigram algo to add relevance
+
+   .. :quickref: Habref;
+
+   :params field: a Habref column
+   :type field: str
+   :param ilike: the ilike where expression to filter
+   :type ilike:str
+
+   :returns: Array of dict
+
+
+.. py:function:: get_hab(cd_hab)
+
+   Get one habitat with its correspondances
+
+   .. :quickref: Habref;
+
+   :params cd_hab: a cd_hab
+   :type cd_hab: int
+
+
+.. py:function:: get_habref_autocomplete()
+
+   Get all habref items of a list for autocomplete
+
+   .. :quickref: Habref;
+
+   :query id_list int: the id of the habref list
+   :query search_name str: the pattern to filter with
+   :query cd_typo int: filter by typology
+   :query limit int: number of results, default = 20
+
+   :returns: Array<AutoCompleteHabitat>
+
+
+.. py:function:: get_typo()
+
+   Get all typology
+
+   .. :quickref: Habref;
+
+   :query int id_list: return only the typology of a given id_list
+   :returns: Array<TypoRef>
+
+
+.. py:function:: get_coresp(cd_hab)
+
+   Get all correspondances in other typo from a cd_hab
+
+   .. :quickref: Habref;
+
+   :params cd_hab: a cd_hab
+   :type cd_hab: int
+
+

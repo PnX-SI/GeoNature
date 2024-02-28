@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.notifications.models &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.notifications.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.notifications.models</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Models of gn_notifications schema</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">ForeignKey</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">select</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">relationship</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">g</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.models</span> <span class="kn">import</span> <span class="n">qfilter</span>
+
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.serializers</span> <span class="kn">import</span> <span class="n">serializable</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db.models</span> <span class="kn">import</span> <span class="n">User</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="NotificationMethod">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationMethod">[docs]</a>
+<span class="k">class</span> <span class="nc">NotificationMethod</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="NotificationMethod.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationMethod.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_notifications_methods&quot;</span></div>
+
+<div class="viewcode-block" id="NotificationMethod.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationMethod.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_notifications&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="NotificationMethod.code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationMethod.code">[docs]</a>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NotificationMethod.label">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationMethod.label">[docs]</a>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NotificationMethod.description">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationMethod.description">[docs]</a>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">UnicodeText</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="NotificationMethod.display">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationMethod.display">[docs]</a>
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> – </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NotificationMethod.__str__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationMethod.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">code</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="NotificationCategory">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationCategory">[docs]</a>
+<span class="k">class</span> <span class="nc">NotificationCategory</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="NotificationCategory.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationCategory.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_notifications_categories&quot;</span></div>
+
+<div class="viewcode-block" id="NotificationCategory.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationCategory.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_notifications&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="NotificationCategory.code">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationCategory.code">[docs]</a>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NotificationCategory.label">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationCategory.label">[docs]</a>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NotificationCategory.description">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationCategory.description">[docs]</a>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">UnicodeText</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="NotificationCategory.display">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationCategory.display">[docs]</a>
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> – </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NotificationCategory.__str__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationCategory.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">code</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="NotificationTemplate">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationTemplate">[docs]</a>
+<span class="k">class</span> <span class="nc">NotificationTemplate</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="NotificationTemplate.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationTemplate.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_notifications_templates&quot;</span></div>
+
+<div class="viewcode-block" id="NotificationTemplate.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationTemplate.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_notifications&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="NotificationTemplate.code_category">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationTemplate.code_category">[docs]</a>
+    <span class="n">code_category</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="n">NotificationCategory</span><span class="o">.</span><span class="n">code</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="NotificationTemplate.code_method">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationTemplate.code_method">[docs]</a>
+    <span class="n">code_method</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">NotificationMethod</span><span class="o">.</span><span class="n">code</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NotificationTemplate.content">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationTemplate.content">[docs]</a>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">UnicodeText</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NotificationTemplate.category">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationTemplate.category">[docs]</a>
+    <span class="n">category</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">NotificationCategory</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NotificationTemplate.method">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationTemplate.method">[docs]</a>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">NotificationMethod</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NotificationTemplate.__str__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationTemplate.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="Notification">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.Notification">[docs]</a>
+<span class="k">class</span> <span class="nc">Notification</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="Notification.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.Notification.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_notifications&quot;</span></div>
+
+<div class="viewcode-block" id="Notification.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.Notification.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_notifications&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="Notification.id_notification">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.Notification.id_notification">[docs]</a>
+    <span class="n">id_notification</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Notification.id_role">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.Notification.id_role">[docs]</a>
+    <span class="n">id_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">id_role</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Notification.title">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.Notification.title">[docs]</a>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Notification.content">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.Notification.content">[docs]</a>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">UnicodeText</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Notification.url">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.Notification.url">[docs]</a>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Notification.code_status">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.Notification.code_status">[docs]</a>
+    <span class="n">code_status</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Notification.creation_date">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.Notification.creation_date">[docs]</a>
+    <span class="n">creation_date</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Notification.user">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.Notification.user">[docs]</a>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">User</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="NotificationRule">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationRule">[docs]</a>
+<span class="k">class</span> <span class="nc">NotificationRule</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="NotificationRule.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationRule.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_notifications_rules&quot;</span></div>
+
+<div class="viewcode-block" id="NotificationRule.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationRule.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">UniqueConstraint</span><span class="p">(</span>
+            <span class="s2">&quot;id_role&quot;</span><span class="p">,</span> <span class="s2">&quot;code_method&quot;</span><span class="p">,</span> <span class="s2">&quot;code_category&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;un_role_method_category&quot;</span>
+        <span class="p">),</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span>
+            <span class="s2">&quot;un_method_category&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;code_method&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;code_category&quot;</span><span class="p">,</span>
+            <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">postgresql_ops</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;where&quot;</span><span class="p">:</span> <span class="n">sa</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;id_role IS NULL&quot;</span><span class="p">),</span>
+            <span class="p">},</span>
+        <span class="p">),</span>
+        <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_notifications&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NotificationRule.id">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationRule.id">[docs]</a>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NotificationRule.id_role">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationRule.id_role">[docs]</a>
+    <span class="n">id_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">id_role</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NotificationRule.code_method">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationRule.code_method">[docs]</a>
+    <span class="n">code_method</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">NotificationMethod</span><span class="o">.</span><span class="n">code</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NotificationRule.code_category">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationRule.code_category">[docs]</a>
+    <span class="n">code_category</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="n">NotificationCategory</span><span class="o">.</span><span class="n">code</span><span class="p">),</span>
+        <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="NotificationRule.subscribed">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationRule.subscribed">[docs]</a>
+    <span class="n">subscribed</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NotificationRule.method">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationRule.method">[docs]</a>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">NotificationMethod</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NotificationRule.category">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationRule.category">[docs]</a>
+    <span class="n">category</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">NotificationCategory</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NotificationRule.user">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationRule.user">[docs]</a>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">User</span><span class="p">)</span></div>
+
+
+    <span class="nd">@qfilter</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="NotificationRule.filter_by_role_with_defaults">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/notifications/models/index.html#geonature.core.notifications.models.NotificationRule.filter_by_role_with_defaults">[docs]</a>
+    <span class="k">def</span> <span class="nf">filter_by_role_with_defaults</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">id_role</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">id_role</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">id_role</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">id_role</span>
+        <span class="n">cte</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">NotificationRule</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">sa</span><span class="o">.</span><span class="n">or_</span><span class="p">(</span>
+                    <span class="n">NotificationRule</span><span class="o">.</span><span class="n">id_role</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+                    <span class="n">NotificationRule</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">id_role</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="n">NotificationRule</span><span class="o">.</span><span class="n">code_category</span><span class="p">,</span> <span class="n">NotificationRule</span><span class="o">.</span><span class="n">code_method</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">order_by</span><span class="p">(</span>
+                <span class="n">NotificationRule</span><span class="o">.</span><span class="n">code_category</span><span class="o">.</span><span class="n">desc</span><span class="p">(),</span>
+                <span class="n">NotificationRule</span><span class="o">.</span><span class="n">code_method</span><span class="o">.</span><span class="n">desc</span><span class="p">(),</span>
+                <span class="n">NotificationRule</span><span class="o">.</span><span class="n">id_role</span><span class="o">.</span><span class="n">asc</span><span class="p">(),</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">cte</span><span class="p">(</span><span class="s2">&quot;cte&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">NotificationRule</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">cte</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

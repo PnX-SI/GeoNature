@@ -1,0 +1,25 @@
+:py:mod:`setup`
+===============
+
+.. py:module:: setup
+
+
+Module Contents
+---------------
+
+.. py:data:: root_dir
+
+   
+
+.. py:data:: version
+
+   
+
+.. py:data:: long_description
+
+   
+
+.. py:data:: requirements
+
+   
+

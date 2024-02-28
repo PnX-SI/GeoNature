@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_synthese.schemas &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../search.html" />
+    <link rel="next" title="geonature.core.gn_synthese.synthese_config" href="../synthese_config/index.html" />
+    <link rel="prev" title="geonature.core.gn_synthese.routes" href="../routes/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../../api-references.html">API REFERENCES</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../../../index.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../middlewares/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.middlewares</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../tasks/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.tasks</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../index.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../pypnusershub/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla_geo/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../frontend.html">Frontend</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../api-references.html">API REFERENCES</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core</span></code></a></li>
+          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_synthese</span></code></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_synthese.schemas</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/autoapi/geonature/core/gn_synthese/schemas/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-geonature.core.gn_synthese.schemas">
+<span id="geonature-core-gn-synthese-schemas"></span><h1><a class="reference internal" href="#module-geonature.core.gn_synthese.schemas" title="geonature.core.gn_synthese.schemas"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_synthese.schemas</span></code></a><a class="headerlink" href="#module-geonature.core.gn_synthese.schemas" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.schemas.ReportTypeSchema" title="geonature.core.gn_synthese.schemas.ReportTypeSchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReportTypeSchema</span></code></a></p></td>
+<td><p>SQLAlchemyAutoSchema that automatically generates marshmallow fields</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.schemas.ReportSchema" title="geonature.core.gn_synthese.schemas.ReportSchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReportSchema</span></code></a></p></td>
+<td><p>This mixin automatically exclude from serialization:</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.schemas.SourceSchema" title="geonature.core.gn_synthese.schemas.SourceSchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SourceSchema</span></code></a></p></td>
+<td><p>SQLAlchemyAutoSchema that automatically generates marshmallow fields</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.schemas.SyntheseConverter" title="geonature.core.gn_synthese.schemas.SyntheseConverter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SyntheseConverter</span></code></a></p></td>
+<td><p>Class that converts a SQLAlchemy model into a dictionary of corresponding</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.schemas.SyntheseSchema" title="geonature.core.gn_synthese.schemas.SyntheseSchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SyntheseSchema</span></code></a></p></td>
+<td><p>This mixin automatically exclude from serialization:</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.ReportTypeSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.schemas.</span></span><span class="sig-name descname"><span class="pre">ReportTypeSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#ReportTypeSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.ReportTypeSchema" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.ma.SQLAlchemyAutoSchema</span></code></p>
+<p>SQLAlchemyAutoSchema that automatically generates marshmallow fields
+from a SQLAlchemy model’s or table’s column.
+Uses the scoped session from Flask-SQLAlchemy by default.</p>
+<p>See <cite>marshmallow_sqlalchemy.SQLAlchemyAutoSchema</cite> for more details
+on the <cite>SQLAlchemyAutoSchema</cite> API.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.ReportTypeSchema.Meta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#ReportTypeSchema.Meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.ReportTypeSchema.Meta" title="Link to this definition"></a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.ReportTypeSchema.Meta.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#ReportTypeSchema.Meta.model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.ReportTypeSchema.Meta.model" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.ReportSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.schemas.</span></span><span class="sig-name descname"><span class="pre">ReportSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#ReportSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.ReportSchema" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">utils_flask_sqla.schema.SmartRelationshipsMixin</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.ma.SQLAlchemyAutoSchema</span></code></p>
+<p>This mixin automatically exclude from serialization:</p>
+<ul class="simple">
+<li><p>Nested, RelatedList and Related fields</p></li>
+<li><p>all fields with exclude=True in their metadata (e.g. <code class="docutils literal notranslate"><span class="pre">fields.String(metadata={'exclude':</span> <span class="pre">True})</span></code>)</p></li>
+</ul>
+<p>Adding only Nested fields to <code class="docutils literal notranslate"><span class="pre">only</span></code> will not exclude others fields and serialize specified Nested fields.
+Adding exclude=True fields to <code class="docutils literal notranslate"><span class="pre">only</span></code> will serialize only specified fields (default marshmallow behaviour).
+You can use “+field_name” syntax on <cite>only</cite> to serialize default excluded fields (with metadata exclude = True) without other fields.</p>
+<p>Examples :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FooSchema</span><span class="p">(</span><span class="n">SmartRelationshipsMixin</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Int</span><span class="p">()</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Str</span><span class="p">()</span>
+    <span class="n">default_excluded_field</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;exclude&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+    <span class="n">relationship</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">OtherSchema</span><span class="p">)</span> <span class="c1"># or field.RelatedList() / field.Related()</span>
+
+<span class="n">FooSchema</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;toto&quot;</span> <span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;+default_excluded_field&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;toto&quot;</span><span class="p">,</span> <span class="n">default_excluded_field</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span> <span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;relationship&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;toto&quot;</span><span class="p">,</span>  <span class="n">relationship</span> <span class="p">:</span> <span class="p">{</span><span class="n">OtherSchema</span><span class="o">...</span><span class="p">}</span> <span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;relationship&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">relationship</span> <span class="p">:</span> <span class="p">{</span><span class="n">OtherSchema</span><span class="o">...</span><span class="p">}</span> <span class="p">}</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.ReportSchema.Meta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#ReportSchema.Meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.ReportSchema.Meta" title="Link to this definition"></a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.ReportSchema.Meta.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#ReportSchema.Meta.model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.ReportSchema.Meta.model" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.ReportSchema.report_type">
+<span class="sig-name descname"><span class="pre">report_type</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#ReportSchema.report_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.ReportSchema.report_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.ReportSchema.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#ReportSchema.user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.ReportSchema.user" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SourceSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.schemas.</span></span><span class="sig-name descname"><span class="pre">SourceSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SourceSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SourceSchema" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.ma.SQLAlchemyAutoSchema</span></code></p>
+<p>SQLAlchemyAutoSchema that automatically generates marshmallow fields
+from a SQLAlchemy model’s or table’s column.
+Uses the scoped session from Flask-SQLAlchemy by default.</p>
+<p>See <cite>marshmallow_sqlalchemy.SQLAlchemyAutoSchema</cite> for more details
+on the <cite>SQLAlchemyAutoSchema</cite> API.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SourceSchema.Meta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SourceSchema.Meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SourceSchema.Meta" title="Link to this definition"></a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SourceSchema.Meta.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SourceSchema.Meta.model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SourceSchema.Meta.model" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SourceSchema.Meta.load_instance">
+<span class="sig-name descname"><span class="pre">load_instance</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SourceSchema.Meta.load_instance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SourceSchema.Meta.load_instance" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SourceSchema.module_url">
+<span class="sig-name descname"><span class="pre">module_url</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SourceSchema.module_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SourceSchema.module_url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseConverter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.schemas.</span></span><span class="sig-name descname"><span class="pre">SyntheseConverter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_cls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseConverter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseConverter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypnnomenclature.utils.NomenclaturesConverter</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">utils_flask_sqla_geo.schema.GeoModelConverter</span></code></p>
+<p>Class that converts a SQLAlchemy model into a dictionary of corresponding
+marshmallow <cite>Fields &lt;marshmallow.fields.Field&gt;</cite>.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.schemas.</span></span><span class="sig-name descname"><span class="pre">SyntheseSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">utils_flask_sqla.schema.SmartRelationshipsMixin</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema</span></code></p>
+<p>This mixin automatically exclude from serialization:</p>
+<ul class="simple">
+<li><p>Nested, RelatedList and Related fields</p></li>
+<li><p>all fields with exclude=True in their metadata (e.g. <code class="docutils literal notranslate"><span class="pre">fields.String(metadata={'exclude':</span> <span class="pre">True})</span></code>)</p></li>
+</ul>
+<p>Adding only Nested fields to <code class="docutils literal notranslate"><span class="pre">only</span></code> will not exclude others fields and serialize specified Nested fields.
+Adding exclude=True fields to <code class="docutils literal notranslate"><span class="pre">only</span></code> will serialize only specified fields (default marshmallow behaviour).
+You can use “+field_name” syntax on <cite>only</cite> to serialize default excluded fields (with metadata exclude = True) without other fields.</p>
+<p>Examples :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FooSchema</span><span class="p">(</span><span class="n">SmartRelationshipsMixin</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Int</span><span class="p">()</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Str</span><span class="p">()</span>
+    <span class="n">default_excluded_field</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;exclude&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+    <span class="n">relationship</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">OtherSchema</span><span class="p">)</span> <span class="c1"># or field.RelatedList() / field.Related()</span>
+
+<span class="n">FooSchema</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;toto&quot;</span> <span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;+default_excluded_field&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;toto&quot;</span><span class="p">,</span> <span class="n">default_excluded_field</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span> <span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;relationship&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;toto&quot;</span><span class="p">,</span>  <span class="n">relationship</span> <span class="p">:</span> <span class="p">{</span><span class="n">OtherSchema</span><span class="o">...</span><span class="p">}</span> <span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;relationship&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">relationship</span> <span class="p">:</span> <span class="p">{</span><span class="n">OtherSchema</span><span class="o">...</span><span class="p">}</span> <span class="p">}</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.Meta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.Meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.Meta" title="Link to this definition"></a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.Meta.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.Meta.model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.Meta.model" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.Meta.exclude">
+<span class="sig-name descname"><span class="pre">exclude</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('the_geom_4326_geojson',)</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.Meta.exclude"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.Meta.exclude" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.Meta.include_fk">
+<span class="sig-name descname"><span class="pre">include_fk</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.Meta.include_fk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.Meta.include_fk" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.Meta.load_instance">
+<span class="sig-name descname"><span class="pre">load_instance</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.Meta.load_instance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.Meta.load_instance" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.Meta.sqla_session">
+<span class="sig-name descname"><span class="pre">sqla_session</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.Meta.sqla_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.Meta.sqla_session" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.Meta.feature_id">
+<span class="sig-name descname"><span class="pre">feature_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'id_synthese'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.Meta.feature_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.Meta.feature_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.Meta.feature_geometry">
+<span class="sig-name descname"><span class="pre">feature_geometry</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'the_geom_4326'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.Meta.feature_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.Meta.feature_geometry" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.Meta.model_converter">
+<span class="sig-name descname"><span class="pre">model_converter</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.Meta.model_converter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.Meta.model_converter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.the_geom_4326">
+<span class="sig-name descname"><span class="pre">the_geom_4326</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.the_geom_4326"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.the_geom_4326" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.the_geom_authorized">
+<span class="sig-name descname"><span class="pre">the_geom_authorized</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.the_geom_authorized"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.the_geom_authorized" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.source">
+<span class="sig-name descname"><span class="pre">source</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.source" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.module">
+<span class="sig-name descname"><span class="pre">module</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.module" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.dataset">
+<span class="sig-name descname"><span class="pre">dataset</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.dataset" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.habitat">
+<span class="sig-name descname"><span class="pre">habitat</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.habitat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.habitat" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.digitiser">
+<span class="sig-name descname"><span class="pre">digitiser</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.digitiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.digitiser" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.cor_observers">
+<span class="sig-name descname"><span class="pre">cor_observers</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.cor_observers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.cor_observers" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.medias">
+<span class="sig-name descname"><span class="pre">medias</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.medias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.medias" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.areas">
+<span class="sig-name descname"><span class="pre">areas</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.areas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.areas" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.area_attachment">
+<span class="sig-name descname"><span class="pre">area_attachment</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.area_attachment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.area_attachment" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.validations">
+<span class="sig-name descname"><span class="pre">validations</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.validations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.validations" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.last_validation">
+<span class="sig-name descname"><span class="pre">last_validation</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.last_validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.last_validation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.schemas.SyntheseSchema.reports">
+<span class="sig-name descname"><span class="pre">reports</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/schemas.html#SyntheseSchema.reports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.schemas.SyntheseSchema.reports" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="../routes/index.html" class="btn btn-neutral float-left" title="geonature.core.gn_synthese.routes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="../synthese_config/index.html" class="btn btn-neutral float-right" title="geonature.core.gn_synthese.synthese_config" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

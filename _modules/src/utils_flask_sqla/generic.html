@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.utils_flask_sqla.generic &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">src.utils_flask_sqla.generic</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de src.utils_flask_sqla.generic</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+
+<span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">parser</span>
+<span class="kn">from</span> <span class="nn">flask_sqlalchemy</span> <span class="kn">import</span> <span class="n">SQLAlchemy</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">MetaData</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="kn">import</span> <span class="n">UUID</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.types</span> <span class="kn">import</span> <span class="n">Boolean</span><span class="p">,</span> <span class="n">Date</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">Numeric</span>
+
+<span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="n">UtilsSqlaError</span>
+
+
+<div class="viewcode-block" id="testDataType">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.testDataType">[docs]</a>
+<span class="k">def</span> <span class="nf">testDataType</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">sqlType</span><span class="p">,</span> <span class="n">paramName</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Test the type of a filter</span>
+<span class="sd">    #TODO: antipatern: should raise something which can be exect by the function which use it</span>
+<span class="sd">    # and not return the error</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sqlType</span> <span class="o">==</span> <span class="n">Integer</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sqlType</span><span class="p">,</span> <span class="p">(</span><span class="n">Integer</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> must be an integer&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">paramName</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sqlType</span> <span class="o">==</span> <span class="n">Numeric</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sqlType</span><span class="p">,</span> <span class="p">(</span><span class="n">Numeric</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> must be an float (decimal separator .)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">paramName</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">sqlType</span> <span class="o">==</span> <span class="n">DateTime</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sqlType</span><span class="p">,</span> <span class="p">(</span><span class="n">Date</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> must be an date (yyyy-mm-dd)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">paramName</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="test_type_and_generate_query">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.test_type_and_generate_query">[docs]</a>
+<span class="k">def</span> <span class="nf">test_type_and_generate_query</span><span class="p">(</span><span class="n">param_name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a query with the filter given, checking the params is the good type of the columns, and formmatting it</span>
+<span class="sd">    Params:</span>
+<span class="sd">        - param_name (str): the name of the column</span>
+<span class="sd">        - value (any): the value of the filter</span>
+<span class="sd">        - model (SQLA model)</span>
+<span class="sd">        - q (SQLA Query)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check the attribut exist in the model</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">param_name</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">UtilsSqlaError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+    <span class="n">sql_type</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">type</span>
+    <span class="k">if</span> <span class="n">sql_type</span> <span class="o">==</span> <span class="n">Integer</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sql_type</span><span class="p">,</span> <span class="p">(</span><span class="n">Integer</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">q</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">col</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UtilsSqlaError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> must be an integer&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">param_name</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">sql_type</span> <span class="o">==</span> <span class="n">Numeric</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sql_type</span><span class="p">,</span> <span class="p">(</span><span class="n">Numeric</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">q</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">col</span> <span class="o">==</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UtilsSqlaError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> must be an float (decimal separator .)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">param_name</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">sql_type</span> <span class="o">==</span> <span class="n">DateTime</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sql_type</span><span class="p">,</span> <span class="p">(</span><span class="n">Date</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">q</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">col</span> <span class="o">==</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UtilsSqlaError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> must be an date (yyyy-mm-dd)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">param_name</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">sql_type</span> <span class="o">==</span> <span class="n">Boolean</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sql_type</span><span class="p">,</span> <span class="n">Boolean</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">q</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">col</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UtilsSqlaError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> must be a boolean&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">param_name</span><span class="p">))</span></div>
+
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Liste des types de données sql qui</span>
+<span class="sd">    nécessite une sérialisation particulière en</span>
+<span class="sd">    @TODO MANQUE FLOAT</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="SERIALIZERS">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.SERIALIZERS">[docs]</a>
+<span class="n">SERIALIZERS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;datetime&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;uuid&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;numeric&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="GenericTable">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.GenericTable">[docs]</a>
+<span class="k">class</span> <span class="nc">GenericTable</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Classe permettant de créer à la volée un mapping</span>
+<span class="sd">        d&#39;une vue avec la base de données par rétroingénierie</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tableName</span><span class="p">,</span> <span class="n">schemaName</span><span class="p">,</span> <span class="n">engine</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        params:</span>
+<span class="sd">            - tableName</span>
+<span class="sd">            - schemaName</span>
+<span class="sd">            - engine : sqlalchemy instance engine</span>
+<span class="sd">                for exemple : DB.engine if DB = Sqlalchemy()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">MetaData</span><span class="p">(</span><span class="n">schema</span><span class="o">=</span><span class="n">schemaName</span><span class="p">)</span>
+        <span class="n">meta</span><span class="o">.</span><span class="n">reflect</span><span class="p">(</span><span class="n">views</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bind</span><span class="o">=</span><span class="n">engine</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tableDef</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">schemaName</span><span class="p">,</span> <span class="n">tableName</span><span class="p">)]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;table </span><span class="si">{}</span><span class="s2">.</span><span class="si">{}</span><span class="s2"> doesn&#39;t exists&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">schemaName</span><span class="p">,</span> <span class="n">tableName</span><span class="p">))</span>
+
+        <span class="c1"># Mise en place d&#39;un mapping des colonnes en vue d&#39;une sérialisation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">serialize_columns</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_serialized_columns</span><span class="p">()</span>
+
+<div class="viewcode-block" id="GenericTable.get_serialized_columns">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.GenericTable.get_serialized_columns">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_serialized_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serializers</span><span class="o">=</span><span class="n">SERIALIZERS</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a tuple of serialize_columns, and db_cols</span>
+<span class="sd">        from the generic table</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">regular_serialize</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">db_cols</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">db_col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tableDef</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">db_col</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;Geometry&quot;</span><span class="p">:</span>
+                <span class="n">serialize_attr</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">name</span><span class="p">,</span>
+                    <span class="n">serializers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">db_col</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="n">regular_serialize</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">serialize_attr</span><span class="p">)</span>
+
+            <span class="n">db_cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">db_col</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">regular_serialize</span><span class="p">,</span> <span class="n">db_cols</span></div>
+
+
+<div class="viewcode-block" id="GenericTable.as_dict">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.GenericTable.as_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[],</span> <span class="n">fields</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">columns</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">columns</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;columns&#39; argument is deprecated. Please add columns to serialize &quot;</span>
+                <span class="s2">&quot;directly in &#39;fields&#39; argument.&quot;</span><span class="p">,</span>
+                <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="n">fprops</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize_columns</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fprops</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize_columns</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="n">item</span><span class="p">:</span> <span class="n">_serializer</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">item</span><span class="p">))</span> <span class="k">for</span> <span class="n">item</span><span class="p">,</span> <span class="n">_serializer</span> <span class="ow">in</span> <span class="n">fprops</span><span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GenericQuery">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.GenericQuery">[docs]</a>
+<span class="k">class</span> <span class="nc">GenericQuery</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Classe permettant de manipuler des objets GenericTable</span>
+
+<span class="sd">    params:</span>
+<span class="sd">        - DB: sqlalchemy instantce (DB if DB = Sqlalchemy())</span>
+<span class="sd">        - tableName</span>
+<span class="sd">        - schemaName</span>
+<span class="sd">        - filters: array of filter of the query</span>
+<span class="sd">        - engine : sqlalchemy instance engine</span>
+<span class="sd">            for exemple : DB.engine if DB = Sqlalchemy()</span>
+<span class="sd">        - limit</span>
+<span class="sd">        - offset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">DB</span><span class="p">,</span>
+        <span class="n">tableName</span><span class="p">,</span>
+        <span class="n">schemaName</span><span class="p">,</span>
+        <span class="n">filters</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DB</span> <span class="o">=</span> <span class="n">DB</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tableName</span> <span class="o">=</span> <span class="n">tableName</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schemaName</span> <span class="o">=</span> <span class="n">schemaName</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="n">filters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="n">limit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="n">offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">GenericTable</span><span class="p">(</span><span class="n">tableName</span><span class="p">,</span> <span class="n">schemaName</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">engine</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GenericQuery.build_query_filters">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.GenericQuery.build_query_filters">[docs]</a>
+    <span class="k">def</span> <span class="nf">build_query_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construction des filtres</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_query_filter</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">query</span></div>
+
+
+<div class="viewcode-block" id="GenericQuery.build_query_filter">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.GenericQuery.build_query_filter">[docs]</a>
+    <span class="k">def</span> <span class="nf">build_query_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param_value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tableDef</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tableDef</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">==</span> <span class="n">param_value</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">param_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;ilike_&quot;</span><span class="p">):</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tableDef</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">param_name</span><span class="p">[</span><span class="mi">6</span><span class="p">:]]</span>
+            <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;TEXT&quot;</span><span class="p">:</span>
+                <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">col</span><span class="o">.</span><span class="n">ilike</span><span class="p">(</span><span class="s2">&quot;%</span><span class="si">{}</span><span class="s2">%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">param_value</span><span class="p">)))</span>
+
+        <span class="k">if</span> <span class="n">param_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;filter_d_&quot;</span><span class="p">):</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tableDef</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">param_name</span><span class="p">[</span><span class="mi">12</span><span class="p">:]]</span>
+            <span class="n">col_type</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="n">test_type</span> <span class="o">=</span> <span class="n">testDataType</span><span class="p">(</span><span class="n">param_value</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span> <span class="ow">and</span> <span class="n">testDataType</span><span class="p">(</span>
+                <span class="n">param_value</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">col</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">test_type</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">UtilsSqlaError</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">test_type</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">col_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Date&quot;</span><span class="p">,</span> <span class="s2">&quot;DateTime&quot;</span><span class="p">,</span> <span class="s2">&quot;TIMESTAMP&quot;</span><span class="p">,</span> <span class="s2">&quot;INTEGER&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">param_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;filter_d_up_&quot;</span><span class="p">):</span>
+                    <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">col</span> <span class="o">&gt;=</span> <span class="n">param_value</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">param_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;filter_d_lo_&quot;</span><span class="p">):</span>
+                    <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">col</span> <span class="o">&lt;=</span> <span class="n">param_value</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">param_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;filter_d_eq_&quot;</span><span class="p">):</span>
+                    <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">col</span> <span class="o">==</span> <span class="n">param_value</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">param_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;filter_n_&quot;</span><span class="p">):</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tableDef</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">param_name</span><span class="p">[</span><span class="mi">12</span><span class="p">:]]</span>
+            <span class="n">col_type</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="n">test_type</span> <span class="o">=</span> <span class="n">testDataType</span><span class="p">(</span><span class="n">param_value</span><span class="p">,</span> <span class="n">Numeric</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">test_type</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">UtilsSqlaError</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">test_type</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">param_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;filter_n_up_&quot;</span><span class="p">):</span>
+                <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">col</span> <span class="o">&gt;=</span> <span class="n">param_value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">param_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;filter_n_lo_&quot;</span><span class="p">):</span>
+                <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">col</span> <span class="o">&lt;=</span> <span class="n">param_value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">query</span></div>
+
+
+<div class="viewcode-block" id="GenericQuery.build_query_order">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.GenericQuery.build_query_order">[docs]</a>
+    <span class="k">def</span> <span class="nf">build_query_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+        <span class="c1"># Ordonnancement</span>
+        <span class="c1"># L&#39;ordonnancement se base actuellement sur une seule colonne</span>
+        <span class="c1">#   et prend la forme suivante : nom_colonne[:ASC|DESC]</span>
+        <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;orderby&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+            <span class="n">order_by</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;orderby&quot;</span><span class="p">)</span>
+            <span class="n">col</span><span class="p">,</span> <span class="o">*</span><span class="n">sort</span> <span class="o">=</span> <span class="n">order_by</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tableDef</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">ordel_col</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tableDef</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">sort</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="p">[</span><span class="s2">&quot;ASC&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;desc&quot;</span><span class="p">:</span>
+                    <span class="n">ordel_col</span> <span class="o">=</span> <span class="n">ordel_col</span><span class="o">.</span><span class="n">desc</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">ordel_col</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">query</span></div>
+
+
+<div class="viewcode-block" id="GenericQuery.set_limit">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.GenericQuery.set_limit">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">q</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">)</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GenericQuery.raw_query">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.GenericQuery.raw_query">[docs]</a>
+    <span class="k">def</span> <span class="nf">raw_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">process_filter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_limit</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Renvoie la requete &#39;brute&#39; (sans .all)</span>
+<span class="sd">        - process_filter: application des filtres (et du sort)</span>
+<span class="sd">        - with_limit: application de la limite sur la query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tableDef</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">process_filter</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">q</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">:</span>
+            <span class="n">unordered_q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_query_filters</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">)</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_query_order</span><span class="p">(</span><span class="n">unordered_q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">with_limit</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_limit</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">q</span></div>
+
+
+<div class="viewcode-block" id="GenericQuery.query">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.GenericQuery.query">[docs]</a>
+    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Lance la requete et retourne l&#39;objet sqlalchemy</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tableDef</span><span class="p">)</span>
+        <span class="n">nb_result_without_filter</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_query</span><span class="p">(</span><span class="n">process_filter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_limit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">total_filtered</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="k">else</span> <span class="n">nb_result_without_filter</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_limit</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">nb_result_without_filter</span><span class="p">,</span> <span class="n">total_filtered</span></div>
+
+
+<div class="viewcode-block" id="GenericQuery.return_query">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.GenericQuery.return_query">[docs]</a>
+    <span class="k">def</span> <span class="nf">return_query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Lance la requete (execute self.query())</span>
+<span class="sd">            et retourne les résutats dans un format standard</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">data</span><span class="p">,</span> <span class="n">nb_result_without_filter</span><span class="p">,</span> <span class="n">nb_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="n">nb_result_without_filter</span><span class="p">,</span>
+            <span class="s2">&quot;total_filtered&quot;</span><span class="p">:</span> <span class="n">nb_results</span><span class="p">,</span>
+            <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span>
+            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span>
+            <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="n">results</span><span class="p">,</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="GenericQuery.as_dict">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.GenericQuery.as_dict">[docs]</a>
+    <span class="n">as_dict</span> <span class="o">=</span> <span class="n">return_query</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="serializeQuery">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.serializeQuery">[docs]</a>
+<span class="k">def</span> <span class="nf">serializeQuery</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columnDef</span><span class="p">):</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="n">c</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">columnDef</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">rows</span></div>
+
+
+
+<div class="viewcode-block" id="serializeQueryOneResult">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.serializeQueryOneResult">[docs]</a>
+<span class="k">def</span> <span class="nf">serializeQueryOneResult</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">column_def</span><span class="p">):</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">c</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">column_def</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">row</span></div>
+
+
+
+<div class="viewcode-block" id="serializeQueryTest">
+<a class="viewcode-back" href="../../../autoapi/src/utils_flask_sqla/generic/index.html#src.utils_flask_sqla.generic.serializeQueryTest">[docs]</a>
+<span class="k">def</span> <span class="nf">serializeQueryTest</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">column_def</span><span class="p">):</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">inter</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">column_def</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="p">(</span><span class="n">Date</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">UUID</span><span class="p">)):</span>
+                    <span class="n">inter</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]))</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="n">Numeric</span><span class="p">):</span>
+                    <span class="n">inter</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]))</span>
+                <span class="c1"># elif not isinstance(c[&quot;type&quot;], Geometry):</span>
+                <span class="c1"># inter[c[&quot;name&quot;]] = getattr(row, c[&quot;name&quot;])</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inter</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rows</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

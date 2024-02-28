@@ -1,0 +1,105 @@
+:py:mod:`app.liste.route`
+=========================
+
+.. py:module:: app.liste.route
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   app.liste.route.lists
+   app.liste.route.addorupdate
+   app.liste.route.membres
+   app.liste.route.delete
+   app.liste.route.info
+   app.liste.route.pops
+   app.liste.route.process
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   app.liste.route.URL_REDIRECT
+   app.liste.route.URL_APPLICATION
+   app.liste.route.route
+
+
+.. py:data:: URL_REDIRECT
+
+   
+
+.. py:data:: URL_APPLICATION
+
+   
+
+.. py:data:: route
+
+   
+
+.. py:function:: lists()
+
+   Route qui affiche la liste des listes
+   Retourne un template avec pour paramètres :
+       - une entête de tableau --> fLine
+       - le nom des colonnes de la base --> line
+       - le contenu du tableau --> table
+       - le chemin de mise à jour --> pathU
+       - le chemin de suppression --> pathD
+       - le chemin d'ajout --> pathA
+       - le chemin des membres de la liste --> pathP
+       - une clé (clé primaire dans la plupart des cas) --> key
+       - un nom (nom de la table) pour le bouton ajout --> name
+       - un nom de liste --> name_list
+       - ajoute une colonne de bouton ('True' doit être de type string)--> otherCol
+       - nom affiché sur le bouton --> Members
+
+
+.. py:function:: addorupdate(id_liste)
+
+   Route affichant un formulaire vierge ou non (selon l'url) pour ajouter ou mettre à jour une liste
+   L'envoie du formulaire permet l'ajout ou la maj de la liste dans la base
+   Retourne un template accompagné d'un formulaire pré-rempli ou non selon le paramètre id_liste
+   Une fois le formulaire validé on retourne une redirection vers la liste des listes
+
+
+.. py:function:: membres(id_liste)
+
+   Route affichant la liste des listes n'appartenant pas à la liste vis à vis de ceux qui appartiennent à celle-ci.
+   Avec pour paramètre un id de liste (id_liste)
+   Retourne un template avec pour paramètres:
+       - une entête des tableaux --> fLine
+       - le nom des colonnes de la base --> data
+       - liste des listes n'appartenant pas à la liste --> table
+       - liste des listes appartenant à la liste --> table2
+
+
+.. py:function:: delete(id_liste)
+
+   Route qui supprime une liste dont l'id est donné en paramètres dans l'url
+   Retourne une redirection vers la liste des listes
+
+
+.. py:function:: info(id_liste)
+
+
+.. py:function:: pops(form)
+
+   Methode qui supprime les éléments indésirables du formulaires
+   Avec pour paramètre un formulaire
+
+
+.. py:function:: process(form, list)
+
+   Methode qui rempli le formulaire par les données de l'éléments concerné
+   Avec pour paramètres un formulaire et une liste
+
+

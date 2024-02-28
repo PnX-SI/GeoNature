@@ -1,0 +1,43 @@
+:py:mod:`apptax.taxonomie.commands.taxref_v14`
+==============================================
+
+.. py:module:: apptax.taxonomie.commands.taxref_v14
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.commands.taxref_v14.import_bdc_statuts_v14
+   apptax.taxonomie.commands.taxref_v14.import_v14
+   apptax.taxonomie.commands.taxref_v14.import_bdc_v14
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.commands.taxref_v14.base_url
+
+
+.. py:data:: base_url
+   :value: 'http://geonature.fr/data/inpn/taxonomie/'
+
+   
+
+.. py:function:: import_bdc_statuts_v14(logger)
+
+
+.. py:function:: import_v14(skip_bdc_statuts)
+
+
+.. py:function:: import_bdc_v14()
+
+

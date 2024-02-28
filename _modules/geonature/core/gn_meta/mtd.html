@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_meta.mtd &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.gn_meta.mtd</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.gn_meta.mtd</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urljoin</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">geonature.core.auth.routes</span> <span class="kn">import</span> <span class="n">insert_user_and_org</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_meta.models</span> <span class="kn">import</span> <span class="n">CorAcquisitionFrameworkActor</span><span class="p">,</span> <span class="n">CorDatasetActor</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.config</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">lxml</span> <span class="kn">import</span> <span class="n">etree</span>
+<span class="kn">from</span> <span class="nn">pypnnomenclature.models</span> <span class="kn">import</span> <span class="n">TNomenclatures</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">func</span><span class="p">,</span> <span class="n">select</span>
+
+<span class="kn">from</span> <span class="nn">.mtd_utils</span> <span class="kn">import</span> <span class="n">associate_actors</span><span class="p">,</span> <span class="n">sync_af</span><span class="p">,</span> <span class="n">sync_ds</span>
+<span class="kn">from</span> <span class="nn">.xml_parser</span> <span class="kn">import</span> <span class="n">parse_acquisition_framework</span><span class="p">,</span> <span class="n">parse_acquisition_framwork_xml</span><span class="p">,</span> <span class="n">parse_jdd_xml</span>
+
+<span class="c1"># create logger</span>
+<div class="viewcode-block" id="logger">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.logger">[docs]</a>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MTD_SYNC&quot;</span><span class="p">)</span></div>
+
+<span class="c1"># config logger</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;MTD&quot;</span><span class="p">][</span><span class="s2">&quot;SYNC_LOG_LEVEL&quot;</span><span class="p">])</span>
+<div class="viewcode-block" id="handler">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.handler">[docs]</a>
+<span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="formatter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.formatter">[docs]</a>
+<span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> | </span><span class="si">%(levelname)s</span><span class="s2"> : </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span></div>
+
+<span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+<span class="c1"># avoid logging output dupplication</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<div class="viewcode-block" id="MTDInstanceApi">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.MTDInstanceApi">[docs]</a>
+<span class="k">class</span> <span class="nc">MTDInstanceApi</span><span class="p">:</span>
+<div class="viewcode-block" id="MTDInstanceApi.af_path">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.MTDInstanceApi.af_path">[docs]</a>
+    <span class="n">af_path</span> <span class="o">=</span> <span class="s2">&quot;/mtd/cadre/export/xml/GetRecordsByInstanceId?id=</span><span class="si">{ID_INSTANCE}</span><span class="s2">&quot;</span></div>
+
+<div class="viewcode-block" id="MTDInstanceApi.ds_path">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.MTDInstanceApi.ds_path">[docs]</a>
+    <span class="n">ds_path</span> <span class="o">=</span> <span class="s2">&quot;/mtd/cadre/jdd/export/xml/GetRecordsByInstanceId?id=</span><span class="si">{ID_INSTANCE}</span><span class="s2">&quot;</span></div>
+
+<div class="viewcode-block" id="MTDInstanceApi.ds_user_path">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.MTDInstanceApi.ds_user_path">[docs]</a>
+    <span class="n">ds_user_path</span> <span class="o">=</span> <span class="s2">&quot;/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id=</span><span class="si">{ID_ROLE}</span><span class="s2">&quot;</span></div>
+
+<div class="viewcode-block" id="MTDInstanceApi.single_af_path">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.MTDInstanceApi.single_af_path">[docs]</a>
+    <span class="n">single_af_path</span> <span class="o">=</span> <span class="s2">&quot;/mtd/cadre/export/xml/GetRecordById?id=</span><span class="si">{ID_AF}</span><span class="s2">&quot;</span></div>
+
+
+    <span class="c1"># https://inpn.mnhn.fr/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id=41542&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_endpoint</span><span class="p">,</span> <span class="n">instance_id</span><span class="p">,</span> <span class="n">id_role</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span> <span class="o">=</span> <span class="n">api_endpoint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">instance_id</span> <span class="o">=</span> <span class="n">instance_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id_role</span> <span class="o">=</span> <span class="n">id_role</span>
+
+<div class="viewcode-block" id="MTDInstanceApi._get_xml_by_url">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.MTDInstanceApi._get_xml_by_url">[docs]</a>
+    <span class="k">def</span> <span class="nf">_get_xml_by_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;MTD - REQUEST : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span></div>
+
+
+<div class="viewcode-block" id="MTDInstanceApi._get_xml">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.MTDInstanceApi._get_xml">[docs]</a>
+    <span class="k">def</span> <span class="nf">_get_xml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ID_INSTANCE</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">instance_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xml_by_url</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MTDInstanceApi._get_af_xml">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.MTDInstanceApi._get_af_xml">[docs]</a>
+    <span class="k">def</span> <span class="nf">_get_af_xml</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xml</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">af_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MTDInstanceApi.get_af_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.MTDInstanceApi.get_af_list">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_af_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">xml</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_af_xml</span><span class="p">()</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">xml</span><span class="p">)</span>
+        <span class="n">af_iter</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">iterfind</span><span class="p">(</span><span class="s2">&quot;.//{http://inpn.mnhn.fr/mtd}CadreAcquisition&quot;</span><span class="p">)</span>
+        <span class="n">af_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">af</span> <span class="ow">in</span> <span class="n">af_iter</span><span class="p">:</span>
+            <span class="n">af_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parse_acquisition_framework</span><span class="p">(</span><span class="n">af</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">af_list</span></div>
+
+
+<div class="viewcode-block" id="MTDInstanceApi._get_ds_xml">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.MTDInstanceApi._get_ds_xml">[docs]</a>
+    <span class="k">def</span> <span class="nf">_get_ds_xml</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xml</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ds_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MTDInstanceApi.get_ds_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.MTDInstanceApi.get_ds_list">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_ds_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">xml</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ds_xml</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">parse_jdd_xml</span><span class="p">(</span><span class="n">xml</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MTDInstanceApi.get_ds_user_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.MTDInstanceApi.get_ds_user_list">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_ds_user_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds_user_path</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ID_ROLE</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span>
+        <span class="n">xml</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xml_by_url</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parse_jdd_xml</span><span class="p">(</span><span class="n">xml</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MTDInstanceApi.get_user_af_list">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.MTDInstanceApi.get_user_af_list">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_user_af_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">af_uuid</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">single_af_path</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ID_AF</span><span class="o">=</span><span class="n">af_uuid</span><span class="p">)</span>
+        <span class="n">xml</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xml_by_url</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parse_acquisition_framwork_xml</span><span class="p">(</span><span class="n">xml</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="INPNCAS">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.INPNCAS">[docs]</a>
+<span class="k">class</span> <span class="nc">INPNCAS</span><span class="p">:</span>
+<div class="viewcode-block" id="INPNCAS.base_url">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.INPNCAS.base_url">[docs]</a>
+    <span class="n">base_url</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;CAS&quot;</span><span class="p">][</span><span class="s2">&quot;CAS_USER_WS&quot;</span><span class="p">][</span><span class="s2">&quot;BASE_URL&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="INPNCAS.user">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.INPNCAS.user">[docs]</a>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;CAS&quot;</span><span class="p">][</span><span class="s2">&quot;CAS_USER_WS&quot;</span><span class="p">][</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="INPNCAS.password">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.INPNCAS.password">[docs]</a>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;CAS&quot;</span><span class="p">][</span><span class="s2">&quot;CAS_USER_WS&quot;</span><span class="p">][</span><span class="s2">&quot;PASSWORD&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="INPNCAS.id_search_path">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.INPNCAS.id_search_path">[docs]</a>
+    <span class="n">id_search_path</span> <span class="o">=</span> <span class="s2">&quot;rechercheParId/</span><span class="si">{user_id}</span><span class="s2">&quot;</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="INPNCAS._get_user_json">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.INPNCAS._get_user_json">[docs]</a>
+    <span class="k">def</span> <span class="nf">_get_user_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">id_search_path</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">password</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="INPNCAS.get_user">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.INPNCAS.get_user">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_user</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_user_json</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="add_unexisting_digitizer">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.add_unexisting_digitizer">[docs]</a>
+<span class="k">def</span> <span class="nf">add_unexisting_digitizer</span><span class="p">(</span><span class="n">id_digitizer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Method to trigger global MTD sync.</span>
+
+<span class="sd">    :param id_digitizer: as id role from meta info</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="ow">not</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+            <span class="n">select</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">User</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">id_role</span><span class="o">=</span><span class="n">id_digitizer</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+        <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="p">):</span>
+        <span class="c1"># not fast - need perf optimization on user call</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">INPNCAS</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">id_digitizer</span><span class="p">)</span>
+        <span class="c1"># to avoid to create org</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;codeOrganisme&quot;</span><span class="p">):</span>
+            <span class="n">user</span><span class="p">[</span><span class="s2">&quot;codeOrganisme&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># insert or update user</span>
+        <span class="n">insert_user_and_org</span><span class="p">(</span><span class="n">user</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="process_af_and_ds">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.process_af_and_ds">[docs]</a>
+<span class="k">def</span> <span class="nf">process_af_and_ds</span><span class="p">(</span><span class="n">af_list</span><span class="p">,</span> <span class="n">ds_list</span><span class="p">,</span> <span class="n">id_role</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Synchro AF&lt;array&gt;, Synchro DS&lt;array&gt;</span>
+
+<span class="sd">    :param af_list: list af</span>
+<span class="sd">    :param ds_list: list ds</span>
+<span class="sd">    :param id_role: use role id pass on user authent only</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cas_api</span> <span class="o">=</span> <span class="n">INPNCAS</span><span class="p">()</span>
+    <span class="c1"># read nomenclatures from DB to avoid errors if GN nomenclature is not the same</span>
+    <span class="n">list_cd_nomenclature</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">record</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">TNomenclatures</span><span class="o">.</span><span class="n">cd_nomenclature</span><span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">())</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="p">]</span>
+    <span class="n">user_add_total_time</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;MTD - PROCESS AF LIST&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">af</span> <span class="ow">in</span> <span class="n">af_list</span><span class="p">:</span>
+        <span class="n">actors</span> <span class="o">=</span> <span class="n">af</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;actors&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">begin_nested</span><span class="p">():</span>
+            <span class="n">start_add_user_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">id_role</span><span class="p">:</span>
+                <span class="n">add_unexisting_digitizer</span><span class="p">(</span><span class="n">af</span><span class="p">[</span><span class="s2">&quot;id_digitizer&quot;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">add_unexisting_digitizer</span><span class="p">(</span><span class="n">id_role</span><span class="p">)</span>
+            <span class="n">user_add_total_time</span> <span class="o">+=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_add_user_time</span>
+        <span class="n">af</span> <span class="o">=</span> <span class="n">sync_af</span><span class="p">(</span><span class="n">af</span><span class="p">)</span>
+        <span class="n">associate_actors</span><span class="p">(</span>
+            <span class="n">actors</span><span class="p">,</span>
+            <span class="n">CorAcquisitionFrameworkActor</span><span class="p">,</span>
+            <span class="s2">&quot;id_acquisition_framework&quot;</span><span class="p">,</span>
+            <span class="n">af</span><span class="o">.</span><span class="n">id_acquisition_framework</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># TODO: remove actors removed from MTD</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;MTD - PROCESS DS LIST&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">ds_list</span><span class="p">:</span>
+        <span class="n">actors</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;actors&quot;</span><span class="p">)</span>
+        <span class="c1"># CREATE DIGITIZER</span>
+        <span class="k">with</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">begin_nested</span><span class="p">():</span>
+            <span class="n">start_add_user_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">id_role</span><span class="p">:</span>
+                <span class="n">add_unexisting_digitizer</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">&quot;id_digitizer&quot;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">add_unexisting_digitizer</span><span class="p">(</span><span class="n">id_role</span><span class="p">)</span>
+            <span class="n">user_add_total_time</span> <span class="o">+=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_add_user_time</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">sync_ds</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">list_cd_nomenclature</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">associate_actors</span><span class="p">(</span><span class="n">actors</span><span class="p">,</span> <span class="n">CorDatasetActor</span><span class="p">,</span> <span class="s2">&quot;id_dataset&quot;</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">id_dataset</span><span class="p">)</span>
+
+    <span class="n">user_add_total_time</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">user_add_total_time</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="sync_af_and_ds">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.sync_af_and_ds">[docs]</a>
+<span class="k">def</span> <span class="nf">sync_af_and_ds</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Method to trigger global MTD sync.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MTD - SYNC GLOBAL : START&quot;</span><span class="p">)</span>
+    <span class="n">mtd_api</span> <span class="o">=</span> <span class="n">MTDInstanceApi</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;MTD_API_ENDPOINT&quot;</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;MTD&quot;</span><span class="p">][</span><span class="s2">&quot;ID_INSTANCE_FILTER&quot;</span><span class="p">])</span>
+
+    <span class="n">af_list</span> <span class="o">=</span> <span class="n">mtd_api</span><span class="o">.</span><span class="n">get_af_list</span><span class="p">()</span>
+
+    <span class="n">ds_list</span> <span class="o">=</span> <span class="n">mtd_api</span><span class="o">.</span><span class="n">get_ds_list</span><span class="p">()</span>
+
+    <span class="c1"># synchro a partir des listes</span>
+    <span class="n">process_af_and_ds</span><span class="p">(</span><span class="n">af_list</span><span class="p">,</span> <span class="n">ds_list</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MTD - SYNC GLOBAL : FINISH&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="sync_af_and_ds_by_user">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/mtd/index.html#geonature.core.gn_meta.mtd.sync_af_and_ds_by_user">[docs]</a>
+<span class="k">def</span> <span class="nf">sync_af_and_ds_by_user</span><span class="p">(</span><span class="n">id_role</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Method to trigger MTD sync on user authent.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MTD - SYNC USER : START&quot;</span><span class="p">)</span>
+
+    <span class="n">mtd_api</span> <span class="o">=</span> <span class="n">MTDInstanceApi</span><span class="p">(</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;MTD_API_ENDPOINT&quot;</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;MTD&quot;</span><span class="p">][</span><span class="s2">&quot;ID_INSTANCE_FILTER&quot;</span><span class="p">],</span> <span class="n">id_role</span>
+    <span class="p">)</span>
+
+    <span class="n">ds_list</span> <span class="o">=</span> <span class="n">mtd_api</span><span class="o">.</span><span class="n">get_ds_user_list</span><span class="p">()</span>
+    <span class="n">user_af_uuids</span> <span class="o">=</span> <span class="p">[</span><span class="n">ds</span><span class="p">[</span><span class="s2">&quot;uuid_acquisition_framework&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">ds_list</span><span class="p">]</span>
+
+    <span class="c1"># TODO - voir avec INPN pourquoi les AF par user ne sont pas dans l&#39;appel global des AF</span>
+    <span class="c1"># Ce code ne fonctionne pas pour cette raison -&gt; AF manquants</span>
+    <span class="c1"># af_list = mtd_api.get_af_list()</span>
+    <span class="c1"># af_list = [af for af in af_list if af[&quot;unique_acquisition_framework_id&quot;] in user_af_uuids]</span>
+
+    <span class="c1"># call INPN API for each AF to retrieve info</span>
+    <span class="n">af_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">mtd_api</span><span class="o">.</span><span class="n">get_user_af_list</span><span class="p">(</span><span class="n">af_uuid</span><span class="p">)</span> <span class="k">for</span> <span class="n">af_uuid</span> <span class="ow">in</span> <span class="n">user_af_uuids</span><span class="p">]</span>
+
+    <span class="c1"># start AF and DS lists</span>
+    <span class="n">process_af_and_ds</span><span class="p">(</span><span class="n">af_list</span><span class="p">,</span> <span class="n">ds_list</span><span class="p">,</span> <span class="n">id_role</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MTD - SYNC USER : FINISH&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

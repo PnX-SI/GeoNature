@@ -1,0 +1,42 @@
+:py:mod:`apptax.taxonomie.commands.migrate_taxref`
+==================================================
+
+.. py:module:: apptax.taxonomie.commands.migrate_taxref
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   data/index.rst
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   commands_v15/index.rst
+   commands_v16/index.rst
+   queries/index.rst
+   utils/index.rst
+
+
+Package Contents
+----------------
+
+.. py:data:: logger
+
+   
+
+.. py:data:: ch
+
+   
+
+.. py:data:: formatter
+
+   
+

@@ -1,0 +1,124 @@
+:py:mod:`geonature.core.gn_synthese.utils.query_select_sqla`
+============================================================
+
+.. py:module:: geonature.core.gn_synthese.utils.query_select_sqla
+
+.. autoapi-nested-parse::
+
+   Utility function to manage permissions and all filter of Synthese
+   Use these functions rather than query.py
+   Filter the query of synthese using SQLA expression language and 'select' object
+   https://docs.sqlalchemy.org/en/latest/core/tutorial.html#selecting
+   much more efficient
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.utils.query_select_sqla.remove_accents
+
+
+
+.. py:class:: SyntheseQuery(model, query, filters, id_synthese_column='id_synthese', id_dataset_column='id_dataset', observers_column='observers', id_digitiser_column='id_digitiser', with_generic_table=False, query_joins=None, geom_column=None)
+
+
+   class for building synthese query and manage join
+
+   Attributes:
+       query: SQLA select object
+       filters: dict of query string filters
+       model: a SQLA model
+       _already_joined_table: (private) a list of already joined table. Auto build with 'add_join' method
+       query_joins = SQLA Join object
+
+   .. py:method:: add_join(right_table, right_column, left_column, join_type='right')
+
+
+   .. py:method:: add_join_multiple_cond(right_table, conditions)
+
+
+   .. py:method:: build_permissions_filter(user, permissions)
+
+      Return a where clause for the given permissions set
+
+
+   .. py:method:: filter_query_with_permissions(user, permissions)
+
+      Filter the query with the permissions of a user
+
+
+   .. py:method:: filter_query_with_cruved(user, scope)
+
+      Filter the query with the cruved authorization of a user
+
+
+   .. py:method:: filter_taxonomy()
+
+      Filters the query with taxonomic attributes
+      Parameters:
+          - q (SQLAchemyQuery): an SQLAchemy query
+          - filters (dict): a dict of filter
+      Returns:
+          -Tuple: the SQLAlchemy query and the filter dictionnary
+
+
+   .. py:method:: filter_other_filters(user)
+
+      Other filters
+
+
+   .. py:method:: apply_all_filters(user, permissions)
+
+
+   .. py:method:: build_query()
+
+
+   .. py:method:: filter_query_all_filters(user, permissions)
+
+      High level function to manage query with all filters.
+
+      Apply CRUVED, taxonomy and other filters.
+
+      Parameters
+      ----------
+      user: str
+          User filtered by CRUVED.
+
+      Returns
+      -------
+      sqlalchemy.orm.query.Query.filter
+          Combined filter to apply.
+
+
+   .. py:method:: build_bdc_status_pr_nb_lateral_join(protection_status_value, red_list_filters)
+
+      Create subquery for bdc_status filters
+
+      Objectif : filtrer les données ayant :
+        - les statuts du type demandé par l'utilisateur
+        - les status s'appliquent bien sur la zone géographique de la donnée (c-a-d le département)
+
+      Idée de façon à limiter le nombre de sous reqêtes,
+          la liste des status selectionnés par l'utilisateur s'appliquant à l'observation est
+          aggrégée de façon à tester le nombre puis jointé sur le département de la donnée
+
+
+
+.. py:function:: remove_accents(input_str)
+
+

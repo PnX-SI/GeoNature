@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.utils_flask_sqla.generic &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" />
+    <link rel="next" title="src.utils_flask_sqla.models" href="../models/index.html" />
+    <link rel="prev" title="src.utils_flask_sqla.errors" href="../errors/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../api-references.html">API REFERENCES</a></li>
+          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla</span></code></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla.generic</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/autoapi/src/utils_flask_sqla/generic/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-src.utils_flask_sqla.generic">
+<span id="src-utils-flask-sqla-generic"></span><h1><a class="reference internal" href="#module-src.utils_flask_sqla.generic" title="src.utils_flask_sqla.generic"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla.generic</span></code></a><a class="headerlink" href="#module-src.utils_flask_sqla.generic" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.utils_flask_sqla.generic.GenericTable" title="src.utils_flask_sqla.generic.GenericTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GenericTable</span></code></a></p></td>
+<td><p>Classe permettant de créer à la volée un mapping</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.utils_flask_sqla.generic.GenericQuery" title="src.utils_flask_sqla.generic.GenericQuery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GenericQuery</span></code></a></p></td>
+<td><p>Classe permettant de manipuler des objets GenericTable</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.utils_flask_sqla.generic.testDataType" title="src.utils_flask_sqla.generic.testDataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">testDataType</span></code></a>(value, sqlType, paramName)</p></td>
+<td><p>Test the type of a filter</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.utils_flask_sqla.generic.test_type_and_generate_query" title="src.utils_flask_sqla.generic.test_type_and_generate_query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_type_and_generate_query</span></code></a>(param_name, value, model, q)</p></td>
+<td><p>Generate a query with the filter given, checking the params is the good type of the columns, and formmatting it</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.utils_flask_sqla.generic.serializeQuery" title="src.utils_flask_sqla.generic.serializeQuery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">serializeQuery</span></code></a>(data, columnDef)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.utils_flask_sqla.generic.serializeQueryOneResult" title="src.utils_flask_sqla.generic.serializeQueryOneResult"><code class="xref py py-obj docutils literal notranslate"><span class="pre">serializeQueryOneResult</span></code></a>(row, column_def)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.utils_flask_sqla.generic.serializeQueryTest" title="src.utils_flask_sqla.generic.serializeQueryTest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">serializeQueryTest</span></code></a>(data, column_def)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.utils_flask_sqla.generic.SERIALIZERS" title="src.utils_flask_sqla.generic.SERIALIZERS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SERIALIZERS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.testDataType">
+<span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla.generic.</span></span><span class="sig-name descname"><span class="pre">testDataType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sqlType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">paramName</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#testDataType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.testDataType" title="Link to this definition"></a></dt>
+<dd><p>Test the type of a filter
+#TODO: antipatern: should raise something which can be exect by the function which use it
+# and not return the error</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.test_type_and_generate_query">
+<span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla.generic.</span></span><span class="sig-name descname"><span class="pre">test_type_and_generate_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#test_type_and_generate_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.test_type_and_generate_query" title="Link to this definition"></a></dt>
+<dd><p>Generate a query with the filter given, checking the params is the good type of the columns, and formmatting it
+Params:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>param_name (str): the name of the column</p></li>
+<li><p>value (any): the value of the filter</p></li>
+<li><p>model (SQLA model)</p></li>
+<li><p>q (SQLA Query)</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.SERIALIZERS">
+<span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla.generic.</span></span><span class="sig-name descname"><span class="pre">SERIALIZERS</span></span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#SERIALIZERS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.SERIALIZERS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.GenericTable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla.generic.</span></span><span class="sig-name descname"><span class="pre">GenericTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tableName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schemaName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#GenericTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.GenericTable" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Classe permettant de créer à la volée un mapping</dt><dd><p>d’une vue avec la base de données par rétroingénierie</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.GenericTable.get_serialized_columns">
+<span class="sig-name descname"><span class="pre">get_serialized_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serializers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">SERIALIZERS</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#GenericTable.get_serialized_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.GenericTable.get_serialized_columns" title="Link to this definition"></a></dt>
+<dd><p>Return a tuple of serialize_columns, and db_cols
+from the generic table</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.GenericTable.as_dict">
+<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#GenericTable.as_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.GenericTable.as_dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.GenericQuery">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla.generic.</span></span><span class="sig-name descname"><span class="pre">GenericQuery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tableName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schemaName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#GenericQuery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.GenericQuery" title="Link to this definition"></a></dt>
+<dd><p>Classe permettant de manipuler des objets GenericTable</p>
+<dl class="simple">
+<dt>params:</dt><dd><ul class="simple">
+<li><p>DB: sqlalchemy instantce (DB if DB = Sqlalchemy())</p></li>
+<li><p>tableName</p></li>
+<li><p>schemaName</p></li>
+<li><p>filters: array of filter of the query</p></li>
+<li><dl class="simple">
+<dt>engine<span class="classifier">sqlalchemy instance engine</span></dt><dd><p>for exemple : DB.engine if DB = Sqlalchemy()</p>
+</dd>
+</dl>
+</li>
+<li><p>limit</p></li>
+<li><p>offset</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.GenericQuery.as_dict">
+<span class="sig-name descname"><span class="pre">as_dict</span></span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#GenericQuery.as_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.GenericQuery.as_dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.GenericQuery.build_query_filters">
+<span class="sig-name descname"><span class="pre">build_query_filters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#GenericQuery.build_query_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.GenericQuery.build_query_filters" title="Link to this definition"></a></dt>
+<dd><p>Construction des filtres</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.GenericQuery.build_query_filter">
+<span class="sig-name descname"><span class="pre">build_query_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#GenericQuery.build_query_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.GenericQuery.build_query_filter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.GenericQuery.build_query_order">
+<span class="sig-name descname"><span class="pre">build_query_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#GenericQuery.build_query_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.GenericQuery.build_query_order" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.GenericQuery.set_limit">
+<span class="sig-name descname"><span class="pre">set_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#GenericQuery.set_limit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.GenericQuery.set_limit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.GenericQuery.raw_query">
+<span class="sig-name descname"><span class="pre">raw_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#GenericQuery.raw_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.GenericQuery.raw_query" title="Link to this definition"></a></dt>
+<dd><p>Renvoie la requete “brute” (sans .all)
+- process_filter: application des filtres (et du sort)
+- with_limit: application de la limite sur la query</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.GenericQuery.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#GenericQuery.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.GenericQuery.query" title="Link to this definition"></a></dt>
+<dd><p>Lance la requete et retourne l’objet sqlalchemy</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.GenericQuery.return_query">
+<span class="sig-name descname"><span class="pre">return_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#GenericQuery.return_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.GenericQuery.return_query" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Lance la requete (execute self.query())</dt><dd><p>et retourne les résutats dans un format standard</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.serializeQuery">
+<span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla.generic.</span></span><span class="sig-name descname"><span class="pre">serializeQuery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columnDef</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#serializeQuery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.serializeQuery" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.serializeQueryOneResult">
+<span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla.generic.</span></span><span class="sig-name descname"><span class="pre">serializeQueryOneResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_def</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#serializeQueryOneResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.serializeQueryOneResult" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.generic.serializeQueryTest">
+<span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla.generic.</span></span><span class="sig-name descname"><span class="pre">serializeQueryTest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_def</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/generic.html#serializeQueryTest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.generic.serializeQueryTest" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="../errors/index.html" class="btn btn-neutral float-left" title="src.utils_flask_sqla.errors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="../models/index.html" class="btn btn-neutral float-right" title="src.utils_flask_sqla.models" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

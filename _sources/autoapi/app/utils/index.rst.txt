@@ -1,0 +1,17 @@
+:py:mod:`app.utils`
+===================
+
+.. py:module:: app.utils
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   errors/index.rst
+   utils_all/index.rst
+   utilssqlalchemy/index.rst
+
+

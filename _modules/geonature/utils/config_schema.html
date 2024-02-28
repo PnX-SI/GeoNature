@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.utils.config_schema &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.utils.config_schema</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.utils.config_schema</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Description des options de configuration</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Schema</span><span class="p">,</span>
+    <span class="n">fields</span><span class="p">,</span>
+    <span class="n">validates_schema</span><span class="p">,</span>
+    <span class="n">ValidationError</span><span class="p">,</span>
+    <span class="n">post_load</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">marshmallow.validate</span> <span class="kn">import</span> <span class="n">OneOf</span><span class="p">,</span> <span class="n">Regexp</span><span class="p">,</span> <span class="n">Email</span><span class="p">,</span> <span class="n">Length</span>
+
+<span class="kn">from</span> <span class="nn">geonature.core.gn_synthese.synthese_config</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DEFAULT_EXPORT_COLUMNS</span><span class="p">,</span>
+    <span class="n">DEFAULT_LIST_COLUMN</span><span class="p">,</span>
+    <span class="n">DEFAULT_COLUMNS_API_SYNTHESE</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">GEONATURE_VERSION</span><span class="p">,</span> <span class="n">BACKEND_DIR</span><span class="p">,</span> <span class="n">ROOT_DIR</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.module</span> <span class="kn">import</span> <span class="n">iter_modules_dist</span><span class="p">,</span> <span class="n">get_module_config</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.utilsmails</span> <span class="kn">import</span> <span class="n">clean_recipients</span>
+<span class="kn">from</span> <span class="nn">geonature.utils.utilstoml</span> <span class="kn">import</span> <span class="n">load_and_validate_toml</span>
+
+
+<div class="viewcode-block" id="EmailStrOrListOfEmailStrField">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.EmailStrOrListOfEmailStrField">[docs]</a>
+<span class="k">class</span> <span class="nc">EmailStrOrListOfEmailStrField</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">Field</span><span class="p">):</span>
+<div class="viewcode-block" id="EmailStrOrListOfEmailStrField._deserialize">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.EmailStrOrListOfEmailStrField._deserialize">[docs]</a>
+    <span class="k">def</span> <span class="nf">_deserialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">value</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Field should be str or list of str&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_email</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="EmailStrOrListOfEmailStrField._check_email">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.EmailStrOrListOfEmailStrField._check_email">[docs]</a>
+    <span class="k">def</span> <span class="nf">_check_email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">recipients</span> <span class="o">=</span> <span class="n">clean_recipients</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">recipient</span> <span class="ow">in</span> <span class="n">recipients</span><span class="p">:</span>
+            <span class="n">email</span> <span class="o">=</span> <span class="n">recipient</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">recipient</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="n">recipient</span>
+            <span class="c1"># Validate email with Marshmallow</span>
+            <span class="n">validator</span> <span class="o">=</span> <span class="n">Email</span><span class="p">()</span>
+            <span class="n">validator</span><span class="p">(</span><span class="n">email</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CasUserSchemaConf">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CasUserSchemaConf">[docs]</a>
+<span class="k">class</span> <span class="nc">CasUserSchemaConf</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="CasUserSchemaConf.URL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CasUserSchemaConf.URL">[docs]</a>
+    <span class="n">URL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Url</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;https://inpn.mnhn.fr/authentication/information&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CasUserSchemaConf.BASE_URL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CasUserSchemaConf.BASE_URL">[docs]</a>
+    <span class="n">BASE_URL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Url</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;https://inpn.mnhn.fr/authentication/&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CasUserSchemaConf.ID">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CasUserSchemaConf.ID">[docs]</a>
+    <span class="n">ID</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;mon_id&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CasUserSchemaConf.PASSWORD">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CasUserSchemaConf.PASSWORD">[docs]</a>
+    <span class="n">PASSWORD</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;mon_pass&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CasFrontend">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CasFrontend">[docs]</a>
+<span class="k">class</span> <span class="nc">CasFrontend</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="CasFrontend.CAS_AUTHENTIFICATION">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CasFrontend.CAS_AUTHENTIFICATION">[docs]</a>
+    <span class="n">CAS_AUTHENTIFICATION</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CasFrontend.CAS_URL_LOGIN">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CasFrontend.CAS_URL_LOGIN">[docs]</a>
+    <span class="n">CAS_URL_LOGIN</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Url</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;https://preprod-inpn.mnhn.fr/auth/login&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CasFrontend.CAS_URL_LOGOUT">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CasFrontend.CAS_URL_LOGOUT">[docs]</a>
+    <span class="n">CAS_URL_LOGOUT</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Url</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;https://preprod-inpn.mnhn.fr/auth/logout&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CasSchemaConf">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CasSchemaConf">[docs]</a>
+<span class="k">class</span> <span class="nc">CasSchemaConf</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="CasSchemaConf.CAS_URL_VALIDATION">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CasSchemaConf.CAS_URL_VALIDATION">[docs]</a>
+    <span class="n">CAS_URL_VALIDATION</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span>
+        <span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;https://preprod-inpn.mnhn.fr/auth/serviceValidate&quot;</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CasSchemaConf.CAS_USER_WS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CasSchemaConf.CAS_USER_WS">[docs]</a>
+    <span class="n">CAS_USER_WS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">CasUserSchemaConf</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">CasUserSchemaConf</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="CasSchemaConf.USERS_CAN_SEE_ORGANISM_DATA">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CasSchemaConf.USERS_CAN_SEE_ORGANISM_DATA">[docs]</a>
+    <span class="n">USERS_CAN_SEE_ORGANISM_DATA</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+</div>
+
+    <span class="c1"># Quel modules seront associés au JDD récupérés depuis MTD</span>
+
+
+<div class="viewcode-block" id="MTDSchemaConf">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MTDSchemaConf">[docs]</a>
+<span class="k">class</span> <span class="nc">MTDSchemaConf</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="MTDSchemaConf.JDD_MODULE_CODE_ASSOCIATION">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MTDSchemaConf.JDD_MODULE_CODE_ASSOCIATION">[docs]</a>
+    <span class="n">JDD_MODULE_CODE_ASSOCIATION</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;OCCTAX&quot;</span><span class="p">,</span> <span class="s2">&quot;OCCHAB&quot;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="MTDSchemaConf.ID_INSTANCE_FILTER">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MTDSchemaConf.ID_INSTANCE_FILTER">[docs]</a>
+    <span class="n">ID_INSTANCE_FILTER</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MTDSchemaConf.SYNC_LOG_LEVEL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MTDSchemaConf.SYNC_LOG_LEVEL">[docs]</a>
+    <span class="n">SYNC_LOG_LEVEL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BddConfig">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.BddConfig">[docs]</a>
+<span class="k">class</span> <span class="nc">BddConfig</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="BddConfig.ID_USER_SOCLE_1">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.BddConfig.ID_USER_SOCLE_1">[docs]</a>
+    <span class="n">ID_USER_SOCLE_1</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BddConfig.ID_USER_SOCLE_2">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.BddConfig.ID_USER_SOCLE_2">[docs]</a>
+    <span class="n">ID_USER_SOCLE_2</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="RightsSchemaConf">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.RightsSchemaConf">[docs]</a>
+<span class="k">class</span> <span class="nc">RightsSchemaConf</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="RightsSchemaConf.NOTHING">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.RightsSchemaConf.NOTHING">[docs]</a>
+    <span class="n">NOTHING</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RightsSchemaConf.MY_DATA">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.RightsSchemaConf.MY_DATA">[docs]</a>
+    <span class="n">MY_DATA</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RightsSchemaConf.MY_ORGANISM_DATA">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.RightsSchemaConf.MY_ORGANISM_DATA">[docs]</a>
+    <span class="n">MY_ORGANISM_DATA</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RightsSchemaConf.ALL_DATA">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.RightsSchemaConf.ALL_DATA">[docs]</a>
+    <span class="n">ALL_DATA</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MailConfig">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MailConfig">[docs]</a>
+<span class="k">class</span> <span class="nc">MailConfig</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="MailConfig.MAIL_SERVER">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MailConfig.MAIL_SERVER">[docs]</a>
+    <span class="n">MAIL_SERVER</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MailConfig.MAIL_PORT">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MailConfig.MAIL_PORT">[docs]</a>
+    <span class="n">MAIL_PORT</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MailConfig.MAIL_USE_TLS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MailConfig.MAIL_USE_TLS">[docs]</a>
+    <span class="n">MAIL_USE_TLS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MailConfig.MAIL_USE_SSL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MailConfig.MAIL_USE_SSL">[docs]</a>
+    <span class="n">MAIL_USE_SSL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MailConfig.MAIL_USERNAME">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MailConfig.MAIL_USERNAME">[docs]</a>
+    <span class="n">MAIL_USERNAME</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MailConfig.MAIL_PASSWORD">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MailConfig.MAIL_PASSWORD">[docs]</a>
+    <span class="n">MAIL_PASSWORD</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MailConfig.MAIL_DEFAULT_SENDER">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MailConfig.MAIL_DEFAULT_SENDER">[docs]</a>
+    <span class="n">MAIL_DEFAULT_SENDER</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MailConfig.MAIL_MAX_EMAILS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MailConfig.MAIL_MAX_EMAILS">[docs]</a>
+    <span class="n">MAIL_MAX_EMAILS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MailConfig.MAIL_SUPPRESS_SEND">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MailConfig.MAIL_SUPPRESS_SEND">[docs]</a>
+    <span class="n">MAIL_SUPPRESS_SEND</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MailConfig.MAIL_ASCII_ATTACHMENTS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MailConfig.MAIL_ASCII_ATTACHMENTS">[docs]</a>
+    <span class="n">MAIL_ASCII_ATTACHMENTS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MailConfig.ERROR_MAIL_TO">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MailConfig.ERROR_MAIL_TO">[docs]</a>
+    <span class="n">ERROR_MAIL_TO</span> <span class="o">=</span> <span class="n">EmailStrOrListOfEmailStrField</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CeleryConfig">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CeleryConfig">[docs]</a>
+<span class="k">class</span> <span class="nc">CeleryConfig</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="CeleryConfig.broker_url">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CeleryConfig.broker_url">[docs]</a>
+    <span class="n">broker_url</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;redis://localhost:6379/0&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CeleryConfig.result_backend">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CeleryConfig.result_backend">[docs]</a>
+    <span class="n">result_backend</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;redis://localhost:6379/0&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CeleryConfig.enable_utc">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CeleryConfig.enable_utc">[docs]</a>
+    <span class="n">enable_utc</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CeleryConfig.timezone">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.CeleryConfig.timezone">[docs]</a>
+    <span class="n">timezone</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AccountManagement">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AccountManagement">[docs]</a>
+<span class="k">class</span> <span class="nc">AccountManagement</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="c1"># Config for sign-up</span>
+<div class="viewcode-block" id="AccountManagement.ENABLE_SIGN_UP">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AccountManagement.ENABLE_SIGN_UP">[docs]</a>
+    <span class="n">ENABLE_SIGN_UP</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AccountManagement.ENABLE_USER_MANAGEMENT">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AccountManagement.ENABLE_USER_MANAGEMENT">[docs]</a>
+    <span class="n">ENABLE_USER_MANAGEMENT</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AccountManagement.AUTO_ACCOUNT_CREATION">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AccountManagement.AUTO_ACCOUNT_CREATION">[docs]</a>
+    <span class="n">AUTO_ACCOUNT_CREATION</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AccountManagement.AUTO_DATASET_CREATION">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AccountManagement.AUTO_DATASET_CREATION">[docs]</a>
+    <span class="n">AUTO_DATASET_CREATION</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AccountManagement.VALIDATOR_EMAIL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AccountManagement.VALIDATOR_EMAIL">[docs]</a>
+    <span class="n">VALIDATOR_EMAIL</span> <span class="o">=</span> <span class="n">EmailStrOrListOfEmailStrField</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AccountManagement.ACCOUNT_FORM">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AccountManagement.ACCOUNT_FORM">[docs]</a>
+    <span class="n">ACCOUNT_FORM</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">Dict</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[])</span></div>
+
+<div class="viewcode-block" id="AccountManagement.ADDON_USER_EMAIL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AccountManagement.ADDON_USER_EMAIL">[docs]</a>
+    <span class="n">ADDON_USER_EMAIL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AccountManagement.DATASET_MODULES_ASSOCIATION">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AccountManagement.DATASET_MODULES_ASSOCIATION">[docs]</a>
+    <span class="n">DATASET_MODULES_ASSOCIATION</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;OCCTAX&quot;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="AccountManagement.EXTERNAL_LINKS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AccountManagement.EXTERNAL_LINKS">[docs]</a>
+    <span class="n">EXTERNAL_LINKS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span>
+        <span class="n">load_default</span><span class="o">=</span><span class="p">[],</span>
+    <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="UsersHubConfig">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.UsersHubConfig">[docs]</a>
+<span class="k">class</span> <span class="nc">UsersHubConfig</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="UsersHubConfig.ADMIN_APPLICATION_LOGIN">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.UsersHubConfig.ADMIN_APPLICATION_LOGIN">[docs]</a>
+    <span class="n">ADMIN_APPLICATION_LOGIN</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="UsersHubConfig.ADMIN_APPLICATION_PASSWORD">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.UsersHubConfig.ADMIN_APPLICATION_PASSWORD">[docs]</a>
+    <span class="n">ADMIN_APPLICATION_PASSWORD</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="UsersHubConfig.URL_USERSHUB">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.UsersHubConfig.URL_USERSHUB">[docs]</a>
+    <span class="n">URL_USERSHUB</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Url</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ServerConfig">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.ServerConfig">[docs]</a>
+<span class="k">class</span> <span class="nc">ServerConfig</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="ServerConfig.LOG_LEVEL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.ServerConfig.LOG_LEVEL">[docs]</a>
+    <span class="n">LOG_LEVEL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MediasConfig">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MediasConfig">[docs]</a>
+<span class="k">class</span> <span class="nc">MediasConfig</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="MediasConfig.MEDIAS_SIZE_MAX">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MediasConfig.MEDIAS_SIZE_MAX">[docs]</a>
+    <span class="n">MEDIAS_SIZE_MAX</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">50000</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MediasConfig.THUMBNAIL_SIZES">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MediasConfig.THUMBNAIL_SIZES">[docs]</a>
+    <span class="n">THUMBNAIL_SIZES</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">50</span><span class="p">])</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AlembicConfig">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AlembicConfig">[docs]</a>
+<span class="k">class</span> <span class="nc">AlembicConfig</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="AlembicConfig.VERSION_LOCATIONS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AlembicConfig.VERSION_LOCATIONS">[docs]</a>
+    <span class="n">VERSION_LOCATIONS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AdditionalFields">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AdditionalFields">[docs]</a>
+<span class="k">class</span> <span class="nc">AdditionalFields</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="AdditionalFields.IMPLEMENTED_MODULES">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AdditionalFields.IMPLEMENTED_MODULES">[docs]</a>
+    <span class="n">IMPLEMENTED_MODULES</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;OCCTAX&quot;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="AdditionalFields.IMPLEMENTED_OBJECTS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.AdditionalFields.IMPLEMENTED_OBJECTS">[docs]</a>
+    <span class="n">IMPLEMENTED_OBJECTS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;OCCTAX_RELEVE&quot;</span><span class="p">,</span> <span class="s2">&quot;OCCTAX_OCCURENCE&quot;</span><span class="p">,</span> <span class="s2">&quot;OCCTAX_DENOMBREMENT&quot;</span><span class="p">]</span>
+    <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="HomeConfig">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.HomeConfig">[docs]</a>
+<span class="k">class</span> <span class="nc">HomeConfig</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="HomeConfig.TITLE">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.HomeConfig.TITLE">[docs]</a>
+    <span class="n">TITLE</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;Bienvenue dans GeoNature&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HomeConfig.INTRODUCTION">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.HomeConfig.INTRODUCTION">[docs]</a>
+    <span class="n">INTRODUCTION</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span>
+        <span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;Texte d&#39;introduction, configurable pour le modifier régulièrement ou le masquer&quot;</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="HomeConfig.FOOTER">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.HomeConfig.FOOTER">[docs]</a>
+    <span class="n">FOOTER</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MetadataConfig">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig">[docs]</a>
+<span class="k">class</span> <span class="nc">MetadataConfig</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="MetadataConfig.NB_AF_DISPLAYED">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig.NB_AF_DISPLAYED">[docs]</a>
+    <span class="n">NB_AF_DISPLAYED</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="n">OneOf</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="MetadataConfig.ENABLE_CLOSE_AF">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig.ENABLE_CLOSE_AF">[docs]</a>
+    <span class="n">ENABLE_CLOSE_AF</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MetadataConfig.AF_SHEET_CLOSED_LINK_NAME">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig.AF_SHEET_CLOSED_LINK_NAME">[docs]</a>
+    <span class="n">AF_SHEET_CLOSED_LINK_NAME</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;Lien du certificat de dépôt&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MetadataConfig.CLOSED_AF_TITLE">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig.CLOSED_AF_TITLE">[docs]</a>
+    <span class="n">CLOSED_AF_TITLE</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MetadataConfig.AF_PDF_TITLE">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig.AF_PDF_TITLE">[docs]</a>
+    <span class="n">AF_PDF_TITLE</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;Cadre d&#39;acquisition: &quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MetadataConfig.DS_PDF_TITLE">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig.DS_PDF_TITLE">[docs]</a>
+    <span class="n">DS_PDF_TITLE</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MetadataConfig.MAIL_SUBJECT_AF_CLOSED_BASE">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig.MAIL_SUBJECT_AF_CLOSED_BASE">[docs]</a>
+    <span class="n">MAIL_SUBJECT_AF_CLOSED_BASE</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MetadataConfig.MAIL_CONTENT_AF_CLOSED_ADDITION">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig.MAIL_CONTENT_AF_CLOSED_ADDITION">[docs]</a>
+    <span class="n">MAIL_CONTENT_AF_CLOSED_ADDITION</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MetadataConfig.MAIL_CONTENT_AF_CLOSED_PDF">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig.MAIL_CONTENT_AF_CLOSED_PDF">[docs]</a>
+    <span class="n">MAIL_CONTENT_AF_CLOSED_PDF</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MetadataConfig.MAIL_CONTENT_AF_CLOSED_URL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig.MAIL_CONTENT_AF_CLOSED_URL">[docs]</a>
+    <span class="n">MAIL_CONTENT_AF_CLOSED_URL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MetadataConfig.MAIL_CONTENT_AF_CLOSED_GREETINGS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig.MAIL_CONTENT_AF_CLOSED_GREETINGS">[docs]</a>
+    <span class="n">MAIL_CONTENT_AF_CLOSED_GREETINGS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MetadataConfig.CLOSED_MODAL_LABEL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig.CLOSED_MODAL_LABEL">[docs]</a>
+    <span class="n">CLOSED_MODAL_LABEL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;Fermer un cadre d&#39;acquisition&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MetadataConfig.CLOSED_MODAL_CONTENT">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig.CLOSED_MODAL_CONTENT">[docs]</a>
+    <span class="n">CLOSED_MODAL_CONTENT</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span>
+        <span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;L&#39;action de fermeture est irréversible. Il ne sera</span>
+<span class="s2">    plus possible d&#39;ajouter des jeux de données au cadre d&#39;acquisition par la suite.&quot;&quot;&quot;</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="MetadataConfig.CD_NOMENCLATURE_ROLE_TYPE_DS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig.CD_NOMENCLATURE_ROLE_TYPE_DS">[docs]</a>
+    <span class="n">CD_NOMENCLATURE_ROLE_TYPE_DS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[])</span></div>
+
+<div class="viewcode-block" id="MetadataConfig.CD_NOMENCLATURE_ROLE_TYPE_AF">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig.CD_NOMENCLATURE_ROLE_TYPE_AF">[docs]</a>
+    <span class="n">CD_NOMENCLATURE_ROLE_TYPE_AF</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[])</span></div>
+
+<div class="viewcode-block" id="MetadataConfig.METADATA_AREA_FILTERS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MetadataConfig.METADATA_AREA_FILTERS">[docs]</a>
+    <span class="n">METADATA_AREA_FILTERS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span>
+        <span class="n">load_default</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Communes&quot;</span><span class="p">,</span> <span class="s2">&quot;type_code&quot;</span><span class="p">:</span> <span class="s2">&quot;COM&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Départements&quot;</span><span class="p">,</span> <span class="s2">&quot;type_code&quot;</span><span class="p">:</span> <span class="s2">&quot;DEP&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Régions&quot;</span><span class="p">,</span> <span class="s2">&quot;type_code&quot;</span><span class="p">:</span> <span class="s2">&quot;REG&quot;</span><span class="p">},</span>
+        <span class="p">],</span>
+    <span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1"># class a utiliser pour les paramètres que l&#39;on ne veut pas passer au frontend</span>
+
+
+<div class="viewcode-block" id="GnPySchemaConf">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf">[docs]</a>
+<span class="k">class</span> <span class="nc">GnPySchemaConf</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="GnPySchemaConf.SQLALCHEMY_DATABASE_URI">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.SQLALCHEMY_DATABASE_URI">[docs]</a>
+    <span class="n">SQLALCHEMY_DATABASE_URI</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">validate</span><span class="o">=</span><span class="n">Regexp</span><span class="p">(</span>
+            <span class="s2">&quot;^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+&quot;</span><span class="p">,</span>
+            <span class="n">error</span><span class="o">=</span><span class="s2">&quot;Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.SQLALCHEMY_TRACK_MODIFICATIONS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.SQLALCHEMY_TRACK_MODIFICATIONS">[docs]</a>
+    <span class="n">SQLALCHEMY_TRACK_MODIFICATIONS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.SESSION_TYPE">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.SESSION_TYPE">[docs]</a>
+    <span class="n">SESSION_TYPE</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;filesystem&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.SECRET_KEY">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.SECRET_KEY">[docs]</a>
+    <span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="n">Length</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">20</span><span class="p">))</span></div>
+
+    <span class="c1"># le cookie expire toute les 7 jours par défaut</span>
+<div class="viewcode-block" id="GnPySchemaConf.COOKIE_EXPIRATION">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.COOKIE_EXPIRATION">[docs]</a>
+    <span class="n">COOKIE_EXPIRATION</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">7</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.COOKIE_AUTORENEW">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.COOKIE_AUTORENEW">[docs]</a>
+    <span class="n">COOKIE_AUTORENEW</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.TRAP_ALL_EXCEPTIONS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.TRAP_ALL_EXCEPTIONS">[docs]</a>
+    <span class="n">TRAP_ALL_EXCEPTIONS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.SENTRY_DSN">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.SENTRY_DSN">[docs]</a>
+    <span class="n">SENTRY_DSN</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.ROOT_PATH">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.ROOT_PATH">[docs]</a>
+    <span class="n">ROOT_PATH</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="n">BACKEND_DIR</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.STATIC_FOLDER">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.STATIC_FOLDER">[docs]</a>
+    <span class="n">STATIC_FOLDER</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;static&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.CUSTOM_STATIC_FOLDER">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.CUSTOM_STATIC_FOLDER">[docs]</a>
+    <span class="n">CUSTOM_STATIC_FOLDER</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="n">ROOT_DIR</span> <span class="o">/</span> <span class="s2">&quot;custom&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.MEDIA_FOLDER">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.MEDIA_FOLDER">[docs]</a>
+    <span class="n">MEDIA_FOLDER</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;media&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.CAS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.CAS">[docs]</a>
+    <span class="n">CAS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">CasSchemaConf</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">CasSchemaConf</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.MAIL_ON_ERROR">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.MAIL_ON_ERROR">[docs]</a>
+    <span class="n">MAIL_ON_ERROR</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.MAIL_CONFIG">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.MAIL_CONFIG">[docs]</a>
+    <span class="n">MAIL_CONFIG</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">MailConfig</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">MailConfig</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.CELERY">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.CELERY">[docs]</a>
+    <span class="n">CELERY</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">CeleryConfig</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">CeleryConfig</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.METADATA">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.METADATA">[docs]</a>
+    <span class="n">METADATA</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">MetadataConfig</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">MetadataConfig</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.ADMIN_APPLICATION_LOGIN">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.ADMIN_APPLICATION_LOGIN">[docs]</a>
+    <span class="n">ADMIN_APPLICATION_LOGIN</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.ACCOUNT_MANAGEMENT">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.ACCOUNT_MANAGEMENT">[docs]</a>
+    <span class="n">ACCOUNT_MANAGEMENT</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">AccountManagement</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">AccountManagement</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.BAD_LOGIN_STATUS_CODE">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.BAD_LOGIN_STATUS_CODE">[docs]</a>
+    <span class="n">BAD_LOGIN_STATUS_CODE</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">401</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.USERSHUB">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.USERSHUB">[docs]</a>
+    <span class="n">USERSHUB</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">UsersHubConfig</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">UsersHubConfig</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.SERVER">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.SERVER">[docs]</a>
+    <span class="n">SERVER</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">ServerConfig</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">ServerConfig</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.MEDIAS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.MEDIAS">[docs]</a>
+    <span class="n">MEDIAS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">MediasConfig</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">MediasConfig</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnPySchemaConf.ALEMBIC">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.ALEMBIC">[docs]</a>
+    <span class="n">ALEMBIC</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">AlembicConfig</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">AlembicConfig</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+
+    <span class="nd">@post_load</span><span class="p">()</span>
+<div class="viewcode-block" id="GnPySchemaConf.folders">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.folders">[docs]</a>
+    <span class="k">def</span> <span class="nf">folders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;STATIC_FOLDER&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ROOT_PATH&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;STATIC_FOLDER&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">&quot;CUSTOM_STATIC_FOLDER&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;CUSTOM_STATIC_FOLDER&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ROOT_PATH&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;CUSTOM_STATIC_FOLDER&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;MEDIA_FOLDER&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ROOT_PATH&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;MEDIA_FOLDER&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+    <span class="nd">@post_load</span><span class="p">()</span>
+<div class="viewcode-block" id="GnPySchemaConf.unwrap_usershub">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.unwrap_usershub">[docs]</a>
+    <span class="k">def</span> <span class="nf">unwrap_usershub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        On met la section [USERSHUB] à la racine de la conf</span>
+<span class="sd">        pour compatibilité et simplicité ave le sous-module d&#39;authentif</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;USERSHUB&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;USERSHUB&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+    <span class="nd">@validates_schema</span>
+<div class="viewcode-block" id="GnPySchemaConf.validate_enable_usershub_and_mail">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnPySchemaConf.validate_enable_usershub_and_mail">[docs]</a>
+    <span class="k">def</span> <span class="nf">validate_enable_usershub_and_mail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># si account management = true, URL_USERSHUB et MAIL_CONFIG sont necessaire</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ENABLE_SIGN_UP&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="n">data</span><span class="p">[</span>
+            <span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span>
+        <span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ENABLE_USER_MANAGEMENT&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;USERSHUB&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;URL_USERSHUB&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+                <span class="ow">or</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;USERSHUB&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ADMIN_APPLICATION_LOGIN&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+                <span class="ow">or</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;USERSHUB&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ADMIN_APPLICATION_PASSWORD&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="s2">&quot;URL_USERSHUB, ADMIN_APPLICATION_LOGIN et ADMIN_APPLICATION_PASSWORD sont necessaires si ENABLE_SIGN_UP=True &quot;</span>
+                        <span class="s2">&quot;ou si ENABLE_USER_MANAGEMENT=True&quot;</span>
+                    <span class="p">),</span>
+                    <span class="s2">&quot;URL_USERSHUB&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;MAIL_CONFIG&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;MAIL_SERVER&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span>
+                    <span class="s2">&quot;Veuillez remplir la rubrique MAIL_CONFIG si ENABLE_SIGN_UP=True&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;ENABLE_SIGN_UP&quot;</span><span class="p">,</span>
+                <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GnFrontEndConf">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnFrontEndConf">[docs]</a>
+<span class="k">class</span> <span class="nc">GnFrontEndConf</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="GnFrontEndConf.PROD_MOD">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnFrontEndConf.PROD_MOD">[docs]</a>
+    <span class="n">PROD_MOD</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnFrontEndConf.DISPLAY_FOOTER">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnFrontEndConf.DISPLAY_FOOTER">[docs]</a>
+    <span class="n">DISPLAY_FOOTER</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnFrontEndConf.DISPLAY_STAT_BLOC">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnFrontEndConf.DISPLAY_STAT_BLOC">[docs]</a>
+    <span class="n">DISPLAY_STAT_BLOC</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnFrontEndConf.STAT_BLOC_TTL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnFrontEndConf.STAT_BLOC_TTL">[docs]</a>
+    <span class="n">STAT_BLOC_TTL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">3600</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnFrontEndConf.DISPLAY_MAP_LAST_OBS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnFrontEndConf.DISPLAY_MAP_LAST_OBS">[docs]</a>
+    <span class="n">DISPLAY_MAP_LAST_OBS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnFrontEndConf.MULTILINGUAL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnFrontEndConf.MULTILINGUAL">[docs]</a>
+    <span class="n">MULTILINGUAL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnFrontEndConf.ENABLE_PROFILES">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnFrontEndConf.ENABLE_PROFILES">[docs]</a>
+    <span class="n">ENABLE_PROFILES</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+    <span class="c1"># show email on synthese and validation info obs modal</span>
+<div class="viewcode-block" id="GnFrontEndConf.DISPLAY_EMAIL_INFO_OBS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnFrontEndConf.DISPLAY_EMAIL_INFO_OBS">[docs]</a>
+    <span class="n">DISPLAY_EMAIL_INFO_OBS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnFrontEndConf.DISPLAY_EMAIL_DISPLAY_INFO">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnFrontEndConf.DISPLAY_EMAIL_DISPLAY_INFO">[docs]</a>
+    <span class="n">DISPLAY_EMAIL_DISPLAY_INFO</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;NOM_VERN&quot;</span><span class="p">])</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Synthese">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese">[docs]</a>
+<span class="k">class</span> <span class="nc">Synthese</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="c1"># --------------------------------------------------------------------</span>
+    <span class="c1"># SYNTHESE - SEARCH FORM</span>
+<div class="viewcode-block" id="Synthese.AREA_FILTERS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.AREA_FILTERS">[docs]</a>
+    <span class="n">AREA_FILTERS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Communes&quot;</span><span class="p">,</span> <span class="s2">&quot;type_code&quot;</span><span class="p">:</span> <span class="s2">&quot;COM&quot;</span><span class="p">}]</span>
+    <span class="p">)</span></div>
+
+    <span class="c1"># Nombre de résultat à afficher pour la rechercher autocompleté de taxon</span>
+<div class="viewcode-block" id="Synthese.TAXON_RESULT_NUMBER">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.TAXON_RESULT_NUMBER">[docs]</a>
+    <span class="n">TAXON_RESULT_NUMBER</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span></div>
+
+    <span class="c1"># Afficher ou non l&#39;arbre taxonomique</span>
+<div class="viewcode-block" id="Synthese.DISPLAY_TAXON_TREE">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.DISPLAY_TAXON_TREE">[docs]</a>
+    <span class="n">DISPLAY_TAXON_TREE</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+    <span class="c1"># Switch the observer form input in free text input (true) or in select input (false)</span>
+<div class="viewcode-block" id="Synthese.SEARCH_OBSERVER_WITH_LIST">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.SEARCH_OBSERVER_WITH_LIST">[docs]</a>
+    <span class="n">SEARCH_OBSERVER_WITH_LIST</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+    <span class="c1"># Id of the observer list -- utilisateurs.t_menus</span>
+<div class="viewcode-block" id="Synthese.ID_SEARCH_OBSERVER_LIST">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.ID_SEARCH_OBSERVER_LIST">[docs]</a>
+    <span class="n">ID_SEARCH_OBSERVER_LIST</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+    <span class="c1"># Regulatory or not status list of fields</span>
+<div class="viewcode-block" id="Synthese.STATUS_FILTERS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.STATUS_FILTERS">[docs]</a>
+    <span class="n">STATUS_FILTERS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span>
+        <span class="n">load_default</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;protections&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;show&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Taxons protégés&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;status_types&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;PN&quot;</span><span class="p">,</span> <span class="s2">&quot;PR&quot;</span><span class="p">,</span> <span class="s2">&quot;PD&quot;</span><span class="p">],</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;regulations&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;show&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Taxons réglementés&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;status_types&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;REGLII&quot;</span><span class="p">,</span> <span class="s2">&quot;REGLLUTTE&quot;</span><span class="p">,</span> <span class="s2">&quot;REGL&quot;</span><span class="p">,</span> <span class="s2">&quot;REGLSO&quot;</span><span class="p">],</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;znief&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;show&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Espèces déterminantes ZNIEFF&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;status_types&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ZDET&quot;</span><span class="p">],</span>
+            <span class="p">},</span>
+        <span class="p">],</span>
+    <span class="p">)</span></div>
+
+    <span class="c1"># Red lists list of fields</span>
+<div class="viewcode-block" id="Synthese.RED_LISTS_FILTERS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.RED_LISTS_FILTERS">[docs]</a>
+    <span class="n">RED_LISTS_FILTERS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span>
+        <span class="n">load_default</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;worldwide&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;show&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Liste rouge mondiale&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;status_type&quot;</span><span class="p">:</span> <span class="s2">&quot;LRM&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;european&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;show&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Liste rouge européenne&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;status_type&quot;</span><span class="p">:</span> <span class="s2">&quot;LRE&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;national&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;show&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Liste rouge nationale&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;status_type&quot;</span><span class="p">:</span> <span class="s2">&quot;LRN&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;regional&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;show&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Liste rouge régionale&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;status_type&quot;</span><span class="p">:</span> <span class="s2">&quot;LRR&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">],</span>
+    <span class="p">)</span></div>
+
+
+    <span class="c1"># Filtres par défaut pour la synthese</span>
+<div class="viewcode-block" id="Synthese.DEFAULT_FILTERS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.DEFAULT_FILTERS">[docs]</a>
+    <span class="n">DEFAULT_FILTERS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Dict</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="p">{})</span></div>
+
+
+    <span class="c1"># --------------------------------------------------------------------</span>
+    <span class="c1"># SYNTHESE - OBSERVATIONS LIST</span>
+    <span class="c1"># Listes des champs renvoyés par l&#39;API synthese &#39;/synthese&#39;</span>
+    <span class="c1"># Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut</span>
+    <span class="c1"># d&#39;abbord s&#39;assurer que ces champs sont bien renvoyé par l&#39;API !</span>
+    <span class="c1"># Champs disponibles: tous ceux de la vue &#39;v_synthese_for_web_app</span>
+<div class="viewcode-block" id="Synthese.COLUMNS_API_SYNTHESE_WEB_APP">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.COLUMNS_API_SYNTHESE_WEB_APP">[docs]</a>
+    <span class="n">COLUMNS_API_SYNTHESE_WEB_APP</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">DEFAULT_COLUMNS_API_SYNTHESE</span>
+    <span class="p">)</span></div>
+
+    <span class="c1"># Colonnes affichées sur la liste des résultats de la sytnthese</span>
+<div class="viewcode-block" id="Synthese.LIST_COLUMNS_FRONTEND">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.LIST_COLUMNS_FRONTEND">[docs]</a>
+    <span class="n">LIST_COLUMNS_FRONTEND</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">DEFAULT_LIST_COLUMN</span><span class="p">)</span></div>
+
+
+    <span class="c1"># --------------------------------------------------------------------</span>
+    <span class="c1"># SYNTHESE - DOWNLOADS (AKA EXPORTS)</span>
+<div class="viewcode-block" id="Synthese.EXPORT_COLUMNS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.EXPORT_COLUMNS">[docs]</a>
+    <span class="n">EXPORT_COLUMNS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="n">DEFAULT_EXPORT_COLUMNS</span><span class="p">)</span></div>
+
+    <span class="c1"># Certaines colonnes sont obligatoires pour effectuer les filtres CRUVED</span>
+<div class="viewcode-block" id="Synthese.EXPORT_ID_SYNTHESE_COL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.EXPORT_ID_SYNTHESE_COL">[docs]</a>
+    <span class="n">EXPORT_ID_SYNTHESE_COL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;id_synthese&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Synthese.EXPORT_ID_DATASET_COL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.EXPORT_ID_DATASET_COL">[docs]</a>
+    <span class="n">EXPORT_ID_DATASET_COL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;jdd_id&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Synthese.EXPORT_ID_DIGITISER_COL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.EXPORT_ID_DIGITISER_COL">[docs]</a>
+    <span class="n">EXPORT_ID_DIGITISER_COL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;id_digitiser&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Synthese.EXPORT_OBSERVERS_COL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.EXPORT_OBSERVERS_COL">[docs]</a>
+    <span class="n">EXPORT_OBSERVERS_COL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;observateurs&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Synthese.EXPORT_GEOJSON_4326_COL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.EXPORT_GEOJSON_4326_COL">[docs]</a>
+    <span class="n">EXPORT_GEOJSON_4326_COL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;geojson_4326&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Synthese.EXPORT_GEOJSON_LOCAL_COL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.EXPORT_GEOJSON_LOCAL_COL">[docs]</a>
+    <span class="n">EXPORT_GEOJSON_LOCAL_COL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;geojson_local&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Synthese.EXPORT_METADATA_ID_DATASET_COL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.EXPORT_METADATA_ID_DATASET_COL">[docs]</a>
+    <span class="n">EXPORT_METADATA_ID_DATASET_COL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;jdd_id&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Synthese.EXPORT_METADATA_ACTOR_COL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.EXPORT_METADATA_ACTOR_COL">[docs]</a>
+    <span class="n">EXPORT_METADATA_ACTOR_COL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;acteurs&quot;</span><span class="p">)</span></div>
+
+    <span class="c1"># Formats d&#39;export disponibles [&quot;csv&quot;, &quot;geojson&quot;, &quot;shapefile&quot;, &quot;gpkg&quot;]</span>
+<div class="viewcode-block" id="Synthese.EXPORT_FORMAT">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.EXPORT_FORMAT">[docs]</a>
+    <span class="n">EXPORT_FORMAT</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;csv&quot;</span><span class="p">,</span> <span class="s2">&quot;geojson&quot;</span><span class="p">,</span> <span class="s2">&quot;shapefile&quot;</span><span class="p">])</span></div>
+
+    <span class="c1"># Nombre max d&#39;observation dans les exports</span>
+<div class="viewcode-block" id="Synthese.NB_MAX_OBS_EXPORT">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.NB_MAX_OBS_EXPORT">[docs]</a>
+    <span class="n">NB_MAX_OBS_EXPORT</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">50000</span><span class="p">)</span></div>
+
+
+    <span class="c1"># --------------------------------------------------------------------</span>
+    <span class="c1"># SYNTHESE - OBSERVATION DETAILS</span>
+    <span class="c1"># Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese</span>
+    <span class="c1"># et sur les filtres taxonomiques avancés</span>
+<div class="viewcode-block" id="Synthese.ID_ATTRIBUT_TAXHUB">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.ID_ATTRIBUT_TAXHUB">[docs]</a>
+    <span class="n">ID_ATTRIBUT_TAXHUB</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[</span><span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">])</span></div>
+
+    <span class="c1"># Display email on synthese and validation info obs modal</span>
+<div class="viewcode-block" id="Synthese.DISPLAY_EMAIL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.DISPLAY_EMAIL">[docs]</a>
+    <span class="n">DISPLAY_EMAIL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+    <span class="c1"># --------------------------------------------------------------------</span>
+    <span class="c1"># SYNTHESE - SHARED PARAMETERS</span>
+    <span class="c1"># Nom des colonnes de la table gn_synthese.synthese que l&#39;on veux retirer des filtres dynamiques</span>
+    <span class="c1"># et de la modale d&#39;information détaillée d&#39;une observation example = &quot;[non_digital_proof]&quot;</span>
+<div class="viewcode-block" id="Synthese.EXCLUDED_COLUMNS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.EXCLUDED_COLUMNS">[docs]</a>
+    <span class="n">EXCLUDED_COLUMNS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[])</span></div>
+
+
+    <span class="c1"># Nombre max d&#39;observation à afficher sur la carte</span>
+<div class="viewcode-block" id="Synthese.NB_MAX_OBS_MAP">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.NB_MAX_OBS_MAP">[docs]</a>
+    <span class="n">NB_MAX_OBS_MAP</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">50000</span><span class="p">)</span></div>
+
+    <span class="c1"># Clusteriser les layers sur la carte</span>
+<div class="viewcode-block" id="Synthese.ENABLE_LEAFLET_CLUSTER">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.ENABLE_LEAFLET_CLUSTER">[docs]</a>
+    <span class="n">ENABLE_LEAFLET_CLUSTER</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+    <span class="c1"># Nombre des &quot;dernières observations&quot; affichées à l&#39;arrivée sur la synthese</span>
+<div class="viewcode-block" id="Synthese.NB_LAST_OBS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.NB_LAST_OBS">[docs]</a>
+    <span class="n">NB_LAST_OBS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span></div>
+
+
+    <span class="c1"># Display email on synthese and validation info obs modal</span>
+    <span class="n">DISPLAY_EMAIL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Limit comment max length for the discussion tab</span>
+<div class="viewcode-block" id="Synthese.DISCUSSION_MAX_LENGTH">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.DISCUSSION_MAX_LENGTH">[docs]</a>
+    <span class="n">DISCUSSION_MAX_LENGTH</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">1500</span><span class="p">)</span></div>
+
+    <span class="c1"># Allow disable discussion tab for synthese or validation</span>
+<div class="viewcode-block" id="Synthese.DISCUSSION_MODULES">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.DISCUSSION_MODULES">[docs]</a>
+    <span class="n">DISCUSSION_MODULES</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;SYNTHESE&quot;</span><span class="p">,</span> <span class="s2">&quot;VALIDATION&quot;</span><span class="p">])</span></div>
+
+    <span class="c1"># Allow disable alert synthese module for synthese or validation or any</span>
+<div class="viewcode-block" id="Synthese.ALERT_MODULES">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.ALERT_MODULES">[docs]</a>
+    <span class="n">ALERT_MODULES</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;SYNTHESE&quot;</span><span class="p">,</span> <span class="s2">&quot;VALIDATION&quot;</span><span class="p">])</span></div>
+
+    <span class="c1"># Allow to activate pin tool for any, some or all VALIDATION, SYNTHESE</span>
+<div class="viewcode-block" id="Synthese.PIN_MODULES">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.PIN_MODULES">[docs]</a>
+    <span class="n">PIN_MODULES</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;SYNTHESE&quot;</span><span class="p">,</span> <span class="s2">&quot;VALIDATION&quot;</span><span class="p">])</span></div>
+
+    <span class="c1"># Enable areas vizualisation with toggle slide</span>
+<div class="viewcode-block" id="Synthese.AREA_AGGREGATION_ENABLED">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.AREA_AGGREGATION_ENABLED">[docs]</a>
+    <span class="n">AREA_AGGREGATION_ENABLED</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+    <span class="c1"># Choose size of areas</span>
+<div class="viewcode-block" id="Synthese.AREA_AGGREGATION_TYPE">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.AREA_AGGREGATION_TYPE">[docs]</a>
+    <span class="n">AREA_AGGREGATION_TYPE</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;M10&quot;</span><span class="p">)</span></div>
+
+    <span class="c1"># Activate areas mode by default</span>
+<div class="viewcode-block" id="Synthese.AREA_AGGREGATION_BY_DEFAULT">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.AREA_AGGREGATION_BY_DEFAULT">[docs]</a>
+    <span class="n">AREA_AGGREGATION_BY_DEFAULT</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+    <span class="c1"># Areas legend classes to use</span>
+<div class="viewcode-block" id="Synthese.AREA_AGGREGATION_LEGEND_CLASSES">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.AREA_AGGREGATION_LEGEND_CLASSES">[docs]</a>
+    <span class="n">AREA_AGGREGATION_LEGEND_CLASSES</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">Dict</span><span class="p">(),</span>
+        <span class="n">load_default</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span><span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#800026&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#BD0026&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#E31A1C&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#FC4E2A&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#FD8D3C&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#FEB24C&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#FED976&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#FFEDA0&quot;</span><span class="p">},</span>
+        <span class="p">],</span>
+    <span class="p">)</span></div>
+
+    <span class="c1"># Activate the blurring of sensitive observations. Otherwise, exclude them</span>
+<div class="viewcode-block" id="Synthese.BLUR_SENSITIVE_OBSERVATIONS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.Synthese.BLUR_SENSITIVE_OBSERVATIONS">[docs]</a>
+    <span class="n">BLUR_SENSITIVE_OBSERVATIONS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1"># Map configuration</span>
+<div class="viewcode-block" id="BASEMAP">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.BASEMAP">[docs]</a>
+<span class="n">BASEMAP</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;OpenStreetMap&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;//</span><span class="si">{s}</span><span class="s2">.tile.openstreetmap.fr/hot/</span><span class="si">{z}</span><span class="s2">/</span><span class="si">{x}</span><span class="s2">/</span><span class="si">{y}</span><span class="s2">.png&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;attribution&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;a href=&#39;https://www.openstreetmap.org/copyright&#39; target=&#39;_blank&#39;&gt;© OpenStreetMap contributors&lt;/a&gt;&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;OpenTopoMap&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;//a.tile.opentopomap.org/</span><span class="si">{z}</span><span class="s2">/</span><span class="si">{x}</span><span class="s2">/</span><span class="si">{y}</span><span class="s2">.png&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;attribution&quot;</span><span class="p">:</span> <span class="s2">&quot;Map data: © &lt;a href=&#39;https://www.openstreetmap.org/copyright&#39; target=&#39;_blank&#39;&gt;OpenStreetMap contributors&lt;/a&gt;, SRTM | Map style: © &lt;a href=&#39;https://opentopomap.org&#39; target=&#39;_blank&#39;&gt;OpenTopoMap&lt;/a&gt; (&lt;a href=&#39;https://creativecommons.org/licenses/by-sa/3.0/&#39; target=&#39;_blank&#39;&gt;CC-BY-SA&lt;/a&gt;)&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;GoogleSatellite&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="s2">&quot;//</span><span class="si">{s}</span><span class="s2">.google.com/vt/lyrs=s&amp;x=</span><span class="si">{x}</span><span class="s2">&amp;y=</span><span class="si">{y}</span><span class="s2">&amp;z=</span><span class="si">{z}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;subdomains&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;mt0&quot;</span><span class="p">,</span> <span class="s2">&quot;mt1&quot;</span><span class="p">,</span> <span class="s2">&quot;mt2&quot;</span><span class="p">,</span> <span class="s2">&quot;mt3&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;attribution&quot;</span><span class="p">:</span> <span class="s2">&quot;© Google Maps&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+<span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="MapConfig">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MapConfig">[docs]</a>
+<span class="k">class</span> <span class="nc">MapConfig</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="MapConfig.BASEMAP">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MapConfig.BASEMAP">[docs]</a>
+    <span class="n">BASEMAP</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">Dict</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="n">BASEMAP</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MapConfig.CENTER">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MapConfig.CENTER">[docs]</a>
+    <span class="n">CENTER</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">Float</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[</span><span class="mf">46.52863469527167</span><span class="p">,</span> <span class="mf">2.43896484375</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="MapConfig.ZOOM_LEVEL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MapConfig.ZOOM_LEVEL">[docs]</a>
+    <span class="n">ZOOM_LEVEL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MapConfig.ZOOM_LEVEL_RELEVE">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MapConfig.ZOOM_LEVEL_RELEVE">[docs]</a>
+    <span class="n">ZOOM_LEVEL_RELEVE</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MapConfig.GEOLOCATION">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MapConfig.GEOLOCATION">[docs]</a>
+    <span class="n">GEOLOCATION</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+    <span class="c1"># zoom appliqué sur la carte lorsque l&#39;on clique sur une liste</span>
+    <span class="c1"># ne s&#39;applique qu&#39;aux points</span>
+<div class="viewcode-block" id="MapConfig.ZOOM_ON_CLICK">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MapConfig.ZOOM_ON_CLICK">[docs]</a>
+    <span class="n">ZOOM_ON_CLICK</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span></div>
+
+    <span class="c1"># Restreindre la recherche OpenStreetMap (sur la carte dans l&#39;encart &quot;Rechercher un lieu&quot;)</span>
+    <span class="c1"># à certains pays. Les pays doivent être au format ISO_3166-1 :</span>
+    <span class="c1"># https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 et séparés par une virgule.</span>
+    <span class="c1"># Exemple : OSM_RESTRICT_COUNTRY_CODES = &quot;fr,es,be,ch&quot; (Restreint à France, Espagne, Belgique</span>
+    <span class="c1"># et Suisse)</span>
+    <span class="c1"># Laisser à null pour n&#39;avoir aucune restriction</span>
+<div class="viewcode-block" id="MapConfig.OSM_RESTRICT_COUNTRY_CODES">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MapConfig.OSM_RESTRICT_COUNTRY_CODES">[docs]</a>
+    <span class="n">OSM_RESTRICT_COUNTRY_CODES</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MapConfig.REF_LAYERS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MapConfig.REF_LAYERS">[docs]</a>
+    <span class="n">REF_LAYERS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">Dict</span><span class="p">(),</span>
+        <span class="n">load_default</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="s2">&quot;limitesadministratives&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Limites administratives (IGN)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;wms&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://data.geopf.fr/wms-r&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;activate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;service&quot;</span><span class="p">:</span> <span class="s2">&quot;wms&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.3.0&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="s2">&quot;GetMap&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;layers&quot;</span><span class="p">:</span> <span class="s2">&quot;LIMITES_ADMINISTRATIVES_EXPRESS.LATEST&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;styles&quot;</span><span class="p">:</span> <span class="s2">&quot;normal&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;image/png&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;crs&quot;</span><span class="p">:</span> <span class="s2">&quot;CRS:84&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;dpiMode&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+                <span class="p">},</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="s2">&quot;znieff1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;ZNIEFF1 (INPN)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;wms&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ws.carmencarto.fr/WMS/119/fxx_inpn&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;activate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;service&quot;</span><span class="p">:</span> <span class="s2">&quot;wms&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.3.0&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="s2">&quot;GetMap&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;layers&quot;</span><span class="p">:</span> <span class="s2">&quot;znieff1&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;image/png&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;crs&quot;</span><span class="p">:</span> <span class="s2">&quot;EPSG:4326&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;opacity&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>
+                    <span class="s2">&quot;transparent&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="p">},</span>
+            <span class="p">},</span>
+        <span class="p">],</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="MapConfig.REF_LAYERS_LEGEND">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.MapConfig.REF_LAYERS_LEGEND">[docs]</a>
+    <span class="n">REF_LAYERS_LEGEND</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TaxHub">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.TaxHub">[docs]</a>
+<span class="k">class</span> <span class="nc">TaxHub</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="TaxHub.ID_TYPE_MAIN_PHOTO">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.TaxHub.ID_TYPE_MAIN_PHOTO">[docs]</a>
+    <span class="n">ID_TYPE_MAIN_PHOTO</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1"># class a utiliser pour les paramètres que l&#39;on veut passer au frontend</span>
+<div class="viewcode-block" id="GnGeneralSchemaConf">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf">[docs]</a>
+<span class="k">class</span> <span class="nc">GnGeneralSchemaConf</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+<div class="viewcode-block" id="GnGeneralSchemaConf.appName">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.appName">[docs]</a>
+    <span class="n">appName</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;GeoNature2&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.GEONATURE_VERSION">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.GEONATURE_VERSION">[docs]</a>
+    <span class="n">GEONATURE_VERSION</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="n">GEONATURE_VERSION</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.DEFAULT_LANGUAGE">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.DEFAULT_LANGUAGE">[docs]</a>
+    <span class="n">DEFAULT_LANGUAGE</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;fr&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.PASS_METHOD">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.PASS_METHOD">[docs]</a>
+    <span class="n">PASS_METHOD</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;hash&quot;</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="n">OneOf</span><span class="p">([</span><span class="s2">&quot;hash&quot;</span><span class="p">,</span> <span class="s2">&quot;md5&quot;</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.DEBUG">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.DEBUG">[docs]</a>
+    <span class="n">DEBUG</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.URL_APPLICATION">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.URL_APPLICATION">[docs]</a>
+    <span class="n">URL_APPLICATION</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Url</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.API_ENDPOINT">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.API_ENDPOINT">[docs]</a>
+    <span class="n">API_ENDPOINT</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Url</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.API_TAXHUB">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.API_TAXHUB">[docs]</a>
+    <span class="n">API_TAXHUB</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Url</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.CODE_APPLICATION">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.CODE_APPLICATION">[docs]</a>
+    <span class="n">CODE_APPLICATION</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;GN&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.XML_NAMESPACE">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.XML_NAMESPACE">[docs]</a>
+    <span class="n">XML_NAMESPACE</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;{http://inpn.mnhn.fr/mtd}&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.MTD_API_ENDPOINT">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.MTD_API_ENDPOINT">[docs]</a>
+    <span class="n">MTD_API_ENDPOINT</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Url</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;https://preprod-inpn.mnhn.fr/mtd&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.DISABLED_MODULES">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.DISABLED_MODULES">[docs]</a>
+    <span class="n">DISABLED_MODULES</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(),</span> <span class="n">load_default</span><span class="o">=</span><span class="p">[])</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.CAS_PUBLIC">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.CAS_PUBLIC">[docs]</a>
+    <span class="n">CAS_PUBLIC</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">CasFrontend</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">CasFrontend</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.RIGHTS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.RIGHTS">[docs]</a>
+    <span class="n">RIGHTS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">RightsSchemaConf</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">RightsSchemaConf</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.FRONTEND">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.FRONTEND">[docs]</a>
+    <span class="n">FRONTEND</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">GnFrontEndConf</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">GnFrontEndConf</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.SYNTHESE">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.SYNTHESE">[docs]</a>
+    <span class="n">SYNTHESE</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">Synthese</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">Synthese</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.MAPCONFIG">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.MAPCONFIG">[docs]</a>
+    <span class="n">MAPCONFIG</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">MapConfig</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">MapConfig</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+    <span class="c1"># Ajoute la surchouche &#39;taxonomique&#39; sur l&#39;API nomenclature</span>
+<div class="viewcode-block" id="GnGeneralSchemaConf.ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS">[docs]</a>
+    <span class="n">ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.BDD">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.BDD">[docs]</a>
+    <span class="n">BDD</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">BddConfig</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">BddConfig</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.URL_USERSHUB">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.URL_USERSHUB">[docs]</a>
+    <span class="n">URL_USERSHUB</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Url</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.ACCOUNT_MANAGEMENT">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.ACCOUNT_MANAGEMENT">[docs]</a>
+    <span class="n">ACCOUNT_MANAGEMENT</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">AccountManagement</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">AccountManagement</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.MEDIAS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.MEDIAS">[docs]</a>
+    <span class="n">MEDIAS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">MediasConfig</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">MediasConfig</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.STATIC_URL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.STATIC_URL">[docs]</a>
+    <span class="n">STATIC_URL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;/static&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.MEDIA_URL">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.MEDIA_URL">[docs]</a>
+    <span class="n">MEDIA_URL</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;/media&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.METADATA">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.METADATA">[docs]</a>
+    <span class="n">METADATA</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">MetadataConfig</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">MetadataConfig</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.MTD">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.MTD">[docs]</a>
+    <span class="n">MTD</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">MTDSchemaConf</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">MTDSchemaConf</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.NB_MAX_DATA_SENSITIVITY_REPORT">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.NB_MAX_DATA_SENSITIVITY_REPORT">[docs]</a>
+    <span class="n">NB_MAX_DATA_SENSITIVITY_REPORT</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="mi">1000000</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.ADDITIONAL_FIELDS">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.ADDITIONAL_FIELDS">[docs]</a>
+    <span class="n">ADDITIONAL_FIELDS</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">AdditionalFields</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">AdditionalFields</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.PUBLIC_ACCESS_USERNAME">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.PUBLIC_ACCESS_USERNAME">[docs]</a>
+    <span class="n">PUBLIC_ACCESS_USERNAME</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.TAXHUB">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.TAXHUB">[docs]</a>
+    <span class="n">TAXHUB</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">TaxHub</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">TaxHub</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.HOME">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.HOME">[docs]</a>
+    <span class="n">HOME</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">HomeConfig</span><span class="p">,</span> <span class="n">load_default</span><span class="o">=</span><span class="n">HomeConfig</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({}))</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.NOTIFICATIONS_ENABLED">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.NOTIFICATIONS_ENABLED">[docs]</a>
+    <span class="n">NOTIFICATIONS_ENABLED</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.PROFILES_REFRESH_CRONTAB">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.PROFILES_REFRESH_CRONTAB">[docs]</a>
+    <span class="n">PROFILES_REFRESH_CRONTAB</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;0 3 * * *&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GnGeneralSchemaConf.MEDIA_CLEAN_CRONTAB">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.MEDIA_CLEAN_CRONTAB">[docs]</a>
+    <span class="n">MEDIA_CLEAN_CRONTAB</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">load_default</span><span class="o">=</span><span class="s2">&quot;0 1 * * *&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@validates_schema</span>
+<div class="viewcode-block" id="GnGeneralSchemaConf.validate_enable_sign_up">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.validate_enable_sign_up">[docs]</a>
+    <span class="k">def</span> <span class="nf">validate_enable_sign_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># si CAS_PUBLIC = true and ENABLE_SIGN_UP = true</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;CAS_PUBLIC&quot;</span><span class="p">][</span><span class="s2">&quot;CAS_AUTHENTIFICATION&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span><span class="p">][</span><span class="s2">&quot;ENABLE_SIGN_UP&quot;</span><span class="p">]</span>
+            <span class="ow">or</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span><span class="p">][</span><span class="s2">&quot;ENABLE_USER_MANAGEMENT&quot;</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span>
+                <span class="s2">&quot;CAS_PUBLIC et ENABLE_SIGN_UP ou ENABLE_USER_MANAGEMENT ne peuvent être activés ensemble&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ENABLE_SIGN_UP, ENABLE_USER_MANAGEMENT&quot;</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+    <span class="nd">@validates_schema</span>
+<div class="viewcode-block" id="GnGeneralSchemaConf.validate_account_autovalidation">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.validate_account_autovalidation">[docs]</a>
+    <span class="k">def</span> <span class="nf">validate_account_autovalidation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">account_config</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ACCOUNT_MANAGEMENT&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">account_config</span><span class="p">[</span><span class="s2">&quot;AUTO_ACCOUNT_CREATION&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span>
+            <span class="ow">and</span> <span class="n">account_config</span><span class="p">[</span><span class="s2">&quot;VALIDATOR_EMAIL&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span>
+                <span class="s2">&quot;Si AUTO_ACCOUNT_CREATION = False, veuillez remplir le paramètre VALIDATOR_EMAIL&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;AUTO_ACCOUNT_CREATION, VALIDATOR_EMAIL&quot;</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+    <span class="nd">@post_load</span>
+<div class="viewcode-block" id="GnGeneralSchemaConf.insert_module_config">
+<a class="viewcode-back" href="../../../autoapi/geonature/utils/config_schema/index.html#geonature.utils.config_schema.GnGeneralSchemaConf.insert_module_config">[docs]</a>
+    <span class="k">def</span> <span class="nf">insert_module_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">dist</span> <span class="ow">in</span> <span class="n">iter_modules_dist</span><span class="p">():</span>
+            <span class="n">module_code</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">entry_points</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">module_code</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;DISABLED_MODULES&quot;</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">module_code</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_module_config</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+:py:mod:`geonature.core.gn_meta`
+================================
+
+.. py:module:: geonature.core.gn_meta
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   models/index.rst
+   mtd/index.rst
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   repositories/index.rst
+   routes/index.rst
+   schemas/index.rst
+
+

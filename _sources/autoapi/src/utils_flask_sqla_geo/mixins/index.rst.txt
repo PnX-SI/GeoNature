@@ -1,0 +1,26 @@
+:py:mod:`src.utils_flask_sqla_geo.mixins`
+=========================================
+
+.. py:module:: src.utils_flask_sqla_geo.mixins
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla_geo.mixins.GeoFeatureCollectionMixin
+
+
+
+
+.. py:class:: GeoFeatureCollectionMixin
+
+
+   .. py:method:: as_geofeaturecollection(*args, **kwargs)
+
+
+

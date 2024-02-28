@@ -1,0 +1,76 @@
+:py:mod:`app.t_applications.forms`
+==================================
+
+.. py:module:: app.t_applications.forms
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   app.t_applications.forms.Application
+   app.t_applications.forms.AppProfil
+
+
+
+
+.. py:class:: Application(formdata=_Auto, **kwargs)
+
+
+   Bases: :py:obj:`flask_wtf.FlaskForm`
+
+   Classe du formulaire des applications
+
+   .. py:attribute:: nom_application
+
+      
+
+   .. py:attribute:: code_application
+
+      
+
+   .. py:attribute:: desc_application
+
+      
+
+   .. py:attribute:: id_parent
+
+      
+
+   .. py:attribute:: id_application
+
+      
+
+   .. py:attribute:: submit
+
+      
+
+
+.. py:class:: AppProfil(id_application, *args, **kwargs)
+
+
+   Bases: :py:obj:`flask_wtf.FlaskForm`
+
+   Classe du formulaire de profil d'un role pour une appli
+
+   .. py:attribute:: role
+
+      
+
+   .. py:attribute:: profil
+
+      
+
+   .. py:attribute:: profil
+
+      
+
+   .. py:attribute:: submit
+
+      
+
+

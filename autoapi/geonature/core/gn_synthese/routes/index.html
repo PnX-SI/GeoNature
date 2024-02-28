@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_synthese.routes &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../search.html" />
+    <link rel="next" title="geonature.core.gn_synthese.schemas" href="../schemas/index.html" />
+    <link rel="prev" title="geonature.core.gn_synthese.models" href="../models/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../../api-references.html">API REFERENCES</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../../../index.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../middlewares/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.middlewares</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../tasks/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.tasks</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../index.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../pypnusershub/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla_geo/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../frontend.html">Frontend</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../api-references.html">API REFERENCES</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core</span></code></a></li>
+          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_synthese</span></code></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_synthese.routes</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/autoapi/geonature/core/gn_synthese/routes/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-geonature.core.gn_synthese.routes">
+<span id="geonature-core-gn-synthese-routes"></span><h1><a class="reference internal" href="#module-geonature.core.gn_synthese.routes" title="geonature.core.gn_synthese.routes"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_synthese.routes</span></code></a><a class="headerlink" href="#module-geonature.core.gn_synthese.routes" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.get_observations_for_web" title="geonature.core.gn_synthese.routes.get_observations_for_web"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_observations_for_web</span></code></a>(permissions)</p></td>
+<td><p>Optimized route to serve data for the frontend with all filters.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.get_one_synthese" title="geonature.core.gn_synthese.routes.get_one_synthese"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_one_synthese</span></code></a>(permissions, id_synthese)</p></td>
+<td><p>Get one synthese record for web app with all decoded nomenclature</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.export_taxon_web" title="geonature.core.gn_synthese.routes.export_taxon_web"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_taxon_web</span></code></a>(permissions)</p></td>
+<td><p>Optimized route for taxon web export.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.export_observations_web" title="geonature.core.gn_synthese.routes.export_observations_web"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_observations_web</span></code></a>(permissions)</p></td>
+<td><p>Optimized route for observations web export.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.export_metadata" title="geonature.core.gn_synthese.routes.export_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_metadata</span></code></a>(permissions)</p></td>
+<td><p>Route to export the metadata in CSV</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.export_status" title="geonature.core.gn_synthese.routes.export_status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_status</span></code></a>(permissions)</p></td>
+<td><p>Route to get all the protection status of a synthese search</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.general_stats" title="geonature.core.gn_synthese.routes.general_stats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">general_stats</span></code></a>(permissions)</p></td>
+<td><p>Return stats about synthese.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.get_taxon_tree" title="geonature.core.gn_synthese.routes.get_taxon_tree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_taxon_tree</span></code></a>()</p></td>
+<td><p>Get taxon tree.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.get_autocomplete_taxons_synthese" title="geonature.core.gn_synthese.routes.get_autocomplete_taxons_synthese"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_autocomplete_taxons_synthese</span></code></a>()</p></td>
+<td><p>Autocomplete taxon for web search (based on all taxon in Synthese).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.get_sources" title="geonature.core.gn_synthese.routes.get_sources"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sources</span></code></a>()</p></td>
+<td><p>Get all sources.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.getDefaultsNomenclatures" title="geonature.core.gn_synthese.routes.getDefaultsNomenclatures"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getDefaultsNomenclatures</span></code></a>()</p></td>
+<td><p>Get default nomenclatures</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.get_color_taxon" title="geonature.core.gn_synthese.routes.get_color_taxon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_color_taxon</span></code></a>()</p></td>
+<td><p>Get color of taxon in areas (vue synthese.v_color_taxon_area).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.get_taxa_count" title="geonature.core.gn_synthese.routes.get_taxa_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_taxa_count</span></code></a>()</p></td>
+<td><p>Get taxa count in synthese filtering with generic parameters</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.get_observation_count" title="geonature.core.gn_synthese.routes.get_observation_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_observation_count</span></code></a>()</p></td>
+<td><p>Get observations found in a given dataset</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.get_bbox" title="geonature.core.gn_synthese.routes.get_bbox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_bbox</span></code></a>()</p></td>
+<td><p>Get bbox of observations</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.observation_count_per_column" title="geonature.core.gn_synthese.routes.observation_count_per_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">observation_count_per_column</span></code></a>(column)</p></td>
+<td><p>Get observations count group by a given column</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.get_taxa_distribution" title="geonature.core.gn_synthese.routes.get_taxa_distribution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_taxa_distribution</span></code></a>()</p></td>
+<td><p>Get taxa distribution for a given dataset or acquisition framework</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.create_report" title="geonature.core.gn_synthese.routes.create_report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_report</span></code></a>(permissions)</p></td>
+<td><p>Create a report (e.g report) for a given synthese id</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.notify_new_report_change" title="geonature.core.gn_synthese.routes.notify_new_report_change"><code class="xref py py-obj docutils literal notranslate"><span class="pre">notify_new_report_change</span></code></a>(synthese, user, id_roles, content)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.update_content_report" title="geonature.core.gn_synthese.routes.update_content_report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_content_report</span></code></a>(id_report)</p></td>
+<td><p>Modify a report (e.g report) for a given synthese id</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.list_reports" title="geonature.core.gn_synthese.routes.list_reports"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_reports</span></code></a>(permissions)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.delete_report" title="geonature.core.gn_synthese.routes.delete_report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_report</span></code></a>(id_report)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.list_synthese_log_entries" title="geonature.core.gn_synthese.routes.list_synthese_log_entries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_synthese_log_entries</span></code></a>(→ dict)</p></td>
+<td><p>Get log history from synthese</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_synthese.routes.routes" title="geonature.core.gn_synthese.routes.routes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">routes</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.routes">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">routes</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#routes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.routes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.get_observations_for_web">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">get_observations_for_web</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permissions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#get_observations_for_web"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.get_observations_for_web" title="Link to this definition"></a></dt>
+<dd><p>Optimized route to serve data for the frontend with all filters.</p>
+<p>Query filtered by any filter, returning all the fields of the
+view v_synthese_for_export:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">properties</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;id_synthese&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;date_min&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;date_min&quot;</span><span class="p">]),</span>
+    <span class="s2">&quot;cd_nom&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;cd_nom&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;nom_vern_or_lb_nom&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;nom_vern&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;nom_vern&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;lb_nom&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;lb_nom&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;lb_nom&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;dataset_name&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;observers&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;observers&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;url_source&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;url_source&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;unique_id_sinp&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;unique_id_sinp&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;entity_source_pk_value&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;entity_source_pk_value&quot;</span><span class="p">],</span>
+<span class="p">}</span>
+<span class="n">geojson</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;st_asgeojson&quot;</span><span class="p">])</span>
+<span class="n">geojson</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">properties</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Qparam str limit<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Limit number of synthese returned. Defaults to NB_MAX_OBS_MAP.</p>
+</dd>
+<dt class="field-even">Qparam str cd_ref_parent<span class="colon">:</span></dt>
+<dd class="field-even"><p>filtre tous les taxons enfants d’un TAXREF cd_ref.</p>
+</dd>
+<dt class="field-odd">Qparam str cd_ref<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Filter by TAXREF cd_ref attribute</p>
+</dd>
+<dt class="field-even">Qparam str taxonomy_group2_inpn<span class="colon">:</span></dt>
+<dd class="field-even"><p>Filter by TAXREF group2_inpn attribute</p>
+</dd>
+<dt class="field-odd">Qparam str taxonomy_id_hab<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Filter by TAXREF id_habitat attribute</p>
+</dd>
+<dt class="field-even">Qparam str taxhub_attribut*<span class="colon">:</span></dt>
+<dd class="field-even"><p>filtre générique TAXREF en fonction de l’attribut et de la valeur.</p>
+</dd>
+<dt class="field-odd">Qparam str *_red_lists<a href="#id1"><span class="problematic" id="id2">*</span></a>_red_lists<span class="colon">:</span></dt>
+<dd class="field-odd"><p>filtre générique de listes rouges. Filtre sur les valeurs. Voir config.</p>
+</dd>
+<dt class="field-even">Qparam str *_protection_status<a href="#id3"><span class="problematic" id="id4">*</span></a>_protection_status<span class="colon">:</span></dt>
+<dd class="field-even"><p>filtre générique de statuts (BdC Statuts). Filtre sur les types. Voir config.</p>
+</dd>
+<dt class="field-odd">Qparam str observers<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Filter on observer</p>
+</dd>
+<dt class="field-even">Qparam str id_organism<span class="colon">:</span></dt>
+<dd class="field-even"><p>Filter on organism</p>
+</dd>
+<dt class="field-odd">Qparam str date_min<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Start date</p>
+</dd>
+<dt class="field-even">Qparam str date_max<span class="colon">:</span></dt>
+<dd class="field-even"><p>End date</p>
+</dd>
+<dt class="field-odd">Qparam str id_acquisition_framework<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>tbd</em></p>
+</dd>
+<dt class="field-even">Qparam str geoIntersection<span class="colon">:</span></dt>
+<dd class="field-even"><p>Intersect with the geom send from the map</p>
+</dd>
+<dt class="field-odd">Qparam str period_start<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>tbd</em></p>
+</dd>
+<dt class="field-even">Qparam str period_end<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>tbd</em></p>
+</dd>
+<dt class="field-odd">Qparam str area*<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Generic filter on area</p>
+</dd>
+<dt class="field-even">Qparam str *<span class="colon">:</span></dt>
+<dd class="field-even"><p>Generic filter, given by colname &amp; value</p>
+</dd>
+<dt class="field-odd">&gt;jsonarr array data<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of synthese with geojson key, see above</p>
+</dd>
+<dt class="field-even">&gt;jsonarr int nb_total<span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of observations</p>
+</dd>
+<dt class="field-odd">&gt;jsonarr bool nb_obs_limited<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Is number of observations capped</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.get_one_synthese">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">get_one_synthese</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permissions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_synthese</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#get_one_synthese"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.get_one_synthese" title="Link to this definition"></a></dt>
+<dd><p>Get one synthese record for web app with all decoded nomenclature</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.export_taxon_web">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">export_taxon_web</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permissions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#export_taxon_web"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.export_taxon_web" title="Link to this definition"></a></dt>
+<dd><p>Optimized route for taxon web export.</p>
+<p>This view is customisable by the administrator
+Some columns are mandatory: cd_ref</p>
+<dl class="simple">
+<dt>POST parameters: Use a list of cd_ref (in POST parameters)</dt><dd><p>to filter the v_synthese_taxon_for_export_view</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Query str export_format<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str&lt;”csv”&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.export_observations_web">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">export_observations_web</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permissions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#export_observations_web"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.export_observations_web" title="Link to this definition"></a></dt>
+<dd><p>Optimized route for observations web export.</p>
+<p>This view is customisable by the administrator
+Some columns are mandatory: id_synthese, geojson and geojson_local to generate the exported files</p>
+<p>POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view</p>
+<dl class="field-list simple">
+<dt class="field-odd">Query str export_format<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str&lt;”csv”, “geojson”, “shapefiles”, “gpkg”&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.export_metadata">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">export_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permissions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#export_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.export_metadata" title="Link to this definition"></a></dt>
+<dd><p>Route to export the metadata in CSV</p>
+<p>The table synthese is join with gn_synthese.v_metadata_for_export
+The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export</p>
+<p>TODO: Remove the following comment line ? or add the where clause for id_synthese in id_list ?
+POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.export_status">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">export_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permissions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#export_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.export_status" title="Link to this definition"></a></dt>
+<dd><p>Route to get all the protection status of a synthese search</p>
+<p>Get the CRUVED from “R” action because we don’t give observations X/Y but only statuts
+and to be consistent with the data displayed in the web interface.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p>HTTP-GET: the same that the /synthese endpoint (all the filter in web app)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.general_stats">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">general_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permissions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#general_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.general_stats" title="Link to this definition"></a></dt>
+<dd><p>Return stats about synthese.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.get_taxon_tree">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">get_taxon_tree</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#get_taxon_tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.get_taxon_tree" title="Link to this definition"></a></dt>
+<dd><p>Get taxon tree.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.get_autocomplete_taxons_synthese">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">get_autocomplete_taxons_synthese</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#get_autocomplete_taxons_synthese"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.get_autocomplete_taxons_synthese" title="Link to this definition"></a></dt>
+<dd><p>Autocomplete taxon for web search (based on all taxon in Synthese).</p>
+<p>The request use trigram algorithm to get relevent results</p>
+<dl class="field-list simple">
+<dt class="field-odd">Query str search_name<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the search name (use sql ilike statement and puts « % » for spaces)</p>
+</dd>
+<dt class="field-even">Query str regne<span class="colon">:</span></dt>
+<dd class="field-even"><p>filter with kingdom</p>
+</dd>
+</dl>
+<p>:query str group2_inpn : filter with INPN group 2</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.get_sources">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">get_sources</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#get_sources"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.get_sources" title="Link to this definition"></a></dt>
+<dd><p>Get all sources.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.getDefaultsNomenclatures">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">getDefaultsNomenclatures</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#getDefaultsNomenclatures"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.getDefaultsNomenclatures" title="Link to this definition"></a></dt>
+<dd><p>Get default nomenclatures</p>
+<dl class="field-list simple">
+<dt class="field-odd">Query str group2_inpn<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">Query str regne<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">Query int organism<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.get_color_taxon">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">get_color_taxon</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#get_color_taxon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.get_color_taxon" title="Link to this definition"></a></dt>
+<dd><p>Get color of taxon in areas (vue synthese.v_color_taxon_area).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Query str code_area_type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Type area code (ref_geo.bib_areas_types.type_code)</p>
+</dd>
+<dt class="field-even">Query int id_area<span class="colon">:</span></dt>
+<dd class="field-even"><p>Id of area (ref_geo.l_areas.id_area)</p>
+</dd>
+<dt class="field-odd">Query int cd_nom<span class="colon">:</span></dt>
+<dd class="field-odd"><p>taxon code (taxonomie.taxref.cd_nom)</p>
+</dd>
+</dl>
+<p>Those three parameters can be multiples
+:returns: Array&lt;dict&lt;VColorAreaTaxon&gt;&gt;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.get_taxa_count">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">get_taxa_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#get_taxa_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.get_taxa_count" title="Link to this definition"></a></dt>
+<dd><p>Get taxa count in synthese filtering with generic parameters</p>
+<section id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<p>id_dataset: <cite>int</cite> (query parameter)</p>
+</section>
+<section id="returns">
+<h4>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>count: <cite>int</cite>:</dt><dd><p>the number of taxon</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.get_observation_count">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">get_observation_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#get_observation_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.get_observation_count" title="Link to this definition"></a></dt>
+<dd><p>Get observations found in a given dataset</p>
+<section id="id5">
+<h4>Parameters<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
+<p>id_dataset: <cite>int</cite> (query parameter)</p>
+</section>
+<section id="id6">
+<h4>Returns<a class="headerlink" href="#id6" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>count: <cite>int</cite>:</dt><dd><p>the number of observation</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.get_bbox">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">get_bbox</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#get_bbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.get_bbox" title="Link to this definition"></a></dt>
+<dd><p>Get bbox of observations</p>
+<section id="id7">
+<h4>Parameters<a class="headerlink" href="#id7" title="Link to this heading"></a></h4>
+<p>id_dataset: int: (query parameter)</p>
+</section>
+<section id="id8">
+<h4>Returns<a class="headerlink" href="#id8" title="Link to this heading"></a></h4>
+<blockquote>
+<div><dl class="simple">
+<dt>bbox: <cite>geojson</cite>:</dt><dd><p>the bounding box in geojson</p>
+</dd>
+</dl>
+</div></blockquote>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.observation_count_per_column">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">observation_count_per_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#observation_count_per_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.observation_count_per_column" title="Link to this definition"></a></dt>
+<dd><p>Get observations count group by a given column</p>
+<p>This function was used to count observations per dataset,
+but this usage have been replaced by
+TDatasets.synthese_records_count.
+Remove this function as it is very inefficient?</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.get_taxa_distribution">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">get_taxa_distribution</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#get_taxa_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.get_taxa_distribution" title="Link to this definition"></a></dt>
+<dd><p>Get taxa distribution for a given dataset or acquisition framework
+and grouped by a certain taxa rank</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.create_report">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">create_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permissions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#create_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.create_report" title="Link to this definition"></a></dt>
+<dd><p>Create a report (e.g report) for a given synthese id</p>
+<section id="id9">
+<h4>Returns<a class="headerlink" href="#id9" title="Link to this heading"></a></h4>
+<blockquote>
+<div><dl class="simple">
+<dt>report: <cite>json</cite>:</dt><dd><p>Every occurrence’s report</p>
+</dd>
+</dl>
+</div></blockquote>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.notify_new_report_change">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">notify_new_report_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">synthese</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_roles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#notify_new_report_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.notify_new_report_change" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.update_content_report">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">update_content_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_report</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#update_content_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.update_content_report" title="Link to this definition"></a></dt>
+<dd><p>Modify a report (e.g report) for a given synthese id</p>
+<section id="id10">
+<h4>Returns<a class="headerlink" href="#id10" title="Link to this heading"></a></h4>
+<blockquote>
+<div><dl class="simple">
+<dt>report: <cite>json</cite>:</dt><dd><p>Every occurrence’s report</p>
+</dd>
+</dl>
+</div></blockquote>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.list_reports">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">list_reports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permissions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#list_reports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.list_reports" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.delete_report">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">delete_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_report</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#delete_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.delete_report" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_synthese.routes.list_synthese_log_entries">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.routes.</span></span><span class="sig-name descname"><span class="pre">list_synthese_log_entries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(disponible dans Python v3.12)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_synthese/routes.html#list_synthese_log_entries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.routes.list_synthese_log_entries" title="Link to this definition"></a></dt>
+<dd><p>Get log history from synthese</p>
+<section id="id11">
+<h4>Parameters<a class="headerlink" href="#id11" title="Link to this heading"></a></h4>
+</section>
+<section id="id12">
+<h4>Returns<a class="headerlink" href="#id12" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dict</dt><dd><p>log action list</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="../models/index.html" class="btn btn-neutral float-left" title="geonature.core.gn_synthese.models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="../schemas/index.html" class="btn btn-neutral float-right" title="geonature.core.gn_synthese.schemas" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

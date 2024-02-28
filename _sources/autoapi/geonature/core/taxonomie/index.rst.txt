@@ -1,0 +1,15 @@
+:py:mod:`geonature.core.taxonomie`
+==================================
+
+.. py:module:: geonature.core.taxonomie
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   schemas/index.rst
+
+

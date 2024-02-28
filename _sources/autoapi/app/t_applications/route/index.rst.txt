@@ -1,0 +1,140 @@
+:py:mod:`app.t_applications.route`
+==================================
+
+.. py:module:: app.t_applications.route
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   app.t_applications.route.applications
+   app.t_applications.route.info
+   app.t_applications.route.addorupdate
+   app.t_applications.route.delete
+   app.t_applications.route.profils_for_app
+   app.t_applications.route.profils_in_app
+   app.t_applications.route.add_or_update_profil_for_role_in_app
+   app.t_applications.route.delete_cor_role_app_profil
+   app.t_applications.route.pops
+   app.t_applications.route.process
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   app.t_applications.route.URL_REDIRECT
+   app.t_applications.route.URL_APPLICATION
+   app.t_applications.route.route
+
+
+.. py:data:: URL_REDIRECT
+
+   
+
+.. py:data:: URL_APPLICATION
+
+   
+
+.. py:data:: route
+
+   
+
+.. py:function:: applications()
+
+   Route qui affiche la liste des applications
+   Retourne un template avec pour paramètres :
+                                           - une entête de tableau --> fLine
+                                           - le nom des colonnes de la base --> line
+                                           - le contenu du tableau --> table
+                                           - le chemin de mise à jour --> pathU
+                                           - le chemin de suppression --> pathD
+                                           - le chemin d'ajout --> pathA
+                                           - une clé (clé primaire dans la plupart des cas) --> key
+                                           - un nom (nom de la table) pour le bouton ajout --> name
+                                           - un nom de liste --> name_list
+                                           - ajoute une colonne de bouton ('True doit être de type string) --> permissions
+                                           - nom affiché sur le bouton --> Members
+
+
+
+.. py:function:: info(id_application)
+
+   Route qui retourne une fiche de l'application
+   et des roles qui disposent de profils pour elle.
+
+
+.. py:function:: addorupdate(id_application)
+
+   Route affichant un formulaire vierge ou non (selon l'url) pour ajouter ou mettre à jour une application
+   L'envoie du formulaire permet l'ajout ou la maj d'une application dans la base
+   Retourne un template accompagné d'un formulaire pré-rempli ou non selon le paramètre id_application
+   Une fois le formulaire validé on retourne une redirection vers la liste d'application
+
+
+.. py:function:: delete(id_application)
+
+   Route qui supprime une application dont l'id est donné en paramètres dans l'URL
+   Retourne une redirection vers la liste de groupe
+
+
+.. py:function:: profils_for_app(id_application)
+
+   Route affichant la liste des profils utilisables par l'application et ceux disponibles.
+   Avec pour paramètre un id d'application
+   Retourne un template avec pour paramètres:
+       - une entête des tableaux --> fLine
+       - le nom des colonnes de la base --> data
+       - liste des profils utilisables --> table
+       - liste des profils non utilisables mais disponibles --> table2
+
+
+.. py:function:: profils_in_app(id_application)
+
+   Route affichant la liste des roles ayant un profil pour une application
+   Retourne un template avec pour paramètres :
+                                       - une entête de tableau --> fLine
+                                       - le nom des colonnes de la base --> line
+                                       - le contenu du tableau --> table
+                                       - le chemin de mise à jour --> pathU
+                                       - le chemin de suppression --> pathD
+                                       - le chemin d'ajout --> pathA
+                                       - une clé (clé primaire dans la plupart des cas) --> key
+                                       - l'id_application pour construire l'url de redirection -> key2
+                                       - un nom (nom de la table) pour le bouton ajout --> name
+                                       - un nom de liste --> name_list
+                                       - ajoute une colonne de bouton ('True doit être de type string) --> permissions
+                                       - nom affiché sur le bouton --> Members
+
+
+.. py:function:: add_or_update_profil_for_role_in_app(id_application, id_role=None)
+
+   add or update un profil sur une application
+   on part du principe qu'un role ne peut avoir qu'un profil dans une application
+   TODO: pour mettre plusieurs profil a un role dans une appli:
+   rajouter une clé primaire a cor_role_app_profil pour gérer l'update
+
+
+.. py:function:: delete_cor_role_app_profil(id_role, id_application)
+
+
+.. py:function:: pops(form)
+
+   Methode qui supprime les éléments indésirables du formulaires
+   Avec pour paramètre un formulaire
+
+
+.. py:function:: process(form, application)
+
+   Methode qui rempli le formulaire par les données de l'éléments concerné
+   Avec pour paramètres un formulaire et une application
+
+

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.api.route_register &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">app.api.route_register</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de app.api.route_register</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Route permettant de manipuler les données de UsersHub via une API</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">current_app</span>
+<span class="kn">from</span> <span class="nn">pypnusershub</span> <span class="kn">import</span> <span class="n">routes</span> <span class="k">as</span> <span class="n">fnauth</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db.models_register</span> <span class="kn">import</span> <span class="n">TempUser</span><span class="p">,</span> <span class="n">CorRoleToken</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db.tools</span> <span class="kn">import</span> <span class="n">DifferentPasswordError</span>
+
+<span class="kn">from</span> <span class="nn">app.env</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">app.utils.utilssqlalchemy</span> <span class="kn">import</span> <span class="n">json_resp</span>
+<span class="kn">from</span> <span class="nn">app.models</span> <span class="kn">import</span> <span class="n">TRoles</span><span class="p">,</span> <span class="n">CorRoleAppProfil</span><span class="p">,</span> <span class="n">TProfils</span><span class="p">,</span> <span class="n">CorRoles</span>
+
+
+<div class="viewcode-block" id="route">
+<a class="viewcode-back" href="../../../autoapi/app/api/route_register/index.html#app.api.route_register.route">[docs]</a>
+<span class="n">route</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s2">&quot;api_register&quot;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/role/&lt;id_role&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="get_one_t_roles">
+<a class="viewcode-back" href="../../../autoapi/app/api/route_register/index.html#app.api.route_register.get_one_t_roles">[docs]</a>
+<span class="k">def</span> <span class="nf">get_one_t_roles</span><span class="p">(</span><span class="n">id_role</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fonction qui retourne les données concernant un utilisateur.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">role</span> <span class="o">=</span> <span class="n">TRoles</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="n">id_role</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">role</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/test_connexion&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="test_connexion">
+<a class="viewcode-back" href="../../../autoapi/app/api/route_register/index.html#app.api.route_register.test_connexion">[docs]</a>
+<span class="k">def</span> <span class="nf">test_connexion</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Route pour tester la connexion.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;connexion ok&quot;</span><span class="p">}</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/create_temp_user&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="create_temp_user">
+<a class="viewcode-back" href="../../../autoapi/app/api/route_register/index.html#app.api.route_register.create_temp_user">[docs]</a>
+<span class="k">def</span> <span class="nf">create_temp_user</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Route pour créer un compte temporaire en attendant la confirmation de</span>
+<span class="sd">    l&#39;adresse mail.</span>
+
+<span class="sd">    Nous stockons :</span>
+<span class="sd">    1. Les infos qui seront utilisées par la création de compte. Dont les</span>
+<span class="sd">    mots de passe qui sont stockés cryptés.</span>
+<span class="sd">    2. Les infos permettant d&#39;appeler l&#39;appli source si la création du</span>
+<span class="sd">    compte est confirmée (Appel d&#39;une URL de callaback =&gt; confirmation_url).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Get data from JSON</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="c1"># Create new temp user</span>
+    <span class="n">role_data</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">TempUser</span><span class="p">,</span> <span class="n">att</span><span class="p">):</span>
+            <span class="n">role_data</span><span class="p">[</span><span class="n">att</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">att</span><span class="p">]</span>
+    <span class="n">temp_user</span> <span class="o">=</span> <span class="n">TempUser</span><span class="p">(</span><span class="o">**</span><span class="n">role_data</span><span class="p">)</span>
+
+    <span class="c1"># Encrypt and set password</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">temp_user</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">],</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;password_confirmation&quot;</span><span class="p">],</span>
+            <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;PASS_METHOD&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;FILL_MD5_PASS&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="n">DifferentPasswordError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;Password and password_confirmation are differents&quot;</span><span class="p">,</span> <span class="mi">500</span>
+
+    <span class="c1"># Check sended parameters (password, login and exiting email)</span>
+    <span class="p">(</span><span class="n">is_temp_user_valid</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span> <span class="o">=</span> <span class="n">temp_user</span><span class="o">.</span><span class="n">is_valid</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_temp_user_valid</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="p">},</span> <span class="mi">400</span>
+
+    <span class="c1"># Delete duplicate entries</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TempUser</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+        <span class="n">TempUser</span><span class="o">.</span><span class="n">identifiant</span> <span class="o">==</span> <span class="n">temp_user</span><span class="o">.</span><span class="n">identifiant</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="c1"># Delete old entries (cleaning)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TempUser</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+        <span class="n">TempUser</span><span class="o">.</span><span class="n">date_insert</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">))</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="c1"># Update attributes</span>
+    <span class="n">temp_user</span><span class="o">.</span><span class="n">token_role</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">getrandbits</span><span class="p">(</span><span class="mi">128</span><span class="p">))</span>
+
+    <span class="c1"># Save new temp user in database</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">temp_user</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">temp_user</span><span class="o">.</span><span class="n">token_role</span><span class="p">},</span> <span class="mi">200</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;valid_temp_user&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="valid_temp_user">
+<a class="viewcode-back" href="../../../autoapi/app/api/route_register/index.html#app.api.route_register.valid_temp_user">[docs]</a>
+<span class="k">def</span> <span class="nf">valid_temp_user</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Route pour valider un compte temporaire et en faire un utilisateur</span>
+<span class="sd">    (requete a usershub).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">data_in</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="n">token</span> <span class="o">=</span> <span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;token&quot;</span><span class="p">]</span>
+    <span class="n">id_application</span> <span class="o">=</span> <span class="n">data_in</span><span class="p">[</span><span class="s2">&quot;id_application&quot;</span><span class="p">]</span>
+
+    <span class="c1"># recherche de l&#39;utilisateur temporaire correspondant au token</span>
+    <span class="n">temp_user</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TempUser</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">token</span> <span class="o">==</span> <span class="n">TempUser</span><span class="o">.</span><span class="n">token_role</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">temp_user</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                Il n&#39;y a pas d&#39;utilisateur temporaire correspondant au token fourni </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">.&lt;br&gt;</span>
+<span class="s2">                Il se peut que la demande de création de compte ai déjà été validée, ou bien que l&#39;adresse de validation soit erronée.&lt;br&gt;</span>
+<span class="s2">                &quot;&quot;&quot;</span>
+            <span class="p">},</span>
+            <span class="mi">422</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">req_data</span> <span class="o">=</span> <span class="n">temp_user</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+    <span class="c1"># Récupération du groupe par défaut</span>
+    <span class="n">id_grp</span> <span class="o">=</span> <span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">get_default_for_app</span><span class="p">(</span><span class="n">id_application</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">id_grp</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;pas de groupe par défaut pour l&#39;application&quot;</span><span class="p">},</span> <span class="mi">500</span>
+
+    <span class="c1"># set password correctly</span>
+    <span class="n">req_data</span><span class="p">[</span><span class="s2">&quot;pass_plus&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">req_data</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]</span>
+    <span class="n">req_data</span><span class="p">[</span><span class="s2">&quot;pass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">req_data</span><span class="p">[</span><span class="s2">&quot;pass_md5&quot;</span><span class="p">]</span>
+    <span class="n">role_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="n">req_data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">TRoles</span><span class="p">,</span> <span class="n">att</span><span class="p">):</span>
+            <span class="c1"># Patch pas beau pour corriger le db.Unicode de TRole pour id_organisme</span>
+            <span class="k">if</span> <span class="n">att</span> <span class="o">==</span> <span class="s2">&quot;id_organisme&quot;</span> <span class="ow">and</span> <span class="n">req_data</span><span class="p">[</span><span class="n">att</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;None&quot;</span><span class="p">:</span>
+                <span class="n">role_data</span><span class="p">[</span><span class="n">att</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">role_data</span><span class="p">[</span><span class="n">att</span><span class="p">]</span> <span class="o">=</span> <span class="n">req_data</span><span class="p">[</span><span class="n">att</span><span class="p">]</span>
+
+    <span class="n">role</span> <span class="o">=</span> <span class="n">TRoles</span><span class="p">(</span><span class="o">**</span><span class="n">role_data</span><span class="p">)</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">role</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="c1"># Ajout du role au profil</span>
+    <span class="n">cor</span> <span class="o">=</span> <span class="n">CorRoles</span><span class="p">(</span><span class="n">id_role_groupe</span><span class="o">=</span><span class="n">id_grp</span><span class="o">.</span><span class="n">id_role</span><span class="p">,</span> <span class="n">id_role_utilisateur</span><span class="o">=</span><span class="n">role</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cor</span><span class="p">)</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">temp_user</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">role</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">recursif</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="set_cor_role_token">
+<a class="viewcode-back" href="../../../autoapi/app/api/route_register/index.html#app.api.route_register.set_cor_role_token">[docs]</a>
+<span class="k">def</span> <span class="nf">set_cor_role_token</span><span class="p">(</span><span class="n">email</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fonction pour la création d&#39;un token associé a un id_role</span>
+<span class="sd">    Parametres : email</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">email</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Aucun email&quot;</span><span class="p">},</span> <span class="mi">404</span>
+
+    <span class="n">role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TRoles</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">email</span> <span class="o">==</span> <span class="n">TRoles</span><span class="o">.</span><span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">role</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Aucun utilisateur trouvé pour l&#39;email : &quot;</span> <span class="o">+</span> <span class="n">email</span><span class="p">},</span> <span class="mi">400</span>
+
+    <span class="n">id_role</span> <span class="o">=</span> <span class="n">role</span><span class="o">.</span><span class="n">id_role</span>
+
+    <span class="n">token</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">getrandbits</span><span class="p">(</span><span class="mi">128</span><span class="p">))</span>
+
+    <span class="c1"># on efface les jeton précédent concernant cet id_role</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">CorRoleToken</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorRoleToken</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">id_role</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="c1"># creation du jeton</span>
+    <span class="n">cor</span> <span class="o">=</span> <span class="n">CorRoleToken</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">&quot;id_role&quot;</span><span class="p">:</span> <span class="n">id_role</span><span class="p">,</span> <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">})</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cor</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span> <span class="s2">&quot;id_role&quot;</span><span class="p">:</span> <span class="n">id_role</span><span class="p">,</span> <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="n">role</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()}</span></div>
+
+
+
+<div class="viewcode-block" id="check_token">
+<a class="viewcode-back" href="../../../autoapi/app/api/route_register/index.html#app.api.route_register.check_token">[docs]</a>
+<span class="k">def</span> <span class="nf">check_token</span><span class="p">(</span><span class="n">token</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    fonction permettant de vérifier la présence</span>
+<span class="sd">    d&#39;un token et qui retourne l&#39;id_role associé</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">CorRoleToken</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorRoleToken</span><span class="o">.</span><span class="n">token</span> <span class="o">==</span> <span class="n">token</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">res</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/create_cor_role_token&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="create_cor_role_token">
+<a class="viewcode-back" href="../../../autoapi/app/api/route_register/index.html#app.api.route_register.create_cor_role_token">[docs]</a>
+<span class="k">def</span> <span class="nf">create_cor_role_token</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    route pour la creation d&#39;un token associé a un id_role</span>
+<span class="sd">    fait un appel de la fonction set_cor_role_token(email)</span>
+<span class="sd">    parametres post : email</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="n">email</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">set_cor_role_token</span><span class="p">(</span><span class="n">email</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/change_password&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="change_password">
+<a class="viewcode-back" href="../../../autoapi/app/api/route_register/index.html#app.api.route_register.change_password">[docs]</a>
+<span class="k">def</span> <span class="nf">change_password</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Route permettant à un utilisateur de renouveller</span>
+<span class="sd">    son mot de passe</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="n">token</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;token non defini dans paramètre POST&quot;</span><span class="p">},</span> <span class="mi">500</span>
+
+    <span class="n">password</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">password_confirmation</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;password_confirmation&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">password_confirmation</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">password</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;password non defini dans paramètres POST&quot;</span><span class="p">},</span> <span class="mi">500</span>
+
+    <span class="n">associated_id_role</span> <span class="o">=</span> <span class="n">check_token</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">associated_id_role</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;pas d&#39;id role associée au token&quot;</span><span class="p">},</span> <span class="mi">500</span>
+
+    <span class="n">id_role</span> <span class="o">=</span> <span class="n">associated_id_role</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TRoles</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">TRoles</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">id_role</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">role</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;pas d&#39;utilisateur correspondant à id_role&quot;</span><span class="p">},</span> <span class="mi">500</span>
+    <span class="n">role</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="n">password</span><span class="p">,</span> <span class="n">password_confirmation</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="c1"># delete cors</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">CorRoleToken</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">CorRoleToken</span><span class="o">.</span><span class="n">token</span> <span class="o">==</span> <span class="n">token</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">role</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/change_application_right&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="change_application_right">
+<a class="viewcode-back" href="../../../autoapi/app/api/route_register/index.html#app.api.route_register.change_application_right">[docs]</a>
+<span class="k">def</span> <span class="nf">change_application_right</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Change les droits d&#39;un utilisateur pour une application</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">req_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="n">id_application</span> <span class="o">=</span> <span class="n">req_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_application&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># Test assurant une rétrocompatibilité (à l&#39;époque des niveaux de droits)</span>
+    <span class="k">if</span> <span class="n">req_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_droit&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">code_profil</span> <span class="o">=</span> <span class="n">req_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_droit&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">code_profil</span> <span class="o">=</span> <span class="n">req_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_profil&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># Récupération de l&#39;identifiant du profil à partir de son code</span>
+    <span class="n">profil</span> <span class="o">=</span> <span class="n">TProfils</span><span class="o">.</span><span class="n">get_profil_in_app_with_code</span><span class="p">(</span><span class="n">id_application</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">code_profil</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">profil</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;pas de profil &quot;</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">code_profil</span><span class="p">)</span>
+                <span class="o">+</span> <span class="s2">&quot;corespondant pour l&#39;application&quot;</span>  <span class="c1"># noqa</span>
+            <span class="p">},</span>
+            <span class="mi">500</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">id_profil</span> <span class="o">=</span> <span class="n">profil</span><span class="o">.</span><span class="n">id_profil</span>
+
+    <span class="n">id_role</span> <span class="o">=</span> <span class="n">req_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_role&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TRoles</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">TRoles</span><span class="o">.</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">id_role</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">id_application</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">id_role</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">code_profil</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Problème de paramètres POST&quot;</span><span class="p">},</span> <span class="mi">400</span>
+
+    <span class="n">cor</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">CorRoleAppProfil</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">id_role</span> <span class="o">==</span> <span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">id_application</span> <span class="o">==</span> <span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">id_application</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cor</span><span class="p">:</span>
+        <span class="n">cor</span> <span class="o">=</span> <span class="n">CorRoleAppProfil</span><span class="p">(</span>
+            <span class="o">**</span><span class="p">{</span>
+                <span class="s2">&quot;id_role&quot;</span><span class="p">:</span> <span class="n">id_role</span><span class="p">,</span>
+                <span class="s2">&quot;id_application&quot;</span><span class="p">:</span> <span class="n">id_application</span><span class="p">,</span>
+                <span class="s2">&quot;id_profil&quot;</span><span class="p">:</span> <span class="n">id_profil</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cor</span><span class="o">.</span><span class="n">id_profil</span> <span class="o">=</span> <span class="n">id_profil</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;id_role&quot;</span><span class="p">:</span> <span class="n">id_role</span><span class="p">,</span>
+        <span class="s2">&quot;id_profil&quot;</span><span class="p">:</span> <span class="n">code_profil</span><span class="p">,</span>
+        <span class="s2">&quot;id_droit&quot;</span><span class="p">:</span> <span class="n">code_profil</span><span class="p">,</span>  <span class="c1"># Retrocompatiblité pour l&#39;OEASC</span>
+        <span class="s2">&quot;id_application&quot;</span><span class="p">:</span> <span class="n">id_application</span><span class="p">,</span>
+        <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="n">role</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(),</span>
+    <span class="p">}</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/add_application_right_to_role&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="add_application_right_to_role">
+<a class="viewcode-back" href="../../../autoapi/app/api/route_register/index.html#app.api.route_register.add_application_right_to_role">[docs]</a>
+<span class="k">def</span> <span class="nf">add_application_right_to_role</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Route permettant de d&#39;ajouter des droits</span>
+<span class="sd">    pour une application a un utilisateur</span>
+<span class="sd">    soit en l&#39;associant à un groupe</span>
+<span class="sd">    soit en lui affectant le profil &quot;1&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">req_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="n">identifiant</span> <span class="o">=</span> <span class="n">req_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;login&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">pwd</span> <span class="o">=</span> <span class="n">req_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">id_application</span> <span class="o">=</span> <span class="n">req_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_application&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">identifiant</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">pwd</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">id_application</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;les parametres sont mal renseignés&quot;</span><span class="p">},</span> <span class="mi">500</span>
+
+    <span class="c1"># Récupération du groupe par défaut</span>
+    <span class="n">id_grp</span> <span class="o">=</span> <span class="n">CorRoleAppProfil</span><span class="o">.</span><span class="n">get_default_for_app</span><span class="p">(</span><span class="n">id_application</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">id_grp</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;pas de groupe par défaut pour l&#39;application&quot;</span><span class="p">},</span> <span class="mi">500</span>
+
+    <span class="n">role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TRoles</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">TRoles</span><span class="o">.</span><span class="n">identifiant</span> <span class="o">==</span> <span class="n">identifiant</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">role</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;pas d&#39;user pour l&#39;identifiant &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">identifiant</span><span class="p">)},</span> <span class="mi">500</span>
+
+    <span class="n">id_role</span> <span class="o">=</span> <span class="n">role</span><span class="o">.</span><span class="n">id_role</span>
+
+    <span class="c1"># check pwd</span>
+    <span class="n">pwd_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">pwd</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">role</span><span class="o">.</span><span class="n">pass_md5</span> <span class="o">==</span> <span class="n">pwd_hash</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;password false&quot;</span><span class="p">},</span> <span class="mi">500</span>
+
+    <span class="c1"># Test si l&#39;utilisateur n&#39;est pas déjà associé au groupe</span>
+    <span class="c1"># par défaut</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">CorRoles</span><span class="o">.</span><span class="n">test_role_in_grp</span><span class="p">(</span><span class="n">id_role</span><span class="p">,</span> <span class="n">id_grp</span><span class="o">.</span><span class="n">id_role</span><span class="p">):</span>
+        <span class="n">cor</span> <span class="o">=</span> <span class="n">CorRoles</span><span class="p">(</span><span class="n">id_role_groupe</span><span class="o">=</span><span class="n">id_grp</span><span class="o">.</span><span class="n">id_role</span><span class="p">,</span> <span class="n">id_role_utilisateur</span><span class="o">=</span><span class="n">role</span><span class="o">.</span><span class="n">id_role</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cor</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">role</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">recursif</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/login_recovery&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="login_recovery">
+<a class="viewcode-back" href="../../../autoapi/app/api/route_register/index.html#app.api.route_register.login_recovery">[docs]</a>
+<span class="k">def</span> <span class="nf">login_recovery</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    route pour changer des paramètres d&#39;utilisateur</span>
+<span class="sd">    FIXME : Route qui ne modifie rien du tout</span>
+<span class="sd">        devrait peut être transformée pour être plus générique</span>
+<span class="sd">        et retourner les informations d&#39;un utilisateur donné</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">req_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="n">email</span> <span class="o">=</span> <span class="n">req_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">email</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Pas d&#39;email&quot;</span><span class="p">},</span> <span class="mi">400</span>
+
+    <span class="n">count</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TRoles</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Adresse mail inconnue&quot;</span><span class="p">},</span> <span class="mi">404</span>
+    <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Plusieurs identifiants correspondent à cette adresse, veuillez contacter l&#39;administrateur&quot;</span>
+            <span class="p">},</span>
+            <span class="mi">404</span><span class="p">,</span>
+        <span class="p">)</span>  <span class="c1"># noqa</span>
+
+    <span class="n">user</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TRoles</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>
+
+    <span class="c1"># FIXME changer le retour de la fonction</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Un mail avec votre identifiant vient d&#39;être envoyé sur l&#39;adresse </span><span class="si">%s</span><span class="s2">&quot;</span>
+            <span class="o">%</span> <span class="n">email</span>
+        <span class="p">},</span>
+        <span class="mi">200</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/update_user&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@fnauth</span><span class="o">.</span><span class="n">check_auth</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="update_user">
+<a class="viewcode-back" href="../../../autoapi/app/api/route_register/index.html#app.api.route_register.update_user">[docs]</a>
+<span class="k">def</span> <span class="nf">update_user</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    route pour changer des paramètres d&#39;utilisateur</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">req_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="n">id_role</span> <span class="o">=</span> <span class="n">req_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id_role&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">id_role</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Pas d&#39;id_role&quot;</span><span class="p">},</span> <span class="mi">400</span>
+
+    <span class="n">role_data</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="n">req_data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">TRoles</span><span class="p">,</span> <span class="n">att</span><span class="p">):</span>
+            <span class="n">role_data</span><span class="p">[</span><span class="n">att</span><span class="p">]</span> <span class="o">=</span> <span class="n">req_data</span><span class="p">[</span><span class="n">att</span><span class="p">]</span>
+
+    <span class="n">role</span> <span class="o">=</span> <span class="n">TRoles</span><span class="p">(</span><span class="o">**</span><span class="n">role_data</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">role</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TRoles</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_role</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">role</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">recursif</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@route</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/check_token&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="check_token_validity">
+<a class="viewcode-back" href="../../../autoapi/app/api/route_register/index.html#app.api.route_register.check_token_validity">[docs]</a>
+<span class="k">def</span> <span class="nf">check_token_validity</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    route permettant de savoir si un token est toujours valide</span>
+<span class="sd">    parametres post : token</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="n">token_exists</span> <span class="o">=</span> <span class="n">check_token</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">token_exists</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;valid token&quot;</span><span class="p">},</span> <span class="mi">200</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;invalid token&quot;</span><span class="p">},</span> <span class="mi">500</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

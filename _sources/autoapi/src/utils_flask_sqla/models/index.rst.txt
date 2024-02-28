@@ -1,0 +1,91 @@
+:py:mod:`src.utils_flask_sqla.models`
+=====================================
+
+.. py:module:: src.utils_flask_sqla.models
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla.models.is_whereclause_compatible
+   src.utils_flask_sqla.models.qfilter
+   src.utils_flask_sqla.models._qfilter
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla.models.AUTHORIZED_WHERECLAUSE_TYPES
+
+
+.. py:data:: AUTHORIZED_WHERECLAUSE_TYPES
+
+   
+
+.. py:function:: is_whereclause_compatible(object)
+
+
+.. py:function:: qfilter(*args_dec, **kwargs_dec)
+
+   This decorator allows you to constrain a SQLAlchemy model method to return a whereclause (by default) or a query. If
+   its `query` is set to True and no query is given in a `query` parameter, it will create one with a simple select: `select(model)`. The latter
+   is accessible through `kwargs.get("query")` in the decorated method.
+
+   The decorated query requires the following minimum parameters (cls,**kwargs).
+
+   >>> from utils_flask_sqla.models import qfilter
+   >>> from sqlalchemy.sql import select
+   >>> class Station(NomenclaturesMixin, db.Model):
+           __tablename__ = "t_stations"
+           __table_args__ = {"schema": "pr_occhab"}
+           # If you wish the method to return a whereclause
+           @qfilter
+           def filter_by_params(cls,**kwargs):
+               filters = []
+               if "id_station" in kwargs:
+                   filters.append(Station.id_station == kwargs["id_station"])
+               return sa.and_(*filters)
+           # If you wish the method to return a query
+           @qfilter(query=True)
+           def filter_by_paramsQ(cls,**kwargs):
+               query = kwargs("query") #  select(Station)
+               if "id_station" in kwargs:
+                   query = query.filter_by(id_station=kwargs["id_station"])
+               return query
+
+   >>> query = Station.filter_by_paramsQ(id_station=1)
+   >>> query2 = select(Station).where(Station.filter_by_params(id_station=1))
+
+   Parameters
+   ----------
+   query : bool
+       decorated function must (or not) return a query (Select)
+
+   Returns
+   -------
+   function
+       decorated method
+
+   Raises
+   ------
+   ValueError
+       Method's class is not DefaultMeta class
+   ValueError
+       if query is True and return value of the decorated method is not Select
+   ValueError
+       if query is False and return value of the decorated method is not a : `bool` or sqlalchemy.sql.expression.BooleanClauseList` or `sqlalchemy.sql.expression.BinaryExpression`
+
+
+
+.. py:function:: _qfilter(query=False)
+
+

@@ -1,0 +1,16 @@
+:py:mod:`apptax.log`
+====================
+
+.. py:module:: apptax.log
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   logmanager/index.rst
+   models/index.rst
+
+

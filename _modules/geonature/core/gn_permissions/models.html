@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_permissions.models &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">geonature.core.gn_permissions.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de geonature.core.gn_permissions.models</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Models of gn_permissions schema</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">packaging</span> <span class="kn">import</span> <span class="n">version</span>
+
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">ForeignKeyConstraint</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">select</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">foreign</span><span class="p">,</span> <span class="n">joinedload</span><span class="p">,</span> <span class="n">contains_eager</span>
+<span class="kn">import</span> <span class="nn">flask_sqlalchemy</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.models</span> <span class="kn">import</span> <span class="n">qfilter</span>
+
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.serializers</span> <span class="kn">import</span> <span class="n">serializable</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.db.models</span> <span class="kn">import</span> <span class="n">User</span>
+
+<span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">geonature.core.gn_commons.models.base</span> <span class="kn">import</span> <span class="n">TModules</span>
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="PermFilterType">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermFilterType">[docs]</a>
+<span class="k">class</span> <span class="nc">PermFilterType</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="PermFilterType.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermFilterType.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_filters_type&quot;</span></div>
+
+<div class="viewcode-block" id="PermFilterType.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermFilterType.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_permissions&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="PermFilterType.id_filter_type">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermFilterType.id_filter_type">[docs]</a>
+    <span class="n">id_filter_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermFilterType.code_filter_type">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermFilterType.code_filter_type">[docs]</a>
+    <span class="n">code_filter_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermFilterType.label_filter_type">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermFilterType.label_filter_type">[docs]</a>
+    <span class="n">label_filter_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermFilterType.description_filter_type">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermFilterType.description_filter_type">[docs]</a>
+    <span class="n">description_filter_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="PermScope">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermScope">[docs]</a>
+<span class="k">class</span> <span class="nc">PermScope</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="PermScope.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermScope.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_filters_scope&quot;</span></div>
+
+<div class="viewcode-block" id="PermScope.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermScope.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_permissions&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="PermScope.value">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermScope.value">[docs]</a>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermScope.label">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermScope.label">[docs]</a>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermScope.description">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermScope.description">[docs]</a>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PermScope.__str__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermScope.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="PermAction">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermAction">[docs]</a>
+<span class="k">class</span> <span class="nc">PermAction</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="PermAction.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermAction.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_actions&quot;</span></div>
+
+<div class="viewcode-block" id="PermAction.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermAction.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_permissions&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="PermAction.id_action">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermAction.id_action">[docs]</a>
+    <span class="n">id_action</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermAction.code_action">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermAction.code_action">[docs]</a>
+    <span class="n">code_action</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermAction.description_action">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermAction.description_action">[docs]</a>
+    <span class="n">description_action</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PermAction.__str__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermAction.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">description_action</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="cor_object_module">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.cor_object_module">[docs]</a>
+<span class="n">cor_object_module</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;cor_object_module&quot;</span><span class="p">,</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_cor_object_module&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_object&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_permissions.t_objects.id_object&quot;</span><span class="p">),</span>
+    <span class="p">),</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_module&quot;</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_commons.t_modules.id_module&quot;</span><span class="p">),</span>
+    <span class="p">),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;gn_permissions&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="PermObject">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermObject">[docs]</a>
+<span class="k">class</span> <span class="nc">PermObject</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="PermObject.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermObject.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_objects&quot;</span></div>
+
+<div class="viewcode-block" id="PermObject.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermObject.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_permissions&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="PermObject.id_object">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermObject.id_object">[docs]</a>
+    <span class="n">id_object</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermObject.code_object">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermObject.code_object">[docs]</a>
+    <span class="n">code_object</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermObject.description_object">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermObject.description_object">[docs]</a>
+    <span class="n">description_object</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PermObject.__str__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermObject.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">code_object</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">description_object</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+</div>
+
+
+
+<span class="c1"># compat.</span>
+<div class="viewcode-block" id="TObjects">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.TObjects">[docs]</a>
+<span class="n">TObjects</span> <span class="o">=</span> <span class="n">PermObject</span></div>
+
+
+
+<div class="viewcode-block" id="_nice_order">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models._nice_order">[docs]</a>
+<span class="k">def</span> <span class="nf">_nice_order</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">qs</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">geonature.core.gn_commons.models</span> <span class="kn">import</span> <span class="n">TModules</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">qs</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">action</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">options</span><span class="p">(</span>
+            <span class="n">contains_eager</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="p">),</span>
+            <span class="n">contains_eager</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
+            <span class="n">contains_eager</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">action</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">order_by</span><span class="p">(</span>
+            <span class="n">TModules</span><span class="o">.</span><span class="n">module_code</span><span class="p">,</span>
+            <span class="c1"># ensure ALL at first:</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">case</span><span class="p">([(</span><span class="n">PermObject</span><span class="o">.</span><span class="n">code_object</span> <span class="o">==</span> <span class="s2">&quot;ALL&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)],</span> <span class="n">else_</span><span class="o">=</span><span class="n">PermObject</span><span class="o">.</span><span class="n">code_object</span><span class="p">),</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">id_action</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="PermissionAvailable">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermissionAvailable">[docs]</a>
+<span class="k">class</span> <span class="nc">PermissionAvailable</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="PermissionAvailable.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermissionAvailable.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_permissions_available&quot;</span></div>
+
+<div class="viewcode-block" id="PermissionAvailable.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermissionAvailable.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_permissions&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="PermissionAvailable.id_module">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermissionAvailable.id_module">[docs]</a>
+    <span class="n">id_module</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_commons.t_modules.id_module&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermissionAvailable.id_object">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermissionAvailable.id_object">[docs]</a>
+    <span class="n">id_object</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="n">PermObject</span><span class="o">.</span><span class="n">id_object</span><span class="p">),</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">select</span><span class="p">(</span><span class="n">PermObject</span><span class="o">.</span><span class="n">id_object</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">PermObject</span><span class="o">.</span><span class="n">code_object</span> <span class="o">==</span> <span class="s2">&quot;ALL&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermissionAvailable.id_action">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermissionAvailable.id_action">[docs]</a>
+    <span class="n">id_action</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">PermAction</span><span class="o">.</span><span class="n">id_action</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermissionAvailable.label">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermissionAvailable.label">[docs]</a>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PermissionAvailable.module">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermissionAvailable.module">[docs]</a>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;TModules&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermissionAvailable.object">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermissionAvailable.object">[docs]</a>
+    <span class="nb">object</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">PermObject</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermissionAvailable.action">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermissionAvailable.action">[docs]</a>
+    <span class="n">action</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">PermAction</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PermissionAvailable.scope_filter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermissionAvailable.scope_filter">[docs]</a>
+    <span class="n">scope_filter</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">server_default</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">false</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermissionAvailable.sensitivity_filter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermissionAvailable.sensitivity_filter">[docs]</a>
+    <span class="n">sensitivity_filter</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">server_default</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">false</span><span class="p">(),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PermissionAvailable.filters_fields">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermissionAvailable.filters_fields">[docs]</a>
+    <span class="n">filters_fields</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;SCOPE&quot;</span><span class="p">:</span> <span class="n">scope_filter</span><span class="p">,</span>
+        <span class="s2">&quot;SENSITIVITY&quot;</span><span class="p">:</span> <span class="n">sensitivity_filter</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="PermissionAvailable.filters">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermissionAvailable.filters">[docs]</a>
+    <span class="k">def</span> <span class="nf">filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters_fields</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="PermissionAvailable.__str__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermissionAvailable.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">module_label</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">code_object</span> <span class="o">!=</span> <span class="s2">&quot;ALL&quot;</span><span class="p">:</span>
+            <span class="n">object_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">code_object</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; | </span><span class="si">{</span><span class="n">object_label</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; | </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="PermissionAvailable.nice_order">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermissionAvailable.nice_order">[docs]</a>
+    <span class="k">def</span> <span class="nf">nice_order</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># TODO fix when flask admin is compatible with</span>
+        <span class="c1"># sqlalchemy2.0 query style</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">PermissionAvailable</span><span class="o">.</span><span class="n">query</span>
+        <span class="k">return</span> <span class="n">_nice_order</span><span class="p">(</span><span class="n">PermissionAvailable</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PermFilter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermFilter">[docs]</a>
+<span class="k">class</span> <span class="nc">PermFilter</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="PermFilter.__str__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.PermFilter.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;SCOPE&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;&quot;&quot;&lt;i class=&quot;fa fa-users&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; de tout le monde&quot;&quot;&quot;</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;&quot;&quot;&lt;i class=&quot;fa fa-user&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; à moi&quot;&quot;&quot;</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;&quot;&quot;&lt;i class=&quot;fa fa-user-circle&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; de mon organisme&quot;&quot;&quot;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;SENSITIVITY&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;&quot;&quot;&lt;i class=&quot;fa fa-low-vision&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;  non sensible&quot;&quot;&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;&quot;&quot;&lt;i class=&quot;fa fa-eye&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;  sensible et non sensible&quot;&quot;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="Permission">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission">[docs]</a>
+<span class="k">class</span> <span class="nc">Permission</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="Permission.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_permissions&quot;</span></div>
+
+<div class="viewcode-block" id="Permission.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">ForeignKeyConstraint</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;id_module&quot;</span><span class="p">,</span> <span class="s2">&quot;id_object&quot;</span><span class="p">,</span> <span class="s2">&quot;id_action&quot;</span><span class="p">],</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;gn_permissions.t_permissions_available.id_module&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;gn_permissions.t_permissions_available.id_object&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;gn_permissions.t_permissions_available.id_action&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">),</span>
+        <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_permissions&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Permission.id_permission">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.id_permission">[docs]</a>
+    <span class="n">id_permission</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permission.id_role">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.id_role">[docs]</a>
+    <span class="n">id_role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;utilisateurs.t_roles.id_role&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Permission.id_action">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.id_action">[docs]</a>
+    <span class="n">id_action</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">PermAction</span><span class="o">.</span><span class="n">id_action</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Permission.id_module">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.id_module">[docs]</a>
+    <span class="n">id_module</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_commons.t_modules.id_module&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Permission.id_object">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.id_object">[docs]</a>
+    <span class="n">id_object</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="n">PermObject</span><span class="o">.</span><span class="n">id_object</span><span class="p">),</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">select</span><span class="p">(</span><span class="n">PermObject</span><span class="o">.</span><span class="n">id_object</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">PermObject</span><span class="o">.</span><span class="n">code_object</span> <span class="o">==</span> <span class="s2">&quot;ALL&quot;</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Permission.role">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.role">[docs]</a>
+    <span class="n">role</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">backref</span><span class="p">(</span><span class="s2">&quot;permissions&quot;</span><span class="p">,</span> <span class="n">cascade_backrefs</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Permission.action">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.action">[docs]</a>
+    <span class="n">action</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">PermAction</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permission.module">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.module">[docs]</a>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">TModules</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permission.object">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.object">[docs]</a>
+    <span class="nb">object</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">PermObject</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Permission.scope_value">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.scope_value">[docs]</a>
+    <span class="n">scope_value</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">PermScope</span><span class="o">.</span><span class="n">value</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permission.scope">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.scope">[docs]</a>
+    <span class="n">scope</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">PermScope</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permission.sensitivity_filter">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.sensitivity_filter">[docs]</a>
+    <span class="n">sensitivity_filter</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">server_default</span><span class="o">=</span><span class="n">sa</span><span class="o">.</span><span class="n">false</span><span class="p">(),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Permission.availability">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.availability">[docs]</a>
+    <span class="n">availability</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="n">PermissionAvailable</span><span class="p">,</span>
+        <span class="n">backref</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">backref</span><span class="p">(</span><span class="s2">&quot;permissions&quot;</span><span class="p">,</span> <span class="n">overlaps</span><span class="o">=</span><span class="s2">&quot;action, object, module&quot;</span><span class="p">),</span>  <span class="c1"># overlaps expected</span>
+        <span class="n">overlaps</span><span class="o">=</span><span class="s2">&quot;action, object, module&quot;</span><span class="p">,</span>  <span class="c1"># overlaps expected</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Permission.filters_fields">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.filters_fields">[docs]</a>
+    <span class="n">filters_fields</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;SCOPE&quot;</span><span class="p">:</span> <span class="n">scope_value</span><span class="p">,</span>
+        <span class="s2">&quot;SENSITIVITY&quot;</span><span class="p">:</span> <span class="n">sensitivity_filter</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Permission.__SCOPE_le__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.__SCOPE_le__">[docs]</a>
+    <span class="k">def</span> <span class="nf">__SCOPE_le__</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="n">a</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">a</span> <span class="o">&lt;=</span> <span class="n">b</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Permission.__SENSITIVITY_le__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.__SENSITIVITY_le__">[docs]</a>
+    <span class="k">def</span> <span class="nf">__SENSITIVITY_le__</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="c1"># False only if: A is False and b is True</span>
+        <span class="k">return</span> <span class="p">(</span><span class="ow">not</span> <span class="n">a</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="ow">not</span> <span class="n">b</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Permission.__default_le__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.__default_le__">[docs]</a>
+    <span class="k">def</span> <span class="nf">__default_le__</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span> <span class="ow">or</span> <span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Permission.__le__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.__le__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if this permission is supersed by &#39;other&#39; permission.</span>
+<span class="sd">        This requires all filters to be supersed by &#39;other&#39; filters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Get filter comparison function or use default comparison function</span>
+            <span class="n">__le_fct__</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;__</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_le__&quot;</span><span class="p">,</span> <span class="n">Permission</span><span class="o">.</span><span class="n">__default_le__</span><span class="p">)</span>
+            <span class="n">self_value</span><span class="p">,</span> <span class="n">other_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">__le_fct__</span><span class="p">(</span><span class="n">self_value</span><span class="p">,</span> <span class="n">other_value</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Permission.filters">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.filters">[docs]</a>
+    <span class="k">def</span> <span class="nf">filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">filters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">nullable</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">python_type</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="k">continue</span>
+            <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PermFilter</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">filters</span></div>
+
+
+<div class="viewcode-block" id="Permission.has_other_filters_than">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.has_other_filters_than">[docs]</a>
+    <span class="k">def</span> <span class="nf">has_other_filters_than</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">expected_filters</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">flt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">flt</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">expected_filters</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+    <span class="nd">@qfilter</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="Permission.nice_order">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_permissions/models/index.html#geonature.core.gn_commons.models.Permission.nice_order">[docs]</a>
+    <span class="k">def</span> <span class="nf">nice_order</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_nice_order</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">])</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

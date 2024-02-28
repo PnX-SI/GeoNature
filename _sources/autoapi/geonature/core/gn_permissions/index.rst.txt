@@ -1,0 +1,20 @@
+:py:mod:`geonature.core.gn_permissions`
+=======================================
+
+.. py:module:: geonature.core.gn_permissions
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   admin/index.rst
+   commands/index.rst
+   decorators/index.rst
+   models/index.rst
+   routes/index.rst
+   tools/index.rst
+
+

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.utils_flask_sqla.models &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" />
+    <link rel="next" title="src.utils_flask_sqla.response" href="../response/index.html" />
+    <link rel="prev" title="src.utils_flask_sqla.generic" href="../generic/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../api-references.html">API REFERENCES</a></li>
+          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla</span></code></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla.models</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/autoapi/src/utils_flask_sqla/models/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-src.utils_flask_sqla.models">
+<span id="src-utils-flask-sqla-models"></span><h1><a class="reference internal" href="#module-src.utils_flask_sqla.models" title="src.utils_flask_sqla.models"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla.models</span></code></a><a class="headerlink" href="#module-src.utils_flask_sqla.models" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.utils_flask_sqla.models.is_whereclause_compatible" title="src.utils_flask_sqla.models.is_whereclause_compatible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_whereclause_compatible</span></code></a>(object)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.utils_flask_sqla.models.qfilter" title="src.utils_flask_sqla.models.qfilter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qfilter</span></code></a>(*args_dec, **kwargs_dec)</p></td>
+<td><p>This decorator allows you to constrain a SQLAlchemy model method to return a whereclause (by default) or a query. If</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.utils_flask_sqla.models._qfilter" title="src.utils_flask_sqla.models._qfilter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_qfilter</span></code></a>([query])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.utils_flask_sqla.models.AUTHORIZED_WHERECLAUSE_TYPES" title="src.utils_flask_sqla.models.AUTHORIZED_WHERECLAUSE_TYPES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AUTHORIZED_WHERECLAUSE_TYPES</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.models.AUTHORIZED_WHERECLAUSE_TYPES">
+<span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla.models.</span></span><span class="sig-name descname"><span class="pre">AUTHORIZED_WHERECLAUSE_TYPES</span></span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/models.html#AUTHORIZED_WHERECLAUSE_TYPES"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.models.AUTHORIZED_WHERECLAUSE_TYPES" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.models.is_whereclause_compatible">
+<span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla.models.</span></span><span class="sig-name descname"><span class="pre">is_whereclause_compatible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/models.html#is_whereclause_compatible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.models.is_whereclause_compatible" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.models.qfilter">
+<span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla.models.</span></span><span class="sig-name descname"><span class="pre">qfilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args_dec</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs_dec</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/models.html#qfilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.models.qfilter" title="Link to this definition"></a></dt>
+<dd><p>This decorator allows you to constrain a SQLAlchemy model method to return a whereclause (by default) or a query. If
+its <cite>query</cite> is set to True and no query is given in a <cite>query</cite> parameter, it will create one with a simple select: <cite>select(model)</cite>. The latter
+is accessible through <cite>kwargs.get(« query »)</cite> in the decorated method.</p>
+<p>The decorated query requires the following minimum parameters (cls,**kwargs).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">utils_flask_sqla.models</span> <span class="kn">import</span> <span class="n">qfilter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">select</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Station</span><span class="p">(</span><span class="n">NomenclaturesMixin</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="go">        __tablename__ = &quot;t_stations&quot;</span>
+<span class="go">        __table_args__ = {&quot;schema&quot;: &quot;pr_occhab&quot;}</span>
+<span class="go">        # If you wish the method to return a whereclause</span>
+<span class="go">        @qfilter</span>
+<span class="go">        def filter_by_params(cls,**kwargs):</span>
+<span class="go">            filters = []</span>
+<span class="go">            if &quot;id_station&quot; in kwargs:</span>
+<span class="go">                filters.append(Station.id_station == kwargs[&quot;id_station&quot;])</span>
+<span class="go">            return sa.and_(*filters)</span>
+<span class="go">        # If you wish the method to return a query</span>
+<span class="go">        @qfilter(query=True)</span>
+<span class="go">        def filter_by_paramsQ(cls,**kwargs):</span>
+<span class="go">            query = kwargs(&quot;query&quot;) #  select(Station)</span>
+<span class="go">            if &quot;id_station&quot; in kwargs:</span>
+<span class="go">                query = query.filter_by(id_station=kwargs[&quot;id_station&quot;])</span>
+<span class="go">            return query</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">Station</span><span class="o">.</span><span class="n">filter_by_paramsQ</span><span class="p">(</span><span class="n">id_station</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">query2</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">Station</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Station</span><span class="o">.</span><span class="n">filter_by_params</span><span class="p">(</span><span class="n">id_station</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<section id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>query<span class="classifier">bool</span></dt><dd><p>decorated function must (or not) return a query (Select)</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h4>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>function</dt><dd><p>decorated method</p>
+</dd>
+</dl>
+</section>
+<section id="raises">
+<h4>Raises<a class="headerlink" href="#raises" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>ValueError</dt><dd><p>Method’s class is not DefaultMeta class</p>
+</dd>
+<dt>ValueError</dt><dd><p>if query is True and return value of the decorated method is not Select</p>
+</dd>
+<dt>ValueError</dt><dd><p>if query is False and return value of the decorated method is not a : <cite>bool</cite> or sqlalchemy.sql.expression.BooleanClauseList` or <cite>sqlalchemy.sql.expression.BinaryExpression</cite></p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.utils_flask_sqla.models._qfilter">
+<span class="sig-prename descclassname"><span class="pre">src.utils_flask_sqla.models.</span></span><span class="sig-name descname"><span class="pre">_qfilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/src/utils_flask_sqla/models.html#_qfilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.utils_flask_sqla.models._qfilter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="../generic/index.html" class="btn btn-neutral float-left" title="src.utils_flask_sqla.generic" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="../response/index.html" class="btn btn-neutral float-right" title="src.utils_flask_sqla.response" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

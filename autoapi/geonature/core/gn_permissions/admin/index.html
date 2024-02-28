@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_permissions.admin &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../search.html" />
+    <link rel="next" title="geonature.core.gn_permissions.commands" href="../commands/index.html" />
+    <link rel="prev" title="geonature.core.gn_permissions" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../../api-references.html">API REFERENCES</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../../../index.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../middlewares/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.middlewares</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../tasks/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.tasks</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../index.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../pypnusershub/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla_geo/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../frontend.html">Frontend</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../api-references.html">API REFERENCES</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core</span></code></a></li>
+          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_permissions</span></code></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_permissions.admin</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/autoapi/geonature/core/gn_permissions/admin/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-geonature.core.gn_permissions.admin">
+<span id="geonature-core-gn-permissions-admin"></span><h1><a class="reference internal" href="#module-geonature.core.gn_permissions.admin" title="geonature.core.gn_permissions.admin"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_permissions.admin</span></code></a><a class="headerlink" href="#module-geonature.core.gn_permissions.admin" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.RoleFilter" title="geonature.core.gn_permissions.admin.RoleFilter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RoleFilter</span></code></a></p></td>
+<td><p>Base SQLAlchemy filter.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.ModuleFilter" title="geonature.core.gn_permissions.admin.ModuleFilter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModuleFilter</span></code></a></p></td>
+<td><p>Base SQLAlchemy filter.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.ObjectFilter" title="geonature.core.gn_permissions.admin.ObjectFilter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObjectFilter</span></code></a></p></td>
+<td><p>Base SQLAlchemy filter.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.ActionFilter" title="geonature.core.gn_permissions.admin.ActionFilter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActionFilter</span></code></a></p></td>
+<td><p>Base SQLAlchemy filter.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.ScopeFilter" title="geonature.core.gn_permissions.admin.ScopeFilter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ScopeFilter</span></code></a></p></td>
+<td><p>Base SQLAlchemy filter.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.OptionSelect2Widget" title="geonature.core.gn_permissions.admin.OptionSelect2Widget"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OptionSelect2Widget</span></code></a></p></td>
+<td><p><a class="reference external" href="https://github.com/ivaynberg/select2">Select2</a> styled select widget.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.OptionQuerySelectField" title="geonature.core.gn_permissions.admin.OptionQuerySelectField"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OptionQuerySelectField</span></code></a></p></td>
+<td><p>Overrides the QuerySelectField class from flask admin to allow</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.UserAjaxModelLoader" title="geonature.core.gn_permissions.admin.UserAjaxModelLoader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UserAjaxModelLoader</span></code></a></p></td>
+<td><p>Ajax related model loader. Override this to implement custom loading behavior.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.ObjectAdmin" title="geonature.core.gn_permissions.admin.ObjectAdmin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObjectAdmin</span></code></a></p></td>
+<td><p>SQLAlchemy model view</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.PermissionAdmin" title="geonature.core.gn_permissions.admin.PermissionAdmin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PermissionAdmin</span></code></a></p></td>
+<td><p>SQLAlchemy model view</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.PermissionAvailableAdmin" title="geonature.core.gn_permissions.admin.PermissionAvailableAdmin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PermissionAvailableAdmin</span></code></a></p></td>
+<td><p>SQLAlchemy model view</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.RolePermAdmin" title="geonature.core.gn_permissions.admin.RolePermAdmin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RolePermAdmin</span></code></a></p></td>
+<td><p>SQLAlchemy model view</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.GroupPermAdmin" title="geonature.core.gn_permissions.admin.GroupPermAdmin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GroupPermAdmin</span></code></a></p></td>
+<td><p>SQLAlchemy model view</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.UserPermAdmin" title="geonature.core.gn_permissions.admin.UserPermAdmin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UserPermAdmin</span></code></a></p></td>
+<td><p>SQLAlchemy model view</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.filters_formatter" title="geonature.core.gn_permissions.admin.filters_formatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filters_formatter</span></code></a>(v, c, m, p)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.modules_formatter" title="geonature.core.gn_permissions.admin.modules_formatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">modules_formatter</span></code></a>(view, context, model, name)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.groups_formatter" title="geonature.core.gn_permissions.admin.groups_formatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">groups_formatter</span></code></a>(view, context, model, name)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.role_formatter" title="geonature.core.gn_permissions.admin.role_formatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">role_formatter</span></code></a>(view, context, model, name)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.permissions_formatter" title="geonature.core.gn_permissions.admin.permissions_formatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">permissions_formatter</span></code></a>(view, context, model, name)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_permissions.admin.permissions_count_formatter" title="geonature.core.gn_permissions.admin.permissions_count_formatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">permissions_count_formatter</span></code></a>(view, context, model, name)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.RoleFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">RoleFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#RoleFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.RoleFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../admin/utils/index.html#geonature.core.admin.utils.DynamicOptionsMixin" title="geonature.core.admin.utils.DynamicOptionsMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.core.admin.utils.DynamicOptionsMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.filters.FilterEqual</span></code></p>
+<p>Base SQLAlchemy filter.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.RoleFilter.get_dynamic_options">
+<span class="sig-name descname"><span class="pre">get_dynamic_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#RoleFilter.get_dynamic_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.RoleFilter.get_dynamic_options" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ModuleFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">ModuleFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ModuleFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ModuleFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../admin/utils/index.html#geonature.core.admin.utils.DynamicOptionsMixin" title="geonature.core.admin.utils.DynamicOptionsMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.core.admin.utils.DynamicOptionsMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.filters.FilterEqual</span></code></p>
+<p>Base SQLAlchemy filter.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ModuleFilter.get_dynamic_options">
+<span class="sig-name descname"><span class="pre">get_dynamic_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ModuleFilter.get_dynamic_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ModuleFilter.get_dynamic_options" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ObjectFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">ObjectFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ObjectFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ObjectFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../admin/utils/index.html#geonature.core.admin.utils.DynamicOptionsMixin" title="geonature.core.admin.utils.DynamicOptionsMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.core.admin.utils.DynamicOptionsMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.filters.FilterEqual</span></code></p>
+<p>Base SQLAlchemy filter.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ObjectFilter.get_dynamic_options">
+<span class="sig-name descname"><span class="pre">get_dynamic_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ObjectFilter.get_dynamic_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ObjectFilter.get_dynamic_options" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ActionFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">ActionFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ActionFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ActionFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../admin/utils/index.html#geonature.core.admin.utils.DynamicOptionsMixin" title="geonature.core.admin.utils.DynamicOptionsMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.core.admin.utils.DynamicOptionsMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.filters.FilterEqual</span></code></p>
+<p>Base SQLAlchemy filter.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ActionFilter.get_dynamic_options">
+<span class="sig-name descname"><span class="pre">get_dynamic_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ActionFilter.get_dynamic_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ActionFilter.get_dynamic_options" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ScopeFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">ScopeFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ScopeFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ScopeFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../admin/utils/index.html#geonature.core.admin.utils.DynamicOptionsMixin" title="geonature.core.admin.utils.DynamicOptionsMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.core.admin.utils.DynamicOptionsMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.filters.FilterEqual</span></code></p>
+<p>Base SQLAlchemy filter.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ScopeFilter.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ScopeFilter.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ScopeFilter.apply" title="Link to this definition"></a></dt>
+<dd><p>Apply search criteria to the query and return new query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> – Query</p></li>
+<li><p><strong>value</strong> – Search criteria</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ScopeFilter.get_dynamic_options">
+<span class="sig-name descname"><span class="pre">get_dynamic_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ScopeFilter.get_dynamic_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ScopeFilter.get_dynamic_options" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.filters_formatter">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">filters_formatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#filters_formatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.filters_formatter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.modules_formatter">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">modules_formatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#modules_formatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.modules_formatter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.groups_formatter">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">groups_formatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#groups_formatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.groups_formatter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.role_formatter">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">role_formatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#role_formatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.role_formatter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.permissions_formatter">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">permissions_formatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#permissions_formatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.permissions_formatter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.permissions_count_formatter">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">permissions_count_formatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#permissions_count_formatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.permissions_count_formatter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.OptionSelect2Widget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">OptionSelect2Widget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiple</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#OptionSelect2Widget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.OptionSelect2Widget" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.form.widgets.Select2Widget</span></code></p>
+<p><a class="reference external" href="https://github.com/ivaynberg/select2">Select2</a> styled select widget.</p>
+<p>You must include select2.js, form-x.x.x.js and select2 stylesheet for it to
+work.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.OptionSelect2Widget.render_option">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">render_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#OptionSelect2Widget.render_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.OptionSelect2Widget.render_option" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.OptionQuerySelectField">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">OptionQuerySelectField</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#OptionQuerySelectField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.OptionQuerySelectField" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.fields.QuerySelectField</span></code></p>
+<p>Overrides the QuerySelectField class from flask admin to allow
+other attributes on a select option.</p>
+<p>options_additional_values is added in form_args, it is a list of
+strings, each element is the name of the attribute in the model
+which will be added on the option</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.OptionQuerySelectField.widget">
+<span class="sig-name descname"><span class="pre">widget</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#OptionQuerySelectField.widget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.OptionQuerySelectField.widget" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.OptionQuerySelectField.iter_choices">
+<span class="sig-name descname"><span class="pre">iter_choices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#OptionQuerySelectField.iter_choices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.OptionQuerySelectField.iter_choices" title="Link to this definition"></a></dt>
+<dd><p>Provides data for choice widget rendering. Must return a sequence or
+iterable of (value, label, selected, render_kw) tuples.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.UserAjaxModelLoader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">UserAjaxModelLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#UserAjaxModelLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.UserAjaxModelLoader" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.ajax.QueryAjaxModelLoader</span></code></p>
+<p>Ajax related model loader. Override this to implement custom loading behavior.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.UserAjaxModelLoader.format">
+<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#UserAjaxModelLoader.format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.UserAjaxModelLoader.format" title="Link to this definition"></a></dt>
+<dd><p>Return (id, name) tuple from the model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.UserAjaxModelLoader.get_query">
+<span class="sig-name descname"><span class="pre">get_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#UserAjaxModelLoader.get_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.UserAjaxModelLoader.get_query" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ObjectAdmin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">ObjectAdmin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_class_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ObjectAdmin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ObjectAdmin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../admin/utils/index.html#geonature.core.admin.utils.CruvedProtectedMixin" title="geonature.core.admin.utils.CruvedProtectedMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.core.admin.utils.CruvedProtectedMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.ModelView</span></code></p>
+<p>SQLAlchemy model view</p>
+<p>Usage sample:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">admin</span> <span class="o">=</span> <span class="n">Admin</span><span class="p">()</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">ModelView</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ObjectAdmin.module_code">
+<span class="sig-name descname"><span class="pre">module_code</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ADMIN'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ObjectAdmin.module_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ObjectAdmin.module_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ObjectAdmin.object_code">
+<span class="sig-name descname"><span class="pre">object_code</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'PERMISSIONS'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ObjectAdmin.object_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ObjectAdmin.object_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ObjectAdmin.can_create">
+<span class="sig-name descname"><span class="pre">can_create</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ObjectAdmin.can_create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ObjectAdmin.can_create" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ObjectAdmin.can_edit">
+<span class="sig-name descname"><span class="pre">can_edit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ObjectAdmin.can_edit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ObjectAdmin.can_edit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ObjectAdmin.can_delete">
+<span class="sig-name descname"><span class="pre">can_delete</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ObjectAdmin.can_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ObjectAdmin.can_delete" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ObjectAdmin.column_list">
+<span class="sig-name descname"><span class="pre">column_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('code_object',</span> <span class="pre">'description_object',</span> <span class="pre">'modules')</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ObjectAdmin.column_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ObjectAdmin.column_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ObjectAdmin.column_labels">
+<span class="sig-name descname"><span class="pre">column_labels</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ObjectAdmin.column_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ObjectAdmin.column_labels" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ObjectAdmin.column_default_sort">
+<span class="sig-name descname"><span class="pre">column_default_sort</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'id_object'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ObjectAdmin.column_default_sort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ObjectAdmin.column_default_sort" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.ObjectAdmin.column_formatters">
+<span class="sig-name descname"><span class="pre">column_formatters</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#ObjectAdmin.column_formatters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.ObjectAdmin.column_formatters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">PermissionAdmin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_class_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../admin/utils/index.html#geonature.core.admin.utils.CruvedProtectedMixin" title="geonature.core.admin.utils.CruvedProtectedMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.core.admin.utils.CruvedProtectedMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.ModelView</span></code></p>
+<p>SQLAlchemy model view</p>
+<p>Usage sample:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">admin</span> <span class="o">=</span> <span class="n">Admin</span><span class="p">()</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">ModelView</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.module_code">
+<span class="sig-name descname"><span class="pre">module_code</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ADMIN'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.module_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.module_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.object_code">
+<span class="sig-name descname"><span class="pre">object_code</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'PERMISSIONS'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.object_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.object_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.column_list">
+<span class="sig-name descname"><span class="pre">column_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('role',</span> <span class="pre">'module',</span> <span class="pre">'object',</span> <span class="pre">'action',</span> <span class="pre">'label',</span> <span class="pre">'filters')</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.column_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.column_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.column_labels">
+<span class="sig-name descname"><span class="pre">column_labels</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.column_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.column_labels" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.column_select_related_list">
+<span class="sig-name descname"><span class="pre">column_select_related_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('availability',)</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.column_select_related_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.column_select_related_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.column_searchable_list">
+<span class="sig-name descname"><span class="pre">column_searchable_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('role.identifiant',</span> <span class="pre">'role.nom_complet')</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.column_searchable_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.column_searchable_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.column_formatters">
+<span class="sig-name descname"><span class="pre">column_formatters</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.column_formatters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.column_formatters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.column_filters">
+<span class="sig-name descname"><span class="pre">column_filters</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.column_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.column_filters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.named_filter_urls">
+<span class="sig-name descname"><span class="pre">named_filter_urls</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.named_filter_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.named_filter_urls" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.column_sortable_list">
+<span class="sig-name descname"><span class="pre">column_sortable_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(('role',</span> <span class="pre">'role.nom_complet'),</span> <span class="pre">('module',</span> <span class="pre">'module.module_code'),</span> <span class="pre">('object',...</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.column_sortable_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.column_sortable_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.column_default_sort">
+<span class="sig-name descname"><span class="pre">column_default_sort</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[('role.nom_complet',</span> <span class="pre">False),</span> <span class="pre">('module.module_code',</span> <span class="pre">False),</span> <span class="pre">('object.code_object',</span> <span class="pre">False),...</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.column_default_sort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.column_default_sort" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.form_columns">
+<span class="sig-name descname"><span class="pre">form_columns</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('role',</span> <span class="pre">'availability',</span> <span class="pre">'scope',</span> <span class="pre">'sensitivity_filter')</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.form_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.form_columns" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.form_overrides">
+<span class="sig-name descname"><span class="pre">form_overrides</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.form_overrides"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.form_overrides" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.form_args">
+<span class="sig-name descname"><span class="pre">form_args</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.form_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.form_args" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.create_template">
+<span class="sig-name descname"><span class="pre">create_template</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'admin/hide_select2_options_create.html'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.create_template"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.create_template" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.edit_template">
+<span class="sig-name descname"><span class="pre">edit_template</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'admin/hide_select2_options_edit.html'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.edit_template"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.edit_template" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.form_ajax_refs">
+<span class="sig-name descname"><span class="pre">form_ajax_refs</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.form_ajax_refs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.form_ajax_refs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.render" title="Link to this definition"></a></dt>
+<dd><p>Render template</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>template</strong> – Template path to render</p></li>
+<li><p><strong>kwargs</strong> – Template arguments</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAdmin.create_form">
+<span class="sig-name descname"><span class="pre">create_form</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAdmin.create_form"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAdmin.create_form" title="Link to this definition"></a></dt>
+<dd><p>Instantiate model creation form and return it.</p>
+<p>Override to implement custom behavior.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAvailableAdmin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">PermissionAvailableAdmin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_class_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAvailableAdmin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAvailableAdmin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../admin/utils/index.html#geonature.core.admin.utils.CruvedProtectedMixin" title="geonature.core.admin.utils.CruvedProtectedMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.core.admin.utils.CruvedProtectedMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.ModelView</span></code></p>
+<p>SQLAlchemy model view</p>
+<p>Usage sample:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">admin</span> <span class="o">=</span> <span class="n">Admin</span><span class="p">()</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">ModelView</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAvailableAdmin.module_code">
+<span class="sig-name descname"><span class="pre">module_code</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ADMIN'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAvailableAdmin.module_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.module_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAvailableAdmin.object_code">
+<span class="sig-name descname"><span class="pre">object_code</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'PERMISSIONS'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAvailableAdmin.object_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.object_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAvailableAdmin.can_create">
+<span class="sig-name descname"><span class="pre">can_create</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAvailableAdmin.can_create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.can_create" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAvailableAdmin.can_delete">
+<span class="sig-name descname"><span class="pre">can_delete</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAvailableAdmin.can_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.can_delete" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAvailableAdmin.can_export">
+<span class="sig-name descname"><span class="pre">can_export</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAvailableAdmin.can_export"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.can_export" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAvailableAdmin.column_labels">
+<span class="sig-name descname"><span class="pre">column_labels</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAvailableAdmin.column_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.column_labels" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAvailableAdmin.column_formatters">
+<span class="sig-name descname"><span class="pre">column_formatters</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAvailableAdmin.column_formatters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.column_formatters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAvailableAdmin.column_sortable_list">
+<span class="sig-name descname"><span class="pre">column_sortable_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(('module',</span> <span class="pre">'module.module_code'),</span> <span class="pre">('object',</span> <span class="pre">'object.code_object'),</span> <span class="pre">('action',</span> <span class="pre">'action.code_action'))</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAvailableAdmin.column_sortable_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.column_sortable_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAvailableAdmin.column_filters">
+<span class="sig-name descname"><span class="pre">column_filters</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAvailableAdmin.column_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.column_filters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAvailableAdmin.column_default_sort">
+<span class="sig-name descname"><span class="pre">column_default_sort</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[('module.module_code',</span> <span class="pre">False),</span> <span class="pre">('object.code_object',</span> <span class="pre">False),</span> <span class="pre">('id_action',</span> <span class="pre">False)]</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAvailableAdmin.column_default_sort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.column_default_sort" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.PermissionAvailableAdmin.form_columns">
+<span class="sig-name descname"><span class="pre">form_columns</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('scope_filter',</span> <span class="pre">'sensitivity_filter')</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#PermissionAvailableAdmin.form_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.PermissionAvailableAdmin.form_columns" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.RolePermAdmin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">RolePermAdmin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_class_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#RolePermAdmin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.RolePermAdmin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../admin/utils/index.html#geonature.core.admin.utils.CruvedProtectedMixin" title="geonature.core.admin.utils.CruvedProtectedMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.core.admin.utils.CruvedProtectedMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.ModelView</span></code></p>
+<p>SQLAlchemy model view</p>
+<p>Usage sample:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">admin</span> <span class="o">=</span> <span class="n">Admin</span><span class="p">()</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">ModelView</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.RolePermAdmin.module_code">
+<span class="sig-name descname"><span class="pre">module_code</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ADMIN'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#RolePermAdmin.module_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.RolePermAdmin.module_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.RolePermAdmin.object_code">
+<span class="sig-name descname"><span class="pre">object_code</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'PERMISSIONS'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#RolePermAdmin.object_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.RolePermAdmin.object_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.RolePermAdmin.can_create">
+<span class="sig-name descname"><span class="pre">can_create</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#RolePermAdmin.can_create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.RolePermAdmin.can_create" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.RolePermAdmin.can_edit">
+<span class="sig-name descname"><span class="pre">can_edit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#RolePermAdmin.can_edit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.RolePermAdmin.can_edit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.RolePermAdmin.can_delete">
+<span class="sig-name descname"><span class="pre">can_delete</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#RolePermAdmin.can_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.RolePermAdmin.can_delete" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.RolePermAdmin.can_export">
+<span class="sig-name descname"><span class="pre">can_export</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#RolePermAdmin.can_export"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.RolePermAdmin.can_export" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.RolePermAdmin.can_view_details">
+<span class="sig-name descname"><span class="pre">can_view_details</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#RolePermAdmin.can_view_details"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.RolePermAdmin.can_view_details" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.RolePermAdmin.details_template">
+<span class="sig-name descname"><span class="pre">details_template</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'role_or_group_detail.html'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#RolePermAdmin.details_template"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.RolePermAdmin.details_template" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.RolePermAdmin.column_select_related_list">
+<span class="sig-name descname"><span class="pre">column_select_related_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('permissions',)</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#RolePermAdmin.column_select_related_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.RolePermAdmin.column_select_related_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.RolePermAdmin.column_labels">
+<span class="sig-name descname"><span class="pre">column_labels</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#RolePermAdmin.column_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.RolePermAdmin.column_labels" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.RolePermAdmin.column_searchable_list">
+<span class="sig-name descname"><span class="pre">column_searchable_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('identifiant',</span> <span class="pre">'nom_complet')</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#RolePermAdmin.column_searchable_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.RolePermAdmin.column_searchable_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.RolePermAdmin.column_formatters">
+<span class="sig-name descname"><span class="pre">column_formatters</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#RolePermAdmin.column_formatters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.RolePermAdmin.column_formatters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.RolePermAdmin.column_formatters_detail">
+<span class="sig-name descname"><span class="pre">column_formatters_detail</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#RolePermAdmin.column_formatters_detail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.RolePermAdmin.column_formatters_detail" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.GroupPermAdmin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">GroupPermAdmin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_class_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#GroupPermAdmin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.GroupPermAdmin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#geonature.core.gn_permissions.admin.RolePermAdmin" title="geonature.core.gn_permissions.admin.RolePermAdmin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RolePermAdmin</span></code></a></p>
+<p>SQLAlchemy model view</p>
+<p>Usage sample:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">admin</span> <span class="o">=</span> <span class="n">Admin</span><span class="p">()</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">ModelView</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.GroupPermAdmin.column_list">
+<span class="sig-name descname"><span class="pre">column_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('nom_role',</span> <span class="pre">'permissions_count')</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#GroupPermAdmin.column_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.GroupPermAdmin.column_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.GroupPermAdmin.column_details_list">
+<span class="sig-name descname"><span class="pre">column_details_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('nom_role',</span> <span class="pre">'permissions_count',</span> <span class="pre">'permissions')</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#GroupPermAdmin.column_details_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.GroupPermAdmin.column_details_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.GroupPermAdmin.get_query">
+<span class="sig-name descname"><span class="pre">get_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#GroupPermAdmin.get_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.GroupPermAdmin.get_query" title="Link to this definition"></a></dt>
+<dd><p>Return a query for the model type.</p>
+<p>This method can be used to set a « persistent filter » on an index_view.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyView</span><span class="p">(</span><span class="n">ModelView</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_query</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">username</span> <span class="o">==</span> <span class="n">current_user</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you override this method, don’t forget to also override <cite>get_count_query</cite>, for displaying the correct
+item count in the list view, and <cite>get_one</cite>, which is used when retrieving records for the edit view.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.GroupPermAdmin.get_count_query">
+<span class="sig-name descname"><span class="pre">get_count_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#GroupPermAdmin.get_count_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.GroupPermAdmin.get_count_query" title="Link to this definition"></a></dt>
+<dd><p>Return a the count query for the model type</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">query(self.model).count()</span></code> approach produces an excessive
+subquery, so <code class="docutils literal notranslate"><span class="pre">query(func.count('*'))</span></code> should be used instead.</p>
+<p>See commit <code class="docutils literal notranslate"><span class="pre">#45a2723</span></code> for details.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.UserPermAdmin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_permissions.admin.</span></span><span class="sig-name descname"><span class="pre">UserPermAdmin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_class_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#UserPermAdmin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.UserPermAdmin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#geonature.core.gn_permissions.admin.RolePermAdmin" title="geonature.core.gn_permissions.admin.RolePermAdmin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RolePermAdmin</span></code></a></p>
+<p>SQLAlchemy model view</p>
+<p>Usage sample:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">admin</span> <span class="o">=</span> <span class="n">Admin</span><span class="p">()</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">ModelView</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.UserPermAdmin.column_list">
+<span class="sig-name descname"><span class="pre">column_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('identifiant',</span> <span class="pre">'nom_role',</span> <span class="pre">'prenom_role',</span> <span class="pre">'groups',</span> <span class="pre">'permissions_count')</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#UserPermAdmin.column_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.UserPermAdmin.column_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.UserPermAdmin.column_labels">
+<span class="sig-name descname"><span class="pre">column_labels</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#UserPermAdmin.column_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.UserPermAdmin.column_labels" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.UserPermAdmin.column_details_list">
+<span class="sig-name descname"><span class="pre">column_details_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('identifiant',</span> <span class="pre">'nom_role',</span> <span class="pre">'prenom_role',</span> <span class="pre">'groups',</span> <span class="pre">'permissions_count',</span> <span class="pre">'permissions')</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#UserPermAdmin.column_details_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.UserPermAdmin.column_details_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.UserPermAdmin.get_query">
+<span class="sig-name descname"><span class="pre">get_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#UserPermAdmin.get_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.UserPermAdmin.get_query" title="Link to this definition"></a></dt>
+<dd><p>Return a query for the model type.</p>
+<p>This method can be used to set a « persistent filter » on an index_view.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyView</span><span class="p">(</span><span class="n">ModelView</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_query</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">username</span> <span class="o">==</span> <span class="n">current_user</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you override this method, don’t forget to also override <cite>get_count_query</cite>, for displaying the correct
+item count in the list view, and <cite>get_one</cite>, which is used when retrieving records for the edit view.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_permissions.admin.UserPermAdmin.get_count_query">
+<span class="sig-name descname"><span class="pre">get_count_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_permissions/admin.html#UserPermAdmin.get_count_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_permissions.admin.UserPermAdmin.get_count_query" title="Link to this definition"></a></dt>
+<dd><p>Return a the count query for the model type</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">query(self.model).count()</span></code> approach produces an excessive
+subquery, so <code class="docutils literal notranslate"><span class="pre">query(func.count('*'))</span></code> should be used instead.</p>
+<p>See commit <code class="docutils literal notranslate"><span class="pre">#45a2723</span></code> for details.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="../index.html" class="btn btn-neutral float-left" title="geonature.core.gn_permissions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="../commands/index.html" class="btn btn-neutral float-right" title="geonature.core.gn_permissions.commands" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

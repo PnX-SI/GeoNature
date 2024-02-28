@@ -1,0 +1,81 @@
+:py:mod:`src.utils_flask_sqla_geo.utils`
+========================================
+
+.. py:module:: src.utils_flask_sqla_geo.utils
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla_geo.utils.JsonifiableGenerator
+   src.utils_flask_sqla_geo.utils.GeneratorField
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla_geo.utils.geojsonify
+
+
+
+.. py:class:: JsonifiableGenerator(gen)
+
+
+   Bases: :py:obj:`list`
+
+   Inherite from list, so compatible with JSONEncoder, but must be initialized
+   with a generator. Implement __bool__ as used by JSONEncoder.
+
+   .. py:attribute:: __repr__
+
+      
+
+   .. py:method:: __iter__()
+
+      Implement iter(self).
+
+
+   .. py:method:: __bool__()
+
+
+
+.. py:class:: GeneratorField(cls_or_instance: Field | type, **kwargs)
+
+
+   Bases: :py:obj:`marshmallow.fields.List`
+
+   As marshmallow List field, but if value is not a list (e.g. map or generator),
+   return a JsonifiableGenerator instead of a list.
+
+   .. py:method:: _serialize(value, attr, obj, **kwargs)
+
+      Serializes ``value`` to a basic Python datatype. Noop by default.
+      Concrete :class:`Field` classes should implement this method.
+
+      Example: ::
+
+          class TitleCase(Field):
+              def _serialize(self, value, attr, obj, **kwargs):
+                  if not value:
+                      return ''
+                  return str(value).title()
+
+      :param value: The value to be serialized.
+      :param str attr: The attribute or key on the object to be serialized.
+      :param object obj: The object the value was pulled from.
+      :param dict kwargs: Field-specific keyword arguments.
+      :return: The serialized value
+
+
+
+.. py:function:: geojsonify(*args, **kwargs)
+
+

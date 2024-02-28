@@ -1,0 +1,90 @@
+:py:mod:`apptax.taxonomie.commands.migrate_taxref.commands_v16`
+===============================================================
+
+.. py:module:: apptax.taxonomie.commands.migrate_taxref.commands_v16
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.commands.migrate_taxref.commands_v16.migrate_to_v16
+   apptax.taxonomie.commands.migrate_taxref.commands_v16.import_taxref_v16
+   apptax.taxonomie.commands.migrate_taxref.commands_v16.test_changes_detection
+   apptax.taxonomie.commands.migrate_taxref.commands_v16.apply_changes
+   apptax.taxonomie.commands.migrate_taxref.commands_v16.import_data_taxref_v16
+   apptax.taxonomie.commands.migrate_taxref.commands_v16.import_and_format_dbc_status
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.commands.migrate_taxref.commands_v16.base_url
+
+
+.. py:data:: base_url
+   :value: 'http://geonature.fr/data/inpn/taxonomie/'
+
+   
+
+.. py:function:: migrate_to_v16()
+
+
+.. py:function:: import_taxref_v16()
+
+   Procédure de migration de taxref vers la version 16
+       Test de la disparition des cd_noms
+
+
+.. py:function:: test_changes_detection(keep_cdnom)
+
+   Analyse des répercussions de changement de taxref
+
+   :param keep-cdnom:  Indique si l'on souhaite concerver les cd_noms manquant au lieu de les supprimer
+   :type keep-cdnom: boolean
+
+   3 étapes :
+       - Detection des cd_noms manquants
+       - Création d'une copie de travail de bib_noms
+       - Analyse des modifications taxonomique (split, merge, ...) et
+           de leur répercussion sur les attributs et medias de taxhub
+
+
+.. py:function:: apply_changes(keep_oldtaxref, keep_oldbdc, keep_cdnom, script_predetection, script_postdetection)
+
+   Procédure de migration de taxref vers la version 16
+        Application des changements import des données dans les tables taxref et bdc_status
+
+
+   :param keep-oldtaxref: Indique si l'on souhaite concerver l'ancienne version du referentiel taxref
+   :type keep-oldtaxref: boolean
+   :param keep-oldbdc:  Indique si l'on souhaite concerver l'ancienne version du referentiel bdc_status
+   :type keep-oldbdc: boolean
+   :param keep-cdnom:  Indique si l'on souhaite concerver les cd_noms manquant au lieu de les supprimer
+   :type keep-cdnom: boolean
+   :param script_predetection: Emplacement d'un fichier sql de correction avant la detection des changements
+   :type script_predetection: Path
+   :param script_postdetection: Emplacement d'un fichier sql de correction après la detection des changements
+   :type script_postdetection: Path
+
+
+.. py:function:: import_data_taxref_v16()
+
+   Import des données brutes de taxref v16 en base
+   avant leur traitement
+
+
+.. py:function:: import_and_format_dbc_status()
+
+   Import des données brutes de la base bdc_status  en base
+   Puis traitement des données de façon à les ventiler dans les différentes tables
+
+

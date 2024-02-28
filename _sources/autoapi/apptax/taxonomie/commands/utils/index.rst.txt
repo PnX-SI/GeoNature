@@ -1,0 +1,50 @@
+:py:mod:`apptax.taxonomie.commands.utils`
+=========================================
+
+.. py:module:: apptax.taxonomie.commands.utils
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.commands.utils.import_bdc_statuts
+   apptax.taxonomie.commands.utils.populate_bdc_statut_cor_text_area
+   apptax.taxonomie.commands.utils.truncate_bdc_statuts
+   apptax.taxonomie.commands.utils.refresh_taxref_vm
+   apptax.taxonomie.commands.utils.get_csv_field_names
+   apptax.taxonomie.commands.utils.populate_enable_bdc_statut_text
+   apptax.taxonomie.commands.utils.copy_from_csv
+   apptax.taxonomie.commands.utils.insert_taxref_numversion
+
+
+
+.. py:function:: import_bdc_statuts(logger, base_url, zipfile, status_types_file, status_file)
+
+
+.. py:function:: populate_bdc_statut_cor_text_area(logger)
+
+
+.. py:function:: truncate_bdc_statuts()
+
+
+.. py:function:: refresh_taxref_vm()
+
+
+.. py:function:: get_csv_field_names(f, encoding, delimiter)
+
+
+.. py:function:: populate_enable_bdc_statut_text(logger, clean, departements)
+
+
+.. py:function:: copy_from_csv(f, table_name, dest_cols='', source_cols=None, schema='taxonomie', header=True, encoding=None, delimiter=None)
+
+
+.. py:function:: insert_taxref_numversion(num_version)
+
+

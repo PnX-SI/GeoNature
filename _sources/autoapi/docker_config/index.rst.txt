@@ -1,0 +1,44 @@
+:py:mod:`docker_config`
+=======================
+
+.. py:module:: docker_config
+
+
+Module Contents
+---------------
+
+.. py:data:: PASS_METHOD
+   :value: 'hash'
+
+   
+
+.. py:data:: FILL_MD5_PASS
+   :value: False
+
+   
+
+.. py:data:: COOKIE_EXPIRATION
+   :value: 3600
+
+   
+
+.. py:data:: COOKIE_AUTORENEW
+   :value: True
+
+   
+
+.. py:data:: ACTIVATE_API
+   :value: True
+
+   
+
+.. py:data:: ACTIVATE_APP
+   :value: True
+
+   
+
+.. py:data:: SQLALCHEMY_TRACK_MODIFICATIONS
+   :value: False
+
+   
+

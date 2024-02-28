@@ -1,0 +1,89 @@
+:py:mod:`src.utils_flask_sqla_geo.serializers`
+==============================================
+
+.. py:module:: src.utils_flask_sqla_geo.serializers
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla_geo.serializers.get_geoserializable_decorator
+   src.utils_flask_sqla_geo.serializers.geoserializable
+   src.utils_flask_sqla_geo.serializers.shapeserializable
+   src.utils_flask_sqla_geo.serializers.geofileserializable
+   src.utils_flask_sqla_geo.serializers.sqla_query_to_text
+   src.utils_flask_sqla_geo.serializers.txt_query_as_geojson
+   src.utils_flask_sqla_geo.serializers.sqla_query_to_geojson
+
+
+
+.. py:function:: get_geoserializable_decorator(geoCol=None, idCol=None, **kwargs)
+
+   Décorateur de classe
+   Permet de rajouter la fonction as_geofeature à une classe
+
+
+.. py:function:: geoserializable(*args, **kwargs)
+
+
+.. py:function:: shapeserializable(cls)
+
+
+.. py:function:: geofileserializable(cls)
+
+
+.. py:function:: sqla_query_to_text(query)
+
+   Transformation d'une requete de type Select en sqlalchemy
+       en text
+
+   Parameters
+       query : requete au format Select sqlalchemy
+   Returns:
+       text : requete au format text
+
+
+.. py:function:: txt_query_as_geojson(session, query, id_col, geom_col, geom_srid=4326, is_geojson=False, keep_id_col=False)
+
+   Fonction qui permet de convertir une requete sql en geojson
+       En utilisant les fonctionnalités de serialisation de postresql
+
+   Parameters
+
+   session : Session sqlalchemy
+   query : requete au format text
+   id_col : nom de la colonne identifiant (id du geojson)
+   geom_col (string): nom de la colonne géométrique
+   geom_srid (int): srid de la géométrie
+   is_geojson (boolean): Est-ce que la colonne géometrie est déjà un geojson
+   keep_id_col (boolean): Est-ce que les valeurs de la colonne id_col doit être concervée dans les properties
+
+   Returns:
+       FeatureCollection
+
+
+.. py:function:: sqla_query_to_geojson(session, query, id_col, geom_col, geom_srid=4326, is_geojson=False, keep_id_col=False)
+
+   Fonction qui permet de convertir une requete sql en geojson
+       En utilisant les fonctionnalités de serialisation de postresql
+
+   Parameters
+
+   session : Session sqlalchemy
+   query : requete au format Select
+   id_col : nom de la colonne identifiant (id du geojson)
+   geom_col (string): nom de la colonne géométrique
+   geom_srid (int): srid de la géométrie
+   is_geojson (boolean): Est-ce que la colonne géometrie est déjà un geojson
+   keep_id_col (boolean): Est-ce que les valeurs de la colonne id_col doit être concervée dans les properties
+
+   Returns:
+       FeatureCollection
+
+

@@ -1,0 +1,57 @@
+:py:mod:`ref_geo`
+=================
+
+.. py:module:: ref_geo
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   commands/index.rst
+   env/index.rst
+   models/index.rst
+   routes/index.rst
+   schemas/index.rst
+   utils/index.rst
+
+
+Package Contents
+----------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   ref_geo.configure_alembic
+   ref_geo.create_app
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   ref_geo.routes
+   ref_geo.migrate
+
+
+.. py:data:: routes
+
+   
+
+.. py:data:: migrate
+
+   
+
+.. py:function:: configure_alembic(alembic_config)
+
+
+.. py:function:: create_app()
+
+

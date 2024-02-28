@@ -1,0 +1,54 @@
+:py:mod:`src.pypnnomenclature`
+==============================
+
+.. py:module:: src.pypnnomenclature
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   admin/index.rst
+   env/index.rst
+   models/index.rst
+   repository/index.rst
+   routes/index.rst
+   schemas/index.rst
+   test_settings/index.rst
+   utils/index.rst
+
+
+Package Contents
+----------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   src.pypnnomenclature.configure_alembic
+   src.pypnnomenclature.create_app
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   src.pypnnomenclature.migrate
+
+
+.. py:data:: migrate
+
+   
+
+.. py:function:: configure_alembic(alembic_config)
+
+
+.. py:function:: create_app()
+
+

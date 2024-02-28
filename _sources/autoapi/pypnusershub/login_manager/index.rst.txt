@@ -1,0 +1,61 @@
+:py:mod:`pypnusershub.login_manager`
+====================================
+
+.. py:module:: pypnusershub.login_manager
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   pypnusershub.login_manager.CustomSessionInterface
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   pypnusershub.login_manager.load_user
+   pypnusershub.login_manager.load_user_from_request
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   pypnusershub.login_manager.login_manager
+
+
+.. py:data:: login_manager
+
+   
+
+.. py:function:: load_user(user_id)
+
+
+.. py:function:: load_user_from_request(request)
+
+
+.. py:class:: CustomSessionInterface
+
+
+   Bases: :py:obj:`flask.sessions.SecureCookieSessionInterface`
+
+   Prevent creating session from API requests.
+
+   .. py:method:: save_session(*args, **kwargs)
+
+      This is called at the end of each request, after generating
+      a response, before removing the request context. It is skipped
+      if :meth:`is_null_session` returns ``True``.
+
+
+

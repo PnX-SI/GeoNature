@@ -1,0 +1,16 @@
+:py:mod:`app.api`
+=================
+
+.. py:module:: app.api
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   route/index.rst
+   route_register/index.rst
+
+

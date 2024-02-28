@@ -1,0 +1,71 @@
+:py:mod:`apptax.taxonomie.commands.migrate_taxref.utils`
+========================================================
+
+.. py:module:: apptax.taxonomie.commands.migrate_taxref.utils
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.commands.migrate_taxref.utils.analyse_taxref_changes
+   apptax.taxonomie.commands.migrate_taxref.utils.create_copy_bib_noms
+   apptax.taxonomie.commands.migrate_taxref.utils.detect_changes
+   apptax.taxonomie.commands.migrate_taxref.utils.save_data
+   apptax.taxonomie.commands.migrate_taxref.utils.missing_cd_nom_query
+   apptax.taxonomie.commands.migrate_taxref.utils.test_missing_cd_nom
+   apptax.taxonomie.commands.migrate_taxref.utils.export_as_csv
+
+
+
+.. py:function:: analyse_taxref_changes(keep_missing_cd_nom=False, script_predetection=None, script_postdetection=None)
+
+   Analyse des répercussions de changement de taxref
+
+   3 étapes :
+       - Detection des cd_noms manquants
+       - Création d'une copie de travail de bib_noms
+       - Analyse des modifications taxonomique (split, merge, ...) et
+           de leur répercussion sur les attributs et medias de taxhub
+
+
+.. py:function:: create_copy_bib_noms(keep_missing_cd_nom=False)
+
+   Création d'une table copie de bib_noms
+
+
+.. py:function:: detect_changes(script_predetection=None, script_postdetection=None)
+
+   Detection des changements et de leur implication
+       sur bib_noms, les attributs et les médias
+
+   :return: Nombre de conflit detecté
+   :rtype: int
+
+
+.. py:function:: save_data(version, keep_taxref, keep_bdc)
+
+   Sauvegarde des données de l'ancienne version de taxref
+
+   :param version: numéro de version de taxref
+   :type version: int
+   :param keep_taxref: Indique si l'on souhaite concerver l'ancienne version du referentiel taxref
+   :type keep_taxref: boolean
+   :param keep_bdc:  Indique si l'on souhaite concerver l'ancienne version du referentiel bdc_status
+   :type keep_bdc: boolean
+
+
+.. py:function:: missing_cd_nom_query(query_name, export_file_name)
+
+
+.. py:function:: test_missing_cd_nom()
+
+
+.. py:function:: export_as_csv(file_name, columns, data, separator=',')
+
+

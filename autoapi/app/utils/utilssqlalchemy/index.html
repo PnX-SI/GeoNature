@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.utils.utilssqlalchemy &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">app.utils.utilssqlalchemy</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/autoapi/app/utils/utilssqlalchemy/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-app.utils.utilssqlalchemy">
+<span id="app-utils-utilssqlalchemy"></span><h1><a class="reference internal" href="#module-app.utils.utilssqlalchemy" title="app.utils.utilssqlalchemy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">app.utils.utilssqlalchemy</span></code></a><a class="headerlink" href="#module-app.utils.utilssqlalchemy" title="Link to this heading"></a></h1>
+<p>Fonctions utilitaires</p>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.utils.utilssqlalchemy.GenericTable" title="app.utils.utilssqlalchemy.GenericTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GenericTable</span></code></a></p></td>
+<td><p>Classe permettant de créer à la volée un mapping</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.utils.utilssqlalchemy.serializeQuery" title="app.utils.utilssqlalchemy.serializeQuery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">serializeQuery</span></code></a>(data, columnDef)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.utils.utilssqlalchemy.serializeQueryTest" title="app.utils.utilssqlalchemy.serializeQueryTest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">serializeQueryTest</span></code></a>(data, columnDef)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.utils.utilssqlalchemy.serializeQueryOneResult" title="app.utils.utilssqlalchemy.serializeQueryOneResult"><code class="xref py py-obj docutils literal notranslate"><span class="pre">serializeQueryOneResult</span></code></a>(row, columnDef)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.utils.utilssqlalchemy.serializable" title="app.utils.utilssqlalchemy.serializable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">serializable</span></code></a>(cls)</p></td>
+<td><p>Décorateur de classe pour les DB.Models</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.utils.utilssqlalchemy.json_resp" title="app.utils.utilssqlalchemy.json_resp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">json_resp</span></code></a>(fn)</p></td>
+<td><p>Décorateur transformant le résultat renvoyé par une vue</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.utils.utilssqlalchemy.csv_resp" title="app.utils.utilssqlalchemy.csv_resp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csv_resp</span></code></a>(fn)</p></td>
+<td><p>Décorateur transformant le résultat renvoyé en un fichier csv</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.utils.utilssqlalchemy.SERIALIZERS" title="app.utils.utilssqlalchemy.SERIALIZERS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SERIALIZERS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="app.utils.utilssqlalchemy.SERIALIZERS">
+<span class="sig-prename descclassname"><span class="pre">app.utils.utilssqlalchemy.</span></span><span class="sig-name descname"><span class="pre">SERIALIZERS</span></span><a class="reference internal" href="../../../../_modules/app/utils/utilssqlalchemy.html#SERIALIZERS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.utilssqlalchemy.SERIALIZERS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.utils.utilssqlalchemy.GenericTable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.utils.utilssqlalchemy.</span></span><span class="sig-name descname"><span class="pre">GenericTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tableName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schemaName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry_field</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/utils/utilssqlalchemy.html#GenericTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.utilssqlalchemy.GenericTable" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Classe permettant de créer à la volée un mapping</dt><dd><p>d’une vue avec la base de données par rétroingénierie</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="app.utils.utilssqlalchemy.GenericTable.as_dict">
+<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/utils/utilssqlalchemy.html#GenericTable.as_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.utilssqlalchemy.GenericTable.as_dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.utils.utilssqlalchemy.serializeQuery">
+<span class="sig-prename descclassname"><span class="pre">app.utils.utilssqlalchemy.</span></span><span class="sig-name descname"><span class="pre">serializeQuery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columnDef</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/utils/utilssqlalchemy.html#serializeQuery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.utilssqlalchemy.serializeQuery" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.utils.utilssqlalchemy.serializeQueryTest">
+<span class="sig-prename descclassname"><span class="pre">app.utils.utilssqlalchemy.</span></span><span class="sig-name descname"><span class="pre">serializeQueryTest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columnDef</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/utils/utilssqlalchemy.html#serializeQueryTest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.utilssqlalchemy.serializeQueryTest" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.utils.utilssqlalchemy.serializeQueryOneResult">
+<span class="sig-prename descclassname"><span class="pre">app.utils.utilssqlalchemy.</span></span><span class="sig-name descname"><span class="pre">serializeQueryOneResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columnDef</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/utils/utilssqlalchemy.html#serializeQueryOneResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.utilssqlalchemy.serializeQueryOneResult" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.utils.utilssqlalchemy.serializable">
+<span class="sig-prename descclassname"><span class="pre">app.utils.utilssqlalchemy.</span></span><span class="sig-name descname"><span class="pre">serializable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/utils/utilssqlalchemy.html#serializable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.utilssqlalchemy.serializable" title="Link to this definition"></a></dt>
+<dd><p>Décorateur de classe pour les DB.Models
+Permet de rajouter la fonction as_dict qui est basée sur le mapping SQLAlchemy</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.utils.utilssqlalchemy.json_resp">
+<span class="sig-prename descclassname"><span class="pre">app.utils.utilssqlalchemy.</span></span><span class="sig-name descname"><span class="pre">json_resp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/utils/utilssqlalchemy.html#json_resp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.utilssqlalchemy.json_resp" title="Link to this definition"></a></dt>
+<dd><p>Décorateur transformant le résultat renvoyé par une vue
+en objet JSON</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.utils.utilssqlalchemy.csv_resp">
+<span class="sig-prename descclassname"><span class="pre">app.utils.utilssqlalchemy.</span></span><span class="sig-name descname"><span class="pre">csv_resp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/utils/utilssqlalchemy.html#csv_resp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.utilssqlalchemy.csv_resp" title="Link to this definition"></a></dt>
+<dd><p>Décorateur transformant le résultat renvoyé en un fichier csv</p>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

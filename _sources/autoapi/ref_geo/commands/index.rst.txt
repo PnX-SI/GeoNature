@@ -1,0 +1,26 @@
+:py:mod:`ref_geo.commands`
+==========================
+
+.. py:module:: ref_geo.commands
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   ref_geo.commands.ref_geo
+   ref_geo.commands.info
+
+
+
+.. py:function:: ref_geo()
+
+
+.. py:function:: info()
+
+

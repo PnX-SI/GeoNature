@@ -1,0 +1,310 @@
+:py:mod:`src.pypnnomenclature.admin`
+====================================
+
+.. py:module:: src.pypnnomenclature.admin
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   src.pypnnomenclature.admin.ReloadingIterator
+   src.pypnnomenclature.admin.TNomenclatureFiltersType
+   src.pypnnomenclature.admin.TNomenclatureFiltersMnemonique
+   src.pypnnomenclature.admin.TNomenclatureFiltersId
+   src.pypnnomenclature.admin.TNomenclaturesAdmin
+   src.pypnnomenclature.admin.BibNomenclatureFiltersLabel
+   src.pypnnomenclature.admin.BibNomenclatureFiltersID
+   src.pypnnomenclature.admin.BibNomenclatureFiltersMnemonique
+   src.pypnnomenclature.admin.BibNomenclaturesTypesAdmin
+
+
+
+
+.. py:class:: ReloadingIterator(iterator_factory)
+
+
+   .. py:method:: __iter__()
+
+
+
+.. py:class:: TNomenclatureFiltersType(column, name, options=None, data_type=None)
+
+
+   Bases: :py:obj:`flask_admin.contrib.sqla.filters.BaseSQLAFilter`
+
+   Base SQLAlchemy filter.
+
+   .. py:method:: apply(query, value, alias=None)
+
+      Apply search criteria to the query and return new query.
+
+      :param query:
+          Query
+      :param value:
+          Search criteria
+
+
+   .. py:method:: operation()
+
+      Return readable operation name.
+
+      For example: u'equals'
+
+
+   .. py:method:: get_dynamic_options(view)
+
+
+   .. py:method:: get_options(view)
+
+      Return list of predefined options.
+
+      Override to customize behavior.
+
+      :param view:
+          Associated administrative view class.
+
+
+
+.. py:class:: TNomenclatureFiltersMnemonique(column, name, options=None, data_type=None)
+
+
+   Bases: :py:obj:`flask_admin.contrib.sqla.filters.BaseSQLAFilter`
+
+   Base SQLAlchemy filter.
+
+   .. py:method:: apply(query, value, alias=None)
+
+      Apply search criteria to the query and return new query.
+
+      :param query:
+          Query
+      :param value:
+          Search criteria
+
+
+   .. py:method:: operation()
+
+      Return readable operation name.
+
+      For example: u'equals'
+
+
+   .. py:method:: get_dynamic_options(view)
+
+
+   .. py:method:: get_options(view)
+
+      Return list of predefined options.
+
+      Override to customize behavior.
+
+      :param view:
+          Associated administrative view class.
+
+
+
+.. py:class:: TNomenclatureFiltersId(column, name, options=None, data_type=None)
+
+
+   Bases: :py:obj:`flask_admin.contrib.sqla.filters.BaseSQLAFilter`
+
+   Base SQLAlchemy filter.
+
+   .. py:method:: apply(query, value, alias=None)
+
+      Apply search criteria to the query and return new query.
+
+      :param query:
+          Query
+      :param value:
+          Search criteria
+
+
+   .. py:method:: operation()
+
+      Return readable operation name.
+
+      For example: u'equals'
+
+
+
+.. py:class:: TNomenclaturesAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
+
+
+   Bases: :py:obj:`flask_admin.contrib.sqla.ModelView`
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
+
+   .. py:attribute:: page_size
+      :value: 10
+
+      
+
+   .. py:attribute:: form_columns
+      :value: ['nomenclature_type', 'cd_nomenclature', 'mnemonique', 'label_fr', 'definition_fr',...
+
+      
+
+   .. py:attribute:: column_list
+      :value: ['id_nomenclature', 'nomenclature_type', 'mnemonique', 'cd_nomenclature', 'label_default',...
+
+      
+
+   .. py:attribute:: page_size
+      :value: 15
+
+      
+
+   .. py:attribute:: column_filters
+
+      
+
+
+.. py:class:: BibNomenclatureFiltersLabel(column, name, options=None, data_type=None)
+
+
+   Bases: :py:obj:`flask_admin.contrib.sqla.filters.BaseSQLAFilter`
+
+   Base SQLAlchemy filter.
+
+   .. py:method:: apply(query, value, alias=None)
+
+      Apply search criteria to the query and return new query.
+
+      :param query:
+          Query
+      :param value:
+          Search criteria
+
+
+   .. py:method:: operation()
+
+      Return readable operation name.
+
+      For example: u'equals'
+
+
+   .. py:method:: get_dynamic_options(view)
+
+
+   .. py:method:: get_options(view)
+
+      Return list of predefined options.
+
+      Override to customize behavior.
+
+      :param view:
+          Associated administrative view class.
+
+
+
+.. py:class:: BibNomenclatureFiltersID(column, name, options=None, data_type=None)
+
+
+   Bases: :py:obj:`flask_admin.contrib.sqla.filters.BaseSQLAFilter`
+
+   Base SQLAlchemy filter.
+
+   .. py:method:: apply(query, value, alias=None)
+
+      Apply search criteria to the query and return new query.
+
+      :param query:
+          Query
+      :param value:
+          Search criteria
+
+
+   .. py:method:: operation()
+
+      Return readable operation name.
+
+      For example: u'equals'
+
+
+
+.. py:class:: BibNomenclatureFiltersMnemonique(column, name, options=None, data_type=None)
+
+
+   Bases: :py:obj:`flask_admin.contrib.sqla.filters.BaseSQLAFilter`
+
+   Base SQLAlchemy filter.
+
+   .. py:method:: apply(query, value, alias=None)
+
+      Apply search criteria to the query and return new query.
+
+      :param query:
+          Query
+      :param value:
+          Search criteria
+
+
+   .. py:method:: get_dynamic_options(view)
+
+
+   .. py:method:: get_options(view)
+
+      Return list of predefined options.
+
+      Override to customize behavior.
+
+      :param view:
+          Associated administrative view class.
+
+
+   .. py:method:: operation()
+
+      Return readable operation name.
+
+      For example: u'equals'
+
+
+
+.. py:class:: BibNomenclaturesTypesAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
+
+
+   Bases: :py:obj:`flask_admin.contrib.sqla.ModelView`
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
+
+   .. py:attribute:: page_size
+      :value: 10
+
+      
+
+   .. py:attribute:: column_list
+      :value: ['id_type', 'mnemonique', 'label_default', 'definition_default', 'label_fr', 'source', 'statut']
+
+      
+
+   .. py:attribute:: column_display_pk
+      :value: True
+
+      
+
+   .. py:attribute:: form_columns
+      :value: ['mnemonique', 'label_default', 'definition_default', 'label_fr', 'definition_fr', 'source', 'statut']
+
+      
+
+   .. py:attribute:: column_filters
+
+      
+
+

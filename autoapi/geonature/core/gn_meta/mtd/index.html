@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>geonature.core.gn_meta.mtd &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../../search.html" />
+    <link rel="next" title="geonature.core.gn_meta.mtd.mtd_utils" href="mtd_utils/index.html" />
+    <link rel="prev" title="geonature.core.gn_meta.models.datasets" href="../models/datasets/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../../api-references.html">API REFERENCES</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../../../index.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../middlewares/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.middlewares</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../tasks/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.tasks</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../index.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../pypnusershub/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../src/utils_flask_sqla_geo/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../frontend.html">Frontend</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../api-references.html">API REFERENCES</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core</span></code></a></li>
+          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_meta</span></code></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_meta.mtd</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/autoapi/geonature/core/gn_meta/mtd/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-geonature.core.gn_meta.mtd">
+<span id="geonature-core-gn-meta-mtd"></span><h1><a class="reference internal" href="#module-geonature.core.gn_meta.mtd" title="geonature.core.gn_meta.mtd"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_meta.mtd</span></code></a><a class="headerlink" href="#module-geonature.core.gn_meta.mtd" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mtd_utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_meta.mtd.mtd_utils</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="mtd_webservice/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_meta.mtd.mtd_webservice</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="xml_parser/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature.core.gn_meta.mtd.xml_parser</span></code></a></li>
+</ul>
+</div>
+</section>
+<section id="package-contents">
+<h2>Package Contents<a class="headerlink" href="#package-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor" title="geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CorAcquisitionFrameworkActor</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.CorDatasetActor" title="geonature.core.gn_meta.mtd.CorDatasetActor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CorDatasetActor</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.MTDInstanceApi" title="geonature.core.gn_meta.mtd.MTDInstanceApi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MTDInstanceApi</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.INPNCAS" title="geonature.core.gn_meta.mtd.INPNCAS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INPNCAS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.insert_user_and_org" title="geonature.core.gn_meta.mtd.insert_user_and_org"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_user_and_org</span></code></a>(info_user)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.associate_actors" title="geonature.core.gn_meta.mtd.associate_actors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">associate_actors</span></code></a>(actors, CorActor, pk_name, pk_value)</p></td>
+<td><p>Associate actor and DS or AF according to CorActor value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.sync_af" title="geonature.core.gn_meta.mtd.sync_af"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync_af</span></code></a>(af)</p></td>
+<td><p>Will create or update a given AF according to UUID.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.sync_ds" title="geonature.core.gn_meta.mtd.sync_ds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync_ds</span></code></a>(ds, cd_nomenclatures)</p></td>
+<td><p>Will create or update a given DS according to UUID.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.parse_acquisition_framework" title="geonature.core.gn_meta.mtd.parse_acquisition_framework"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_acquisition_framework</span></code></a>(ca)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.parse_acquisition_framwork_xml" title="geonature.core.gn_meta.mtd.parse_acquisition_framwork_xml"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_acquisition_framwork_xml</span></code></a>(xml)</p></td>
+<td><p>Parse an xml of AF from a string</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.parse_jdd_xml" title="geonature.core.gn_meta.mtd.parse_jdd_xml"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_jdd_xml</span></code></a>(xml)</p></td>
+<td><p>Parse an xml of datasets from a string</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.add_unexisting_digitizer" title="geonature.core.gn_meta.mtd.add_unexisting_digitizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_unexisting_digitizer</span></code></a>(id_digitizer)</p></td>
+<td><p>Method to trigger global MTD sync.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.process_af_and_ds" title="geonature.core.gn_meta.mtd.process_af_and_ds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">process_af_and_ds</span></code></a>(af_list, ds_list[, id_role])</p></td>
+<td><p>Synchro AF&lt;array&gt;, Synchro DS&lt;array&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.sync_af_and_ds" title="geonature.core.gn_meta.mtd.sync_af_and_ds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync_af_and_ds</span></code></a>()</p></td>
+<td><p>Method to trigger global MTD sync.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.sync_af_and_ds_by_user" title="geonature.core.gn_meta.mtd.sync_af_and_ds_by_user"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync_af_and_ds_by_user</span></code></a>(id_role)</p></td>
+<td><p>Method to trigger MTD sync on user authent.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.config" title="geonature.core.gn_meta.mtd.config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.logger" title="geonature.core.gn_meta.mtd.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.handler" title="geonature.core.gn_meta.mtd.handler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">handler</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.mtd.formatter" title="geonature.core.gn_meta.mtd.formatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">formatter</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.insert_user_and_org">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">insert_user_and_org</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/auth/routes.html#insert_user_and_org"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.insert_user_and_org" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">CorAcquisitionFrameworkActor</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/commons.html#CorAcquisitionFrameworkActor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cor_acquisition_framework_actor'</span></em><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.id_cafa">
+<span class="sig-name descname"><span class="pre">id_cafa</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.id_cafa" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.id_acquisition_framework">
+<span class="sig-name descname"><span class="pre">id_acquisition_framework</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.id_acquisition_framework" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.id_role">
+<span class="sig-name descname"><span class="pre">id_role</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.id_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.id_organism">
+<span class="sig-name descname"><span class="pre">id_organism</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.id_organism" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.id_nomenclature_actor_role">
+<span class="sig-name descname"><span class="pre">id_nomenclature_actor_role</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.id_nomenclature_actor_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.nomenclature_actor_role">
+<span class="sig-name descname"><span class="pre">nomenclature_actor_role</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.nomenclature_actor_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.role">
+<span class="sig-name descname"><span class="pre">role</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.organism">
+<span class="sig-name descname"><span class="pre">organism</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor.organism" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorDatasetActor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">CorDatasetActor</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/commons.html#CorDatasetActor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorDatasetActor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.DB.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorDatasetActor.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cor_dataset_actor'</span></em><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorDatasetActor.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorDatasetActor.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorDatasetActor.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorDatasetActor.id_cda">
+<span class="sig-name descname"><span class="pre">id_cda</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorDatasetActor.id_cda" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorDatasetActor.id_dataset">
+<span class="sig-name descname"><span class="pre">id_dataset</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorDatasetActor.id_dataset" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorDatasetActor.id_role">
+<span class="sig-name descname"><span class="pre">id_role</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorDatasetActor.id_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorDatasetActor.id_organism">
+<span class="sig-name descname"><span class="pre">id_organism</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorDatasetActor.id_organism" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorDatasetActor.id_nomenclature_actor_role">
+<span class="sig-name descname"><span class="pre">id_nomenclature_actor_role</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorDatasetActor.id_nomenclature_actor_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorDatasetActor.nomenclature_actor_role">
+<span class="sig-name descname"><span class="pre">nomenclature_actor_role</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorDatasetActor.nomenclature_actor_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorDatasetActor.role">
+<span class="sig-name descname"><span class="pre">role</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorDatasetActor.role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorDatasetActor.organism">
+<span class="sig-name descname"><span class="pre">organism</span></span><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorDatasetActor.organism" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorDatasetActor.actor">
+<span class="sig-name descname"><span class="pre">actor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/commons.html#CorDatasetActor.actor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorDatasetActor.actor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.CorDatasetActor.display">
+<span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/models/commons.html#CorDatasetActor.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.CorDatasetActor.display" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.config">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">config</span></span><a class="reference internal" href="../../../../../_modules/geonature/utils/config.html#config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.config" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.associate_actors">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">associate_actors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CorActor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pk_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pk_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd/mtd_utils.html#associate_actors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.associate_actors" title="Link to this definition"></a></dt>
+<dd><p>Associate actor and DS or AF according to CorActor value.</p>
+<section id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>actors<span class="classifier">list</span></dt><dd><p>list of actors</p>
+</dd>
+<dt>CorActor<span class="classifier">db.Model</span></dt><dd><p>table model</p>
+</dd>
+<dt>pk_name<span class="classifier">str</span></dt><dd><p>pk attribute name</p>
+</dd>
+<dt>pk_value<span class="classifier">str</span></dt><dd><p>pk value</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.sync_af">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">sync_af</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">af</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd/mtd_utils.html#sync_af"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.sync_af" title="Link to this definition"></a></dt>
+<dd><p>Will create or update a given AF according to UUID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>af</strong> – dict AF infos</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.sync_ds">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">sync_ds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cd_nomenclatures</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd/mtd_utils.html#sync_ds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.sync_ds" title="Link to this definition"></a></dt>
+<dd><p>Will create or update a given DS according to UUID.
+Only process DS if dataset’s cd_nomenclatures exists in ref_normenclatures.t_nomenclatures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ds</strong> – &lt;dict&gt; DS infos</p></li>
+<li><p><strong>cd_nomenclatures</strong> – &lt;array&gt; cd_nomenclature from ref_normenclatures.t_nomenclatures</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.parse_acquisition_framework">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">parse_acquisition_framework</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ca</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd/xml_parser.html#parse_acquisition_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.parse_acquisition_framework" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.parse_acquisition_framwork_xml">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">parse_acquisition_framwork_xml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xml</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd/xml_parser.html#parse_acquisition_framwork_xml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.parse_acquisition_framwork_xml" title="Link to this definition"></a></dt>
+<dd><p>Parse an xml of AF from a string
+Return:</p>
+<blockquote>
+<div><p>dict: a dict of the parsed xml</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.parse_jdd_xml">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">parse_jdd_xml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xml</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd/xml_parser.html#parse_jdd_xml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.parse_jdd_xml" title="Link to this definition"></a></dt>
+<dd><p>Parse an xml of datasets from a string
+Return:</p>
+<blockquote>
+<div><p>list: a list of dict of the JDD in the xml</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.logger">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.logger" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.handler">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">handler</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.handler" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.formatter">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">formatter</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#formatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.formatter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">MTDInstanceApi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_endpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_role</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi" title="Link to this definition"></a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi.af_path">
+<span class="sig-name descname"><span class="pre">af_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/mtd/cadre/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi.af_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi.af_path" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi.ds_path">
+<span class="sig-name descname"><span class="pre">ds_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/mtd/cadre/jdd/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi.ds_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi.ds_path" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi.ds_user_path">
+<span class="sig-name descname"><span class="pre">ds_user_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id={ID_ROLE}'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi.ds_user_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi.ds_user_path" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi.single_af_path">
+<span class="sig-name descname"><span class="pre">single_af_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/mtd/cadre/export/xml/GetRecordById?id={ID_AF}'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi.single_af_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi.single_af_path" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi._get_xml_by_url">
+<span class="sig-name descname"><span class="pre">_get_xml_by_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi._get_xml_by_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi._get_xml_by_url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi._get_xml">
+<span class="sig-name descname"><span class="pre">_get_xml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi._get_xml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi._get_xml" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi._get_af_xml">
+<span class="sig-name descname"><span class="pre">_get_af_xml</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi._get_af_xml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi._get_af_xml" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi.get_af_list">
+<span class="sig-name descname"><span class="pre">get_af_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi.get_af_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi.get_af_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi._get_ds_xml">
+<span class="sig-name descname"><span class="pre">_get_ds_xml</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi._get_ds_xml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi._get_ds_xml" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi.get_ds_list">
+<span class="sig-name descname"><span class="pre">get_ds_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi.get_ds_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi.get_ds_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi.get_ds_user_list">
+<span class="sig-name descname"><span class="pre">get_ds_user_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi.get_ds_user_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi.get_ds_user_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.MTDInstanceApi.get_user_af_list">
+<span class="sig-name descname"><span class="pre">get_user_af_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">af_uuid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#MTDInstanceApi.get_user_af_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.MTDInstanceApi.get_user_af_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.INPNCAS">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">INPNCAS</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#INPNCAS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.INPNCAS" title="Link to this definition"></a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.INPNCAS.base_url">
+<span class="sig-name descname"><span class="pre">base_url</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#INPNCAS.base_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.INPNCAS.base_url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.INPNCAS.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#INPNCAS.user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.INPNCAS.user" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.INPNCAS.password">
+<span class="sig-name descname"><span class="pre">password</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#INPNCAS.password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.INPNCAS.password" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.INPNCAS.id_search_path">
+<span class="sig-name descname"><span class="pre">id_search_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'rechercheParId/{user_id}'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#INPNCAS.id_search_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.INPNCAS.id_search_path" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.INPNCAS._get_user_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_get_user_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#INPNCAS._get_user_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.INPNCAS._get_user_json" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.INPNCAS.get_user">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#INPNCAS.get_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.INPNCAS.get_user" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.add_unexisting_digitizer">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">add_unexisting_digitizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_digitizer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#add_unexisting_digitizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.add_unexisting_digitizer" title="Link to this definition"></a></dt>
+<dd><p>Method to trigger global MTD sync.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id_digitizer</strong> – as id role from meta info</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.process_af_and_ds">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">process_af_and_ds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">af_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_role</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#process_af_and_ds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.process_af_and_ds" title="Link to this definition"></a></dt>
+<dd><p>Synchro AF&lt;array&gt;, Synchro DS&lt;array&gt;</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>af_list</strong> – list af</p></li>
+<li><p><strong>ds_list</strong> – list ds</p></li>
+<li><p><strong>id_role</strong> – use role id pass on user authent only</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.sync_af_and_ds">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">sync_af_and_ds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#sync_af_and_ds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.sync_af_and_ds" title="Link to this definition"></a></dt>
+<dd><p>Method to trigger global MTD sync.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.mtd.sync_af_and_ds_by_user">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.mtd.</span></span><span class="sig-name descname"><span class="pre">sync_af_and_ds_by_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/mtd.html#sync_af_and_ds_by_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.mtd.sync_af_and_ds_by_user" title="Link to this definition"></a></dt>
+<dd><p>Method to trigger MTD sync on user authent.</p>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="../models/datasets/index.html" class="btn btn-neutral float-left" title="geonature.core.gn_meta.models.datasets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="mtd_utils/index.html" class="btn btn-neutral float-right" title="geonature.core.gn_meta.mtd.mtd_utils" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

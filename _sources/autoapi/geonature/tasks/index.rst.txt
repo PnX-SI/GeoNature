@@ -1,0 +1,34 @@
+:py:mod:`geonature.tasks`
+=========================
+
+.. py:module:: geonature.tasks
+
+
+Package Contents
+----------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.tasks.close_session
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.tasks.celery_app
+
+
+.. py:data:: celery_app
+
+   
+
+.. py:function:: close_session(*args, **kwargs)
+
+

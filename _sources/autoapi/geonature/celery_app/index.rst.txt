@@ -1,0 +1,40 @@
+:py:mod:`geonature.celery_app`
+==============================
+
+.. py:module:: geonature.celery_app
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   geonature.celery_app.ContextTask
+
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.celery_app.flask_app
+
+
+.. py:data:: flask_app
+
+   
+
+.. py:class:: ContextTask
+
+
+   Bases: :py:obj:`geonature.utils.celery.celery_app.Task`
+
+   .. py:method:: __call__(*args, **kwargs)
+
+
+

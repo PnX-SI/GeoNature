@@ -1,0 +1,264 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>geonature documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top d-block d-sm-none">
+            <a href="../" class="navbar-brand">geonature documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content class">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Classes</li>
+  <li class="breadcrumb-item" >MetadataPaginator</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/app/metadataModule/metadata.module.ts</code>
+        </p>
+
+
+
+
+
+
+
+            <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor()</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="32" class="link-to-prism">src/app/metadataModule/metadata.module.ts:32</a></div>
+                            </td>
+                        </tr>
+
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+
+
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { NgModule } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { GN2CommonModule } from &#x27;@geonature_common/GN2Common.module&#x27;;
+import { Routes, RouterModule } from &#x27;@angular/router&#x27;;
+import { HttpClientXsrfModule } from &#x27;@angular/common/http&#x27;;
+import { MatPaginatorIntl } from &#x27;@angular/material/paginator&#x27;;
+import { MatCheckboxModule } from &#x27;@angular/material/checkbox&#x27;;
+import { MatButtonToggleModule } from &#x27;@angular/material/button-toggle&#x27;;
+
+import { DatasetFormComponent } from &#x27;./datasets/dataset-form.component&#x27;;
+import { DatasetCardComponent } from &#x27;./datasets/dataset-card.component&#x27;;
+import { AfFormComponent } from &#x27;./af/af-form.component&#x27;;
+import { ActorComponent } from &#x27;./actors/actors.component&#x27;;
+import { MetadataComponent } from &#x27;./metadata.component&#x27;;
+import { MetadataDatasetComponent } from &#x27;./metadata-dataset.component&#x27;;
+import { AfCardComponent } from &#x27;./af/af-card.component&#x27;;
+import { NgChartsModule } from &#x27;ng2-charts&#x27;;
+import { MetadataService } from &#x27;./services/metadata.service&#x27;;
+import { MetadataDataService } from &#x27;./services/metadata-data.service&#x27;;
+import { ActorFormService } from &#x27;./services/actor-form.service&#x27;;
+
+const routes: Routes &#x3D; [
+  { path: &#x27;&#x27;, component: MetadataComponent },
+  { path: &#x27;dataset&#x27;, component: DatasetFormComponent },
+  { path: &#x27;dataset/:id&#x27;, component: DatasetFormComponent },
+  { path: &#x27;dataset_detail/:id&#x27;, component: DatasetCardComponent },
+  { path: &#x27;af&#x27;, component: AfFormComponent },
+  { path: &#x27;af/:id&#x27;, component: AfFormComponent },
+  { path: &#x27;af_detail/:id&#x27;, component: AfCardComponent },
+];
+
+export class MetadataPaginator extends MatPaginatorIntl {
+  constructor() {
+    super();
+    this.nextPageLabel &#x3D; &#x27;Page suivante&#x27;;
+    this.previousPageLabel &#x3D; &#x27;Page précédente&#x27;;
+    this.itemsPerPageLabel &#x3D; &#x27;Éléments par page&#x27;;
+    this.getRangeLabel &#x3D; (page: number, pageSize: number, length: number) &#x3D;&gt; {
+      if (length &#x3D;&#x3D; 0 || pageSize &#x3D;&#x3D; 0) {
+        return &#x60;0 sur ${length}&#x60;;
+      }
+      length &#x3D; Math.max(length, 0);
+      const startIndex &#x3D; page * pageSize;
+      const endIndex &#x3D;
+        startIndex &lt; length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
+      return &#x60;${startIndex + 1} - ${endIndex} sur ${length}&#x60;;
+    };
+  }
+}
+
+@NgModule({
+  imports: [
+    HttpClientXsrfModule.withOptions({
+      cookieName: &#x27;token&#x27;,
+      headerName: &#x27;token&#x27;,
+    }),
+    CommonModule,
+    GN2CommonModule,
+    NgChartsModule,
+    RouterModule.forChild(routes),
+    MatCheckboxModule,
+    MatButtonToggleModule,
+  ],
+  exports: [],
+  declarations: [
+    MetadataComponent,
+    MetadataDatasetComponent,
+    DatasetFormComponent,
+    DatasetCardComponent,
+    AfFormComponent,
+    ActorComponent,
+    AfCardComponent,
+  ],
+  providers: [
+    MetadataService,
+    MetadataDataService,
+    ActorFormService,
+    {
+      provide: MatPaginatorIntl,
+      useClass: MetadataPaginator,
+    },
+  ],
+})
+export class MetadataModule {}
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'class';
+            var COMPODOC_CURRENT_PAGE_URL = 'MetadataPaginator.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

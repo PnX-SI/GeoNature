@@ -1,0 +1,29 @@
+:py:mod:`apptax.test_config`
+============================
+
+.. py:module:: apptax.test_config
+
+
+Module Contents
+---------------
+
+.. py:data:: SQLALCHEMY_DATABASE_URI
+   :value: 'postgresql://taxhubadmin:taxhubpwd@127.0.0.1:5432/taxhub'
+
+   
+
+.. py:data:: SECRET_KEY
+   :value: 'a7e0a755dd3f2c382bac5b5cea6c9329802aeedf39e3f10d0462ffb52c3f5e99'
+
+   
+
+.. py:data:: COOKIE_EXPIRATION
+   :value: 3600
+
+   
+
+.. py:data:: UPLOAD_FOLDER
+   :value: 'medias'
+
+   
+

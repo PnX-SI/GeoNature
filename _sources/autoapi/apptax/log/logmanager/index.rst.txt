@@ -1,0 +1,22 @@
+:py:mod:`apptax.log.logmanager`
+===============================
+
+.. py:module:: apptax.log.logmanager
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.log.logmanager.log_action
+
+
+
+.. py:function:: log_action(object_type, object_id, object_repr, change_type, change_message)
+
+

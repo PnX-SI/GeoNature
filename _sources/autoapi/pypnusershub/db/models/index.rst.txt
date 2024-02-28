@@ -1,0 +1,635 @@
+:py:mod:`pypnusershub.db.models`
+================================
+
+.. py:module:: pypnusershub.db.models
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   pypnusershub.db.models.UserQuery
+   pypnusershub.db.models.User
+   pypnusershub.db.models.Organisme
+   pypnusershub.db.models.Profils
+   pypnusershub.db.models.Application
+   pypnusershub.db.models.ApplicationRight
+   pypnusershub.db.models.UserApplicationRight
+   pypnusershub.db.models.AppUser
+   pypnusershub.db.models.AppRole
+   pypnusershub.db.models.UserList
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   pypnusershub.db.models.check_and_encrypt_password
+   pypnusershub.db.models.fn_check_password
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   pypnusershub.db.models.cor_roles
+   pypnusershub.db.models.profils_for_app
+   pypnusershub.db.models.cor_role_liste
+
+
+.. py:function:: check_and_encrypt_password(password, password_confirmation, md5=False)
+
+
+.. py:function:: fn_check_password(self, pwd)
+
+
+.. py:data:: cor_roles
+
+   
+
+.. py:class:: UserQuery(entities, session=None)
+
+
+   Bases: :py:obj:`flask_sqlalchemy.query.Query`
+
+   SQLAlchemy :class:`~sqlalchemy.orm.query.Query` subclass with some extra methods
+   useful for querying in a web application.
+
+   This is the default query class for :attr:`.Model.query`.
+
+   .. versionchanged:: 3.0
+       Renamed to ``Query`` from ``BaseQuery``.
+
+   .. py:method:: filter_by_app(code_app=None)
+
+
+
+.. py:class:: User
+
+
+   Bases: :py:obj:`pypnusershub.env.db.Model`, :py:obj:`flask_login.UserMixin`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:property:: max_level_profil
+
+
+   .. py:property:: password
+
+
+   .. py:property:: is_public
+
+
+   .. py:attribute:: __tablename__
+      :value: 't_roles'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: query_class
+
+      
+
+   .. py:attribute:: groupe
+
+      
+
+   .. py:attribute:: id_role
+
+      
+
+   .. py:attribute:: identifiant
+
+      
+
+   .. py:attribute:: nom_role
+
+      
+
+   .. py:attribute:: prenom_role
+
+      
+
+   .. py:attribute:: desc_role
+
+      
+
+   .. py:attribute:: _password
+
+      
+
+   .. py:attribute:: _password_plus
+
+      
+
+   .. py:attribute:: email
+
+      
+
+   .. py:attribute:: id_organisme
+
+      
+
+   .. py:attribute:: remarques
+
+      
+
+   .. py:attribute:: champs_addi
+
+      
+
+   .. py:attribute:: date_insert
+
+      
+
+   .. py:attribute:: date_update
+
+      
+
+   .. py:attribute:: active
+
+      
+
+   .. py:attribute:: groups
+
+      
+
+   .. py:attribute:: check_password
+
+      
+
+   .. py:method:: nom_complet()
+
+
+   .. py:method:: nom_complet()
+
+
+   .. py:method:: get_id()
+
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+   .. py:method:: __str__()
+
+      Return str(self).
+
+
+   .. py:method:: filter_by_app(code_app=None, **kwargs)
+      :classmethod:
+
+
+
+.. py:class:: Organisme
+
+
+   Bases: :py:obj:`pypnusershub.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_organismes'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_organisme
+
+      
+
+   .. py:attribute:: uuid_organisme
+
+      
+
+   .. py:attribute:: nom_organisme
+
+      
+
+   .. py:attribute:: adresse_organisme
+
+      
+
+   .. py:attribute:: cp_organisme
+
+      
+
+   .. py:attribute:: ville_organisme
+
+      
+
+   .. py:attribute:: tel_organisme
+
+      
+
+   .. py:attribute:: fax_organisme
+
+      
+
+   .. py:attribute:: email_organisme
+
+      
+
+   .. py:attribute:: url_organisme
+
+      
+
+   .. py:attribute:: url_logo
+
+      
+
+   .. py:attribute:: id_parent
+
+      
+
+   .. py:attribute:: additional_data
+
+      
+
+   .. py:attribute:: members
+
+      
+
+   .. py:method:: __str__()
+
+      Return str(self).
+
+
+
+.. py:data:: profils_for_app
+
+   
+
+.. py:class:: Profils
+
+
+   Bases: :py:obj:`pypnusershub.env.db.Model`
+
+   Model de la classe t_profils
+
+   .. py:attribute:: __tablename__
+      :value: 't_profils'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_profil
+
+      
+
+   .. py:attribute:: code_profil
+
+      
+
+   .. py:attribute:: nom_profil
+
+      
+
+   .. py:attribute:: desc_profil
+
+      
+
+   .. py:attribute:: applications
+
+      
+
+
+.. py:class:: Application
+
+
+   Bases: :py:obj:`pypnusershub.env.db.Model`
+
+   Représente une application ou un module
+
+   .. py:attribute:: __tablename__
+      :value: 't_applications'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_application
+
+      
+
+   .. py:attribute:: code_application
+
+      
+
+   .. py:attribute:: nom_application
+
+      
+
+   .. py:attribute:: desc_application
+
+      
+
+   .. py:attribute:: id_parent
+
+      
+
+   .. py:attribute:: profils
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+   .. py:method:: __str__()
+
+      Return str(self).
+
+
+   .. py:method:: get_application(nom_application)
+      :staticmethod:
+
+
+
+.. py:class:: ApplicationRight
+
+
+   Bases: :py:obj:`pypnusershub.env.db.Model`
+
+   Droit d'acces a une application
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_droits'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_droit
+
+      
+
+   .. py:attribute:: nom_droit
+
+      
+
+   .. py:attribute:: desc_droit
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+   .. py:method:: __str__()
+
+      Return str(self).
+
+
+
+.. py:class:: UserApplicationRight
+
+
+   Bases: :py:obj:`pypnusershub.env.db.Model`
+
+   Droit d'acces d'un user particulier a une application particuliere
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_role_app_profil'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_role
+
+      
+
+   .. py:attribute:: id_profil
+
+      
+
+   .. py:attribute:: id_application
+
+      
+
+   .. py:attribute:: role
+
+      
+
+   .. py:attribute:: profil
+
+      
+
+   .. py:attribute:: application
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: AppUser
+
+
+   Bases: :py:obj:`pypnusershub.env.db.Model`
+
+   Relations entre applications et utilisateurs
+
+   .. py:property:: password
+
+
+   .. py:attribute:: __tablename__
+      :value: 'v_userslist_forall_applications'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_role
+
+      
+
+   .. py:attribute:: role
+
+      
+
+   .. py:attribute:: nom_role
+
+      
+
+   .. py:attribute:: prenom_role
+
+      
+
+   .. py:attribute:: id_application
+
+      
+
+   .. py:attribute:: id_organisme
+
+      
+
+   .. py:attribute:: application
+
+      
+
+   .. py:attribute:: identifiant
+
+      
+
+   .. py:attribute:: _password
+
+      
+
+   .. py:attribute:: _password_plus
+
+      
+
+   .. py:attribute:: id_droit_max
+
+      
+
+   .. py:attribute:: check_password
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:class:: AppRole
+
+
+   Bases: :py:obj:`pypnusershub.env.db.Model`
+
+   Relations entre applications et role
+
+   .. py:attribute:: __tablename__
+      :value: 'v_roleslist_forall_applications'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_role
+
+      
+
+   .. py:attribute:: groupe
+
+      
+
+   .. py:attribute:: nom_role
+
+      
+
+   .. py:attribute:: prenom_role
+
+      
+
+   .. py:attribute:: id_application
+
+      
+
+   .. py:attribute:: id_organisme
+
+      
+
+   .. py:attribute:: identifiant
+
+      
+
+   .. py:attribute:: application
+
+      
+
+   .. py:method:: as_dict()
+
+
+
+.. py:data:: cor_role_liste
+
+   
+
+.. py:class:: UserList
+
+
+   Bases: :py:obj:`pypnusershub.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 't_listes'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_liste
+
+      
+
+   .. py:attribute:: code_liste
+
+      
+
+   .. py:attribute:: nom_liste
+
+      
+
+   .. py:attribute:: desc_liste
+
+      
+
+   .. py:attribute:: users
+
+      
+
+

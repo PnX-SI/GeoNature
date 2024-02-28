@@ -1,25 +1,29 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="fr" >
+<html class="writer-html5" lang="fr" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CHANGELOG &mdash; Documentation GeoNature 2.0</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/translations.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=e8570148"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=d99ca74e"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Recherche" href="search.html" />
+    <link rel="next" title="API REFERENCES" href="api-references.html" />
     <link rel="prev" title="AUTEURS" href="authors.html" /> 
 </head>
 
@@ -28,15 +32,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="index.html" class="icon icon-home"> GeoNature
-            <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GeoNature
+              <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -50,6 +58,7 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">CHANGELOG</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#talpa-europaea-2024-02-28">2.14.0 - Talpa europaea 👓 (2024-02-28)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">2.13.4 (2023-12-15)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id2">2.13.3 (2023-10-17)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id3">2.13.2 (2023-09-28)</a></li>
@@ -114,6 +123,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#versions-1-2014-2018">Versions 1 (2014-2018)</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="api-references.html">API REFERENCES</a></li>
 </ul>
 
         </div>
@@ -129,8 +139,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>CHANGELOG</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">CHANGELOG</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/CHANGELOG.md.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
@@ -141,9 +151,72 @@
            <div itemprop="articleBody">
              
   <section id="changelog">
-<h1>CHANGELOG<a class="headerlink" href="#changelog" title="Lien permanent vers cette rubrique"></a></h1>
+<h1>CHANGELOG<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
+<section id="talpa-europaea-2024-02-28">
+<h2>2.14.0 - Talpa europaea 👓 (2024-02-28)<a class="headerlink" href="#talpa-europaea-2024-02-28" title="Link to this heading"></a></h2>
+<p>Cette nouvelle version de GeoNature propose de nouvelles fonctionnalités comme le floutage de données sensibles dans le module Synthèse ainsi qu’un système de validation automatique des données basé sur les profils de taxons.<br />
+Elle intégre aussi plusieurs mises à jour des versions des librairies python utilisées comme Flask (3.0) et SQLAlchemy (1.4).</p>
+<p><strong>⚠️ Notes de version</strong></p>
+<p>Si vous mettez à jour GeoNature :</p>
+<ul class="simple">
+<li><p>Le support de Debian 10 a été arrêté, votre serveur doit être en Debian 11 ou 12</p></li>
+<li><p>Mettre à jour TaxHub en version 1.13.3 (ou plus) et optionnellement UsersHub (2.4.0 ou plus)</p></li>
+<li><p>Si vous les utilisez, mettez à jour les modules Import (version 2.3.0), Export (version 1.7.0), Monitoring (version 0.7.2) et Dashboard (version 1.5.0), avec la nouvelle procédure consistant uniquement à télécharger, dézipper et renommer les dossiers des modules</p></li>
+<li><p>Si vous utilisez d’autres modules externes, vérifiez qu’ils disposent d’une version compatible avec GeoNature 2.14 (SQLAlchemy 1.4, Python 3.9 minimum, supression du fichier <code class="docutils literal notranslate"><span class="pre">app.config.ts</span></code>)</p></li>
+<li><p>Suivez la procédure de mise à jour classique de GeoNature (<a class="reference external" href="https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application">https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application</a>)</p></li>
+<li><p>Si vous utilisez les fonds IGN, mettez à jour les URL des flux dans votre fichier de configuration <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code> (#2789)</p></li>
+</ul>
+<p><strong>🚀 Nouveautés</strong></p>
+<ul class="simple">
+<li><p>[Synthèse] Floutage des données sensibles (#2558)</p>
+<ul>
+<li><p>Il est désormais possible de définir un filtre « Flouter les données sensibles » sur les actions <em>Lire</em> et <em>Exporter</em> du module Synthèse</p></li>
+<li><p>Pour les utilisateurs qui ont ce filtre de permission appliqué, les données sensibles seront floutées lors de leur affichage ou de leur export dans le module Synthèse, en fonction des mailles ou zonages définis dans les règles de sensibilité du SINP</p></li>
+<li><p>En mode Mailles, les données sensibles dont la géométrie floutée est plus grande que la maille affichée sont exclues</p></li>
+<li><p>Dans l’onglet « Zonage » des fiches des observations de la Synthèse, on affiche uniquement les zonages plus grands que la géométrie floutée des données sensibles</p></li>
+<li><p>Si un utilisateur dispose de permissions filtrées sur les données sensibles, alors les filtres par zonage s’appuie sur une intersection spatiale avec les géométries floutées pour ne pas renvoyer d’informations plus précises sur les données floutées</p></li>
+<li><p>La documentation sur le sensibilité des données a été complétée : https://docs.geonature.fr/admin-manual.html#gestion-de-la-sensibilite)</p></li>
+<li><p>Le paramètre <code class="docutils literal notranslate"><span class="pre">BLUR_SENSITIVE_OBSERVATIONS</span></code> permet de basculer sur l’exclusion des données sensibles plutôt que leur floutage, comme implémenté dans la version 2.13</p></li>
+</ul>
+</li>
+<li><p>[Validation] Fonction de validation automatique basée sur les profils de taxons (non activée par défaut et surcouchable avec une fonction spécifique) (#2600)</p></li>
+<li><p>[Synthèse] Ajout des groupes 3 INPN dans les filtres et les exports de la Synthèse (#2621, #2637)</p></li>
+<li><p>[Occtax] Ajout de la possibilité d’associer des nomenclatures à des groupes 3 INPN (#2684)</p></li>
+<li><p>[Authentification] Possibilité d’ajouter des liens externes (#2917)</p></li>
+<li><p>[Carte] Mise à jour des exemples d’URL de fonds de carte IGN (#2789)</p></li>
+<li><p>[RefGeo] Répercussion du remplacement du champs <code class="docutils literal notranslate"><span class="pre">geojson_4326</span></code> par <code class="docutils literal notranslate"><span class="pre">geom_4326</span></code> dans la table <code class="docutils literal notranslate"><span class="pre">l_areas</span></code> (#2809)</p></li>
+<li><p>[Documentation] Ajout de diagrammes d’architecture dans la documentation (#2760)</p></li>
+</ul>
+<p><strong>🐛 Corrections</strong></p>
+<ul class="simple">
+<li><p>Correction de l’affichage du nom du module quand on revient à la page d’accueil (#2795)</p></li>
+<li><p>[Synthèse] Correction de l’affichage du nom du taxon observé quand les profils de taxons sont désactivés (#2820)</p></li>
+<li><p>[Carte] Conservation de la géométrie existante lorsqu’on annule la modification d’une géométrie (#2778)</p></li>
+<li><p>[Métadonnées] Correction de l’affichage du type de financement sur les fiches détail des CA et JDD (#2840)</p></li>
+<li><p>[Occhab] Correction des permissions avec portée limitée (#2909)</p></li>
+<li><p>[Occtax] Correction de la suppression d’un champ additionnel (#2923)</p></li>
+</ul>
+<p><strong>💻 Développement</strong></p>
+<ul class="simple">
+<li><p>Mise à jour vers SQLAlchemy 1.4 (#1812)</p></li>
+<li><p>Mise à jour vers Flask 3 (#2751)</p></li>
+<li><p>Mise à jour de Black en version 24 (#2879)</p></li>
+<li><p>Suppression des modules dépréciés : <code class="docutils literal notranslate"><span class="pre">utilsgeometry.py</span></code>, <code class="docutils literal notranslate"><span class="pre">utilssqlalchemy.py</span></code>, <code class="docutils literal notranslate"><span class="pre">config_manager.py</span></code> (#2751)</p></li>
+<li><p>Intégration de la documentation automatique des composants Frontend (avec <code class="docutils literal notranslate"><span class="pre">compodoc</span></code>) et des fonctions et classes du backend (avec <code class="docutils literal notranslate"><span class="pre">sphinx-autoapi</span></code>) (#2765)</p></li>
+<li><p>Abandon du système d’authentification par cookie, sauf pour le module Admin. Le token d’authentification (JWT) est maintenant passé dans chaque appel à l’API dans le header HTTP « Authorization Bearer ». Il est aussi fourni par la route de login du sous-module d’authentification et stocké dans le localStorage (#2586, #2161, #490, #2574)</p></li>
+<li><p>Suppression du fichier <code class="docutils literal notranslate"><span class="pre">app.config.ts</span></code> (#2747)</p></li>
+<li><p>Passage du paramètre <code class="docutils literal notranslate"><span class="pre">--line-length</span></code> de Black de 99 à 100 caractères (#2847)</p></li>
+<li><p>Modification de <code class="docutils literal notranslate"><span class="pre">TModules</span></code> pour éviter de lever l’erreur de polymorphisme de SQLAlchemy (#2792)</p></li>
+<li><p>Fin du support de Debian 10 et de Python 3.7 (#1787)</p></li>
+<li><p>Changement de l’ensemble des requêtes SQLAlchemy au style 2.0 (#2751)</p></li>
+<li><p>Augmentation du nombre de tests unitaires dans : <code class="docutils literal notranslate"><span class="pre">gn_meta</span></code>, <code class="docutils literal notranslate"><span class="pre">occtax</span></code>, <code class="docutils literal notranslate"><span class="pre">occhab</span></code>, <code class="docutils literal notranslate"><span class="pre">synthese</span></code> (#2751)</p></li>
+<li><p>Modification des <code class="docutils literal notranslate"><span class="pre">fixtures</span></code> : <code class="docutils literal notranslate"><span class="pre">datasets</span></code>, <code class="docutils literal notranslate"><span class="pre">stations</span></code> + <code class="docutils literal notranslate"><span class="pre">user</span></code>(#2751). Possibilité de créer des utilisateurs de tests avec des permissions plus fines (#2915)</p></li>
+</ul>
+<p><strong>📝 Merci aux contributeurs</strong></p>
+<p>&#64;amandine-sahl, &#64;Pierre-Narcisi, &#64;jacquesfize, &#64;TheoLechemia, &#64;bouttier, &#64;mvergez, &#64;andriacap, &#64;edelclaux, &#64;VincentCauchois, &#64;MoulinZ, &#64;pierre56, &#64;camillemonchicourt</p>
+</section>
 <section id="id1">
-<h2>2.13.4 (2023-12-15)<a class="headerlink" href="#id1" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.13.4 (2023-12-15)<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>[Synthèse] Ajout des colonnes <code class="docutils literal notranslate"><span class="pre">group[1,2,3]_inpn</span></code> à la vue <code class="docutils literal notranslate"><span class="pre">gn_synthese.v_synthese_for_web_app</span></code> (#2798, par &#64;andriacap)</p></li>
@@ -163,7 +236,7 @@
 </ul>
 </section>
 <section id="id2">
-<h2>2.13.3 (2023-10-17)<a class="headerlink" href="#id2" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.13.3 (2023-10-17)<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>[Métadonnées] Correction de l’affichage des descriptions dans les fiches des cadres d’acquisition (#2716, par &#64;mvergez)</p></li>
@@ -179,7 +252,7 @@
 </ul>
 </section>
 <section id="id3">
-<h2>2.13.2 (2023-09-28)<a class="headerlink" href="#id3" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.13.2 (2023-09-28)<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>[Synthèse] Ajout d’un filtre par module de provenance (#2670, par &#64;andriacap)</p></li>
@@ -207,7 +280,7 @@
 </ul>
 </section>
 <section id="id4">
-<h2>2.13.1 (2023-09-15)<a class="headerlink" href="#id4" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.13.1 (2023-09-15)<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
 <p>L’installation de GeoNature (ainsi que ses 4 modules externes principaux, TaxHub et UsersHub) avec Docker est désormais complet et fonctionnel. Voir la documentation sur https://docs.geonature.fr/installation.html#docker.<br />
 C’est la manière la plus simple de déployer GeoNature avec ses 4 modules externes principaux (Import, Export, Dashboard, Monitoring) mais aussi de les mettre à jour, avec seulement quelques lignes de commandes, à partir des images construites automatiquement et du fichier <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> global, fourni dans le dépôt <a class="reference external" href="https://github.com/PnX-SI/GeoNature-Docker-services">GeoNature-Docker-services</a>.</p>
 <p><strong>🚀 Nouveautés</strong></p>
@@ -237,7 +310,7 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 </ul>
 </section>
 <section id="carpodacus-erythrinus-2023-08-23">
-<h2>2.13.0 - <a class="reference external" href="https://www.ecrins-parcnational.fr/breve/roselin-gondouins">Carpodacus erythrinus</a> 🐤 (2023-08-23)<a class="headerlink" href="#carpodacus-erythrinus-2023-08-23" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.13.0 - <a class="reference external" href="https://www.ecrins-parcnational.fr/breve/roselin-gondouins">Carpodacus erythrinus</a> 🐤 (2023-08-23)<a class="headerlink" href="#carpodacus-erythrinus-2023-08-23" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Révision globale des permissions pour pouvoir leur associer d’autres types de filtres (sensibilité notamment), les simplifier et clarifier en supprimant l’héritage et en définissant les permissions disponibles pour chaque module.</p></li>
 <li><p>Possibilité de filtrer les données dans la Synthèse selon leur sensibilité, mais sans floutage pour le moment (à venir), en affichant ou non les données sensibles selon les permissions de l’utilisateur.</p></li>
@@ -310,11 +383,12 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 <li><p>Les permissions existantes sur vos différents groupes et utilisateurs sont récupérées et remises à plat automatiquement sans système d’héritage. Vérifiez cependant les permissions après la mise à jour de vos groupes et utilisateurs.</p></li>
 <li><p>Désormais, quand vous installerez un nouveau module (ou sous-module), pour le voir affiché dans le menu et y avoir accès, il faudra lui appliquer des permissions aux groupes ou utilisateurs qui doivent y accéder.</p></li>
 </ul>
+<p>✅ Exemple de procédure de mise à jour depuis une version 2.12 : https://geonature.fr/documents/procedures/2023-10-GN-212to213.txt</p>
 <p><strong>📝 Merci aux contributeurs</strong></p>
 <p>&#64;bouttier / &#64;TheoLechemia / &#64;VincentCauchois / &#64;Pierre-Narcisi / &#64;joelclems / &#64;andriacap / &#64;mvergez / &#64;JulienCorny / &#64;MathRdt / &#64;DonovanMaillard / &#64;camillemonchicourt</p>
 </section>
 <section id="id5">
-<h2>2.12.3 (2023-05-09)<a class="headerlink" href="#id5" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.12.3 (2023-05-09)<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>[Synthèse] Correction du filtre des observations épinglées pour ne remonter que celles de l’utilisateur connecté (#2507 par &#64;mvergez)</p></li>
@@ -336,7 +410,7 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 <p>Si vous utilisiez des champs additionnels avec des checkbox, lors de leur changement de type (recommandé dans les notes de version de la 2.12.0) il est important que les valeurs du champ <code class="docutils literal notranslate"><span class="pre">field_values</span></code> continue à avoir des « string » dans la clé values : [{« label »: « Un », « value »: « 1 »}] sans quoi il y aura des problème à l’édition. Pour les nouveaux champs additionnels, il est cependant bien possible de mettre des entiers dans la clé <code class="docutils literal notranslate"><span class="pre">value</span></code> [{« label »: « Un », « value »: 1}]</p>
 </section>
 <section id="id6">
-<h2>2.12.2 (2023-04-18)<a class="headerlink" href="#id6" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.12.2 (2023-04-18)<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Synthèse : ajout d’un filtre sur les observations avec ou sans commentaire (#2469, par &#64;mvergez)</p></li>
@@ -365,7 +439,7 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 </ul>
 </section>
 <section id="id7">
-<h2>2.12.1 (2023-04-11)<a class="headerlink" href="#id7" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.12.1 (2023-04-11)<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Mise à jour de quelques dépendances python (#2438, par &#64;MathRdt)</p></li>
@@ -383,7 +457,7 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 </ul>
 </section>
 <section id="cyathea-borbonica-2023-03-27">
-<h2>2.12.0 - Cyathea borbonica 🌴 (2023-03-27)<a class="headerlink" href="#cyathea-borbonica-2023-03-27" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.12.0 - Cyathea borbonica 🌴 (2023-03-27)<a class="headerlink" href="#cyathea-borbonica-2023-03-27" title="Link to this heading"></a></h2>
 <p><strong>⏩ En bref</strong></p>
 <ul class="simple">
 <li><p>Affichage agrégé des observations dans la Synthèse (performances et lisibilité) (#1847 et #1878)</p></li>
@@ -441,11 +515,11 @@ Pour conserver le bon affichage lors de l’édition des données, renseignez l�
 <li><p>Personnalisation de la page d’accueil : ajout d’une section <code class="docutils literal notranslate"><span class="pre">[HOME]</span></code> contenant les paramètres <code class="docutils literal notranslate"><span class="pre">TITLE</span></code>, <code class="docutils literal notranslate"><span class="pre">INTRODUCTION</span></code> et <code class="docutils literal notranslate"><span class="pre">FOOTER</span></code>. Ceux-ci peuvent contenir du code HTML qui est chargé dynamiquement avec la configuration, évitant ainsi la nécessité d’un rebuild du frontend (#2300)</p></li>
 <li><p>Synthèse : Agrégation des observations ayant la même géométrie pour ne les charger qu’une seule fois, et ainsi améliorer les performances et la lisibilité (#1847)</p></li>
 <li><p>Synthèse : Possibilité d’afficher les données agrégées par maille (#1878). La fonctionnalité est configurable avec les paramètres suivants :</p>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[SYNTHESE]</span><span class="w"></span>
-<span class="w">    </span><span class="n">AREA_AGGREGATION_ENABLED</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
-<span class="w">    </span><span class="n">AREA_AGGREGATION_TYPE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;M10&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="n">AREA_AGGREGATION_BY_DEFAULT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">false</span><span class="w">    </span><span class="c1"># affichage groupé par défaut</span><span class="w"></span>
-<span class="w">    </span><span class="n">AREA_AGGREGATION_LEGEND_CLASSES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="w">   </span><span class="c1"># voir fichier de configuration d’exemple</span><span class="w"></span>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[SYNTHESE]</span>
+<span class="w">    </span><span class="n">AREA_AGGREGATION_ENABLED</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="n">AREA_AGGREGATION_TYPE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;M10&quot;</span>
+<span class="w">    </span><span class="n">AREA_AGGREGATION_BY_DEFAULT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w">    </span><span class="c1"># affichage groupé par défaut</span>
+<span class="w">    </span><span class="n">AREA_AGGREGATION_LEGEND_CLASSES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">.   # voir fichier de configuration d’exemple</span>
 </pre></div>
 </div>
 </li>
@@ -455,8 +529,8 @@ Pour conserver le bon affichage lors de l’édition des données, renseignez l�
 <li><p>Admin : Possibilité de gérer la table des applications mobiles (<code class="docutils literal notranslate"><span class="pre">t_mobile_apps</span></code>) dans le module « Admin » de GeoNature, notamment pour faciliter la gestion des mises à jour de Occtax-mobile (#2352)</p></li>
 <li><p>Possibilité de configurer les modules (picto, doc, label) directement depuis le module Admin (#2409)</p></li>
 <li><p>Possibilité d’afficher un bouton de géolocalisation sur les cartes des formulaires Occtax et Occhab (#2338), activable avec le paramètre suivant :</p>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[MAPCONFIG]</span><span class="w"></span>
-<span class="w">    </span><span class="n">GEOLOCATION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[MAPCONFIG]</span>
+<span class="w">    </span><span class="n">GEOLOCATION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 </pre></div>
 </div>
 </li>
@@ -471,11 +545,11 @@ Pour conserver le bon affichage lors de l’édition des données, renseignez l�
 <ul>
 <li><p>Séparation des fichiers statiques (applicatif, fournis par GeoNature) et des fichiers médias (générés par l’applications). Sont déplacés du dossier <code class="docutils literal notranslate"><span class="pre">backend/static</span></code> vers le dossier <code class="docutils literal notranslate"><span class="pre">backend/media</span></code> les sous-dossiers suivants : <code class="docutils literal notranslate"><span class="pre">medias</span></code>, <code class="docutils literal notranslate"><span class="pre">exports</span></code>, <code class="docutils literal notranslate"><span class="pre">geopackages</span></code>, <code class="docutils literal notranslate"><span class="pre">mobile</span></code>, <code class="docutils literal notranslate"><span class="pre">pdf</span></code>, <code class="docutils literal notranslate"><span class="pre">shapefiles</span></code>. De plus, l’ancien dossier <code class="docutils literal notranslate"><span class="pre">medias</span></code> est renommé <code class="docutils literal notranslate"><span class="pre">attachments</span></code>.</p></li>
 <li><p>Ajout des paramètres de configuration suivants :</p>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="n">ROOT_PATH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dossier absolu du backend&quot;</span><span class="w"></span>
-<span class="n">STATIC_FOLDER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;static&quot;</span><span class="w">    </span><span class="c1"># dossier absolu ou relatif à ROOT_PATH</span><span class="w"></span>
-<span class="n">STATIC_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/static&quot;</span><span class="w">      </span><span class="c1"># URL d’accès aux fichiers statiques</span><span class="w"></span>
-<span class="n">MEDIA_FOLDER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;media&quot;</span><span class="w">      </span><span class="c1"># dossier absolu ou relatif à ROOT_PATH</span><span class="w"></span>
-<span class="n">MEDIA_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/media&quot;</span><span class="w">        </span><span class="c1"># URL d’accès aux médias</span><span class="w"></span>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="n">ROOT_PATH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;dossier absolu du backend&quot;</span>
+<span class="n">STATIC_FOLDER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;static&quot;</span><span class="w">    </span><span class="c1"># dossier absolu ou relatif à ROOT_PATH</span>
+<span class="n">STATIC_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/static&quot;</span><span class="w">      </span><span class="c1"># URL d’accès aux fichiers statiques</span>
+<span class="n">MEDIA_FOLDER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;media&quot;</span><span class="w">      </span><span class="c1"># dossier absolu ou relatif à ROOT_PATH</span>
+<span class="n">MEDIA_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/media&quot;</span><span class="w">        </span><span class="c1"># URL d’accès aux médias</span>
 </pre></div>
 </div>
 </li>
@@ -582,7 +656,7 @@ Module de référence pour les développements et documentation associée (#2331
 <p>&#64;ch-cbna / &#64;bouttier / &#64;TheoLechemia / &#64;jpm-cbna / &#64;bastyen / &#64;Gaetanbrl / &#64;VincentCauchois / &#64;joelclems / &#64;amandine-sahl / &#64;andriacap / &#64;mvergez / &#64;DonovanMaillard / &#64;dece / &#64;lpofredc / &#64;MathRdt / &#64;gildeluermoz / &#64;maximetoma / &#64;pierre56 / &#64;cecchi-a / &#64;jbrieuclp / &#64;camillemonchicourt</p>
 </section>
 <section id="id8">
-<h2>2.11.2 (2023-01-19)<a class="headerlink" href="#id8" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.11.2 (2023-01-19)<a class="headerlink" href="#id8" title="Link to this heading"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Correction d’un import manquant dans un fichier de migration des données d’exemple d’Occtax (#2285)</p></li>
@@ -590,7 +664,7 @@ Module de référence pour les développements et documentation associée (#2331
 </ul>
 </section>
 <section id="id9">
-<h2>2.11.1 (2023-01-18)<a class="headerlink" href="#id9" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.11.1 (2023-01-18)<a class="headerlink" href="#id9" title="Link to this heading"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Correction de la documentation de la sensibilité (#2234)</p></li>
@@ -600,7 +674,7 @@ Module de référence pour les développements et documentation associée (#2331
 </ul>
 </section>
 <section id="ilex-aquifolium-2022-12-21">
-<h2>2.11.0 - Ilex aquifolium 🎄 (2022-12-21)<a class="headerlink" href="#ilex-aquifolium-2022-12-21" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.11.0 - Ilex aquifolium 🎄 (2022-12-21)<a class="headerlink" href="#ilex-aquifolium-2022-12-21" title="Link to this heading"></a></h2>
 <p><strong>⏩ En bref</strong></p>
 <ul class="simple">
 <li><p>Utilisation de la BDC statuts dans la Synthèse pour les filtres et infos sur les statuts des espèces</p></li>
@@ -621,9 +695,9 @@ Module de référence pour les développements et documentation associée (#2331
 <li><p>Si vous aviez mis en place l’accès public à GeoNature, adaptez sa configuration avec le nouveau paramètre unique <code class="docutils literal notranslate"><span class="pre">PUBLIC_ACCESS_USERNAME</span></code> (#2202)</p></li>
 <li><p>Suivez la procédure de mise à jour classique de GeoNature (<a class="reference external" href="https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application">https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application</a>)</p></li>
 <li><p>Attention, le script de migration de la version 2.11 a une régression et ne récupère plus automatiquement la configuration des modules fournis avec GeoNature (Occtax, Occhab, Validation). Rapatriez manuellement vos éventuels fichiers de configuration de ces modules si vous en avez créé :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp geonature_old/contrib/occtax/config/conf_gn_module.toml geonature/contrib/occtax/config/conf_gn_module.toml
-cp geonature_old/contrib/gn_module_validation/config/conf_gn_module.toml geonature/contrib/gn_module_validation/config/conf_gn_module.toml
-cp geonature_old/contrib/gn_module_occhab/config/conf_gn_module.toml geonature/contrib/gn_module_occhab/config/conf_gn_module.toml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>geonature_old/contrib/occtax/config/conf_gn_module.toml<span class="w"> </span>geonature/contrib/occtax/config/conf_gn_module.toml
+cp<span class="w"> </span>geonature_old/contrib/gn_module_validation/config/conf_gn_module.toml<span class="w"> </span>geonature/contrib/gn_module_validation/config/conf_gn_module.toml
+cp<span class="w"> </span>geonature_old/contrib/gn_module_occhab/config/conf_gn_module.toml<span class="w"> </span>geonature/contrib/gn_module_occhab/config/conf_gn_module.toml
 </pre></div>
 </div>
 </li>
@@ -633,48 +707,48 @@ Voir rubrique « 5. Configurer les filtres des statuts de protection et des lis
 <li><p>Vous pouvez mettre à jour vos règles de sensibilité si vous utilisez TaxRef versions 14 ou 15 :</p>
 <ul>
 <li><p>Désinstallez les règles fournies par Alembic :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> ~/geonature/backend/venv/bin/activate
-geonature db downgrade ref_sensitivity_inpn@base
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/geonature/backend/venv/bin/activate
+geonature<span class="w"> </span>db<span class="w"> </span>downgrade<span class="w"> </span>ref_sensitivity_inpn@base
 </pre></div>
 </div>
 </li>
 <li><p>Vous n’avez probablement plus besoin des anciennes régions que vous pouvez alors supprimer de votre référentiel géographique :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature db downgrade ref_geo_fr_regions_1970@base
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>db<span class="w"> </span>downgrade<span class="w"> </span>ref_geo_fr_regions_1970@base
 </pre></div>
 </div>
 </li>
 <li><p>Assurez-vous que votre référientiel géographique contienne les départements :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature db upgrade ref_geo_fr_departments@head
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>db<span class="w"> </span>upgrade<span class="w"> </span>ref_geo_fr_departments@head
 </pre></div>
 </div>
 </li>
 <li><p>Si vous avez TaxRef v15, insérez les nouvelles règles ainsi :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity add-referential <span class="se">\</span>
-    --source-name <span class="s2">&quot;Référentiel sensibilité TAXREF v15 20220331&quot;</span> <span class="se">\</span>
-    --url https://inpn.mnhn.fr/docs-web/docs/download/401875 <span class="se">\</span>
-    --zipfile RefSensibiliteV15_20220331.zip <span class="se">\</span>
-    --csvfile RefSensibilite_V15_31032022/RefSensibilite_15.csv  <span class="se">\</span>
-    --encoding<span class="o">=</span>iso-8859-15
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v15 20220331&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--url<span class="w"> </span>https://inpn.mnhn.fr/docs-web/docs/download/401875<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--zipfile<span class="w"> </span>RefSensibiliteV15_20220331.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--csvfile<span class="w"> </span>RefSensibilite_V15_31032022/RefSensibilite_15.csv<span class="w">  </span><span class="se">\</span>
+<span class="w">    </span>--encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
 </li>
 <li><p>Si vous avez TaxRef v14, insérez les nouvelles règles ainsi :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity add-referential <span class="se">\</span>
-    --source-name <span class="s2">&quot;Référentiel sensibilité TAXREF v14 20220331&quot;</span> <span class="se">\</span>
-    --url https://inpn.mnhn.fr/docs-web/docs/download/401876 <span class="se">\</span>
-    --zipfile RefSensibiliteV14_20220331.zip <span class="se">\</span>
-    --csvfile RefSensibilite_V14_31032022/RefSensibilite_14.csv  <span class="se">\</span>
-    --encoding<span class="o">=</span>iso-8859-15
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>add-referential<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-name<span class="w"> </span><span class="s2">&quot;Référentiel sensibilité TAXREF v14 20220331&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--url<span class="w"> </span>https://inpn.mnhn.fr/docs-web/docs/download/401876<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--zipfile<span class="w"> </span>RefSensibiliteV14_20220331.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--csvfile<span class="w"> </span>RefSensibilite_V14_31032022/RefSensibilite_14.csv<span class="w">  </span><span class="se">\</span>
+<span class="w">    </span>--encoding<span class="o">=</span>iso-8859-15
 </pre></div>
 </div>
 </li>
 <li><p>Rafraîchissez la vue matérialisée pré-calculant les taxons enfants :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity refresh-rules-cache
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>refresh-rules-cache
 </pre></div>
 </div>
 </li>
 <li><p>Relancez le calcul de la sensibilité des observations de la synthèse :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature sensitivity update-synthese
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>sensitivity<span class="w"> </span>update-synthese
 </pre></div>
 </div>
 </li>
@@ -777,7 +851,7 @@ Il n’est pas nécessaire de lancer cette commande manuellement pour les module
 <p>&#64;jpm-cbna / &#64;pierrejego / &#64;Gaetanbrl / &#64;amandine-sahl / &#64;VincentCauchois / &#64;antoinececchimnhn / &#64;metourneau / &#64;bouttier / &#64;TheoLechemia / &#64;camillemonchicourt</p>
 </section>
 <section id="id10">
-<h2>2.10.4 (2022-11-30)<a class="headerlink" href="#id10" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.10.4 (2022-11-30)<a class="headerlink" href="#id10" title="Link to this heading"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Mise à jour du RefGeo en version 1.2.1 afin de corriger une
@@ -794,7 +868,7 @@ corriger un problème aléatoire lors du passage des migrations
 </ul>
 </section>
 <section id="id11">
-<h2>2.10.3 (2022-11-15)<a class="headerlink" href="#id11" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.10.3 (2022-11-15)<a class="headerlink" href="#id11" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Optimisation d’une migration Occtax particulièrement lente en
@@ -809,7 +883,7 @@ désactivant temporairement les triggers (#2138)</p></li>
 </ul>
 </section>
 <section id="id12">
-<h2>2.10.2 (2022-11-09)<a class="headerlink" href="#id12" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.10.2 (2022-11-09)<a class="headerlink" href="#id12" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Documentation de la fonctionnalité de duplication d’Occtax</p></li>
@@ -823,7 +897,7 @@ bonne source</p></li>
 </ul>
 </section>
 <section id="id13">
-<h2>2.10.1 (2022-11-08)<a class="headerlink" href="#id13" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.10.1 (2022-11-08)<a class="headerlink" href="#id13" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout du paramètre de configuration <code class="docutils literal notranslate"><span class="pre">DISABLED_MODULES</span></code></p></li>
@@ -851,7 +925,7 @@ suivant les notes de version de la 2.10.0, en vous aidant
 </ul>
 </section>
 <section id="alouatta-macconnelli-2022-11-02">
-<h2>2.10.0 - Alouatta macconnelli 🐒 (2022-11-02)<a class="headerlink" href="#alouatta-macconnelli-2022-11-02" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.10.0 - Alouatta macconnelli 🐒 (2022-11-02)<a class="headerlink" href="#alouatta-macconnelli-2022-11-02" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><strong>Angular 12, tests automatisés frontend et backend</strong></p></li>
 <li><p><strong>Discussions, signalement, partage, épinglage d’une occurrence</strong></p></li>
@@ -894,7 +968,7 @@ sont présents dans votre fichier de configuration
 </li>
 <li><p>Installation du worker Celery : il vous faut installer le broker
 <code class="docutils literal notranslate"><span class="pre">redis</span></code> :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install redis
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>redis
 </pre></div>
 </div>
 </li>
@@ -1109,7 +1183,7 @@ de l’import du module <code class="docutils literal notranslate"><span class="
 &#64;gildeluermoz / &#64;camillemonchicourt</p>
 </section>
 <section id="id14">
-<h2>2.9.2 (2022-02-15)<a class="headerlink" href="#id14" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.9.2 (2022-02-15)<a class="headerlink" href="#id14" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Optimisation du nombre d’informations renvoyées par l’API pour les
@@ -1174,7 +1248,7 @@ sensibilité ; vous pouvez éviter ceci avec
 </ul>
 </section>
 <section id="id15">
-<h2>2.9.1 (2022-01-27)<a class="headerlink" href="#id15" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.9.1 (2022-01-27)<a class="headerlink" href="#id15" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Utilisation du paramètre <code class="docutils literal notranslate"><span class="pre">page</span></code> de Flask à la place du paramètre
@@ -1206,7 +1280,7 @@ TaxHub lorsque celui-ci est mal configuré (#1438, #1616)</p></li>
 </ul>
 </section>
 <section id="actias-luna-2022-01-13">
-<h2>2.9.0 - Actias luna 🦋 (2022-01-13)<a class="headerlink" href="#actias-luna-2022-01-13" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.9.0 - Actias luna 🦋 (2022-01-13)<a class="headerlink" href="#actias-luna-2022-01-13" title="Link to this heading"></a></h2>
 <p><strong>Profils de taxons</strong></p>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
@@ -1412,7 +1486,7 @@ Monitoring dans leurs dernières versions compatibles avec le version
 </ul>
 </section>
 <section id="id16">
-<h2>2.8.1 (2021-10-17)<a class="headerlink" href="#id16" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.8.1 (2021-10-17)<a class="headerlink" href="#id16" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout de l’indication du département au formulaire des communes
@@ -1428,7 +1502,7 @@ nomenclatures (#1481)</p></li>
 </ul>
 </section>
 <section id="vaccinium-myrtillus-2021-10-18">
-<h2>2.8.0 - Vaccinium myrtillus 🌿 (2021-10-18)<a class="headerlink" href="#vaccinium-myrtillus-2021-10-18" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.8.0 - Vaccinium myrtillus 🌿 (2021-10-18)<a class="headerlink" href="#vaccinium-myrtillus-2021-10-18" title="Link to this heading"></a></h2>
 <p><strong>Gestion de la base de données avec Alembic</strong></p>
 <p>⚠️ Avant de mettre à jour GeoNature, vérifiez que les modules que vous
 utilisez disposent d’une version compatible avec la 2.8.0, suite au
@@ -1556,18 +1630,18 @@ valeurs appropriées</p></li>
 un préfixe (typiquement <code class="docutils literal notranslate"><span class="pre">/geonature/api</span></code>), assurez vous que ce
 préfixe figure bien également à la fin des directives <code class="docutils literal notranslate"><span class="pre">ProxyPass</span></code> et
 <code class="docutils literal notranslate"><span class="pre">ProxyPassReverse</span></code> comme dans l’exemple suivant :</p>
-<div class="highlight-apache notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;Location</span><span class="w"> </span><span class="s">/geonature/api</span><span class="nt">&gt;</span><span class="w"></span>
-<span class="w">    </span><span class="nb">ProxyPass</span><span class="w"> </span>http://127.0.0.1:8000/geonature/api<span class="w"></span>
-<span class="w">    </span><span class="nb">ProxyPassReverse</span><span class="w">  </span>http://127.0.0.1:8000/geonature/api<span class="w"></span>
-<span class="nt">&lt;/Location&gt;</span><span class="w"></span>
+<div class="highlight-apache notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;Location</span><span class="w"> </span><span class="s">/geonature/api</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nb">ProxyPass</span><span class="w"> </span>http://127.0.0.1:8000/geonature/api
+<span class="w">    </span><span class="nb">ProxyPassReverse</span><span class="w">  </span>http://127.0.0.1:8000/geonature/api
+<span class="nt">&lt;/Location&gt;</span>
 </pre></div>
 </div>
 <p>Si vous servez GeoNature sur un sous-domaine, vérifiez ou modifier
 la configuration Apache :</p>
-<div class="highlight-apache notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;Location</span><span class="w"> </span><span class="s">/api</span><span class="nt">&gt;</span><span class="w"></span>
-<span class="w">    </span><span class="nb">ProxyPass</span><span class="w"> </span>http://127.0.0.1:8000/api<span class="w"></span>
-<span class="w">    </span><span class="nb">ProxyPassReverse</span><span class="w">  </span>http://127.0.0.1:8000/api<span class="w"></span>
-<span class="nt">&lt;/Location&gt;</span><span class="w"></span>
+<div class="highlight-apache notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;Location</span><span class="w"> </span><span class="s">/api</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nb">ProxyPass</span><span class="w"> </span>http://127.0.0.1:8000/api
+<span class="w">    </span><span class="nb">ProxyPassReverse</span><span class="w">  </span>http://127.0.0.1:8000/api
+<span class="nt">&lt;/Location&gt;</span>
 </pre></div>
 </div>
 <p>Pensez à recharger Apache si vous êtes amené à en changer la
@@ -1580,8 +1654,8 @@ configuration : <code class="docutils literal notranslate"><span class="pre">sud
 <li><p>Si vous avez UsersHub installé, ajoutez dans votre configuration
 GeoNature la section suivante (en adaptant le chemin) :</p></li>
 </ul>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[ALEMBIC]</span><span class="w"></span>
-<span class="na">VERSION_LOCATIONS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;/path/to/usershub/app/migrations/versions&#39;</span><span class="w"></span>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[ALEMBIC]</span>
+<span class="na">VERSION_LOCATIONS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;/path/to/usershub/app/migrations/versions&#39;</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -1590,13 +1664,13 @@ disponible : <code class="docutils literal notranslate"><span class="pre">source
 <li><p>Exécuter les commandes suivantes afin d’indiquer à Alembic
 l’état de votre base de données :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature db stamp f06cc80cc8ba  <span class="c1"># GeoNature 2.7.5</span>
-geonature db stamp 0dfdbfbccd63  <span class="c1"># référentiel géographique des communes</span>
-geonature db stamp 3fdaa1805575  <span class="c1"># référentiel géographique des départements</span>
-geonature db stamp 586613e2faeb  <span class="c1"># référentiel géographique des mailles 1×1</span>
-geonature db stamp 7d6e98441e4c  <span class="c1"># référentiel géographique des mailles 5×5</span>
-geonature db stamp ede150d9afd9  <span class="c1"># référentiel géographique des mailles 10×10</span>
-geonature db stamp 1715cf31a75d  <span class="c1"># MNT de l’IGN</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>geonature<span class="w"> </span>db<span class="w"> </span>stamp<span class="w"> </span>f06cc80cc8ba<span class="w">  </span><span class="c1"># GeoNature 2.7.5</span>
+geonature<span class="w"> </span>db<span class="w"> </span>stamp<span class="w"> </span>0dfdbfbccd63<span class="w">  </span><span class="c1"># référentiel géographique des communes</span>
+geonature<span class="w"> </span>db<span class="w"> </span>stamp<span class="w"> </span>3fdaa1805575<span class="w">  </span><span class="c1"># référentiel géographique des départements</span>
+geonature<span class="w"> </span>db<span class="w"> </span>stamp<span class="w"> </span>586613e2faeb<span class="w">  </span><span class="c1"># référentiel géographique des mailles 1×1</span>
+geonature<span class="w"> </span>db<span class="w"> </span>stamp<span class="w"> </span>7d6e98441e4c<span class="w">  </span><span class="c1"># référentiel géographique des mailles 5×5</span>
+geonature<span class="w"> </span>db<span class="w"> </span>stamp<span class="w"> </span>ede150d9afd9<span class="w">  </span><span class="c1"># référentiel géographique des mailles 10×10</span>
+geonature<span class="w"> </span>db<span class="w"> </span>stamp<span class="w"> </span>1715cf31a75d<span class="w">  </span><span class="c1"># MNT de l’IGN</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -1617,7 +1691,7 @@ GeoNature</a>.</p>
 </ul>
 </section>
 <section id="id17">
-<h2>2.7.5 (2021-07-28)<a class="headerlink" href="#id17" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.7.5 (2021-07-28)<a class="headerlink" href="#id17" title="Link to this heading"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Compatibilité avec Occtax-mobile 1.3. Possibilité d’ajouter la
@@ -1632,7 +1706,7 @@ notes des versions intermédiaires</p></li>
 </ul>
 </section>
 <section id="id18">
-<h2>2.7.4 (2021-07-23)<a class="headerlink" href="#id18" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.7.4 (2021-07-23)<a class="headerlink" href="#id18" title="Link to this heading"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Correction d’un import manquant entrainant un problème de
@@ -1646,7 +1720,7 @@ notes des versions intermédiaires</p></li>
 </ul>
 </section>
 <section id="id19">
-<h2>2.7.3 (2021-07-22)<a class="headerlink" href="#id19" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.7.3 (2021-07-22)<a class="headerlink" href="#id19" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Métadonnées : ajout des paramètres <code class="docutils literal notranslate"><span class="pre">CD_NOMENCLATURE_ROLE_TYPE_DS</span></code> et
@@ -1677,7 +1751,7 @@ notes des versions intermédiaires</p></li>
 </ul>
 </section>
 <section id="id20">
-<h2>2.7.2 (2021-07-05)<a class="headerlink" href="#id20" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.7.2 (2021-07-05)<a class="headerlink" href="#id20" title="Link to this heading"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>OCCTAX : correction de la vérification du CRUVED (#1413)</p></li>
@@ -1698,7 +1772,7 @@ notes des versions intermédiaires</p></li>
 </ul>
 </section>
 <section id="id21">
-<h2>2.7.1 (2021-07-02)<a class="headerlink" href="#id21" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.7.1 (2021-07-02)<a class="headerlink" href="#id21" title="Link to this heading"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Installation des dépendances javascript des modules lors de la
@@ -1716,7 +1790,7 @@ notes des versions intermédiaires</p></li>
 </ul>
 </section>
 <section id="androsace-delphinensis-2021-06-30">
-<h2>2.7.0 - Androsace delphinensis 🌼 (2021-06-30)<a class="headerlink" href="#androsace-delphinensis-2021-06-30" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.7.0 - Androsace delphinensis 🌼 (2021-06-30)<a class="headerlink" href="#androsace-delphinensis-2021-06-30" title="Link to this heading"></a></h2>
 <p>Nécessite la version 1.8.x de TaxHub.</p>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
@@ -1901,15 +1975,15 @@ paramètre <code class="docutils literal notranslate"><span class="pre">COLUMN_L
 <code class="docutils literal notranslate"><span class="pre">/etc/supervisor/conf.d/geonature-service.conf</span></code>, remplacer
 <code class="docutils literal notranslate"><span class="pre">gn_errors.log</span></code> par <code class="docutils literal notranslate"><span class="pre">supervisor.log</span></code> dans la variable
 <code class="docutils literal notranslate"><span class="pre">stdout_logfile</span></code> :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo sed -i <span class="s1">&#39;s|\(stdout_logfile = .*\)/gn_errors.log|\1/supervisor.log|&#39;</span> /etc/supervisor/conf.d/geonature-service.conf
-sudo supervisorctl reload
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s|\(stdout_logfile = .*\)/gn_errors.log|\1/supervisor.log|&#39;</span><span class="w"> </span>/etc/supervisor/conf.d/geonature-service.conf
+sudo<span class="w"> </span>supervisorctl<span class="w"> </span>reload
 </pre></div>
 </div>
 </li>
 </ul>
 </section>
 <section id="id22">
-<h2>2.6.2 (2021-02-15)<a class="headerlink" href="#id22" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.6.2 (2021-02-15)<a class="headerlink" href="#id22" title="Link to this heading"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Metadonnées : correction d’un bug sur la fiche JDD si le module
@@ -1921,7 +1995,7 @@ casse</p></li>
 </ul>
 </section>
 <section id="id23">
-<h2>2.6.1 (2021-02-11)<a class="headerlink" href="#id23" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.6.1 (2021-02-11)<a class="headerlink" href="#id23" title="Link to this heading"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Correction de la fonction
@@ -1952,7 +2026,7 @@ https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.5to
 </ul>
 </section>
 <section id="saxifraga-2021-02-04">
-<h2>2.6.0 - Saxifraga 🌸 (2021-02-04)<a class="headerlink" href="#saxifraga-2021-02-04" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.6.0 - Saxifraga 🌸 (2021-02-04)<a class="headerlink" href="#saxifraga-2021-02-04" title="Link to this heading"></a></h2>
 <p>Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10
 minimum (qui n’est pas fourni par défaut avec Debian 9) pour les
 triggers déclenchés « on each statement », plus performants.</p>
@@ -2121,7 +2195,7 @@ version 1.1.1</p></li>
 </ul>
 </section>
 <section id="id24">
-<h2>2.5.5 (2020-11-19)<a class="headerlink" href="#id24" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.5.5 (2020-11-19)<a class="headerlink" href="#id24" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout d’un composant fil d’ariane (#1143)</p></li>
@@ -2142,7 +2216,7 @@ lorsqu’on est connecté via le CAS INPN</p></li>
 </ul>
 </section>
 <section id="id25">
-<h2>2.5.4 (2020-11-17)<a class="headerlink" href="#id25" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.5.4 (2020-11-17)<a class="headerlink" href="#id25" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout de scripts <code class="docutils literal notranslate"><span class="pre">sql</span></code> et <code class="docutils literal notranslate"><span class="pre">sh</span></code> de restauration des medias dans
@@ -2179,7 +2253,7 @@ supprimant le préfixe <code class="docutils literal notranslate"><span class="p
 </ul>
 </section>
 <section id="id26">
-<h2>2.5.3 (2020-11-04)<a class="headerlink" href="#id26" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.5.3 (2020-11-04)<a class="headerlink" href="#id26" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Mise en place de l’héritage du CRUVED au niveau des objets des
@@ -2275,7 +2349,7 @@ de Taxref (11.0 ou 13.0).</p></li>
 </ul>
 </section>
 <section id="id27">
-<h2>2.5.2 (2020-10-13)<a class="headerlink" href="#id27" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.5.2 (2020-10-13)<a class="headerlink" href="#id27" title="Link to this heading"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Occtax : correction du problème d’installation du module dans le
@@ -2294,7 +2368,7 @@ notes des versions intermédiaires</p></li>
 </ul>
 </section>
 <section id="id28">
-<h2>2.5.1 (2020-10-06)<a class="headerlink" href="#id28" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.5.1 (2020-10-06)<a class="headerlink" href="#id28" title="Link to this heading"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Ajout d’un paramètre <code class="docutils literal notranslate"><span class="pre">DISPLAY_EMAIL_INFO_OBS</span></code> définissant si les
@@ -2324,7 +2398,7 @@ notes des versions intermédiaires</p></li>
 </ul>
 </section>
 <section id="manidae-2020-09-30">
-<h2>2.5.0 - Manidae (2020-09-30)<a class="headerlink" href="#manidae-2020-09-30" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.5.0 - Manidae (2020-09-30)<a class="headerlink" href="#manidae-2020-09-30" title="Link to this heading"></a></h2>
 <p>Occtax v2 et médias</p>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
@@ -2525,7 +2599,7 @@ standard Occurrence de taxons)</p></li>
 </ul>
 </section>
 <section id="id29">
-<h2>2.4.1 (2020-06-25)<a class="headerlink" href="#id29" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.4.1 (2020-06-25)<a class="headerlink" href="#id29" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Occurrences sans géométrie précise : Ajout d’un champs
@@ -2566,7 +2640,7 @@ Vérifier le déroulement de l’import dans le fichier
 </ul>
 </section>
 <section id="fiches-de-metadonnees-2020-06-22">
-<h2>2.4.0 - Fiches de métadonnées (2020-06-22)<a class="headerlink" href="#fiches-de-metadonnees-2020-06-22" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.4.0 - Fiches de métadonnées (2020-06-22)<a class="headerlink" href="#fiches-de-metadonnees-2020-06-22" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Métadonnées : Ajout d’une fiche pour chaque jeu de données et
@@ -2694,35 +2768,35 @@ pensez à mettre à jour le paramètre <code class="docutils literal notranslate
 <li><p>Exécuter le script SQL de mise à jour de la BDD de GeoNature
 (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.3.2to2.4.0.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.3.2to2.4.0.sql</a>)</p></li>
 <li><p>Installer les dépendances de la librairie Python WeasyPrint :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt-get install -y libcairo2
-sudo apt-get install -y libpango-1.0-0
-sudo apt-get install -y libpangocairo-1.0-0
-sudo apt-get install -y libgdk-pixbuf2.0-0
-sudo apt-get install -y libffi-dev
-sudo apt-get install -y shared-mime-info
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>libcairo2
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>libpango-1.0-0
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>libpangocairo-1.0-0
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>libgdk-pixbuf2.0-0
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>libffi-dev
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>shared-mime-info
 </pre></div>
 </div>
 </li>
 <li><p>Corriger l’utilisation des paramètres du proxy (#944) dans le
 fichier <code class="docutils literal notranslate"><span class="pre">backend/gunicorn_start.sh</span></code> en remplaçant les 2 lignes :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">HTTP_PROXY</span><span class="o">=</span><span class="s2">&quot;&#39;</span><span class="nv">$proxy_http</span><span class="s2">&#39;&quot;</span>
-<span class="nb">export</span> <span class="nv">HTTPS_PROXY</span><span class="o">=</span><span class="s2">&quot;&#39;</span><span class="nv">$proxy_https</span><span class="s2">&#39;&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HTTP_PROXY</span><span class="o">=</span><span class="s2">&quot;&#39;</span><span class="nv">$proxy_http</span><span class="s2">&#39;&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HTTPS_PROXY</span><span class="o">=</span><span class="s2">&quot;&#39;</span><span class="nv">$proxy_https</span><span class="s2">&#39;&quot;</span>
 </pre></div>
 </div>
 <p>par :</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Activation de la configuration des proxy si necessaire</span>
-<span class="o">[[</span> -z <span class="s2">&quot;</span><span class="nv">$proxy_http</span><span class="s2">&quot;</span> <span class="o">]]</span> <span class="o">||</span> <span class="nb">export</span> <span class="nv">HTTP_PROXY</span><span class="o">=</span><span class="s2">&quot;&#39;</span><span class="nv">$proxy_http</span><span class="s2">&#39;&quot;</span>
-<span class="o">[[</span> -z <span class="s2">&quot;</span><span class="nv">$proxy_https</span><span class="s2">&quot;</span> <span class="o">]]</span> <span class="o">||</span> <span class="nb">export</span> <span class="nv">HTTPS_PROXY</span><span class="o">=</span><span class="s2">&quot;&#39;</span><span class="nv">$proxy_https</span><span class="s2">&#39;&quot;</span>
+<span class="o">[[</span><span class="w"> </span>-z<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$proxy_http</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">HTTP_PROXY</span><span class="o">=</span><span class="s2">&quot;&#39;</span><span class="nv">$proxy_http</span><span class="s2">&#39;&quot;</span>
+<span class="o">[[</span><span class="w"> </span>-z<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$proxy_https</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">HTTPS_PROXY</span><span class="o">=</span><span class="s2">&quot;&#39;</span><span class="nv">$proxy_https</span><span class="s2">&#39;&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Vous pouvez supprimer les associations des observations de la
 synthèse aux zonages limitrophes, si vous n’avez pas
 d’observations sans géométrie (#719) :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">cor_area_synthese</span><span class="w"> </span><span class="n">cas</span><span class="w"></span>
-<span class="k">USING</span><span class="w"> </span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">synthese</span><span class="w"> </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">ref_geo</span><span class="p">.</span><span class="n">l_areas</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
-<span class="k">WHERE</span><span class="w"> </span><span class="n">cas</span><span class="p">.</span><span class="n">id_synthese</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">id_synthese</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">id_area</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cas</span><span class="p">.</span><span class="n">id_area</span><span class="w"></span>
-<span class="k">AND</span><span class="w"> </span><span class="k">public</span><span class="p">.</span><span class="n">ST_TOUCHES</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">the_geom_local</span><span class="p">,</span><span class="n">a</span><span class="p">.</span><span class="n">geom</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">cor_area_synthese</span><span class="w"> </span><span class="n">cas</span>
+<span class="k">USING</span><span class="w"> </span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">synthese</span><span class="w"> </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">ref_geo</span><span class="p">.</span><span class="n">l_areas</span><span class="w"> </span><span class="n">a</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">cas</span><span class="p">.</span><span class="n">id_synthese</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">id_synthese</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">id_area</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cas</span><span class="p">.</span><span class="n">id_area</span>
+<span class="k">AND</span><span class="w"> </span><span class="k">public</span><span class="p">.</span><span class="n">ST_TOUCHES</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">the_geom_local</span><span class="p">,</span><span class="n">a</span><span class="p">.</span><span class="n">geom</span><span class="p">);</span>
 </pre></div>
 </div>
 </li>
@@ -2731,7 +2805,7 @@ d’observations sans géométrie (#719) :</p>
 </ul>
 </section>
 <section id="id30">
-<h2>2.3.2 (2020-02-24)<a class="headerlink" href="#id30" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.3.2 (2020-02-24)<a class="headerlink" href="#id30" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Possibilité de charger les commandes d’un module dans les commandes
@@ -2748,7 +2822,7 @@ compatibilité avec la version 1.0.0 du module d’export</p></li>
 </ul>
 </section>
 <section id="id31">
-<h2>2.3.1 (2020-02-18)<a class="headerlink" href="#id31" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.3.1 (2020-02-18)<a class="headerlink" href="#id31" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Installation globale : Compatibilité Debian 10 (PostgreSQL 11,
@@ -2800,7 +2874,7 @@ augmenter, si vous avez déjà rencontré des problèmes de timeout.</p></li>
 </ul>
 </section>
 <section id="occhab-de-noel-2019-12-27">
-<h2>2.3.0 - Occhab de Noël (2019-12-27)<a class="headerlink" href="#occhab-de-noel-2019-12-27" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.3.0 - Occhab de Noël (2019-12-27)<a class="headerlink" href="#occhab-de-noel-2019-12-27" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Développement du module Occhab (Occurrences d’habitats) basé sur
@@ -2953,8 +3027,8 @@ version. Compatibilité dans la 2.3.1.</p>
 <li><p>Lancer le script de migration qui va installer et remplir le nouveau
 schéma <code class="docutils literal notranslate"><span class="pre">ref_habitats</span></code> avec Habref et mettre à jour le schéma
 <code class="docutils literal notranslate"><span class="pre">ref_nomenclatures</span></code> :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> /home/<span class="sb">`</span>whoami<span class="sb">`</span>/geonature/install/migration
-chmod +x <span class="m">2</span>.2.1to2.3.0.sh
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/home/<span class="sb">`</span>whoami<span class="sb">`</span>/geonature/install/migration
+chmod<span class="w"> </span>+x<span class="w"> </span><span class="m">2</span>.2.1to2.3.0.sh
 ./2.2.1to2.3.0.sh
 </pre></div>
 </div>
@@ -2967,9 +3041,9 @@ chmod +x <span class="m">2</span>.2.1to2.3.0.sh
 <a class="reference external" href="https://raw.githubusercontent.com/PnX-SI/GeoNature/2.3.0/data/migrations/2.2.1to2.3.0.sql">https://raw.githubusercontent.com/PnX-SI/GeoNature/2.3.0/data/migrations/2.2.1to2.3.0.sql</a></p></li>
 <li><p>Vous pouvez installer le nouveau module Occhab (Occurrences
 d’habitats) si vous le souhaitez :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> /home/<span class="sb">`</span>whoami<span class="sb">`</span>/geonature/backend
-<span class="nb">source</span> venv/bin/activate
-geonature install_gn_module /home/<span class="sb">`</span>whoami<span class="sb">`</span>/geonature/contrib/gn_module_occhab /occhab
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/home/<span class="sb">`</span>whoami<span class="sb">`</span>/geonature/backend
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate
+geonature<span class="w"> </span>install_gn_module<span class="w"> </span>/home/<span class="sb">`</span>whoami<span class="sb">`</span>/geonature/contrib/gn_module_occhab<span class="w"> </span>/occhab
 deactivate
 </pre></div>
 </div>
@@ -2982,7 +3056,7 @@ utiliser le module Occhab, vous devez y associer au moins un JDD.</p></li>
 </ul>
 </section>
 <section id="id32">
-<h2>2.2.1 (2019-10-09)<a class="headerlink" href="#id32" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.2.1 (2019-10-09)<a class="headerlink" href="#id32" title="Link to this heading"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>La route de changement de mot de passe était désactivée par le
@@ -2998,7 +3072,7 @@ pas de JDD pour des raisons de droit (#743)</p></li>
 </ul>
 </section>
 <section id="module-utilisateurs-2019-09-18">
-<h2>2.2.0 - Module utilisateurs (2019-09-18)<a class="headerlink" href="#module-utilisateurs-2019-09-18" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.2.0 - Module utilisateurs (2019-09-18)<a class="headerlink" href="#module-utilisateurs-2019-09-18" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout d’interfaces et de paramètres de création de compte, de
@@ -3063,7 +3137,7 @@ version</a>.</p></li>
 </ul>
 </section>
 <section id="id33">
-<h2>2.1.2 (2019-07-25)<a class="headerlink" href="#id33" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.1.2 (2019-07-25)<a class="headerlink" href="#id33" title="Link to this heading"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>SYNTHESE : Correction d’une URL en dur pour la recherche de rangs
@@ -3084,7 +3158,7 @@ passez directement à cette version en suivant les notes de version de la
 2.1.1.</p>
 </section>
 <section id="id34">
-<h2>2.1.1 (2019-07-18)<a class="headerlink" href="#id34" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.1.1 (2019-07-18)<a class="headerlink" href="#id34" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>SYNTHESE: Factorisation du formulaire de recherche (utilisé dans le
@@ -3176,7 +3250,7 @@ maintenant sur les <code class="docutils literal notranslate"><span class="pre">
 </ul>
 </section>
 <section id="module-validation-2019-06-01">
-<h2>2.1.0 - Module validation (2019-06-01)<a class="headerlink" href="#module-validation-2019-06-01" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.1.0 - Module validation (2019-06-01)<a class="headerlink" href="#module-validation-2019-06-01" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Intégration du module Validation dans GeoNature (développé par
@@ -3258,7 +3332,7 @@ deactivate
 </ul>
 </section>
 <section id="id35">
-<h2>2.0.1 (2019-03-18)<a class="headerlink" href="#id35" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.0.1 (2019-03-18)<a class="headerlink" href="#id35" title="Link to this heading"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Développement : ajout d’une fonction de génération dynamique de
@@ -3308,7 +3382,7 @@ notes des versions intermédiaires</p></li>
 </ul>
 </section>
 <section id="la-refonte-2019-02-28">
-<h2>2.0.0 - La refonte (2019-02-28)<a class="headerlink" href="#la-refonte-2019-02-28" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.0.0 - La refonte (2019-02-28)<a class="headerlink" href="#la-refonte-2019-02-28" title="Link to this heading"></a></h2>
 <p>La version 2 de GeoNature est une refonte complète de l’application.</p>
 <ul class="simple">
 <li><p>Refonte technologique en migrant de PHP/Symfony/ExtJS/Openlayers à
@@ -3442,7 +3516,7 @@ pour le nouveau module METADATA via le backoffice des permissions.</p></li>
 </ul>
 </section>
 <section id="rc-4-2-2019-01-23">
-<h2>2.0.0-rc.4.2 (2019-01-23)<a class="headerlink" href="#rc-4-2-2019-01-23" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.0.0-rc.4.2 (2019-01-23)<a class="headerlink" href="#rc-4-2-2019-01-23" title="Link to this heading"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Mise en place de logs rotatifs pour éviter de surcharger le serveur</p></li>
@@ -3510,7 +3584,7 @@ compress
 </ul>
 </section>
 <section id="rc-4-1-2019-01-21">
-<h2>2.0.0-rc.4.1 (2019-01-21)<a class="headerlink" href="#rc-4-1-2019-01-21" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.0.0-rc.4.1 (2019-01-21)<a class="headerlink" href="#rc-4-1-2019-01-21" title="Link to this heading"></a></h2>
 <p><strong>Corrections</strong></p>
 <ul class="simple">
 <li><p>Mise à jour des paquets du frontend (#538)</p></li>
@@ -3529,7 +3603,7 @@ de GeoNature RC3 vers RC4 par &#64;DonovanMaillard
 </ul>
 </section>
 <section id="rc-4-2019-01-15">
-<h2>2.0.0-rc.4 (2019-01-15)<a class="headerlink" href="#rc-4-2019-01-15" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.0.0-rc.4 (2019-01-15)<a class="headerlink" href="#rc-4-2019-01-15" title="Link to this heading"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Intégration de la gestion des permissions (CRUVED) dans la BDD de
@@ -3641,7 +3715,7 @@ dans la doc pour récupérer le CRUVED.</p></li>
 </ul>
 </section>
 <section id="rc-3-1-2018-10-21">
-<h2>2.0.0-rc.3.1 (2018-10-21)<a class="headerlink" href="#rc-3-1-2018-10-21" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.0.0-rc.3.1 (2018-10-21)<a class="headerlink" href="#rc-3-1-2018-10-21" title="Link to this heading"></a></h2>
 <p><strong>Corrections</strong></p>
 <ul class="simple">
 <li><p>Correction du script <code class="docutils literal notranslate"><span class="pre">ìnstall_all.sh</span></code> au niveau de la génération de
@@ -3665,7 +3739,7 @@ correctement</p></li>
 </ul>
 </section>
 <section id="rc-3-2018-10-18">
-<h2>2.0.0-rc.3 (2018-10-18)<a class="headerlink" href="#rc-3-2018-10-18" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.0.0-rc.3 (2018-10-18)<a class="headerlink" href="#rc-3-2018-10-18" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Possibilité d’utiliser le MNT en raster ou en vecteur dans la BDD
 (+ doc MNT) #439 (merci &#64;mathieubossaert)</p></li>
@@ -3779,7 +3853,7 @@ Il est conseillé d’installer plutôt la version corrective.</p></li>
 </ul>
 </section>
 <section id="rc-2-2018-09-24">
-<h2>2.0.0-rc.2 (2018-09-24)<a class="headerlink" href="#rc-2-2018-09-24" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.0.0-rc.2 (2018-09-24)<a class="headerlink" href="#rc-2-2018-09-24" title="Link to this heading"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Script <code class="docutils literal notranslate"><span class="pre">install_all.sh</span></code> compatible Ubuntu (16 et 18)</p></li>
@@ -3817,7 +3891,7 @@ relevés mal copiés dans la Synthèse</p></li>
 </ul>
 </section>
 <section id="rc-1-2018-09-21">
-<h2>2.0.0-rc.1 (2018-09-21)<a class="headerlink" href="#rc-1-2018-09-21" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.0.0-rc.1 (2018-09-21)<a class="headerlink" href="#rc-1-2018-09-21" title="Link to this heading"></a></h2>
 <p>La version 2 de GeoNature est une refonte complète de l’application.</p>
 <ul class="simple">
 <li><p>Refonte technologique en migrant de PHP/Symfony/ExtJS/Openlayers à
@@ -4110,7 +4184,7 @@ geonature frontend_build
 </ul>
 </section>
 <section id="beta5-2018-07-16">
-<h2>2.0.0.beta5 (2018-07-16)<a class="headerlink" href="#beta5-2018-07-16" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.0.0.beta5 (2018-07-16)<a class="headerlink" href="#beta5-2018-07-16" title="Link to this heading"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout d’un message d’erreur si l’utilisateur n’a pas de JDD ou
@@ -4173,17 +4247,17 @@ d’un relevé</p></li>
 <p>Si vous mettez à jour votre GeoNature depuis une Beta4 :</p>
 <ul>
 <li><p>Téléchargez la beta5 et renommer les répertoires :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> /home/myuser
-wget https://github.com/PnX-SI/GeoNature/archive/geonature2beta.zip
-unzip geonature2beta.zip
-mv /home/&lt;mon_user&gt;/geonature/ /home/&lt;mon_user&gt;/geonature_old/
-mv GeoNature-geonature2beta /home/&lt;mon_user&gt;/geonature/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/home/myuser
+wget<span class="w"> </span>https://github.com/PnX-SI/GeoNature/archive/geonature2beta.zip
+unzip<span class="w"> </span>geonature2beta.zip
+mv<span class="w"> </span>/home/&lt;mon_user&gt;/geonature/<span class="w"> </span>/home/&lt;mon_user&gt;/geonature_old/
+mv<span class="w"> </span>GeoNature-geonature2beta<span class="w"> </span>/home/&lt;mon_user&gt;/geonature/
 </pre></div>
 </div>
 </li>
 <li><p>Exécutez le script de migration <code class="docutils literal notranslate"><span class="pre">install/migration/beta4tobeta5.sh</span></code>
 depuis la racine de votre GeoNature :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> geonature
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>geonature
 ./install/migration/beta4tobeta5.sh
 </pre></div>
 </div>
@@ -4199,7 +4273,7 @@ réintégrant la configuration du module dans son répertoire <code class="docut
 </ul>
 </section>
 <section id="beta4-2018-05-25">
-<h2>2.0.0.beta4 (2018-05-25)<a class="headerlink" href="#beta4-2018-05-25" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.0.0.beta4 (2018-05-25)<a class="headerlink" href="#beta4-2018-05-25" title="Link to this heading"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Synthèse : début de mise en place du backend, de l’API et du
@@ -4247,7 +4321,7 @@ nationale
 </ul>
 </section>
 <section id="beta3-2018-03-28">
-<h2>2.0.0.beta3 (2018-03-28)<a class="headerlink" href="#beta3-2018-03-28" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.0.0.beta3 (2018-03-28)<a class="headerlink" href="#beta3-2018-03-28" title="Link to this heading"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Travail sur le module générique de Suivi intégré à GeoNature
@@ -4297,7 +4371,7 @@ GeoNature (<a class="reference external" href="https://github.com/PnCevennes/pro
 </ul>
 </section>
 <section id="beta2-2018-03-16">
-<h2>2.0.0.beta2 (2018-03-16)<a class="headerlink" href="#beta2-2018-03-16" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.0.0.beta2 (2018-03-16)<a class="headerlink" href="#beta2-2018-03-16" title="Link to this heading"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Compléments de la documentation (schéma architecture,
@@ -4323,7 +4397,7 @@ des modules de suivi (sites et visites centralisés)</p></li>
 </ul>
 </section>
 <section id="beta1-2018-02-16">
-<h2>2.0.0.beta1 (2018-02-16)<a class="headerlink" href="#beta1-2018-02-16" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>2.0.0.beta1 (2018-02-16)<a class="headerlink" href="#beta1-2018-02-16" title="Link to this heading"></a></h2>
 <p>La version 2 de GeoNature est une refonte complète de l’application.</p>
 <ul class="simple">
 <li><p>Refonte technologique en migrant de PHP/Symfony/ExtJS/Openlayers à
@@ -4434,7 +4508,7 @@ générique des sites et visites de suivi</p></li>
 </ul>
 </section>
 <section id="versions-1-2014-2018">
-<h2>Versions 1 (2014-2018)<a class="headerlink" href="#versions-1-2014-2018" title="Lien permanent vers cette rubrique"></a></h2>
+<h2>Versions 1 (2014-2018)<a class="headerlink" href="#versions-1-2014-2018" title="Link to this heading"></a></h2>
 <p>Pour consulter les notes des versions 1 de GeoNature, elles sont disponibles dans la branche dédiée : https://github.com/PnX-SI/GeoNature/blob/v1/docs/changelog.rst</p>
 </section>
 </section>
@@ -4444,12 +4518,13 @@ générique des sites et visites de suivi</p></li>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
         <a href="authors.html" class="btn btn-neutral float-left" title="AUTEURS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="api-references.html" class="btn btn-neutral float-right" title="API REFERENCES" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2018-2023, PnE, PnC.</p>
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
   </div>
 
   Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un

@@ -1,0 +1,13 @@
+:py:mod:`geonature.utils.config`
+================================
+
+.. py:module:: geonature.utils.config
+
+
+Module Contents
+---------------
+
+.. py:data:: config
+
+   
+

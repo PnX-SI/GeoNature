@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.api.route_register &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">app.api.route_register</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/autoapi/app/api/route_register/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-app.api.route_register">
+<span id="app-api-route-register"></span><h1><a class="reference internal" href="#module-app.api.route_register" title="app.api.route_register"><code class="xref py py-mod docutils literal notranslate"><span class="pre">app.api.route_register</span></code></a><a class="headerlink" href="#module-app.api.route_register" title="Link to this heading"></a></h1>
+<p>Route permettant de manipuler les données de UsersHub via une API</p>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.api.route_register.get_one_t_roles" title="app.api.route_register.get_one_t_roles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_one_t_roles</span></code></a>(id_role)</p></td>
+<td><p>Fonction qui retourne les données concernant un utilisateur.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.api.route_register.test_connexion" title="app.api.route_register.test_connexion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_connexion</span></code></a>()</p></td>
+<td><p>Route pour tester la connexion.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.api.route_register.create_temp_user" title="app.api.route_register.create_temp_user"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_temp_user</span></code></a>()</p></td>
+<td><p>Route pour créer un compte temporaire en attendant la confirmation de</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.api.route_register.valid_temp_user" title="app.api.route_register.valid_temp_user"><code class="xref py py-obj docutils literal notranslate"><span class="pre">valid_temp_user</span></code></a>()</p></td>
+<td><p>Route pour valider un compte temporaire et en faire un utilisateur</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.api.route_register.set_cor_role_token" title="app.api.route_register.set_cor_role_token"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_cor_role_token</span></code></a>(email)</p></td>
+<td><p>Fonction pour la création d'un token associé a un id_role</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.api.route_register.check_token" title="app.api.route_register.check_token"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_token</span></code></a>(token)</p></td>
+<td><p>fonction permettant de vérifier la présence</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.api.route_register.create_cor_role_token" title="app.api.route_register.create_cor_role_token"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_cor_role_token</span></code></a>()</p></td>
+<td><p>route pour la creation d'un token associé a un id_role</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.api.route_register.change_password" title="app.api.route_register.change_password"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_password</span></code></a>()</p></td>
+<td><p>Route permettant à un utilisateur de renouveller</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.api.route_register.change_application_right" title="app.api.route_register.change_application_right"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_application_right</span></code></a>()</p></td>
+<td><p>Change les droits d'un utilisateur pour une application</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.api.route_register.add_application_right_to_role" title="app.api.route_register.add_application_right_to_role"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_application_right_to_role</span></code></a>()</p></td>
+<td><p>Route permettant de d'ajouter des droits</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.api.route_register.login_recovery" title="app.api.route_register.login_recovery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">login_recovery</span></code></a>()</p></td>
+<td><p>route pour changer des paramètres d'utilisateur</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.api.route_register.update_user" title="app.api.route_register.update_user"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_user</span></code></a>()</p></td>
+<td><p>route pour changer des paramètres d'utilisateur</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.api.route_register.check_token_validity" title="app.api.route_register.check_token_validity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_token_validity</span></code></a>()</p></td>
+<td><p>route permettant de savoir si un token est toujours valide</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.api.route_register.route" title="app.api.route_register.route"><code class="xref py py-obj docutils literal notranslate"><span class="pre">route</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="app.api.route_register.route">
+<span class="sig-prename descclassname"><span class="pre">app.api.route_register.</span></span><span class="sig-name descname"><span class="pre">route</span></span><a class="reference internal" href="../../../../_modules/app/api/route_register.html#route"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.route_register.route" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.route_register.get_one_t_roles">
+<span class="sig-prename descclassname"><span class="pre">app.api.route_register.</span></span><span class="sig-name descname"><span class="pre">get_one_t_roles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_role</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/api/route_register.html#get_one_t_roles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.route_register.get_one_t_roles" title="Link to this definition"></a></dt>
+<dd><p>Fonction qui retourne les données concernant un utilisateur.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.route_register.test_connexion">
+<span class="sig-prename descclassname"><span class="pre">app.api.route_register.</span></span><span class="sig-name descname"><span class="pre">test_connexion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/api/route_register.html#test_connexion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.route_register.test_connexion" title="Link to this definition"></a></dt>
+<dd><p>Route pour tester la connexion.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.route_register.create_temp_user">
+<span class="sig-prename descclassname"><span class="pre">app.api.route_register.</span></span><span class="sig-name descname"><span class="pre">create_temp_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/api/route_register.html#create_temp_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.route_register.create_temp_user" title="Link to this definition"></a></dt>
+<dd><p>Route pour créer un compte temporaire en attendant la confirmation de
+l’adresse mail.</p>
+<p>Nous stockons :
+1. Les infos qui seront utilisées par la création de compte. Dont les
+mots de passe qui sont stockés cryptés.
+2. Les infos permettant d’appeler l’appli source si la création du
+compte est confirmée (Appel d’une URL de callaback =&gt; confirmation_url).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.route_register.valid_temp_user">
+<span class="sig-prename descclassname"><span class="pre">app.api.route_register.</span></span><span class="sig-name descname"><span class="pre">valid_temp_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/api/route_register.html#valid_temp_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.route_register.valid_temp_user" title="Link to this definition"></a></dt>
+<dd><p>Route pour valider un compte temporaire et en faire un utilisateur
+(requete a usershub).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.route_register.set_cor_role_token">
+<span class="sig-prename descclassname"><span class="pre">app.api.route_register.</span></span><span class="sig-name descname"><span class="pre">set_cor_role_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/api/route_register.html#set_cor_role_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.route_register.set_cor_role_token" title="Link to this definition"></a></dt>
+<dd><p>Fonction pour la création d’un token associé a un id_role
+Parametres : email</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.route_register.check_token">
+<span class="sig-prename descclassname"><span class="pre">app.api.route_register.</span></span><span class="sig-name descname"><span class="pre">check_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/api/route_register.html#check_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.route_register.check_token" title="Link to this definition"></a></dt>
+<dd><p>fonction permettant de vérifier la présence
+d’un token et qui retourne l’id_role associé</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.route_register.create_cor_role_token">
+<span class="sig-prename descclassname"><span class="pre">app.api.route_register.</span></span><span class="sig-name descname"><span class="pre">create_cor_role_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/api/route_register.html#create_cor_role_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.route_register.create_cor_role_token" title="Link to this definition"></a></dt>
+<dd><p>route pour la creation d’un token associé a un id_role
+fait un appel de la fonction set_cor_role_token(email)
+parametres post : email</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.route_register.change_password">
+<span class="sig-prename descclassname"><span class="pre">app.api.route_register.</span></span><span class="sig-name descname"><span class="pre">change_password</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/api/route_register.html#change_password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.route_register.change_password" title="Link to this definition"></a></dt>
+<dd><p>Route permettant à un utilisateur de renouveller
+son mot de passe</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.route_register.change_application_right">
+<span class="sig-prename descclassname"><span class="pre">app.api.route_register.</span></span><span class="sig-name descname"><span class="pre">change_application_right</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/api/route_register.html#change_application_right"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.route_register.change_application_right" title="Link to this definition"></a></dt>
+<dd><p>Change les droits d’un utilisateur pour une application</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.route_register.add_application_right_to_role">
+<span class="sig-prename descclassname"><span class="pre">app.api.route_register.</span></span><span class="sig-name descname"><span class="pre">add_application_right_to_role</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/api/route_register.html#add_application_right_to_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.route_register.add_application_right_to_role" title="Link to this definition"></a></dt>
+<dd><p>Route permettant de d’ajouter des droits
+pour une application a un utilisateur
+soit en l’associant à un groupe
+soit en lui affectant le profil « 1 »</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.route_register.login_recovery">
+<span class="sig-prename descclassname"><span class="pre">app.api.route_register.</span></span><span class="sig-name descname"><span class="pre">login_recovery</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/api/route_register.html#login_recovery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.route_register.login_recovery" title="Link to this definition"></a></dt>
+<dd><p>route pour changer des paramètres d’utilisateur
+FIXME : Route qui ne modifie rien du tout</p>
+<blockquote>
+<div><p>devrait peut être transformée pour être plus générique
+et retourner les informations d’un utilisateur donné</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.route_register.update_user">
+<span class="sig-prename descclassname"><span class="pre">app.api.route_register.</span></span><span class="sig-name descname"><span class="pre">update_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/api/route_register.html#update_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.route_register.update_user" title="Link to this definition"></a></dt>
+<dd><p>route pour changer des paramètres d’utilisateur</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.route_register.check_token_validity">
+<span class="sig-prename descclassname"><span class="pre">app.api.route_register.</span></span><span class="sig-name descname"><span class="pre">check_token_validity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/app/api/route_register.html#check_token_validity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.route_register.check_token_validity" title="Link to this definition"></a></dt>
+<dd><p>route permettant de savoir si un token est toujours valide
+parametres post : token</p>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

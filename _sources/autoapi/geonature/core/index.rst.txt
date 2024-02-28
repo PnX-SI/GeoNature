@@ -1,0 +1,36 @@
+:py:mod:`geonature.core`
+========================
+
+.. py:module:: geonature.core
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   admin/index.rst
+   auth/index.rst
+   command/index.rst
+   gn_commons/index.rst
+   gn_meta/index.rst
+   gn_monitoring/index.rst
+   gn_permissions/index.rst
+   gn_profiles/index.rst
+   gn_synthese/index.rst
+   notifications/index.rst
+   sensitivity/index.rst
+   taxonomie/index.rst
+   users/index.rst
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   errors/index.rst
+
+

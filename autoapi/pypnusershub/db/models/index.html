@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pypnusershub.db.models &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../../search.html" />
+    <link rel="next" title="pypnusershub.db.models_register" href="../models_register/index.html" />
+    <link rel="prev" title="pypnusershub.db" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../api-references.html">API REFERENCES</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../geonature/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../../index.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.db</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../index.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/utils_flask_sqla/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/utils_flask_sqla_geo/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../frontend.html">Frontend</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../api-references.html">API REFERENCES</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a></li>
+          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.db</span></code></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.db.models</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/autoapi/pypnusershub/db/models/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pypnusershub.db.models">
+<span id="pypnusershub-db-models"></span><h1><a class="reference internal" href="#module-pypnusershub.db.models" title="pypnusershub.db.models"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.db.models</span></code></a><a class="headerlink" href="#module-pypnusershub.db.models" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypnusershub.db.models.UserQuery" title="pypnusershub.db.models.UserQuery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UserQuery</span></code></a></p></td>
+<td><p>SQLAlchemy <code class="xref py py-class docutils literal notranslate"><span class="pre">Query</span></code> subclass with some extra methods</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pypnusershub.db.models.User" title="pypnusershub.db.models.User"><code class="xref py py-obj docutils literal notranslate"><span class="pre">User</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypnusershub.db.models.Organisme" title="pypnusershub.db.models.Organisme"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Organisme</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pypnusershub.db.models.Profils" title="pypnusershub.db.models.Profils"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Profils</span></code></a></p></td>
+<td><p>Model de la classe t_profils</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypnusershub.db.models.Application" title="pypnusershub.db.models.Application"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Application</span></code></a></p></td>
+<td><p>Représente une application ou un module</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pypnusershub.db.models.ApplicationRight" title="pypnusershub.db.models.ApplicationRight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplicationRight</span></code></a></p></td>
+<td><p>Droit d'acces a une application</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypnusershub.db.models.UserApplicationRight" title="pypnusershub.db.models.UserApplicationRight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UserApplicationRight</span></code></a></p></td>
+<td><p>Droit d'acces d'un user particulier a une application particuliere</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pypnusershub.db.models.AppUser" title="pypnusershub.db.models.AppUser"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AppUser</span></code></a></p></td>
+<td><p>Relations entre applications et utilisateurs</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypnusershub.db.models.AppRole" title="pypnusershub.db.models.AppRole"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AppRole</span></code></a></p></td>
+<td><p>Relations entre applications et role</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pypnusershub.db.models.UserList" title="pypnusershub.db.models.UserList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UserList</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypnusershub.db.models.check_and_encrypt_password" title="pypnusershub.db.models.check_and_encrypt_password"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_and_encrypt_password</span></code></a>(password, password_confirmation)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pypnusershub.db.models.fn_check_password" title="pypnusershub.db.models.fn_check_password"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fn_check_password</span></code></a>(self, pwd)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypnusershub.db.models.cor_roles" title="pypnusershub.db.models.cor_roles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_roles</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pypnusershub.db.models.profils_for_app" title="pypnusershub.db.models.profils_for_app"><code class="xref py py-obj docutils literal notranslate"><span class="pre">profils_for_app</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypnusershub.db.models.cor_role_liste" title="pypnusershub.db.models.cor_role_liste"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_role_liste</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="pypnusershub.db.models.check_and_encrypt_password">
+<span class="sig-prename descclassname"><span class="pre">pypnusershub.db.models.</span></span><span class="sig-name descname"><span class="pre">check_and_encrypt_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">password</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password_confirmation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">md5</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#check_and_encrypt_password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.check_and_encrypt_password" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pypnusershub.db.models.fn_check_password">
+<span class="sig-prename descclassname"><span class="pre">pypnusershub.db.models.</span></span><span class="sig-name descname"><span class="pre">fn_check_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pwd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#fn_check_password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.fn_check_password" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pypnusershub.db.models.cor_roles">
+<span class="sig-prename descclassname"><span class="pre">pypnusershub.db.models.</span></span><span class="sig-name descname"><span class="pre">cor_roles</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#cor_roles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.cor_roles" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserQuery">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypnusershub.db.models.</span></span><span class="sig-name descname"><span class="pre">UserQuery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserQuery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserQuery" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_sqlalchemy.query.Query</span></code></p>
+<p>SQLAlchemy <code class="xref py py-class docutils literal notranslate"><span class="pre">Query</span></code> subclass with some extra methods
+useful for querying in a web application.</p>
+<p>This is the default query class for <code class="xref py py-attr docutils literal notranslate"><span class="pre">Model.query</span></code>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.0: </span>Renamed to <code class="docutils literal notranslate"><span class="pre">Query</span></code> from <code class="docutils literal notranslate"><span class="pre">BaseQuery</span></code>.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserQuery.filter_by_app">
+<span class="sig-name descname"><span class="pre">filter_by_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code_app</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserQuery.filter_by_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserQuery.filter_by_app" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypnusershub.db.models.</span></span><span class="sig-name descname"><span class="pre">User</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypnusershub.env.db.Model</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_login.UserMixin</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.max_level_profil">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_level_profil</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.max_level_profil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.max_level_profil" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.password">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">password</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.password" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.is_public">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_public</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.is_public"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.is_public" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_roles'</span></em><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.query_class">
+<span class="sig-name descname"><span class="pre">query_class</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.query_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.query_class" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.groupe">
+<span class="sig-name descname"><span class="pre">groupe</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.groupe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.groupe" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.id_role">
+<span class="sig-name descname"><span class="pre">id_role</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.id_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.id_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.identifiant">
+<span class="sig-name descname"><span class="pre">identifiant</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.identifiant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.identifiant" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.nom_role">
+<span class="sig-name descname"><span class="pre">nom_role</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.nom_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.nom_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.prenom_role">
+<span class="sig-name descname"><span class="pre">prenom_role</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.prenom_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.prenom_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.desc_role">
+<span class="sig-name descname"><span class="pre">desc_role</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.desc_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.desc_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User._password">
+<span class="sig-name descname"><span class="pre">_password</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User._password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User._password" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User._password_plus">
+<span class="sig-name descname"><span class="pre">_password_plus</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User._password_plus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User._password_plus" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.email">
+<span class="sig-name descname"><span class="pre">email</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.email"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.email" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.id_organisme">
+<span class="sig-name descname"><span class="pre">id_organisme</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.id_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.id_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.remarques">
+<span class="sig-name descname"><span class="pre">remarques</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.remarques"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.remarques" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.champs_addi">
+<span class="sig-name descname"><span class="pre">champs_addi</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.champs_addi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.champs_addi" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.date_insert">
+<span class="sig-name descname"><span class="pre">date_insert</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.date_insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.date_insert" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.date_update">
+<span class="sig-name descname"><span class="pre">date_update</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.date_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.date_update" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.active">
+<span class="sig-name descname"><span class="pre">active</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.active"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.active" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.groups">
+<span class="sig-name descname"><span class="pre">groups</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.groups" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.check_password">
+<span class="sig-name descname"><span class="pre">check_password</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.check_password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.check_password" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.nom_complet">
+<span class="sig-name descname"><span class="pre">nom_complet</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.nom_complet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.nom_complet" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">nom_complet</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.nom_complet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.get_id">
+<span class="sig-name descname"><span class="pre">get_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.get_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.get_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.__str__" title="Link to this definition"></a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.db.models.User.filter_by_app">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_by_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code_app</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#User.filter_by_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.User.filter_by_app" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypnusershub.db.models.</span></span><span class="sig-name descname"><span class="pre">Organisme</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypnusershub.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_organismes'</span></em><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.id_organisme">
+<span class="sig-name descname"><span class="pre">id_organisme</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.id_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.id_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.uuid_organisme">
+<span class="sig-name descname"><span class="pre">uuid_organisme</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.uuid_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.uuid_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.nom_organisme">
+<span class="sig-name descname"><span class="pre">nom_organisme</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.nom_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.nom_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.adresse_organisme">
+<span class="sig-name descname"><span class="pre">adresse_organisme</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.adresse_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.adresse_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.cp_organisme">
+<span class="sig-name descname"><span class="pre">cp_organisme</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.cp_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.cp_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.ville_organisme">
+<span class="sig-name descname"><span class="pre">ville_organisme</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.ville_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.ville_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.tel_organisme">
+<span class="sig-name descname"><span class="pre">tel_organisme</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.tel_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.tel_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.fax_organisme">
+<span class="sig-name descname"><span class="pre">fax_organisme</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.fax_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.fax_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.email_organisme">
+<span class="sig-name descname"><span class="pre">email_organisme</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.email_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.email_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.url_organisme">
+<span class="sig-name descname"><span class="pre">url_organisme</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.url_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.url_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.url_logo">
+<span class="sig-name descname"><span class="pre">url_logo</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.url_logo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.url_logo" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.id_parent">
+<span class="sig-name descname"><span class="pre">id_parent</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.id_parent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.id_parent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.additional_data">
+<span class="sig-name descname"><span class="pre">additional_data</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.additional_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.additional_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.members">
+<span class="sig-name descname"><span class="pre">members</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.members"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.members" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Organisme.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Organisme.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Organisme.__str__" title="Link to this definition"></a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pypnusershub.db.models.profils_for_app">
+<span class="sig-prename descclassname"><span class="pre">pypnusershub.db.models.</span></span><span class="sig-name descname"><span class="pre">profils_for_app</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#profils_for_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.profils_for_app" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Profils">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypnusershub.db.models.</span></span><span class="sig-name descname"><span class="pre">Profils</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Profils"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Profils" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypnusershub.env.db.Model</span></code></p>
+<p>Model de la classe t_profils</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Profils.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_profils'</span></em><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Profils.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Profils.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Profils.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Profils.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Profils.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Profils.id_profil">
+<span class="sig-name descname"><span class="pre">id_profil</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Profils.id_profil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Profils.id_profil" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Profils.code_profil">
+<span class="sig-name descname"><span class="pre">code_profil</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Profils.code_profil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Profils.code_profil" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Profils.nom_profil">
+<span class="sig-name descname"><span class="pre">nom_profil</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Profils.nom_profil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Profils.nom_profil" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Profils.desc_profil">
+<span class="sig-name descname"><span class="pre">desc_profil</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Profils.desc_profil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Profils.desc_profil" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Profils.applications">
+<span class="sig-name descname"><span class="pre">applications</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Profils.applications"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Profils.applications" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Application">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypnusershub.db.models.</span></span><span class="sig-name descname"><span class="pre">Application</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Application" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypnusershub.env.db.Model</span></code></p>
+<p>Représente une application ou un module</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Application.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_applications'</span></em><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Application.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Application.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Application.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Application.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Application.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Application.id_application">
+<span class="sig-name descname"><span class="pre">id_application</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Application.id_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Application.id_application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Application.code_application">
+<span class="sig-name descname"><span class="pre">code_application</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Application.code_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Application.code_application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Application.nom_application">
+<span class="sig-name descname"><span class="pre">nom_application</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Application.nom_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Application.nom_application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Application.desc_application">
+<span class="sig-name descname"><span class="pre">desc_application</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Application.desc_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Application.desc_application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Application.id_parent">
+<span class="sig-name descname"><span class="pre">id_parent</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Application.id_parent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Application.id_parent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Application.profils">
+<span class="sig-name descname"><span class="pre">profils</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Application.profils"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Application.profils" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Application.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Application.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Application.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Application.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Application.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Application.__str__" title="Link to this definition"></a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.db.models.Application.get_application">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_application</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nom_application</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#Application.get_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.Application.get_application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypnusershub.db.models.ApplicationRight">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypnusershub.db.models.</span></span><span class="sig-name descname"><span class="pre">ApplicationRight</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#ApplicationRight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.ApplicationRight" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypnusershub.env.db.Model</span></code></p>
+<p>Droit d’acces a une application</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.ApplicationRight.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_droits'</span></em><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#ApplicationRight.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.ApplicationRight.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.ApplicationRight.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#ApplicationRight.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.ApplicationRight.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.ApplicationRight.id_droit">
+<span class="sig-name descname"><span class="pre">id_droit</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#ApplicationRight.id_droit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.ApplicationRight.id_droit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.ApplicationRight.nom_droit">
+<span class="sig-name descname"><span class="pre">nom_droit</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#ApplicationRight.nom_droit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.ApplicationRight.nom_droit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.ApplicationRight.desc_droit">
+<span class="sig-name descname"><span class="pre">desc_droit</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#ApplicationRight.desc_droit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.ApplicationRight.desc_droit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.db.models.ApplicationRight.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#ApplicationRight.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.ApplicationRight.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.db.models.ApplicationRight.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#ApplicationRight.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.ApplicationRight.__str__" title="Link to this definition"></a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserApplicationRight">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypnusershub.db.models.</span></span><span class="sig-name descname"><span class="pre">UserApplicationRight</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserApplicationRight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserApplicationRight" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypnusershub.env.db.Model</span></code></p>
+<p>Droit d’acces d’un user particulier a une application particuliere</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserApplicationRight.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cor_role_app_profil'</span></em><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserApplicationRight.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserApplicationRight.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserApplicationRight.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserApplicationRight.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserApplicationRight.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserApplicationRight.id_role">
+<span class="sig-name descname"><span class="pre">id_role</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserApplicationRight.id_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserApplicationRight.id_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserApplicationRight.id_profil">
+<span class="sig-name descname"><span class="pre">id_profil</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserApplicationRight.id_profil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserApplicationRight.id_profil" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserApplicationRight.id_application">
+<span class="sig-name descname"><span class="pre">id_application</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserApplicationRight.id_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserApplicationRight.id_application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserApplicationRight.role">
+<span class="sig-name descname"><span class="pre">role</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserApplicationRight.role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserApplicationRight.role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserApplicationRight.profil">
+<span class="sig-name descname"><span class="pre">profil</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserApplicationRight.profil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserApplicationRight.profil" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserApplicationRight.application">
+<span class="sig-name descname"><span class="pre">application</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserApplicationRight.application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserApplicationRight.application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserApplicationRight.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserApplicationRight.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserApplicationRight.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypnusershub.db.models.</span></span><span class="sig-name descname"><span class="pre">AppUser</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypnusershub.env.db.Model</span></code></p>
+<p>Relations entre applications et utilisateurs</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser.password">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">password</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser.password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser.password" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'v_userslist_forall_applications'</span></em><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser.id_role">
+<span class="sig-name descname"><span class="pre">id_role</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser.id_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser.id_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser.role">
+<span class="sig-name descname"><span class="pre">role</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser.role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser.role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser.nom_role">
+<span class="sig-name descname"><span class="pre">nom_role</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser.nom_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser.nom_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser.prenom_role">
+<span class="sig-name descname"><span class="pre">prenom_role</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser.prenom_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser.prenom_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser.id_application">
+<span class="sig-name descname"><span class="pre">id_application</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser.id_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser.id_application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser.id_organisme">
+<span class="sig-name descname"><span class="pre">id_organisme</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser.id_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser.id_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser.application">
+<span class="sig-name descname"><span class="pre">application</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser.application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser.application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser.identifiant">
+<span class="sig-name descname"><span class="pre">identifiant</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser.identifiant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser.identifiant" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser._password">
+<span class="sig-name descname"><span class="pre">_password</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser._password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser._password" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser._password_plus">
+<span class="sig-name descname"><span class="pre">_password_plus</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser._password_plus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser._password_plus" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser.id_droit_max">
+<span class="sig-name descname"><span class="pre">id_droit_max</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser.id_droit_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser.id_droit_max" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser.check_password">
+<span class="sig-name descname"><span class="pre">check_password</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser.check_password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser.check_password" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppUser.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppUser.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppUser.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppRole">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypnusershub.db.models.</span></span><span class="sig-name descname"><span class="pre">AppRole</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppRole"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppRole" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypnusershub.env.db.Model</span></code></p>
+<p>Relations entre applications et role</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppRole.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'v_roleslist_forall_applications'</span></em><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppRole.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppRole.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppRole.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppRole.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppRole.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppRole.id_role">
+<span class="sig-name descname"><span class="pre">id_role</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppRole.id_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppRole.id_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppRole.groupe">
+<span class="sig-name descname"><span class="pre">groupe</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppRole.groupe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppRole.groupe" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppRole.nom_role">
+<span class="sig-name descname"><span class="pre">nom_role</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppRole.nom_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppRole.nom_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppRole.prenom_role">
+<span class="sig-name descname"><span class="pre">prenom_role</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppRole.prenom_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppRole.prenom_role" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppRole.id_application">
+<span class="sig-name descname"><span class="pre">id_application</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppRole.id_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppRole.id_application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppRole.id_organisme">
+<span class="sig-name descname"><span class="pre">id_organisme</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppRole.id_organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppRole.id_organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppRole.identifiant">
+<span class="sig-name descname"><span class="pre">identifiant</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppRole.identifiant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppRole.identifiant" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppRole.application">
+<span class="sig-name descname"><span class="pre">application</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppRole.application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppRole.application" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.db.models.AppRole.as_dict">
+<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#AppRole.as_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.AppRole.as_dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pypnusershub.db.models.cor_role_liste">
+<span class="sig-prename descclassname"><span class="pre">pypnusershub.db.models.</span></span><span class="sig-name descname"><span class="pre">cor_role_liste</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#cor_role_liste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.cor_role_liste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypnusershub.db.models.</span></span><span class="sig-name descname"><span class="pre">UserList</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserList" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypnusershub.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserList.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_listes'</span></em><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserList.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserList.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserList.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserList.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserList.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserList.id_liste">
+<span class="sig-name descname"><span class="pre">id_liste</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserList.id_liste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserList.id_liste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserList.code_liste">
+<span class="sig-name descname"><span class="pre">code_liste</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserList.code_liste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserList.code_liste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserList.nom_liste">
+<span class="sig-name descname"><span class="pre">nom_liste</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserList.nom_liste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserList.nom_liste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserList.desc_liste">
+<span class="sig-name descname"><span class="pre">desc_liste</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserList.desc_liste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserList.desc_liste" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.db.models.UserList.users">
+<span class="sig-name descname"><span class="pre">users</span></span><a class="reference internal" href="../../../../_modules/pypnusershub/db/models.html#UserList.users"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.db.models.UserList.users" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="../index.html" class="btn btn-neutral float-left" title="pypnusershub.db" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="../models_register/index.html" class="btn btn-neutral float-right" title="pypnusershub.db.models_register" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

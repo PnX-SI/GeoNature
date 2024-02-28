@@ -1,0 +1,26 @@
+:py:mod:`geonature.utils.utilsrequests`
+=======================================
+
+.. py:module:: geonature.utils.utilsrequests
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.utils.utilsrequests.get
+   geonature.utils.utilsrequests.post
+
+
+
+.. py:function:: get(url, auth=None)
+
+
+.. py:function:: post(url, json={})
+
+

@@ -1,0 +1,57 @@
+:py:mod:`src.utils_flask_sqla.response`
+=======================================
+
+.. py:module:: src.utils_flask_sqla.response
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla.response.json_resp_accept
+   src.utils_flask_sqla.response.to_json_resp
+   src.utils_flask_sqla.response.csv_resp
+   src.utils_flask_sqla.response.to_csv_resp
+   src.utils_flask_sqla.response.generate_csv_content
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla.response.json_resp
+   src.utils_flask_sqla.response.json_resp_accept_empty_list
+
+
+.. py:function:: json_resp_accept(accepted_list=[])
+
+
+.. py:data:: json_resp
+
+   
+
+.. py:data:: json_resp_accept_empty_list
+
+   
+
+.. py:function:: to_json_resp(res, status=200, filename=None, as_file=False, indent=None, extension='json', accepted_list=[])
+
+
+.. py:function:: csv_resp(fn)
+
+   Décorateur transformant le résultat renvoyé en un fichier csv
+
+
+.. py:function:: to_csv_resp(filename, data, columns, separator=';')
+
+
+.. py:function:: generate_csv_content(columns, data, separator)
+
+

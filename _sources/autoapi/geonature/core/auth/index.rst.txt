@@ -1,0 +1,15 @@
+:py:mod:`geonature.core.auth`
+=============================
+
+.. py:module:: geonature.core.auth
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   routes/index.rst
+
+

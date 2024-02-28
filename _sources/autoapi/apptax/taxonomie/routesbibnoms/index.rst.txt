@@ -1,0 +1,78 @@
+:py:mod:`apptax.taxonomie.routesbibnoms`
+========================================
+
+.. py:module:: apptax.taxonomie.routesbibnoms
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.routesbibnoms.get_bibtaxons
+   apptax.taxonomie.routesbibnoms.getOne_bibtaxonsInfo
+   apptax.taxonomie.routesbibnoms.getOneSimple_bibtaxons
+   apptax.taxonomie.routesbibnoms.getOneFull_bibtaxons
+   apptax.taxonomie.routesbibnoms.insertUpdate_bibtaxons
+   apptax.taxonomie.routesbibnoms.delete_bibtaxons
+   apptax.taxonomie.routesbibnoms.getBibTaxonSynonymes
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   apptax.taxonomie.routesbibnoms.adresses
+   apptax.taxonomie.routesbibnoms.logger
+   apptax.taxonomie.routesbibnoms.media_repo
+
+
+.. py:data:: adresses
+
+   
+
+.. py:data:: logger
+
+   
+
+.. py:data:: media_repo
+
+   
+
+.. py:function:: get_bibtaxons()
+
+
+.. py:function:: getOne_bibtaxonsInfo(cd_nom)
+
+   Route qui renvoie les attributs et les médias d'un taxon
+
+   Parameters:
+
+       - cd_nom (integer)
+       - id_theme (integer): id du thème des attributs
+               (Possibilité de passer plusieurs id_theme)
+       - id_attribut(integer): id_attribut
+               (Possibilité de passer plusiers id_attribut)
+
+
+.. py:function:: getOneSimple_bibtaxons(id_nom)
+
+
+.. py:function:: getOneFull_bibtaxons(id_nom)
+
+
+.. py:function:: insertUpdate_bibtaxons(id_nom=None)
+
+
+.. py:function:: delete_bibtaxons(id_nom)
+
+
+.. py:function:: getBibTaxonSynonymes(id_nom, cd_nom)
+
+

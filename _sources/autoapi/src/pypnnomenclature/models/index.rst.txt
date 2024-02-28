@@ -1,0 +1,457 @@
+:py:mod:`src.pypnnomenclature.models`
+=====================================
+
+.. py:module:: src.pypnnomenclature.models
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   src.pypnnomenclature.models.CorTaxrefNomenclature
+   src.pypnnomenclature.models.TNomenclatures
+   src.pypnnomenclature.models.TNomenclatureTaxonomy
+   src.pypnnomenclature.models.BibNomenclaturesTypes
+   src.pypnnomenclature.models.BibNomenclaturesTypeTaxo
+   src.pypnnomenclature.models.VNomenclatureTaxonomie
+
+
+
+
+.. py:class:: CorTaxrefNomenclature
+
+
+   Bases: :py:obj:`src.pypnnomenclature.env.db.Model`
+
+   Relation entre taxonomie et nomenclature.
+   A n'utiliser uniquement lorsque que l'extension 'taxonomie' des nomenclatures est installée
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_taxref_nomenclature'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_nomenclature
+
+      
+
+   .. py:attribute:: regne
+
+      
+
+   .. py:attribute:: group2_inpn
+
+      
+
+   .. py:attribute:: group3_inpn
+
+      
+
+
+.. py:class:: TNomenclatures
+
+
+   Bases: :py:obj:`src.pypnnomenclature.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 't_nomenclatures'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_nomenclature
+
+      
+
+   .. py:attribute:: id_type
+
+      
+
+   .. py:attribute:: nomenclature_type
+
+      
+
+   .. py:attribute:: cd_nomenclature
+
+      
+
+   .. py:attribute:: mnemonique
+
+      
+
+   .. py:attribute:: label_default
+
+      
+
+   .. py:attribute:: definition_default
+
+      
+
+   .. py:attribute:: label_fr
+
+      
+
+   .. py:attribute:: definition_fr
+
+      
+
+   .. py:attribute:: label_en
+
+      
+
+   .. py:attribute:: definition_en
+
+      
+
+   .. py:attribute:: label_es
+
+      
+
+   .. py:attribute:: definition_es
+
+      
+
+   .. py:attribute:: label_de
+
+      
+
+   .. py:attribute:: definition_de
+
+      
+
+   .. py:attribute:: label_it
+
+      
+
+   .. py:attribute:: definition_it
+
+      
+
+   .. py:attribute:: source
+
+      
+
+   .. py:attribute:: statut
+
+      
+
+   .. py:attribute:: id_broader
+
+      
+
+   .. py:attribute:: hierarchy
+
+      
+
+   .. py:attribute:: active
+
+      
+
+   .. py:attribute:: meta_create_date
+
+      
+
+   .. py:attribute:: meta_update_date
+
+      
+
+   .. py:method:: get_default_nomenclature(mnemonique, id_organism=0)
+      :staticmethod:
+
+
+
+.. py:class:: TNomenclatureTaxonomy
+
+
+   Bases: :py:obj:`TNomenclatures`
+
+   Hérite de TNomenclatures, rajoute une relation vers CorTaxrefNomenclature
+
+   .. py:attribute:: taxref
+
+      
+
+
+.. py:class:: BibNomenclaturesTypes
+
+
+   Bases: :py:obj:`src.pypnnomenclature.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'bib_nomenclatures_types'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_type
+
+      
+
+   .. py:attribute:: mnemonique
+
+      
+
+   .. py:attribute:: label_default
+
+      
+
+   .. py:attribute:: definition_default
+
+      
+
+   .. py:attribute:: label_fr
+
+      
+
+   .. py:attribute:: definition_fr
+
+      
+
+   .. py:attribute:: label_en
+
+      
+
+   .. py:attribute:: definition_en
+
+      
+
+   .. py:attribute:: label_es
+
+      
+
+   .. py:attribute:: definition_es
+
+      
+
+   .. py:attribute:: label_de
+
+      
+
+   .. py:attribute:: definition_de
+
+      
+
+   .. py:attribute:: label_it
+
+      
+
+   .. py:attribute:: definition_it
+
+      
+
+   .. py:attribute:: source
+
+      
+
+   .. py:attribute:: statut
+
+      
+
+   .. py:attribute:: meta_create_date
+
+      
+
+   .. py:attribute:: meta_update_date
+
+      
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+   .. py:method:: get_default_nomenclature(mnemonique, id_organism=0)
+      :staticmethod:
+
+
+
+.. py:class:: BibNomenclaturesTypeTaxo
+
+
+   Bases: :py:obj:`BibNomenclaturesTypes`
+
+   Hérite de BibNomenclaturesTypes, rajoute simplement une relation vers 'nomenclature' avec la jointure vers la taxonomie
+
+   .. py:attribute:: taxonomic_nomenclatures
+
+      
+
+
+.. py:class:: VNomenclatureTaxonomie
+
+
+   Bases: :py:obj:`src.pypnnomenclature.env.db.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'v_nomenclature_taxonomie'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_type
+
+      
+
+   .. py:attribute:: type_label
+
+      
+
+   .. py:attribute:: type_definition
+
+      
+
+   .. py:attribute:: type_label_fr
+
+      
+
+   .. py:attribute:: type_definition_fr
+
+      
+
+   .. py:attribute:: type_label_en
+
+      
+
+   .. py:attribute:: type_definition_en
+
+      
+
+   .. py:attribute:: type_label_es
+
+      
+
+   .. py:attribute:: type_definition_es
+
+      
+
+   .. py:attribute:: type_label_de
+
+      
+
+   .. py:attribute:: type_definition_de
+
+      
+
+   .. py:attribute:: type_label_it
+
+      
+
+   .. py:attribute:: type_definition_it
+
+      
+
+   .. py:attribute:: regne
+
+      
+
+   .. py:attribute:: group2_inpn
+
+      
+
+   .. py:attribute:: group3_inpn
+
+      
+
+   .. py:attribute:: id_nomenclature
+
+      
+
+   .. py:attribute:: mnemonique
+
+      
+
+   .. py:attribute:: nomenclature_label
+
+      
+
+   .. py:attribute:: nomenclature_definition
+
+      
+
+   .. py:attribute:: nomenclature_label_fr
+
+      
+
+   .. py:attribute:: nomenclature_definition_fr
+
+      
+
+   .. py:attribute:: nomenclature_label_en
+
+      
+
+   .. py:attribute:: nomenclature_definition_en
+
+      
+
+   .. py:attribute:: nomenclature_label_es
+
+      
+
+   .. py:attribute:: nomenclature_definition_es
+
+      
+
+   .. py:attribute:: nomenclature_label_de
+
+      
+
+   .. py:attribute:: nomenclature_definition_de
+
+      
+
+   .. py:attribute:: nomenclature_label_it
+
+      
+
+   .. py:attribute:: nomenclature_definition_it
+
+      
+
+   .. py:attribute:: id_broader
+
+      
+
+   .. py:attribute:: hierarchy
+
+      
+
+

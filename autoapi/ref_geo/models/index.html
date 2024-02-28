@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ref_geo.models &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ref_geo.models</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/ref_geo/models/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-ref_geo.models">
+<span id="ref-geo-models"></span><h1><a class="reference internal" href="#module-ref_geo.models" title="ref_geo.models"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ref_geo.models</span></code></a><a class="headerlink" href="#module-ref_geo.models" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ref_geo.models.BibAreasTypes" title="ref_geo.models.BibAreasTypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibAreasTypes</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ref_geo.models.LAreas" title="ref_geo.models.LAreas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LAreas</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ref_geo.models.BibLinearsTypes" title="ref_geo.models.BibLinearsTypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibLinearsTypes</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ref_geo.models.LLinears" title="ref_geo.models.LLinears"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LLinears</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ref_geo.models.TLinearGroups" title="ref_geo.models.TLinearGroups"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TLinearGroups</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ref_geo.models.BibPointsTypes" title="ref_geo.models.BibPointsTypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibPointsTypes</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ref_geo.models.LPoints" title="ref_geo.models.LPoints"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LPoints</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ref_geo.models.LiMunicipalities" title="ref_geo.models.LiMunicipalities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LiMunicipalities</span></code></a></p></td>
+<td><p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ref_geo.models.cor_areas" title="ref_geo.models.cor_areas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_areas</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ref_geo.models.cor_linear_group" title="ref_geo.models.cor_linear_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_linear_group</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ref_geo.models.cor_linear_area" title="ref_geo.models.cor_linear_area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cor_linear_area</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="ref_geo.models.BibAreasTypes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ref_geo.models.</span></span><span class="sig-name descname"><span class="pre">BibAreasTypes</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibAreasTypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibAreasTypes" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ref_geo.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibAreasTypes.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_areas_types'</span></em><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibAreasTypes.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibAreasTypes.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibAreasTypes.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibAreasTypes.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibAreasTypes.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibAreasTypes.id_type">
+<span class="sig-name descname"><span class="pre">id_type</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibAreasTypes.id_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibAreasTypes.id_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibAreasTypes.type_name">
+<span class="sig-name descname"><span class="pre">type_name</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibAreasTypes.type_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibAreasTypes.type_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibAreasTypes.type_code">
+<span class="sig-name descname"><span class="pre">type_code</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibAreasTypes.type_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibAreasTypes.type_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibAreasTypes.type_desc">
+<span class="sig-name descname"><span class="pre">type_desc</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibAreasTypes.type_desc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibAreasTypes.type_desc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibAreasTypes.ref_name">
+<span class="sig-name descname"><span class="pre">ref_name</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibAreasTypes.ref_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibAreasTypes.ref_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibAreasTypes.ref_version">
+<span class="sig-name descname"><span class="pre">ref_version</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibAreasTypes.ref_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibAreasTypes.ref_version" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibAreasTypes.num_version">
+<span class="sig-name descname"><span class="pre">num_version</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibAreasTypes.num_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibAreasTypes.num_version" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibAreasTypes.size_hierarchy">
+<span class="sig-name descname"><span class="pre">size_hierarchy</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibAreasTypes.size_hierarchy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibAreasTypes.size_hierarchy" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="ref_geo.models.cor_areas">
+<span class="sig-prename descclassname"><span class="pre">ref_geo.models.</span></span><span class="sig-name descname"><span class="pre">cor_areas</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#cor_areas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.cor_areas" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ref_geo.models.LAreas">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ref_geo.models.</span></span><span class="sig-name descname"><span class="pre">LAreas</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LAreas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LAreas" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ref_geo.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LAreas.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'l_areas'</span></em><a class="reference internal" href="../../../_modules/ref_geo/models.html#LAreas.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LAreas.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LAreas.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LAreas.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LAreas.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LAreas.id_area">
+<span class="sig-name descname"><span class="pre">id_area</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LAreas.id_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LAreas.id_area" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LAreas.id_type">
+<span class="sig-name descname"><span class="pre">id_type</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LAreas.id_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LAreas.id_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LAreas.area_name">
+<span class="sig-name descname"><span class="pre">area_name</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LAreas.area_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LAreas.area_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LAreas.area_code">
+<span class="sig-name descname"><span class="pre">area_code</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LAreas.area_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LAreas.area_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LAreas.geom">
+<span class="sig-name descname"><span class="pre">geom</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LAreas.geom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LAreas.geom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LAreas.centroid">
+<span class="sig-name descname"><span class="pre">centroid</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LAreas.centroid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LAreas.centroid" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LAreas.geom_4326">
+<span class="sig-name descname"><span class="pre">geom_4326</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LAreas.geom_4326"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LAreas.geom_4326" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LAreas.source">
+<span class="sig-name descname"><span class="pre">source</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LAreas.source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LAreas.source" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LAreas.enable">
+<span class="sig-name descname"><span class="pre">enable</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LAreas.enable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LAreas.enable" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LAreas.meta_create_date">
+<span class="sig-name descname"><span class="pre">meta_create_date</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LAreas.meta_create_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LAreas.meta_create_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LAreas.meta_update_date">
+<span class="sig-name descname"><span class="pre">meta_update_date</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LAreas.meta_update_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LAreas.meta_update_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LAreas.area_type">
+<span class="sig-name descname"><span class="pre">area_type</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LAreas.area_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LAreas.area_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LAreas.parent_areas">
+<span class="sig-name descname"><span class="pre">parent_areas</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LAreas.parent_areas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LAreas.parent_areas" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ref_geo.models.BibLinearsTypes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ref_geo.models.</span></span><span class="sig-name descname"><span class="pre">BibLinearsTypes</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibLinearsTypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibLinearsTypes" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ref_geo.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibLinearsTypes.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_linears_types'</span></em><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibLinearsTypes.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibLinearsTypes.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibLinearsTypes.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibLinearsTypes.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibLinearsTypes.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibLinearsTypes.id_type">
+<span class="sig-name descname"><span class="pre">id_type</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibLinearsTypes.id_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibLinearsTypes.id_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibLinearsTypes.type_name">
+<span class="sig-name descname"><span class="pre">type_name</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibLinearsTypes.type_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibLinearsTypes.type_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibLinearsTypes.type_code">
+<span class="sig-name descname"><span class="pre">type_code</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibLinearsTypes.type_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibLinearsTypes.type_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibLinearsTypes.type_desc">
+<span class="sig-name descname"><span class="pre">type_desc</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibLinearsTypes.type_desc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibLinearsTypes.type_desc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibLinearsTypes.ref_name">
+<span class="sig-name descname"><span class="pre">ref_name</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibLinearsTypes.ref_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibLinearsTypes.ref_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibLinearsTypes.ref_version">
+<span class="sig-name descname"><span class="pre">ref_version</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibLinearsTypes.ref_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibLinearsTypes.ref_version" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibLinearsTypes.num_version">
+<span class="sig-name descname"><span class="pre">num_version</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibLinearsTypes.num_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibLinearsTypes.num_version" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="ref_geo.models.cor_linear_group">
+<span class="sig-prename descclassname"><span class="pre">ref_geo.models.</span></span><span class="sig-name descname"><span class="pre">cor_linear_group</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#cor_linear_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.cor_linear_group" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="ref_geo.models.cor_linear_area">
+<span class="sig-prename descclassname"><span class="pre">ref_geo.models.</span></span><span class="sig-name descname"><span class="pre">cor_linear_area</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#cor_linear_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.cor_linear_area" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ref_geo.models.LLinears">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ref_geo.models.</span></span><span class="sig-name descname"><span class="pre">LLinears</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LLinears"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LLinears" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ref_geo.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LLinears.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'l_linears'</span></em><a class="reference internal" href="../../../_modules/ref_geo/models.html#LLinears.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LLinears.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LLinears.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LLinears.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LLinears.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LLinears.id_linear">
+<span class="sig-name descname"><span class="pre">id_linear</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LLinears.id_linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LLinears.id_linear" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LLinears.id_type">
+<span class="sig-name descname"><span class="pre">id_type</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LLinears.id_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LLinears.id_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LLinears.linear_name">
+<span class="sig-name descname"><span class="pre">linear_name</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LLinears.linear_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LLinears.linear_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LLinears.linear_code">
+<span class="sig-name descname"><span class="pre">linear_code</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LLinears.linear_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LLinears.linear_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LLinears.geom">
+<span class="sig-name descname"><span class="pre">geom</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LLinears.geom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LLinears.geom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LLinears.source">
+<span class="sig-name descname"><span class="pre">source</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LLinears.source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LLinears.source" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LLinears.enable">
+<span class="sig-name descname"><span class="pre">enable</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LLinears.enable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LLinears.enable" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LLinears.additional_data">
+<span class="sig-name descname"><span class="pre">additional_data</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LLinears.additional_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LLinears.additional_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LLinears.meta_create_date">
+<span class="sig-name descname"><span class="pre">meta_create_date</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LLinears.meta_create_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LLinears.meta_create_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LLinears.meta_update_date">
+<span class="sig-name descname"><span class="pre">meta_update_date</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LLinears.meta_update_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LLinears.meta_update_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LLinears.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LLinears.type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LLinears.type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LLinears.groups">
+<span class="sig-name descname"><span class="pre">groups</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LLinears.groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LLinears.groups" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LLinears.areas">
+<span class="sig-name descname"><span class="pre">areas</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LLinears.areas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LLinears.areas" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ref_geo.models.TLinearGroups">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ref_geo.models.</span></span><span class="sig-name descname"><span class="pre">TLinearGroups</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#TLinearGroups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.TLinearGroups" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ref_geo.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.TLinearGroups.__table_name__">
+<span class="sig-name descname"><span class="pre">__table_name__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'t_linear_groups'</span></em><a class="reference internal" href="../../../_modules/ref_geo/models.html#TLinearGroups.__table_name__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.TLinearGroups.__table_name__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.TLinearGroups.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#TLinearGroups.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.TLinearGroups.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.TLinearGroups.id_group">
+<span class="sig-name descname"><span class="pre">id_group</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#TLinearGroups.id_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.TLinearGroups.id_group" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.TLinearGroups.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#TLinearGroups.name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.TLinearGroups.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.TLinearGroups.code">
+<span class="sig-name descname"><span class="pre">code</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#TLinearGroups.code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.TLinearGroups.code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ref_geo.models.BibPointsTypes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ref_geo.models.</span></span><span class="sig-name descname"><span class="pre">BibPointsTypes</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibPointsTypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibPointsTypes" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ref_geo.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibPointsTypes.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bib_points_types'</span></em><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibPointsTypes.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibPointsTypes.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibPointsTypes.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibPointsTypes.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibPointsTypes.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibPointsTypes.id_type">
+<span class="sig-name descname"><span class="pre">id_type</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibPointsTypes.id_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibPointsTypes.id_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibPointsTypes.type_name">
+<span class="sig-name descname"><span class="pre">type_name</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibPointsTypes.type_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibPointsTypes.type_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibPointsTypes.type_code">
+<span class="sig-name descname"><span class="pre">type_code</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibPointsTypes.type_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibPointsTypes.type_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibPointsTypes.type_desc">
+<span class="sig-name descname"><span class="pre">type_desc</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibPointsTypes.type_desc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibPointsTypes.type_desc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibPointsTypes.ref_name">
+<span class="sig-name descname"><span class="pre">ref_name</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibPointsTypes.ref_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibPointsTypes.ref_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibPointsTypes.ref_version">
+<span class="sig-name descname"><span class="pre">ref_version</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibPointsTypes.ref_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibPointsTypes.ref_version" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.BibPointsTypes.num_version">
+<span class="sig-name descname"><span class="pre">num_version</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#BibPointsTypes.num_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.BibPointsTypes.num_version" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ref_geo.models.LPoints">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ref_geo.models.</span></span><span class="sig-name descname"><span class="pre">LPoints</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LPoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LPoints" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ref_geo.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LPoints.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'l_points'</span></em><a class="reference internal" href="../../../_modules/ref_geo/models.html#LPoints.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LPoints.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LPoints.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LPoints.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LPoints.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LPoints.id_point">
+<span class="sig-name descname"><span class="pre">id_point</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LPoints.id_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LPoints.id_point" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LPoints.id_type">
+<span class="sig-name descname"><span class="pre">id_type</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LPoints.id_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LPoints.id_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LPoints.point_name">
+<span class="sig-name descname"><span class="pre">point_name</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LPoints.point_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LPoints.point_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LPoints.point_code">
+<span class="sig-name descname"><span class="pre">point_code</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LPoints.point_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LPoints.point_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LPoints.geom">
+<span class="sig-name descname"><span class="pre">geom</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LPoints.geom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LPoints.geom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LPoints.source">
+<span class="sig-name descname"><span class="pre">source</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LPoints.source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LPoints.source" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LPoints.enable">
+<span class="sig-name descname"><span class="pre">enable</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LPoints.enable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LPoints.enable" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LPoints.additional_data">
+<span class="sig-name descname"><span class="pre">additional_data</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LPoints.additional_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LPoints.additional_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LPoints.meta_create_date">
+<span class="sig-name descname"><span class="pre">meta_create_date</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LPoints.meta_create_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LPoints.meta_create_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LPoints.meta_update_date">
+<span class="sig-name descname"><span class="pre">meta_update_date</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LPoints.meta_update_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LPoints.meta_update_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LPoints.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LPoints.type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LPoints.type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LPoints.geom_4326">
+<span class="sig-name descname"><span class="pre">geom_4326</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LPoints.geom_4326"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LPoints.geom_4326" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ref_geo.models.</span></span><span class="sig-name descname"><span class="pre">LiMunicipalities</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ref_geo.env.db.Model</span></code></p>
+<p>The base class of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SQLAlchemy.Model</span></code> declarative model class.</p>
+<p>To define models, subclass <code class="xref py py-attr docutils literal notranslate"><span class="pre">db.Model</span></code>, not this. To
+customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code>, subclass this and pass it as <code class="docutils literal notranslate"><span class="pre">model_class</span></code> to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemy</span></code>. To customize <code class="docutils literal notranslate"><span class="pre">db.Model</span></code> at the metaclass level, pass an
+already created declarative model class as <code class="docutils literal notranslate"><span class="pre">model_class</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.__tablename__">
+<span class="sig-name descname"><span class="pre">__tablename__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'li_municipalities'</span></em><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.__tablename__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.__tablename__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.__table_args__">
+<span class="sig-name descname"><span class="pre">__table_args__</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.__table_args__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.__table_args__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.id_municipality">
+<span class="sig-name descname"><span class="pre">id_municipality</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.id_municipality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.id_municipality" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.id_area">
+<span class="sig-name descname"><span class="pre">id_area</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.id_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.id_area" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.status">
+<span class="sig-name descname"><span class="pre">status</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.insee_com">
+<span class="sig-name descname"><span class="pre">insee_com</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.insee_com"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.insee_com" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.nom_com">
+<span class="sig-name descname"><span class="pre">nom_com</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.nom_com"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.nom_com" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.insee_arr">
+<span class="sig-name descname"><span class="pre">insee_arr</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.insee_arr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.insee_arr" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.nom_dep">
+<span class="sig-name descname"><span class="pre">nom_dep</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.nom_dep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.nom_dep" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.insee_dep">
+<span class="sig-name descname"><span class="pre">insee_dep</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.insee_dep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.insee_dep" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.nom_reg">
+<span class="sig-name descname"><span class="pre">nom_reg</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.nom_reg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.nom_reg" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.insee_reg">
+<span class="sig-name descname"><span class="pre">insee_reg</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.insee_reg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.insee_reg" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.code_epci">
+<span class="sig-name descname"><span class="pre">code_epci</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.code_epci"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.code_epci" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.plani_precision">
+<span class="sig-name descname"><span class="pre">plani_precision</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.plani_precision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.plani_precision" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.siren_code">
+<span class="sig-name descname"><span class="pre">siren_code</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.siren_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.siren_code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.canton">
+<span class="sig-name descname"><span class="pre">canton</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.canton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.canton" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.population">
+<span class="sig-name descname"><span class="pre">population</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.population"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.population" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.multican">
+<span class="sig-name descname"><span class="pre">multican</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.multican"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.multican" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.cc_nom">
+<span class="sig-name descname"><span class="pre">cc_nom</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.cc_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.cc_nom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.cc_siren">
+<span class="sig-name descname"><span class="pre">cc_siren</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.cc_siren"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.cc_siren" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.cc_nature">
+<span class="sig-name descname"><span class="pre">cc_nature</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.cc_nature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.cc_nature" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.cc_date_creation">
+<span class="sig-name descname"><span class="pre">cc_date_creation</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.cc_date_creation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.cc_date_creation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.cc_date_effet">
+<span class="sig-name descname"><span class="pre">cc_date_effet</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.cc_date_effet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.cc_date_effet" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.insee_commune_nouvelle">
+<span class="sig-name descname"><span class="pre">insee_commune_nouvelle</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.insee_commune_nouvelle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.insee_commune_nouvelle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.meta_create_date">
+<span class="sig-name descname"><span class="pre">meta_create_date</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.meta_create_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.meta_create_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.meta_update_date">
+<span class="sig-name descname"><span class="pre">meta_update_date</span></span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.meta_update_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.meta_update_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ref_geo.models.LiMunicipalities.nom_com_dept">
+<span class="sig-name descname"><span class="pre">nom_com_dept</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ref_geo/models.html#LiMunicipalities.nom_com_dept"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ref_geo.models.LiMunicipalities.nom_com_dept" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

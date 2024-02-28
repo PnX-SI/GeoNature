@@ -1,0 +1,48 @@
+:py:mod:`src.utils_flask_sqla.utils`
+====================================
+
+.. py:module:: src.utils_flask_sqla.utils
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla.utils.remote_file
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla.utils.is_already_joined
+
+
+
+.. py:class:: remote_file(url, filename, data_dir=None, logger=None)
+
+
+   Bases: :py:obj:`contextlib.ExitStack`
+
+   Ce contextmanager renvoit le chemin d’accès d’un fichier après l’avoir préalablement téléchargé.
+
+   .. py:method:: __enter__()
+
+      Return `self` upon entering the runtime context.
+
+
+
+.. py:function:: is_already_joined(my_class, query)
+
+   Check if the given class is already present is the current query
+   _class: SQLAlchemy class
+   query: SQLAlchemy query
+   return boolean
+
+

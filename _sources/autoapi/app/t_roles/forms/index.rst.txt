@@ -1,0 +1,140 @@
+:py:mod:`app.t_roles.forms`
+===========================
+
+.. py:module:: app.t_roles.forms
+
+.. autoapi-nested-parse::
+
+   Définition du formulaire : création/modification d'un role
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   app.t_roles.forms.MultiCheckboxField
+   app.t_roles.forms.Utilisateur
+   app.t_roles.forms.UserPass
+
+
+
+
+.. py:class:: MultiCheckboxField(label=None, validators=None, coerce=str, choices=None, validate_choice=True, **kwargs)
+
+
+   Bases: :py:obj:`wtforms.SelectMultipleField`
+
+   No different from a normal select field, except this one can take (and
+   validate) multiple choices.  You'll need to specify the HTML `size`
+   attribute to the select field when rendering.
+
+   .. py:attribute:: widget
+
+      
+
+   .. py:attribute:: option_widget
+
+      
+
+
+.. py:class:: Utilisateur(formdata=_Auto, **kwargs)
+
+
+   Bases: :py:obj:`flask_wtf.FlaskForm`
+
+   Flask-specific subclass of WTForms :class:`~wtforms.form.Form`.
+
+   If ``formdata`` is not specified, this will use :attr:`flask.request.form`
+   and :attr:`flask.request.files`.  Explicitly pass ``formdata=None`` to
+   prevent this.
+
+   .. py:attribute:: active
+
+      
+
+   .. py:attribute:: nom_role
+
+      
+
+   .. py:attribute:: prenom_role
+
+      
+
+   .. py:attribute:: desc_role
+
+      
+
+   .. py:attribute:: id_organisme
+
+      
+
+   .. py:attribute:: a_groupe
+
+      
+
+   .. py:attribute:: identifiant
+
+      
+
+   .. py:attribute:: pass_plus
+
+      
+
+   .. py:attribute:: mdpconf
+
+      
+
+   .. py:attribute:: email
+
+      
+
+   .. py:attribute:: groupe
+
+      
+
+   .. py:attribute:: remarques
+
+      
+
+   .. py:attribute:: id_role
+
+      
+
+   .. py:attribute:: submit
+
+      
+
+
+.. py:class:: UserPass(formdata=_Auto, **kwargs)
+
+
+   Bases: :py:obj:`flask_wtf.FlaskForm`
+
+   Flask-specific subclass of WTForms :class:`~wtforms.form.Form`.
+
+   If ``formdata`` is not specified, this will use :attr:`flask.request.form`
+   and :attr:`flask.request.files`.  Explicitly pass ``formdata=None`` to
+   prevent this.
+
+   .. py:attribute:: pass_plus
+
+      
+
+   .. py:attribute:: mdpconf
+
+      
+
+   .. py:attribute:: id_role
+
+      
+
+   .. py:attribute:: submit
+
+      
+
+

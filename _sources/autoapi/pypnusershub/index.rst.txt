@@ -1,0 +1,40 @@
+:py:mod:`pypnusershub`
+======================
+
+.. py:module:: pypnusershub
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   db/index.rst
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   __main__/index.rst
+   decorators/index.rst
+   env/index.rst
+   login_manager/index.rst
+   routes/index.rst
+   routes_register/index.rst
+   schemas/index.rst
+   test_settings/index.rst
+   utils/index.rst
+
+
+Package Contents
+----------------
+
+.. py:data:: __version__
+   :value: '1.4.5.dev0'
+
+   
+

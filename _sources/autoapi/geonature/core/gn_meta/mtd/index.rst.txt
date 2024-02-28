@@ -1,0 +1,347 @@
+:py:mod:`geonature.core.gn_meta.mtd`
+====================================
+
+.. py:module:: geonature.core.gn_meta.mtd
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   mtd_utils/index.rst
+   mtd_webservice/index.rst
+   xml_parser/index.rst
+
+
+Package Contents
+----------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_meta.mtd.CorAcquisitionFrameworkActor
+   geonature.core.gn_meta.mtd.CorDatasetActor
+   geonature.core.gn_meta.mtd.MTDInstanceApi
+   geonature.core.gn_meta.mtd.INPNCAS
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_meta.mtd.insert_user_and_org
+   geonature.core.gn_meta.mtd.associate_actors
+   geonature.core.gn_meta.mtd.sync_af
+   geonature.core.gn_meta.mtd.sync_ds
+   geonature.core.gn_meta.mtd.parse_acquisition_framework
+   geonature.core.gn_meta.mtd.parse_acquisition_framwork_xml
+   geonature.core.gn_meta.mtd.parse_jdd_xml
+   geonature.core.gn_meta.mtd.add_unexisting_digitizer
+   geonature.core.gn_meta.mtd.process_af_and_ds
+   geonature.core.gn_meta.mtd.sync_af_and_ds
+   geonature.core.gn_meta.mtd.sync_af_and_ds_by_user
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_meta.mtd.config
+   geonature.core.gn_meta.mtd.logger
+   geonature.core.gn_meta.mtd.handler
+   geonature.core.gn_meta.mtd.formatter
+
+
+.. py:function:: insert_user_and_org(info_user)
+
+
+.. py:class:: CorAcquisitionFrameworkActor
+
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_acquisition_framework_actor'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_cafa
+
+      
+
+   .. py:attribute:: id_acquisition_framework
+
+      
+
+   .. py:attribute:: id_role
+
+      
+
+   .. py:attribute:: id_organism
+
+      
+
+   .. py:attribute:: id_nomenclature_actor_role
+
+      
+
+   .. py:attribute:: nomenclature_actor_role
+
+      
+
+   .. py:attribute:: role
+
+      
+
+   .. py:attribute:: organism
+
+      
+
+
+.. py:class:: CorDatasetActor
+
+
+   Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+   .. py:attribute:: __tablename__
+      :value: 'cor_dataset_actor'
+
+      
+
+   .. py:attribute:: __table_args__
+
+      
+
+   .. py:attribute:: id_cda
+
+      
+
+   .. py:attribute:: id_dataset
+
+      
+
+   .. py:attribute:: id_role
+
+      
+
+   .. py:attribute:: id_organism
+
+      
+
+   .. py:attribute:: id_nomenclature_actor_role
+
+      
+
+   .. py:attribute:: nomenclature_actor_role
+
+      
+
+   .. py:attribute:: role
+
+      
+
+   .. py:attribute:: organism
+
+      
+
+   .. py:method:: actor()
+
+
+   .. py:method:: display()
+
+
+
+.. py:data:: config
+
+   
+
+.. py:function:: associate_actors(actors, CorActor, pk_name, pk_value)
+
+   Associate actor and DS or AF according to CorActor value.
+
+   Parameters
+   ----------
+   actors : list
+       list of actors
+   CorActor : db.Model
+       table model
+   pk_name : str
+       pk attribute name
+   pk_value : str
+       pk value
+
+
+.. py:function:: sync_af(af)
+
+   Will create or update a given AF according to UUID.
+
+   :param af: dict AF infos
+
+
+.. py:function:: sync_ds(ds, cd_nomenclatures)
+
+   Will create or update a given DS according to UUID.
+   Only process DS if dataset's cd_nomenclatures exists in ref_normenclatures.t_nomenclatures.
+
+   :param ds: <dict> DS infos
+   :param cd_nomenclatures: <array> cd_nomenclature from ref_normenclatures.t_nomenclatures
+
+
+.. py:function:: parse_acquisition_framework(ca)
+
+
+.. py:function:: parse_acquisition_framwork_xml(xml)
+
+   Parse an xml of AF from a string
+   Return:
+       dict: a dict of the parsed xml
+
+
+.. py:function:: parse_jdd_xml(xml)
+
+   Parse an xml of datasets from a string
+   Return:
+       list: a list of dict of the JDD in the xml
+
+
+.. py:data:: logger
+
+   
+
+.. py:data:: handler
+
+   
+
+.. py:data:: formatter
+
+   
+
+.. py:class:: MTDInstanceApi(api_endpoint, instance_id, id_role=None)
+
+
+   .. py:attribute:: af_path
+      :value: '/mtd/cadre/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}'
+
+      
+
+   .. py:attribute:: ds_path
+      :value: '/mtd/cadre/jdd/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}'
+
+      
+
+   .. py:attribute:: ds_user_path
+      :value: '/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id={ID_ROLE}'
+
+      
+
+   .. py:attribute:: single_af_path
+      :value: '/mtd/cadre/export/xml/GetRecordById?id={ID_AF}'
+
+      
+
+   .. py:method:: _get_xml_by_url(url)
+
+
+   .. py:method:: _get_xml(path)
+
+
+   .. py:method:: _get_af_xml()
+
+
+   .. py:method:: get_af_list()
+
+
+   .. py:method:: _get_ds_xml()
+
+
+   .. py:method:: get_ds_list()
+
+
+   .. py:method:: get_ds_user_list()
+
+
+   .. py:method:: get_user_af_list(af_uuid)
+
+
+
+.. py:class:: INPNCAS
+
+
+   .. py:attribute:: base_url
+
+      
+
+   .. py:attribute:: user
+
+      
+
+   .. py:attribute:: password
+
+      
+
+   .. py:attribute:: id_search_path
+      :value: 'rechercheParId/{user_id}'
+
+      
+
+   .. py:method:: _get_user_json(user_id)
+      :classmethod:
+
+
+   .. py:method:: get_user(user_id)
+      :classmethod:
+
+
+
+.. py:function:: add_unexisting_digitizer(id_digitizer)
+
+   Method to trigger global MTD sync.
+
+   :param id_digitizer: as id role from meta info
+
+
+.. py:function:: process_af_and_ds(af_list, ds_list, id_role=None)
+
+   Synchro AF<array>, Synchro DS<array>
+
+   :param af_list: list af
+   :param ds_list: list ds
+   :param id_role: use role id pass on user authent only
+
+
+.. py:function:: sync_af_and_ds()
+
+   Method to trigger global MTD sync.
+
+
+.. py:function:: sync_af_and_ds_by_user(id_role)
+
+   Method to trigger MTD sync on user authent.
+
+

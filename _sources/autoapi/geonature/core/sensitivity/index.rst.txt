@@ -1,0 +1,17 @@
+:py:mod:`geonature.core.sensitivity`
+====================================
+
+.. py:module:: geonature.core.sensitivity
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   models/index.rst
+   routes/index.rst
+   utils/index.rst
+
+

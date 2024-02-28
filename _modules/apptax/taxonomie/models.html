@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>apptax.taxonomie.models &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">apptax.taxonomie.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de apptax.taxonomie.models</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os.path</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span>
+<span class="kn">from</span> <span class="nn">flask_sqlalchemy</span> <span class="kn">import</span> <span class="n">SQLAlchemy</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.ext.hybrid</span> <span class="kn">import</span> <span class="n">hybrid_property</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.schema</span> <span class="kn">import</span> <span class="n">FetchedValue</span>
+
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.serializers</span> <span class="kn">import</span> <span class="n">serializable</span>
+<span class="kn">from</span> <span class="nn">ref_geo.models</span> <span class="kn">import</span> <span class="n">LAreas</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">db</span>
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibNoms">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibNoms">[docs]</a>
+<span class="k">class</span> <span class="nc">BibNoms</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibNoms.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibNoms.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_noms&quot;</span></div>
+
+<div class="viewcode-block" id="BibNoms.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibNoms.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BibNoms.id_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibNoms.id_nom">[docs]</a>
+    <span class="n">id_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibNoms.cd_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibNoms.cd_nom">[docs]</a>
+    <span class="n">cd_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;taxonomie.taxref.cd_nom&quot;</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibNoms.cd_ref">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibNoms.cd_ref">[docs]</a>
+    <span class="n">cd_ref</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibNoms.nom_francais">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibNoms.nom_francais">[docs]</a>
+    <span class="n">nom_francais</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibNoms.comments">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibNoms.comments">[docs]</a>
+    <span class="n">comments</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BibNoms.taxref">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibNoms.taxref">[docs]</a>
+    <span class="n">taxref</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;Taxref&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;bib_nom&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibNoms.attributs">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibNoms.attributs">[docs]</a>
+    <span class="n">attributs</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;CorTaxonAttribut&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;bib_nom&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibNoms.listes">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibNoms.listes">[docs]</a>
+    <span class="n">listes</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;CorNomListe&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;bib_nom&quot;</span><span class="p">)</span></div>
+
+    <span class="c1"># medias relationship defined through backref</span>
+
+<div class="viewcode-block" id="BibNoms.__repr__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibNoms.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;BibNoms </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nom_francais</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="CorTaxonAttribut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorTaxonAttribut">[docs]</a>
+<span class="k">class</span> <span class="nc">CorTaxonAttribut</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="CorTaxonAttribut.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorTaxonAttribut.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;cor_taxon_attribut&quot;</span></div>
+
+<div class="viewcode-block" id="CorTaxonAttribut.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorTaxonAttribut.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="CorTaxonAttribut.id_attribut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorTaxonAttribut.id_attribut">[docs]</a>
+    <span class="n">id_attribut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;taxonomie.bib_attributs.id_attribut&quot;</span><span class="p">),</span>
+        <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorTaxonAttribut.cd_ref">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorTaxonAttribut.cd_ref">[docs]</a>
+    <span class="n">cd_ref</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;taxonomie.bib_noms.cd_ref&quot;</span><span class="p">),</span>
+        <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorTaxonAttribut.valeur_attribut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorTaxonAttribut.valeur_attribut">[docs]</a>
+    <span class="n">valeur_attribut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorTaxonAttribut.bib_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorTaxonAttribut.bib_nom">[docs]</a>
+    <span class="n">bib_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;BibNoms&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;attributs&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorTaxonAttribut.bib_attribut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorTaxonAttribut.bib_attribut">[docs]</a>
+    <span class="n">bib_attribut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;BibAttributs&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CorTaxonAttribut.__repr__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorTaxonAttribut.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;CorTaxonAttribut </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">valeur_attribut</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibThemes">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibThemes">[docs]</a>
+<span class="k">class</span> <span class="nc">BibThemes</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibThemes.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibThemes.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_themes&quot;</span></div>
+
+<div class="viewcode-block" id="BibThemes.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibThemes.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BibThemes.id_theme">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibThemes.id_theme">[docs]</a>
+    <span class="n">id_theme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibThemes.nom_theme">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibThemes.nom_theme">[docs]</a>
+    <span class="n">nom_theme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibThemes.desc_theme">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibThemes.desc_theme">[docs]</a>
+    <span class="n">desc_theme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibThemes.ordre">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibThemes.ordre">[docs]</a>
+    <span class="n">ordre</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibThemes.id_droit">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibThemes.id_droit">[docs]</a>
+    <span class="n">id_droit</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibThemes.attributs">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibThemes.attributs">[docs]</a>
+    <span class="n">attributs</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;BibAttributs&quot;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;theme&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BibThemes.__repr__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibThemes.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;BibThemes </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nom_theme</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibAttributs">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs">[docs]</a>
+<span class="k">class</span> <span class="nc">BibAttributs</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibAttributs.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_attributs&quot;</span></div>
+
+<div class="viewcode-block" id="BibAttributs.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BibAttributs.id_attribut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs.id_attribut">[docs]</a>
+    <span class="n">id_attribut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAttributs.nom_attribut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs.nom_attribut">[docs]</a>
+    <span class="n">nom_attribut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAttributs.label_attribut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs.label_attribut">[docs]</a>
+    <span class="n">label_attribut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAttributs.liste_valeur_attribut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs.liste_valeur_attribut">[docs]</a>
+    <span class="n">liste_valeur_attribut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAttributs.obligatoire">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs.obligatoire">[docs]</a>
+    <span class="n">obligatoire</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">BOOLEAN</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">server_default</span><span class="o">=</span><span class="n">FetchedValue</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="BibAttributs.desc_attribut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs.desc_attribut">[docs]</a>
+    <span class="n">desc_attribut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAttributs.type_attribut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs.type_attribut">[docs]</a>
+    <span class="n">type_attribut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAttributs.type_widget">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs.type_widget">[docs]</a>
+    <span class="n">type_widget</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAttributs.regne">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs.regne">[docs]</a>
+    <span class="n">regne</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAttributs.group2_inpn">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs.group2_inpn">[docs]</a>
+    <span class="n">group2_inpn</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAttributs.id_theme">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs.id_theme">[docs]</a>
+    <span class="n">id_theme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="n">BibThemes</span><span class="o">.</span><span class="n">id_theme</span><span class="p">),</span>
+        <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAttributs.ordre">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs.ordre">[docs]</a>
+    <span class="n">ordre</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibAttributs.theme">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs.theme">[docs]</a>
+    <span class="n">theme</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">BibThemes</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;attributs&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BibAttributs.__repr__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibAttributs.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;BibAttributs </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nom_attribut</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;nom_vern_or_lb_nom&quot;</span><span class="p">])</span>
+<div class="viewcode-block" id="Taxref">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref">[docs]</a>
+<span class="k">class</span> <span class="nc">Taxref</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="Taxref.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;taxref&quot;</span></div>
+
+<div class="viewcode-block" id="Taxref.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="Taxref.cd_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.cd_nom">[docs]</a>
+    <span class="n">cd_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.id_statut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.id_statut">[docs]</a>
+    <span class="n">id_statut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.id_habitat">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.id_habitat">[docs]</a>
+    <span class="n">id_habitat</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.id_rang">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.id_rang">[docs]</a>
+    <span class="n">id_rang</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.regne">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.regne">[docs]</a>
+    <span class="n">regne</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.phylum">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.phylum">[docs]</a>
+    <span class="n">phylum</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.classe">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.classe">[docs]</a>
+    <span class="n">classe</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+    <span class="n">regne</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span>
+<div class="viewcode-block" id="Taxref.ordre">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.ordre">[docs]</a>
+    <span class="n">ordre</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.famille">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.famille">[docs]</a>
+    <span class="n">famille</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.sous_famille">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.sous_famille">[docs]</a>
+    <span class="n">sous_famille</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.tribu">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.tribu">[docs]</a>
+    <span class="n">tribu</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.cd_taxsup">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.cd_taxsup">[docs]</a>
+    <span class="n">cd_taxsup</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.cd_sup">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.cd_sup">[docs]</a>
+    <span class="n">cd_sup</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.cd_ref">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.cd_ref">[docs]</a>
+    <span class="n">cd_ref</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.lb_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.lb_nom">[docs]</a>
+    <span class="n">lb_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.lb_auteur">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.lb_auteur">[docs]</a>
+    <span class="n">lb_auteur</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.nom_complet">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.nom_complet">[docs]</a>
+    <span class="n">nom_complet</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.nom_complet_html">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.nom_complet_html">[docs]</a>
+    <span class="n">nom_complet_html</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.nom_vern">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.nom_vern">[docs]</a>
+    <span class="n">nom_vern</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.nom_valide">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.nom_valide">[docs]</a>
+    <span class="n">nom_valide</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.nom_vern_eng">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.nom_vern_eng">[docs]</a>
+    <span class="n">nom_vern_eng</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.group1_inpn">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.group1_inpn">[docs]</a>
+    <span class="n">group1_inpn</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.group2_inpn">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.group2_inpn">[docs]</a>
+    <span class="n">group2_inpn</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.group3_inpn">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.group3_inpn">[docs]</a>
+    <span class="n">group3_inpn</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Taxref.url">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.url">[docs]</a>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Taxref.bib_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.bib_nom">[docs]</a>
+    <span class="n">bib_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">BibNoms</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;taxref&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@hybrid_property</span>
+<div class="viewcode-block" id="Taxref.nom_vern_or_lb_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.nom_vern_or_lb_nom">[docs]</a>
+    <span class="k">def</span> <span class="nf">nom_vern_or_lb_nom</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nom_vern</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nom_vern</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">lb_nom</span></div>
+
+
+    <span class="nd">@nom_vern_or_lb_nom</span><span class="o">.</span><span class="n">expression</span>
+    <span class="k">def</span> <span class="nf">nom_vern_or_lb_nom</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">coalesce</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">nom_vern</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">lb_nom</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Taxref.__repr__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.Taxref.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;Taxref </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nom_complet</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="CorNomListe">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorNomListe">[docs]</a>
+<span class="k">class</span> <span class="nc">CorNomListe</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="CorNomListe.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorNomListe.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;cor_nom_liste&quot;</span></div>
+
+<div class="viewcode-block" id="CorNomListe.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorNomListe.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="CorNomListe.id_liste">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorNomListe.id_liste">[docs]</a>
+    <span class="n">id_liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;taxonomie.bib_listes.id_liste&quot;</span><span class="p">),</span>
+        <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorNomListe.id_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorNomListe.id_nom">[docs]</a>
+    <span class="n">id_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;taxonomie.bib_noms.id_nom&quot;</span><span class="p">),</span>
+        <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorNomListe.bib_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorNomListe.bib_nom">[docs]</a>
+    <span class="n">bib_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">BibNoms</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;listes&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorNomListe.bib_liste">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorNomListe.bib_liste">[docs]</a>
+    <span class="n">bib_liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;BibListes&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;cnl&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CorNomListe.__repr__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.CorNomListe.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;CorNomListe </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id_liste</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibListes">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibListes">[docs]</a>
+<span class="k">class</span> <span class="nc">BibListes</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibListes.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibListes.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_listes&quot;</span></div>
+
+<div class="viewcode-block" id="BibListes.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibListes.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BibListes.id_liste">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibListes.id_liste">[docs]</a>
+    <span class="n">id_liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibListes.code_liste">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibListes.code_liste">[docs]</a>
+    <span class="n">code_liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibListes.nom_liste">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibListes.nom_liste">[docs]</a>
+    <span class="n">nom_liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibListes.desc_liste">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibListes.desc_liste">[docs]</a>
+    <span class="n">desc_liste</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibListes.picto">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibListes.picto">[docs]</a>
+    <span class="n">picto</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibListes.regne">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibListes.regne">[docs]</a>
+    <span class="n">regne</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibListes.group2_inpn">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibListes.group2_inpn">[docs]</a>
+    <span class="n">group2_inpn</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BibListes.cnl">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibListes.cnl">[docs]</a>
+    <span class="n">cnl</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">CorNomListe</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;bib_liste&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibListes.noms">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibListes.noms">[docs]</a>
+    <span class="n">noms</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="s2">&quot;BibNoms&quot;</span><span class="p">,</span> <span class="n">secondary</span><span class="o">=</span><span class="n">CorNomListe</span><span class="o">.</span><span class="n">__table__</span><span class="p">,</span> <span class="n">overlaps</span><span class="o">=</span><span class="s2">&quot;bib_nom,listes,bib_liste,cnl&quot;</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BibListes.__repr__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibListes.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;BibListes </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nom_liste</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibTypesMedia">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTypesMedia">[docs]</a>
+<span class="k">class</span> <span class="nc">BibTypesMedia</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibTypesMedia.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTypesMedia.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_types_media&quot;</span></div>
+
+<div class="viewcode-block" id="BibTypesMedia.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTypesMedia.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BibTypesMedia.id_type">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTypesMedia.id_type">[docs]</a>
+    <span class="n">id_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibTypesMedia.nom_type_media">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTypesMedia.nom_type_media">[docs]</a>
+    <span class="n">nom_type_media</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibTypesMedia.desc_type_media">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTypesMedia.desc_type_media">[docs]</a>
+    <span class="n">desc_type_media</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BibTypesMedia.__repr__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTypesMedia.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;BibTypesMedia </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nom_type_media</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TMedias">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias">[docs]</a>
+<span class="k">class</span> <span class="nc">TMedias</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="TMedias.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_medias&quot;</span></div>
+
+<div class="viewcode-block" id="TMedias.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TMedias.id_media">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.id_media">[docs]</a>
+    <span class="n">id_media</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.cd_ref">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.cd_ref">[docs]</a>
+    <span class="n">cd_ref</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="n">BibNoms</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">),</span>
+        <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.titre">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.titre">[docs]</a>
+    <span class="n">titre</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.url">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.url">[docs]</a>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.chemin">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.chemin">[docs]</a>
+    <span class="n">chemin</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.auteur">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.auteur">[docs]</a>
+    <span class="n">auteur</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.desc_media">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.desc_media">[docs]</a>
+    <span class="n">desc_media</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.source">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.source">[docs]</a>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.licence">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.licence">[docs]</a>
+    <span class="n">licence</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.is_public">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.is_public">[docs]</a>
+    <span class="n">is_public</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">BOOLEAN</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.supprime">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.supprime">[docs]</a>
+    <span class="n">supprime</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">BOOLEAN</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.id_type">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.id_type">[docs]</a>
+    <span class="n">id_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="n">BibTypesMedia</span><span class="o">.</span><span class="n">id_type</span><span class="p">),</span>
+        <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TMedias.types">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.types">[docs]</a>
+    <span class="n">types</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">BibTypesMedia</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMedias.bib_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.bib_nom">[docs]</a>
+    <span class="n">bib_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">BibNoms</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s2">&quot;medias&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TMedias.__repr__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMedias.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;TMedias </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">titre</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="VMTaxrefListForautocomplete">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefListForautocomplete">[docs]</a>
+<span class="k">class</span> <span class="nc">VMTaxrefListForautocomplete</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="VMTaxrefListForautocomplete.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefListForautocomplete.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;vm_taxref_list_forautocomplete&quot;</span></div>
+
+<div class="viewcode-block" id="VMTaxrefListForautocomplete.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefListForautocomplete.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="VMTaxrefListForautocomplete.gid">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefListForautocomplete.gid">[docs]</a>
+    <span class="n">gid</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefListForautocomplete.cd_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefListForautocomplete.cd_nom">[docs]</a>
+    <span class="n">cd_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Taxref</span><span class="o">.</span><span class="n">cd_nom</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="VMTaxrefListForautocomplete.search_name">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefListForautocomplete.search_name">[docs]</a>
+    <span class="n">search_name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefListForautocomplete.unaccent_search_name">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefListForautocomplete.unaccent_search_name">[docs]</a>
+    <span class="n">unaccent_search_name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefListForautocomplete.cd_ref">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefListForautocomplete.cd_ref">[docs]</a>
+    <span class="n">cd_ref</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefListForautocomplete.nom_valide">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefListForautocomplete.nom_valide">[docs]</a>
+    <span class="n">nom_valide</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefListForautocomplete.lb_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefListForautocomplete.lb_nom">[docs]</a>
+    <span class="n">lb_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefListForautocomplete.nom_vern">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefListForautocomplete.nom_vern">[docs]</a>
+    <span class="n">nom_vern</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefListForautocomplete.regne">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefListForautocomplete.regne">[docs]</a>
+    <span class="n">regne</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefListForautocomplete.group2_inpn">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefListForautocomplete.group2_inpn">[docs]</a>
+    <span class="n">group2_inpn</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefListForautocomplete.group3_inpn">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefListForautocomplete.group3_inpn">[docs]</a>
+    <span class="n">group3_inpn</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VMTaxrefListForautocomplete.__repr__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefListForautocomplete.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;VMTaxrefListForautocomplete </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">search_name</span><span class="si">}</span><span class="s2"> &gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibTaxrefHabitats">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefHabitats">[docs]</a>
+<span class="k">class</span> <span class="nc">BibTaxrefHabitats</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibTaxrefHabitats.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefHabitats.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_taxref_habitats&quot;</span></div>
+
+<div class="viewcode-block" id="BibTaxrefHabitats.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefHabitats.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BibTaxrefHabitats.id_habitat">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefHabitats.id_habitat">[docs]</a>
+    <span class="n">id_habitat</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibTaxrefHabitats.nom_habitat">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefHabitats.nom_habitat">[docs]</a>
+    <span class="n">nom_habitat</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibTaxrefHabitats.desc_habitat">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefHabitats.desc_habitat">[docs]</a>
+    <span class="n">desc_habitat</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BibTaxrefHabitats.__repr__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefHabitats.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;BibTaxrefHabitats </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nom_habitat</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibTaxrefRangs">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefRangs">[docs]</a>
+<span class="k">class</span> <span class="nc">BibTaxrefRangs</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibTaxrefRangs.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefRangs.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_taxref_rangs&quot;</span></div>
+
+<div class="viewcode-block" id="BibTaxrefRangs.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefRangs.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BibTaxrefRangs.id_rang">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefRangs.id_rang">[docs]</a>
+    <span class="n">id_rang</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibTaxrefRangs.nom_rang">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefRangs.nom_rang">[docs]</a>
+    <span class="n">nom_rang</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibTaxrefRangs.tri_rang">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefRangs.tri_rang">[docs]</a>
+    <span class="n">tri_rang</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BibTaxrefRangs.__repr__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefRangs.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;BibTaxrefRangs </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nom_rang</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="BibTaxrefStatus">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefStatus">[docs]</a>
+<span class="k">class</span> <span class="nc">BibTaxrefStatus</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="BibTaxrefStatus.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefStatus.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bib_taxref_statuts&quot;</span></div>
+
+<div class="viewcode-block" id="BibTaxrefStatus.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefStatus.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BibTaxrefStatus.id_statut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefStatus.id_statut">[docs]</a>
+    <span class="n">id_statut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BibTaxrefStatus.nom_statut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefStatus.nom_statut">[docs]</a>
+    <span class="n">nom_statut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BibTaxrefStatus.__repr__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.BibTaxrefStatus.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;BibTaxrefStatus </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nom_statut</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="VMTaxrefHierarchie">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie">[docs]</a>
+<span class="k">class</span> <span class="nc">VMTaxrefHierarchie</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="VMTaxrefHierarchie.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;vm_taxref_hierarchie&quot;</span></div>
+
+<div class="viewcode-block" id="VMTaxrefHierarchie.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="VMTaxrefHierarchie.cd_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.cd_nom">[docs]</a>
+    <span class="n">cd_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefHierarchie.cd_ref">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.cd_ref">[docs]</a>
+    <span class="n">cd_ref</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefHierarchie.regne">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.regne">[docs]</a>
+    <span class="n">regne</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefHierarchie.phylum">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.phylum">[docs]</a>
+    <span class="n">phylum</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefHierarchie.classe">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.classe">[docs]</a>
+    <span class="n">classe</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefHierarchie.ordre">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.ordre">[docs]</a>
+    <span class="n">ordre</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefHierarchie.famille">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.famille">[docs]</a>
+    <span class="n">famille</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefHierarchie.lb_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.lb_nom">[docs]</a>
+    <span class="n">lb_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefHierarchie.id_rang">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.id_rang">[docs]</a>
+    <span class="n">id_rang</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefHierarchie.nb_tx_fm">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.nb_tx_fm">[docs]</a>
+    <span class="n">nb_tx_fm</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefHierarchie.nb_tx_or">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.nb_tx_or">[docs]</a>
+    <span class="n">nb_tx_or</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefHierarchie.nb_tx_cl">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.nb_tx_cl">[docs]</a>
+    <span class="n">nb_tx_cl</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefHierarchie.nb_tx_ph">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.nb_tx_ph">[docs]</a>
+    <span class="n">nb_tx_ph</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VMTaxrefHierarchie.nb_tx_kd">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.nb_tx_kd">[docs]</a>
+    <span class="n">nb_tx_kd</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VMTaxrefHierarchie.__repr__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VMTaxrefHierarchie.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;VMTaxrefHierarchie </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lb_nom</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons">[docs]</a>
+<span class="k">class</span> <span class="nc">VTaxrefHierarchieBibtaxons</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;v_taxref_hierarchie_bibtaxons&quot;</span></div>
+
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons.cd_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.cd_nom">[docs]</a>
+    <span class="n">cd_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons.cd_ref">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.cd_ref">[docs]</a>
+    <span class="n">cd_ref</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons.regne">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.regne">[docs]</a>
+    <span class="n">regne</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons.phylum">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.phylum">[docs]</a>
+    <span class="n">phylum</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons.classe">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.classe">[docs]</a>
+    <span class="n">classe</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons.ordre">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.ordre">[docs]</a>
+    <span class="n">ordre</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons.lb_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.lb_nom">[docs]</a>
+    <span class="n">lb_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons.id_rang">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.id_rang">[docs]</a>
+    <span class="n">id_rang</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons.nb_tx_fm">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.nb_tx_fm">[docs]</a>
+    <span class="n">nb_tx_fm</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons.nb_tx_or">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.nb_tx_or">[docs]</a>
+    <span class="n">nb_tx_or</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons.nb_tx_cl">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.nb_tx_cl">[docs]</a>
+    <span class="n">nb_tx_cl</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons.nb_tx_ph">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.nb_tx_ph">[docs]</a>
+    <span class="n">nb_tx_ph</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons.nb_tx_kd">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.nb_tx_kd">[docs]</a>
+    <span class="n">nb_tx_kd</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VTaxrefHierarchieBibtaxons.__repr__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VTaxrefHierarchieBibtaxons.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;VMTaxrefHierarchie </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lb_nom</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TaxrefBdcStatutType">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutType">[docs]</a>
+<span class="k">class</span> <span class="nc">TaxrefBdcStatutType</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="TaxrefBdcStatutType.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutType.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bdc_statut_type&quot;</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutType.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutType.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutType.cd_type_statut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutType.cd_type_statut">[docs]</a>
+    <span class="n">cd_type_statut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutType.lb_type_statut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutType.lb_type_statut">[docs]</a>
+    <span class="n">lb_type_statut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutType.regroupement_type">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutType.regroupement_type">[docs]</a>
+    <span class="n">regroupement_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutType.thematique">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutType.thematique">[docs]</a>
+    <span class="n">thematique</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutType.type_value">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutType.type_value">[docs]</a>
+    <span class="n">type_value</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TaxrefBdcStatutType.text">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutType.text">[docs]</a>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;TaxrefBdcStatutText&quot;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;type_statut&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@hybrid_property</span>
+<div class="viewcode-block" id="TaxrefBdcStatutType.display">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutType.display">[docs]</a>
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lb_type_statut</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cd_type_statut</span><span class="si">}</span><span class="s2">&quot;</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="bdc_statut_cor_text_area">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.bdc_statut_cor_text_area">[docs]</a>
+<span class="n">bdc_statut_cor_text_area</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s2">&quot;bdc_statut_cor_text_area&quot;</span><span class="p">,</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="s2">&quot;id_text&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;taxonomie.bdc_statut_text.id_text&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">),</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id_area&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">LAreas</span><span class="o">.</span><span class="n">id_area</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;taxonomie&quot;</span><span class="p">,</span>
+<span class="p">)</span></div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TaxrefBdcStatutText">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText">[docs]</a>
+<span class="k">class</span> <span class="nc">TaxrefBdcStatutText</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="TaxrefBdcStatutText.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bdc_statut_text&quot;</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutText.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutText.id_text">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.id_text">[docs]</a>
+    <span class="n">id_text</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutText.cd_st_text">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.cd_st_text">[docs]</a>
+    <span class="n">cd_st_text</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutText.cd_type_statut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.cd_type_statut">[docs]</a>
+    <span class="n">cd_type_statut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;taxonomie.bdc_statut_type.cd_type_statut&quot;</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutText.cd_sig">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.cd_sig">[docs]</a>
+    <span class="n">cd_sig</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutText.cd_doc">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.cd_doc">[docs]</a>
+    <span class="n">cd_doc</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutText.niveau_admin">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.niveau_admin">[docs]</a>
+    <span class="n">niveau_admin</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutText.cd_iso3166_1">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.cd_iso3166_1">[docs]</a>
+    <span class="n">cd_iso3166_1</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutText.cd_iso3166_2">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.cd_iso3166_2">[docs]</a>
+    <span class="n">cd_iso3166_2</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutText.lb_adm_tr">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.lb_adm_tr">[docs]</a>
+    <span class="n">lb_adm_tr</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutText.full_citation">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.full_citation">[docs]</a>
+    <span class="n">full_citation</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutText.doc_url">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.doc_url">[docs]</a>
+    <span class="n">doc_url</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutText.enable">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.enable">[docs]</a>
+    <span class="n">enable</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Boolean</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TaxrefBdcStatutText.type_statut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.type_statut">[docs]</a>
+    <span class="n">type_statut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">TaxrefBdcStatutType</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutText.cor_text">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.cor_text">[docs]</a>
+    <span class="n">cor_text</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="s2">&quot;TaxrefBdcStatutCorTextValues&quot;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;text&quot;</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TaxrefBdcStatutText.areas">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutText.areas">[docs]</a>
+    <span class="n">areas</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">LAreas</span><span class="p">,</span> <span class="n">secondary</span><span class="o">=</span><span class="n">bdc_statut_cor_text_area</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TaxrefBdcStatutValues">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutValues">[docs]</a>
+<span class="k">class</span> <span class="nc">TaxrefBdcStatutValues</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="TaxrefBdcStatutValues.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutValues.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bdc_statut_values&quot;</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutValues.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutValues.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutValues.id_value">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutValues.id_value">[docs]</a>
+    <span class="n">id_value</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutValues.code_statut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutValues.code_statut">[docs]</a>
+    <span class="n">code_statut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutValues.label_statut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutValues.label_statut">[docs]</a>
+    <span class="n">label_statut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+    <span class="nd">@hybrid_property</span>
+<div class="viewcode-block" id="TaxrefBdcStatutValues.display">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutValues.display">[docs]</a>
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">code_statut</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label_statut</span><span class="si">}</span><span class="s2">&quot;</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TaxrefBdcStatutCorTextValues">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues">[docs]</a>
+<span class="k">class</span> <span class="nc">TaxrefBdcStatutCorTextValues</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="TaxrefBdcStatutCorTextValues.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bdc_statut_cor_text_values&quot;</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutCorTextValues.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutCorTextValues.id_value_text">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.id_value_text">[docs]</a>
+    <span class="n">id_value_text</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutCorTextValues.id_value">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.id_value">[docs]</a>
+    <span class="n">id_value</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;taxonomie.bdc_statut_values.id_value&quot;</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutCorTextValues.id_text">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.id_text">[docs]</a>
+    <span class="n">id_text</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;taxonomie.bdc_statut_text.id_text&quot;</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TaxrefBdcStatutCorTextValues.text">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.text">[docs]</a>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">TaxrefBdcStatutText</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;cor_text&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutCorTextValues.value">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.value">[docs]</a>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="n">TaxrefBdcStatutValues</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TaxrefBdcStatutCorTextValues.taxon">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutCorTextValues.taxon">[docs]</a>
+    <span class="n">taxon</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;TaxrefBdcStatutTaxon&quot;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;value_text&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TaxrefBdcStatutTaxon">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutTaxon">[docs]</a>
+<span class="k">class</span> <span class="nc">TaxrefBdcStatutTaxon</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="TaxrefBdcStatutTaxon.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutTaxon.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;bdc_statut_taxons&quot;</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutTaxon.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutTaxon.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutTaxon.id">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutTaxon.id">[docs]</a>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutTaxon.id_value_text">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutTaxon.id_value_text">[docs]</a>
+    <span class="n">id_value_text</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;taxonomie.bdc_statut_cor_text_values.id_value_text&quot;</span><span class="p">),</span>
+        <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutTaxon.cd_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutTaxon.cd_nom">[docs]</a>
+    <span class="n">cd_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutTaxon.cd_ref">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutTaxon.cd_ref">[docs]</a>
+    <span class="n">cd_ref</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxrefBdcStatutTaxon.rq_statut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutTaxon.rq_statut">[docs]</a>
+    <span class="n">rq_statut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TaxrefBdcStatutTaxon.value_text">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TaxrefBdcStatutTaxon.value_text">[docs]</a>
+    <span class="n">value_text</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="n">TaxrefBdcStatutCorTextValues</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;taxon&quot;</span>
+    <span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="VBdcStatus">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus">[docs]</a>
+<span class="k">class</span> <span class="nc">VBdcStatus</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="VBdcStatus.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;v_bdc_status&quot;</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">,</span> <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">is_view</span><span class="o">=</span><span class="kc">True</span><span class="p">)}</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.cd_nom">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.cd_nom">[docs]</a>
+    <span class="n">cd_nom</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.cd_ref">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.cd_ref">[docs]</a>
+    <span class="n">cd_ref</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.rq_statut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.rq_statut">[docs]</a>
+    <span class="n">rq_statut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.code_statut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.code_statut">[docs]</a>
+    <span class="n">code_statut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.label_statut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.label_statut">[docs]</a>
+    <span class="n">label_statut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.cd_type_statut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.cd_type_statut">[docs]</a>
+    <span class="n">cd_type_statut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.lb_type_statut">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.lb_type_statut">[docs]</a>
+    <span class="n">lb_type_statut</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.regroupement_type">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.regroupement_type">[docs]</a>
+    <span class="n">regroupement_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.thematique">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.thematique">[docs]</a>
+    <span class="n">thematique</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.cd_st_text">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.cd_st_text">[docs]</a>
+    <span class="n">cd_st_text</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.cd_sig">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.cd_sig">[docs]</a>
+    <span class="n">cd_sig</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.cd_doc">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.cd_doc">[docs]</a>
+    <span class="n">cd_doc</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.niveau_admin">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.niveau_admin">[docs]</a>
+    <span class="n">niveau_admin</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.cd_iso3166_1">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.cd_iso3166_1">[docs]</a>
+    <span class="n">cd_iso3166_1</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.cd_iso3166_2">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.cd_iso3166_2">[docs]</a>
+    <span class="n">cd_iso3166_2</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.full_citation">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.full_citation">[docs]</a>
+    <span class="n">full_citation</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.doc_url">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.doc_url">[docs]</a>
+    <span class="n">doc_url</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VBdcStatus.type_value">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.VBdcStatus.type_value">[docs]</a>
+    <span class="n">type_value</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@serializable</span>
+<div class="viewcode-block" id="TMetaTaxref">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMetaTaxref">[docs]</a>
+<span class="k">class</span> <span class="nc">TMetaTaxref</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="TMetaTaxref.__tablename__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMetaTaxref.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;t_meta_taxref&quot;</span></div>
+
+<div class="viewcode-block" id="TMetaTaxref.__table_args__">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMetaTaxref.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;taxonomie&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TMetaTaxref.referencial_name">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMetaTaxref.referencial_name">[docs]</a>
+    <span class="n">referencial_name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMetaTaxref.version">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMetaTaxref.version">[docs]</a>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TMetaTaxref.update_date">
+<a class="viewcode-back" href="../../../autoapi/apptax/taxonomie/models/index.html#apptax.taxonomie.models.TMetaTaxref.update_date">[docs]</a>
+    <span class="n">update_date</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

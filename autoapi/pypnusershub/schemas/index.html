@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pypnusershub.schemas &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=e8570148"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" />
+    <link rel="next" title="pypnusershub.test_settings" href="../test_settings/index.html" />
+    <link rel="prev" title="pypnusershub.routes_register" href="../routes_register/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GeoNature
+              <img src="../../../_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">CHANGELOG</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../api-references.html">API REFERENCES</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../geonature/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">geonature</span></code></a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../index.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../__main__/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.__main__</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../decorators/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.decorators</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../env/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.env</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../login_manager/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.login_manager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../routes/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.routes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../routes_register/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.routes_register</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.schemas</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../test_settings/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.test_settings</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../src/utils_flask_sqla/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../src/utils_flask_sqla_geo/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src.utils_flask_sqla_geo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../frontend.html">Frontend</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../api-references.html">API REFERENCES</a></li>
+          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub</span></code></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.schemas</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/pypnusershub/schemas/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pypnusershub.schemas">
+<span id="pypnusershub-schemas"></span><h1><a class="reference internal" href="#module-pypnusershub.schemas" title="pypnusershub.schemas"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pypnusershub.schemas</span></code></a><a class="headerlink" href="#module-pypnusershub.schemas" title="Link to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pypnusershub.schemas.OrganismeSchema" title="pypnusershub.schemas.OrganismeSchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OrganismeSchema</span></code></a></p></td>
+<td><p>This mixin automatically exclude from serialization:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pypnusershub.schemas.UserSchema" title="pypnusershub.schemas.UserSchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UserSchema</span></code></a></p></td>
+<td><p>This mixin automatically exclude from serialization:</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="pypnusershub.schemas.OrganismeSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypnusershub.schemas.</span></span><span class="sig-name descname"><span class="pre">OrganismeSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#OrganismeSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.OrganismeSchema" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">utils_flask_sqla.schema.SmartRelationshipsMixin</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypnusershub.env.ma.SQLAlchemyAutoSchema</span></code></p>
+<p>This mixin automatically exclude from serialization:</p>
+<ul class="simple">
+<li><p>Nested, RelatedList and Related fields</p></li>
+<li><p>all fields with exclude=True in their metadata (e.g. <code class="docutils literal notranslate"><span class="pre">fields.String(metadata={'exclude':</span> <span class="pre">True})</span></code>)</p></li>
+</ul>
+<p>Adding only Nested fields to <code class="docutils literal notranslate"><span class="pre">only</span></code> will not exclude others fields and serialize specified Nested fields.
+Adding exclude=True fields to <code class="docutils literal notranslate"><span class="pre">only</span></code> will serialize only specified fields (default marshmallow behaviour).
+You can use “+field_name” syntax on <cite>only</cite> to serialize default excluded fields (with metadata exclude = True) without other fields.</p>
+<p>Examples :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FooSchema</span><span class="p">(</span><span class="n">SmartRelationshipsMixin</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Int</span><span class="p">()</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Str</span><span class="p">()</span>
+    <span class="n">default_excluded_field</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;exclude&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+    <span class="n">relationship</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">OtherSchema</span><span class="p">)</span> <span class="c1"># or field.RelatedList() / field.Related()</span>
+
+<span class="n">FooSchema</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;toto&quot;</span> <span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;+default_excluded_field&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;toto&quot;</span><span class="p">,</span> <span class="n">default_excluded_field</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span> <span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;relationship&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;toto&quot;</span><span class="p">,</span>  <span class="n">relationship</span> <span class="p">:</span> <span class="p">{</span><span class="n">OtherSchema</span><span class="o">...</span><span class="p">}</span> <span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;relationship&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">relationship</span> <span class="p">:</span> <span class="p">{</span><span class="n">OtherSchema</span><span class="o">...</span><span class="p">}</span> <span class="p">}</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="pypnusershub.schemas.OrganismeSchema.Meta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#OrganismeSchema.Meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.OrganismeSchema.Meta" title="Link to this definition"></a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.schemas.OrganismeSchema.Meta.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#OrganismeSchema.Meta.model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.OrganismeSchema.Meta.model" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.schemas.OrganismeSchema.Meta.load_instance">
+<span class="sig-name descname"><span class="pre">load_instance</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#OrganismeSchema.Meta.load_instance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.OrganismeSchema.Meta.load_instance" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.schemas.OrganismeSchema.Meta.sqla_session">
+<span class="sig-name descname"><span class="pre">sqla_session</span></span><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#OrganismeSchema.Meta.sqla_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.OrganismeSchema.Meta.sqla_session" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pypnusershub.schemas.UserSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pypnusershub.schemas.</span></span><span class="sig-name descname"><span class="pre">UserSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#UserSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.UserSchema" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">utils_flask_sqla.schema.SmartRelationshipsMixin</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">pypnusershub.env.ma.SQLAlchemyAutoSchema</span></code></p>
+<p>This mixin automatically exclude from serialization:</p>
+<ul class="simple">
+<li><p>Nested, RelatedList and Related fields</p></li>
+<li><p>all fields with exclude=True in their metadata (e.g. <code class="docutils literal notranslate"><span class="pre">fields.String(metadata={'exclude':</span> <span class="pre">True})</span></code>)</p></li>
+</ul>
+<p>Adding only Nested fields to <code class="docutils literal notranslate"><span class="pre">only</span></code> will not exclude others fields and serialize specified Nested fields.
+Adding exclude=True fields to <code class="docutils literal notranslate"><span class="pre">only</span></code> will serialize only specified fields (default marshmallow behaviour).
+You can use “+field_name” syntax on <cite>only</cite> to serialize default excluded fields (with metadata exclude = True) without other fields.</p>
+<p>Examples :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FooSchema</span><span class="p">(</span><span class="n">SmartRelationshipsMixin</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Int</span><span class="p">()</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Str</span><span class="p">()</span>
+    <span class="n">default_excluded_field</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;exclude&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+    <span class="n">relationship</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">OtherSchema</span><span class="p">)</span> <span class="c1"># or field.RelatedList() / field.Related()</span>
+
+<span class="n">FooSchema</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;toto&quot;</span> <span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;+default_excluded_field&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;toto&quot;</span><span class="p">,</span> <span class="n">default_excluded_field</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span> <span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;relationship&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;toto&quot;</span><span class="p">,</span>  <span class="n">relationship</span> <span class="p">:</span> <span class="p">{</span><span class="n">OtherSchema</span><span class="o">...</span><span class="p">}</span> <span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;relationship&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">relationship</span> <span class="p">:</span> <span class="p">{</span><span class="n">OtherSchema</span><span class="o">...</span><span class="p">}</span> <span class="p">}</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="pypnusershub.schemas.UserSchema.Meta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#UserSchema.Meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.UserSchema.Meta" title="Link to this definition"></a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.schemas.UserSchema.Meta.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#UserSchema.Meta.model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.UserSchema.Meta.model" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.schemas.UserSchema.Meta.include_fk">
+<span class="sig-name descname"><span class="pre">include_fk</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#UserSchema.Meta.include_fk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.UserSchema.Meta.include_fk" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.schemas.UserSchema.Meta.load_instance">
+<span class="sig-name descname"><span class="pre">load_instance</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#UserSchema.Meta.load_instance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.UserSchema.Meta.load_instance" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.schemas.UserSchema.Meta.sqla_session">
+<span class="sig-name descname"><span class="pre">sqla_session</span></span><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#UserSchema.Meta.sqla_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.UserSchema.Meta.sqla_session" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.schemas.UserSchema.Meta.exclude">
+<span class="sig-name descname"><span class="pre">exclude</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('_password',</span> <span class="pre">'_password_plus',</span> <span class="pre">'champs_addi',</span> <span class="pre">'max_level_profil')</span></em><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#UserSchema.Meta.exclude"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.UserSchema.Meta.exclude" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.schemas.UserSchema.max_level_profil">
+<span class="sig-name descname"><span class="pre">max_level_profil</span></span><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#UserSchema.max_level_profil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.UserSchema.max_level_profil" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.schemas.UserSchema.nom_complet">
+<span class="sig-name descname"><span class="pre">nom_complet</span></span><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#UserSchema.nom_complet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.UserSchema.nom_complet" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.schemas.UserSchema.groups">
+<span class="sig-name descname"><span class="pre">groups</span></span><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#UserSchema.groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.UserSchema.groups" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pypnusershub.schemas.UserSchema.organisme">
+<span class="sig-name descname"><span class="pre">organisme</span></span><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#UserSchema.organisme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.UserSchema.organisme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pypnusershub.schemas.UserSchema.make_observer">
+<span class="sig-name descname"><span class="pre">make_observer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pypnusershub/schemas.html#UserSchema.make_observer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pypnusershub.schemas.UserSchema.make_observer" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="../routes_register/index.html" class="btn btn-neutral float-left" title="pypnusershub.routes_register" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="../test_settings/index.html" class="btn btn-neutral float-right" title="pypnusershub.test_settings" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2018-2023, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+:py:mod:`src.utils_flask_sqla_geo.export`
+=========================================
+
+.. py:module:: src.utils_flask_sqla_geo.export
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   src.utils_flask_sqla_geo.export.export_csv
+   src.utils_flask_sqla_geo.export.export_geojson
+   src.utils_flask_sqla_geo.export.export_json
+   src.utils_flask_sqla_geo.export.export_geopackage
+
+
+
+.. py:function:: export_csv(query, schema_class: Type[utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema], fp, columns: list = [], chunk_size: int = 1000, separator=';', geometry_field_name=None)
+
+   Exporte une generic query au format csv
+
+   la geométrie n'est pas présente par défaut
+   elle peut être dans les données exportées si geometry_field_name est précisé
+
+   Args:
+       query (QueryClass): requete select
+       schema_class: marshmallow_schema
+       fp (file pointer): pointer vers un fichier (un stream, etc..)
+       columns (list, optioname): liste des colonnes à exporter. Defaults to [] (toutes les colonnes de la vue).
+       chunk_size (int, optional): taille pour le traitement par lots. Defaults to 1000.
+       separator (str, optional): sparateur pour le csv. Defaults to ";".
+       geometry_field_name (_type_, optional): nom du champ pour la colonne geométrique. Defaults to None.
+
+
+.. py:function:: export_geojson(query, schema_class: Type[utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema], fp, columns: list = [], chunk_size: int = 1000, geometry_field_name=None)
+
+   Exporte une generic query au format geojson
+
+   le champs geomtrique peut être précisé
+   ou choisi par défaut si la vue ne comporte qu'un seul champs geométrique
+
+   Args:
+       query (QueryClass): requete select
+       schema_class: marshmallow_schema
+       fp (file pointer): pointer vers un fichier (un stream, etc..)
+       columns (list, optioname): liste des colonnes à exporter. Defaults to [] (toutes les colonnes de la vue).
+       chunk_size (int, optional): taille pour le traitement par lots. Defaults to 1000.
+       geometry_field_name (_type_, optional): nom du champ pour la colonne geométrique. Defaults to None.
+
+
+.. py:function:: export_json(query, schema_class: Type[utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema], fp, columns: list = [], chunk_size: int = 1000, geometry_field_name=None)
+
+   Exporte une generic query au format json
+
+   la geométrie n'est pas présente par défaut
+   elle peut être dans les données exportées si geometry_field_name est précisé
+
+   Args:
+       query (QueryClass): requete select
+       schema_class: marshmallow_schema
+       fp (_type_): pointer vers un fichier (un stream, etc..)
+       columns (list, optioname): liste des colonnes à exporter. Defaults to [] (toutes les colonnes de la vue).
+       chunk_size (int, optional): taille pour le traitement par lots. Defaults to 1000.
+       separator (str, optional): sparateur pour le csv. Defaults to ";".
+       geometry_field_name (_type_, optional): nom du champ pour la colonne geométrique. Defaults to None.
+
+
+.. py:function:: export_geopackage(query, schema_class: Type[utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema], filename: str, srid: int, geometry_field_name=None, columns: list = [], chunk_size: int = 1000)
+
+

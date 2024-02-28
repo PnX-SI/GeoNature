@@ -1,0 +1,88 @@
+:py:mod:`geonature.core.gn_meta.mtd.mtd_utils`
+==============================================
+
+.. py:module:: geonature.core.gn_meta.mtd.mtd_utils
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_meta.mtd.mtd_utils.sync_ds
+   geonature.core.gn_meta.mtd.mtd_utils.sync_af
+   geonature.core.gn_meta.mtd.mtd_utils.add_or_update_organism
+   geonature.core.gn_meta.mtd.mtd_utils.associate_actors
+   geonature.core.gn_meta.mtd.mtd_utils.associate_dataset_modules
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_meta.mtd.mtd_utils.NOMENCLATURE_MAPPING
+   geonature.core.gn_meta.mtd.mtd_utils.log
+
+
+.. py:data:: NOMENCLATURE_MAPPING
+
+   
+
+.. py:data:: log
+
+   
+
+.. py:function:: sync_ds(ds, cd_nomenclatures)
+
+   Will create or update a given DS according to UUID.
+   Only process DS if dataset's cd_nomenclatures exists in ref_normenclatures.t_nomenclatures.
+
+   :param ds: <dict> DS infos
+   :param cd_nomenclatures: <array> cd_nomenclature from ref_normenclatures.t_nomenclatures
+
+
+.. py:function:: sync_af(af)
+
+   Will create or update a given AF according to UUID.
+
+   :param af: dict AF infos
+
+
+.. py:function:: add_or_update_organism(uuid, nom, email)
+
+   Create or update organism if UUID not exists in DB.
+
+   :param uuid: uniq organism uuid
+   :param nom: org name
+   :param email: org email
+
+
+.. py:function:: associate_actors(actors, CorActor, pk_name, pk_value)
+
+   Associate actor and DS or AF according to CorActor value.
+
+   Parameters
+   ----------
+   actors : list
+       list of actors
+   CorActor : db.Model
+       table model
+   pk_name : str
+       pk attribute name
+   pk_value : str
+       pk value
+
+
+.. py:function:: associate_dataset_modules(dataset)
+
+   Associate a dataset to modules specified in [MTD][JDD_MODULE_CODE_ASSOCIATION] parameter (geonature config)
+
+   :param dataset: <geonature.core.gn_meta.models.TDatasets> dataset (SQLAlchemy model object)
+
+

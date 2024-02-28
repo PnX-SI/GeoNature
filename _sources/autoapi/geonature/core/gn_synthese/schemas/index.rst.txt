@@ -1,0 +1,254 @@
+:py:mod:`geonature.core.gn_synthese.schemas`
+============================================
+
+.. py:module:: geonature.core.gn_synthese.schemas
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   geonature.core.gn_synthese.schemas.ReportTypeSchema
+   geonature.core.gn_synthese.schemas.ReportSchema
+   geonature.core.gn_synthese.schemas.SourceSchema
+   geonature.core.gn_synthese.schemas.SyntheseConverter
+   geonature.core.gn_synthese.schemas.SyntheseSchema
+
+
+
+
+.. py:class:: ReportTypeSchema(*args, **kwargs)
+
+
+   Bases: :py:obj:`geonature.utils.env.ma.SQLAlchemyAutoSchema`
+
+   SQLAlchemyAutoSchema that automatically generates marshmallow fields
+   from a SQLAlchemy model's or table's column.
+   Uses the scoped session from Flask-SQLAlchemy by default.
+
+   See `marshmallow_sqlalchemy.SQLAlchemyAutoSchema` for more details
+   on the `SQLAlchemyAutoSchema` API.
+
+   .. py:class:: Meta
+
+
+      .. py:attribute:: model
+
+         
+
+
+
+.. py:class:: ReportSchema(*args, **kwargs)
+
+
+   Bases: :py:obj:`utils_flask_sqla.schema.SmartRelationshipsMixin`, :py:obj:`geonature.utils.env.ma.SQLAlchemyAutoSchema`
+
+   This mixin automatically exclude from serialization:
+
+   * Nested, RelatedList and Related fields
+   * all fields with exclude=True in their metadata (e.g. ``fields.String(metadata={'exclude': True})``)
+   Adding only Nested fields to ``only`` will not exclude others fields and serialize specified Nested fields.
+   Adding exclude=True fields to ``only`` will serialize only specified fields (default marshmallow behaviour).
+   You can use '+field_name' syntax on `only` to serialize default excluded fields (with metadata exclude = True) without other fields.
+
+   Examples :
+
+   .. code-block:: python
+
+      class FooSchema(SmartRelationshipsMixin):
+          id = fields.Int()
+          name = field.Str()
+          default_excluded_field = fields.Str(metadata={"exclude": True})
+          relationship = fields.Nested(OtherSchema) # or field.RelatedList() / field.Related()
+
+      FooSchema().dump() -> {"id": 1, "name": "toto" }
+      FooSchema(only=["+default_excluded_field"]).dump() -> {"id": 1, "name": "toto", default_excluded_field: "test" }
+      FooSchema(only=["relationship"]).dump() -> {"id": 1, "name": "toto",  relationship : {OtherSchema...} }
+      FooSchema(only=["id", "relationship"]).dump() -> {"id": 1, relationship : {OtherSchema...} }
+
+   .. py:class:: Meta
+
+
+      .. py:attribute:: model
+
+         
+
+
+   .. py:attribute:: report_type
+
+      
+
+   .. py:attribute:: user
+
+      
+
+
+.. py:class:: SourceSchema(*args, **kwargs)
+
+
+   Bases: :py:obj:`geonature.utils.env.ma.SQLAlchemyAutoSchema`
+
+   SQLAlchemyAutoSchema that automatically generates marshmallow fields
+   from a SQLAlchemy model's or table's column.
+   Uses the scoped session from Flask-SQLAlchemy by default.
+
+   See `marshmallow_sqlalchemy.SQLAlchemyAutoSchema` for more details
+   on the `SQLAlchemyAutoSchema` API.
+
+   .. py:class:: Meta
+
+
+      .. py:attribute:: model
+
+         
+
+      .. py:attribute:: load_instance
+         :value: True
+
+         
+
+
+   .. py:attribute:: module_url
+
+      
+
+
+.. py:class:: SyntheseConverter(schema_cls=None)
+
+
+   Bases: :py:obj:`pypnnomenclature.utils.NomenclaturesConverter`, :py:obj:`utils_flask_sqla_geo.schema.GeoModelConverter`
+
+   Class that converts a SQLAlchemy model into a dictionary of corresponding
+   marshmallow `Fields <marshmallow.fields.Field>`.
+
+
+.. py:class:: SyntheseSchema(*args, **kwargs)
+
+
+   Bases: :py:obj:`utils_flask_sqla.schema.SmartRelationshipsMixin`, :py:obj:`utils_flask_sqla_geo.schema.GeoAlchemyAutoSchema`
+
+   This mixin automatically exclude from serialization:
+
+   * Nested, RelatedList and Related fields
+   * all fields with exclude=True in their metadata (e.g. ``fields.String(metadata={'exclude': True})``)
+   Adding only Nested fields to ``only`` will not exclude others fields and serialize specified Nested fields.
+   Adding exclude=True fields to ``only`` will serialize only specified fields (default marshmallow behaviour).
+   You can use '+field_name' syntax on `only` to serialize default excluded fields (with metadata exclude = True) without other fields.
+
+   Examples :
+
+   .. code-block:: python
+
+      class FooSchema(SmartRelationshipsMixin):
+          id = fields.Int()
+          name = field.Str()
+          default_excluded_field = fields.Str(metadata={"exclude": True})
+          relationship = fields.Nested(OtherSchema) # or field.RelatedList() / field.Related()
+
+      FooSchema().dump() -> {"id": 1, "name": "toto" }
+      FooSchema(only=["+default_excluded_field"]).dump() -> {"id": 1, "name": "toto", default_excluded_field: "test" }
+      FooSchema(only=["relationship"]).dump() -> {"id": 1, "name": "toto",  relationship : {OtherSchema...} }
+      FooSchema(only=["id", "relationship"]).dump() -> {"id": 1, relationship : {OtherSchema...} }
+
+   .. py:class:: Meta
+
+
+      .. py:attribute:: model
+
+         
+
+      .. py:attribute:: exclude
+         :value: ('the_geom_4326_geojson',)
+
+         
+
+      .. py:attribute:: include_fk
+         :value: True
+
+         
+
+      .. py:attribute:: load_instance
+         :value: True
+
+         
+
+      .. py:attribute:: sqla_session
+
+         
+
+      .. py:attribute:: feature_id
+         :value: 'id_synthese'
+
+         
+
+      .. py:attribute:: feature_geometry
+         :value: 'the_geom_4326'
+
+         
+
+      .. py:attribute:: model_converter
+
+         
+
+
+   .. py:attribute:: the_geom_4326
+
+      
+
+   .. py:attribute:: the_geom_authorized
+
+      
+
+   .. py:attribute:: source
+
+      
+
+   .. py:attribute:: module
+
+      
+
+   .. py:attribute:: dataset
+
+      
+
+   .. py:attribute:: habitat
+
+      
+
+   .. py:attribute:: digitiser
+
+      
+
+   .. py:attribute:: cor_observers
+
+      
+
+   .. py:attribute:: medias
+
+      
+
+   .. py:attribute:: areas
+
+      
+
+   .. py:attribute:: area_attachment
+
+      
+
+   .. py:attribute:: validations
+
+      
+
+   .. py:attribute:: last_validation
+
+      
+
+   .. py:attribute:: reports
+
+      
+
+

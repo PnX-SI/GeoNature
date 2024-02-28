@@ -1,0 +1,157 @@
+:py:mod:`import_inpn_media`
+===========================
+
+.. py:module:: import_inpn_media
+
+.. autoapi-nested-parse::
+
+   Script permettant l'import de médias récupérés via l'API inpn
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   import_inpn_media.Media
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   import_inpn_media.runquery
+   import_inpn_media.process_media
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   import_inpn_media.API_URL
+   import_inpn_media.SOURCE
+   import_inpn_media.QUERY_INSERT_TMEDIA
+   import_inpn_media.QUERY_UPDATE_TMEDIA
+   import_inpn_media.QUERY_SELECT_TESTEXISTS
+   import_inpn_media.DB_CONNEXION
+   import_inpn_media.cursor
+   import_inpn_media.url
+
+
+.. py:data:: API_URL
+   :value: 'https://taxref.mnhn.fr/api/taxa/{}/media'
+
+   
+
+.. py:data:: SOURCE
+   :value: 'INPN'
+
+   
+
+.. py:data:: QUERY_INSERT_TMEDIA
+   :value: Multiline-String
+
+    .. raw:: html
+
+        <details><summary>Show Value</summary>
+
+    .. code-block:: python
+
+        """
+            INSERT INTO taxonomie.t_medias (
+                cd_ref, titre, url, auteur,
+                desc_media, date_media, id_type, source, licence
+            )
+            VALUES (
+                %s, %s, %s, %s, COALESCE(%s, null), now(), %s, %s, %s
+            );
+        """
+
+    .. raw:: html
+
+        </details>
+
+   
+
+.. py:data:: QUERY_UPDATE_TMEDIA
+   :value: Multiline-String
+
+    .. raw:: html
+
+        <details><summary>Show Value</summary>
+
+    .. code-block:: python
+
+        """
+            UPDATE taxonomie.t_medias
+            SET titre = %s,  auteur = %s, desc_media= %s, licence =%s
+            WHERE cd_ref = %s AND url = %s AND source = %s
+        """
+
+    .. raw:: html
+
+        </details>
+
+   
+
+.. py:data:: QUERY_SELECT_TESTEXISTS
+   :value: Multiline-String
+
+    .. raw:: html
+
+        <details><summary>Show Value</summary>
+
+    .. code-block:: python
+
+        """
+            SELECT count(*)
+            FROM taxonomie.t_medias
+            WHERE cd_ref = %s AND url = %s AND source = %s
+        """
+
+    .. raw:: html
+
+        </details>
+
+   
+
+.. py:class:: Media(cd_ref, titre, nom, auteur, desc_media, licence, url)
+
+
+   .. py:method:: __repr__()
+
+      Return repr(self).
+
+
+
+.. py:function:: runquery(cursor, sql, params, trap=False)
+
+   Fonction permettant d'executer une requete
+   trap : Indique si les erreurs sont ou pas retournées
+
+
+.. py:function:: process_media(cur, cd_ref, media)
+
+   Fonction qui gère l'enregistrement du media dans la base
+
+
+.. py:data:: DB_CONNEXION
+
+   
+
+.. py:data:: cursor
+
+   
+
+.. py:data:: url
+
+   
+

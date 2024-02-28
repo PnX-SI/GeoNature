@@ -1,0 +1,13 @@
+:py:mod:`geonature.utils.celery`
+================================
+
+.. py:module:: geonature.utils.celery
+
+
+Module Contents
+---------------
+
+.. py:data:: celery_app
+
+   
+

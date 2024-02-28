@@ -1,0 +1,17 @@
+:py:mod:`apptax.database`
+=========================
+
+.. py:module:: apptax.database
+
+
+Module Contents
+---------------
+
+.. py:data:: db_path
+
+   
+
+.. py:data:: db_module
+
+   
+
