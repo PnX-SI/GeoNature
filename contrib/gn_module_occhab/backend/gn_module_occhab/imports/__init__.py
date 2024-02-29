@@ -25,6 +25,7 @@ from geonature.core.imports.checks.sql import (
     check_duplicate_uuid,
     check_existing_uuid,
     generate_missing_uuid,
+    check_missing_uuid,
     check_duplicate_source_pk,
     check_dates,
     check_altitudes,
@@ -146,6 +147,7 @@ def check_transient_data(task, logger, imprt):
                 generate_altitudes(
                     imprt, fields["the_geom_local"], fields["altitude_min"], fields["altitude_max"]
                 )
+
             check_altitudes(
                 imprt,
                 entity,
@@ -167,9 +169,13 @@ def check_transient_data(task, logger, imprt):
                     fields["geom_local"],
                     id_area=current_app.config["IMPORT"]["ID_AREA_RESTRICTION"],
                 )
+
             if "unique_id_sinp_station" in selected_fields:
                 check_duplicate_uuid(imprt, entity, selected_fields["unique_id_sinp_station"])
                 check_existing_uuid(imprt, entity, selected_fields["unique_id_sinp_station"])
+            if not imprt.fieldmapping.get("unique_id_sinp_generate", False):
+                check_missing_uuid(imprt, entity, fields["unique_id_sinp_station"])
+
             if "id_station_source" in fields:
                 check_duplicate_source_pk(imprt, entity, fields["id_station_source"])
                 # TODO check existing source pk?
@@ -177,9 +183,12 @@ def check_transient_data(task, logger, imprt):
         if entity.code == "habitat":
             if "cd_hab" in selected_fields:
                 check_cd_hab(imprt, entity, selected_fields["cd_hab"])
+
             if "unique_id_sinp_habitat" in selected_fields:
                 check_duplicate_uuid(imprt, entity, selected_fields["unique_id_sinp_habitat"])
                 check_existing_uuid(imprt, entity, selected_fields["unique_id_sinp_habitat"])
+            if not imprt.fieldmapping.get("unique_id_sinp_generate", False):
+                check_missing_uuid(imprt, entity, fields["unique_id_sinp_habitat"])
 
             set_id_parent_from_destination(
                 imprt,
@@ -213,6 +222,16 @@ def check_transient_data(task, logger, imprt):
                 child_entity=entities["habitat"],
                 parent_line_no="station_line_no",
             )
+
+
+    # Generate missing UUID
+    # Note: station uuid *must* be generated *after* processing habitat entity, as
+    # station uuid field is part of habitat fields, and so are type-checked.
+    # Therefor, any uuid generated when processing station entity is overrided
+    # during habitat entity processing.
+    if not imprt.fieldmapping.get("unique_id_sinp_generate", False):
+        generate_missing_uuid(imprt, entity, fields["unique_id_sinp_station"])
+        generate_missing_uuid(imprt, entity, fields["unique_id_sinp_habitat"])
 
 
 def import_data_to_occhab(imprt):

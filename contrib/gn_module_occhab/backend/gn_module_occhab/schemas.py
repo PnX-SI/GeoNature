@@ -35,6 +35,7 @@ class StationSchema(CruvedSchemaMixin, SmartRelationshipsMixin, GeoAlchemyAutoSc
     __module_code__ = "OCCHAB"
 
     id_station = auto_field(allow_none=True)
+    unique_id_sinp_station = fields.String(required=True)
 
     date_min = fields.DateTime("%Y-%m-%d")
     date_max = fields.DateTime("%Y-%m-%d")
@@ -70,7 +71,7 @@ class OccurenceHabitatSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
 
     id_habitat = auto_field(allow_none=True)
     id_station = auto_field(allow_none=True)
-    unique_id_sinp_hab = auto_field(allow_none=True)
+    unique_id_sinp_hab = auto_field(required=True)
 
     station = Nested(StationSchema)
     habref = Nested(HabrefSchema, dump_only=True)
