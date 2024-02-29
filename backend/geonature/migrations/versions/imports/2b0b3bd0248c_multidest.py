@@ -444,7 +444,12 @@ def downgrade():
     with op.batch_alter_table(schema="gn_imports", table_name="bib_fields") as batch:
         batch.add_column(sa.Column("desc_field", sa.String(1000)))
         batch.add_column(
-            sa.Column("id_theme", sa.Integer, sa.ForeignKey("gn_imports.bib_themes.id_theme"))
+            sa.Column(
+                "id_theme",
+                sa.Integer,
+                sa.ForeignKey("gn_imports.bib_themes.id_theme"),
+                nullable=True,
+            )
         )
         batch.add_column(sa.Column("order_field", sa.Integer))
         batch.add_column(sa.Column("comment", sa.String))
@@ -474,6 +479,30 @@ def downgrade():
             e.code = 'observation'
         """
     )
+
+    bib_fields = Table("bib_fields", meta, autoload=True, schema="gn_imports")
+    bib_themes = Table("bib_themes", meta, autoload=True, schema="gn_imports")
+    # Update id_theme where id_theme is NULL
+    subquery = (
+        sa.select([bib_themes.c.id_theme])
+        .where(
+            bib_themes.c.name_theme == "statement_info"
+        )  # default value based on initial insert on install import module
+        .scalar_subquery()
+    )
+    update_id_theme_statement = (
+        sa.update(bib_fields).values(id_theme=subquery).where(bib_fields.c.id_theme.is_(None))
+    )
+
+    # Update order_field where order_field is NULL
+    update_order_field_statement = (
+        sa.update(bib_fields)
+        .values(order_field=13)  # default value based on initial insert on install import module
+        .where(bib_fields.c.order_field.is_(None))
+    )
+
+    op.execute(update_id_theme_statement)
+    op.execute(update_order_field_statement)
     with op.batch_alter_table(schema="gn_imports", table_name="bib_fields") as batch:
         batch.alter_column(column_name="id_theme", nullable=False)
         batch.alter_column(column_name="order_field", nullable=False)
@@ -486,6 +515,34 @@ def downgrade():
         table_name="bib_fields",
         constraint_name="unicity_bib_fields_dest_name_field",
     )
+
+    query = (
+        sa.select([bib_fields.c.id_destination, bib_fields.c.name_field, sa.func.count()])
+        .group_by(bib_fields.c.id_destination, bib_fields.c.name_field)
+        .having(sa.func.count() > 1)
+    )
+
+    duplicate_rows = op.get_bind().execute(query).fetchall()
+    for id_destination, name_field, count in duplicate_rows:
+        subquery = (
+            sa.select([sa.func.min(bib_fields.c.id_field)])
+            .where(
+                sa.and_(
+                    bib_fields.c.id_destination == id_destination,
+                    bib_fields.c.name_field == name_field,
+                )
+            )
+            .scalar_subquery()
+        )
+        delete_statement = sa.delete(bib_fields).where(
+            sa.and_(
+                bib_fields.c.id_destination == id_destination,
+                bib_fields.c.name_field == name_field,
+                bib_fields.c.id_field != subquery,
+            )
+        )
+        op.execute(delete_statement)
+
     op.create_unique_constraint(
         schema="gn_imports",
         table_name="bib_fields",
