@@ -44,7 +44,6 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
     // Set the current module name in the navbar
     this.onModuleChange();
-    
 
     // Init the sidenav instance in sidebar service
     this.sideNavService.setSideNav(this.sidenav);
