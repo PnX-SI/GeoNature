@@ -47,7 +47,7 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-metadata-jdd-delete-' + jddUUID + '"]').should('be.disabled');
 
     // go to the JDD detail page
-    cy.get('[data-qa="pnx-metadata-jdd-' + jddUUID + '"]').click();
+    cy.get(`[data-qa="pnx-metadata-jdd-${jddUUID}"]`).click();
     cy.get('[data-qa="pnx-metadata-dataset-name"]').contains(jdd);
     cy.get('[data-qa="pnx-metadata-exit-jdd"]').click();
 
@@ -115,64 +115,66 @@ describe('Testing metadata', () => {
   it('should create a new "jeux de données"', () => {
     cy.visit('/#/metadata');
     cy.get('[data-qa="pnx-metadata-add-jdd"]').click();
+    cy.fixture("jdd").then((newJdd) => {
+      cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
 
-    cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
-
-    cy.get('pnx-metadata-actor > div > form > ng-select > div > div > div.ng-input').click();
-    cy.get('[data-qa="pnx-metadata-organism-ALL"]').click();
-    cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
-
-    cy.get('[data-qa="pnx-dataset-form-select-cadre-acq"]').click();
-    cy.get('[data-qa="pnx-metadata-jdd-' + cadreAcq + '"]').click({ force: true });
-    cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
-
-    cy.get('[data-qa="pnx-dataset-form-input-jdd-name"]').type(newJdd.name);
-    cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
-
-    cy.get('[data-qa="pnx-dataset-form-input-jdd-shortname"]').type(newJdd.shortname);
-    cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
-
-    cy.get('[data-qa="pnx-dataset-form-input-jdd-description"]').type(newJdd.description);
-    cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
-
-    cy.get("[data-qa='pnx-dataset-form-datatype'] > ng-select > div > div > div.ng-input").click();
-    cy.get('[data-qa="5"]').click();
-    cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
-
-    cy.get(
-      '[data-qa="pnx-dataset-form-status-source"] > ng-select > div > div > div.ng-input'
-    ).click();
-    cy.get('[data-qa="Co"]').click();
-    cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
-
-    cy.get('[data-qa="pnx-dataset-form-objectif"] > ng-select > div > div > div.ng-input').click();
-    cy.get('[data-qa="7.2"]').click();
-    cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
-
-    cy.get(
-      '[data-qa="pnx-dataset-form-territories"] > ng-select > div > div > div.ng-input'
-    ).click();
-    cy.get('[data-qa="CLI"]').click();
-    cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
-
-    cy.get(
-      '[data-qa="pnx-dataset-form-collecting-method"] > ng-select > div > div > div.ng-input'
-    ).click();
-    cy.get('[data-qa="12"]').click();
-    cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
-
-    cy.get(
-      '[data-qa="pnx-dataset-form-data-origin"] > ng-select > div > div > div.ng-input'
-    ).click();
-    cy.get('[data-qa="NSP"]').click();
-    cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
-
-    cy.get('[data-qa="pnx-dataset-form-resource-type"] > ng-select > div').click();
-    cy.get('[data-qa="1"]').click();
-
-    cy.get('[data-qa="pnx-dataset-form-save-jdd"]').click();
-    cy.get('[data-qa="pnx-metadata-dataset-name"]').contains(newJdd.name);
-    cy.get('[data-qa="pnx-metadata-exit-jdd"]').click();
+      cy.get('pnx-metadata-actor > div > form > ng-select > div > div > div.ng-input').click();
+      cy.get('[data-qa="pnx-metadata-organism-ALL"]').click();
+      cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
+  
+      cy.get('[data-qa="pnx-dataset-form-select-cadre-acq"]').click();
+      cy.get('[data-qa="pnx-metadata-jdd-' + cadreAcq + '"]').click({ force: true });
+      cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
+  
+      cy.get('[data-qa="pnx-dataset-form-input-jdd-name"]').type(newJdd.name);
+      cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
+  
+      cy.get('[data-qa="pnx-dataset-form-input-jdd-shortname"]').type(newJdd.shortname);
+      cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
+  
+      cy.get('[data-qa="pnx-dataset-form-input-jdd-description"]').type(newJdd.description);
+      cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
+  
+      cy.get("[data-qa='pnx-dataset-form-datatype'] > ng-select > div > div > div.ng-input").click();
+      cy.get('[data-qa="5"]').click();
+      cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
+  
+      cy.get(
+        '[data-qa="pnx-dataset-form-status-source"] > ng-select > div > div > div.ng-input'
+      ).click();
+      cy.get('[data-qa="Co"]').click();
+      cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
+  
+      cy.get('[data-qa="pnx-dataset-form-objectif"] > ng-select > div > div > div.ng-input').click();
+      cy.get('[data-qa="7.2"]').click();
+      cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
+  
+      cy.get(
+        '[data-qa="pnx-dataset-form-territories"] > ng-select > div > div > div.ng-input'
+      ).click();
+      cy.get('[data-qa="CLI"]').click();
+      cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
+  
+      cy.get(
+        '[data-qa="pnx-dataset-form-collecting-method"] > ng-select > div > div > div.ng-input'
+      ).click();
+      cy.get('[data-qa="12"]').click();
+      cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
+  
+      cy.get(
+        '[data-qa="pnx-dataset-form-data-origin"] > ng-select > div > div > div.ng-input'
+      ).click();
+      cy.get('[data-qa="NSP"]').click();
+      cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
+  
+      cy.get('[data-qa="pnx-dataset-form-resource-type"] > ng-select > div').click();
+      cy.get('[data-qa="1"]').click();
+  
+      cy.get('[data-qa="pnx-dataset-form-save-jdd"]').click();
+      cy.get('[data-qa="pnx-metadata-dataset-name"]').contains(newJdd.name);
+      cy.get('[data-qa="pnx-metadata-exit-jdd"]').click();
+    });
+    
   });
 
   it('should delete the new "jeux de données"', () => {
