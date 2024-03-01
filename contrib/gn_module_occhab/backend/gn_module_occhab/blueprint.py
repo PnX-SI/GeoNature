@@ -52,20 +52,36 @@ from .schemas import StationSchema
 blueprint = Blueprint("occhab", __name__)
 
 
+def get_joinedload_when_scope(scope):
+    joinedload_when_scope = []
+    if scope != 0:
+        # Required when a scope is defined.
+        # The following enable the restricted user to access one (or more) stations' datasets information
+        joinedload_when_scope = [
+            joinedload(TDatasets.cor_dataset_actor).options(
+                joinedload(CorDatasetActor.role), joinedload(CorDatasetActor.organism)
+            ),
+            joinedload(TDatasets.acquisition_framework).options(
+                joinedload(TAcquisitionFramework.cor_af_actor).options(
+                    joinedload(CorAcquisitionFrameworkActor.role)
+                )
+            ),
+        ]
+    return joinedload_when_scope
+
+
 @blueprint.route("/stations/", methods=["GET"])
 @permissions.check_cruved_scope("R", module_code="OCCHAB", get_scope=True)
 def list_stations(scope):
+    joinedload_when_scope = get_joinedload_when_scope(scope)
     stations = Station.filter_by_params(request.args)
     stations = Station.filter_by_scope(scope=scope, query=stations)
     stations = stations.order_by(Station.date_min.desc()).options(
         raiseload("*"),
         joinedload(Station.observers),
-        joinedload(Station.dataset),
+        joinedload(Station.dataset).options(*joinedload_when_scope),
     )
-    only = [
-        "observers",
-        "dataset",
-    ]
+    only = ["observers", "dataset", "+cruved"]
     if request.args.get("habitats", default=False, type=int):
         only.extend(
             [
@@ -111,18 +127,7 @@ def get_station(id_station, scope):
     :rtype dict<TStationsOcchab>
 
     """
-    joinedload_when_scope = []
-    if scope != 0:
-        # Required when a scope is defined.
-        # The following enable the restricted user to access one (or more) stations' datasets information
-        joinedload_when_scope = [
-            joinedload(TDatasets.cor_dataset_actor).options(joinedload(CorDatasetActor.role)),
-            joinedload(TDatasets.acquisition_framework).options(
-                joinedload(TAcquisitionFramework.cor_af_actor).options(
-                    joinedload(CorAcquisitionFrameworkActor.role)
-                )
-            ),
-        ]
+    joinedload_when_scope = get_joinedload_when_scope(scope)
     station = (
         db.session.scalars(
             select(Station)
