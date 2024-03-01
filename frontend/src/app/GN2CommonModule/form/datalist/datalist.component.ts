@@ -36,6 +36,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   @Input() filters = {}; // help
 
   @Input() default;
+  @Input() nullDefault;
 
   @Input() dataPath: string; // pour atteindre la liste si elle n'est pas à la racine de la réponse de l'api.
   // si on a 'data/liste' on mettra dataPath='data'
@@ -68,7 +69,15 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
 
   getFilteredValues() {
     let values = this.values || [];
-
+    // if(this.nullDefault){
+    //   values.push()
+    // }
+    if (this.nullDefault && !this.required) {
+      let obj = {};
+      obj[this.keyValue] = null;
+      obj[this.keyLabel] = '-- Aucun --';
+      values.unshift(obj);
+    }
     values = values
       // filter search
       .filter(
@@ -131,8 +140,8 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
       this.filteredValues.length === 1 &&
       !(this.parentFormControl.value && this.parentFormControl.value.length)
     ) {
-      const val = this.values[0][this.keyValue];
-      this.parentFormControl.patchValue(this.multiple ? [val] : val);
+      const val = this.nullDefault ? null : this.values[0][this.keyValue];
+      this.parentFormControl.patchValue(this.multiple && !this.nullDefault ? [val] : val);
     }
     // valeur par défaut (depuis input value)
     if (!this.parentFormControl.value && this.default) {

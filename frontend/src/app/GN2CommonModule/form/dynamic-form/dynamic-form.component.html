@@ -287,8 +287,16 @@
       [idMenu]="formDefComp['id_menu']"
       [idList]="formDefComp['id_list']"
       [codeList]="formDefComp['code_list']"
+      [multiSelect]="formDefComp['multi_select']"
     >
     </pnx-observers>
+
+    <pnx-observers-text
+      *ngSwitchCase="'observers-text'"
+      [label]="formDefComp['attribut_label']"
+      [parentFormControl]="form.get(formDefComp['attribut_name'])"
+    >
+    </pnx-observers-text>
 
     <pnx-date
       *ngSwitchCase="'date'"
@@ -344,6 +352,7 @@
       [definition]="formDefComp['definition']"
       [filters]="formDefComp['filters']"
       [default]="formDefComp['default']"
+      [nullDefault]="formDefComp['nullDefault']"
     ></pnx-datalist>
 
     <small class="form-text text-muted">{{ formDefComp['help'] }}</small>
