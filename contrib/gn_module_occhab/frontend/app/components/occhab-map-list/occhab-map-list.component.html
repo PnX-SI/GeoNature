@@ -113,10 +113,9 @@
       </ngx-datatable-column>
       <ngx-datatable-column maxWidth="10" [sortable]="false">
         <ng-template let-row="row" ngx-datatable-cell-template>
-          <button *ngIf="row.cruved.R"
+          <button
             [matTooltip]="row.id_station"
             [routerLink]="['info', row.id_station]"
-            
             class="btn btn-outline-shadow btn-no-padding btn-ghost"
           >
             <i class="fa fa-info-circle" aria-hidden="true"></i>
@@ -127,9 +126,10 @@
 
       <ngx-datatable-column maxWidth="10" [sortable]="false">
         <ng-template let-row="row" ngx-datatable-cell-template>
-          <button *ngIf="row.cruved.U"
+          <button 
             class="btn btn-outline-shadow btn-no-padding btn-ghost"
             [routerLink]="['edit', row.id_station]"
+            [disabled]="!row.cruved.U"
           >
             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
           </button>
@@ -141,7 +141,7 @@
           <button
             class="btn btn-outline-shadow btn-no-padding btn-ghost"
             (click)="openDeleteModal(row, deleteModal)"
-            *ngIf="row.cruved.D"
+            [disabled]="!row.cruved.D"
           >
             <i class="fa fa-trash-o" aria-hidden="true"></i>
           </button>
