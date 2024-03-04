@@ -76,8 +76,11 @@ export class OccHabFormComponent implements OnInit, OnDestroy {
           this.showHabForm = false;
           this.showTabHab = true;
           this._occHabDataService.getStation(params['id_station']).subscribe((station: any) => {
-            if (!station.properties.cruved.U){
-              this._commonService.regularToaster('error', "Vous n'avez pas les permissions requises pour modifier cette station !");
+            if (!station.properties.cruved.U) {
+              this._commonService.regularToaster(
+                'error',
+                "Vous n'avez pas les permissions requises pour modifier cette station !"
+              );
               this._router.navigate(['occhab']);
             }
             this.currentEditingStation = station;
