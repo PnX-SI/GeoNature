@@ -334,8 +334,16 @@ def users(app):
                 2,
                 False,
                 [],
-                {"C": 2, "OCCHAB": {"R": 2, "U": 1, "E": 2, "D": 1}},
+                {
+                    "C": 2,
+                    "OCCHAB": {"R": 2, "U": 1, "E": 2, "D": 1},
+                    "OCCTAX": {"R": 2, "U": 1, "E": 2, "D": 1},
+                },
             ),
+            {},
+        ),
+        (
+            ("user_with_blurring", organisme, 2, True, [], {}),
             {},
         ),
     ]
