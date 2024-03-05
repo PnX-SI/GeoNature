@@ -12,6 +12,7 @@ logger.setLevel(logging.DEBUG)
 from .utils import CLIENT_GET, CLIENT_POST
 
 
+@pytest.mark.benchmark(group="occhab")
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestBenchmarkOcchab:
 
