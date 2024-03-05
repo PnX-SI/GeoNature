@@ -1,5 +1,5 @@
 import logging
-from geonature.tests.test_synthese import blur_sensitive_observations
+
 import pytest
 from geonature.tests.benchmarks import *
 from geonature.tests.test_pr_occhab import stations
@@ -7,16 +7,18 @@ from geonature.core.gn_synthese.models import Synthese
 
 from .benchmark_generator import BenchmarkTest, CLater
 
+
 logging.basicConfig()
 logger = logging.getLogger("logger-name")
 logger.setLevel(logging.DEBUG)
 
-from .utils import CLIENT_GET, CLIENT_POST
+from .utils import CLIENT_GET, CLIENT_POST, add_bluring_to_benchmark_test_class
 
 SYNTHESE_GET_OBS_URL = """url_for("gn_synthese.get_observations_for_web")"""
 SYNTHESE_EXPORT_OBS_URL = """url_for("gn_synthese.export_observations_web")"""
 
 
+@pytest.mark.benchmark(group="synthese")
 @pytest.mark.usefixtures(
     "client_class",
     "temporary_transaction",
@@ -109,22 +111,4 @@ class TestBenchmarkSynthese:
     )
 
 
-# Add blurring
-for attr in dir(TestBenchmarkSynthese):
-    if attr.startswith("test_"):
-        b_test = getattr(TestBenchmarkSynthese, attr)
-        kwargs = b_test.function_kwargs
-        if "fixture" in kwargs:
-            kwargs["fixtures"].append(blur_sensitive_observations)
-        else:
-            kwargs["fixtures"] = [blur_sensitive_observations]
-        setattr(
-            TestBenchmarkSynthese,
-            f"{attr}_with_blurring",
-            BenchmarkTest(b_test.function, b_test.function_args, kwargs)(),
-        )
-        setattr(
-            TestBenchmarkSynthese,
-            attr,
-            b_test(),
-        )
+add_bluring_to_benchmark_test_class(TestBenchmarkSynthese)
