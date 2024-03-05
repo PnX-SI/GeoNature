@@ -24,10 +24,16 @@ jsonschema_definitions = {
                 "type": "string",
             },
             "eng_label": {
-                "type": "string",
+                "type": [
+                    "string",
+                    "null",
+                ],
             },
             "desc_field": {
-                "type": "string",
+                "type": [
+                    "string",
+                    "null",
+                ],
             },
             "type_field": {
                 "type": "string",
