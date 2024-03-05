@@ -343,7 +343,7 @@ def users(app):
             {},
         ),
         (
-            ("user_with_blurring", organisme, 2, True, [], {}),
+            ("user_with_blurring", organisme, 1, True, [], {}),
             {},
         ),
     ]
