@@ -1,7 +1,9 @@
 import logging
+from geonature.tests.test_synthese import blur_sensitive_observations
 import pytest
 from geonature.tests.benchmarks import *
 from geonature.tests.test_pr_occhab import stations
+from geonature.core.gn_synthese.models import Synthese
 
 from .benchmark_generator import BenchmarkTest, CLater
 
@@ -11,113 +13,118 @@ logger.setLevel(logging.DEBUG)
 
 from .utils import CLIENT_GET, CLIENT_POST
 
+SYNTHESE_GET_OBS_URL = """url_for("gn_synthese.get_observations_for_web")"""
+SYNTHESE_EXPORT_OBS_URL = """url_for("gn_synthese.export_observations_web")"""
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")  # , "activate_profiling_sql")
+
+@pytest.mark.usefixtures(
+    "client_class",
+    "temporary_transaction",
+)  # , "activate_profiling_sql")
 class TestBenchmarkSynthese:
+    # GET NOMENCLATURE
     test_get_default_nomenclatures = BenchmarkTest(
         CLIENT_GET,
         [CLater("""url_for("gn_synthese.getDefaultsNomenclatures")""")],
         dict(user_profile="self_user"),
-    )()
+    )
+
     test_synthese_with_geometry_bbox = BenchmarkTest(
         CLIENT_POST,
-        [CLater("""url_for("gn_synthese.get_observations_for_web")""")],
+        [CLater(SYNTHESE_GET_OBS_URL)],
         dict(
             user_profile="admin_user",
             json=benchmark_synthese_intersection_data_test_bbox,
         ),
-    )()
+    )
 
     test_synthese_with_geometry_complex_poly = BenchmarkTest(
         CLIENT_POST,
-        [CLater("""url_for("gn_synthese.get_observations_for_web")""")],
+        [CLater(SYNTHESE_GET_OBS_URL)],
         dict(
             user_profile="admin_user",
             json=benchmark_synthese_intersection_data_test_complex_polygon,
         ),
-    )()
+    )
     test_synthese_with_commune = BenchmarkTest(
         CLIENT_POST,
-        [CLater("""url_for("gn_synthese.get_observations_for_web")""")],
+        [CLater(SYNTHESE_GET_OBS_URL)],
         dict(
             user_profile="admin_user",
             json=CLater("benchmark_data.benchmark_synthese_intersection_data_test_commune()"),
         ),
-    )()
+    )
 
     test_synthese_with_departement = BenchmarkTest(
         CLIENT_POST,
-        [CLater("""url_for("gn_synthese.get_observations_for_web")""")],
+        [CLater(SYNTHESE_GET_OBS_URL)],
         dict(
             user_profile="admin_user",
             json=CLater("benchmark_data.benchmark_synthese_intersection_data_test_departement()"),
         ),
-    )()
+    )
     test_synthese_with_region = BenchmarkTest(
         CLIENT_POST,
-        [CLater("""url_for("gn_synthese.get_observations_for_web")""")],
+        [CLater(SYNTHESE_GET_OBS_URL)],
         dict(
             user_profile="admin_user",
             json=CLater("benchmark_data.benchmark_synthese_intersection_data_test_region()"),
         ),
-    )()
+    )
     test_synthese_with_up_tree_taxon = BenchmarkTest(
         CLIENT_POST,
-        [CLater("""url_for("gn_synthese.get_observations_for_web")""")],
+        [CLater(SYNTHESE_GET_OBS_URL)],
         dict(
             user_profile="admin_user",
             json=benchmark_synthese_with_tree_taxon,
         ),
-    )()
+    )
 
-    ### WITH BLURRING
-    test_synthese_with_geometry_bbox_with_blurring = BenchmarkTest(
+    # EXPORT TESTING
+    test_synthese_export_1000 = BenchmarkTest(
         CLIENT_POST,
-        [CLater("""url_for("gn_synthese.get_observations_for_web")""")],
+        [CLater(SYNTHESE_EXPORT_OBS_URL)],
         dict(
-            user_profile="user_with_blurring",
-            json=benchmark_synthese_intersection_data_test_bbox,
+            user_profile="admin_user",
+            json=CLater("db.session.execute(select(Synthese.id_synthese).limit(1000)).all()"),
         ),
-    )()
+    )
 
-    test_synthese_with_geometry_complex_poly_with_blurring = BenchmarkTest(
+    test_synthese_export_10000 = BenchmarkTest(
         CLIENT_POST,
-        [CLater("""url_for("gn_synthese.get_observations_for_web")""")],
+        [CLater(SYNTHESE_EXPORT_OBS_URL)],
         dict(
-            user_profile="user_with_blurring",
-            json=benchmark_synthese_intersection_data_test_complex_polygon,
+            user_profile="admin_user",
+            json=CLater("db.session.execute(select(Synthese.id_synthese).limit(10000)).all()"),
         ),
-    )()
-    test_synthese_with_commune_with_blurring = BenchmarkTest(
-        CLIENT_POST,
-        [CLater("""url_for("gn_synthese.get_observations_for_web")""")],
-        dict(
-            user_profile="user_with_blurring",
-            json=CLater("benchmark_data.benchmark_synthese_intersection_data_test_commune()"),
-        ),
-    )()
+    )
 
-    test_synthese_with_departement_with_blurring = BenchmarkTest(
+    test_synthese_export_100000 = BenchmarkTest(
         CLIENT_POST,
-        [CLater("""url_for("gn_synthese.get_observations_for_web")""")],
+        [CLater(SYNTHESE_EXPORT_OBS_URL)],
         dict(
-            user_profile="user_with_blurring",
-            json=CLater("benchmark_data.benchmark_synthese_intersection_data_test_departement()"),
+            user_profile="admin_user",
+            json=CLater("db.session.execute(select(Synthese.id_synthese).limit(100000)).all()"),
         ),
-    )()
-    test_synthese_with_region_with_blurring = BenchmarkTest(
-        CLIENT_POST,
-        [CLater("""url_for("gn_synthese.get_observations_for_web")""")],
-        dict(
-            user_profile="user_with_blurring",
-            json=CLater("benchmark_data.benchmark_synthese_intersection_data_test_region()"),
-        ),
-    )()
-    test_synthese_with_up_tree_taxon_with_blurring = BenchmarkTest(
-        CLIENT_POST,
-        [CLater("""url_for("gn_synthese.get_observations_for_web")""")],
-        dict(
-            user_profile="user_with_blurring",
-            json=benchmark_synthese_with_tree_taxon,
-        ),
-    )()
+    )
+
+
+# Add blurring
+for attr in dir(TestBenchmarkSynthese):
+    if attr.startswith("test_"):
+        b_test = getattr(TestBenchmarkSynthese, attr)
+        kwargs = b_test.function_kwargs
+        if "fixture" in kwargs:
+            kwargs["fixtures"].append(blur_sensitive_observations)
+        else:
+            kwargs["fixtures"] = [blur_sensitive_observations]
+        setattr(
+            TestBenchmarkSynthese,
+            f"{attr}_with_blurring",
+            BenchmarkTest(b_test.function, b_test.function_args, kwargs)(),
+        )
+        setattr(
+            TestBenchmarkSynthese,
+            attr,
+            b_test(),
+        )
