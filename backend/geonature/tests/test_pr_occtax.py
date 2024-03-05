@@ -124,6 +124,7 @@ def releve_data(client: Any, datasets: dict[Any, TDatasets]):
             "observers": [1],
             "observers_txt": "tatatato",
             "id_nomenclature_grp_typ": id_nomenclature_grp_typ,
+            "additional_fields": {"releve_addi_field": "Releve"},
         },
     }
 
@@ -154,7 +155,7 @@ def occurrence_data(client: Any, releve_occtax: Any):
         "digital_proof": None,
         "non_digital_proof": None,
         "comment": "blah",
-        "additional_fields": {},
+        "additional_fields": {"occurrence_addi_field": "occ"},
         "cor_counting_occtax": [
             {
                 "id_nomenclature_life_stage": dict_nomenclatures["STADE_VIE"],
@@ -166,7 +167,6 @@ def occurrence_data(client: Any, releve_occtax: Any):
                 "count_min": 2,
                 "count_max": 2,
                 "medias": [],
-                "additional_fields": {},
             },
             {
                 "id_nomenclature_life_stage": dict_nomenclatures["STADE_VIE"],
@@ -178,7 +178,6 @@ def occurrence_data(client: Any, releve_occtax: Any):
                 "count_min": 1,
                 "count_max": 1,
                 "medias": [],
-                "additional_fields": {},
             },
         ],
     }
@@ -407,15 +406,26 @@ class TestOcctaxOccurrence:
         assert response.status_code == 200
         json_resp = response.json
         assert len(json_resp["cor_counting_occtax"]) == 2
-
-        occurrence_data["additional_fields"] = None
-        response = self.client.post(
-            url_for("pr_occtax.createOccurrence", id_releve=occurrence_data["id_releve_occtax"]),
-            json=occurrence_data,
+        # Test trigger to synthese
+        occurrence = (
+            db.session.execute(
+                select(TOccurrencesOccurrence).filter_by(
+                    id_occurrence_occtax=json_resp["id_occurrence_occtax"]
+                )
+            )
+            .unique()
+            .scalar_one()
         )
-        assert response.status_code == BadRequest.code
-
-        # TODO : test dans la synthese qu'il y a bien 2 ligne pour l'UUID couting
+        synthese_data = db.session.scalars(
+            select(Synthese).filter_by(unique_id_sinp_grp=occurrence.releve.unique_id_sinp_grp)
+        ).all()
+        assert len(synthese_data) >= 2
+        synthese_reccord = synthese_data[0]
+        # test additionnal field concatenation
+        assert synthese_reccord.additional_data == {
+            "occurrence_addi_field": "occ",
+            "releve_addi_field": "Releve",
+        }
 
     def test_update_occurrence(self, users: dict, occurrence: Any):
         set_logged_user(self.client, users["user"])
