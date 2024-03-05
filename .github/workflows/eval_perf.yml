@@ -1,7 +1,15 @@
-name: Routes performance evaluation
-
+name: Performance Evaluation
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - hotfixes
+      - develop
+  pull_request:
+    branches:
+      - master
+      - hotfixes
+      - develop
 
 jobs:
   build:
@@ -79,21 +87,33 @@ jobs:
           geonature db status --dependencies
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
-      - name: Restore database
+      # - name: Restore database
+      #   run: |
+      #     # wget https://www.dropbox.com/scl/fi/17gsthsftfg59mxwmbbre/export_geonature_10000.zip?rlkey=33choleag4xw60wadm802c3oh&dl=1 -O 10kDump.zip
+      #     # unzip 10kDump.zip
+      #     wget https://www.dropbox.com/scl/fi/jjkxyg120bxc0dp8uy8kq/300KDump.sql?rlkey=tyuk2svitcb9nyshn7r09yo7b&dl=1 -O 300KDump.sql
+      #     ls
+      #     psql -h localhost -U geonatadmin -d geonature2db -f 300KDump.sql
+      #   env:
+      #     PGPASSWORD: geonatpasswd
+      - name: Install database
         run: |
-          # wget https://www.dropbox.com/scl/fi/17gsthsftfg59mxwmbbre/export_geonature_10000.zip?rlkey=33choleag4xw60wadm802c3oh&dl=1 -O 10kDump.zip
-          # unzip 10kDump.zip
-          wget https://www.dropbox.com/scl/fi/jjkxyg120bxc0dp8uy8kq/300KDump.sql?rlkey=tyuk2svitcb9nyshn7r09yo7b&dl=1 -O 300KDump.sql
-          ls
-          psql -h localhost -U geonatadmin -d geonature2db -f 300KDump.sql
+          install/03b_populate_db.sh
         env:
-          PGPASSWORD: geonatpasswd
-      - name: Install module import
+          GEONATURE_CONFIG_FILE: config/test_config.toml
+          srid_local: 2154
+          install_bdc_statuts: true
+          add_sample_data: true
+          install_sig_layers: true
+          install_grid_layer_5: true
+          install_grid_layer_10: true
+          install_ref_sensitivity: true
+      - name: Show database status
         run: |
-          wget https://github.com/PnX-SI/gn_module_import/archive/refs/heads/develop.zip
-          unzip develop.zip
-          cd gn_module_import-develop
-          pip install -e .
+          geonature db status
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
+
       - name: Install core modules backend
         run: |
           pip install -e contrib/occtax
@@ -114,9 +134,13 @@ jobs:
           geonature db status --dependencies
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
-      - name: Test with pytest
+      - name: Load benchmark stable data
         run: |
-          pytest --benchmark-only
+          wget https://geonature.fr/data/benchmark_history/benchmark_stable.json -O benchmark_stable.json
+
+      - name: Compare performance to stable data
+        run: |
+          pytest --benchmark-only --benchmark-compare-fail="mean:0.1" --benchmark-compare=benchmark_stable.json
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
         # https://stackoverflow.com/a/64126737 For posting results on GitHub Pull Requests
