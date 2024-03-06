@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { Destination } from '../../models/import.model';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'pnx-destinations',
@@ -12,6 +13,7 @@ export class DestinationsComponent extends GenericFormComponent {
   destinations: Array<Destination>;
 
   @Input() bindValue: string = 'code';
+  @Output() onClear = new EventEmitter<any>();
 
   constructor(private _ds: DataService) {
     super();
