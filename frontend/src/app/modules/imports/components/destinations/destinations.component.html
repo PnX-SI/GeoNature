@@ -9,6 +9,7 @@
   [clearable]="clearable"
   [virtualScroll]="true"
   [formControl]="parentFormControl"
+  (clear)="onClear.emit()"
 >
   <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
     <div matTooltip="{{ item.code }}" [attr.data-qa]="item.code">
