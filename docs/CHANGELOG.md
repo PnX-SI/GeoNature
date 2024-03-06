@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+## 2.14.1 (unrealesed)
+
+🚀 Nouveautés
+
+- [Synthèse] Possibilité d'ajouter des champs supplémentaires à la liste de résultats via le paramètre `ADDITIONAL_COLUMNS_FRONTEND`. Ces champs sont masqués par défaut et controlables depuis l'interface (#2946)
+
 2.14.0 - Talpa europaea 👓 (2024-02-28)
 ---------------------------------------
 

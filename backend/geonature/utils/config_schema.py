@@ -355,15 +355,11 @@ class Synthese(Schema):
 
     # --------------------------------------------------------------------
     # SYNTHESE - OBSERVATIONS LIST
-    # Listes des champs renvoyés par l'API synthese '/synthese'
-    # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
-    # d'abbord s'assurer que ces champs sont bien renvoyé par l'API !
+    # Colonnes affichées par défaut sur la liste des résultats de la synthese
     # Champs disponibles: tous ceux de la vue 'v_synthese_for_web_app
-    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(
-        fields.String, load_default=DEFAULT_COLUMNS_API_SYNTHESE
-    )
-    # Colonnes affichées sur la liste des résultats de la sytnthese
     LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, load_default=DEFAULT_LIST_COLUMN)
+    # Colonnes affichables sur la liste des résultats de la synthese via la modale de selection des colonnes
+    ADDITIONAL_COLUMNS_FRONTEND = fields.List(fields.Dict, load_default=[])
 
     # --------------------------------------------------------------------
     # SYNTHESE - DOWNLOADS (AKA EXPORTS)

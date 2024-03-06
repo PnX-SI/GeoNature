@@ -23,6 +23,7 @@ import { ColumnMode } from '@swimlane/ngx-datatable';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { ConfigService } from '@geonature/services/config.service';
+import { FormArray, FormControl } from '@angular/forms';
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
@@ -39,6 +40,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   public inpnMapUrl: string;
   public downloadMessage: string;
   public ColumnMode: ColumnMode;
+  public availableColumns: Array<any> = [];
+  public defaultColumns: Array<any> = [];
   //input to resize datatable on searchbar toggle
   @Input() searchBarHidden: boolean;
   @Input() inputSyntheseData: GeoJSON;
@@ -59,6 +62,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
     this.rowNumber = Math.trunc(h / 37);
+
+    this.initListColumns();
 
     // On map click, select on the list a change the page
     this.mapListService.onMapClik$.subscribe((ids) => {
@@ -104,6 +109,20 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     this.table.sorts = [];
   }
 
+  initListColumns() {
+    this.defaultColumns = this.SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND;
+    let allColumnsTemp = [
+      ...this.SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND,
+      ...this.SYNTHESE_CONFIG.ADDITIONAL_COLUMNS_FRONTEND,
+    ];
+    this.availableColumns = allColumnsTemp.map((col) => {
+      col['checked'] = this.defaultColumns.some((defcol) => {
+        return defcol.name == col.name;
+      });
+      return col;
+    });
+  }
+
   /**
    * Restore previous selected rows when sort state return to 'undefined'.
    * With ngx-datable sortType must be 'multi' to use 3 states : asc, desc and undefined !
@@ -143,6 +162,10 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     modalRef.componentInstance.useFrom = 'synthese';
   }
 
+  openModalCol($event, modal) {
+    this.ngbModal.open(modal);
+  }
+
   openDownloadModal() {
     this.ngbModal.open(SyntheseModalDownloadComponent, {
       size: 'lg',
@@ -159,6 +182,11 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     }
     const d = new Date(date);
     return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('-');
+  }
+
+  toggleColumnNames(col) {
+    col.checked = !col.checked;
+    this.defaultColumns = this.availableColumns.filter((col) => col.checked);
   }
 
   ngOnChanges(changes) {
