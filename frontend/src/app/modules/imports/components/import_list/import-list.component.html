@@ -11,7 +11,8 @@
               'Import.Destinations' | translate | lowercase
             }}"
             [parentFormControl]="selectDestinationForm"
-            (onChange) = "onImportList()"
+            (onChange) = "resetPage()"
+            (onClear) = "resetPage()"
             class="flex-fill pr-1"
           ></pnx-destinations>
           <div class="flex-fill">
