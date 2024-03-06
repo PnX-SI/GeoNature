@@ -84,7 +84,15 @@ export class ImportListComponent implements OnInit {
    */
   updateSearchQuery() {
     this.searchString = this.search.value;
-    this.onImportList();
+    this.resetPage();
+  }
+
+  /**
+   * Resets the page offset before updating the import list
+   */
+  resetPage() {
+    this.offset = 0;
+    this.updateImports();
   }
 
 
