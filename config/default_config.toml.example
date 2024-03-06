@@ -269,13 +269,19 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
     # Colonne à afficher par défaut sur la liste des résultats de la synthese
     # Choisir le champ 'prop' parmis les colonnes suivantes :
-    # id (=id_synthese), date_min, cd_nom, lb_nom, nom_vern_or_lb_nom,
+    # id_synthese, date_min, cd_nom, lb_nom, nom_vern_or_lb_nom,
     # observers, dataset_name, url_source, count_min_max
     LIST_COLUMNS_FRONTEND = [
         { prop = "nom_vern_or_lb_nom", name = "Taxon" },
         { prop = "date_min", name = "Date début" },
         { prop = "observers", name = "Observateurs" },
         { prop = "dataset_name", name = "Jeu de données" }
+    ]
+
+    # Colonnes affichables dans la liste des résulats, mais masquées par default
+    # Possibilité de les ajouter en cliquant sur la route crantée en haut de la liste
+    ADDITIONNAL_COLUMNS_FRONTEND = [
+        { prop = "lb_nom", name = "Nom scientifique" },
     ]
 
     # Nombre de résultats à afficher pour la recherche autocompletée de taxon

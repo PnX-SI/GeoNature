@@ -120,7 +120,11 @@ class CustomRequiredConverter(GeoModelConverter):
 
     def _add_column_kwargs(self, kwargs, column):
         super()._add_column_kwargs(kwargs, column)
-        default_cols = map(lambda col: col["prop"], config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"])
+        default_cols = map(
+            lambda col: col["prop"],
+            config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"]
+            + config["SYNTHESE"]["ADDITIONNAL_COLUMNS_FRONTEND"],
+        )
         required_cols = list(default_cols) + MANDATORY_COLUMNS
         kwargs["required"] = column.name in required_cols
 
@@ -128,11 +132,8 @@ class CustomRequiredConverter(GeoModelConverter):
 class VSyntheseForWebAppSchema(GeoAlchemyAutoSchema):
     count_min_max = fields.Str()
     nom_vern_or_lb_nom = fields.Str()
-
     class Meta:
         model = VSyntheseForWebApp
-        feature_geometry = "the_geom_4326"
-        sqla_session = db.session
         model_converter = CustomRequiredConverter
 
 
@@ -171,6 +172,8 @@ class TestSynthese:
             {"prop": "altitude_min", "name": "Altitude min"},
             {"prop": "count_min_max", "name": "Dénombrement"},
             {"prop": "nom_vern_or_lb_nom", "name": "Taxon"},
+        app.config["SYNTHESE"]["ADDITIONNAL_COLUMNS_FRONTEND"] += [
+            {"prop": "lb_nom", "name": "Nom scientifique"}
         ]
         url_ungrouped = url_for("gn_synthese.get_observations_for_web")
         set_logged_user(self.client, users["admin_user"])
@@ -226,6 +229,7 @@ class TestSynthese:
                 "name": "Cdnom",
             }
         ]
+        # schema["properties"]["observations"]["items"]["required"] =
         # test on synonymy and taxref attrs
         filters = {
             "cd_ref": [taxon_attribut.bib_nom.cd_ref],
