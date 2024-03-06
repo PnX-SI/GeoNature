@@ -4,7 +4,7 @@
   #table
   class="material striped margin-top-xs table-size expandable"
   [rows]="mapListService.tableData"
-  [columns]="SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND"
+  [columns]="defaultColumns"
   [columnMode]="'force'"
   [headerHeight]="50"
   [footerHeight]="35"
@@ -19,6 +19,18 @@
   (select)="mapListService.onRowSelect($event)"
 >
   <ngx-datatable-column [maxWidth]="5">
+    <ng-template ngx-datatable-header-template>
+      <i
+        id="dropdownMenuButton"
+        class="fa fa-cog clickable"
+        aria-hidden="true"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        matTooltip="{{ 'List.Columns' | translate }}"
+        (click)="openModalCol($event, modalCol)"
+      ></i>
+    </ng-template>
     <ng-template
       let-row="row"
       ngx-datatable-cell-template
@@ -59,7 +71,7 @@
 
   <!-- cellClass is use for test, the "data-qa" attr do not work because the html is generated -->
   <ngx-datatable-column
-    *ngFor="let col of SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND"
+    *ngFor="let col of defaultColumns"
     [maxWidth]="col.max_width"
     [name]="col.name"
     [prop]="col.prop"
@@ -93,12 +105,33 @@
   <mat-icon>file_download</mat-icon>
 </button>
 
-<!-- <pnx-modal-download [pathDownload]="exportRoute " [queryString]="queyrStringDownload " [exportFormat]="SYNTHESE_CONFIG.EXPORT_FORMAT "
-  (buttonClicked)="setQueryString() ">
+<ng-template
+  #modalCol
+  let-c="close"
+  let-d="dismiss"
+>
+  <div class="modal-header">
+    <h4>{{ 'List.DisplayColumns' | translate }}</h4>
+  </div>
+  <div class="modal-body">
+    <div
+      class="form-check"
+      *ngFor="let col of availableColumns"
+    >
+      <input
+        class="form-check-input"
+        type="checkbox"
+        [id]="col.name"
+        (click)="toggleColumnNames(col)"
+        [checked]="col.checked"
+      />
 
-</pnx-modal-download> -->
-
-<!-- MODAL INFO OBS -->
-<!-- <ng-template #modalInfoObs let-c="close " let-d="dismiss">
-  <pnx-synthese-modal-info-obs></pnx-synthese-modal-info-obs>
-</ng-template> -->
+      <label
+        [attr.for]="col.name"
+        class="form-check-label"
+      >
+        {{ col.name | readablePropertie }}
+      </label>
+    </div>
+  </div>
+</ng-template>

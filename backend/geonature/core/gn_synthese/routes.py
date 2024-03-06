@@ -22,6 +22,7 @@ from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from werkzeug.datastructures import MultiDict
 from sqlalchemy import distinct, func, desc, asc, select, case
+from sqlalchemy.orm import joinedload, lazyload, selectinload, contains_eager
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 from sqlalchemy.orm import load_only, aliased, Load, with_expression
@@ -148,7 +149,9 @@ def get_observations_for_web(permissions):
 
     # Get Column Frontend parameter to return only the needed columns
     param_column_list = {
-        col["prop"] for col in current_app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"]
+        col["prop"]
+        for col in current_app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"]
+        + current_app.config["SYNTHESE"]["ADDITIONAL_COLUMNS_FRONTEND"]
     }
     # Init with compulsory columns
     columns = []
