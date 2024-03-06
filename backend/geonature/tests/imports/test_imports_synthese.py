@@ -1,4 +1,4 @@
-from io import StringIO
+from io import StringIO, BytesIO
 from pathlib import Path
 from functools import partial
 from operator import or_
@@ -143,11 +143,25 @@ def new_import(synthese_destination, users, import_dataset):
 
 
 @pytest.fixture()
-def uploaded_import(new_import, import_file_name):
+def uploaded_import(client, new_import, datasets, import_file_name):
     with db.session.begin_nested():
         with open(tests_path / "files" / "synthese" / import_file_name, "rb") as f:
-            new_import.source_file = f.read()
-            new_import.full_file_name = "valid_file.csv"
+            f.seek(0)
+            content = f.read()
+            if import_file_name == "jdd_to_import_file.csv":
+                content = content.replace(
+                    b"VALID_DATASET_UUID",
+                    datasets["own_dataset"].unique_dataset_id.hex.encode("ascii"),
+                )
+                content = content.replace(
+                    b"FORBIDDEN_DATASET_UUID",
+                    datasets["orphan_dataset"].unique_dataset_id.hex.encode("ascii"),
+                )
+                new_import.full_file_name = "jdd_to_import_file.csv"
+            else:
+                new_import.full_file_name = "valid_file.csv"
+            new_import.source_file = content
+            # data = bytes_csv_to_dict(content)
     return new_import
 
 
@@ -174,7 +188,7 @@ def decoded_import(client, uploaded_import):
 
 @pytest.fixture()
 def fieldmapping(import_file_name, autogenerate):
-    if import_file_name == "valid_file.csv":
+    if import_file_name in ["valid_file.csv", "jdd_to_import_file.csv"]:
         return FieldMapping.query.filter_by(label="Synthese GeoNature").one().values
     else:
         return {
@@ -206,16 +220,27 @@ def loaded_import(client, field_mapped_import):
 
 @pytest.fixture()
 def content_mapped_import(client, import_file_name, loaded_import):
-    with db.session.begin_nested():
-        loaded_import.contentmapping = (
-            ContentMapping.query.filter_by(label="Nomenclatures SINP (labels)").one().values
+    if import_file_name == "jdd_to_import_file.csv":
+        set_logged_user(client, loaded_import.authors[0])
+        contentmapping = ContentMapping.query.filter_by(label="Nomenclatures SINP (labels)").one()
+        r = client.post(
+            url_for("import.set_import_content_mapping", import_id=loaded_import.id_import),
+            data=contentmapping.values,
         )
-        if import_file_name == "empty_nomenclatures_file.csv":
-            loaded_import.contentmapping["STADE_VIE"].update(
-                {
-                    "": "17",  # Alevin
-                }
+        assert r.status_code == 200, r.data
+        unset_logged_user(client)
+        db.session.refresh(loaded_import)
+    else:
+        with db.session.begin_nested():
+            loaded_import.contentmapping = (
+                ContentMapping.query.filter_by(label="Nomenclatures SINP (labels)").one().values
             )
+            if import_file_name == "empty_nomenclatures_file.csv":
+                loaded_import.contentmapping["STADE_VIE"].update(
+                    {
+                        "": "17",  # Alevin
+                    }
+                )
     return loaded_import
 
 
@@ -1271,3 +1296,14 @@ class TestImportsSynthese:
             assert int(source_row["line_number"]) == erroneous_line_number
             # and this is the test purpose assert:
             assert error_row == source_row
+
+    @pytest.mark.parametrize("import_file_name", ["jdd_to_import_file.csv"])
+    def test_import_jdd_file(self, imported_import):
+        assert_import_errors(
+            imported_import,
+            {
+                # id_dataset errors
+                ("DATASET_NOT_FOUND", "unique_dataset_id", frozenset({5})),
+                ("DATASET_NOT_AUTHORIZED", "unique_dataset_id", frozenset({4})),
+            },
+        )
