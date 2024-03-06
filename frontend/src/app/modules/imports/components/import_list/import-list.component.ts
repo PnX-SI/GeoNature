@@ -49,7 +49,7 @@ export class ImportListComponent implements OnInit {
     private importProcessService: ImportProcessService,
     public _csvExport: CsvExportService,
     public config: ConfigService
-  ) { }
+  ) {}
 
   /**
    * Initialize the import list
@@ -95,36 +95,32 @@ export class ImportListComponent implements OnInit {
     this.updateImports();
   }
 
-
   /**
    * Refresh the import list based on the page number and value in the filters
    * @param {object} [params={}]
    */
   private onImportList(params: object = {}) {
-    let default_params = { page: 1, search: this.searchString }
+    let default_params = { page: 1, search: this.searchString };
     default_params = { ...default_params, ...params };
-    this._ds
-      .getImportList(default_params, this.selectDestinationForm.value)
-      .subscribe((res) => {
-        this.history = res['imports'];
-        this.getImportsStatus();
+    this._ds.getImportList(default_params, this.selectDestinationForm.value).subscribe((res) => {
+      this.history = res['imports'];
+      this.getImportsStatus();
 
-        this.filteredHistory = this.history;
-        this.empty = res.length == 0;
-        this.total = res['count'];
-        this.limit = res['limit'];
-        this.offset = res['offset'];
-        this.fetchTimeout = setTimeout(() => {
-          this.updateImports();
-        }, 15000);
-      });
+      this.filteredHistory = this.history;
+      this.empty = res.length == 0;
+      this.total = res['count'];
+      this.limit = res['limit'];
+      this.offset = res['offset'];
+      this.fetchTimeout = setTimeout(() => {
+        this.updateImports();
+      }, 15000);
+    });
   }
 
   /**
    * Return import status
    */
   private getImportsStatus() {
-
     this.history.forEach((hist) => {
       if (hist.task_id !== null && hist.task_progress !== null) {
         if (hist.task_progress == -1) {
@@ -142,7 +138,6 @@ export class ImportListComponent implements OnInit {
     this.checkingImport = this.inErrorImport = this.runningImport = [];
   }
 
-  
   private updateImports() {
     let params = { page: this.offset + 1, search: this.searchString };
     if (this.sort) {
@@ -153,7 +148,7 @@ export class ImportListComponent implements OnInit {
     }
     this.onImportList(params);
   }
-  
+
   onFinishImport(data: Import) {
     clearTimeout(this.fetchTimeout);
     this.importProcessService.continueProcess(data);
@@ -181,7 +176,7 @@ export class ImportListComponent implements OnInit {
     let params = { page: 1, search: this.searchString, sort: sort.prop, sort_dir: sort.dir };
     this.sort = sort.prop;
     this.dir = sort.dir;
-    this.onImportList(params)
+    this.onImportList(params);
   }
   setPage(e) {
     let params = { page: e.offset + 1, search: this.searchString };
