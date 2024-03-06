@@ -91,19 +91,6 @@ def check_transient_data(task, logger, imprt):
             )
         update_batch_progress(batch, 1)
 
-        logger.info(f"[{batch+1}/{batch_count}] Check dataset rows")
-        with start_sentry_child(op="check.df", description="check datasets rows"):
-            updated_cols |= check_datasets(
-                imprt,
-                entity,
-                df,
-                uuid_field=fields["unique_dataset_id"],
-                id_field=fields["id_dataset"],
-                module_code="SYNTHESE",
-            )
-
-        update_batch_progress(batch, 2)
-
         logger.info(f"[{batch+1}/{batch_count}] Concat dates…")
         with start_sentry_child(op="check.df", description="concat dates"):
             updated_cols |= concat_dates(
@@ -115,16 +102,28 @@ def check_transient_data(task, logger, imprt):
                 fields["hour_min"].source_field,
                 fields["hour_max"].source_field,
             )
-        update_batch_progress(batch, 3)
+        update_batch_progress(batch, 2)
 
         logger.info(f"[{batch+1}/{batch_count}] Check required values…")
         with start_sentry_child(op="check.df", description="check required values"):
             updated_cols |= check_required_values(imprt, entity, df, fields)
-        update_batch_progress(batch, 4)
+        update_batch_progress(batch, 3)
 
         logger.info(f"[{batch+1}/{batch_count}] Check types…")
         with start_sentry_child(op="check.df", description="check types"):
             updated_cols |= check_types(imprt, entity, df, fields)
+
+        update_batch_progress(batch, 4)
+        logger.info(f"[{batch+1}/{batch_count}] Check dataset rows")
+        with start_sentry_child(op="check.df", description="check datasets rows"):
+            updated_cols |= check_datasets(
+                imprt,
+                entity,
+                df,
+                uuid_field=fields["unique_dataset_id"],
+                id_field=fields["id_dataset"],
+                module_code="SYNTHESE",
+            )
         update_batch_progress(batch, 5)
 
         logger.info(f"[{batch+1}/{batch_count}] Check geography…")
@@ -320,6 +319,7 @@ def import_data_to_synthese(imprt):
             if source_field in imprt.columns:
                 insert_fields |= {field}
 
+    insert_fields -= {fields["unique_dataset_id"]}
     select_stmt = (
         sa.select(
             *[transient_table.c[field.dest_field] for field in insert_fields],
