@@ -20,6 +20,7 @@ from geonature.core.imports.checks.dataframe import (
     check_types,
     check_geography,
     check_counts,
+    check_datasets,
 )
 from geonature.core.imports.checks.sql import (
     do_nomenclatures_mapping,
@@ -69,7 +70,7 @@ def check_transient_data(task, logger, imprt):
     def update_batch_progress(batch, step):
         start = 0.1
         end = 0.4
-        step_count = 7
+        step_count = 8
         progress = start + ((batch + 1) / batch_count) * (step / step_count) * (end - start)
         task.update_state(state="PROGRESS", meta={"progress": progress})
 
@@ -90,6 +91,19 @@ def check_transient_data(task, logger, imprt):
             )
         update_batch_progress(batch, 1)
 
+        logger.info(f"[{batch+1}/{batch_count}] Check dataset rows")
+        with start_sentry_child(op="check.df", description="check datasets rows"):
+            updated_cols |= check_datasets(
+                imprt,
+                entity,
+                df,
+                uuid_field=fields["unique_dataset_id"],
+                id_field=fields["id_dataset"],
+                module_code="SYNTHESE",
+            )
+
+        update_batch_progress(batch, 2)
+
         logger.info(f"[{batch+1}/{batch_count}] Concat dates…")
         with start_sentry_child(op="check.df", description="concat dates"):
             updated_cols |= concat_dates(
@@ -101,17 +115,17 @@ def check_transient_data(task, logger, imprt):
                 fields["hour_min"].source_field,
                 fields["hour_max"].source_field,
             )
-        update_batch_progress(batch, 2)
+        update_batch_progress(batch, 3)
 
         logger.info(f"[{batch+1}/{batch_count}] Check required values…")
         with start_sentry_child(op="check.df", description="check required values"):
             updated_cols |= check_required_values(imprt, entity, df, fields)
-        update_batch_progress(batch, 3)
+        update_batch_progress(batch, 4)
 
         logger.info(f"[{batch+1}/{batch_count}] Check types…")
         with start_sentry_child(op="check.df", description="check types"):
             updated_cols |= check_types(imprt, entity, df, fields)
-        update_batch_progress(batch, 4)
+        update_batch_progress(batch, 5)
 
         logger.info(f"[{batch+1}/{batch_count}] Check geography…")
         with start_sentry_child(op="check.df", description="set geography"):
@@ -129,7 +143,7 @@ def check_transient_data(task, logger, imprt):
                 codemaille_field=fields["codemaille"],
                 codedepartement_field=fields["codedepartement"],
             )
-        update_batch_progress(batch, 5)
+        update_batch_progress(batch, 6)
 
         logger.info(f"[{batch+1}/{batch_count}] Check counts…")
         with start_sentry_child(op="check.df", description="check count"):
@@ -141,12 +155,12 @@ def check_transient_data(task, logger, imprt):
                 fields["count_max"],
                 default_count=current_app.config["IMPORT"]["DEFAULT_COUNT_VALUE"],
             )
-        update_batch_progress(batch, 6)
+        update_batch_progress(batch, 7)
 
         logger.info(f"[{batch+1}/{batch_count}] Updating import data from dataframe…")
         with start_sentry_child(op="check.df", description="save dataframe"):
             update_transient_data_from_dataframe(imprt, entity, updated_cols, df)
-        update_batch_progress(batch, 7)
+        update_batch_progress(batch, 8)
 
     # Checks in SQL
     convert_geom_columns(
