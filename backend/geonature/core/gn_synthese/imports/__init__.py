@@ -325,7 +325,7 @@ def import_data_to_synthese(imprt):
             *[transient_table.c[field.dest_field] for field in insert_fields],
             sa.literal(source.id_source),
             sa.literal(source.module.id_module),
-            sa.literal(imprt.id_dataset),
+            transient_table.c.id_dataset,
             sa.literal("I"),
         )
         .where(transient_table.c.id_import == imprt.id_import)
