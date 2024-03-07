@@ -16,12 +16,12 @@ from .utils import CLIENT_GET, CLIENT_POST
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestBenchmarkOcctax:
 
-    test_occtax_list_releves_restricted = BenchmarkTest(
+    test_list_releves_restricted = BenchmarkTest(
         CLIENT_GET,
         [CLater("""url_for("pr_occtax.getReleves")""")],
         dict(user_profile="user_restricted_occhab", fixtures=[]),
     )()
-    test_occtax_list_releves_unrestricted = BenchmarkTest(
+    test_list_releves_unrestricted = BenchmarkTest(
         CLIENT_GET,
         [CLater("""url_for("pr_occtax.getReleves")""")],
         dict(user_profile="admin_user", fixtures=[]),
