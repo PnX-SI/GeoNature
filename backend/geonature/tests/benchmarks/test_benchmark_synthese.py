@@ -16,6 +16,8 @@ from .utils import CLIENT_GET, CLIENT_POST, add_bluring_to_benchmark_test_class
 
 SYNTHESE_GET_OBS_URL = """url_for("gn_synthese.get_observations_for_web")"""
 SYNTHESE_EXPORT_OBS_URL = """url_for("gn_synthese.export_observations_web")"""
+SYNTHESE_EXPORT_STATUS_URL = """url_for("gn_synthese.export_status")"""
+SYNTHESE_EXPORT_TAXON_WEB_URL = """url_for("gn_synthese.export_taxon_web")"""
 
 
 @pytest.mark.benchmark(group="synthese")
@@ -31,7 +33,7 @@ class TestBenchmarkSynthese:
         dict(user_profile="self_user"),
     )
 
-    test_synthese_with_geometry_bbox = BenchmarkTest(
+    test_with_geometry_bbox = BenchmarkTest(
         CLIENT_POST,
         [CLater(SYNTHESE_GET_OBS_URL)],
         dict(
@@ -40,7 +42,7 @@ class TestBenchmarkSynthese:
         ),
     )
 
-    test_synthese_with_geometry_complex_poly = BenchmarkTest(
+    test_with_geometry_complex_poly = BenchmarkTest(
         CLIENT_POST,
         [CLater(SYNTHESE_GET_OBS_URL)],
         dict(
@@ -48,7 +50,7 @@ class TestBenchmarkSynthese:
             json=benchmark_synthese_intersection_data_test_complex_polygon,
         ),
     )
-    test_synthese_with_commune = BenchmarkTest(
+    test_with_commune = BenchmarkTest(
         CLIENT_POST,
         [CLater(SYNTHESE_GET_OBS_URL)],
         dict(
@@ -57,7 +59,7 @@ class TestBenchmarkSynthese:
         ),
     )
 
-    test_synthese_with_departement = BenchmarkTest(
+    test_with_departement = BenchmarkTest(
         CLIENT_POST,
         [CLater(SYNTHESE_GET_OBS_URL)],
         dict(
@@ -65,7 +67,7 @@ class TestBenchmarkSynthese:
             json=CLater("benchmark_data.benchmark_synthese_intersection_data_test_departement()"),
         ),
     )
-    test_synthese_with_region = BenchmarkTest(
+    test_with_region = BenchmarkTest(
         CLIENT_POST,
         [CLater(SYNTHESE_GET_OBS_URL)],
         dict(
@@ -73,7 +75,7 @@ class TestBenchmarkSynthese:
             json=CLater("benchmark_data.benchmark_synthese_intersection_data_test_region()"),
         ),
     )
-    test_synthese_with_up_tree_taxon = BenchmarkTest(
+    test_with_up_tree_taxon = BenchmarkTest(
         CLIENT_POST,
         [CLater(SYNTHESE_GET_OBS_URL)],
         dict(
@@ -82,33 +84,27 @@ class TestBenchmarkSynthese:
         ),
     )
 
-    # EXPORT TESTING
-    test_synthese_export_1000 = BenchmarkTest(
-        CLIENT_POST,
-        [CLater(SYNTHESE_EXPORT_OBS_URL)],
-        dict(
-            user_profile="admin_user",
-            json=CLater("db.session.execute(select(Synthese.id_synthese).limit(1000)).all()"),
-        ),
-    )
 
-    test_synthese_export_10000 = BenchmarkTest(
-        CLIENT_POST,
-        [CLater(SYNTHESE_EXPORT_OBS_URL)],
-        dict(
-            user_profile="admin_user",
-            json=CLater("db.session.execute(select(Synthese.id_synthese).limit(10000)).all()"),
-        ),
-    )
-
-    test_synthese_export_100000 = BenchmarkTest(
-        CLIENT_POST,
-        [CLater(SYNTHESE_EXPORT_OBS_URL)],
-        dict(
-            user_profile="admin_user",
-            json=CLater("db.session.execute(select(Synthese.id_synthese).limit(100000)).all()"),
-        ),
-    )
-
+# EXPORT TESTING
+for url, label in [
+    (SYNTHESE_EXPORT_STATUS_URL, "status"),
+    (SYNTHESE_EXPORT_TAXON_WEB_URL, "taxons"),
+    (SYNTHESE_EXPORT_OBS_URL, "observations"),
+]:
+    for n_obs in [1000, 10000, 100000, 1000000]:
+        setattr(
+            TestBenchmarkSynthese,
+            f"test_export_{label}_{n_obs}",
+            BenchmarkTest(
+                CLIENT_POST,
+                [CLater(SYNTHESE_EXPORT_OBS_URL)],
+                dict(
+                    user_profile="admin_user",
+                    json=CLater(
+                        f"db.session.execute(select(Synthese.id_synthese).limit({n_obs})).all()"
+                    ),
+                ),
+            ),
+        )
 
 add_bluring_to_benchmark_test_class(TestBenchmarkSynthese)
