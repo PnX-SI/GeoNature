@@ -16,20 +16,32 @@ from .utils import CLIENT_GET, CLIENT_POST
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestBenchmarkOcchab:
 
-    test_occhab_get_station = BenchmarkTest(
+    test_get_station = BenchmarkTest(
         CLIENT_GET,
         [CLater("""url_for("occhab.get_station", id_station=8)""")],
         dict(user_profile="user", fixtures=[stations]),
     )()
 
-    test_occhab_list_stations = BenchmarkTest(
+    test_list_stations = BenchmarkTest(
         CLIENT_GET,
         [CLater("""url_for("occhab.list_stations")""")],
         dict(user_profile="admin_user", fixtures=[]),
     )()
 
-    test_occhab_list_stations_restricted = BenchmarkTest(
+    test_list_stations_restricted = BenchmarkTest(
         CLIENT_GET,
         [CLater("""url_for("occhab.list_stations")""")],
         dict(user_profile="user_restricted_occhab", fixtures=[]),
     )()
+
+
+for format_ in "csv geojson shapefile".split():
+    setattr(
+        TestBenchmarkOcchab,
+        f"test_export_all_habitats_{format_}",
+        BenchmarkTest(
+            CLIENT_POST,
+            [CLater("""url_for("occhab.export_all_habitats",export_format="csv")""")],
+            dict(user_profile="admin_user", fixtures=[]),
+        )(),
+    )
