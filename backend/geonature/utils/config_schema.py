@@ -192,8 +192,8 @@ class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
         validate=Regexp(
-            "^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+",
-            error="Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name",
+            "^(postgres(?:ql)?):\/\/(?:([^@\s]+)@)?([^\/\s]+)(?:\/(\w+))?(?:\?(.+))?",
+            error="PostgreSQL database URL is invalid. Check for authorized URL here : https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING-URIS",
         ),
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(load_default=True)
