@@ -586,7 +586,7 @@ class VSyntheseForWebApp(DB.Model):
     id_module = DB.Column(DB.Integer)
     entity_source_pk_value = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)
-    dataset_name = DB.Column(DB.Integer)
+    dataset_name = DB.Column(DB.String)
     id_acquisition_framework = DB.Column(DB.Integer)
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
