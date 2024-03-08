@@ -1,3 +1,4 @@
+import os
 from flask import current_app
 import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
@@ -307,3 +308,10 @@ def remove_data_from_occhab(imprt):
         r = db.session.execute(
             sa.delete(destination_table).where(destination_table.c.id_import == imprt.id_import)
         )
+
+
+def get_imported_data_link(imprt):
+    datalink = {}
+    datalink["query_params"] = {"id_dataset": imprt.id_dataset, "id_import": imprt.id_import}
+    datalink["module_url"] = f"/{imprt.destination.code}"
+    return datalink

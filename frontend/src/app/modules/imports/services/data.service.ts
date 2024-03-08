@@ -284,4 +284,8 @@ export class DataService {
       {}
     );
   }
+
+  get_imported_data_link(id_import) {
+    return this._http.get(`${this.getUrlApi()}/imports/${id_import}/data_link`);
+  }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { OccHabMapListService } from '../../services/occhab-map-list.service';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { ConfigService } from '@geonature/services/config.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'pnx-occhab-map-list-filter',
@@ -14,10 +15,27 @@ export class OcchabMapListFilterComponent implements OnInit {
   constructor(
     public mapListFormService: OccHabMapListService,
     private _dateParser: NgbDateParserFormatter,
-    public config: ConfigService
+    public config: ConfigService,
+    private _route: ActivatedRoute
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.filterIdImport();
+  }
+
+  filterIdImport() {
+    this._route.queryParamMap.subscribe((params) => {
+      if (params.get('id_import')) {
+        this.mapListFormService.searchForm.controls['id_dataset'].setValue(
+          Number(params.get('id_dataset'))
+        );
+        this.mapListFormService.searchForm.controls['id_import'].setValue(
+          Number(params.get('id_import'))
+        );
+        this.onSearch.emit(this.cleanFilter());
+      }
+    });
+  }
 
   formatter(item) {
     return item.search_name;
@@ -33,6 +51,7 @@ export class OcchabMapListFilterComponent implements OnInit {
 
   cleanFilter() {
     const cleanedObject = {};
+    console.log(this.mapListFormService.searchForm);
     Object.keys(this.mapListFormService.searchForm.value).forEach((key) => {
       /** return only the form items where value is not null or empty array */
       if (

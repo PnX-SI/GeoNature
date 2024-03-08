@@ -293,9 +293,6 @@
         <pnx-geojson [geojson]="validBbox" [zoomOnFirstTime]="true">
         </pnx-geojson>
       </pnx-map>
-      <button  mat-raised-button class="align-self-center" color="primary" [disabled]="importData?.date_end_import === null" (click)="goToSynthese(importData?.id_dataset)">
-        Afficher dans la synthèse
-      </button>
     </div>
     <div *ngIf="doughnutChartData.length > 0" class="d-flex flex-column col-sm-6">
       <h5 class="card-title">Répartition des taxons importés</h5>
@@ -313,6 +310,11 @@
         </mat-select>
       </mat-form-field>
     </div>
+    </div>
+    <div *ngIf="is_data_link">
+      <button  mat-raised-button class="align-self-center" color="primary" [disabled]="importData?.date_end_import === null" (click)="goToTargetModule()">
+        Voir les données dans le module de destination
+      </button>
     </div>
     </mat-expansion-panel>
   </div>
