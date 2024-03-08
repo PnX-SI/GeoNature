@@ -84,6 +84,16 @@ const defaultRoutes: Routes = [
         canActivate: [UserPublicGuard],
       },
       {
+        path: 'import',
+        data: { module_code: 'import' },
+        canActivate: [ModuleGuardService],
+        loadChildren: () =>
+          import(
+            /* webpackChunkName: "imports" */
+            '@geonature/modules/imports/imports.module'
+          ).then((m) => m.ImportsModule),
+      },
+      {
         path: 'notification',
         component: NotificationComponent,
       },
@@ -99,4 +109,7 @@ const defaultRoutes: Routes = [
   },
 ];
 
-export const routing = RouterModule.forRoot(defaultRoutes, { useHash: true });
+export const routing = RouterModule.forRoot(defaultRoutes, {
+  useHash: true,
+  paramsInheritanceStrategy: 'always',
+});

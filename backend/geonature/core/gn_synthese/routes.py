@@ -39,6 +39,7 @@ from geonature.utils.utilsgeometrytools import export_as_geo_file
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.notifications.utils import dispatch_notifications
 
+import geonature.core.gn_synthese.module
 from geonature.core.gn_synthese.models import (
     BibReportsTypes,
     CorAreaSynthese,

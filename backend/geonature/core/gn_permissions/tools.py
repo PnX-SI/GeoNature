@@ -4,7 +4,7 @@ from itertools import groupby, permutations
 
 import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
-from flask import g
+from flask import has_request_context, g
 
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.models import (
@@ -50,9 +50,12 @@ def _get_user_permissions(id_role):
 def get_user_permissions(id_role=None):
     if id_role is None:
         id_role = g.current_user.id_role
-    if id_role not in g._permissions_by_user:
-        g._permissions_by_user[id_role] = _get_user_permissions(id_role)
-    return g._permissions_by_user[id_role]
+    if has_request_context():
+        if id_role not in g._permissions_by_user:
+            g._permissions_by_user[id_role] = _get_user_permissions(id_role)
+        return g._permissions_by_user[id_role]
+    else:
+        return _get_user_permissions(id_role)
 
 
 def _get_permissions(id_role, module_code, object_code, action_code):
@@ -93,9 +96,12 @@ def get_permissions(action_code, id_role=None, module_code=None, object_code=Non
             object_code = "ALL"
 
     ident = (id_role, module_code, object_code, action_code)
-    if ident not in g._permissions:
-        g._permissions[ident] = _get_permissions(*ident)
-    return g._permissions[ident]
+    if has_request_context():
+        if ident not in g._permissions:
+            g._permissions[ident] = _get_permissions(*ident)
+        return g._permissions[ident]
+    else:
+        return _get_permissions(*ident)
 
 
 def get_scope(action_code, id_role=None, module_code=None, object_code=None, bypass_warning=False):

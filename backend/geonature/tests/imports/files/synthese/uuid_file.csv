@@ -1,0 +1,7 @@
+date_min;nom_cite;observateurs;WKT;cd_nom;unique_id_sinp;Erreur(s) attendue(s)
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;5cef829a-cf6a-11ec-80e4-7b789162d5b4;Valide
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;60f14950-cf6a-11ec-a455-2ff4be8ecf40;DUPLICATE_UUID
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;60f14950-cf6a-11ec-a455-2ff4be8ecf40;DUPLICATE_UUID
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;f4428222-d038-40bc-bc5c-6e977bbbc92b;EXISTING_UUID
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;abcdef;INVALID_UUID
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;;Valide

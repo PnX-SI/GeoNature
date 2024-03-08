@@ -29,6 +29,7 @@
   "LoginError": "Identifiant ou mot de passe incorrect",
   "Downloading": "Téléchargement en cours",
   "DownloadData": "Télécharger les données",
+  "Upload": "Importer",
   "Download": "Télécharger",
   "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
   "AllItems": "Tous",
@@ -59,7 +60,8 @@
     "RefreshFilters": "Rafraichir les filtres",
     "AdvancedFilters": "Filtres avancés",
     "OtherFilters": "Autres filtres",
-    "Organism": "Organisme(s)"
+    "Organism": "Organisme(s)",
+    "Filter":"Filtrer"
   },
   "List": {
     "Columns": "Colonnes",
@@ -267,5 +269,32 @@
     "type": "Type de média",
     "next": "Voir le média suivant",
     "previous": "Voir le média précédent"
+  },
+  "Import": {
+    "Destinations": "Destinations",
+    "FileUpload": " Téléversement du fichier ",
+    "ChooseDataset": "Choisir un jeu de données :",
+    "ChooseDestination": "Choisir une destination",
+    "ImportFile": "Importer un fichier :",
+    "ChooseFile": "Choisissez votre fichier",
+    "Next": "Suivant",
+    "Validate": "Valider",
+    "ErrorMessage": {
+      "Title": "Le module d'import a rencontré un problème",
+      "Remark": "Il s'agit d'un problème indépendant du controle des données.",
+      "DescriptionRestart": "Vous pouvez essayer de relancer l'import après vérification des paramètres.",
+      "DescriptionContactAdmin": "Si le problème persiste, merci de contacter votre administrateur."
+    },
+    "Errors": {
+      "FileTooBig": "Le fichier sélectionné est trop volumineux. La taille maximale est de {{maxFileSize}}Mo",
+      "EmptyFile": "Le fichier sélectionné est vide",
+      "FileColumn": "La première ligne du fichier doit correspondre au nom des colonnes",
+      "FileNameTooBig": "Le nom du fichier est trop long. Il doit faire moins de {{maxFileNameLength}} caractères."
+    },
+    "Report": {
+      "Errors": {
+        "Entity": "Entité"
+      }
+    }
   }
 }

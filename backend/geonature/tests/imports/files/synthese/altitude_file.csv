@@ -1,0 +1,12 @@
+date_min;nom_cite;observateurs;WKT;cd_nom;altitude_min;altitude_max;Erreur(s) attendue(s)
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;;;Valide
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;10;;Valide
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;5000;;ALTI_MIN_SUP_ALTI_MAX
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;;5000;Valide
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;;10;ALTI_MIN_SUP_ALTI_MAX
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;10;10;Valide
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;10;20;Valide
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;20;10;ALTI_MIN_SUP_ALTI_MAX
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;a;;INVALID_INTEGER
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;;b;INVALID_INTEGER
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;a;b;INVALID_INTEGER

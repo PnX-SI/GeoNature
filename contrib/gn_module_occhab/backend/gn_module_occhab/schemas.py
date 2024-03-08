@@ -30,6 +30,7 @@ class StationSchema(CruvedSchemaMixin, SmartRelationshipsMixin, GeoAlchemyAutoSc
         sqla_session = db.session
         feature_id = "id_station"
         model_converter = StationConverter
+        feature_geometry = "geom_4326"
 
     __module_code__ = "OCCHAB"
 
@@ -42,6 +43,7 @@ class StationSchema(CruvedSchemaMixin, SmartRelationshipsMixin, GeoAlchemyAutoSc
     observers = Nested(UserSchema, exclude=["max_level_profil"], unknown=EXCLUDE, many=True)
     dataset = Nested(DatasetSchema, dump_only=True)
 
+    # TODO@TestImportsOcchab.test_import_valid_file: maybe add testcase
     @validates_schema
     def validate_habitats(self, data, **kwargs):
         """

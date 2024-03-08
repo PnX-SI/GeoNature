@@ -1,0 +1,6 @@
+date_min;nom_cite;observateurs;WKT;cd_nom;entity_source_pk_value;Erreur(s) attendue(s)
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;;Valide
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;;Valide
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;1;Valide
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;2;DUPLICATE_ENTITY_SOURCE_PK
+2017-01-01;Ablette;Toto;POINT(6.5 44.85);67111;2;DUPLICATE_ENTITY_SOURCE_PK
