@@ -70,24 +70,3 @@ class SyntheseSchema(SmartRelationshipsMixin, GeoAlchemyAutoSchema):
     last_validation = ma.Nested(TValidationSchema, dump_only=True)
     reports = ma.Nested(ReportSchema, many=True)
     # Missing nested schemas: taxref
-
-
-class CustomRequiredConverter(GeoModelConverter):
-    """Custom converter to add kwargs required for mandatory and asked fields in get_observations_for_web view
-    Use to validate response in test"""
-
-    def _add_column_kwargs(self, kwargs, column):
-        super()._add_column_kwargs(kwargs, column)
-        default_cols = map(lambda col: col["prop"], config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"])
-        required_cols = list(default_cols) + MANDATORY_COLUMNS
-        kwargs["required"] = column.name in required_cols
-
-
-# Only used in test for now
-class VSyntheseForWebAppSchema(GeoAlchemyAutoSchema):
-
-    class Meta:
-        model = VSyntheseForWebApp
-        feature_geometry = "the_geom_4326"
-        sqla_session = db.session
-        model_converter = CustomRequiredConverter
