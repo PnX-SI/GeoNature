@@ -16,6 +16,7 @@ from flask import (
     g,
 )
 from geonature.core.gn_synthese.schemas import SyntheseSchema
+from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from pypnusershub.db.models import User
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
@@ -151,12 +152,9 @@ def get_observations_for_web(permissions):
         col["prop"] for col in current_app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"]
     }
     # Init with compulsory columns
-    columns = [
-        "id",
-        VSyntheseForWebApp.id_synthese,
-        "url_source",
-        VSyntheseForWebApp.url_source,
-    ]
+    columns = []
+    for col in MANDATORY_COLUMNS:
+        columns.extend([col, getattr(VSyntheseForWebApp, col)])
 
     if "count_min_max" in param_column_list:
         count_min_max = case(

@@ -14,7 +14,9 @@ from jsonschema import validate as validate_json
 from geoalchemy2.shape import to_shape, from_shape
 from shapely.testing import assert_geometries_equal
 from shapely.geometry import Point
-from marshmallow import EXCLUDE
+from marshmallow import EXCLUDE, fields, Schema
+from marshmallow_geojson import FeatureSchema, GeoJSONSchema
+
 
 from geonature.utils.env import db
 from geonature.core.gn_permissions.tools import get_permissions
@@ -23,7 +25,7 @@ from geonature.core.gn_synthese.utils.query_select_sqla import remove_accents
 from geonature.core.sensitivity.models import cor_sensitivity_area_type
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_synthese.models import Synthese, TSources, VSyntheseForWebApp
-from geonature.core.gn_synthese.schemas import SyntheseSchema
+from geonature.core.gn_synthese.schemas import SyntheseSchema, VSyntheseForWebAppSchema
 from geonature.core.gn_permissions.models import PermAction, Permission
 from geonature.core.gn_commons.models.base import TModules
 
@@ -34,7 +36,6 @@ from pypnusershub.tests.utils import logged_user_headers, set_logged_user
 
 from .fixtures import *
 from .fixtures import create_synthese, create_module, synthese_with_protected_status
-from .utils import jsonschema_definitions
 
 
 @pytest.fixture()
@@ -106,59 +107,48 @@ def synthese_for_observers(source, datasets):
             )
 
 
-synthese_properties = {
-    "type": "object",
-    "properties": {
-        "observations": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "id": {"type": "number"},
-                    "cd_nom": {"type": "number"},
-                    "count_min_max": {"type": "string"},
-                    "dataset_name": {"type": "string"},
-                    "date_min": {"type": "string"},
-                    "entity_source_pk_value": {
-                        "oneOf": [
-                            {"type": "null"},
-                            {"type": "string"},
-                        ],
-                    },
-                    "lb_nom": {"type": "string"},
-                    "nom_vern_or_lb_nom": {"type": "string"},
-                    "unique_id_sinp": {
-                        "type": "string",
-                        "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
-                    },
-                    "observers": {
-                        "oneOf": [
-                            {"type": "null"},
-                            {"type": "string"},
-                        ],
-                    },
-                    "url_source": {
-                        "oneOf": [
-                            {"type": "null"},
-                            {"type": "string"},
-                        ],
-                    },
-                },
-                "required": [  # obligatoire pour le fonctionement du front
-                    "id",
-                    "cd_nom",
-                    "url_source",
-                    "entity_source_pk_value",
-                ],
-                # "additionalProperties": False,
-            },
-        },
-    },
-}
+# utility classes for VSyntheseForWebAppSchema validation
+class UngroupedFeatureSchema(FeatureSchema):
+    properties = fields.Nested(
+        VSyntheseForWebAppSchema,
+        required=True,
+    )
+
+
+class NestedObs(Schema):
+    observations = fields.List(
+        fields.Nested(VSyntheseForWebAppSchema, required=True), required=True
+    )
+
+
+class GroupedFeatureSchema(FeatureSchema):
+    properties = fields.Nested(NestedObs, required=True)
+
+
+class UngroupedGeoJSONSchema(GeoJSONSchema):
+    feature_schema = UngroupedFeatureSchema
+
+
+class GroupedGeoJSONSchema(GeoJSONSchema):
+    feature_schema = GroupedFeatureSchema
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestSynthese:
+    def test_required_fields_and_format(self, app, users):
+        # Test required fields base on VSyntheseForWebAppSchema surrounded by a custom converter : CustomRequiredConverter
+        # also test geojson serialization (grouped by geometry and not)
+        url_ungrouped = url_for("gn_synthese.get_observations_for_web")
+        set_logged_user(self.client, users["admin_user"])
+        resp = self.client.get(url_ungrouped)
+        for f in resp.json["features"]:
+            UngroupedGeoJSONSchema().load(f)
+
+        url_grouped = url_for("gn_synthese.get_observations_for_web", format="grouped_geom")
+        resp = self.client.get(url_grouped)
+        for f in resp.json["features"]:
+            GroupedGeoJSONSchema().load(f)
+
     def test_synthese_scope_filtering(self, app, users, synthese_data):
         all_ids = {s.id_synthese for s in synthese_data.values()}
         sq = (
@@ -184,12 +174,6 @@ class TestSynthese:
 
     def test_get_observations_for_web(self, app, users, synthese_data, taxon_attribut):
         url = url_for("gn_synthese.get_observations_for_web")
-        schema = {
-            "definitions": jsonschema_definitions,
-            "$ref": "#/definitions/featurecollection",
-            "$defs": {"props": synthese_properties},
-        }
-
         r = self.client.get(url)
         assert r.status_code == Unauthorized.code
 
@@ -197,7 +181,9 @@ class TestSynthese:
 
         r = self.client.get(url)
         assert r.status_code == 200
-        validate_json(instance=r.json, schema=schema)
+
+        r = self.client.get(url)
+        assert r.status_code == 200
 
         # Add cd_nom column
         app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"] += [
@@ -215,7 +201,6 @@ class TestSynthese:
         }
         r = self.client.post(url, json=filters)
         assert r.status_code == 200
-        validate_json(instance=r.json, schema=schema)
         assert len(r.json["features"]) > 0
         for feature in r.json["features"]:
             assert feature["properties"]["cd_nom"] == taxon_attribut.bib_nom.cd_nom
@@ -241,7 +226,6 @@ class TestSynthese:
         }
         r = self.client.post(url, json=filters)
         assert r.status_code == 200
-        validate_json(instance=r.json, schema=schema)
         assert {synthese_data[k].id_synthese for k in ["p1_af1", "p1_af2"]}.issubset(
             {f["properties"]["id"] for f in r.json["features"]}
         )
@@ -264,7 +248,6 @@ class TestSynthese:
         }
         r = self.client.post(url, json=filters)
         assert r.status_code == 200
-        validate_json(instance=r.json, schema=schema)
         assert {synthese_data[k].id_synthese for k in ["p1_af1", "p1_af2"]}.issubset(
             {f["properties"]["id"] for f in r.json["features"]}
         )
@@ -280,7 +263,6 @@ class TestSynthese:
         filters = {f"area_{com_type.id_type}": [chambery.id_area]}
         r = self.client.post(url, json=filters)
         assert r.status_code == 200
-        validate_json(instance=r.json, schema=schema)
         assert {synthese_data[k].id_synthese for k in ["p1_af1", "p1_af2"]}.issubset(
             {f["properties"]["id"] for f in r.json["features"]}
         )
@@ -294,7 +276,6 @@ class TestSynthese:
         }
         r = self.client.post(url, json=filters)
         assert r.status_code == 200
-        validate_json(instance=r.json, schema=schema)
         assert len(r.json["features"]) >= 2  # FIXME
 
         # test status lr
