@@ -22,6 +22,23 @@ from geonature.core.gn_meta.models import TDatasets
 from geonature.utils.env import DB
 
 
+cor_site_observer = DB.Table(
+    "cor_site_observer",
+    DB.Column(
+        "id_base_site",
+        DB.Integer,
+        ForeignKey("gn_monitoring.t_base_sites.id_base_site"),
+        primary_key=True,
+    ),
+    DB.Column(
+        "id_role",
+        DB.Integer,
+        ForeignKey("utilisateurs.t_roles.id_role"),
+        primary_key=True,
+    ),
+    schema="gn_monitoring",
+)
+
 cor_visit_observer = DB.Table(
     "cor_visit_observer",
     DB.Column(
@@ -180,7 +197,6 @@ class TBaseSites(DB.Model):
     __tablename__ = "t_base_sites"
     __table_args__ = {"schema": "gn_monitoring"}
     id_base_site = DB.Column(DB.Integer, primary_key=True)
-    id_inventor = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     id_digitiser = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     base_site_name = DB.Column(DB.Unicode)
     base_site_description = DB.Column(DB.Unicode)
@@ -196,8 +212,13 @@ class TBaseSites(DB.Model):
     digitiser = relationship(
         User, primaryjoin=(User.id_role == id_digitiser), foreign_keys=[id_digitiser]
     )
-    inventor = relationship(
-        User, primaryjoin=(User.id_role == id_inventor), foreign_keys=[id_inventor]
+
+    observers = DB.relationship(
+        User,
+        secondary=cor_site_observer,
+        primaryjoin=(cor_site_observer.c.id_base_site == id_base_site),
+        secondaryjoin=(cor_site_observer.c.id_role == User.id_role),
+        foreign_keys=[cor_site_observer.c.id_base_site, cor_site_observer.c.id_role],
     )
 
     t_base_visits = relationship("TBaseVisits", lazy="select", cascade="all,delete-orphan")
