@@ -113,7 +113,7 @@ export class SyntheseComponent implements OnInit {
         this._mapListService.geojsonData = this.simplifyGeoJson(cloneDeep(data));
         this.formatDataForTable(data);
 
-        this._mapListService.idName = 'id';
+        this._mapListService.idName = 'id_synthese';
         this.searchService.dataLoaded = true;
       },
       () => {
@@ -137,9 +137,9 @@ export class SyntheseComponent implements OnInit {
     const idSynthese = new Set();
     geojson.features.forEach((feature) => {
       feature.properties.observations.forEach((obs) => {
-        if (!idSynthese.has(obs.id)) {
+        if (!idSynthese.has(obs.id_synthese)) {
           this._mapListService.tableData.push(obs);
-          idSynthese.add(obs.id);
+          idSynthese.add(obs.id_synthese);
         }
       });
     });
@@ -190,7 +190,7 @@ export class SyntheseComponent implements OnInit {
     let ids = [];
     for (let feature of geojson.features) {
       feature.properties.observations.forEach((obs) => {
-        ids.push(obs['id']);
+        ids.push(obs['id_synthese']);
       });
     }
     return ids;
@@ -205,11 +205,11 @@ export class SyntheseComponent implements OnInit {
 
       let ids = [];
       for (let obs of Object.values(feature.properties.observations)) {
-        if (obs['id']) {
-          ids.push(obs['id']);
+        if (obs['id_synthese']) {
+          ids.push(obs['id_synthese']);
         }
       }
-      feature.properties.observations = { id: ids };
+      feature.properties.observations = { id_synthese: ids };
     }
     if (noGeomMessage) {
       this._toasterService.warning(

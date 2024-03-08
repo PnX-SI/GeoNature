@@ -67,13 +67,13 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
       this.mapListService.tableData.map((row) => {
         // mandatory to sort (each row must have a selected attr)
         row.selected = false;
-        if (ids.includes(row.id)) {
+        if (ids.includes(row.id_synthese)) {
           row.selected = true;
         }
       });
 
       let observations = this.mapListService.tableData.filter((e) => {
-        return ids.includes(e.id);
+        return ids.includes(e.id_synthese);
       });
 
       this.mapListService.tableData.sort((a, b) => {
@@ -83,7 +83,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
       this.mapListService.selectedRow = observations;
       const page = Math.trunc(
         this.mapListService.tableData.findIndex((e) => {
-          return e.id === ids[0];
+          return e.id_synthese === ids[0];
         }) / this.rowNumber
       );
       this.table.offset = page;
@@ -111,7 +111,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
    */
   onSort(event) {
     if (event.newValue === undefined) {
-      let selectedObsIds = this.mapListService.selectedRow.map((obs) => obs.id);
+      let selectedObsIds = this.mapListService.selectedRow.map((obs) => obs.id_synthese);
       this.mapListService.mapSelected.next(selectedObsIds);
     }
   }
@@ -133,7 +133,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   }
 
   openInfoModal(row) {
-    row.id_synthese = row.id;
+    row.id_synthese = row.id_synthese;
     const modalRef = this.ngbModal.open(SyntheseInfoObsComponent, {
       size: 'lg',
       windowClass: 'large-modal',
