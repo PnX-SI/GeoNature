@@ -197,7 +197,6 @@ class TBaseSites(DB.Model):
     __tablename__ = "t_base_sites"
     __table_args__ = {"schema": "gn_monitoring"}
     id_base_site = DB.Column(DB.Integer, primary_key=True)
-    id_inventor = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     id_digitiser = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     base_site_name = DB.Column(DB.Unicode)
     base_site_description = DB.Column(DB.Unicode)
@@ -212,10 +211,6 @@ class TBaseSites(DB.Model):
     altitude_max = DB.Column(DB.Integer)
     digitiser = relationship(
         User, primaryjoin=(User.id_role == id_digitiser), foreign_keys=[id_digitiser]
-    )
-
-    inventor = relationship(
-        User, primaryjoin=(User.id_role == id_inventor), foreign_keys=[id_inventor]
     )
 
     observers = DB.relationship(
