@@ -29,6 +29,7 @@ from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_synthese.models import Synthese, TSources, VSyntheseForWebApp
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 
+from geonature.core.gn_synthese.schemas import SyntheseSchema
 from geonature.core.gn_permissions.models import PermAction, Permission
 from geonature.core.gn_commons.models.base import TModules
 
