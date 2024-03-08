@@ -19,13 +19,15 @@ from marshmallow_geojson import FeatureSchema, GeoJSONSchema
 
 
 from geonature.utils.env import db
+from geonature.utils.config import config
 from geonature.core.gn_permissions.tools import get_permissions
 from geonature.core.gn_synthese.utils.blurring import split_blurring_precise_permissions
 from geonature.core.gn_synthese.utils.query_select_sqla import remove_accents
 from geonature.core.sensitivity.models import cor_sensitivity_area_type
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_synthese.models import Synthese, TSources, VSyntheseForWebApp
-from geonature.core.gn_synthese.schemas import SyntheseSchema, VSyntheseForWebAppSchema
+from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
+
 from geonature.core.gn_permissions.models import PermAction, Permission
 from geonature.core.gn_commons.models.base import TModules
 
@@ -33,6 +35,8 @@ from apptax.taxonomie.models import Taxref
 from ref_geo.models import BibAreasTypes, LAreas
 from apptax.tests.fixtures import noms_example, attribut_example
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user
+
+from utils_flask_sqla_geo.schema import GeoModelConverter, GeoAlchemyAutoSchema
 
 from .fixtures import *
 from .fixtures import create_synthese, create_module, synthese_with_protected_status
@@ -105,6 +109,27 @@ def synthese_for_observers(source, datasets):
                     the_geom_local=func.st_transform(geom, 2154),
                 )
             )
+
+
+class CustomRequiredConverter(GeoModelConverter):
+    """Custom converter to add kwargs required for mandatory and asked fields in get_observations_for_web view
+    Use to validate response in test"""
+
+    def _add_column_kwargs(self, kwargs, column):
+        super()._add_column_kwargs(kwargs, column)
+        default_cols = map(lambda col: col["prop"], config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"])
+        required_cols = list(default_cols) + MANDATORY_COLUMNS
+        kwargs["required"] = column.name in required_cols
+
+
+# Only used in test for now
+class VSyntheseForWebAppSchema(GeoAlchemyAutoSchema):
+
+    class Meta:
+        model = VSyntheseForWebApp
+        feature_geometry = "the_geom_4326"
+        sqla_session = db.session
+        model_converter = CustomRequiredConverter
 
 
 # utility classes for VSyntheseForWebAppSchema validation
