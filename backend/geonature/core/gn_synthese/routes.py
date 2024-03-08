@@ -148,8 +148,9 @@ def get_observations_for_web(permissions):
 
     # Get Column Frontend parameter to return only the needed columns
     param_column_list = {
-        col["prop"] for col in current_app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"]
-    }
+        col["prop"] for col in (current_app.config["SYNTHESE"]["LIST_COLUMNS_FRONTEND"])
+    } + {"entity_source_pk_value"}
+
     # Init with compulsory columns
     columns = [
         "id",
