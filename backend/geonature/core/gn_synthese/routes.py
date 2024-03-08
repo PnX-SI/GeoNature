@@ -22,7 +22,6 @@ from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from werkzeug.datastructures import MultiDict
 from sqlalchemy import distinct, func, desc, asc, select, case
-from sqlalchemy.orm import joinedload, lazyload, selectinload, contains_eager
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 from sqlalchemy.orm import load_only, aliased, Load, with_expression
