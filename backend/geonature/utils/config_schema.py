@@ -192,7 +192,7 @@ class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
         validate=Regexp(
-            "^(postgres(?:ql)?):\/\/(?:([^@\s]+)@)?([^\/\s]+)(?:\/(\w+))?(?:\?(.+))?",
+            r"^(postgres(?:ql)?)((\+psycopg2)?):\/\/(?:([^@\s]+)@)?([^\/\s]+)(?:\/(\w+))?(?:\?(.+))?",
             error="PostgreSQL database URL is invalid. Check for authorized URL here : https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING-URIS",
         ),
     )
