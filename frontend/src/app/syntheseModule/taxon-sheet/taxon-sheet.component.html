@@ -3,15 +3,18 @@
     <div class="card-body">
       <div class="">
         <h3 class="card-title mb-0">
-          <i> {{ taxon?.nom_complet }}</i>
-          <span *ngIf="taxon?.nom_vern"> - {{ taxon?.nom_vern }} </span>
+          <i>{{ taxon?.nom_complet }}</i>
+          <span *ngIf="taxon?.nom_vern">- {{ taxon?.nom_vern }}</span>
         </h3>
-        <small class="text-muted"
-          >*Le profil est calculé à partir des observations considérées comme valides</small
-        >
+        <small class="text-muted">
+          *Le profil est calculé à partir des observations considérées comme valides
+        </small>
       </div>
       <div class="card-columns">
-        <div class="card" *ngIf="mediaUrl">
+        <div
+          class="card"
+          *ngIf="mediaUrl"
+        >
           <div
             class="card-body cover image"
             [style.background-image]="'url(' + mediaUrl + ')'"
@@ -53,7 +56,10 @@
       </div>
 
       <pnx-map height="50vh">
-        <pnx-geojson [geojson]="profilArea" [zoomOnFirstTime]="true"> </pnx-geojson>
+        <pnx-geojson
+          [geojson]="profilArea"
+          [zoomOnFirstTime]="true"
+        ></pnx-geojson>
       </pnx-map>
     </div>
   </div>

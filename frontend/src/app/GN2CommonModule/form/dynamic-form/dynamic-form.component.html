@@ -34,9 +34,13 @@
       target="_blank"
       class="link-media"
       [href]="formDefComp.link_definition"
-      ><mat-icon [matTooltip]="formDefComp['definition']" matTooltipClass="form-tooltip"
-        >info</mat-icon
+    >
+      <mat-icon
+        [matTooltip]="formDefComp['definition']"
+        matTooltipClass="form-tooltip"
       >
+        info
+      </mat-icon>
     </a>
   </div>
   <div [ngSwitch]="formDefComp['type_widget']">
@@ -81,8 +85,7 @@
       id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
       type="textarea"
       rows="{{ formDefComp['rows'] }}"
-    >
-    </textarea>
+    ></textarea>
 
     <span *ngSwitchCase="'select'">
       <select
@@ -91,18 +94,33 @@
         id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
         [formControl]="form.get(formDefComp['attribut_name'])"
       >
-        <option [ngValue]="null" *ngIf="!formDefComp['noNullOption']">-</option>
-        <option *ngFor="let item of formDefComp['values']" [ngValue]="item.value">
+        <option
+          [ngValue]="null"
+          *ngIf="!formDefComp['noNullOption']"
+        >
+          -
+        </option>
+        <option
+          *ngFor="let item of formDefComp['values']"
+          [ngValue]="item.value"
+        >
           {{ item.label }}
         </option>
       </select>
 
       <ng-template #selectElseBlock>
-        <input type="text" disabled [value]="form.get(formDefComp['attribut_name'])?.value" />
+        <input
+          type="text"
+          disabled
+          [value]="form.get(formDefComp['attribut_name'])?.value"
+        />
       </ng-template>
     </span>
 
-    <div *ngSwitchCase="'file'" class="input-group">
+    <div
+      *ngSwitchCase="'file'"
+      class="input-group"
+    >
       <div class="custom-file">
         <input
           type="file"
@@ -112,7 +130,10 @@
           [accept]="formDefComp['accept']"
           (change)="onFileChange($event)"
         />
-        <label class="custom-file-label" for="inputGroupFile01">
+        <label
+          class="custom-file-label"
+          for="inputGroupFile01"
+        >
           {{ form.get(formDefComp['attribut_name']).value?.name || 'Choisir un fichier' }}
         </label>
       </div>
@@ -132,8 +153,11 @@
           [value]="formDefComp['values'][0].value"
           (change)="onCheckChange($event, form.get(formDefComp['attribut_name']))"
         />
-        <label class="custom-control-label" for="{{ formDefComp['attribut_name'] }}_{{ rand }}">
-          <span [innerHTML]="formDefComp['attribut_label']"> </span>
+        <label
+          class="custom-control-label"
+          for="{{ formDefComp['attribut_name'] }}_{{ rand }}"
+        >
+          <span [innerHTML]="formDefComp['attribut_label']"></span>
         </label>
       </div>
       <ng-template #elseBlock>
@@ -151,7 +175,10 @@
             (change)="onCheckChange($event, form.get(formDefComp['attribut_name']), item.value)"
             [checked]="form.get(formDefComp['attribut_name']).value?.includes(item.value)"
           />
-          <label for="{{ item.label }}_{{ rand }}" class="custom-control-label">
+          <label
+            for="{{ item.label }}_{{ rand }}"
+            class="custom-control-label"
+          >
             <span [innerHTML]="item.label"></span>
           </label>
         </div>
@@ -167,7 +194,7 @@
         [name]="formDefComp['attribut_name']"
         [formControl]="form.get(formDefComp['attribut_name'])"
       />
-      <span> {{ formDefComp['attribut_label'] }} </span>
+      <span>{{ formDefComp['attribut_label'] }}</span>
       <mat-icon
         *ngIf="formDefComp['definition']"
         [matTooltip]="formDefComp['definition']"
@@ -244,8 +271,7 @@
         [default]="formDefComp['default'] || {}"
         [details]="formDefComp['details']"
         [hideDetailsFields]="formDefComp['hide_details_fields']"
-      >
-      </pnx-medias>
+      ></pnx-medias>
     </div>
 
     <pnx-nomenclature
@@ -258,8 +284,7 @@
       [cdNomenclatures]="formDefComp['cd_nomenclatures']"
       [regne]="formDefComp['regne']"
       [group2Inpn]="formDefComp['group2Inpn']"
-    >
-    </pnx-nomenclature>
+    ></pnx-nomenclature>
 
     <pnx-taxonomy
       *ngSwitchCase="'taxonomy'"
@@ -268,8 +293,7 @@
       [idList]="formDefComp['id_list']"
       [charNumber]="3"
       [listLength]="20"
-    >
-    </pnx-taxonomy>
+    ></pnx-taxonomy>
 
     <pnx-datasets
       *ngSwitchCase="'dataset'"
@@ -278,8 +302,7 @@
       [multiSelect]="formDef.multi_select"
       [moduleCode]="formDef.module_code"
       [creatableInModule]="formDef.creatable_in_module"
-    >
-    </pnx-datasets>
+    ></pnx-datasets>
 
     <pnx-observers
       *ngSwitchCase="'observers'"
@@ -288,15 +311,13 @@
       [idMenu]="formDefComp['id_menu']"
       [idList]="formDefComp['id_list']"
       [codeList]="formDefComp['code_list']"
-    >
-    </pnx-observers>
+    ></pnx-observers>
 
     <pnx-date
       *ngSwitchCase="'date'"
       [label]="formDefComp['attribut_label']"
       [parentFormControl]="form.get(formDefComp['attribut_name'])"
-    >
-    </pnx-date>
+    ></pnx-date>
 
     <pnx-areas
       *ngSwitchCase="'areas'"
@@ -304,16 +325,14 @@
       [parentFormControl]="form.get(formDefComp.attribut_name)"
       [valueFieldName]="formDefComp.value_field_name"
       [typeCodes]="formDefComp.type_codes"
-    >
-    </pnx-areas>
+    ></pnx-areas>
 
     <pnx-municipalities
       *ngSwitchCase="'municipalities'"
       [label]="formDefComp['attribut_label']"
       [parentFormControl]="form.get(formDefComp['attribut_name'])"
       [valueFieldName]="formDefComp['value_field_name']"
-    >
-    </pnx-municipalities>
+    ></pnx-municipalities>
 
     <pnx-multiselect
       *ngSwitchCase="'multiselect'"
@@ -324,8 +343,7 @@
       [label]="formDefComp['attribut_label']"
       [searchBar]="false"
       [disabled]="form.get(formDefComp['attribut_name'])?.disabled"
-    >
-    </pnx-multiselect>
+    ></pnx-multiselect>
     <pnx-datalist
       *ngSwitchCase="'datalist'"
       [designStyle]="formDefComp['designStyle']"

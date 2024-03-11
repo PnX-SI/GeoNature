@@ -1,6 +1,11 @@
 <div class="modal-header">
   <h4 class="modal-title pull-left">Filtres taxonomiques avancés</h4>
-  <button type="button" class="close pull-right" aria-label="Close" (click)="onCloseModal()">
+  <button
+    type="button"
+    class="close pull-right"
+    aria-label="Close"
+    (click)="onCloseModal()"
+  >
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -20,8 +25,7 @@
         keyValue="displayed_name"
         label="Rechercher un rang taxonomique (nom latin - au dessus du genre)"
         (onChange)="onTaxonSelected($event)"
-      >
-      </pnx-autocomplete>
+      ></pnx-autocomplete>
 
       <div
         class="searched-taxa-list alert alert-warning taxon-alert"
@@ -43,7 +47,10 @@
       </div>
     </div>
 
-    <div [hidden]="!storeService.displayTaxonTree" class="form-group">
+    <div
+      [hidden]="!storeService.displayTaxonTree"
+      class="form-group"
+    >
       <button
         (click)="isCollapseTree = !isCollapseTree"
         [attr.aria-expanded]="!isCollapseTree"
@@ -51,12 +58,20 @@
         class="btn btn-sm btn-outline-primary"
       >
         Arbre taxonomique
-        <i *ngIf="isCollapseTree" class="fa fa-chevron-down" aria-expanded="false"> </i>
-        <i *ngIf="!isCollapseTree" class="fa fa-chevron-right" aria-expanded="false"> </i>
+        <i
+          *ngIf="isCollapseTree"
+          class="fa fa-chevron-down"
+          aria-expanded="false"
+        ></i>
+        <i
+          *ngIf="!isCollapseTree"
+          class="fa fa-chevron-right"
+          aria-expanded="false"
+        ></i>
       </button>
 
       <div [(ngbCollapse)]="isCollapseTree">
-        <small> Selectionner un ou plusieurs taxons à partir de la hierarchie taxonomique </small>
+        <small>Selectionner un ou plusieurs taxons à partir de la hierarchie taxonomique</small>
         <br />
         <div class="card">
           <div class="card-body tree-wrapper">
@@ -67,9 +82,21 @@
               [nodes]="storeService.taxonTree"
               [options]="treeOptions"
             >
-              <ng-template #treeNodeTemplate let-node let-index="index">
-                <i *ngIf="!node.data.leaf" class="fa fa-folder-o" aria-hidden="true"></i>
-                <i *ngIf="node.data.leaf" class="fa fa-hand-o-right" aria-hidden="true"></i>
+              <ng-template
+                #treeNodeTemplate
+                let-node
+                let-index="index"
+              >
+                <i
+                  *ngIf="!node.data.leaf"
+                  class="fa fa-folder-o"
+                  aria-hidden="true"
+                ></i>
+                <i
+                  *ngIf="node.data.leaf"
+                  class="fa fa-hand-o-right"
+                  aria-hidden="true"
+                ></i>
                 <span [ngClass]="node.data.classes">{{ node.data.name }}</span>
               </ng-template>
             </tree-root>
@@ -81,7 +108,7 @@
           class="btn btn-sm btn-outline-danger"
           (click)="resetTree()"
         >
-          <small> Réinitialiser la sélection </small>
+          <small>Réinitialiser la sélection</small>
         </button>
       </div>
     </div>
@@ -89,7 +116,10 @@
 
   <div *ngIf="formService.formBuilded && formService.statusFilters.length > 0">
     <h5>Statuts</h5>
-    <div class="form-group" *ngFor="let status of formService.statusFilters; let i = index">
+    <div
+      class="form-group"
+      *ngFor="let status of formService.statusFilters; let i = index"
+    >
       <pnx-multiselect
         *ngIf="status.show && status.status_types.length > 1"
         [values]="status.values"
@@ -99,10 +129,12 @@
         [label]="status.display_name"
         (onChange)="onStatusSelected($event)"
         (onDelete)="onStatusDeleted($event)"
-      >
-      </pnx-multiselect>
+      ></pnx-multiselect>
 
-      <div *ngIf="status.show && status.status_types.length == 1" class="form-group">
+      <div
+        *ngIf="status.show && status.status_types.length == 1"
+        class="form-group"
+      >
         <div class="custom-control custom-checkbox">
           <input
             type="checkbox"
@@ -112,7 +144,10 @@
             [value]="status.status_types[0]"
             (change)="onStatusCheckboxChanged($event)"
           />
-          <label [for]="status.control_name" class="custom-control-label">
+          <label
+            [for]="status.control_name"
+            class="custom-control-label"
+          >
             <small>{{ status.display_name }}</small>
           </label>
         </div>
@@ -121,7 +156,10 @@
 
     <div *ngIf="formService.formBuilded && formService.redListsFilters.length > 0">
       <h5>Listes rouges</h5>
-      <div class="form-group" *ngFor="let redList of formService.redListsFilters; let i = index">
+      <div
+        class="form-group"
+        *ngFor="let redList of formService.redListsFilters; let i = index"
+      >
         <pnx-multiselect
           *ngIf="redList.show"
           [values]="redList.values"
@@ -131,8 +169,7 @@
           [label]="redList.display_name"
           (onChange)="$event.statusType = redList.status_type; onRedListsSelected($event)"
           (onDelete)="$event.statusType = redList.status_type; onRedListsDeleted($event)"
-        >
-        </pnx-multiselect>
+        ></pnx-multiselect>
       </div>
     </div>
 
@@ -148,8 +185,7 @@
           label="Habitat"
           (onChange)="onTaxRefAttributsSelected($event.id_habitat)"
           (onDelete)="onTaxRefAttributsDeleted($event.value.id_habitat)"
-        >
-        </pnx-multiselect>
+        ></pnx-multiselect>
       </div>
 
       <div class="form-group">
@@ -161,8 +197,7 @@
           label="Groupe 2 INPN"
           (onChange)="onTaxRefAttributsSelected($event.value)"
           (onDelete)="onTaxRefAttributsDeleted($event.value.value)"
-        >
-        </pnx-multiselect>
+        ></pnx-multiselect>
       </div>
       <div class="form-group">
         <pnx-multiselect
@@ -173,8 +208,7 @@
           label="Groupe 3 INPN"
           (onChange)="onTaxRefAttributsSelected($event.value)"
           (onDelete)="onTaxRefAttributsDeleted($event.value.value)"
-        >
-        </pnx-multiselect>
+        ></pnx-multiselect>
       </div>
     </div>
 
@@ -184,13 +218,20 @@
         class="dynamic-form padding-sm"
         *ngFor="let formDef of storeService.taxhubAttributes; let i = index"
       >
-        <pnx-dynamic-form [formDef]="formDef" [form]="formService.searchForm"> </pnx-dynamic-form>
+        <pnx-dynamic-form
+          [formDef]="formDef"
+          [form]="formService.searchForm"
+        ></pnx-dynamic-form>
       </div>
     </div>
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-success" (click)="onCloseModal()">
+    <button
+      type="button"
+      class="btn btn-success"
+      (click)="onCloseModal()"
+    >
       Valider et fermer
     </button>
   </div>

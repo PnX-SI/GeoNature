@@ -1,11 +1,14 @@
-<div class="container" data-qa="pnx-dataset-form">
-
-  <div style="margin-bottom: 10px;">
+<div
+  class="container"
+  data-qa="pnx-dataset-form"
+>
+  <div style="margin-bottom: 10px">
     <a
       mat-raised-button
       routerLink="/metadata"
     >
-      <mat-icon> chevron_left</mat-icon> Retour
+      <mat-icon>chevron_left</mat-icon>
+      Retour
     </a>
   </div>
 
@@ -26,30 +29,31 @@
               [disabled]="true"
               data-qa="pnx-dataset-form-select-cadre-acq"
             >
-            <ng-template 
-              ng-option-tmp 
-              let-item="item" 
-              let-index="index" 
-              let-search="searchTerm"
-            >
-              <span class="pre-wrap" [attr.data-qa]='"pnx-metadata-jdd-"+item.acquisition_framework_name'> 
-                {{item.acquisition_framework_name}}
-                <span *ngIf="!item.opened">
-                  [Cloturé]
+              <ng-template
+                ng-option-tmp
+                let-item="item"
+                let-index="index"
+                let-search="searchTerm"
+              >
+                <span
+                  class="pre-wrap"
+                  [attr.data-qa]="'pnx-metadata-jdd-' + item.acquisition_framework_name"
+                >
+                  {{ item.acquisition_framework_name }}
+                  <span *ngIf="!item.opened">[Cloturé]</span>
                 </span>
-              </span>
-            </ng-template>
+              </ng-template>
             </ng-select>
           </div>
 
           <div>
-            <small>Nom du JDD </small>
+            <small>Nom du JDD</small>
             <input
               class="form-control form-control-sm"
               type="text"
               [formControl]="form.get('dataset_name')"
               data-qa="pnx-dataset-form-input-jdd-name"
-            >
+            />
             <small
               *ngIf="form.get('dataset_name').errors?.maxlength"
               class="error"
@@ -61,13 +65,13 @@
 
           <div class="row">
             <div class="col-md-8">
-              <small>Nom court du JDD </small>
+              <small>Nom court du JDD</small>
               <input
                 class="form-control form-control-sm"
                 type="text"
                 [formControl]="form.get('dataset_shortname')"
                 data-qa="pnx-dataset-form-input-jdd-shortname"
-              >
+              />
               <small
                 *ngIf="form.get('dataset_shortname').errors?.maxlength"
                 class="error"
@@ -85,12 +89,11 @@
               type="text"
               [formControl]="form.get('dataset_desc')"
               data-qa="pnx-dataset-form-input-jdd-description"
-              >
-            </textarea>
+            ></textarea>
           </div>
 
           <div>
-            <small>Mots clés </small>
+            <small>Mots clés</small>
             <input
               class="form-control form-control-sm"
               type="text"
@@ -107,7 +110,7 @@
                   type="checkbox"
                   id="terrestrial_domain"
                 />
-                <label for="terrestrial_domain"> Domaine terrestre </label>
+                <label for="terrestrial_domain">Domaine terrestre</label>
               </div>
               <div class="checkbox">
                 <input
@@ -115,7 +118,7 @@
                   type="checkbox"
                   id="marine_domain"
                 />
-                <label for="marine_domain"> Domaine marin </label>
+                <label for="marine_domain">Domaine marin</label>
               </div>
             </div>
           </div>
@@ -127,8 +130,7 @@
                 [parentFormControl]="form.get('id_nomenclature_data_type')"
                 codeNomenclatureType="DATA_TYP"
                 data-qa="pnx-dataset-form-datatype"
-              >
-              </pnx-nomenclature>
+              ></pnx-nomenclature>
             </div>
 
             <div class="col-md-6">
@@ -137,8 +139,7 @@
                 [parentFormControl]="form.get('id_nomenclature_source_status')"
                 codeNomenclatureType="STATUT_SOURCE"
                 data-qa="pnx-dataset-form-status-source"
-              >
-              </pnx-nomenclature>
+              ></pnx-nomenclature>
             </div>
           </div>
 
@@ -148,8 +149,7 @@
               [parentFormControl]="form.get('id_nomenclature_dataset_objectif')"
               codeNomenclatureType="JDD_OBJECTIFS"
               data-qa="pnx-dataset-form-objectif"
-              >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
 
           <div>
@@ -161,8 +161,7 @@
               [bindAllItem]="true"
               [keyValue]="null"
               data-qa="pnx-dataset-form-territories"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
 
           <div>
@@ -171,8 +170,7 @@
               [parentFormControl]="form.get('id_nomenclature_collecting_method')"
               codeNomenclatureType="METHO_RECUEIL"
               data-qa="pnx-dataset-form-collecting-method"
-            >
-            </pnx-nomenclature>
+            ></pnx-nomenclature>
           </div>
 
           <div class="row">
@@ -182,8 +180,7 @@
                 [parentFormControl]="form.get('id_nomenclature_data_origin')"
                 codeNomenclatureType="DS_PUBLIQUE"
                 data-qa="pnx-dataset-form-data-origin"
-              >
-              </pnx-nomenclature>
+              ></pnx-nomenclature>
             </div>
 
             <div class="col-md-6">
@@ -192,8 +189,7 @@
                 [parentFormControl]="form.get('id_nomenclature_resource_type')"
                 codeNomenclatureType="RESOURCE_TYP"
                 data-qa="pnx-dataset-form-resource-type"
-              >
-              </pnx-nomenclature>
+              ></pnx-nomenclature>
             </div>
           </div>
 
@@ -201,12 +197,20 @@
 
           <div>
             <div class="checkbox">
-              <input [formControl]="form.get('active')" type="checkbox" id="active" />
-              <label for="active"> Actif à la saisie </label>
+              <input
+                [formControl]="form.get('active')"
+                type="checkbox"
+                id="active"
+              />
+              <label for="active">Actif à la saisie</label>
             </div>
             <div class="checkbox">
-              <input [formControl]="form.get('validable')" type="checkbox" id="validable" />
-              <label for="validable"> Validable </label>
+              <input
+                [formControl]="form.get('validable')"
+                type="checkbox"
+                id="validable"
+              />
+              <label for="validable">Validable</label>
             </div>
           </div>
 
@@ -217,13 +221,18 @@
             [keyValue]="null"
             label="Module(s) GeoNature associé(s) au jeu de données"
             [bindAllItem]="true"
-          >
-          </pnx-multiselect>
+          ></pnx-multiselect>
           <small>Liste de taxons (facultatif)</small>
-          <select class="form-control form-control-sm" [formControl]="form.get('id_taxa_list')">
+          <select
+            class="form-control form-control-sm"
+            [formControl]="form.get('id_taxa_list')"
+          >
             <option [ngValue]="null">--Selectionner une liste de taxon--</option>
             <option [ngValue]="-1">Aucune liste (tout Taxref)</option>
-            <option *ngFor="let list of taxaBibList" [ngValue]="list.id_liste">
+            <option
+              *ngFor="let list of taxaBibList"
+              [ngValue]="list.id_liste"
+            >
               {{ list.nom_liste }}
             </option>
           </select>
@@ -245,15 +254,14 @@
               metadataType="dataset"
               (actorFormRemove)="datasetFormS.removeActor(datasetFormS.actors, idx)"
               [defaultTab]="(datasetFormS.dataset | async)?.id_dataset ? 'all' : 'organism'"
-            >
-            </pnx-metadata-actor>
+            ></pnx-metadata-actor>
 
             <ng-container
               *ngIf="
                 !datasetFormS.actors.valid && datasetFormS.actors.errors?.hasDoublons.index == idx
               "
             >
-              <small class="mat-error"> Ce contact principal est déjà présent dans la liste </small>
+              <small class="mat-error">Ce contact principal est déjà présent dans la liste</small>
             </ng-container>
 
             <p></p>
@@ -286,15 +294,14 @@
               metadataType="dataset"
               (actorFormRemove)="datasetFormS.removeActor(datasetFormS.genericActorForm, idx)"
               [defaultTab]="(datasetFormS.dataset | async)?.id_dataset ? 'all' : 'organism'"
-            >
-            </pnx-metadata-actor>
+            ></pnx-metadata-actor>
             <ng-container
               *ngIf="
                 !datasetFormS.genericActorForm.valid &&
                 datasetFormS.genericActorForm.errors?.hasDoublons.index == idx
               "
             >
-              <small class="mat-error"> Cet acteur est déjà présent dans la liste </small>
+              <small class="mat-error">Cet acteur est déjà présent dans la liste</small>
             </ng-container>
 
             <p></p>
@@ -316,7 +323,14 @@
   </div>
 
   <div class="mr-1 mt-1">
-    <button mat-raised-button type="button" color="warn" routerLink="/metadata">Annuler</button>
+    <button
+      mat-raised-button
+      type="button"
+      color="warn"
+      routerLink="/metadata"
+    >
+      Annuler
+    </button>
     <button
       [disabled]="form.invalid || datasetFormS.genericActorForm.invalid"
       class="button-success ml-1"

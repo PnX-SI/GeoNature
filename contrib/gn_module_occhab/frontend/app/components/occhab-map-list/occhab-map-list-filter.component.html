@@ -6,37 +6,33 @@
       [displayOnlyActive]="false"
       [parentFormControl]="mapListFormService.searchForm.get('id_dataset')"
       moduleCode="OCCHAB"
-    >
-    </pnx-datasets>
+    ></pnx-datasets>
   </div>
   <div class="col-3">
     <pnx-autocomplete
-      apiEndPoint="{{config.API_ENDPOINT}}/habref/habitats/autocomplete"
+      apiEndPoint="{{ config.API_ENDPOINT }}/habref/habitats/autocomplete"
       [searchAsParameter]="false"
       [parentFormControl]="mapListFormService.searchForm.get('habitat')"
       queryParamSearch="search_name"
-      [othersGetParams]="{id_list: config.OCCHAB.ID_LIST_HABITAT}"
+      [othersGetParams]="{ id_list: config.OCCHAB.ID_LIST_HABITAT }"
       [formatter]="formatter"
       keyValue="search_name"
       label="Habitat"
       placeholder="Tapez les 1eres lettres de l'habitat"
-    >
-    </pnx-autocomplete>
+    ></pnx-autocomplete>
   </div>
   <div class="col-2">
     <pnx-date
       label="{{ 'Releve.MinDate' | translate }}"
       [parentFormControl]="mapListFormService.searchForm.get('date_low')"
-    >
-    </pnx-date>
+    ></pnx-date>
   </div>
 
   <div class="col-2">
     <pnx-date
       label="{{ 'Releve.MaxDate' | translate }}"
       [parentFormControl]="mapListFormService.searchForm.get('date_up')"
-    >
-    </pnx-date>
+    ></pnx-date>
   </div>
 
   <button
@@ -59,7 +55,4 @@
   </button>
 
   <!-- {{mapListFormService.searchForm.value |json}} -->
-
-
-
 </div>

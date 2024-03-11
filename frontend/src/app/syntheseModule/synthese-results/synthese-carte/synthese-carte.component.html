@@ -1,4 +1,7 @@
-<pnx-map height="92vh" class="map-card">
+<pnx-map
+  height="92vh"
+  class="map-card"
+>
   <pnx-leaflet-filelayer
     (onLoad)="onFileLayerLoaded($event)"
     [removeLayer]="currentLeafletDrawCoord"
@@ -9,6 +12,5 @@
     [zoomLevel]="1"
     (layerDrawed)="bindGeojsonForm($event)"
     (layerDeleted)="deleteControlValue()"
-  >
-  </pnx-leaflet-draw>
+  ></pnx-leaflet-draw>
 </pnx-map>

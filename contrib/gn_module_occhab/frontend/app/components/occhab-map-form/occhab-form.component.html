@@ -1,7 +1,14 @@
-<div class="row row-0" data-qa="pnx-occhab-form">
+<div
+  class="row row-0"
+  data-qa="pnx-occhab-form"
+>
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
     <!-- HABITAT ALREADY SAVED -->
-    <div id="overlay-hab" class="card hard-shadow" *ngIf="showTabHab">
+    <div
+      id="overlay-hab"
+      class="card hard-shadow"
+      *ngIf="showTabHab"
+    >
       <div class="card-body small">
         <div>
           <table class="table">
@@ -22,7 +29,9 @@
                 "
               >
                 <tr *ngIf="i != occHabForm.currentEditingHabForm">
-                  <td>{{ occHabForm.stationForm.value.habitats.length - i }}</td>
+                  <td>
+                    {{ occHabForm.stationForm.value.habitats.length - i }}
+                  </td>
                   <td>{{ hab?.nom_cite }}</td>
                   <td>{{ hab?.id_nomenclature_abundance?.label_default }}</td>
                   <td>
@@ -32,7 +41,10 @@
                       class="btn btn-primary btn-sm"
                       (click)="editHab(i)"
                     >
-                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                      <i
+                        class="fa fa-pencil-square-o"
+                        aria-hidden="true"
+                      ></i>
                     </span>
                     <span
                       matTooltip="Supprimer cet habitat de la station"
@@ -40,7 +52,10 @@
                       class="btn btn-danger btn-sm"
                       (click)="occHabForm.deleteHab(i)"
                     >
-                      <i class="fa fa-times" aria-hidden="true"></i>
+                      <i
+                        class="fa fa-times"
+                        aria-hidden="true"
+                      ></i>
                     </span>
                   </td>
                 </tr>
@@ -51,28 +66,28 @@
       </div>
     </div>
     <!--END  HABITAT ALREADY SAVED -->
-    <pnx-map [height]="mapHeight" [geolocation]="true">
+    <pnx-map
+      [height]="mapHeight"
+      [geolocation]="true"
+    >
       <pnx-marker
         [coordinates]="markerCoordinates"
         zoomLevel="5"
         [defaultEnable]="false"
         (markerChanged)="occHabForm.patchGeoValue($event)"
-      >
-      </pnx-marker>
+      ></pnx-marker>
       <pnx-leaflet-draw
         [geojson]="currentGeoJsonFileLayer"
         [options]="leafletDrawOptions"
         zoomLevel="5"
         (layerDrawed)="occHabForm.patchGeoValue($event)"
-      >
-      </pnx-leaflet-draw>
+      ></pnx-leaflet-draw>
       <pnx-leaflet-filelayer
         [editMode]="true"
         (onLoad)="infoMessageFileLayer()"
         (onGeomChange)="occHabForm.patchGeoValue($event)"
         [style]="{ color: 'green' }"
-      >
-      </pnx-leaflet-filelayer>
+      ></pnx-leaflet-filelayer>
     </pnx-map>
   </div>
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
@@ -84,9 +99,15 @@
       (click)="formIsDisable()"
     ></div>
     <div class="all-form">
-      <div class="card border-primary" id="station-card">
+      <div
+        class="card border-primary"
+        id="station-card"
+      >
         <h5 class="card-header bg-primary text-white">
-          <i class="fa fa-flag" aria-hidden="true"></i>
+          <i
+            class="fa fa-flag"
+            aria-hidden="true"
+          ></i>
           Station
         </h5>
 
@@ -96,8 +117,7 @@
               <div *ngIf="config.OCCHAB.OBSERVER_AS_TXT; else observerIDBlock">
                 <pnx-observers-text
                   [parentFormControl]="occHabForm.stationForm.get('observers_txt')"
-                >
-                </pnx-observers-text>
+                ></pnx-observers-text>
               </div>
               <ng-template #observerIDBlock>
                 <pnx-observers
@@ -105,8 +125,7 @@
                   [idMenu]="config.OCCHAB.OBSERVER_LIST_ID"
                   label="{{ 'Releve.Observers' | translate }}"
                   [bindAllItem]="true"
-                >
-                </pnx-observers>
+                ></pnx-observers>
               </ng-template>
             </div>
             <div class="col">
@@ -117,9 +136,11 @@
                   else elseblocDataset
                 "
               >
-                <small> {{ 'MetaData.Datasets' | translate }}: </small>
+                <small>{{ 'MetaData.Datasets' | translate }}:</small>
                 <small>
-                  <b> {{ currentEditingStation?.properties?.dataset?.dataset_name }}</b>
+                  <b>
+                    {{ currentEditingStation?.properties?.dataset?.dataset_name }}
+                  </b>
                 </small>
               </div>
               <ng-template #elseblocDataset>
@@ -129,8 +150,7 @@
                   moduleCode="OCCHAB"
                   creatableInModule="OCCHAB"
                   data-qa="pnx-occhab-form-dataset"
-                >
-                </pnx-datasets>
+                ></pnx-datasets>
               </ng-template>
             </div>
           </div>
@@ -145,9 +165,10 @@
                   [defaultToday]="true"
                   label="{{ 'Releve.MinDate' | translate }}"
                   [parentFormControl]="occHabForm.stationForm.get('date_min')"
-                  (onSelectOrKeyIn)="globalFormService.synchronizeMax(occHabForm.stationForm, 'date_min', 'date_max')"
-                >
-                </pnx-date>
+                  (onSelectOrKeyIn)="
+                    globalFormService.synchronizeMax(occHabForm.stationForm, 'date_min', 'date_max')
+                  "
+                ></pnx-date>
               </div>
               <div
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
@@ -157,9 +178,10 @@
                   [defaultToday]="true"
                   label="{{ 'Releve.MaxDate' | translate }}"
                   [parentFormControl]="occHabForm.stationForm.get('date_max')"
-                  (onSelectOrKeyIn)="globalFormService.synchronizeMin(occHabForm.stationForm, 'date_min', 'date_max')"
-                >
-                </pnx-date>
+                  (onSelectOrKeyIn)="
+                    globalFormService.synchronizeMin(occHabForm.stationForm, 'date_min', 'date_max')
+                  "
+                ></pnx-date>
               </div>
             </div>
             <small
@@ -177,7 +199,7 @@
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
                 *ngIf="config.OCCHAB.formConfig['altitude_min']"
               >
-                <small for=""> Altitude min</small>
+                <small for="">Altitude min</small>
                 <input
                   type="number"
                   class="form-control form-control-sm"
@@ -188,7 +210,7 @@
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
                 *ngIf="config.OCCHAB.formConfig['altitude_max']"
               >
-                <small for=""> Altitude max</small>
+                <small for="">Altitude max</small>
                 <input
                   type="number"
                   class="form-control form-control-sm"
@@ -198,10 +220,16 @@
               <button
                 (click)="isCollapseDepth = !isCollapseDepth"
                 [attr.aria-expanded]="!isCollapseDepth"
-                *ngIf="!showDepth && (config.OCCHAB.formConfig['depth_min'] || config.OCCHAB.formConfig['depth_max'])"
+                *ngIf="
+                  !showDepth &&
+                  (config.OCCHAB.formConfig['depth_min'] || config.OCCHAB.formConfig['depth_max'])
+                "
                 class="btn btn-sm btn-outline-shadow depth-button"
               >
-                <i class="fa fa-plus" aria-expanded="false"></i>
+                <i
+                  class="fa fa-plus"
+                  aria-expanded="false"
+                ></i>
               </button>
               <button
                 (click)="isCollapseDepth = !isCollapseDepth"
@@ -210,7 +238,10 @@
                 (click)="toggleDepth()"
                 class="btn btn-sm btn-outline-shadow depth-button"
               >
-                <i class="fa fa-minus" aria-expanded="false"></i>
+                <i
+                  class="fa fa-minus"
+                  aria-expanded="false"
+                ></i>
               </button>
             </div>
             <small
@@ -222,13 +253,16 @@
             </small>
           </div>
 
-          <div [(ngbCollapse)]="isCollapseDepth" class="form-group">
+          <div
+            [(ngbCollapse)]="isCollapseDepth"
+            class="form-group"
+          >
             <div class="row row-0">
               <div
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
                 *ngIf="config.OCCHAB.formConfig['depth_min']"
               >
-                <small for=""> Profondeur min</small>
+                <small for="">Profondeur min</small>
                 <input
                   type="number"
                   class="form-control form-control-sm"
@@ -239,7 +273,7 @@
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
                 *ngIf="config.OCCHAB.formConfig['depth_max']"
               >
-                <small for=""> Profondeur max</small>
+                <small for="">Profondeur max</small>
                 <input
                   type="number"
                   class="form-control form-control-sm"
@@ -257,15 +291,14 @@
             comparedKey="id_nomenclature"
             titleKey="definition_fr"
             displayedKey="label_fr"
-          >
-          </pnx-dumb-select>
+          ></pnx-dumb-select>
 
           <div class="row row-0">
             <div
               class="col padding-sm"
               *ngIf="config.OCCHAB.formConfig['area']"
             >
-              <small> Surface (en m²)</small>
+              <small>Surface (en m²)</small>
               <input
                 class="form-control form-control-sm"
                 [formControl]="occHabForm.stationForm.get('area')"
@@ -284,8 +317,7 @@
                 comparedKey="id_nomenclature"
                 titleKey="definition_fr"
                 displayedKey="label_fr"
-              >
-              </pnx-dumb-select>
+              ></pnx-dumb-select>
             </div>
           </div>
 
@@ -302,8 +334,7 @@
                 titleKey="definition_fr"
                 displayedKey="label_fr"
                 data-qa="pnx-occhab-form-geographic"
-              >
-              </pnx-dumb-select>
+              ></pnx-dumb-select>
             </div>
           </div>
 
@@ -338,8 +369,14 @@
 
       <div class="card border-primary">
         <div class="habitat-form">
-          <h5 class="card-header text-white" id="header-form-hab">
-            <i class="fa fa-leaf" aria-hidden="true"></i>
+          <h5
+            class="card-header text-white"
+            id="header-form-hab"
+          >
+            <i
+              class="fa fa-leaf"
+              aria-hidden="true"
+            ></i>
             Habitat
             <button
               *ngIf="!showHabForm"
@@ -348,7 +385,11 @@
               class="btn btn-sm float-right"
               (click)="addNewHab()"
             >
-              <i style="color: rgb(0, 233, 0)" class="fa fa-plus" aria-hidden="true"></i>
+              <i
+                style="color: rgb(0, 233, 0)"
+                class="fa fa-plus"
+                aria-hidden="true"
+              ></i>
               Ajouter un habitat à la station
             </button>
             <button
@@ -357,20 +398,32 @@
               class="btn btn-sm btn-danger float-right add-hab-btn"
               (click)="cancelHab()"
             >
-              <i class="fa fa-minus" aria-hidden="true"></i>
+              <i
+                class="fa fa-minus"
+                aria-hidden="true"
+              ></i>
               Annuler l'édition de l'habitat
             </button>
           </h5>
-          <div *ngIf="showHabForm" class="card-body body-hab-form">
-            <div [(ngbCollapse)]="isCollaspeTypo" class="form-row">
+          <div
+            *ngIf="showHabForm"
+            class="card-body body-hab-form"
+          >
+            <div
+              [(ngbCollapse)]="isCollaspeTypo"
+              class="form-row"
+            >
               <div class="col-6 padding-sm">
-                <small> Sélectionner une typologie d'habitat</small>
+                <small>Sélectionner une typologie d'habitat</small>
                 <select
                   [formControl]="occHabForm.typoHabControl"
                   class="form-control form-control-sm"
                 >
                   <option [ngValue]="null">Toutes</option>
-                  <option *ngFor="let typo of storeService.typoHabitat" [ngValue]="typo.cd_typo">
+                  <option
+                    *ngFor="let typo of storeService.typoHabitat"
+                    [ngValue]="typo.cd_typo"
+                  >
                     {{ typo.lb_nom_typo }}
                   </option>
                 </select>
@@ -380,7 +433,7 @@
             <div class="form-row">
               <div class="col-6 inline">
                 <pnx-autocomplete
-                  apiEndPoint="{{config.API_ENDPOINT}}/habref/habitats/autocomplete"
+                  apiEndPoint="{{ config.API_ENDPOINT }}/habref/habitats/autocomplete"
                   [searchAsParameter]="false"
                   [parentFormControl]="
                     occHabForm.stationForm
@@ -388,15 +441,20 @@
                       .controls[occHabForm.currentEditingHabForm].get('habref')
                   "
                   queryParamSearch="search_name"
-                  [othersGetParams]="{cd_type: occHabForm.typoHabControl.value, id_list: config.OCCHAB.ID_LIST_HABITAT}"
+                  [othersGetParams]="{
+                    cd_type: occHabForm.typoHabControl.value,
+                    id_list: config.OCCHAB.ID_LIST_HABITAT
+                  }"
                   [formatter]="formatter"
                   keyValue="search_name"
                   label="Habitat"
                   placeholder="Tapez les premières lettres..."
                   (onChange)="occHabForm.patchNomCite($event)"
+                ></pnx-autocomplete>
+                <div
+                  class="input-group-append"
+                  id="addon"
                 >
-                </pnx-autocomplete>
-                <div class="input-group-append" id="addon">
                   <button
                     (click)="isCollaspeTypo = !isCollaspeTypo"
                     [attr.aria-expanded]="!isCollaspeTypo"
@@ -404,7 +462,10 @@
                     aria-expanded="false"
                     matTooltip="Filtrer les habitat proposés à l'autocompletion  par typologie"
                   >
-                    <i class="fa fa-filter" aria-hidden="true"></i>
+                    <i
+                      class="fa fa-filter"
+                      aria-hidden="true"
+                    ></i>
                   </button>
                 </div>
               </div>
@@ -424,8 +485,7 @@
                   titleKey="definition_fr"
                   displayedKey="label_fr"
                   [displayNullValue]="true"
-                >
-                </pnx-dumb-select>
+                ></pnx-dumb-select>
               </div>
             </div>
 
@@ -434,7 +494,7 @@
                 class="col"
                 *ngIf="config.OCCHAB.formConfig['determiner']"
               >
-                <small> Déterminateur</small>
+                <small>Déterminateur</small>
                 <input
                   type="text"
                   name="determinter"
@@ -463,8 +523,7 @@
                   comparedKey="id_nomenclature"
                   titleKey="definition_fr"
                   displayedKey="label_fr"
-                >
-                </pnx-dumb-select>
+                ></pnx-dumb-select>
               </div>
             </div>
 
@@ -483,8 +542,7 @@
               titleKey="definition_fr"
               displayedKey="label_fr"
               data-qa="pnx-occhab-form-technique-collect"
-            >
-            </pnx-dumb-select>
+            ></pnx-dumb-select>
 
             <div class="form-group">
               <input
@@ -521,7 +579,7 @@
               class="form-group"
               *ngIf="config.OCCHAB.formConfig['recovery_percentage']"
             >
-              <small> Pourcentage de recouvrement</small>
+              <small>Pourcentage de recouvrement</small>
               <input
                 type="number"
                 name="recovery"
@@ -547,8 +605,7 @@
               titleKey="definition_fr"
               displayedKey="label_fr"
               [displayNullValue]="true"
-            >
-            </pnx-dumb-select>
+            ></pnx-dumb-select>
 
             <br />
 
@@ -559,9 +616,7 @@
               class="uppercase"
               (click)="validateHabitat()"
               [disabled]="
-                occHabForm.stationForm.get('habitats').controls[
-                  occHabForm.currentEditingHabForm
-                ] &&
+                occHabForm.stationForm.get('habitats').controls[occHabForm.currentEditingHabForm] &&
                 occHabForm.stationForm.get('habitats').controls[occHabForm.currentEditingHabForm]
                   .invalid
               "
@@ -574,6 +629,5 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>

@@ -1,14 +1,20 @@
-<div id="cover-spin" *ngIf="!_ds.dataLoaded"></div>
+<div
+  id="cover-spin"
+  *ngIf="!_ds.dataLoaded"
+></div>
 
 <div class="wrapper">
-  <nav [(ngbCollapse)]="isCollapseValidationNavBar" #navBar id="sidebar">
+  <nav
+    [(ngbCollapse)]="isCollapseValidationNavBar"
+    #navBar
+    id="sidebar"
+  >
     <!-- <pnx-validation-search (searchClicked)="loadAndStoreData($event)"></pnx-validation-search> -->
     <pnx-synthese-search
       (resetFilter)="goHome()"
       [displayValidation]="true"
       (searchClicked)="loadAndStoreData($event)"
-    >
-    </pnx-synthese-search>
+    ></pnx-synthese-search>
   </nav>
 
   <!-- Page Content  -->
@@ -24,7 +30,10 @@
         id="sidebarCollapse"
         class="btn btn-toogle-sidenav box-shadow"
       >
-        <i class="fa" [ngClass]="searchBarHidden ? 'fa-caret-left' : 'fa-caret-right'"></i>
+        <i
+          class="fa"
+          [ngClass]="searchBarHidden ? 'fa-caret-left' : 'fa-caret-right'"
+        ></i>
       </button>
       <pnx-validation-synthese-list
         (displayAll)="goHome()"

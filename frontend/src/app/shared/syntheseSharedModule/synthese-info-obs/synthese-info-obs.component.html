@@ -1,8 +1,24 @@
-<div id="cover-spin" *ngIf="isLoading"></div>
+<div
+  id="cover-spin"
+  *ngIf="isLoading"
+></div>
 
-<div *ngIf="header" class="modal-header padding-md-all">
-  <h5 *ngIf="!alertOpen" class="my-3 ml-3">{{ 'Synthese.ModalTitle' | translate }}</h5>
-  <h5 *ngIf="alertOpen" class="my-3 ml-3">Signalement</h5>
+<div
+  *ngIf="header"
+  class="modal-header padding-md-all"
+>
+  <h5
+    *ngIf="!alertOpen"
+    class="my-3 ml-3"
+  >
+    {{ 'Synthese.ModalTitle' | translate }}
+  </h5>
+  <h5
+    *ngIf="alertOpen"
+    class="my-3 ml-3"
+  >
+    Signalement
+  </h5>
   <button
     type="button"
     class="close"
@@ -17,7 +33,10 @@
   </button>
 </div>
 
-<mat-card class="modal-body" *ngIf="idSynthese && alertOpen">
+<mat-card
+  class="modal-body"
+  *ngIf="idSynthese && alertOpen"
+>
   <mat-card-content *ngIf="activateAlert">
     <span class="font-xs mb-2">
       <pnx-alert-info
@@ -29,7 +48,10 @@
   </mat-card-content>
 </mat-card>
 
-<mat-card class="modal-body" *ngIf="!alertOpen">
+<mat-card
+  class="modal-body"
+  *ngIf="!alertOpen"
+>
   <div class="d-flex w-100 justify-content-between">
     <h4 class="mr-auto gn-color">
       <a
@@ -39,7 +61,7 @@
         [routerLink]="['/synthese/taxon', selectedObsTaxonDetail?.cd_ref]"
         target="_blank"
         *ngIf="selectedObsTaxonDetail && config.FRONTEND['ENABLE_PROFILES']; else notLink"
-        >
+      >
         <span *ngIf="selectedObsTaxonDetail?.nom_vern">
           {{ selectedObsTaxonDetail?.nom_vern }} -
         </span>
@@ -47,10 +69,10 @@
       </a>
       <ng-template #notLink>
         <div
-          class="no-link-style" 
+          class="no-link-style"
           placement="bottom"
           *ngIf="selectedObsTaxonDetail"
-          >
+        >
           <span *ngIf="selectedObsTaxonDetail?.nom_vern">
             {{ selectedObsTaxonDetail?.nom_vern }} -
           </span>
@@ -121,41 +143,46 @@
     <span class="font-xs mb-2">
       <div>
         <span *ngIf="selectedObs?.place_name">
-          <b>{{ 'Synthese.LocationName' | translate }} : </b> {{ selectedObs?.place_name }}
+          <b>{{ 'Synthese.LocationName' | translate }} :</b>
+          {{ selectedObs?.place_name }}
         </span>
         <span *ngIf="selectedObs?.precision">
-          <b>{{ 'Synthese.Accuracy' | translate }} : </b> {{ selectedObs?.precision }}
+          <b>{{ 'Synthese.Accuracy' | translate }} :</b>
+          {{ selectedObs?.precision }}
         </span>
       </div>
-      <b> {{ 'Synthese.Owner' | translate }} : </b>
+      <b>{{ 'Synthese.Owner' | translate }} :</b>
       <span data-qa="synthese-info-obs-observateur">
         {{ selectedObs?.observers }}
       </span>
       <br />
       <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
-        <b> {{ 'Synthese.Date' | translate }} : </b
-        ><span>{{ selectedObs?.date_min }} -> {{ selectedObs?.date_max }}</span>
+        <b>{{ 'Synthese.Date' | translate }} :</b>
+        <span>{{ selectedObs?.date_min }} -> {{ selectedObs?.date_max }}</span>
       </span>
       <ng-template #elseBlock>
-        <b> {{ 'Synthese.Date' | translate }} : </b
-        ><span data-qa="synthese-info-obs-date">{{ selectedObs?.date_min }}</span>
+        <b>{{ 'Synthese.Date' | translate }} :</b>
+        <span data-qa="synthese-info-obs-date">{{ selectedObs?.date_min }}</span>
       </ng-template>
       <br />
       <span *ngIf="selectedObs?.altitude_min || selectedObs?.altitude_max">
-        <b> {{ 'Synthese.Altitude' | translate }}</b> : {{ selectedObs?.altitude_min }} m -
-        {{ selectedObs?.altitude_max }} m
+        <b>{{ 'Synthese.Altitude' | translate }}</b>
+        : {{ selectedObs?.altitude_min }} m - {{ selectedObs?.altitude_max }} m
         <br />
       </span>
       <span *ngIf="selectedObs?.depth_min || selectedObs?.depth_max">
-        <b> {{ 'Synthese.DeepMin' | translate }} </b> : {{ selectedObs?.depth_min }} m -
-        <b> {{ 'Synthese.DeepMax' | translate }} : </b> {{ selectedObs?.depth_max }} m
+        <b>{{ 'Synthese.DeepMin' | translate }}</b>
+        : {{ selectedObs?.depth_min }} m -
+        <b>{{ 'Synthese.DeepMax' | translate }} :</b>
+        {{ selectedObs?.depth_max }} m
         <br />
       </span>
-      <b> {{ 'Synthese.UidObs' | translate }} : </b> {{ selectedObs?.unique_id_sinp }}
+      <b>{{ 'Synthese.UidObs' | translate }} :</b>
+      {{ selectedObs?.unique_id_sinp }}
       <br />
       <span *ngIf="selectedObs?.habitat">
-        <b> {{ 'Synthese.Habitat' | translate }}</b
-        >: {{ selectedObs?.habitat?.lb_hab_fr }} -
+        <b>{{ 'Synthese.Habitat' | translate }}</b>
+        : {{ selectedObs?.habitat?.lb_hab_fr }} -
         {{ selectedObs?.habitat?.lb_code }}
         <br />
       </span>
@@ -358,7 +385,7 @@
     <table class="font-xs table table-striped table-sm">
       <tr>
         <td>
-          <b>Groupe taxonomique </b>
+          <b>Groupe taxonomique</b>
         </td>
         <td>{{ selectedObsTaxonDetail?.classe }}</td>
       </tr>
@@ -370,7 +397,7 @@
       </tr>
       <tr>
         <td>
-          <b> Famille</b>
+          <b>Famille</b>
         </td>
         <td data-qa="synthese-obs-detail-taxo-familly">{{ selectedObsTaxonDetail?.famille }}</td>
       </tr>
@@ -378,16 +405,22 @@
 
     <h5 class="underlined underlined-sm main-color">Attribut(s) Taxonomique(s) locaux</h5>
     <table class="font-xs table table-striped table-sm">
-      <tr class="font-xs" *ngFor="let attr of selectObsTaxonInfo?.attributs">
+      <tr
+        class="font-xs"
+        *ngFor="let attr of selectObsTaxonInfo?.attributs"
+      >
         <td>
-          <b>{{ attr.label_attribut }} </b>
+          <b>{{ attr.label_attribut }}</b>
         </td>
         <td>{{ attr.valeur_attribut }}</td>
       </tr>
     </table>
 
     <h5 class="underlined underlined-sm main-color">Statuts</h5>
-    <table class="font-xs table table-sm" *ngIf="selectedObsTaxonDetail?.status; else noStatus">
+    <table
+      class="font-xs table table-sm"
+      *ngIf="selectedObsTaxonDetail?.status; else noStatus"
+    >
       <ng-container *ngFor="let status of selectedObsTaxonDetail?.status | keyvalue">
         <tr class="table-primary">
           <th>{{ status.value.display }}</th>
@@ -395,7 +428,10 @@
         <tr *ngFor="let text of status.value.text | keyvalue">
           <td>
             <ul class="list-unstyled mt-2">
-              <li *ngIf="text.value.full_citation" class="d-flex w-100 justify-content-between">
+              <li
+                *ngIf="text.value.full_citation"
+                class="d-flex w-100 justify-content-between"
+              >
                 <span class="flex-shrink-1 w-75">
                   <strong [innerHtml]="text.value.full_citation | safeHTML"></strong>
                   <br />
@@ -437,7 +473,12 @@
           <tr>
             <td>Titre</td>
             <td>
-              <a target="_blank" [href]="mediaService.href(media)">{{ media.title_fr }}</a>
+              <a
+                target="_blank"
+                [href]="mediaService.href(media)"
+              >
+                {{ media.title_fr }}
+              </a>
             </td>
           </tr>
           <tr *ngIf="media.description_fr">
@@ -455,8 +496,7 @@
                 [medias]="selectedObs?.medias"
                 [index]="i"
                 display="medium"
-              >
-              </pnx-display-medias>
+              ></pnx-display-medias>
             </td>
           </tr>
         </ng-container>
@@ -483,7 +523,8 @@
               data-qa="synthese-obs-detail-area"
               *ngFor="let area of area_type.areas; let index = index"
             >
-              {{ area.area_name }}<span *ngIf="index < area_type.areas.length - 1">,</span>
+              {{ area.area_name }}
+              <span *ngIf="index < area_type.areas.length - 1">,</span>
             </span>
           </td>
         </tr>
@@ -516,14 +557,22 @@
                 class="validationCircle"
                 [ngStyle]="{ background: validationColor[row.cd_nomenclature] }"
               >
-                <mat-icon *ngIf="row.typeValidation == 'True'" class="computer">computer</mat-icon>
+                <mat-icon
+                  *ngIf="row.typeValidation == 'True'"
+                  class="computer"
+                >
+                  computer
+                </mat-icon>
               </span>
-              <span class="statusName" class="ml-4">
+              <span
+                class="statusName"
+                class="ml-4"
+              >
                 {{ row.label_default }}
               </span>
             </td>
             <td width="20%">
-              <span> {{ row.validator }} </span>
+              <span>{{ row.validator }}</span>
             </td>
             <td>{{ row.comment }}</td>
           </tr>
@@ -552,11 +601,11 @@
 
                 <tr>
                   <td>Première observation valide</td>
-                  <td>{{ profile?.properties?.first_valid_data | date : 'dd/MM/yyyy' }}</td>
+                  <td>{{ profile?.properties?.first_valid_data | date: 'dd/MM/yyyy' }}</td>
                 </tr>
                 <tr>
                   <td>Dernière observation valide</td>
-                  <td>{{ profile?.properties?.last_valid_data | date : 'dd/MM/yyyy' }}</td>
+                  <td>{{ profile?.properties?.last_valid_data | date: 'dd/MM/yyyy' }}</td>
                 </tr>
               </table>
 
@@ -565,28 +614,28 @@
                 <tr>
                   <td>Dans l'aire d'observation valide</td>
                   <td *ngIf="profileDataChecks?.valid_distribution">
-                    <mat-icon class="success"> check </mat-icon>
+                    <mat-icon class="success">check</mat-icon>
                   </td>
                   <td *ngIf="!profileDataChecks?.valid_distribution">
-                    <mat-icon class="error"> close </mat-icon>
+                    <mat-icon class="error">close</mat-icon>
                   </td>
                 </tr>
                 <tr>
                   <td>Cohérence phénologique</td>
                   <td *ngIf="profileDataChecks?.valid_phenology">
-                    <mat-icon class="success"> check </mat-icon>
+                    <mat-icon class="success">check</mat-icon>
                   </td>
                   <td *ngIf="!profileDataChecks?.valid_phenology">
-                    <mat-icon class="error"> close </mat-icon>
+                    <mat-icon class="error">close</mat-icon>
                   </td>
                 </tr>
                 <tr>
                   <td>Dans la fourchette altitudinale valide</td>
                   <td *ngIf="profileDataChecks?.valid_altitude">
-                    <mat-icon class="success"> check </mat-icon>
+                    <mat-icon class="success">check</mat-icon>
                   </td>
                   <td *ngIf="!profileDataChecks?.valid_altitude">
-                    <mat-icon class="error"> close </mat-icon>
+                    <mat-icon class="error">close</mat-icon>
                   </td>
                 </tr>
                 <tr>
@@ -601,14 +650,21 @@
         <h5>Aire de répartition des observations valides</h5>
         <div class="mb-3 border border-secondary">
           <pnx-map height="40vh">
-            <pnx-geojson [geojson]="selectedGeom" [style]="{ color: 'red' }"> </pnx-geojson>
-            <pnx-geojson [geojson]="profile" [zoomOnFirstTime]="true"> </pnx-geojson>
+            <pnx-geojson
+              [geojson]="selectedGeom"
+              [style]="{ color: 'red' }"
+            ></pnx-geojson>
+            <pnx-geojson
+              [geojson]="profile"
+              [zoomOnFirstTime]="true"
+            ></pnx-geojson>
           </pnx-map>
         </div>
       </div>
       <ng-template #noProfile>
-        <span class="alert alert-info"> Pas de profil pour ce taxon </span>
-        <br /><br />
+        <span class="alert alert-info">Pas de profil pour ce taxon</span>
+        <br />
+        <br />
       </ng-template>
     </div>
   </mat-tab>

@@ -1,4 +1,4 @@
-<small> {{ label }} </small>
+<small>{{ label }}</small>
 <ng-select
   [ngClass]="class"
   [items]="datasets"
@@ -10,8 +10,16 @@
   [virtualScroll]="true"
   [formControl]="parentFormControl"
 >
-  <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-    <div matTooltip="{{ item.dataset_name }}" [attr.data-qa]="item.dataset_name">
+  <ng-template
+    ng-option-tmp
+    let-item="item"
+    let-index="index"
+    let-search="searchTerm"
+  >
+    <div
+      matTooltip="{{ item.dataset_name }}"
+      [attr.data-qa]="item.dataset_name"
+    >
       <span class="pre-wrap">{{ item.dataset_name }}</span>
     </div>
   </ng-template>
