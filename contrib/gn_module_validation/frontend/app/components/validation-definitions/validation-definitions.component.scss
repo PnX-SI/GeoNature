@@ -7,13 +7,15 @@ th.table_status {
   width: 30%;
 }
 
-td,th {
+td,
+th {
   border: 1px solid black;
   text-align: left;
   padding: 8px;
 }
 
-button#showDef, button#hideDef{
+button#showDef,
+button#hideDef {
   width: 100% !important;
 }
 

@@ -1,4 +1,4 @@
-<small> {{ label }} </small>
+<small>{{ label }}</small>
 <ng-select
   [ngClass]="class"
   [items]="labels"
@@ -11,8 +11,16 @@
   [attr.qa-test]="label"
   appendTo="body"
 >
-  <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-    <div matTooltip="{{ item[definitionLang] }}" [attr.data-qa]="item['cd_nomenclature']">
+  <ng-template
+    ng-option-tmp
+    let-item="item"
+    let-index="index"
+    let-search="searchTerm"
+  >
+    <div
+      matTooltip="{{ item[definitionLang] }}"
+      [attr.data-qa]="item['cd_nomenclature']"
+    >
       <span class="pre-wrap">{{ item[labelLang] }}</span>
     </div>
   </ng-template>

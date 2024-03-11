@@ -1,10 +1,14 @@
-<div class="container" data-qa="pnx-af-form">
+<div
+  class="container"
+  data-qa="pnx-af-form"
+>
   <a
     mat-raised-button
     class="ml-1 mb-1"
     routerLink="/metadata"
   >
-    <mat-icon> chevron_left</mat-icon> Retour
+    <mat-icon>chevron_left</mat-icon>
+    Retour
   </a>
 
   <div class="row">
@@ -14,7 +18,7 @@
           <h3>Cadre d'acquisition</h3>
 
           <div>
-            <small>Nom </small>
+            <small>Nom</small>
             <input
               class="form-control form-control-sm"
               type="text"
@@ -30,8 +34,7 @@
               type="text"
               [formControl]="form.get('acquisition_framework_desc')"
               data-qa="pnx-metadata-af-form-description"
-            >
-            </textarea>
+            ></textarea>
           </div>
 
           <div>
@@ -52,12 +55,15 @@
 
           <br />
           <div>
-            <input [formControl]="form.get('is_parent')" type="checkbox" />
-            <small> Est un cadre d'acquisition parent </small>
+            <input
+              [formControl]="form.get('is_parent')"
+              type="checkbox"
+            />
+            <small>Est un cadre d'acquisition parent</small>
           </div>
 
           <div>
-            <small>Cadre d'acquisition parent </small>
+            <small>Cadre d'acquisition parent</small>
             <select
               class="form-control form-control-sm"
               [formControl]="form.get('acquisition_framework_parent_id')"
@@ -80,16 +86,14 @@
             [bindAllItem]="true"
             [keyValue]="null"
             data-qa="pnx-metadata-af-form-territory"
-          >
-          </pnx-nomenclature>
+          ></pnx-nomenclature>
 
           <pnx-nomenclature
             label="Niveau territorial"
             [parentFormControl]="form.get('id_nomenclature_territorial_level')"
             codeNomenclatureType="NIVEAU_TERRITORIAL"
             data-qa="pnx-metadata-af-form-territory-level"
-          >
-          </pnx-nomenclature>
+          ></pnx-nomenclature>
 
           <div>
             <small>Précision sur le territoire</small>
@@ -97,8 +101,7 @@
               class="form-control form-control-sm"
               type="text"
               [formControl]="form.get('territory_desc')"
-            >
-            </textarea>
+            ></textarea>
           </div>
 
           <pnx-nomenclature
@@ -109,9 +112,7 @@
             [bindAllItem]="true"
             [keyValue]="null"
             data-qa="pnx-metadata-af-form-objectif"
-
-          >
-          </pnx-nomenclature>
+          ></pnx-nomenclature>
 
           <pnx-nomenclature
             label="Volets SINP"
@@ -120,16 +121,14 @@
             codeNomenclatureType="VOLET_SINP"
             [bindAllItem]="true"
             [keyValue]="null"
-          >
-          </pnx-nomenclature>
+          ></pnx-nomenclature>
 
           <pnx-nomenclature
             label="Type de financement"
             [parentFormControl]="form.get('id_nomenclature_financing_type')"
             codeNomenclatureType="TYPE_FINANCEMENT"
             data-qa="pnx-metadata-af-form-financing-type"
-          >
-          </pnx-nomenclature>
+          ></pnx-nomenclature>
 
           <div>
             <small>
@@ -149,28 +148,29 @@
           </div>
 
           <div>
-            <small>Description de la cible </small>
+            <small>Description de la cible</small>
             <textarea
               class="form-control form-control-sm"
               type="text"
               [formControl]="form.get('target_description')"
-            >
-            </textarea>
+            ></textarea>
           </div>
           <pnx-date
             label="Date début"
             [parentFormControl]="form.get('acquisition_framework_start_date')"
             data-qa="pnx-metadata-af-form-start-date"
-          >
-          </pnx-date>
+          ></pnx-date>
 
           <pnx-date
             label="Date fin"
             [parentFormControl]="form.get('acquisition_framework_end_date')"
-          >
-          </pnx-date>
+          ></pnx-date>
 
-          <small *ngIf="form.errors?.invalidDate" class="error" style="color: red">
+          <small
+            *ngIf="form.errors?.invalidDate"
+            class="error"
+            style="color: red"
+          >
             {{ 'Releve.DateMaxError' | translate }}
           </small>
 
@@ -281,8 +281,7 @@
                   ? 'all'
                   : 'organism'
               "
-            >
-            </pnx-metadata-actor>
+            ></pnx-metadata-actor>
           </ng-container>
         </div>
       </div>
@@ -303,13 +302,12 @@
                   ? 'all'
                   : 'organism'
               "
-            >
-            </pnx-metadata-actor>
+            ></pnx-metadata-actor>
 
             <ng-container
               *ngIf="!afFormS.actors.valid && afFormS.actors.errors?.hasDoublons.index == idx"
             >
-              <small class="mat-error"> Cet acteur est déjà présent dans la liste </small>
+              <small class="mat-error">Cet acteur est déjà présent dans la liste</small>
             </ng-container>
 
             <p></p>
@@ -331,15 +329,22 @@
   </div>
 
   <div class="ml-1 mt-1">
-    <button class="mr-1" type="button" mat-raised-button color="warn" routerLink="/metadata">
+    <button
+      class="mr-1"
+      type="button"
+      mat-raised-button
+      color="warn"
+      routerLink="/metadata"
+    >
       Annuler
     </button>
-    <button 
-      [disabled]="form.invalid" 
-      mat-raised-button class="button-success" 
+    <button
+      [disabled]="form.invalid"
+      mat-raised-button
+      class="button-success"
       (click)="postAf()"
       data-qa="pnx-metadata-save-af"
-      >
+    >
       Enregistrer le cadre d'acquisition
     </button>
   </div>

@@ -1,12 +1,25 @@
-<div id="cover-spin" *ngIf="!searchService.dataLoaded">
-  <div class="alert alert-warning" id="cover-message">
+<div
+  id="cover-spin"
+  *ngIf="!searchService.dataLoaded"
+>
+  <div
+    class="alert alert-warning"
+    id="cover-message"
+  >
     <span>Chargement des données en cours (cela peut prendre du temps)…</span>
   </div>
 </div>
 
-<div class="wrapper" data-qa="pnx-synthese">
-  <nav [(ngbCollapse)]="isCollapseSyntheseNavBar" #navBar id="sidebar">
-    <pnx-synthese-search (searchClicked)="onSearchEvent()"> </pnx-synthese-search>
+<div
+  class="wrapper"
+  data-qa="pnx-synthese"
+>
+  <nav
+    [(ngbCollapse)]="isCollapseSyntheseNavBar"
+    #navBar
+    id="sidebar"
+  >
+    <pnx-synthese-search (searchClicked)="onSearchEvent()"></pnx-synthese-search>
   </nav>
 
   <div class="row row-sm page-content">
@@ -20,13 +33,19 @@
       id="sidebarCollapse"
       class="btn btn-toogle-sidenav box-shadow"
     >
-      <i [hidden]="searchBarHidden" class="fa fa-caret-left"></i>
-      <i [hidden]="!searchBarHidden" class="fa fa-caret-right"></i>
+      <i
+        [hidden]="searchBarHidden"
+        class="fa fa-caret-left"
+      ></i>
+      <i
+        [hidden]="!searchBarHidden"
+        class="fa fa-caret-right"
+      ></i>
     </button>
     <div class="col-sm-12 col-md-7 padding-sm">
       <pnx-synthese-carte
-      (onAreasToggle)="fetchOrRenderData($event)"
-      [inputSyntheseData]="_mapListService.geojsonData"
+        (onAreasToggle)="fetchOrRenderData($event)"
+        [inputSyntheseData]="_mapListService.geojsonData"
       ></pnx-synthese-carte>
     </div>
     <div class="col-sm-12 col-md-5 padding-sm">

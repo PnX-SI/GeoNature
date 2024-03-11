@@ -2,15 +2,14 @@
   id="createAlert"
   class="m-4"
 >
-  <p [ngStyle]="{'font-size': '16px'}">Description du signalement :</p>
+  <p [ngStyle]="{ 'font-size': '16px' }">Description du signalement :</p>
   <form
-    class="
-    my-3"
+    class="my-3"
     *ngIf="!alert?.content"
   >
     <mat-form-field
       appearance="fill"
-      style="width:100%"
+      style="width: 100%"
       focused
       class="my-3 alert-field"
     >
@@ -20,12 +19,10 @@
         placeholder="Votre commentaire...."
         [formControl]="alertForm.controls.content"
       ></textarea>
-      <mat-error *ngIf="!this.alertForm.valid">
-        Veuillez saisir un commentaire
-      </mat-error>
+      <mat-error *ngIf="!this.alertForm.valid">Veuillez saisir un commentaire</mat-error>
     </mat-form-field>
   </form>
-  <mat-card *ngIf="alert?.content">{{alert?.content}}</mat-card>
+  <mat-card *ngIf="alert?.content">{{ alert?.content }}</mat-card>
   <div class="mt-4">
     <button
       id="cancelAlertBtn"
@@ -35,7 +32,8 @@
       data-dismiss="modal"
       (click)="openCloseAlert()"
     >
-      <mat-icon>west</mat-icon> Retour
+      <mat-icon>west</mat-icon>
+      Retour
     </button>
     <button
       *ngIf="!alert || !alert?.id_report"
@@ -50,7 +48,8 @@
       data-dismiss="modal"
       #required
     >
-      <mat-icon>check</mat-icon> Enregistrer
+      <mat-icon>check</mat-icon>
+      Enregistrer
     </button>
     <button
       mat-raised-button
@@ -68,7 +67,8 @@
       color="primary"
       #required
     >
-      <mat-icon>verified</mat-icon> Signalement pris en compte !
+      <mat-icon>verified</mat-icon>
+      Signalement pris en compte !
     </button>
   </div>
 </div>

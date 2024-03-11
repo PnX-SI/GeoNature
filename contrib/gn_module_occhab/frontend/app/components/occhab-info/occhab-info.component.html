@@ -4,16 +4,15 @@
       <pnx-geojson
         [geojson]="station"
         [zoomOnFirstTime]="true"
-      >
-      </pnx-geojson>
+      ></pnx-geojson>
     </pnx-map>
   </div>
   <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 padding-sm right-side">
     <div class="card border-primary bg-light">
       <h5 class="card-header bg-primary text-white">
-        Station n° {{station.properties.id_station}}
+        Station n° {{ station.properties.id_station }}
         <button
-          matTooltip="Editez le relevé {{station?.id}}"
+          matTooltip="Editez le relevé {{ station?.id }}"
           mat-mini-fab
           class="button-success float-right"
           type="button"
@@ -23,7 +22,7 @@
           <mat-icon>edit</mat-icon>
         </button>
         <button
-          matTooltip="Supprimer le relevé {{station?.id}}"
+          matTooltip="Supprimer le relevé {{ station?.id }}"
           mat-mini-fab
           color="warn"
           type="button"
@@ -33,27 +32,25 @@
         >
           <mat-icon>delete</mat-icon>
         </button>
-
       </h5>
       <div
         class="card-body"
         id="card-station"
       >
-
         <div class="content row">
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <h5>
               <b class="text-muted">Jeu de donnée :</b>
             </h5>
-            <p> {{station?.properties.dataset?.dataset_name}} </p>
+            <p>{{ station?.properties.dataset?.dataset_name }}</p>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <h5>
               <b class="text-muted">Date :</b>
             </h5>
             <p>
-              {{station?.properties.date_min | date:'dd/MM/yyyy'}} -
-              {{station?.properties.date_max | date:'dd/MM/yyyy'}}
+              {{ station?.properties.date_min | date: 'dd/MM/yyyy' }} -
+              {{ station?.properties.date_max | date: 'dd/MM/yyyy' }}
             </p>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
@@ -61,46 +58,55 @@
               <b class="text-muted">Observateur(s) :</b>
             </h5>
             <div *ngIf="station?.properties.observers; else elseBlock">
-              <p *ngFor="let obs of station.properties.observers; let last=last">
-                {{obs.nom_role}} {{obs.prenom_role}}
-                <span *ngIf="!last">, </span>
+              <p *ngFor="let obs of station.properties.observers; let last = last">
+                {{ obs.nom_role }} {{ obs.prenom_role }}
+                <span *ngIf="!last">,</span>
               </p>
             </div>
             <ng-template #elseBlock>
-              <p>{{station?.properties.observers_txt}} </p>
+              <p>{{ station?.properties.observers_txt }}</p>
             </ng-template>
           </div>
-
-
         </div>
         <div class="content row">
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
-            <h5> <b class="text-muted">Altitude (en m) : </b> </h5>
-            <p>{{station?.properties.altitude_min}} - {{station?.properties.altitude_max}}</p>
+            <h5><b class="text-muted">Altitude (en m) :</b></h5>
+            <p>
+              {{ station?.properties.altitude_min }} -
+              {{ station?.properties.altitude_max }}
+            </p>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
-            <h5> <b class="text-muted">Surface (en m²) : </b> </h5>
-            <p> {{station?.properties.area}} <small>(
-                {{station?.properties.nomenclature_area_surface_calculation?.label_default}} )</small></p>
+            <h5><b class="text-muted">Surface (en m²) :</b></h5>
+            <p>
+              {{ station?.properties.area }}
+              <small>
+                (
+                {{ station?.properties.nomenclature_area_surface_calculation?.label_default }}
+                )
+              </small>
+            </p>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
-            <h5> <b class="text-muted">Type d'information géographique : </b> </h5>
+            <h5>
+              <b class="text-muted">Type d'information géographique :</b>
+            </h5>
             <p *ngIf="station?.properties.nomenclature_geographic_object">
-              {{station.properties.nomenclature_geographic_object.label_default}} </p>
+              {{ station.properties.nomenclature_geographic_object.label_default }}
+            </p>
           </div>
-
         </div>
         <div class="content row">
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
-            <h5> <b class="text-muted">Habitats de la station : </b> </h5>
+            <h5><b class="text-muted">Habitats de la station :</b></h5>
             <table class="table table-hover">
               <tr
                 class="clickable"
-                [ngClass]="{'table-primary': i == selectedIndex}"
-                *ngFor="let hab of station?.properties.habitats; let i=index"
+                [ngClass]="{ 'table-primary': i == selectedIndex }"
+                *ngFor="let hab of station?.properties.habitats; let i = index"
                 (click)="setCurrentHab(i); getHabInfo(hab.cd_hab)"
               >
-                <td> {{hab.nom_cite}}</td>
+                <td>{{ hab.nom_cite }}</td>
                 <td>
                   <i
                     class="fa fa-eye clickable"
@@ -111,55 +117,62 @@
             </table>
           </div>
 
-          <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 ">
-            <h5> <b class="text-muted">Commentaire : </b> </h5>
-            <p>{{station?.properties.comment}} </p>
+          <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+            <h5><b class="text-muted">Commentaire :</b></h5>
+            <p>{{ station?.properties.comment }}</p>
           </div>
-
         </div>
-
-
       </div>
     </div>
-    <br>
+    <br />
     <!-- SELECTED HAB -->
     <div
       *ngIf="currentHab"
       class="card border-primary"
     >
-      <h5 class="card-header bg-primary text-white">{{currentHab?.nom_cite}}</h5>
+      <h5 class="card-header bg-primary text-white">
+        {{ currentHab?.nom_cite }}
+      </h5>
 
       <div class="card-body">
         <div class="row">
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
-            <b class="text-muted">Technique de collecte : </b>
-            {{currentHab?.nomenclature_collection_technique?.label_default}} <br>
-            <b class="text-muted">Méthode de détermination : </b>
-            {{currentHab?.nomenclature_determination_type?.label_default}} <br>
-            <b class="text-muted">Pourcentage de recouvrement : </b>
-            {{currentHab?.nomenclature_recovery_percentage}} <br>
-            <b class="text-muted">Abondance : </b> {{currentHab?.nomenclature_abundance?.label_default}} <br>
+            <b class="text-muted">Technique de collecte :</b>
+            {{ currentHab?.nomenclature_collection_technique?.label_default }}
+            <br />
+            <b class="text-muted">Méthode de détermination :</b>
+            {{ currentHab?.nomenclature_determination_type?.label_default }}
+            <br />
+            <b class="text-muted">Pourcentage de recouvrement :</b>
+            {{ currentHab?.nomenclature_recovery_percentage }}
+            <br />
+            <b class="text-muted">Abondance :</b>
+            {{ currentHab?.nomenclature_abundance?.label_default }}
+            <br />
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
-            <h5 class="text-muted"> <b>Information sur l'habitat (Habref) : </b> </h5>
+            <h5 class="text-muted">
+              <b>Information sur l'habitat (Habref) :</b>
+            </h5>
             <p>
-              <b class="text-muted">Nom :</b> {{currentHab?.habref?.lb_code}} -
-              {{currentHab?.habref?.lb_hab_fr}}
+              <b class="text-muted">Nom :</b>
+              {{ currentHab?.habref?.lb_code }} -
+              {{ currentHab?.habref?.lb_hab_fr }}
               <i
                 class="fa fa-info-circle clickable"
                 aria-hidden="true"
-                (click)="openModalContent(modalInfo, habInfo?.lb_description )"
+                (click)="openModalContent(modalInfo, habInfo?.lb_description)"
               ></i>
-
             </p>
-            <b class="text-muted"> Typologie : </b> {{habInfo?.typo.lb_nom_typo}}
+            <b class="text-muted">Typologie :</b>
+            {{ habInfo?.typo.lb_nom_typo }}
             <i
               class="fa fa-info-circle clickable"
               aria-hidden="true"
-              (click)="openModalContent(modalInfo, habInfo?.typo.presentation )"
+              (click)="openModalContent(modalInfo, habInfo?.typo.presentation)"
             ></i>
-            <br>
-            <br>
+            <br />
+            <br />
             <button
               (click)="openModal(modalCoresp)"
               type="button"
@@ -171,7 +184,6 @@
         </div>
       </div>
     </div>
-
   </div>
 
   <ng-template
@@ -191,13 +203,9 @@
       </button>
     </div>
     <div class="modal-body">
-      {{modalContent}}
-      <div *ngIf="!modalContent || modalContent.length == 0">
-        Aucune information complémentaire
-      </div>
+      {{ modalContent }}
+      <div *ngIf="!modalContent || modalContent.length == 0">Aucune information complémentaire</div>
     </div>
-
-
   </ng-template>
 
   <ng-template
@@ -206,7 +214,7 @@
     let-c="close"
   >
     <div class="modal-header">
-      <h3> Correspondances </h3>
+      <h3>Correspondances</h3>
       <button
         type="button"
         class="close"
@@ -219,35 +227,29 @@
     <div class="modal-body">
       <table class="table">
         <thead>
-          <th> Habitat </th>
-          <th> Typologie </th>
-          <th> Type de relation </th>
+          <th>Habitat</th>
+          <th>Typologie</th>
+          <th>Type de relation</th>
         </thead>
         <tbody>
           <tr *ngFor="let cor of habInfo?.correspondances">
-            <td> {{cor.habref.lb_code}} {{cor.habref.lb_hab_fr}} </td>
-            <td> {{cor.habref.typo.lb_nom_typo}} </td>
-            <td> {{cor.type_rel?.lb_rel}} </td>
+            <td>{{ cor.habref.lb_code }} {{ cor.habref.lb_hab_fr }}</td>
+            <td>{{ cor.habref.typo.lb_nom_typo }}</td>
+            <td>{{ cor.type_rel?.lb_rel }}</td>
           </tr>
         </tbody>
       </table>
     </div>
-
-
   </ng-template>
 
   <ng-template
     #deleteModal
     let-c="close"
   >
-
     <pnx-occhab-delete
       [c]="c"
       [idStation]="station?.id"
       [nbHabitats]="station.properties.habitats.length"
-    >
-    </pnx-occhab-delete>
-
+    ></pnx-occhab-delete>
   </ng-template>
-
 </div>

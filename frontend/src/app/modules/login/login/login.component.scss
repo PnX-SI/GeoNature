@@ -80,7 +80,8 @@ small {
   color: red;
 }
 
-.inscription, .external_link {
+.inscription,
+.external_link {
   color: #fff;
 }
 
@@ -91,12 +92,14 @@ small {
   margin-bottom: 10px;
   cursor: pointer;
 }
-.forgot:hover,.external_link:hover  {
+.forgot:hover,
+.external_link:hover {
   text-decoration: underline;
 }
 
 .inscription a,
-.forgot-password a, .external_link a {
+.forgot-password a,
+.external_link a {
   color: inherit;
 }
 

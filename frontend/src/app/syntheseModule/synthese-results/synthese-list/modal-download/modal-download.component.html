@@ -1,6 +1,18 @@
 <div class="modal-header">
-  <h5 *ngIf="!tooManyObs" class="modal-title" id="modalLabel">Téléchargement</h5>
-  <h5 *ngIf="tooManyObs" class="modal-title" id="modalLabel">Limite d'affichage atteinte !</h5>
+  <h5
+    *ngIf="!tooManyObs"
+    class="modal-title"
+    id="modalLabel"
+  >
+    Téléchargement
+  </h5>
+  <h5
+    *ngIf="tooManyObs"
+    class="modal-title"
+    id="modalLabel"
+  >
+    Limite d'affichage atteinte !
+  </h5>
 
   <button
     type="button"
@@ -15,14 +27,22 @@
 
 <div class="modal-body">
   <div *ngIf="tooManyObs">
-    <div class="alert alert-danger" role="alert">
-      <b> Attention ! </b> Votre requête comporte un nombre trop important d'observations pour que
-      celles-ci soient affichées sur la carte.
+    <div
+      class="alert alert-danger"
+      role="alert"
+    >
+      <b>Attention !</b>
+      Votre requête comporte un nombre trop important d'observations pour que celles-ci soient
+      affichées sur la carte.
     </div>
 
-    <div class="alert alert-warning" role="alert">
-      En fermant cette fenêtre vous pouvez visualiser <b> seulement</b> les
-      {{ syntheseConfig.NB_MAX_OBS_MAP }} dernières observations correspondant à votre requête.
+    <div
+      class="alert alert-warning"
+      role="alert"
+    >
+      En fermant cette fenêtre vous pouvez visualiser
+      <b>seulement</b>
+      les {{ syntheseConfig.NB_MAX_OBS_MAP }} dernières observations correspondant à votre requête.
     </div>
 
     <div
@@ -31,7 +51,7 @@
       role="alert"
     >
       Vous pouvez néanmoins exporter les données, dans une limite de
-      <b> {{ syntheseConfig.NB_MAX_OBS_EXPORT }} </b>
+      <b>{{ syntheseConfig.NB_MAX_OBS_EXPORT }}</b>
       observations en cliquant sur les liens ci-dessous
     </div>
   </div>
@@ -47,8 +67,7 @@
         (click)="downloadObservations(format)"
         type="button"
         class="buttonLoad button-success format-btn"
-        [attr.data-qa]="'download-'+format"
-
+        [attr.data-qa]="'download-' + format"
       >
         Format {{ format }}
       </button>
@@ -94,10 +113,19 @@
     </div>
   </div>
 
-  <div *ngIf="_dataService.isDownloading" class="telechargement card" style="margin-top: 30px">
+  <div
+    *ngIf="_dataService.isDownloading"
+    class="telechargement card"
+    style="margin-top: 30px"
+  >
     <div class="card-body text-{{ bstype }}">
       {{ 'Downloading' | translate }}
-      <img src="assets/images/Spinner.gif" alt="Chargement..." height="40" width="40" />
+      <img
+        src="assets/images/Spinner.gif"
+        alt="Chargement..."
+        height="40"
+        width="40"
+      />
     </div>
   </div>
 </div>

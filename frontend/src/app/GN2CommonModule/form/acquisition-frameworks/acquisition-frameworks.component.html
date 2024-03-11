@@ -1,4 +1,4 @@
-<small> {{ label }} </small>
+<small>{{ label }}</small>
 <ng-select
   [ngClass]="class"
   [items]="acquisitionFrameworks | async"
@@ -10,7 +10,12 @@
   [virtualScroll]="true"
   [formControl]="parentFormControl"
 >
-  <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+  <ng-template
+    ng-option-tmp
+    let-item="item"
+    let-index="index"
+    let-search="searchTerm"
+  >
     <div
       matTooltip="{{ item.acquisition_framework_name }}"
       [attr.data-qa]="item.acquisition_framework_name"

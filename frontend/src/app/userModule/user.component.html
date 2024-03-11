@@ -7,7 +7,12 @@
     <form [formGroup]="form">
       <div>
         <div class="form-group row">
-          <label for="nom_role" class="col-sm-3 col-form-label text-right">Nom</label>
+          <label
+            for="nom_role"
+            class="col-sm-3 col-form-label text-right"
+          >
+            Nom
+          </label>
           <div class="col-sm-9 col-xl-5">
             <input
               type="text"
@@ -19,7 +24,12 @@
           </div>
         </div>
         <div class="form-group row">
-          <label for="prenom_role" class="col-sm-3 col-form-label text-right">Prenom</label>
+          <label
+            for="prenom_role"
+            class="col-sm-3 col-form-label text-right"
+          >
+            Prenom
+          </label>
           <div class="col-sm-9 col-xl-5">
             <input
               type="text"
@@ -31,7 +41,12 @@
           </div>
         </div>
         <div class="form-group row">
-          <label for="email" class="col-sm-3 col-form-label text-right">Adresse mail</label>
+          <label
+            for="email"
+            class="col-sm-3 col-form-label text-right"
+          >
+            Adresse mail
+          </label>
           <div class="col-sm-9 col-xl-5">
             <input
               type="text"
@@ -47,7 +62,12 @@
 
       <div class="mt-1">
         <div class="form-group row">
-          <label for="identifiant" class="col-sm-3 col-form-label text-right">Login</label>
+          <label
+            for="identifiant"
+            class="col-sm-3 col-form-label text-right"
+          >
+            Login
+          </label>
           <div class="col-sm-9 col-xl-5">
             <input
               type="text"
@@ -60,14 +80,28 @@
         </div>
       </div>
 
-      <div class="text-center" *ngIf="form.disabled">
-        <a routerLink="password" mat-raised-button color="primary">Changer de mot de passe</a>
+      <div
+        class="text-center"
+        *ngIf="form.disabled"
+      >
+        <a
+          routerLink="password"
+          mat-raised-button
+          color="primary"
+        >
+          Changer de mot de passe
+        </a>
       </div>
       <br />
 
       <mat-divider></mat-divider>
       <div class="form-group row mt-1">
-        <label for="remarques" class="col-sm-3 col-form-label text-right"> Remarques </label>
+        <label
+          for="remarques"
+          class="col-sm-3 col-form-label text-right"
+        >
+          Remarques
+        </label>
         <div class="col-sm-9">
           <textarea
             id="remarques"

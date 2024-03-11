@@ -1,9 +1,15 @@
-<div class="container-fluid" data-qa="pnx-home-content">
+<div
+  class="container-fluid"
+  data-qa="pnx-home-content"
+>
   <div class="row">
     <div [className]="showLastObsMap ? 'col-xs-12 col-sm-12 col-md-6 col-lg-6' : 'col-12'">
-      <pnx-introduction> </pnx-introduction>
+      <pnx-introduction></pnx-introduction>
     </div>
-    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" *ngIf="showLastObsMap">
+    <div
+      class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+      *ngIf="showLastObsMap"
+    >
       <div class="panel panel-default">
         <!-- mr-0 and ml-0 since row puts margin-left and right at -15px... -->
         <div class="panel-heading row mr-0 ml-0">
@@ -25,20 +31,29 @@
 
         <div id="map-title"></div>
 
-        <pnx-map class="map-card" height="50vh"></pnx-map>
+        <pnx-map
+          class="map-card"
+          height="50vh"
+        ></pnx-map>
       </div>
     </div>
   </div>
 
-  <div *ngIf="showGeneralStat" class="panel panel-container panel-top">
+  <div
+    *ngIf="showGeneralStat"
+    class="panel panel-container panel-top"
+  >
     <div class="row row-0">
       <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
         <div class="panel panel-teal panel-widget border-right no-margin-bottom">
           <div class="no-padding">
             <em class="fa fa-xl fa-search color-blue"></em>
             <div class="large">
-              <mat-spinner *ngIf="!generalStat" diameter="20"></mat-spinner>
-              {{ generalStat?.nb_data | number: '1.0-0':locale }}
+              <mat-spinner
+                *ngIf="!generalStat"
+                diameter="20"
+              ></mat-spinner>
+              {{ generalStat?.nb_data | number: '1.0-0' : locale }}
             </div>
             <div class="text-muted">Observations</div>
           </div>
@@ -49,8 +64,11 @@
           <div class="no-padding">
             <em class="fa fa-xl fa fa-leaf color-orange"></em>
             <div class="large">
-              <mat-spinner *ngIf="!generalStat" diameter="20"></mat-spinner>
-              {{ generalStat?.nb_species | number: '1.0-0':locale }}
+              <mat-spinner
+                *ngIf="!generalStat"
+                diameter="20"
+              ></mat-spinner>
+              {{ generalStat?.nb_species | number: '1.0-0' : locale }}
             </div>
             <div class="text-muted">Taxons</div>
           </div>
@@ -61,9 +79,12 @@
           <div class="no-padding">
             <em class="fa fa-xl fa-users color-teal"></em>
             <div class="large">
-              <mat-spinner *ngIf="!generalStat; else hasStat" diameter="20"></mat-spinner>
+              <mat-spinner
+                *ngIf="!generalStat; else hasStat"
+                diameter="20"
+              ></mat-spinner>
               <ng-template #hasStat>
-                ~{{ generalStat?.nb_observers | number: '1.0-0':locale }}
+                ~{{ generalStat?.nb_observers | number: '1.0-0' : locale }}
               </ng-template>
             </div>
             <div class="text-muted">Observateurs</div>
@@ -75,8 +96,11 @@
           <div class="no-padding">
             <em class="fa fa-xl fa fa-book color-red"></em>
             <div class="large">
-              <mat-spinner *ngIf="!generalStat" diameter="20"></mat-spinner>
-              {{ generalStat?.nb_dataset | number: '1.0-0':locale }}
+              <mat-spinner
+                *ngIf="!generalStat"
+                diameter="20"
+              ></mat-spinner>
+              {{ generalStat?.nb_dataset | number: '1.0-0' : locale }}
             </div>
             <div class="text-muted">Jeux de données</div>
           </div>
@@ -87,7 +111,7 @@
       <div class="col-xs-12 pr-2 text-muted">
         <small>
           Dernière mise à jour
-          {{ generalStat?.createdDate | date: 'full':undefined:locale }}
+          {{ generalStat?.createdDate | date: 'full' : undefined : locale }}
         </small>
       </div>
     </div>

@@ -39,7 +39,7 @@
             placeholder="Rechercher"
             [formControl]="rapidSearchControl"
             data-qa="pnx-metadata-search"
-          >
+          />
         </div>
         <div class="col-sm-3">
           <button
@@ -65,7 +65,9 @@
       <div>Liste des cadres d'acquisition et des jeux de données associés</div>
       <br />
 
-      <ng-container *ngIf="(acquisitionFrameworks | async)?.length || isLoading; else noAcquisitionFrameworks">
+      <ng-container
+        *ngIf="(acquisitionFrameworks | async)?.length || isLoading; else noAcquisitionFrameworks"
+      >
         <mat-accordion [multi]="true">
           <div
             class="tab-title"
@@ -82,58 +84,65 @@
             diameter="50"
             strokeWidth="2"
             style="margin: 0 auto"
-          >
-          </mat-spinner>
+          ></mat-spinner>
 
-          <ng-container *ngFor="let af of (acquisitionFrameworks | async); let idx = index">
+          <ng-container *ngFor="let af of acquisitionFrameworks | async; let idx = index">
             <mat-expansion-panel
               [expanded]="expandAccordions"
-              [attr.data-qa]='"pnx-metadata-acq-framework"'
+              [attr.data-qa]="'pnx-metadata-acq-framework'"
               (opened)="onOpenExpansionPanel(af)"
             >
               <mat-expansion-panel-header
                 collapsedHeight="*"
                 expandedHeight="*"
-                [attr.data-qa]='"pnx-metadata-acq-framework-header-"+af.unique_acquisition_framework_id'
+                [attr.data-qa]="
+                  'pnx-metadata-acq-framework-header-' + af.unique_acquisition_framework_id
+                "
               >
                 <mat-panel-title
                   class="af-title"
-                  style="margin-top:2.5%;margin-bottom: 1.2%;"
+                  style="margin-top: 2.5%; margin-bottom: 1.2%"
                 >
-
                   <div class="col-md-1">{{ af.id_acquisition_framework }}</div>
                   <div class="col-md-2">
                     <a
                       [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
-                      [attr.data-qa]='"pnx-metadata-acq-framework-"+af.unique_acquisition_framework_id'
+                      [attr.data-qa]="
+                        'pnx-metadata-acq-framework-' + af.unique_acquisition_framework_id
+                      "
                     >
                       {{ af.acquisition_framework_name }}
                       <br />
-                      <small style="color: gray"> {{ af.unique_acquisition_framework_id }} </small>
+                      <small style="color: gray">{{ af.unique_acquisition_framework_id }}</small>
                     </a>
                   </div>
-                  <div class="col-md-2">{{ af.acquisition_framework_start_date | date: 'd/MM/yyyy' }}</div>
+                  <div class="col-md-2">
+                    {{ af.acquisition_framework_start_date | date: 'd/MM/yyyy' }}
+                  </div>
                   <section class="col-md-5">
                     <span *ngIf="af.creator">
-                      <b> {{ af.creator?.nom_complet }} : </b> créateur
+                      <b>{{ af.creator?.nom_complet }} :</b>
+                      créateur
                     </span>
 
                     <ng-container *ngIf="af.cor_af_actor.length; else elifNoActor">
                       <div *ngFor="let ac of af.cor_af_actor">
                         <span *ngIf="ac.organism">
-                          <b> {{ ac.organism?.nom_organisme }} : </b>
-                          {{ ac.nomenclature_actor_role.label_fr }} <br />
+                          <b>{{ ac.organism?.nom_organisme }} :</b>
+                          {{ ac.nomenclature_actor_role.label_fr }}
+                          <br />
                         </span>
                         <span *ngIf="ac.role">
-                          <b> {{ ac.role?.nom_complet }} : </b>
-                          {{ ac.nomenclature_actor_role.label_fr }} <br />
+                          <b>{{ ac.role?.nom_complet }} :</b>
+                          {{ ac.nomenclature_actor_role.label_fr }}
+                          <br />
                         </span>
                       </div>
                     </ng-container>
                     <ng-template #elifNoActor>
                       <div class="alert-actor">
                         <mat-icon>report</mat-icon>
-                        <span> Aucun acteur renseigné </span>
+                        <span>Aucun acteur renseigné</span>
                       </div>
                     </ng-template>
                   </section>
@@ -145,7 +154,7 @@
                       matTooltip="Voir la fiche du cadre d'acquisition"
                       style="color: black"
                     >
-                      <mat-icon> info</mat-icon>
+                      <mat-icon>info</mat-icon>
                     </a>
                     <a
                       mat-icon-button
@@ -153,7 +162,7 @@
                       matTooltip="Editer ce cadre d'acquisition"
                       [routerLink]="['/metadata/af', af.id_acquisition_framework]"
                     >
-                      <mat-icon> create</mat-icon>
+                      <mat-icon>create</mat-icon>
                     </a>
                     <button
                       *ngIf="config.METADATA?.ENABLE_CLOSE_AF"
@@ -164,7 +173,7 @@
                         openPublishModalAf($event, af.id_acquisition_framework, publishModal)
                       "
                     >
-                        <mat-icon matTooltip="Déposer le cadre d'acquisition"> gavel </mat-icon>
+                      <mat-icon matTooltip="Déposer le cadre d'acquisition">gavel</mat-icon>
                     </button>
                   </div>
                 </mat-panel-title>
@@ -183,7 +192,7 @@
                 <tbody>
                   <tr
                     *ngFor="let dataset of af.t_datasets; let last = last"
-                    [attr.data-qa]='"pnx-metadata-dataset-name-"+dataset.dataset_name'
+                    [attr.data-qa]="'pnx-metadata-dataset-name-' + dataset.dataset_name"
                     pnx-metadata-dataset
                     [dataset]="dataset"
                   ></tr>
@@ -199,8 +208,7 @@
           [pageSizeOptions]="metadataService.pageSizeOptions"
           [pageIndex]="metadataService.pageIndex | async"
           (page)="changePaginator($event)"
-        >
-        </mat-paginator>
+        ></mat-paginator>
       </ng-container>
       <ng-template #noAcquisitionFrameworks>
         <div class="text-center">Oups ! Il n'y a aucune métadonnée à afficher.</div>
@@ -218,13 +226,15 @@
     <h5
       class="modal-title"
       id="exampleModalLabel"
-    >Rechercher</h5>
+    >
+      Rechercher
+    </h5>
   </div>
   <div
     class="modal-body"
     style="align-items: flex-end"
   >
-    <label> Rechercher sur:</label>
+    <label>Rechercher sur:</label>
     <ng-select
       [items]="meta_type"
       [formControl]="metadataService.form.get('selector')"
@@ -232,7 +242,8 @@
       bindValue="value"
       name="selecteur"
       id="selector"
-      clearable=""false
+      clearable=""
+      false
     >
       <ng-template
         ng-option-tmp
@@ -241,7 +252,7 @@
         let-search="searchTerm"
       >
         <div [attr.data-qa]="item.value">
-          <span class="pre-wrap">{{item.label}}</span>
+          <span class="pre-wrap">{{ item.label }}</span>
         </div>
       </ng-template>
     </ng-select>
@@ -264,7 +275,7 @@
     ></pnx-date>
 
     <label>Acteur (organisme)</label>
-    
+
     <ng-select
       [items]="organisms"
       [formControl]="metadataService.form.get('organism')"
@@ -273,20 +284,23 @@
       [multiple]="false"
       [searchable]="true"
       [clearable]="true"
-      >
+    >
       <ng-template
         ng-option-tmp
         let-item="item"
         let-index="index"
         let-search="searchTerm"
       >
-        <div [matTooltip]="item.nom_organisme" [attr.data-qa]="item.id_organism">
-          <span class="pre-wrap">{{item.nom_organisme}}</span>
+        <div
+          [matTooltip]="item.nom_organisme"
+          [attr.data-qa]="item.id_organism"
+        >
+          <span class="pre-wrap">{{ item.nom_organisme }}</span>
         </div>
       </ng-template>
     </ng-select>
 
-    <label> Acteur (personne)</label>
+    <label>Acteur (personne)</label>
 
     <ng-select
       [items]="roles"
@@ -295,15 +309,18 @@
       bindValue="id_role"
       [multiple]="false"
       [virtualScroll]="true"
-      >
+    >
       <ng-template
         ng-option-tmp
         let-item="item"
         let-index="index"
         let-search="searchTerm"
       >
-        <div [matTooltip]="item.nom_complet" [attr.data-qa]="item.id_role">
-          <span class="pre-wrap">{{item.nom_complet}}</span>
+        <div
+          [matTooltip]="item.nom_complet"
+          [attr.data-qa]="item.id_role"
+        >
+          <span class="pre-wrap">{{ item.nom_complet }}</span>
         </div>
       </ng-template>
     </ng-select>
@@ -315,8 +332,7 @@
           [label]="area.label"
           [typeCodes]="area.type_code_array"
           [valueFieldName]="null"
-        >
-        </pnx-areas>
+        ></pnx-areas>
       </div>
     </div>
 
@@ -333,7 +349,9 @@
         color="warn"
         class="uppercase"
         (click)="c()"
-      >Fermer</button>
+      >
+        Fermer
+      </button>
     </div>
   </div>
 </ng-template>
@@ -347,7 +365,9 @@
     <h5
       class="modal-title"
       id="publishModalLabel"
-    >{{ afPublishModalLabel }}</h5>
+    >
+      {{ afPublishModalLabel }}
+    </h5>
   </div>
 
   <div
@@ -372,12 +392,16 @@
         cdkFocusInitial
         class="mr-1"
         (click)="c()"
-      >Annuler</button>
+      >
+        Annuler
+      </button>
       <button
         mat-raised-button
         color="primary"
         (click)="publishAf()"
-      >Confirmer</button>
+      >
+        Confirmer
+      </button>
     </div>
     <br />
   </div>

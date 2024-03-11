@@ -36,13 +36,18 @@
     <div class="col-4">
       <div class="card">
         <div class="card-body">
-          <button mat-raised-button color="primary" (click)="getPdf()">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="getPdf()"
+          >
             Export PDF
             <mat-icon>file_download</mat-icon>
           </button>
           <br />
           <span *ngIf="af && !af?.opened">
-            <b> {{ config.METADATA.AF_SHEET_CLOSED_LINK_NAME }} </b> :
+            <b>{{ config.METADATA.AF_SHEET_CLOSED_LINK_NAME }}</b>
+            :
             <a
               href="{{ config.API_ENDPOINT }}/meta/acquisition_frameworks/export_pdf/{{
                 af?.id_acquisition_framework
@@ -51,15 +56,18 @@
             >
               {{ config.API_ENDPOINT }}/meta/acquisition_frameworks/export_pdf/{{
                 af?.id_acquisition_framework
-              }}</a
-            >
+              }}
+            </a>
           </span>
         </div>
       </div>
     </div>
   </div>
 
-  <div *ngIf="stats" class="row">
+  <div
+    *ngIf="stats"
+    class="row"
+  >
     <!-- Nombre de JDD -->
     <div class="col-3">
       <div class="card">
@@ -70,8 +78,14 @@
               <br />
               <div class="center">{{ stats.nb_dataset || 0 }}</div>
             </div>
-            <div class="col-auto" width="60">
-              <img src="./assets/images/JDD_icon.svg" width="60" />
+            <div
+              class="col-auto"
+              width="60"
+            >
+              <img
+                src="./assets/images/JDD_icon.svg"
+                width="60"
+              />
             </div>
           </div>
         </div>
@@ -88,8 +102,14 @@
               <br />
               <div class="center">{{ stats.nb_observations }}</div>
             </div>
-            <div class="col-auto" width="60">
-              <img src="./assets/images/Donnee_icon.svg" width="60" />
+            <div
+              class="col-auto"
+              width="60"
+            >
+              <img
+                src="./assets/images/Donnee_icon.svg"
+                width="60"
+              />
             </div>
           </div>
         </div>
@@ -97,7 +117,10 @@
     </div>
 
     <!-- Nombre de taxons -->
-    <div *ngIf="stats.nb_taxons" class="col-3">
+    <div
+      *ngIf="stats.nb_taxons"
+      class="col-3"
+    >
       <div class="card">
         <div class="card-body">
           <div class="row">
@@ -106,8 +129,14 @@
               <br />
               <div class="center">{{ stats.nb_taxons }}</div>
             </div>
-            <div class="col-auto" width="60">
-              <img src="./assets/images/Taxon_icon.svg" width="60" />
+            <div
+              class="col-auto"
+              width="60"
+            >
+              <img
+                src="./assets/images/Taxon_icon.svg"
+                width="60"
+              />
             </div>
           </div>
         </div>
@@ -115,7 +144,10 @@
     </div>
 
     <!-- Nombre d'habitats -->
-    <div *ngIf="stats.nb_habitats" class="col-3">
+    <div
+      *ngIf="stats.nb_habitats"
+      class="col-3"
+    >
       <div class="card">
         <div class="card-body">
           <div class="row">
@@ -124,8 +156,14 @@
               <br />
               <div class="center">{{ stats.nb_habitats }}</div>
             </div>
-            <div class="col-auto" width="60">
-              <img src="./assets/images/Habitat_icon.svg" width="60" />
+            <div
+              class="col-auto"
+              width="60"
+            >
+              <img
+                src="./assets/images/Habitat_icon.svg"
+                width="60"
+              />
             </div>
           </div>
         </div>
@@ -140,41 +178,62 @@
           <h5>Fiche descriptive</h5>
         </div>
         <div class="card-body">
-          <div class="b">Identification </div>
-          <div class="a" data-qa="pnx-metadata-acq-framework-name"> <b> Nom :</b>
-            {{af?.acquisition_framework_name}}</div>
-          <div class="a"> <b> Identifiant SINP du cadre d'acquisition : </b>
-            {{af?.unique_acquisition_framework_id}}</div>
-          <div class="a" data-qa='pnx-metadata-acq-framework-id'> <b> Identifiant GeoNature du cadre d'acquisition :</b>
-            {{af?.id_acquisition_framework}}</div>
-
+          <div class="b">Identification</div>
+          <div
+            class="a"
+            data-qa="pnx-metadata-acq-framework-name"
+          >
+            <b>Nom :</b>
+            {{ af?.acquisition_framework_name }}
+          </div>
+          <div class="a">
+            <b>Identifiant SINP du cadre d'acquisition :</b>
+            {{ af?.unique_acquisition_framework_id }}
+          </div>
+          <div
+            class="a"
+            data-qa="pnx-metadata-acq-framework-id"
+          >
+            <b>Identifiant GeoNature du cadre d'acquisition :</b>
+            {{ af?.id_acquisition_framework }}
+          </div>
 
           <br />
 
           <div class="b">Description</div>
           <div class="a">
-            <b>Description :</b>{{ af?.acquisition_framework_desc }}
+            <b>Description :</b>
+            {{ af?.acquisition_framework_desc }}
           </div>
-          <div class="a"><b>Est un méta-cadre : </b> {{ af?.is_parent ? 'Oui' : 'Non' }}</div>
-          <div class="a" *ngIf="!af?.is_parent">
+          <div class="a">
+            <b>Est un méta-cadre :</b>
+            {{ af?.is_parent ? 'Oui' : 'Non' }}
+          </div>
+          <div
+            class="a"
+            *ngIf="!af?.is_parent"
+          >
             Identifiant du méta-cadre : {{ af?.acquisition_framework_parent_id }}
           </div>
           <br />
 
           <div class="b">Dates</div>
           <div class="a">
-            <b>Date de lancement du cadre d'acquisition : </b>
+            <b>Date de lancement du cadre d'acquisition :</b>
             {{ af?.acquisition_framework_start_date }}
           </div>
           <div class="a">
-            <b> Date de clôture du cadre d'acquisition :</b>
+            <b>Date de clôture du cadre d'acquisition :</b>
             {{ af?.acquisition_framework_end_date }}
           </div>
           <br />
 
           <div *ngIf="af?.cor_objectifs">
             <div class="b">Objectifs</div>
-            <div *ngFor="let objectif of af?.cor_objectifs" class="a">
+            <div
+              *ngFor="let objectif of af?.cor_objectifs"
+              class="a"
+            >
               {{ objectif?.label_default }}
             </div>
             <br />
@@ -186,7 +245,8 @@
               <li *ngFor="let ter of af?.cor_territories">- {{ ter.label_default }}</li>
             </ul>
             <div class="a">
-              <b> Etendue territoriale : </b>{{ af?.nomenclature_territorial_level?.label_default }}
+              <b>Etendue territoriale :</b>
+              {{ af?.nomenclature_territorial_level?.label_default }}
             </div>
 
             <br />
@@ -194,20 +254,24 @@
 
           <div *ngIf="af?.target_description">
             <div class="b">Cible taxonomique</div>
-            <div class="a"><b> Description : </b> {{ af?.target_description }}</div>
+            <div class="a">
+              <b>Description :</b>
+              {{ af?.target_description }}
+            </div>
             <br />
           </div>
 
           <div *ngIf="af?.cor_af_actor">
             <div class="b">Acteurs</div>
             <ng-container *ngIf="af.cor_af_actor.length; else elifNoActor">
-              <div class="a" *ngFor="let actor of af?.cor_af_actor">
+              <div
+                class="a"
+                *ngFor="let actor of af?.cor_af_actor"
+              >
                 <div>
-                  <b>{{ actor?.nomenclature_actor_role?.mnemonique }} : </b>
+                  <b>{{ actor?.nomenclature_actor_role?.mnemonique }} :</b>
                   {{ actor?.organism?.nom_organisme }}
-                  <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet">
-                    -
-                  </span>
+                  <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet">-</span>
                   {{ actor?.role?.nom_complet }}
                 </div>
               </div>
@@ -215,7 +279,7 @@
             <ng-template #elifNoActor>
               <div class="a alert-actor">
                 <mat-icon>report</mat-icon>
-                <span> Aucun acteur renseigné </span>
+                <span>Aucun acteur renseigné</span>
               </div>
             </ng-template>
             <br />
@@ -224,7 +288,7 @@
           <div class="b">Créateur</div>
 
           <div class="a">
-            <b> Créateur du cadre d'acquisition :</b>
+            <b>Créateur du cadre d'acquisition :</b>
             {{ af?.creator?.nom_complet || 'Non renseigné' }}
           </div>
 
@@ -233,7 +297,7 @@
           <div class="b">Type de financement :</div>
 
           <div class="a">
-            <b> Financement :</b>
+            <b>Financement :</b>
             {{ af?.nomenclature_financing_type?.label_default }}
           </div>
 
@@ -249,8 +313,11 @@
             <div class="b">Référence bibliographiques</div>
             <ul class="a">
               <li *ngFor="let ref of af?.bibliographical_references">
-                - <b>Url : </b> <a [href]="ref.publication_url">{{ ref.publication_url }}</a>
-                <b> rérérence : </b> {{ ref.publication_reference }}
+                -
+                <b>Url :</b>
+                <a [href]="ref.publication_url">{{ ref.publication_url }}</a>
+                <b>rérérence :</b>
+                {{ ref.publication_reference }}
               </li>
             </ul>
             <div class="a">{{ af?.keywords }}</div>
@@ -261,19 +328,31 @@
 
     <div class="col-xs-6 col-sm-4">
       <!-- BBOX -->
-      <div *ngIf="bbox" class="card">
+      <div
+        *ngIf="bbox"
+        class="card"
+      >
         <div class="card-header">
           <h5>Zone géographique</h5>
           <div class="card-body">
-            <pnx-map height="40vh" searchBar="false">
-              <pnx-geojson [geojson]="bbox" [zoomOnFirstTime]="true"> </pnx-geojson>
+            <pnx-map
+              height="40vh"
+              searchBar="false"
+            >
+              <pnx-geojson
+                [geojson]="bbox"
+                [zoomOnFirstTime]="true"
+              ></pnx-geojson>
             </pnx-map>
           </div>
         </div>
       </div>
 
       <!-- PieChart -->
-      <div *ngIf="this.pieChartLabels.length" class="card">
+      <div
+        *ngIf="this.pieChartLabels.length"
+        class="card"
+      >
         <div class="card-header">
           <h5>Répartition des espèces</h5>
         </div>
@@ -289,13 +368,15 @@
               [colors]="pieChartColors"
               [plugins]="pieChartOptions.plugins"
               padding="20px"
-            >
-            </canvas>
+            ></canvas>
           </div>
         </div>
       </div>
 
-      <div *ngIf="stats && stats.nb_dataset" class="card">
+      <div
+        *ngIf="stats && stats.nb_dataset"
+        class="card"
+      >
         <div class="card-header">
           <h5>Jeux de données associés</h5>
         </div>
@@ -315,7 +396,12 @@
                   src="./assets/images/Habitat_icon_vert.svg"
                   alt=""
                 />
-                <img width="60" *ngSwitchDefault src="./assets/images/Taxon_icon_vert.svg" alt="" />
+                <img
+                  width="60"
+                  *ngSwitchDefault
+                  src="./assets/images/Taxon_icon_vert.svg"
+                  alt=""
+                />
               </td>
               <td>
                 <a

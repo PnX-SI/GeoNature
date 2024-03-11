@@ -1,10 +1,18 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav id="app-sidenav" #sidenav mode="side" [opened]="sideNavService.opened">
+  <mat-sidenav
+    id="app-sidenav"
+    #sidenav
+    mode="side"
+    [opened]="sideNavService.opened"
+  >
     <pnx-sidenav-items data-qa="gn-sidenav"></pnx-sidenav-items>
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <mat-toolbar id="app-toolbar" class="row">
+    <mat-toolbar
+      id="app-toolbar"
+      class="row"
+    >
       <button
         class="mat-elevation-z1 mr-2"
         mat-icon-button
@@ -16,9 +24,13 @@
       </button>
 
       <span class="mx-2">
-        <a data-qa="nav-home-module-name" class="home-link" href="{{ moduleUrl }}">{{
-          moduleName
-        }}</a>
+        <a
+          data-qa="nav-home-module-name"
+          class="home-link"
+          href="{{ moduleUrl }}"
+        >
+          {{ moduleName }}
+        </a>
       </span>
 
       <img
@@ -37,10 +49,7 @@
       <span class="toolbar-spacer"></span>
 
       <ng-container
-        *ngIf="
-          config.PUBLIC_ACCESS_USERNAME != currentUser?.user_login;
-          else publicAccessUser
-        "
+        *ngIf="config.PUBLIC_ACCESS_USERNAME != currentUser?.user_login; else publicAccessUser"
       >
         <ng-container
           *ngIf="
@@ -55,7 +64,7 @@
             matTooltip="Ouvrir le menu de mon profil"
             [matMenuTriggerFor]="userMenu"
           >
-            <mat-icon> person </mat-icon>
+            <mat-icon>person</mat-icon>
             <span class="user-name">
               {{ currentUser?.user_login }}
             </span>
@@ -74,7 +83,7 @@
         </ng-container>
 
         <ng-template #noUserManagement>
-          <mat-icon> person </mat-icon>
+          <mat-icon>person</mat-icon>
           <span class="user-name">
             {{ currentUser?.user_login }}
           </span>
@@ -96,7 +105,7 @@
       </ng-container>
 
       <ng-template #publicAccessUser>
-        <mat-icon> accessibility_new </mat-icon>
+        <mat-icon>accessibility_new</mat-icon>
         <span class="user-name">Accès public</span>
       </ng-template>
 

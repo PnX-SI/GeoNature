@@ -1,4 +1,7 @@
-<div id="cover-spin" *ngIf="isLoading"></div>
+<div
+  id="cover-spin"
+  *ngIf="isLoading"
+></div>
 
 <div class="modal-header padding-md-all">
   <h5 style="padding-top: 10px; padding-right: 10px">
@@ -20,38 +23,53 @@
   </button>
 </div>
 <div class="modal-body padding-md-all">
-  <div class="card" style="margin: 0px; margin-bottom: 10px">
+  <div
+    class="card"
+    style="margin: 0px; margin-bottom: 10px"
+  >
     <div class="card-body padding-md-all">
       <div class="padding-sm col-xs-7 col-sm-7 col-md-7 col-lg-7">
         <span class="font-xs">
           <div>
             <span *ngIf="selectedObs?.place_name">
-              <b>Nom du lieu : </b> {{ selectedObs?.place_name }}
+              <b>Nom du lieu :</b>
+              {{ selectedObs?.place_name }}
             </span>
             <span *ngIf="selectedObs?.precision">
-              <b>Précision du pointage : </b> {{ selectedObs?.precision }}
+              <b>Précision du pointage :</b>
+              {{ selectedObs?.precision }}
             </span>
           </div>
-          <b> Observation de : </b> {{ selectedObs?.observers }}
+          <b>Observation de :</b>
+          {{ selectedObs?.observers }}
 
           <br />
           <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
-            <b> Date : </b>{{ selectedObs?.date_min }} -> {{ selectedObs?.date_max }}
+            <b>Date :</b>
+            {{ selectedObs?.date_min }} -> {{ selectedObs?.date_max }}
           </span>
-          <ng-template #elseBlock> <b> Date : </b>{{ selectedObs?.date_min }} </ng-template>
+          <ng-template #elseBlock>
+            <b>Date :</b>
+            {{ selectedObs?.date_min }}
+          </ng-template>
           <br />
           <span *ngIf="selectedObs?.altitude_min || selectedObs?.altitude_max">
-            <b> Altitude</b> : {{ selectedObs?.altitude_min }} m - {{ selectedObs?.altitude_max }} m
+            <b>Altitude</b>
+            : {{ selectedObs?.altitude_min }} m - {{ selectedObs?.altitude_max }} m
             <br />
           </span>
           <span *ngIf="selectedObs?.depth_min || selectedObs?.depth_max">
-            <b> Profondeur min </b> : {{ selectedObs?.depth_min }} m - <b> Profondeur max : </b>
+            <b>Profondeur min</b>
+            : {{ selectedObs?.depth_min }} m -
+            <b>Profondeur max :</b>
             {{ selectedObs?.depth_max }} m
             <br />
           </span>
-          <b> UUID observation : </b> {{ selectedObs?.unique_id_sinp }}
+          <b>UUID observation :</b>
+          {{ selectedObs?.unique_id_sinp }}
           <br />
-          <b> Habitat associé</b>: {{ selectedObs?.habitat?.lb_hab_fr }} -
+          <b>Habitat associé</b>
+          : {{ selectedObs?.habitat?.lb_hab_fr }} -
           {{ selectedObs?.habitat?.lb_code }}
           <br />
           <button
@@ -59,20 +77,30 @@
             class="btn btn-sm btn-primary"
             (click)="backToModule(syntheseObs?.url_source, syntheseObs?.entity_source_pk_value)"
           >
-            <i class="fa fa-file-text" aria-hidden="true"></i>
-            <small>Voir l'observation dans le module de saisie </small>
+            <i
+              class="fa fa-file-text"
+              aria-hidden="true"
+            ></i>
+            <small>Voir l'observation dans le module de saisie</small>
           </button>
         </span>
 
-        <div *ngIf="selectedObs?.areas > 0" class="padding-sm col-xs-4 col-sm-4 col-md-4 col-lg-4">
-          <b> Autres espaces concernés par l'observation</b>
+        <div
+          *ngIf="selectedObs?.areas > 0"
+          class="padding-sm col-xs-4 col-sm-4 col-md-4 col-lg-4"
+        >
+          <b>Autres espaces concernés par l'observation</b>
           <li *ngFor="let area of selectedObs?.areas">{{ area.area_name }}</li>
         </div>
       </div>
     </div>
   </div>
 
-  <ul class="nav nav-tabs" id="myTab" role="tablist">
+  <ul
+    class="nav nav-tabs"
+    id="myTab"
+    role="tablist"
+  >
     <li class="nav-item">
       <a
         class="nav-link active"
@@ -82,8 +110,9 @@
         role="tab"
         aria-controls="home"
         aria-selected="true"
-        >Information observation</a
       >
+        Information observation
+      </a>
     </li>
     <li class="nav-item">
       <a
@@ -94,8 +123,9 @@
         role="tab"
         aria-controls="profile"
         aria-selected="false"
-        >Zonages</a
       >
+        Zonages
+      </a>
     </li>
     <li class="nav-item">
       <a
@@ -106,12 +136,21 @@
         role="tab"
         aria-controls="profile"
         aria-selected="false"
-        >Historique de validation</a
       >
+        Historique de validation
+      </a>
     </li>
   </ul>
-  <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="infoObs" role="tabpanel" aria-labelledby="home-tab">
+  <div
+    class="tab-content"
+    id="myTabContent"
+  >
+    <div
+      class="tab-pane fade show active"
+      id="infoObs"
+      role="tabpanel"
+      aria-labelledby="home-tab"
+    >
       <div class="row">
         <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
           <h5 class="underlined underlined-sm main-color">Métadonnées</h5>
@@ -148,7 +187,12 @@
                 <tr>
                   <td>Titre</td>
                   <td>
-                    <a target="_blank" [href]="mediaService.href(media)">{{ media.title_fr }}</a>
+                    <a
+                      target="_blank"
+                      [href]="mediaService.href(media)"
+                    >
+                      {{ media.title_fr }}
+                    </a>
                   </td>
                 </tr>
                 <tr *ngIf="media.description_fr">
@@ -314,7 +358,7 @@
           <table class="font-xs table table-striped table-sm">
             <tr>
               <td>
-                <b>Groupe taxonomique </b>
+                <b>Groupe taxonomique</b>
               </td>
               <td>{{ selectedObsTaxonDetail?.classe }}</td>
             </tr>
@@ -326,7 +370,7 @@
             </tr>
             <tr>
               <td>
-                <b> Famille</b>
+                <b>Famille</b>
               </td>
               <td>{{ selectedObsTaxonDetail?.famille }}</td>
             </tr>
@@ -334,9 +378,12 @@
 
           <h5 class="underlined underlined-sm main-color">Attribut(s) Taxonomique(s) locaux</h5>
           <table class="table table-striped table-sm">
-            <tr class="font-xs" *ngFor="let attr of selectObsTaxonInfo?.attributs">
+            <tr
+              class="font-xs"
+              *ngFor="let attr of selectObsTaxonInfo?.attributs"
+            >
               <td>
-                <b>{{ attr.label_attribut }} </b>
+                <b>{{ attr.label_attribut }}</b>
               </td>
               <td>{{ attr.valeur_attribut }}</td>
             </tr>
@@ -346,7 +393,7 @@
           <table class="font-xs table table-striped table-sm">
             <tr *ngFor="let arrete of selectedObsTaxonDetail?.statuts_protection">
               <td>
-                <a [href]="arrete.url"> {{ arrete.intitule }} </a>
+                <a [href]="arrete.url">{{ arrete.intitule }}</a>
               </td>
             </tr>
           </table>
@@ -360,7 +407,12 @@
         </div>
       </div>
     </div>
-    <div class="tab-pane fade" id="historic" role="tabpanel" aria-labelledby="profile-tab">
+    <div
+      class="tab-pane fade"
+      id="historic"
+      role="tabpanel"
+      aria-labelledby="profile-tab"
+    >
       <table class="table table-striped">
         <thead>
           <tr>
@@ -379,14 +431,19 @@
               <span *ngIf="row.validator_role; else elseBlock">
                 {{ row.validator_role.prenom_role }} {{ row.validator_role.nom_role }}
               </span>
-              <ng-template #elseBlock> Validation automatique </ng-template>
+              <ng-template #elseBlock>Validation automatique</ng-template>
             </td>
             <td>{{ row.validation_comment }}</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div class="tab-pane fade" id="area" role="tabpanel" aria-labelledby="profile-tab">
+    <div
+      class="tab-pane fade"
+      id="area"
+      role="tabpanel"
+      aria-labelledby="profile-tab"
+    >
       <table class="table table-striped">
         <thead>
           <tr>
@@ -402,7 +459,8 @@
             </td>
             <td>
               <span *ngFor="let area of area_type.areas; let index = index">
-                {{ area.area_name }}<span *ngIf="index < area_type.areas.length - 1">,</span>
+                {{ area.area_name }}
+                <span *ngIf="index < area_type.areas.length - 1">,</span>
               </span>
             </td>
           </tr>
