@@ -7,7 +7,7 @@
       ></div>
       <div
         class="panel-body"
-        [innerHTML]="config.HOME.INTRODUCTION"
+        [innerHTML]="(config.HOME.INTRODUCTION) | safeHTML"
       ></div>
     </div>
   </div>
