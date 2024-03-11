@@ -64,9 +64,10 @@ if [[ ! -f src/assets/config.json ]]; then
   cp -n src/assets/config.sample.json src/assets/config.json
 fi
 api_end_point=$(geonature get-config API_ENDPOINT)
-echo "REMPLACE API ENDPOINT"
-echo $api_end_point
-sed -i 's|"API_ENDPOINT": .*$|"API_ENDPOINT" : "'${api_end_point}'"|' src/assets/config.json
+api_end_point=${api_end_point/'http:'/''}
+echo "Set API_ENDPOINT to "$api_end_point" in frontend configuration file..."
+echo '{"API_ENDPOINT":"'${api_end_point}'"}' > src/assets/config.json
+echo "Generated configuration files :" 
 cat src/assets/config.json
 
 echo "Désactivation du venv..."
