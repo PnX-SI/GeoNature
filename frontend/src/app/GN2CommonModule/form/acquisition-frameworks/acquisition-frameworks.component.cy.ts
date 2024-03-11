@@ -6,25 +6,28 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfigService } from '../../../services/config.service';
 import { MountConfig } from 'cypress/angular';
-import { HttpClient } from '@angular/common/http';
-import { GN2CommonModule } from '../../GN2Common.module';
+import { HttpClient, HttpHandler } from '@angular/common/http';
+import * as gerard from '../../GN2Common.module';
 
 @Component({
   selector: 'pnx-pouet',
   template: '<h1>POUET POUET</h1>',
 })
 export class testComponent implements OnInit {
-  constructor(configService: ConfigService) {}
+  constructor(configService: ConfigService) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 }
 
+export abstract class ConfigMock {
+
+}
 
 describe('testComponent', () => {
-  const config: MountConfig<testComponent> = {
-    imports: [GN2CommonModule],
-    providers: [ConfigService, HttpClient]
-  } 
+  // const config: MountConfig<testComponent> = {
+  //   imports: [GN2CommonModule],
+  //   providers: [ConfigService, HttpClient]
+  // }
 
 
 
@@ -38,8 +41,12 @@ describe('testComponent', () => {
     // cy.get('.name').should('have.value', 'my custom message')
     // console.log(cy.stub(_ds, "getAcquisitionFrameworks").returns({}))
 
-    
-    cy.mount(testComponent, config)
+    console.log("test")
+    cy.mount(testComponent, {
+      imports: [],
+      declarations: [testComponent],
+      providers: [{ provide: ConfigService, useClass: ConfigMock }]
+    })
   });
 });
 

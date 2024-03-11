@@ -17,36 +17,14 @@ export default defineConfig({
     },
     baseUrl: "http://127.0.0.1:4200",
     specPattern: "cypress/e2e/**/*.{js,jsx,ts,tsx}",
+    supportFile: false,
   },
 
   component: {
     devServer: {
       framework: "angular",
       bundler: "webpack",
-      options: {
-        projectConfig: {
-          root: 'src',
-          sourceRoot: 'src/app',
-          buildOptions: {
-            // outputPath: 'dist/my-app',
-            // index: 'apps/my-app/src/index.html',
-            // main: 'apps/my-app/src/main.ts',
-            // polyfills: 'apps/my-app/src/polyfills.ts',
-            tsConfig: 'tsconfig.spec.json',
-            // inlineStyleLanguage: 'scss',
-            // assets: ['apps/my-app/src/favicon.ico', 'apps/my-app/src/assets'],
-            // styles: ['apps/my-app/src/styles.scss'],
-            // scripts: [],
-            // buildOptimizer: false,
-            // optimization: false,
-            // vendorChunk: true,
-            // extractLicenses: false,
-            // sourceMap: true,
-            // namedChunks: true,
-          },
-        },
-      },
     },
-    specPattern: "**/*.spec.ts",
+    specPattern: "**/*.cy.ts",
   },
 });
