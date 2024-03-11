@@ -4,6 +4,14 @@ FAQ
 Problèmes liés au frontend
 --------------------------
 
+Changement d'URL de GeoNature
+"""""""""""""""""""""""""""""
+
+Si vous souhaitez changer l'URL de l'API de GeoNature, il est nécessaire d'indiquer les nouvelles adresses dans le fichier de configuration principale ainsi que le fichier ``config.json`` présent dans le
+ dossier `frontend/src/assets`. Pour mettre à jour ce dernier, relancer le script ``install/05_install_frontend.sh``.
+  
+
+
 Message d'erreur lors de la compilation du frontend
 """""""""""""""""""""""""""""""""""""""""""""""""""
 
