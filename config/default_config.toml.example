@@ -336,6 +336,10 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
     EXPORT_FORMAT = ["csv", "geojson", "shapefile"]
 
+    # Vues d'export personnalisées
+    EXPORT_OBSERVATIONS_CUSTOM_VIEWS = [
+        {"label" : "export customisé", "view_name"= "gn_synthese.ma_vue_personnalisee"}
+    ]
     # Noms des colonnes obligatoires de la vue ``gn_synthese.v_metadata_for_export``
     EXPORT_METADATA_ID_DATASET_COL = "jdd_id"
     EXPORT_METADATA_ACTOR_COL = "acteurs"

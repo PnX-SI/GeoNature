@@ -193,7 +193,7 @@ describe('Tests gn_synthese', () => {
   // });
 
   it('Should download data at the csv format', function () {
-    cy.intercept('POST', '/synthese/export_observations?export_format=csv').as('exportCall');
+    cy.intercept('POST', '/synthese/export_observations?export_format=csv**').as('exportCall');
 
     cy.get('[data-qa="synthese-download-btn"]').click();
     cy.get('[data-qa="download-csv"]').click({

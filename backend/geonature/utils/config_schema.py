@@ -16,7 +16,6 @@ from marshmallow.validate import OneOf, Regexp, Email, Length
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
     DEFAULT_LIST_COLUMN,
-    DEFAULT_COLUMNS_API_SYNTHESE,
 )
 from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
 from geonature.utils.module import iter_modules_dist, get_module_config
@@ -281,6 +280,13 @@ class GnFrontEndConf(Schema):
     DISPLAY_EMAIL_DISPLAY_INFO = fields.List(fields.String(), load_default=["NOM_VERN"])
 
 
+class ExportObservationSchema(Schema):
+    label = fields.String(required=True)
+    view_name = fields.String(required=True)
+    geojson_4326_field = fields.String(load_default="geojson_4326")
+    geojson_local_field = fields.String(load_default="geojson_local")
+
+
 class Synthese(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - SEARCH FORM
@@ -364,6 +370,9 @@ class Synthese(Schema):
     # --------------------------------------------------------------------
     # SYNTHESE - DOWNLOADS (AKA EXPORTS)
     EXPORT_COLUMNS = fields.List(fields.String(), load_default=DEFAULT_EXPORT_COLUMNS)
+    EXPORT_OBSERVATIONS_CUSTOM_VIEWS = fields.List(
+        fields.Nested(ExportObservationSchema), load_default=[]
+    )
     # Certaines colonnes sont obligatoires pour effectuer les filtres CRUVED
     EXPORT_ID_SYNTHESE_COL = fields.String(load_default="id_synthese")
     EXPORT_ID_DATASET_COL = fields.String(load_default="jdd_id")
