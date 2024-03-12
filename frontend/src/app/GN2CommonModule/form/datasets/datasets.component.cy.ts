@@ -3,27 +3,30 @@ import {
     IterableDiffers,
 } from '@angular/core';
 import { DataFormService } from "../data-form.service";
-import { EMPTY, Observable, from } from 'rxjs';
-import * as gerard from '../../GN2Common.module';
-import { UntypedFormControl } from "@angular/forms";
+import { from } from 'rxjs';
+import { FormControl, FormGroup } from "@angular/forms";
+import { NgSelectModule } from "@ng-select/ng-select";
 export class DataFormServiceMock {
 
     constructor() { }
     getDatasets(params, queryStrings = {}, fields = []) {
-        console.log("pouet")
-        return from([{ dataset_name: "test" }])
+        return from([{ dataset_name: "test", id_dataset: 1, id_acquisition_framework: 1 }])
     }
 }
 
 describe("Dataset Component", () => {
     it("show component", () => {
+        let p = new FormGroup({
+            id_dataset: new FormControl(null)
+        })
         cy.mount(DatasetsComponent, {
             componentProperties: {
-                idAcquisitionFramework: 0,
-                displayOnlyActive: true,
-                parentFormControl: new UntypedFormControl()
+                parentFormControl: new FormControl(),
+                label: "Jeux de données",
+                //multiSelect: true,
+                idAcquisitionFramework: 1
             },
-            imports: [],
+            imports: [NgSelectModule],
             declarations: [DatasetsComponent],
             providers: [
                 IterableDiffers,

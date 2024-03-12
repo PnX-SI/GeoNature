@@ -10,6 +10,8 @@ import {
 import { DataFormService } from '../data-form.service';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { Validators } from '@angular/forms';
+import { ContentObserver } from '@angular/cdk/observers';
+import { data } from 'cypress/types/jquery';
 
 /**
  *  Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
@@ -66,7 +68,6 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
 
   ngOnInit() {
     this.bindValue = this.bindAllItem ? null : this.bindValue;
-    console.log("pouetpouet")
     this.getDatasets();
   }
 
@@ -83,6 +84,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     }
     this._dfs.getDatasets((params = filter_param)).subscribe((datasets) => {
       this.datasets = datasets;
+      console.log(datasets)
       this.valueLoaded.emit({ value: datasets });
       if (
         datasets.length == 1 &&
