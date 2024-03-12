@@ -64,10 +64,27 @@
         style="margin-left: 5px"
         *ngFor="let format of syntheseConfig.EXPORT_FORMAT"
         mat-raised-button
-        (click)="downloadObservations(format)"
+        (click)="downloadObservations(format, 'gn_synthese.v_synthese_for_export')"
         type="button"
         class="buttonLoad button-success format-btn"
         [attr.data-qa]="'download-' + format"
+      >
+        Format {{ format }}
+      </button>
+    </div>
+    <div
+      *ngFor="let export of syntheseConfig.EXPORT_OBSERVATIONS_CUSTOM_VIEWS"
+      class="my-3 pt-2"
+    >
+      <h5 class="second-color">Télécharger les observations - {{ export.label }}</h5>
+      <button
+        [disabled]="_dataService.isDownloading"
+        style="margin-left: 5px"
+        *ngFor="let format of syntheseConfig.EXPORT_FORMAT"
+        mat-raised-button
+        (click)="downloadObservations(format, export.view_name)"
+        type="button"
+        class="buttonLoad button-success format-btn"
       >
         Format {{ format }}
       </button>

@@ -564,6 +564,36 @@ class TestSynthese:
         )
         assert response.status_code == 200
 
+    @pytest.mark.parametrize(
+        "view_name,response_status_code",
+        [
+            ("gn_synthese.v_synthese_for_web_app", 200),
+            ("gn_synthese.not_in_config", 403),
+            ("v_synthese_for_web_app", 400),  # miss schema name
+            ("gn_synthese.v_metadata_for_export", 400),  # miss required columns
+        ],
+    )
+    def test_export_observations_custom_view(self, users, app, view_name, response_status_code):
+        set_logged_user(self.client, users["self_user"])
+        if view_name != "gn_synthese.not_in_config":
+            app.config["SYNTHESE"]["EXPORT_OBSERVATIONS_CUSTOM_VIEWS"] = [
+                {
+                    "label": "Test export custom",
+                    "view_name": view_name,
+                    "geojson_4326_field": "st_asgeojson",
+                    "geojson_local_field": "st_asgeojson",
+                }
+            ]
+        response = self.client.post(
+            url_for("gn_synthese.export_observations_web"),
+            json=[1, 2, 3],
+            query_string={
+                "export_format": "geojson",
+                "view_name": view_name,
+            },
+        )
+        assert response.status_code == response_status_code
+
     def test_export_observations(self, users, synthese_data, synthese_sensitive_data, modules):
         data_synthese = synthese_data.values()
         data_synthese_sensitive = synthese_sensitive_data.values()
