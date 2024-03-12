@@ -5,9 +5,6 @@
 
 import { Component, OnInit } from '@angular/core';
 import { ConfigService } from '../../../services/config.service';
-import { MountConfig } from 'cypress/angular';
-import { HttpClient, HttpHandler } from '@angular/common/http';
-import * as gerard from '../../GN2Common.module';
 
 @Component({
   selector: 'pnx-pouet',
@@ -22,20 +19,8 @@ export class testComponent implements OnInit {
 export abstract class ConfigMock { }
 
 describe('testComponent', () => {
-  // const config: MountConfig<testComponent> = {
-  //   imports: [GN2CommonModule],
-  //   providers: [ConfigService, HttpClient]
-  // }
 
   it('uses custom text for the button label', () => {
-    // cy.stub(window, 'prompt').returns('my custom message')
-    // const cs: ConfigService = new ConfigService();
-
-    // // After that, mount your component
-
-    // cy.window().its('prompt').should('be.called')
-    // cy.get('.name').should('have.value', 'my custom message')
-    // console.log(cy.stub(_ds, "getAcquisitionFrameworks").returns({}))
 
     cy.mount(testComponent, {
       imports: [],
