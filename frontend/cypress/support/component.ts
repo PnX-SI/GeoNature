@@ -199,13 +199,13 @@ const imports = [
   }),]
 
 const providers = [
+  MapService,
+  MapListService,
   CommonService,
   DataFormService,
   DynamicFormService,
   ConfigService,
   FormService,
-  MapListService,
-  MapService,
   MatIconRegistry,
   MediaService,
   NgbDatePeriodParserFormatter,

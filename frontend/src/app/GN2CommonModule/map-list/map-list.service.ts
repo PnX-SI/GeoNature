@@ -4,7 +4,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { CommonService } from '@geonature_common/service/common.service';
 import * as L from 'leaflet';
 import { UntypedFormControl } from '@angular/forms';
-import { MapService } from '@geonature_common/map/map.service';
 import { Map } from 'leaflet';
 import { delay, finalize } from 'rxjs/operators';
 import { ConfigService } from '@geonature/services/config.service';
@@ -55,7 +54,6 @@ export class MapListService {
 
   constructor(
     private _http: HttpClient,
-    private _ms: MapService,
     public config: ConfigService
   ) {
     this.columns = [];
@@ -245,14 +243,13 @@ export class MapListService {
     map.fitBounds(tempFeatureGroup.getBounds(), { maxZoom: 15 });
   }
 
-  zoomOnSeveralSelectedLayers(map, layers) {
+  getSelectedLayers(map, layers) {
     let group = new L.FeatureGroup();
     layers.forEach((layer) => {
       this.layerDict[layer];
       group.addLayer(this.layerDict[layer]);
     });
-
-    this._ms.getMap().fitBounds(group.getBounds());
+    return group
   }
 
   /**
