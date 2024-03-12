@@ -60,7 +60,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
 
   constructor(
     private _dfs: DataFormService,
-    private _iterableDiffers: IterableDiffers,
+    private _iterableDiffers: IterableDiffers
   ) {
     super();
     this.iterableDiffer = this._iterableDiffers.find([]).create(null);
@@ -84,7 +84,6 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     }
     this._dfs.getDatasets((params = filter_param)).subscribe((datasets) => {
       this.datasets = datasets;
-      console.log(datasets)
       this.valueLoaded.emit({ value: datasets });
       if (
         datasets.length == 1 &&

@@ -19,17 +19,13 @@ export class testComponent implements OnInit {
   ngOnInit() { }
 }
 
-export abstract class ConfigMock {
-
-}
+export abstract class ConfigMock { }
 
 describe('testComponent', () => {
   // const config: MountConfig<testComponent> = {
   //   imports: [GN2CommonModule],
   //   providers: [ConfigService, HttpClient]
   // }
-
-
 
   it('uses custom text for the button label', () => {
     // cy.stub(window, 'prompt').returns('my custom message')
@@ -41,12 +37,10 @@ describe('testComponent', () => {
     // cy.get('.name').should('have.value', 'my custom message')
     // console.log(cy.stub(_ds, "getAcquisitionFrameworks").returns({}))
 
-    console.log("test")
     cy.mount(testComponent, {
       imports: [],
       declarations: [testComponent],
-      providers: [{ provide: ConfigService, useClass: ConfigMock }]
-    })
+      providers: [{ provide: ConfigService, useClass: ConfigMock }],
+    });
   });
 });
-
