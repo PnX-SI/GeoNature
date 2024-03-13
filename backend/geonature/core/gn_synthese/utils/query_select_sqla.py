@@ -219,7 +219,7 @@ class SyntheseQuery:
                 self.model_id_syn_col.in_(subquery_observers),
                 self.model_id_digitiser_column == user.id_role,
             ]
-            datasets = DB.session.scalars(TDatasets.filter_by_scope(scope)).all()
+            datasets = DB.session.scalars(TDatasets.filter_by_scope(scope)).unique().all()
             allowed_datasets = [dataset.id_dataset for dataset in datasets]
             ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
 
