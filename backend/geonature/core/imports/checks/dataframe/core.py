@@ -101,6 +101,7 @@ def check_datasets(imprt, df, uuid_field, id_field, module_code, object_code=Non
         datasets = {
             ds.unique_dataset_id.hex: ds
             for ds in TDatasets.query.filter(TDatasets.unique_dataset_id.in_(uuid))
+            .options(sa.orm.joinedload(TDatasets.nomenclature_data_origin))
             .options(sa.orm.raiseload("*"))
             .all()
         }
