@@ -143,7 +143,7 @@ def new_import(synthese_destination, users, import_dataset):
 
 
 @pytest.fixture()
-def uploaded_import(client, new_import, datasets, import_file_name):
+def uploaded_import(new_import, datasets, import_file_name):
     with db.session.begin_nested():
         with open(tests_path / "files" / "synthese" / import_file_name, "rb") as f:
             f.seek(0)
@@ -161,7 +161,6 @@ def uploaded_import(client, new_import, datasets, import_file_name):
             else:
                 new_import.full_file_name = "valid_file.csv"
             new_import.source_file = content
-            # data = bytes_csv_to_dict(content)
     return new_import
 
 
@@ -220,27 +219,16 @@ def loaded_import(client, field_mapped_import):
 
 @pytest.fixture()
 def content_mapped_import(client, import_file_name, loaded_import):
-    if import_file_name == "jdd_to_import_file.csv":
-        set_logged_user(client, loaded_import.authors[0])
-        contentmapping = ContentMapping.query.filter_by(label="Nomenclatures SINP (labels)").one()
-        r = client.post(
-            url_for("import.set_import_content_mapping", import_id=loaded_import.id_import),
-            data=contentmapping.values,
+    with db.session.begin_nested():
+        loaded_import.contentmapping = (
+            ContentMapping.query.filter_by(label="Nomenclatures SINP (labels)").one().values
         )
-        assert r.status_code == 200, r.data
-        unset_logged_user(client)
-        db.session.refresh(loaded_import)
-    else:
-        with db.session.begin_nested():
-            loaded_import.contentmapping = (
-                ContentMapping.query.filter_by(label="Nomenclatures SINP (labels)").one().values
+        if import_file_name == "empty_nomenclatures_file.csv":
+            loaded_import.contentmapping["STADE_VIE"].update(
+                {
+                    "": "17",  # Alevin
+                }
             )
-            if import_file_name == "empty_nomenclatures_file.csv":
-                loaded_import.contentmapping["STADE_VIE"].update(
-                    {
-                        "": "17",  # Alevin
-                    }
-                )
     return loaded_import
 
 
@@ -1303,7 +1291,8 @@ class TestImportsSynthese:
             imported_import,
             {
                 # id_dataset errors
+                # The line 2 should not be error (should be the one selected jdd default)
+                ("DATASET_NOT_AUTHORIZED", "unique_dataset_id", frozenset({2, 4})),
                 ("DATASET_NOT_FOUND", "unique_dataset_id", frozenset({5})),
-                ("DATASET_NOT_AUTHORIZED", "unique_dataset_id", frozenset({4})),
             },
         )
