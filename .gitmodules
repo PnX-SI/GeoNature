@@ -1,32 +1,24 @@
 [submodule "backend/dependencies/UsersHub-authentification-module"]
 	path = backend/dependencies/UsersHub-authentification-module
-	url = https://github.com/PnX-SI/UsersHub-authentification-module
-    branch = develop
+	url = ../UsersHub-authentification-module.git
 [submodule "backend/dependencies/Nomenclature-api-module"]
 	path = backend/dependencies/Nomenclature-api-module
-	url = https://github.com/PnX-SI/Nomenclature-api-module
-    branch = develop
+	url = ../Nomenclature-api-module.git
 [submodule "backend/dependencies/Habref-api-module"]
 	path = backend/dependencies/Habref-api-module
-	url = https://github.com/PnX-SI/Habref-api-module
-    branch = develop
+	url = ../Habref-api-module.git
 [submodule "backend/dependencies/Utils-Flask-SQLAlchemy"]
 	path = backend/dependencies/Utils-Flask-SQLAlchemy
-	url = https://github.com/PnX-SI/Utils-Flask-SQLAlchemy
-    branch = develop
+	url = ../Utils-Flask-SQLAlchemy.git
 [submodule "backend/dependencies/TaxHub"]
 	path = backend/dependencies/TaxHub
-	url = https://github.com/PnX-SI/TaxHub
-    branch = develop
+	url = ../TaxHub.git
 [submodule "backend/dependencies/Utils-Flask-SQLAlchemy-Geo"]
 	path = backend/dependencies/Utils-Flask-SQLAlchemy-Geo
-	url = https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo
-    branch = develop
+	url = ../Utils-Flask-SQLAlchemy-Geo.git
 [submodule "backend/dependencies/RefGeo"]
 	path = backend/dependencies/RefGeo
-	url = https://github.com/PnX-SI/RefGeo.git
-    branch = develop
+	url = ../RefGeo.git
 [submodule "backend/dependencies/UsersHub"]
 	path = backend/dependencies/UsersHub
-	url = https://github.com/PnX-SI/UsersHub
-    branch = develop
+	url = ../UsersHub.git
