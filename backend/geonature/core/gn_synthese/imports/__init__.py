@@ -320,12 +320,12 @@ def import_data_to_synthese(imprt):
                 insert_fields |= {field}
 
     insert_fields -= {fields["unique_dataset_id"]}
+    insert_fields |= {fields["id_dataset"]}
     select_stmt = (
         sa.select(
             *[transient_table.c[field.dest_field] for field in insert_fields],
             sa.literal(source.id_source),
             sa.literal(source.module.id_module),
-            transient_table.c.id_dataset,
             sa.literal("I"),
         )
         .where(transient_table.c.id_import == imprt.id_import)
@@ -334,7 +334,6 @@ def import_data_to_synthese(imprt):
     names = [field.dest_field for field in insert_fields] + [
         "id_source",
         "id_module",
-        "id_dataset",
         "last_action",
     ]
     insert_stmt = sa.insert(Synthese).from_select(
