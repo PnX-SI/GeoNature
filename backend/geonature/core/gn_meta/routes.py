@@ -80,14 +80,13 @@ if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
     @routes.before_request
     def synchronize_mtd():
         if request.endpoint in ["gn_meta.get_datasets", "gn_meta.get_acquisition_frameworks_list"]:
+            params = request.json if request.is_json else request.args
             try:
-                id_af = None
-                list_id_af = request.json.get("id_acquisition_frameworks")
-                if list_id_af and len(list_id_af) == 1:
-                    id_af = list_id_af[0]
-                sync_af_and_ds_by_user(id_role=g.current_user.id_role, id_af=id_af)
+                list_id_af = params.get("id_acquisition_frameworks", [])
+                for id_af in list_id_af:
+                    sync_af_and_ds_by_user(id_role=g.current_user.id_role, id_af=id_af)
             except Exception as e:
-                log.exception("Error while get JDD via MTD")
+                log.exception(f"Error while get JDD via MTD: {e}")
 
 
 @routes.route("/datasets", methods=["GET", "POST"])
