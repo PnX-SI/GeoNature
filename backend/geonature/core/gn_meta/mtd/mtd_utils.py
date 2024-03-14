@@ -194,7 +194,7 @@ def associate_actors(actors, CorActor, pk_name, pk_value):
             # create or update organisme
             id_organism = add_or_update_organism(
                 uuid=actor["uuid_organism"],
-                nom=actor["organism"] or "",
+                nom=actor["organism"] if actor["orgnanism"] else "",
                 email=actor["email"],
             )
         # Test if actor already exists to avoid nextVal increase
