@@ -69,6 +69,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.bindValue = this.bindAllItem ? null : this.bindValue;
     this.getDatasets();
   }
@@ -102,6 +103,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   }
 
   ngOnChanges(changes) {
+    super.ngOnChanges(changes);
     // detetch change on input idAcquisitionFramework
     // (the number, if the AFcomponent is not multiSelect) to reload datasets
     if (

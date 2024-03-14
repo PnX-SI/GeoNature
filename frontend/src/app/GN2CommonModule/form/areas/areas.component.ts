@@ -96,6 +96,7 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.valueFieldName = this.valueFieldName === undefined ? 'id_area' : this.valueFieldName;
 
     this.getAreas();
