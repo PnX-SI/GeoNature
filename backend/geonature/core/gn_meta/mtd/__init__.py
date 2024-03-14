@@ -151,10 +151,7 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
         actors = af.pop("actors")
         with db.session.begin_nested():
             start_add_user_time = time.time()
-            if not id_role:
-                add_unexisting_digitizer(af["id_digitizer"])
-            else:
-                add_unexisting_digitizer(id_role)
+            add_unexisting_digitizer(af["id_digitizer"] if not id_role else id_role)
             user_add_total_time += time.time() - start_add_user_time
         af = sync_af(af)
         associate_actors(
