@@ -1,6 +1,5 @@
 import logging
 import time
-from datetime import *
 from urllib.parse import urljoin
 
 from lxml import etree
@@ -40,6 +39,7 @@ class MTDInstanceApi:
     af_path = "/mtd/cadre/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}"
     ds_path = "/mtd/cadre/jdd/export/xml/GetRecordsByInstanceId?id={ID_INSTANCE}"
     ds_user_path = "/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id={ID_ROLE}"
+    af_user_path = "/mtd/cadre/export/xml/GetRecordsByUserId?id={ID_ROLE}"
     single_af_path = "/mtd/cadre/export/xml/GetRecordById?id={ID_AF}"
 
     # https://inpn.mnhn.fr/mtd/cadre/jdd/export/xml/GetRecordsByUserId?id=41542"
@@ -79,13 +79,68 @@ class MTDInstanceApi:
         xml = self._get_ds_xml()
         return parse_jdd_xml(xml)
 
-    def get_ds_user_list(self):
+    def get_ds_user_list(self):        
+        """
+        Retrieve the list of of datasets (ds) for the user.
+        
+        Returns
+        -------
+        list
+            A list of datasets (ds) for the user.
+        """
         url = urljoin(self.api_endpoint, self.ds_user_path)
         url = url.format(ID_ROLE=self.id_role)
-        xml = self._get_xml_by_url(url)
-        return parse_jdd_xml(xml)
+        try:
+            xml = self._get_xml_by_url(url)
+            return parse_jdd_xml(xml)
+        except requests.HttpError as http_error:
+            error_code = http_error.response.status_code
+            warning_message = f"""[HttpError : {error_code}] for URL "{url}"."""
+            if error_code == 404:
+                warning_message = f"""{warning_message} Probably no dataset found for the following user {self.id_role}"""
+            return []
 
-    def get_user_af_list(self, af_uuid):
+    def get_list_af_for_user(self):
+        """
+        Retrieve a list of acquisition frameworks (af) for the user.
+
+        Returns
+        -------
+        list
+            A list of acquisition frameworks for the user.
+        """
+        af_list = []
+        url = urljoin(self.api_endpoint, self.af_user_path).format(ID_ROLE=self.id_role)
+
+        try:
+            xml = self._get_xml_by_url(url)
+        except requests.HttpError as http_error:
+            error_code = http_error.response.status_code
+            warning_message = f"""[HttpError : {error_code}] for URL "{url}"."""
+            if error_code == 404:
+                warning_message = f"""{warning_message} Probably no acquisition framework found for the following user {self.id_role}"""
+            logger.warning(warning_message)
+            return af_list
+        _xml_parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
+        root = etree.fromstring(xml, parser=_xml_parser)
+        af_iter = root.findall(".//{http://inpn.mnhn.fr/mtd}CadreAcquisition")
+        af_list = [parse_acquisition_framework(af) for af in af_iter]
+        return af_list
+
+    def get_single_af(self, af_uuid):
+        """
+        Return a single acquistion framework based on its uuid.
+
+        Parameters
+        ----------
+        af_uuid : str
+            uuid of the acquisition framework
+
+        Returns
+        -------
+        dict
+            acquisition framework data
+        """
         url = urljoin(self.api_endpoint, self.single_af_path)
         url = url.format(ID_AF=af_uuid)
         xml = self._get_xml_by_url(url)
@@ -117,9 +172,9 @@ def add_unexisting_digitizer(id_digitizer):
     :param id_digitizer: as id role from meta info
     """
     if (
-        not db.session.scalars(
-            select(func.count("*").select_from(User).filter_by(id_role=id_digitizer).limit(1))
-        ).scalar_one()
+        not db.session.scalar(
+            select(func.count("*")).select_from(User).filter_by(id_role=id_digitizer)
+        )
         > 0
     ):
         # not fast - need perf optimization on user call
@@ -141,10 +196,9 @@ def process_af_and_ds(af_list, ds_list, id_role=None):
     """
     cas_api = INPNCAS()
     # read nomenclatures from DB to avoid errors if GN nomenclature is not the same
-    list_cd_nomenclature = [
-        record[0]
-        for record in db.session.scalars(select(TNomenclatures.cd_nomenclature).distinct()).all()
-    ]
+    list_cd_nomenclature = db.session.scalars(
+        select(TNomenclatures.cd_nomenclature).distinct()
+    ).all()
     user_add_total_time = 0
     logger.debug("MTD - PROCESS AF LIST")
     for af in af_list:
@@ -208,13 +262,13 @@ def sync_af_and_ds_by_user(id_role, id_af=None):
 
     logger.info("MTD - SYNC USER : START")
 
-   # Create an instance of MTDInstanceApi
+    # Create an instance of MTDInstanceApi
     mtd_api = MTDInstanceApi(
         config["MTD_API_ENDPOINT"], config["MTD"]["ID_INSTANCE_FILTER"], id_role
     )
 
     # Get the list of datasets (ds) for the user
-    ds_list = mtd_api.get_ds_user_list()
+    ds_list = mtd_api.get_ds_user_list()  # 7s sur la prod (id == 13829 <=> Kevin)
 
     if not id_af:
         # Get the unique UUIDs of the acquisition frameworks for the user
@@ -225,18 +279,18 @@ def sync_af_and_ds_by_user(id_role, id_af=None):
         # Ce code ne fonctionne pas pour cette raison -> AF manquants
         # af_list = mtd_api.get_af_list()
         # af_list = [af for af in af_list if af["unique_acquisition_framework_id"] in user_af_uuids]
-         
-       # Get the list of acquisition frameworks for the user
+
+        # Get the list of acquisition frameworks for the user
         # call INPN API for each AF to retrieve info
-        af_list = [mtd_api.get_user_af_list(af_uuid) for af_uuid in user_af_uuids]
+        af_list = mtd_api.get_list_af_for_user()
     else:
         uuid_af = TAcquisitionFramework.query.get(id_af).unique_acquisition_framework_id
         uuid_af = str(uuid_af)
         # uuid_af = TAcquisitionFramework.query.filter_by_readable().filter(TAcquisitionFramework.id_acquisition_framework == id_af).unique_acquisition_framework_id
 
         # Get the acquisition framework for the specified UUID, thus a list of one element
-        af_list = [mtd_api.get_user_af_list(uuid_af)]
-        
+        af_list = [mtd_api.get_single_af(uuid_af)]
+
         # Filter the datasets based on the specified UUID
         ds_list = [ds for ds in ds_list if ds["uuid_acquisition_framework"] == uuid_af]
 

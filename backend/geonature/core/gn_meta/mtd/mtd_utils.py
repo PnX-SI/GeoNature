@@ -25,10 +25,10 @@ from .xml_parser import parse_acquisition_framwork_xml, parse_jdd_xml
 from .mtd_webservice import get_jdd_by_user_id, get_acquisition_framework, get_jdd_by_uuid
 
 NOMENCLATURE_MAPPING = {
-    "id_nomenclature_data_type": "DATA_TYP",
-    "id_nomenclature_dataset_objectif": "JDD_OBJECTIFS",
-    "id_nomenclature_data_origin": "DS_PUBLIQUE",
-    "id_nomenclature_source_status": "STATUT_SOURCE",
+    "cd_nomenclature_data_type": "DATA_TYP",
+    "cd_nomenclature_dataset_objectif": "JDD_OBJECTIFS",
+    "cd_nomenclature_data_origin": "DS_PUBLIQUE",
+    "cd_nomenclature_source_status": "STATUT_SOURCE",
 }
 
 # get the root logger
@@ -43,51 +43,62 @@ def sync_ds(ds, cd_nomenclatures):
     :param ds: <dict> DS infos
     :param cd_nomenclatures: <array> cd_nomenclature from ref_normenclatures.t_nomenclatures
     """
-    if ds["id_nomenclature_data_origin"] not in cd_nomenclatures:
+    if not ds["cd_nomenclature_data_origin"]:
+        ds["cd_nomenclature_data_origin"] = "NSP"
+
+    # FIXME : Temporary fix due to different referential between INPN and GeoNature
+    if ds["cd_nomenclature_data_origin"] not in cd_nomenclatures:
         return
 
     # CONTROL AF
     af_uuid = ds.pop("uuid_acquisition_framework")
-    af = DB.session.scalar(
-        select(TAcquisitionFramework).filter_by(unique_acquisition_framework_id=af_uuid).limit(1)
-    ).first()
+    af = (
+        DB.session.execute(
+            select(TAcquisitionFramework).filter_by(unique_acquisition_framework_id=af_uuid)
+        )
+        .unique()
+        .scalar_one_or_none()
+    )
 
     if af is None:
+        print(f"AF {af_uuid} not found")
         return
 
     ds["id_acquisition_framework"] = af.id_acquisition_framework
     ds = {
-        k: (
-            func.ref_nomenclatures.get_id_nomenclature(NOMENCLATURE_MAPPING[k], v)
-            if k.startswith("id_nomenclature")
-            else v
+        field.replace("cd_nomenclature", "id_nomenclature"): (
+            func.ref_nomenclatures.get_id_nomenclature(NOMENCLATURE_MAPPING[field], value)
+            if field.startswith("cd_nomenclature")
+            else value
         )
-        for k, v in ds.items()
-        if v is not None
+        for field, value in ds.items()
+        if value is not None
     }
 
     ds_exists = DB.session.scalar(
-        select(
-            exists().where(
-                TDatasets.unique_dataset_id == ds["unique_dataset_id"],
-            )
+        exists()
+        .where(
+            TDatasets.unique_dataset_id == ds["unique_dataset_id"],
         )
+        .select()
     )
 
+    statement = (
+        pg_insert(TDatasets)
+        .values(**ds)
+        .on_conflict_do_nothing(index_elements=["unique_dataset_id"])
+    )
     if ds_exists:
         statement = (
             update(TDatasets)
             .where(TDatasets.unique_dataset_id == ds["unique_dataset_id"])
             .values(**ds)
         )
-    else:
-        statement = (
-            pg_insert(TDatasets)
-            .values(**ds)
-            .on_conflict_do_nothing(index_elements=["unique_dataset_id"])
-        )
     DB.session.execute(statement)
-    dataset = DB.session.scalars(ds_query).first()
+
+    dataset = DB.session.scalars(
+        select(TDatasets).filter_by(unique_dataset_id=ds["unique_dataset_id"])
+    ).first()
 
     # Associate dataset to the modules if new dataset
     if not ds_exists:
@@ -103,7 +114,7 @@ def sync_af(af):
     ----------
     af : dict
         AF infos.
-    
+
     Returns
     -------
     TAcquisitionFramework
@@ -141,9 +152,7 @@ def add_or_update_organism(uuid, nom, email):
     :param email: org email
     """
     # Test if actor already exists to avoid nextVal increase
-    org_exist = DB.session.execute(
-        select(exists().select_from(BibOrganismes).filter_by(uuid_organisme=uuid))
-    ).scalar_one()
+    org_exist = DB.session.scalar(exists().where(BibOrganismes.uuid_organisme == uuid).select())
 
     if org_exist:
         statement = (
