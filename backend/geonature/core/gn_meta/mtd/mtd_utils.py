@@ -17,7 +17,7 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkActor,
 )
 from geonature.core.gn_commons.models import TModules
-from pypnusershub.db.models import Organisme as BibOrganismes
+from pypnusershub.db.models import Organisme as BibOrganismes, User
 from geonature.core.users import routes as users
 from geonature.core.auth.routes import insert_user_and_org, get_user_from_id_inpn_ws
 
@@ -187,26 +187,33 @@ def associate_actors(actors, CorActor, pk_name, pk_value):
         pk value
     """
     for actor in actors:
-        if not actor["uuid_organism"]:
-            continue
-        # test if actor already exists
-        with DB.session.begin_nested():
-            # create or update organisme
-            id_organism = add_or_update_organism(
-                uuid=actor["uuid_organism"],
-                nom=actor["organism"] if actor["orgnanism"] else "",
-                email=actor["email"],
-            )
+        id_organism = None
+        uuid_organism = actor["uuid_organism"]
+        if uuid_organism:
+            with DB.session.begin_nested():
+                # create or update organisme
+                # FIXME: prevent update of organism email from actor email ! Several actors may be associated to the same organism and still have different mails !
+                id_organism = add_or_update_organism(
+                    uuid=uuid_organism,
+                    nom=actor["organism"] if actor["orgnanism"] else "",
+                    email=actor["email"],
+                )
         # Test if actor already exists to avoid nextVal increase
+        values = dict(
+            id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
+                "ROLE_ACTEUR", actor["actor_role"]
+            ),
+            **{pk_name: pk_value},
+        )
+        if not id_organism:
+            values["id_role"] = DB.session.scalar(
+                select(User.id_role).filter_by(email=actor["email"])
+            )
+        else:
+            values["id_organism"] = id_organism
         statement = (
             pg_insert(CorActor)
-            .values(
-                id_organism=id_organism,
-                id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-                    "ROLE_ACTEUR", actor["actor_role"]
-                ),
-                **{pk_name: pk_value},
-            )
+            .values(**values)
             .on_conflict_do_nothing(
                 index_elements=[pk_name, "id_organism", "id_nomenclature_actor_role"],
             )
