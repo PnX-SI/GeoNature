@@ -7,10 +7,8 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
   templateUrl: 'observers-text.component.html',
   styleUrls: ['./observers-text.component.scss'],
 })
-export class ObserversTextComponent extends GenericFormComponent implements OnInit {
+export class ObserversTextComponent extends GenericFormComponent {
   constructor() {
     super();
   }
-
-  ngOnInit() {}
 }

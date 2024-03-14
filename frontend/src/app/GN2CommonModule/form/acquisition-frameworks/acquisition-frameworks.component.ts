@@ -24,6 +24,7 @@ export class AcquisitionFrameworksComponent extends GenericFormComponent impleme
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.getAcquisitionFrameworks();
   }
 

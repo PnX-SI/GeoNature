@@ -86,6 +86,7 @@ export class NomenclatureComponent
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.keyValue = this.bindAllItem ? null : this.keyValue || 'id_nomenclature'; // patch pour les cas ou this.keyValue == undefined
     this.labelLang = 'label_' + this._translate.currentLang;
     this.definitionLang = 'definition_' + this._translate.currentLang;
@@ -124,6 +125,8 @@ export class NomenclatureComponent
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    super.ngOnChanges(changes);
+
     // if change regne => change groupe2inpn also
     if (changes.regne !== undefined && !changes.regne.firstChange) {
       this.initLabels();
