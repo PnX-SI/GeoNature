@@ -97,37 +97,39 @@ def sync_ds(ds, cd_nomenclatures):
 
 
 def sync_af(af):
-    """
-    Will create or update a given AF according to UUID.
+    """Will update a given AF (Acquisition Framework) if already exists in database according to UUID, else update the AF.
 
-    :param af: dict AF infos
+    Parameters
+    ----------
+    af : dict
+        AF infos.
+    
+    Returns
+    -------
+    TAcquisitionFramework
+        The updated or inserted acquisition framework.
     """
     af_uuid = af["unique_acquisition_framework_id"]
-    count_af = DB.session.execute(
-        select(func.count("*"))
-        .select_from(TAcquisitionFramework)
-        .filter_by(unique_acquisition_framework_id=af_uuid)
-    ).scalar_one()
+    af_exists = DB.session.scalar(
+        exists().where(TAcquisitionFramework.unique_acquisition_framework_id == af_uuid).select()
+    )
 
-    if count_af > 0:
-        # this avoid useless nextval sequence
-        statement = (
-            update(TAcquisitionFramework)
-            .where(TAcquisitionFramework.unique_acquisition_framework_id == af_uuid)
-            .values(af)
-            .returning(TAcquisitionFramework.id_acquisition_framework)
-        )
-    else:
+    # Update statement if AF already exists in DB else insert statement
+    statement = (
+        update(TAcquisitionFramework)
+        .where(TAcquisitionFramework.unique_acquisition_framework_id == af_uuid)
+        .values(af)
+        .returning(TAcquisitionFramework)
+    )
+    if not af_exists:
         statement = (
             pg_insert(TAcquisitionFramework)
             .values(**af)
             .on_conflict_do_nothing(index_elements=["unique_acquisition_framework_id"])
-            .returning(TAcquisitionFramework.id_acquisition_framework)
+            .returning(TAcquisitionFramework)
         )
 
-    af_id = DB.session.execute(statement).scalar()
-    af = DB.session.get(TAcquisitionFramework, af_id)
-    return af
+    return DB.session.scalar(statement)
 
 
 def add_or_update_organism(uuid, nom, email):
