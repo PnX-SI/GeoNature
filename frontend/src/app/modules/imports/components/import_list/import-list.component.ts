@@ -207,7 +207,7 @@ export class ImportListComponent implements OnInit {
   getStatisticsTooltip(row) {
     const statistics = this._getStatistics(row);
     return Object.keys(statistics)
-      .map((statkey) => this.getStatisticsLabel(statkey) + ': ' + statistics[statkey])
+      .map((statkey) => this.getStatisticsLabel(row, statkey) + ': ' + statistics[statkey])
       .join('\n');
   }
 
@@ -216,14 +216,18 @@ export class ImportListComponent implements OnInit {
     return statistics && Object.keys(statistics).length;
   }
 
-  // TODO: This is a placeholder.
-  // It should be handled server side
-  getStatisticsLabel(statKey: string): string {
-    switch (statKey) {
-      case 'taxa_count':
-        return 'Nombre de taxon(s)';
-      default:
-        return statKey;
+  /**
+   * If exists, returns a label for an import statistic value. If not return the key from the `statistics` object.
+   * Labels are defined in the `module.py` in `_imports_.statitics_labels` attribute of the destination module class.
+   *
+   * @param {any} row - row object use in datable
+   * @param {string} statKey - key for a given statistics
+   * @return {string} selected label
+   */
+  getStatisticsLabel(row: any, statKey: string): string {
+    if (row.hasOwnProperty('destination')) {
+      return row.destination?.statistics_labels.find((stat) => stat.key === statKey).value;
     }
+    return statKey;
   }
 }
