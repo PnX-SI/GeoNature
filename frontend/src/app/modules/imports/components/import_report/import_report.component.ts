@@ -241,9 +241,9 @@ export class ImportReportComponent implements OnInit {
   getExportFilename() {
     let string_with_format = this.config.IMPORT.EXPORT_REPORT_PDF_FILENAME;
     Object.keys(this.importData).forEach((key) => {
-      string_with_format = string_with_format.replace('{' + key + '}', this.importData[key]);
-    })
-    return string_with_format
+      string_with_format = string_with_format.replace(`{${key}}`, this.importData[key]);
+    });
+    return string_with_format;
   }
 
   exportMapAndChartPdf(chartImg?, mapImg?) {
@@ -251,7 +251,7 @@ export class ImportReportComponent implements OnInit {
       (result) => {
         this.loadingPdf = false;
         saveAs(result, this.getExportFilename());
-      },//
+      }, //
       (error) => {
         this.loadingPdf = false;
         console.log('Error getting pdf');
