@@ -88,7 +88,7 @@ export class FieldsMappingStepComponent implements OnInit {
       targetFields: this._importDataService.getBibFields(),
       sourceFields: this._importDataService.getColumnsImport(this.importData.id_import),
     }).subscribe(({ fieldMappings, targetFields, sourceFields }) => {
-      this.userFieldMappings = fieldMappings;
+      this.userFieldMappings = fieldMappings.sort((a, b) => a.label.localeCompare(b.label));
 
       this.targetFields = targetFields;
       this.mappedTargetFields = new Set();
@@ -272,9 +272,11 @@ export class FieldsMappingStepComponent implements OnInit {
             'Le mapping ' + this.fieldMappingForm.value.label + ' a bien été supprimé'
           );
           this.fieldMappingForm.setValue(null, { emitEvent: false });
-          this.userFieldMappings = this.userFieldMappings.filter((mapping) => {
-            return mapping.id !== mapping_id;
-          });
+          this.userFieldMappings = this.userFieldMappings
+            .filter((mapping) => {
+              return mapping.id !== mapping_id;
+            })
+            .sort((a, b) => a.label.localeCompare(b.label));
           this.spinner = false;
         },
         () => {

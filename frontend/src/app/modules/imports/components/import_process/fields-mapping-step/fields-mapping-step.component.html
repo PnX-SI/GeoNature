@@ -8,18 +8,22 @@
       <fieldset>
         <div *ngIf="userFieldMappings.length > 0" class="form-group">
           <legend class="px-1">Choix d’un modèle d'import prédéfini</legend>
-          <select
-            class="form-control"
+          <ng-select
             id="mappingSelection"
+            [items]="userFieldMappings"
+            [clearable]="true"
             [formControl]="fieldMappingForm"
             [compareWith]="areMappingFieldEqual"
             [disableControl]="!userFieldMappings.length"
           >
-            <option [ngValue]="null"></option>
-            <option *ngFor="let fieldMapping of userFieldMappings" [ngValue]="fieldMapping">
-              {{ fieldMapping.label }}
-            </option>
-          </select>
+            <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+              <div>
+                <span class="pre-wrap">
+                  {{ item.label }}
+                </span>
+              </div>
+            </ng-template>
+          </ng-select>
         </div>
 
         <div class="d-flex flex-row justify-content-center mt-3">
