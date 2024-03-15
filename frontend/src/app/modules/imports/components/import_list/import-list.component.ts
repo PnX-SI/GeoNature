@@ -207,7 +207,7 @@ export class ImportListComponent implements OnInit {
   getStatisticsTooltip(row) {
     const statistics = this._getStatistics(row);
     return Object.keys(statistics)
-      .map((statkey) => this.getStatisticsLabel(row, statkey) + ': ' + statistics[statkey])
+      .map((statkey) => this.getStatisticsLabel(row, statkey) + ' : ' + statistics[statkey])
       .join('\n');
   }
 
