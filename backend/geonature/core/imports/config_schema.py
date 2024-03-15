@@ -142,3 +142,6 @@ class ImportConfigSchema(Schema):
     ID_LIST_TAXA_RESTRICTION = fields.Integer(load_default=None)
     MODULE_URL = fields.String(load_default="/import")
     DATAFRAME_BATCH_SIZE = fields.Integer(load_default=10000)
+    EXPORT_REPORT_PDF_FILENAME = fields.String(
+        load_default="import_{id_import}_{date_create_import}_report.pdf"
+    )
