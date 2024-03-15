@@ -612,3 +612,67 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     TITLE = "Bienvenue dans GeoNature"
     INTRODUCTION = "Texte d'introduction, configurable pour le modifier régulièrement ou le masquer"
     FOOTER = ""
+
+
+[IMPORT]
+    # Bounding box des données de l'instance. 
+    # Utilisé pour lever des warning lorsque les données sont en dehors. 
+    # Format: [XMIN, YMIN, XMAX, YMAX]
+    # Par défaut: France métropolitaine incluant la Corse
+    INSTANCE_BOUNDING_BOX = [-5.0, 41.0, 10.0, 51.15]
+    # Est-ce que l'on vérifie que les données sont bien dans la bounding box
+    ENABLE_BOUNDING_BOX_CHECK = true
+
+    # Est-ce que l'on vérifie que les UUID fournis sont déjà dans la synthese de GeoNature
+    # Mettre à false dans le cas d'une synthese volumineuse (Ne prévient pas d'eventuels doublons d'UUID dans la Synthese)
+    ENABLE_SYNTHESE_UUID_CHECK = true
+
+    # Taille maximale du fichier chargé (en Mo)
+    MAX_FILE_SIZE=500
+    # SRID autorisés pour les fichiers en entrée
+    SRID = [
+    {name = "WGS84", code = 4326}, 
+    {name = "Lambert93", code = 2154}
+    ]
+    # Extensions autorisées (seul le csv est accepté actuellement)
+    ALLOWED_EXTENSIONS = [".csv"]
+
+    # Activer ou non l'étape du mapping des valeurs
+    ALLOW_VALUE_MAPPING = true
+
+    # Si le mapping des valeurs est désactivé, specifier l'identifiant du mapping qui doit être utilisé
+    DEFAULT_VALUE_MAPPING_ID = 3
+
+    # rempli les valeurs de nomenclature erroné par la valeur par defaut 
+    # Leve un warning et non une erreur sur les lignes concernées
+    FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE = false
+
+    # Encodages acceptés
+    ENCODAGE = ["UTF-8"]
+
+    # Afficher le bouton pour afficher/masquer les champs déjà mappés
+    DISPLAY_CHECK_BOX_MAPPED_FIELD = true
+
+    # Active la vérification de l'existence du champs "floutage" si le JDD est privé
+    CHECK_PRIVATE_JDD_BLURING = true
+    # Active la vérification qu'une ref biblio est fournie si la valeur du champs source = "litterature"
+    CHECK_REF_BIBLIO_LITTERATURE = true
+    # Active la vérification qu'une preuve d'existance est fournie si preuve existance = "oui"
+    CHECK_EXIST_PROOF = true
+    # Customiser le nom du fichier de rapport de l'import
+    # Pour indiquer des données liés à l'import dans le nom du fichier ajouter le nom de la variable
+    # contenant cette dernière. Les variables suivantes sont accessibles : 
+    # - date_create_import -> date de création de l'import
+    # - dataset.dataset_name -> nom du jeu de données de destination
+    # - dataset.active -> Si le jeu de données de destination est actif
+    # - date_end_import -> Date de fin de l'import
+    # - date_max_data -> Date maximum dans les données
+    # - date_min_data -> Date minimum dans les données
+    # - date_update_import -> Date de la dernière mise à jour de l'import
+    # - destination, destination.code, destination.label --> Information sur la destination
+    # - id_dataset, id_destionation, id_import -> identifiant de différentes entités impliquées
+    # - import_count -> Nombre de lignes importées des données envoyés par l'utilisateur
+    EXPORT_REPORT_PDF_FILENAME = "import_{id_import}_{date_create_import}_report.pdf"
+
+    DEFAULT_RANK = "regne"
+
