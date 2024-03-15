@@ -615,20 +615,27 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
 
 [IMPORT]
+    # Encodage des fichiers importés autorisées
+    ENCODAGE = ["UTF-8"]
+
     # Bounding box des données de l'instance. 
     # Utilisé pour lever des warning lorsque les données sont en dehors. 
     # Format: [XMIN, YMIN, XMAX, YMAX]
     # Par défaut: France métropolitaine incluant la Corse
     INSTANCE_BOUNDING_BOX = [-5.0, 41.0, 10.0, 51.15]
-    # Est-ce que l'on vérifie que les données sont bien dans la bounding box
+
+    # Activer la vérification de l'appartenance des données importées à la bounding
+    # box définie dans INSTANCE_BOUNDING_BOX
     ENABLE_BOUNDING_BOX_CHECK = true
 
-    # Est-ce que l'on vérifie que les UUID fournis sont déjà dans la synthese de GeoNature
-    # Mettre à false dans le cas d'une synthese volumineuse (Ne prévient pas d'eventuels doublons d'UUID dans la Synthese)
+    # Activer la vérification des UUID dans les données importées avec ceux présent dans la Synthèse
+    # Attention : Il est conseillé de désactiver cette option lorsque les données de la synthèse
+    # sont très volumineuses.
     ENABLE_SYNTHESE_UUID_CHECK = true
 
     # Taille maximale du fichier chargé (en Mo)
     MAX_FILE_SIZE=500
+
     # SRID autorisés pour les fichiers en entrée
     SRID = [
     {name = "WGS84", code = 4326}, 
@@ -655,10 +662,13 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
     # Active la vérification de l'existence du champs "floutage" si le JDD est privé
     CHECK_PRIVATE_JDD_BLURING = true
+
     # Active la vérification qu'une ref biblio est fournie si la valeur du champs source = "litterature"
     CHECK_REF_BIBLIO_LITTERATURE = true
+
     # Active la vérification qu'une preuve d'existance est fournie si preuve existance = "oui"
     CHECK_EXIST_PROOF = true
+
     # Customiser le nom du fichier de rapport de l'import
     # Pour indiquer des données liés à l'import dans le nom du fichier ajouter le nom de la variable
     # contenant cette dernière. Les variables suivantes sont accessibles : 
@@ -674,5 +684,26 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # - import_count -> Nombre de lignes importées des données envoyés par l'utilisateur
     EXPORT_REPORT_PDF_FILENAME = "import_{id_import}_{date_create_import}_report.pdf"
 
+    # Paramètre pour définir le rang utilisé pour le diagramme camembert du rapport d'import.
+    # Valeurs possibles : ['regne', 'phylum', 'classe', 'ordre', 'famille', 'sous_famille', 'tribu', 'group1_inpn', 'group2_inpn']
     DEFAULT_RANK = "regne"
+
+    # L'UUID d'une entité importée sera généré s'il n'est pas indiqué dans les données du fichier d'entée,
+    DEFAULT_GENERATE_MISSING_UUID = true
+
+
+    # Identifiant d'une géométrie présente dans RefGeo. Si différent de -1, vérifie si les géométries
+    # des entités importées sont bien dans l'emprise spatiale de cette dernière.
+    ID_AREA_RESTRICTION = null
+
+
+    # Id d'une liste de taxons permettant de restreindre l'import d'observations de taxons comprises dans cette dernière
+    # Lève une exception si un taxon n'appartenant pas à liste indiquée apparaît dans les donnés importées. 
+    ID_LIST_TAXA_RESTRICTION = fields.Integer(load_default=None)
+
+    # URL d'accès au module d'import
+    MODULE_URL = "/import"
+
+    # Taille des `batch` de données importées en même temps
+    DATAFRAME_BATCH_SIZE = 10000
 
