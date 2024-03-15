@@ -104,15 +104,20 @@ class ImportConfigSchema(Schema):
     ALLOWED_EXTENSIONS = fields.List(fields.String, load_default=ALLOWED_EXTENSIONS)
     DEFAULT_COUNT_VALUE = fields.Integer(load_default=DEFAULT_COUNT_VALUE)
     ALLOW_VALUE_MAPPING = fields.Boolean(load_default=ALLOW_VALUE_MAPPING)
-    DEFAULT_VALUE_MAPPING_ID = fields.Integer(load_default=DEFAULT_VALUE_MAPPING_ID)
+    DEFAULT_VALUE_MAPPING_ID = fields.Integer(
+        load_default=DEFAULT_VALUE_MAPPING_ID
+    )  # FIXME: unused
     FILL_MISSING_NOMENCLATURE_WITH_DEFAULT_VALUE = fields.Boolean(load_default=True)
-    # Parameter to define if the mapped fields are displayed or not.
-    DISPLAY_MAPPED_VALUES = fields.Boolean(load_default=True)
-    INSTANCE_BOUNDING_BOX = fields.List(fields.Float, load_default=INSTANCE_BOUNDING_BOX)
-    ENABLE_BOUNDING_BOX_CHECK = fields.Boolean(load_default=True)
-    ENABLE_SYNTHESE_UUID_CHECK = fields.Boolean(load_default=True)
-    ALLOW_FIELD_MAPPING = fields.Boolean(load_default=ALLOW_FIELD_MAPPING)
-    DEFAULT_FIELD_MAPPING_ID = fields.Integer(load_default=DEFAULT_FIELD_MAPPING_ID)
+    DISPLAY_MAPPED_VALUES = fields.Boolean(load_default=True)  # FIXME: unused
+    INSTANCE_BOUNDING_BOX = fields.List(
+        fields.Float, load_default=INSTANCE_BOUNDING_BOX
+    )  # FIXME: unused
+    ENABLE_BOUNDING_BOX_CHECK = fields.Boolean(load_default=True)  # FIXME : unused
+    ENABLE_SYNTHESE_UUID_CHECK = fields.Boolean(load_default=True)  # FIXME: unused
+    ALLOW_FIELD_MAPPING = fields.Boolean(load_default=ALLOW_FIELD_MAPPING)  # FIXME: unused
+    DEFAULT_FIELD_MAPPING_ID = fields.Integer(
+        load_default=DEFAULT_FIELD_MAPPING_ID
+    )  # FIXME: unused
     DISPLAY_CHECK_BOX_MAPPED_FIELD = fields.Boolean(load_default=True)
     CHECK_PRIVATE_JDD_BLURING = fields.Boolean(load_default=True)
     CHECK_REF_BIBLIO_LITTERATURE = fields.Boolean(load_default=True)
@@ -134,11 +139,7 @@ class ImportConfigSchema(Schema):
             ]
         ),
     )
-    # If ID is provided (!=-1) will take the geometry in ref_geo.l_areas
-    # and checks if all imported points are inside it. Otherwise throws an error
     ID_AREA_RESTRICTION = fields.Integer(load_default=None)
-    # If an id of taxhub list is provided will check if the imported taxons
-    # are in the list. Otherwise throws an error
     ID_LIST_TAXA_RESTRICTION = fields.Integer(load_default=None)
     MODULE_URL = fields.String(load_default="/import")
     DATAFRAME_BATCH_SIZE = fields.Integer(load_default=10000)
