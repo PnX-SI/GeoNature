@@ -4,13 +4,9 @@
 
 import os
 
-from marshmallow import (
-    Schema,
-    fields,
-    validates_schema,
-    ValidationError,
-    post_load,
-)
+from warnings import warn
+
+from marshmallow import Schema, fields, validates_schema, ValidationError, post_load, pre_load
 from marshmallow.validate import OneOf, Regexp, Email, Length
 
 from geonature.core.gn_synthese.synthese_config import (
@@ -440,6 +436,22 @@ class Synthese(Schema):
     )
     # Activate the blurring of sensitive observations. Otherwise, exclude them
     BLUR_SENSITIVE_OBSERVATIONS = fields.Boolean(load_default=True)
+
+    @pre_load
+    def warn_deprecated(self, data, **kwargs):
+        deprecated = {
+            "EXPORT_ID_SYNTHESE_COL",
+            "EXPORT_ID_DIGITISER_COL",
+            "EXPORT_OBSERVERS_COL",
+            "EXPORT_GEOJSON_4326_COL",
+            "EXPORT_GEOJSON_LOCAL_COL",
+        }
+        for deprecated_field in deprecated & set(data.keys()):
+            warn(
+                f"{deprecated_field} is deprecated - "
+                "Please use `EXPORT_OBSERVATIONS_CUSTOM_VIEWS` parameter to customize your synthese exports "
+            )
+        return data
 
 
 # Map configuration
