@@ -10,7 +10,7 @@ import { NgChartsModule } from 'ng2-charts';
 
 import { ImportModalDestinationComponent } from './components/modal_destination/import-modal-destination.component';
 import { ModalDeleteImport } from './components/delete-modal/delete-modal.component';
-import { DataService } from './services/data.service';
+import { ImportDataService } from './services/data.service';
 import { CsvExportService } from './services/csv-export.service';
 import { FieldMappingService } from './services/mappings/field-mapping.service';
 import { ContentMappingService } from './services/mappings/content-mapping.service';
@@ -115,7 +115,7 @@ const routes: Routes = [
   ],
   entryComponents: [ModalDeleteImport],
   providers: [
-    DataService,
+    ImportDataService,
     ImportProcessService,
     ImportProcessResolver,
     CsvExportService,
