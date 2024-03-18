@@ -6,6 +6,12 @@
 
 - [Synthèse] Possibilité d'ajouter des champs supplémentaires à la liste de résultats via le paramètre `ADDITIONNAL_COLUMNS_FRONTEND`. Ces champs sont masqués par défaut et controlable depuis l'interface (#2946)
 
+- [Synthèse] Possiblité d'ajouter des exports personnalisés basé sur des vues SQL via le paramètre `ADDITIONAL_COLUMNS_FRONTEND` (#2955)
+
+**⚠️ Notes de version**
+
+- Les paramètres de la synthèse permettant de spécifier le nom de certaines colonnes de la vue d'export sont depréciés ( `EXPORT_ID_SYNTHESE_COL, EXPORT_ID_DIGITISER_COL, EXPORT_OBSERVERS_COL, EXPORT_GEOJSON_4326_COL EXPORT_GEOJSON_LOCAL_COL`) . Si vous aviez surcoucher la vue `gn_synthese.v_synthese_for_export`, il est recommandé d'utiliser ce paramètre et de se créer des vues personnalisées.
+
   2.14.0 - Talpa europaea 👓 (2024-02-28)
 
 ---
