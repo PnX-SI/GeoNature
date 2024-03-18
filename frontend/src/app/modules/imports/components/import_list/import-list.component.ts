@@ -6,7 +6,7 @@ import { FormControl } from '@angular/forms';
 import { saveAs } from 'file-saver';
 import { CommonService } from '@geonature_common/service/common.service';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
-import { DataService } from '../../services/data.service';
+import { ImportDataService } from '../../services/data.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ImportProcessService } from '../import_process/import-process.service';
 import { Import } from '../../models/import.model';
@@ -42,7 +42,7 @@ export class ImportListComponent implements OnInit {
 
   constructor(
     public _cruvedStore: CruvedStoreService,
-    private _ds: DataService,
+    private _ds: ImportDataService,
     private _router: Router,
     private _commonService: CommonService,
     private modal: NgbModal,
