@@ -174,7 +174,7 @@
               [matBadge]="this.invalidEntityControls(entitythemes.entity.label)"
               matBadgeColor="warn"
               matBadgeSize="small"
-              [matBadgeHidden]="entitiesForms[entitythemes.entity.label].valid"
+              [matBadgeHidden]="this.invalidEntityControls(entitythemes.entity.label)<1"
               class="entity-tab-label"
             >
               {{ entitythemes.entity.label }}
