@@ -10,14 +10,14 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { ImportProcessService } from './import-process.service';
 import { Import } from '../../models/import.model';
 import { Step } from '../../models/enums.model';
-import { DataService } from '../../services/data.service';
+import { ImportDataService } from '../../services/data.service';
 import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
 export class ImportProcessResolver implements Resolve<Import> {
   constructor(
     private router: Router,
-    private ds: DataService,
+    private ds: ImportDataService,
     private commonService: CommonService,
     private importProcessService: ImportProcessService,
     public config: ConfigService

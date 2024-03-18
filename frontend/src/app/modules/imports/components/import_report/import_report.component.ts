@@ -5,7 +5,7 @@ import leafletImage from 'leaflet-image';
 import { BaseChartDirective } from 'ng2-charts';
 
 import { MapService } from '@geonature_common/map/map.service';
-import { DataService } from '../../services/data.service';
+import { ImportDataService } from '../../services/data.service';
 import { ImportProcessService } from '../import_process/import-process.service';
 import {
   EntitiesThemesFields,
@@ -76,7 +76,7 @@ export class ImportReportComponent implements OnInit {
 
   constructor(
     private importProcessService: ImportProcessService,
-    private _dataService: DataService,
+    private _dataService: ImportDataService,
     private _router: Router,
     private _map: MapService,
     public _csvExport: CsvExportService,

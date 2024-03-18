@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ImportProcessService } from '../import-process.service';
-import { DataService } from '../../../services/data.service';
+import { ImportDataService } from '../../../services/data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { Step } from '../../../models/enums.model';
 import { Import, ImportPreview } from '../../../models/import.model';
@@ -38,7 +38,7 @@ export class ImportStepComponent implements OnInit {
     private importProcessService: ImportProcessService,
     private _router: Router,
     private _route: ActivatedRoute,
-    private _ds: DataService,
+    private _ds: ImportDataService,
     private _commonService: CommonService,
     public _csvExport: CsvExportService,
     public config: ConfigService

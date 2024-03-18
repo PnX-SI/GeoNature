@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonService } from '@geonature_common/service/common.service';
-import { DataService } from '../../services/data.service';
+import { ImportDataService } from '../../services/data.service';
 import { Router } from '@angular/router';
 import { Import } from '../../models/import.model';
 
@@ -14,7 +14,7 @@ export class ModalDeleteImport implements OnInit {
   @Output() onDelete = new EventEmitter();
   constructor(
     private _commonService: CommonService,
-    private _ds: DataService,
+    private _ds: ImportDataService,
     private _router: Router
   ) {}
 
