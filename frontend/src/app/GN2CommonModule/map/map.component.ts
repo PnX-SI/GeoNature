@@ -219,7 +219,7 @@ export class MapComponent implements OnInit {
 
     // Select and add the current tile layer
     const userMapLayer = localStorage.getItem('MapLayer');
-    if (userMapLayer !== null && baseControl[userMapLayer] !== undefined) {
+    if (userMapLayer && baseControl[userMapLayer]) {
       this.map.addLayer(baseControl[userMapLayer]);
     } else {
       this.map.addLayer(baseControl[BASEMAP[0].name]);
