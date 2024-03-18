@@ -25,7 +25,7 @@
         <div class="d-flex flex-row justify-content-center mt-3">
           <div class="d-flex justify-content-center align-content-between row w-100">
             <button
-              *ngIf="canRenameMapping"
+              *ngIf="cruved.U"
               class="btn-sm mb-1 ml-1 col-xl-4 w-50"
               mat-raised-button
               color="primary"
@@ -35,7 +35,7 @@
               Renommer le modèle d'import
             </button>
             <button
-              *ngIf="canDeleteMapping"
+              *ngIf="cruved.D"
               class="btn-sm mb-1 ml-1 col-xl-4 w-50"
               mat-raised-button
               color="warn"
