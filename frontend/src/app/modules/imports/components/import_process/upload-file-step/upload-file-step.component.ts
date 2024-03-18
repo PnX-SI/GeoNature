@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { DataService } from '../../../services/data.service';
+import { ImportDataService } from '../../../services/data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Step } from '../../../models/enums.model';
@@ -29,7 +29,7 @@ export class UploadFileStepComponent implements OnInit {
   public destination: Destination = null;
 
   constructor(
-    private ds: DataService,
+    private ds: ImportDataService,
     private commonService: CommonService,
     private fb: FormBuilder,
     private importProcessService: ImportProcessService,

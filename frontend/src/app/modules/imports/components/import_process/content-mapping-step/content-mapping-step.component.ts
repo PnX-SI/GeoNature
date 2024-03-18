@@ -7,7 +7,7 @@ import { Observable, of } from 'rxjs';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { concatMap, finalize } from 'rxjs/operators';
 
-import { DataService } from '../../../services/data.service';
+import { ImportDataService } from '../../../services/data.service';
 import { ContentMappingService } from '../../../services/mappings/content-mapping.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
@@ -48,7 +48,7 @@ export class ContentMappingStepComponent implements OnInit {
   constructor(
     //private stepService: StepsService,
     private _fb: FormBuilder,
-    private _ds: DataService,
+    private _ds: ImportDataService,
     private _synthese_ds: SyntheseDataService,
     public _cm: ContentMappingService,
     private _commonService: CommonService,

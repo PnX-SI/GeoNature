@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
-import { DataService } from './data.service';
+import { ImportDataService } from './data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class CsvExportService {
   csvDownloadResp: any;
 
   constructor(
-    private _ds: DataService,
+    private _ds: ImportDataService,
     private _commonService: CommonService
   ) {}
 

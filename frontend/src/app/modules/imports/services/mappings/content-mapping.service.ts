@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DataService } from '../data.service';
+import { ImportDataService } from '../data.service';
 import { ConfigService } from '@geonature/services/config.service';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class ContentMappingService {
   public displayMapped: boolean;
 
   constructor(
-    private _ds: DataService,
+    private _ds: ImportDataService,
     public config: ConfigService
   ) {
     this.displayMapped = this.config.IMPORT.DISPLAY_MAPPED_VALUES;
