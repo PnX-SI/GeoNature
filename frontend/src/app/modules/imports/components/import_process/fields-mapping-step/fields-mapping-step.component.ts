@@ -150,17 +150,14 @@ export class FieldsMappingStepComponent implements OnInit {
    */
   invalidEntityControls(entityFormLabel: string) {
     let result: number = 0;
-    console.log(this.targetFields
-      .find(({ entity }) => entity.label === entityFormLabel))
     this.targetFields
       .find(({ entity }) => entity.label === entityFormLabel)
       .themes.forEach(({ fields }) => {
         fields.forEach((field) => {
-          let control = this.mappingFormControl.controls[field.name_field]
+          let control = this.mappingFormControl.controls[field.name_field];
           result += control.status === 'INVALID' ? 1 : 0;
         });
       });
-    console.log(result);
     return result;
   }
 
