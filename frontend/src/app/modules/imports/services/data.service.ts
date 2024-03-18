@@ -85,7 +85,10 @@ export class ImportDataService {
   }
 
   updateImport(idImport, data): Observable<Import> {
-    return this._http.post<Import>(`${this.getUrlApiForADestination()}/imports/${idImport}/update`, data);
+    return this._http.post<Import>(
+      `${this.getUrlApiForADestination()}/imports/${idImport}/update`,
+      data
+    );
   }
 
   createFieldMapping(name: string, values: FieldMappingValues): Observable<FieldMapping> {
@@ -107,15 +110,21 @@ export class ImportDataService {
   }
 
   getContentMappings(): Observable<Array<ContentMapping>> {
-    return this._http.get<Array<ContentMapping>>(`${this.getUrlApiForADestination()}/contentmappings/`);
+    return this._http.get<Array<ContentMapping>>(
+      `${this.getUrlApiForADestination()}/contentmappings/`
+    );
   }
 
   getFieldMapping(id_mapping: number): Observable<FieldMapping> {
-    return this._http.get<FieldMapping>(`${this.getUrlApiForADestination()}/fieldmappings/${id_mapping}/`);
+    return this._http.get<FieldMapping>(
+      `${this.getUrlApiForADestination()}/fieldmappings/${id_mapping}/`
+    );
   }
 
   getContentMapping(id_mapping: number): Observable<ContentMapping> {
-    return this._http.get<ContentMapping>(`${this.getUrlApiForADestination()}/contentmappings/${id_mapping}/`);
+    return this._http.get<ContentMapping>(
+      `${this.getUrlApiForADestination()}/contentmappings/${id_mapping}/`
+    );
   }
 
   updateFieldMapping(
@@ -157,11 +166,15 @@ export class ImportDataService {
   }
 
   deleteFieldMapping(id_mapping: number): Observable<null> {
-    return this._http.delete<null>(`${this.getUrlApiForADestination()}/fieldmappings/${id_mapping}/`);
+    return this._http.delete<null>(
+      `${this.getUrlApiForADestination()}/fieldmappings/${id_mapping}/`
+    );
   }
 
   deleteContentMapping(id_mapping: number): Observable<null> {
-    return this._http.delete<null>(`${this.getUrlApiForADestination()}/contentmappings/${id_mapping}/`);
+    return this._http.delete<null>(
+      `${this.getUrlApiForADestination()}/contentmappings/${id_mapping}/`
+    );
   }
 
   /**
@@ -184,11 +197,15 @@ export class ImportDataService {
    * @param idImport : integer
    */
   getColumnsImport(idImport: number): Observable<Array<string>> {
-    return this._http.get<Array<string>>(`${this.getUrlApiForADestination()}/imports/${idImport}/columns`);
+    return this._http.get<Array<string>>(
+      `${this.getUrlApiForADestination()}/imports/${idImport}/columns`
+    );
   }
 
   getImportValues(idImport: number): Observable<ImportValues> {
-    return this._http.get<ImportValues>(`${this.getUrlApiForADestination()}/imports/${idImport}/values`);
+    return this._http.get<ImportValues>(
+      `${this.getUrlApiForADestination()}/imports/${idImport}/values`
+    );
   }
 
   getBibFields(): Observable<Array<EntitiesThemesFields>> {
@@ -196,7 +213,10 @@ export class ImportDataService {
   }
 
   setImportFieldMapping(idImport: number, values: FieldMappingValues): Observable<Import> {
-    return this._http.post<Import>(`${this.getUrlApiForADestination()}/imports/${idImport}/fieldmapping`, values);
+    return this._http.post<Import>(
+      `${this.getUrlApiForADestination()}/imports/${idImport}/fieldmapping`,
+      values
+    );
   }
 
   setImportContentMapping(idImport: number, values: ContentMappingValues): Observable<Import> {
@@ -207,15 +227,22 @@ export class ImportDataService {
   }
 
   getNomencInfo(id_import: number) {
-    return this._http.get<any>(`${this.getUrlApiForADestination()}/imports/${id_import}/contentMapping`);
+    return this._http.get<any>(
+      `${this.getUrlApiForADestination()}/imports/${id_import}/contentMapping`
+    );
   }
 
   prepareImport(import_id: number): Observable<Import> {
-    return this._http.post<Import>(`${this.getUrlApiForADestination()}/imports/${import_id}/prepare`, {});
+    return this._http.post<Import>(
+      `${this.getUrlApiForADestination()}/imports/${import_id}/prepare`,
+      {}
+    );
   }
 
   getValidData(import_id: number): Observable<ImportPreview> {
-    return this._http.get<any>(`${this.getUrlApiForADestination()}/imports/${import_id}/preview_valid_data`);
+    return this._http.get<any>(
+      `${this.getUrlApiForADestination()}/imports/${import_id}/preview_valid_data`
+    );
   }
 
   getBbox(sourceId: number): Observable<any> {
@@ -225,7 +252,10 @@ export class ImportDataService {
   }
 
   finalizeImport(import_id): Observable<Import> {
-    return this._http.post<Import>(`${this.getUrlApiForADestination()}/imports/${import_id}/import`, {});
+    return this._http.post<Import>(
+      `${this.getUrlApiForADestination()}/imports/${import_id}/import`,
+      {}
+    );
   }
 
   getErrorCSV(importId: number) {
@@ -241,7 +271,9 @@ export class ImportDataService {
   }
 
   getImportErrors(importId): Observable<Array<ImportError>> {
-    return this._http.get<Array<ImportError>>(`${this.getUrlApiForADestination()}/imports/${importId}/errors`);
+    return this._http.get<Array<ImportError>>(
+      `${this.getUrlApiForADestination()}/imports/${importId}/errors`
+    );
   }
 
   getTaxaRepartition(sourceId: number, taxa_rank: string) {
