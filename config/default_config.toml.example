@@ -325,20 +325,15 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Nombre max d'observations dans les exports
     NB_MAX_OBS_EXPORT = 50000
 
-    # Noms des colonnes obligatoires de la vue ``gn_synthese.v_synthese_for_export``
-    EXPORT_ID_SYNTHESE_COL = "id_synthese"
-    EXPORT_ID_DATASET_COL = "jdd_id"
-    EXPORT_ID_DIGITISER_COL = "id_digitiser"
-    EXPORT_OBSERVERS_COL = "observateurs"
-    EXPORT_GEOJSON_4326_COL = "geojson_4326"
-    EXPORT_GEOJSON_LOCAL_COL = "geojson_local"
-
     # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
     EXPORT_FORMAT = ["csv", "geojson", "shapefile"]
 
     # Vues d'export personnalisées
     EXPORT_OBSERVATIONS_CUSTOM_VIEWS = [
-        {"label" : "export customisé", "view_name"= "gn_synthese.ma_vue_personnalisee"}
+        {
+            label = "format personnalisé", 
+            view_name = "schema_name.view_name"
+        }    
     ]
     # Noms des colonnes obligatoires de la vue ``gn_synthese.v_metadata_for_export``
     EXPORT_METADATA_ID_DATASET_COL = "jdd_id"
