@@ -1,5 +1,5 @@
 import { Component, Input, Output } from '@angular/core';
-import { DataService } from '../../services/data.service';
+import { ImportDataService } from '../../services/data.service';
 import { Destination } from '../../models/import.model';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { EventEmitter } from '@angular/core';
@@ -15,7 +15,7 @@ export class DestinationsComponent extends GenericFormComponent {
   @Input() bindValue: string = 'code';
   @Output() onClear = new EventEmitter<any>();
 
-  constructor(private _ds: DataService) {
+  constructor(private _ds: ImportDataService) {
     super();
   }
   ngOnInit() {

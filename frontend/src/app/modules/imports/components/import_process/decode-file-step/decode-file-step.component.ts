@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DataService } from '../../../services/data.service';
+import { ImportDataService } from '../../../services/data.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ImportProcessService } from '../import-process.service';
 import { Step } from '../../../models/enums.model';
@@ -22,7 +22,7 @@ export class DecodeFileStepComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private ds: DataService,
+    private ds: ImportDataService,
     private importProcessService: ImportProcessService,
     private route: ActivatedRoute,
     public config: ConfigService

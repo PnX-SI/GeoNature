@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ImportProcessService } from '../import_process/import-process.service';
 
 import { Import, ImportError } from '../../models/import.model';
-import { DataService } from '../../services/data.service';
+import { ImportDataService } from '../../services/data.service';
 
 @Component({
   selector: 'pnx-import-errors',
@@ -18,7 +18,7 @@ export class ImportErrorsComponent implements OnInit {
   constructor(
     private _router: Router,
     private _route: ActivatedRoute,
-    private _ds: DataService
+    private _ds: ImportDataService
   ) {
     _router.routeReuseStrategy.shouldReuseRoute = () => false; // reset component on importId change
   }

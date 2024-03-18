@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataService } from '../../../services/data.service';
+import { ImportDataService } from '../../../services/data.service';
 import { ImportProcessService } from '../import-process.service';
 import { isObservable } from 'rxjs';
 import { Import } from '../../../models/import.model';
@@ -16,7 +16,7 @@ export class FooterStepperComponent implements OnInit {
 
   constructor(
     private _router: Router,
-    private _ds: DataService,
+    private _ds: ImportDataService,
     private importProcessService: ImportProcessService,
     public config: ConfigService
   ) {}
