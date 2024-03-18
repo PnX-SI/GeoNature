@@ -133,34 +133,36 @@ export class MapComponent implements OnInit {
   }
 
   initialize() {
-    let center: LatLngExpression;
+    let center: LatLngExpression = L.latLng(
+      this.config.MAPCONFIG.CENTER[0],
+      this.config.MAPCONFIG.CENTER[1]
+    );
     if (this.center !== undefined) {
       center = L.latLng(this.center[0], this.center[1]);
-    } else {
-      center = L.latLng(this.config.MAPCONFIG.CENTER[0], this.config.MAPCONFIG.CENTER[1]);
     }
-    // MAP
-    const map = L.map(this.mapContainer.nativeElement, {
+
+    // --- Create MAP
+    this.map = L.map(this.mapContainer.nativeElement, {
       zoomControl: false,
       center: center,
       zoom: this.zoom,
       preferCanvas: true,
     });
-    this.map = map;
-    (map as any)._onResize();
+    (this.map as any)._onResize();
 
+    // --- MAP CONTROLS
     // ZOOM CONTROL
-    L.control.zoom({ position: 'topright' }).addTo(map);
+    L.control.zoom({ position: 'topright' }).addTo(this.map);
 
     // SCALE
-    L.control.scale().addTo(map);
+    L.control.scale().addTo(this.map);
 
-    // geoloc
+    //  GEOLOCATION
     if (this.geolocation && this.config.MAPCONFIG.GEOLOCATION) {
-      (L.control as any).locate().addTo(map);
+      (L.control as any).locate().addTo(this.map);
     }
 
-    // LAYERS CONTROL
+    // --- LAYERS CONTROL
     // Baselayers
     const baseControl = {};
     const BASEMAP = JSON.parse(JSON.stringify(this.config.MAPCONFIG.BASEMAP));
@@ -177,26 +179,26 @@ export class MapComponent implements OnInit {
           formatedBasemap.options
         );
       }
-      if (index === 0) {
-        map.addLayer(baseControl[basemap.name]);
-      }
     });
+    // --- Layers selection
     // overlays layers
-    const overlaysLayers = this.mapService.createOverLayers(map);
+    const overlaysLayers = this.mapService.createOverLayers(this.map);
     // create control layers
     this.mapService.layerControl = L.control.layers(baseControl, overlaysLayers, {
       sortLayers: false, // When false, layers will keep the order in which they were added to the control
       collapsed: true, //If true, the control will be collapsed into an icon and expanded on mouse hover
     });
-    this.mapService.layerControl.addTo(map);
+    this.mapService.layerControl.addTo(this.map);
 
-    this.mapService.setMap(map);
+    this.mapService.setMap(this.map);
+
+    // ADD DRAW CONTROL
     this.mapService.initializeLeafletDrawFeatureGroup();
+
     // GET EXTEND ON EACH ZOOM
-    map.on('moveend', (e) => {
-      const zoom = this.map.getZoom();
+    this.map.on('moveend', (e) => {
       // keep current extend only if current zoom != 0
-      if (zoom !== 0) {
+      if (this.map.getZoom() !== 0) {
         this.mapService.currentExtend = {
           center: this.map.getCenter(),
           zoom: this.map.getZoom(),
@@ -205,18 +207,22 @@ export class MapComponent implements OnInit {
     });
 
     // on L.controler.layers add over layer to map
-    map.on('overlayadd', (overlay) => {
+    this.map.on('overlayadd', (overlay) => {
       // once - load JSON or WFS overlay data async if not already loaded
       this.mapService.loadOverlay(overlay);
     });
 
-    map.on('baselayerchange', (layer) => {
+    // Store last selected basemap
+    this.map.on('baselayerchange', (layer) => {
       localStorage.setItem('MapLayer', layer.name);
     });
 
+    // Select and add the current tile layer
     const userMapLayer = localStorage.getItem('MapLayer');
     if (userMapLayer !== null && baseControl[userMapLayer] !== undefined) {
-      map.addLayer(baseControl[userMapLayer]);
+      this.map.addLayer(baseControl[userMapLayer]);
+    } else {
+      this.map.addLayer(baseControl[BASEMAP[0].name]);
     }
 
     setTimeout(() => {
