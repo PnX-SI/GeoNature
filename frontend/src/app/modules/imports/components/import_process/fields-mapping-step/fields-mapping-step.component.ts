@@ -113,13 +113,13 @@ export class FieldsMappingStepComponent implements OnInit {
       this.mappedSourceFields = new Set();
       this.unmappedSourceFields = new Set(sourceFields);
       if (this.importData.fieldmapping) {
-        this.fillSyntheseFormWithMapping(this.importData.fieldmapping);
+        this.fillFormWithMapping(this.importData.fieldmapping);
       }
 
       // subscribe to changes of selected field mapping
       this.fieldMappingForm.valueChanges
         .pipe(
-          // skip first empty value to avoid reseting the synthese form if importData as mapping:
+          // skip first empty value to avoid reseting the field form if importData as mapping:
           skip(this.importData.fieldmapping === null ? 0 : 1)
         )
         .subscribe((mapping) => {
@@ -135,7 +135,7 @@ export class FieldsMappingStepComponent implements OnInit {
     return fm1 != null && fm2 != null && fm1.id === fm2.id;
   }
 
-  // add a form control for each target field in the syntheseForm
+  // add a form control for each target field in the mappingForm
   // mandatory target fields have a required validator
   displayAlert(field) {
     return (
@@ -320,7 +320,7 @@ export class FieldsMappingStepComponent implements OnInit {
       }
       this.mappingSelected = false;
     } else {
-      this.fillSyntheseFormWithMapping(mapping.values, true);
+      this.fillFormWithMapping(mapping.values, true);
       this.mappingSelected = true;
     }
   }
@@ -329,7 +329,7 @@ export class FieldsMappingStepComponent implements OnInit {
    * Fill the field form with the value define in the given mapping
    * @param mapping : id of the mapping
    */
-  fillSyntheseFormWithMapping(mappingvalues: FieldMappingValues, fromMapping = false) {
+  fillFormWithMapping(mappingvalues: FieldMappingValues, fromMapping = false) {
     // Retrieve fields for this mapping
     this.mappingFormControl.reset();
     this.autoMappedFields = [];
