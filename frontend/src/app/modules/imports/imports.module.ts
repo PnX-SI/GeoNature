@@ -23,6 +23,10 @@ import { UploadFileStepComponent } from './components/import_process/upload-file
 import { DecodeFileStepComponent } from './components/import_process/decode-file-step/decode-file-step.component';
 import { FieldsMappingStepComponent } from './components/import_process/fields-mapping-step/fields-mapping-step.component';
 import { ContentMappingStepComponent } from './components/import_process/content-mapping-step/content-mapping-step.component';
+import { MappingThemeComponent } from './components/import_process/fields-mapping-step/mapping-theme/mapping-theme.component';
+import { MappingEntityComponent } from './components/import_process/fields-mapping-step/mapping-entity/mapping-entity.component';
+import { MappingFormComponent } from './components/import_process/fields-mapping-step/mapping-form/mapping-form.component';
+import { MappingSelectionComponent } from './components/import_process/fields-mapping-step/mapping-selection/mapping-selection.component';
 import { ImportStepComponent } from './components/import_process/import-step/import-step.component';
 import { StepperComponent } from './components/import_process/stepper/stepper.component';
 import { FooterStepperComponent } from './components/import_process/footer-stepper/footer-stepper.component';
@@ -96,6 +100,10 @@ const routes: Routes = [
     DecodeFileStepComponent,
     FieldsMappingStepComponent,
     ContentMappingStepComponent,
+    MappingThemeComponent,
+    MappingEntityComponent,
+    MappingFormComponent,
+    MappingSelectionComponent,
     ImportStepComponent,
     StepperComponent,
     FooterStepperComponent,
