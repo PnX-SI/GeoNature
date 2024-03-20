@@ -80,10 +80,13 @@ if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
     @routes.before_request
     def synchronize_mtd():
         if request.endpoint in ["gn_meta.get_datasets", "gn_meta.get_acquisition_frameworks_list"]:
+            params = request.json if request.is_json else request.args
             try:
-                sync_af_and_ds_by_user(id_role=g.current_user.id_role)
+                list_id_af = params.get("id_acquisition_frameworks", [])
+                for id_af in list_id_af:
+                    sync_af_and_ds_by_user(id_role=g.current_user.id_role, id_af=id_af)
             except Exception as e:
-                log.exception("Error while get JDD via MTD")
+                log.exception(f"Error while get JDD via MTD: {e}")
 
 
 @routes.route("/datasets", methods=["GET", "POST"])
@@ -1061,14 +1064,16 @@ def publish_acquisition_framework(af_id):
 
 
 @routes.cli.command()
-@click.argument("id_role", nargs=1, required=False, default=None)
-def mtd_sync(id_role):
+@click.option("--id-role", nargs=1, required=False, default=None)
+@click.option("--id-af", nargs=1, required=False, default=None)
+def mtd_sync(id_role, id_af):
     """
     Trigger global sync or a sync for a given user only.
 
     :param id_role: user id
+    :param id_af: acquisition framework id
     """
     if id_role:
-        return sync_af_and_ds_by_user(id_role)
+        return sync_af_and_ds_by_user(id_role, id_af)
     else:
         return mtd_sync_af_and_ds()
