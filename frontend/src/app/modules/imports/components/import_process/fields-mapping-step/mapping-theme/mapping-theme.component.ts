@@ -12,9 +12,7 @@ export class MappingThemeComponent implements OnInit {
   @Input() themeLabel: string;
   @Input() sourceFields: any;
   @Input() mappingFormControl: FormGroup;
+  @Input() mappedSourceFields: any;
 
-  ngOnInit() {
-    console.log(this.sourceFields);
-    console.log('HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-  }
+  ngOnInit() {}
 }
