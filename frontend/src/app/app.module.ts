@@ -52,10 +52,6 @@ import { UserDataService } from './userModule/services/user-data.service';
 import { NotificationDataService } from './components/notification/notification-data.service';
 
 import { UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
-import { MappingThemeComponent } from './modules/imports/components/import_process/fields-mapping-step/mapping-theme/mapping-theme.component';
-import { MappingEntityComponent } from './modules/imports/components/import_process/fields-mapping-step/mapping-entity/mapping-entity.component';
-import { MappingFormComponent } from './modules/imports/components/import_process/fields-mapping-step/mapping-form/mapping-form.component';
-import { MappingSelectionComponent } from './modules/imports/components/import_process/fields-mapping-step/mapping-selection/mapping-selection.component';
 
 export function loadConfig(injector) {
   const configService = injector.get(ConfigService);
@@ -112,10 +108,6 @@ export function initApp(injector) {
     IntroductionComponent,
     NotificationComponent,
     RulesComponent,
-    MappingThemeComponent,
-    MappingEntityComponent,
-    MappingFormComponent,
-    MappingSelectionComponent,
   ],
   providers: [
     AuthService,
