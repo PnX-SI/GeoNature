@@ -23,12 +23,18 @@ import { UploadFileStepComponent } from './components/import_process/upload-file
 import { DecodeFileStepComponent } from './components/import_process/decode-file-step/decode-file-step.component';
 import { FieldsMappingStepComponent } from './components/import_process/fields-mapping-step/fields-mapping-step.component';
 import { ContentMappingStepComponent } from './components/import_process/content-mapping-step/content-mapping-step.component';
+import { MappingThemeComponent } from './components/import_process/fields-mapping-step/mapping-theme/mapping-theme.component';
+import { MappingEntityComponent } from './components/import_process/fields-mapping-step/mapping-entity/mapping-entity.component';
+import { MappingFormComponent } from './components/import_process/fields-mapping-step/mapping-form/mapping-form.component';
+import { MappingSelectionComponent } from './components/import_process/fields-mapping-step/mapping-selection/mapping-selection.component';
 import { ImportStepComponent } from './components/import_process/import-step/import-step.component';
 import { StepperComponent } from './components/import_process/stepper/stepper.component';
 import { FooterStepperComponent } from './components/import_process/footer-stepper/footer-stepper.component';
 import { Step } from './models/enums.model';
 import { ImportReportComponent } from './components/import_report/import_report.component';
 import { DestinationsComponent } from './components/destinations/destinations.component';
+import { FieldMappingTestComponent } from './components/import_process/fields-mapping-step/field-mapping-test/field-mapping-test.component';
+import { FieldMappingModalComponent } from './components/import_process/fields-mapping-step/field-mapping-modal/field-mapping-modal.component';
 
 const routes: Routes = [
   { path: '', component: ImportListComponent },
@@ -66,7 +72,7 @@ const routes: Routes = [
       },
       {
         path: ':id_import/fieldmapping',
-        component: FieldsMappingStepComponent,
+        component: FieldMappingTestComponent,
         data: { step: Step.FieldMapping },
         resolve: { importData: ImportProcessResolver },
       },
@@ -96,12 +102,18 @@ const routes: Routes = [
     DecodeFileStepComponent,
     FieldsMappingStepComponent,
     ContentMappingStepComponent,
+    MappingThemeComponent,
+    MappingEntityComponent,
+    MappingFormComponent,
+    MappingSelectionComponent,
     ImportStepComponent,
     StepperComponent,
     FooterStepperComponent,
     ImportProcessComponent,
     ImportReportComponent,
     DestinationsComponent,
+    FieldMappingTestComponent,
+    FieldMappingModalComponent,
   ],
   imports: [
     NgChartsModule,
