@@ -33,6 +33,7 @@ import { FooterStepperComponent } from './components/import_process/footer-stepp
 import { Step } from './models/enums.model';
 import { ImportReportComponent } from './components/import_report/import_report.component';
 import { DestinationsComponent } from './components/destinations/destinations.component';
+import { FieldMappingTestComponent } from './components/import_process/fields-mapping-step/field-mapping-test/field-mapping-test.component';
 
 const routes: Routes = [
   { path: '', component: ImportListComponent },
@@ -70,7 +71,7 @@ const routes: Routes = [
       },
       {
         path: ':id_import/fieldmapping',
-        component: FieldsMappingStepComponent,
+        component: FieldMappingTestComponent,
         data: { step: Step.FieldMapping },
         resolve: { importData: ImportProcessResolver },
       },
@@ -110,6 +111,7 @@ const routes: Routes = [
     ImportProcessComponent,
     ImportReportComponent,
     DestinationsComponent,
+    FieldMappingTestComponent,
   ],
   imports: [
     NgChartsModule,

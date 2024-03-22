@@ -1,0 +1,27 @@
+<div class="card">
+  <div class="card-header">
+    <h5 class="card-title mb-0">Correspondance des champs avec le modèle</h5>
+  </div>
+  <div class="card-body">
+    <pnx-mapping-selection></pnx-mapping-selection>
+    <ng-container *ngIf="isReady" class="">
+      <mat-tab-group [(selectedIndex)]="selectedIndex" animationDuration="0ms" class="entities-tab">
+        <mat-tab *ngFor="let entitythemes of targetFields">
+          <ng-template mat-tab-label>
+            <!-- [matBadge]="this.invalidEntityControls(entitythemes.entity.label)" -->
+            <!-- [matBadgeHidden]="this.invalidEntityControls(entitythemes.entity.label)<1" -->
+            <span matBadgeColor="warn" matBadgeSize="small" class="entity-tab-label">
+              {{ entitythemes.entity.label }}
+            </span>
+          </ng-template>
+          <div *ngFor="let themefields of entitythemes.themes" class="entities-tab__content">
+            <pnx-mapping-theme
+              [themeData]="themefields"
+              [sourceFields]="sourceFields"
+            ></pnx-mapping-theme>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </ng-container>
+  </div>
+</div>
