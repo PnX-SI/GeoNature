@@ -5,150 +5,35 @@ import {
   Validators,
   AbstractControl,
   ValidationErrors,
+  FormBuilder,
 } from '@angular/forms';
 import { ImportDataService } from '../data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 
 @Injectable()
 export class FieldMappingService {
-  /*public fieldMappingForm: FormGroup;
-  public userFieldMappings;
-  public columns;
-  public newMapping: boolean = false;
-  public id_mapping;*/
+  public mappingFormGroup: FormGroup;
 
-  constructor /*private _ds: DataService,
-    private _commonService: CommonService*/() {}
+  constructor(private _fb: FormBuilder) {}
 
-  /*getMappingNamesList(mapping_type) {
-    this._ds.getMappings(mapping_type).subscribe(
-      result => {
-        this.userFieldMappings = result["mappings"];
-        if (result["column_names"] != "undefined import_id") {
-          this.columns = result["column_names"].map(col => {
-            return {
-              id: col,
-              selected: false
-            };
-          });
-        }
-      },
-      error => {
-        console.error(error);
-        if (error.statusText === "Unknown Error") {
-          // show error message if no connexion
-          this._commonService.regularToaster(
-            "error",
-            "Une erreur s'est produite : contactez l'administrateur du site"
-          );
-        } else {
-          this._commonService.regularToaster("error", error.error);
-        }
-      }
+  initForm() {
+    this.mappingFormGroup = this._fb.group({});
+    this.createMappingFormValidators();
+    this.mappingFormGroup.updateValueAndValidity();
+  }
+
+  createMappingFormValidators(): ValidationErrors | null {
+    return null;
+  }
+
+  // add a form control for each target field in the mappingForm
+  // mandatory target fields have a required validator
+  displayAlert(field) {
+    return (
+      field.name_field === 'unique_id_sinp_generate' &&
+      !this.mappingFormGroup.get(field.name_field).value
     );
   }
-
-  createMapping() {
-    this.fieldMappingForm.reset();
-    this.newMapping = true;
-  }
-
-  cancelMapping() {
-    this.newMapping = false;
-    this.fieldMappingForm.controls["mappingName"].setValue("");
-  }
-
-
-
-  onMappingName(mappingForm, targetFormName): void {
-    mappingForm.get("fieldMapping").valueChanges.subscribe(
-      id_mapping => {
-        this.id_mapping = id_mapping;
-        if (this.id_mapping && id_mapping != "") {
-          this.fillMapping(this.id_mapping, targetFormName);
-        } else {
-          this.fillEmptyMapping(targetFormName);
-          this.disableMapping(targetFormName);
-          this.shadeSelectedColumns(targetFormName);
-        }
-      },
-      error => {
-        if (error.statusText === "Unknown Error") {
-          // show error message if no connexion
-          this._commonService.regularToaster(
-            "error",
-            "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)"
-          );
-        } else {
-          console.error(error);
-          this._commonService.regularToaster("error", error.error);
-        }
-      }
-    );
-  }
-
-  fillMapping(id_mapping, targetFormName) {
-    this.id_mapping = id_mapping;
-    this._ds.getMappingFields(this.id_mapping).subscribe(
-      mappingFields => {
-        if (mappingFields.length > 0) {
-          for (let field of mappingFields) {
-            this.enableMapping(targetFormName);
-            targetFormName
-              .get(field["target_field"])
-              .setValue(field["source_field"]);
-          }
-          this.shadeSelectedColumns(targetFormName);
-          this.geoFormValidator(targetFormName);
-        } else {
-          this.fillEmptyMapping(targetFormName);
-        }
-      },
-      error => {
-        if (error.statusText === "Unknown Error") {
-          // show error message if no connexion
-          this._commonService.regularToaster(
-            "error",
-            "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)"
-          );
-        } else {
-          console.error(error);
-          this._commonService.regularToaster("error", error.error);
-        }
-      }
-    );
-  }
-
-  shadeSelectedColumns(targetFormName) {
-    let formValues = targetFormName.value;
-    this.columns.map(col => {
-      if (formValues) {
-        if (Object.values(formValues).includes(col.id)) {
-          col.selected = true;
-        } else {
-          col.selected = false;
-        }
-      }
-    });
-  }*/
-
-  /*setFormControlNotRequired(form): void {
-    form.clearValidators();
-    //form.setValidators(null);
-    form.updateValueAndValidity();
-  }
-
-  setFormControlRequired(form): void {
-    form.setValidators([Validators.required]);
-    form.updateValueAndValidity();
-  }*/
-
-  /*setInvalid(form, errorName: string): void {
-    const error = {}
-    error[errorName] = true
-    form.setErrors(error)
-  }*/
-
   /**
    * Add custom validator to the form
    */
@@ -213,28 +98,4 @@ export class FieldMappingService {
     // we set errors on individual form control level, so we return no errors (null) at form group level.
     return null;
   }
-
-  /*onSelect(id_mapping, targetForm) {
-    this.id_mapping = id_mapping;
-    this.shadeSelectedColumns(targetForm);
-    this.geoFormValidator(targetForm);
-  }
-
-  disableMapping(targetForm) {
-    Object.keys(targetForm.controls).forEach(key => {
-      targetForm.controls[key].disable();
-    });
-  }
-
-  enableMapping(targetForm) {
-    Object.keys(targetForm.controls).forEach(key => {
-      targetForm.controls[key].enable();
-    });
-  }
-
-  fillEmptyMapping(targetForm) {
-    Object.keys(targetForm.controls).forEach(key => {
-      targetForm.get(key).setValue("");
-    });
-  }*/
 }

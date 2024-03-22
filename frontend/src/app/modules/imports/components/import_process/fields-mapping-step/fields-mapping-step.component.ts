@@ -89,14 +89,11 @@ export class FieldsMappingStepComponent implements OnInit {
       sourceFields: this._importDataService.getColumnsImport(this.importData.id_import),
     }).subscribe(({ fieldMappings, targetFields, sourceFields }) => {
       this.userFieldMappings = fieldMappings.sort((a, b) => a.label.localeCompare(b.label));
-
+      this._fm.initForm();
       this.targetFields = targetFields;
       this.mappedTargetFields = new Set();
       this.unmappedTargetFields = new Set();
-      this.mappingFormControl = this._fb.group({});
       this.populateMappingForm();
-      this.mappingFormControl.setValidators([this._fm.geoFormValidator]);
-      this.mappingFormControl.updateValueAndValidity();
 
       this.sourceFields = sourceFields;
 
