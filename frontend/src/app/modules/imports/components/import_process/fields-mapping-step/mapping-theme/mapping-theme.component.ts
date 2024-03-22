@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Field } from '@geonature/modules/imports/models/mapping.model';
-import { FieldMappingService } from 'external_modules/WA/app/services/mappings/field-mapping.service';
+import { FieldMappingService } from '@geonature/modules/imports/services/mappings/field-mapping.service';
+
 
 @Component({
   selector: 'pnx-mapping-theme',
@@ -9,13 +10,10 @@ import { FieldMappingService } from 'external_modules/WA/app/services/mappings/f
   styleUrls: ['./mapping-theme.component.scss'],
 })
 export class MappingThemeComponent implements OnInit {
-  @Input() fieldsData: Field[];
-  @Input() themeLabel: string;
-  @Input() sourceFields: any;
-  @Input() mappingFormControl: FormGroup;
-  @Input() mappedSourceFields: any;
+  @Input() themeData;
 
   constructor(public _fm: FieldMappingService) {}
 
   ngOnInit() {}
 }
+FieldMappingService
