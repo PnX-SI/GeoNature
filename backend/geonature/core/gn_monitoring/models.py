@@ -19,7 +19,7 @@ from ref_geo.models import LAreas
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
-from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_commons.models import TModules, TMedias
 from geonature.core.gn_meta.models import TDatasets
 from geonature.utils.env import DB
 
@@ -187,6 +187,7 @@ class TMarkingEvent(DB.Model):
     __table_args__ = {"schema": "gn_monitoring"}
 
     id_marking = DB.Column(DB.Integer, primary_key=True, autoincrement=True)
+    uuid_marking = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
     id_individual = DB.Column(
         DB.ForeignKey(f"gn_monitoring.t_individuals.id_individual", ondelete="CASCADE"),
         nullable=False,
@@ -213,6 +214,13 @@ class TMarkingEvent(DB.Model):
     data = DB.Column(JSONB)
 
     operator = DB.relationship(User, lazy="joined", foreign_keys=[id_operator])
+
+    medias = DB.relationship(
+        TMedias,
+        lazy="joined",
+        primaryjoin=(TMedias.uuid_attached_row == uuid_marking),
+        foreign_keys=[TMedias.uuid_attached_row],
+    )
 
 
 @serializable
@@ -269,6 +277,13 @@ class TIndividuals(DB.Model):
     markings = DB.relationship(
         TMarkingEvent,
         primaryjoin=(id_individual == TMarkingEvent.id_individual),
+    )
+
+    medias = DB.relationship(
+        TMedias,
+        lazy="joined",
+        primaryjoin=(TMedias.uuid_attached_row == uuid_individual),
+        foreign_keys=[TMedias.uuid_attached_row],
     )
 
     @classmethod
