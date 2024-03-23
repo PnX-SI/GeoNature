@@ -69,6 +69,9 @@ def upgrade():
         "t_marking_events",
         sa.Column("id_marking", sa.Integer, primary_key=True),
         sa.Column(
+            "uuid_marking", UUID, nullable=False, server_default=sa.text("uuid_generate_v4()")
+        ),
+        sa.Column(
             "id_module",
             sa.Integer,
             sa.ForeignKey("gn_commons.t_modules.id_module", ondelete="CASCADE"),
