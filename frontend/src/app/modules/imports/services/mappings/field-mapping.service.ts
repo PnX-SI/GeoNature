@@ -197,6 +197,8 @@ export class FieldMappingService {
     }
   }
 
+  
+
   // add a form control for each target field in the mappingForm
   // mandatory target fields have a required validator
   displayAlert(field) {

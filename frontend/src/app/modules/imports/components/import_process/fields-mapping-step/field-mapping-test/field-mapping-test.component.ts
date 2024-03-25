@@ -24,4 +24,21 @@ export class FieldMappingTestComponent implements OnInit {
       this.isReady = true;
     });
   }
+
+  /**
+   * Count the number of invalid controls
+   * in an entity FormGroup
+   */
+  invalidEntityControls(entityFormLabel: string) {
+    let result: number = 0;
+    this.targetFields
+      .find(({ entity }) => entity.label === entityFormLabel)
+      .themes.forEach(({ fields }) => {
+        fields.forEach((field) => {
+          let control = this._fieldMappingService.mappingFormGroup.controls[field.name_field];
+          result += control.status === 'INVALID' ? 1 : 0;
+        });
+      });
+    return result;
+  }
 }
