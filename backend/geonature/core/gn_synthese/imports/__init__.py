@@ -20,6 +20,7 @@ from geonature.core.imports.checks.dataframe import (
     check_types,
     check_geography,
     check_counts,
+    check_datasets,
 )
 from geonature.core.imports.checks.sql import (
     do_nomenclatures_mapping,
@@ -69,7 +70,7 @@ def check_transient_data(task, logger, imprt):
     def update_batch_progress(batch, step):
         start = 0.1
         end = 0.4
-        step_count = 7
+        step_count = 8
         progress = start + ((batch + 1) / batch_count) * (step / step_count) * (end - start)
         task.update_state(state="PROGRESS", meta={"progress": progress})
 
@@ -111,7 +112,19 @@ def check_transient_data(task, logger, imprt):
         logger.info(f"[{batch+1}/{batch_count}] Check types…")
         with start_sentry_child(op="check.df", description="check types"):
             updated_cols |= check_types(imprt, entity, df, fields)
+
         update_batch_progress(batch, 4)
+        logger.info(f"[{batch+1}/{batch_count}] Check dataset rows")
+        with start_sentry_child(op="check.df", description="check datasets rows"):
+            updated_cols |= check_datasets(
+                imprt,
+                entity,
+                df,
+                uuid_field=fields["unique_dataset_id"],
+                id_field=fields["id_dataset"],
+                module_code="SYNTHESE",
+            )
+        update_batch_progress(batch, 5)
 
         logger.info(f"[{batch+1}/{batch_count}] Check geography…")
         with start_sentry_child(op="check.df", description="set geography"):
@@ -129,7 +142,7 @@ def check_transient_data(task, logger, imprt):
                 codemaille_field=fields["codemaille"],
                 codedepartement_field=fields["codedepartement"],
             )
-        update_batch_progress(batch, 5)
+        update_batch_progress(batch, 6)
 
         logger.info(f"[{batch+1}/{batch_count}] Check counts…")
         with start_sentry_child(op="check.df", description="check count"):
@@ -141,12 +154,12 @@ def check_transient_data(task, logger, imprt):
                 fields["count_max"],
                 default_count=current_app.config["IMPORT"]["DEFAULT_COUNT_VALUE"],
             )
-        update_batch_progress(batch, 6)
+        update_batch_progress(batch, 7)
 
         logger.info(f"[{batch+1}/{batch_count}] Updating import data from dataframe…")
         with start_sentry_child(op="check.df", description="save dataframe"):
             update_transient_data_from_dataframe(imprt, entity, updated_cols, df)
-        update_batch_progress(batch, 7)
+        update_batch_progress(batch, 8)
 
     # Checks in SQL
     convert_geom_columns(
@@ -306,12 +319,13 @@ def import_data_to_synthese(imprt):
             if source_field in imprt.columns:
                 insert_fields |= {field}
 
+    insert_fields -= {fields["unique_dataset_id"]}
+    insert_fields |= {fields["id_dataset"]}
     select_stmt = (
         sa.select(
             *[transient_table.c[field.dest_field] for field in insert_fields],
             sa.literal(source.id_source),
             sa.literal(source.module.id_module),
-            sa.literal(imprt.id_dataset),
             sa.literal("I"),
         )
         .where(transient_table.c.id_import == imprt.id_import)
@@ -320,7 +334,6 @@ def import_data_to_synthese(imprt):
     names = [field.dest_field for field in insert_fields] + [
         "id_source",
         "id_module",
-        "id_dataset",
         "last_action",
     ]
     insert_stmt = sa.insert(Synthese).from_select(
