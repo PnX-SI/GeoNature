@@ -1,0 +1,5 @@
+select option.in_use,
+  ng-select span.in_use {
+    color: #787878;
+    font-style: italic;
+  }

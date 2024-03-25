@@ -164,13 +164,15 @@ export class FieldMappingService {
   }
 
   onFieldMappingChange(name_field, value) {
+    
     if (value) {
-      this.fieldMappingStatus.mapped.add(name_field);
-      this.fieldMappingStatus.unmapped.delete(name_field);
+      this.fieldMappingStatus.mapped.add(value);
+      this.fieldMappingStatus.unmapped.delete(value);
     } else {
       this.fieldMappingStatus.mapped.delete(name_field);
       this.fieldMappingStatus.unmapped.add(name_field);
     }
+    
   }
 
   /**
@@ -196,6 +198,8 @@ export class FieldMappingService {
     //   this.mappingSelected = true;
     }
   }
+
+  
 
   // add a form control for each target field in the mappingForm
   // mandatory target fields have a required validator
