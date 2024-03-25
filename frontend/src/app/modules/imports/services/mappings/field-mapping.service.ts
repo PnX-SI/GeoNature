@@ -42,6 +42,10 @@ export class FieldMappingService {
   ) {
   }
 
+  mappingStatus(category: string, item: string) {
+    return this.fieldMappingStatus[category].has(item);
+  }
+
   parseData({ fieldMappings, targetFields, sourceFields }) {
     this.targetFieldsData = targetFields;
     this.mappingData = fieldMappings;

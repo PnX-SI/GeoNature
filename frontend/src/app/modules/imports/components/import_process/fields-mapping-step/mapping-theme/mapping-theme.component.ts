@@ -11,9 +11,15 @@ import { FieldMappingService } from '@geonature/modules/imports/services/mapping
 })
 export class MappingThemeComponent implements OnInit {
   @Input() themeData;
+  @Input() sourceFields : Array<string>;
 
   constructor(public _fm: FieldMappingService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    
+  }
+
+  isMapped(keySource:string){
+    return this._fm.mappingStatus("mapped", keySource)
+  }
 }
-FieldMappingService

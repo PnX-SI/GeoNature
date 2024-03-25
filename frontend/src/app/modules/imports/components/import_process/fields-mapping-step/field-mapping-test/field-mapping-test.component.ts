@@ -9,17 +9,18 @@ import { FieldMappingService } from '@geonature/modules/imports/services/mapping
 })
 export class FieldMappingTestComponent implements OnInit {
   public targetFields;
+  public sourceFields:Array<string> = [];
   public isReady:boolean=false;
-  constructor(public _fm: FieldMappingService) {}
+  constructor(public _fieldMappingService: FieldMappingService) {}
 
   ngOnInit() {
-    // subscribe(({ fieldMappings, targetFields, sourceFields }) => {
     
-    this._fm.retrieveData().subscribe(({ fieldMappings, targetFields, sourceFields })=>{
-      this._fm.parseData({ fieldMappings, targetFields, sourceFields });
-      this.targetFields = this._fm.getTargetFieldsData();
-      this._fm.initForm();
-      this._fm.populateMappingForm();
+    this._fieldMappingService.retrieveData().subscribe(({ fieldMappings, targetFields, sourceFields })=>{
+      this._fieldMappingService.parseData({ fieldMappings, targetFields, sourceFields });
+      this.targetFields = this._fieldMappingService.getTargetFieldsData();
+      this.sourceFields = this._fieldMappingService.getSourceFieldsData()
+      this._fieldMappingService.initForm();
+      this._fieldMappingService.populateMappingForm();
       this.isReady = true;
     });
   }
