@@ -2208,8 +2208,9 @@ Il est également possible de personnaliser ses exports en créant vos propres v
       ]
 
 
-Ces vues doivent obligatoirement avoir une colonne `id_synthese`, une colonne `geojson_local` représentant le geojson de la géometrie en projection locale (pour la génération du shapefile) et une colonne `geojson_4326` représentant le geojson de la géométrie en projection 4326 (pour la génération du geojson) (utilisez la fonction `st_asgeojson` - voir la vue par défaut `gn_synthese.v_synthese_for_export`).
-Selon les permissions de l'utilisation sur l'action Export du module Synthèse, le floutage pourra s'appliquer automatiquement à la vue d'export sur les même champs géométriques que la vue `gn_synthese.v_synthese_for_export`, à savoir `geometrie_wkt_4326`, `x_centroid_4326`, `y_centroid_4326`, `geojson_local` et `geojson_4326`. Si vous ajoutez des champs représentant la géométrie de l'observation portant des noms différents que les 4 noms précités, ceux-ci ne pourront pas être floutés.
+Ces vues doivent obligatoirement avoir une colonne `id_synthese`, une colonne `geojson_local` représentant le geojson de la géometrie en projection locale (pour la génération du shapefile et geopackage) et une colonne `geojson_4326` représentant le geojson de la géométrie en projection 4326 (pour la génération du geojson) (utilisez la fonction `st_asgeojson` - voir la vue par défaut `gn_synthese.v_synthese_for_export`).
+
+Selon les permissions de l'utilisation sur l'action "Export" du module Synthèse, le floutage pourra s'appliquer automatiquement à la vue d'export sur les mêmes champs géométriques que la vue `gn_synthese.v_synthese_for_export`, à savoir `geometrie_wkt_4326`, `x_centroid_4326`, `y_centroid_4326`, `geojson_local` et `geojson_4326`. Si vous ajoutez des champs représentant la géométrie de l'observation portant des noms différents que les 4 noms précités, ceux-ci ne pourront pas être floutés.
 
 **Export des métadonnées**
 
