@@ -1,1 +1,166 @@
-<p>mapping-selection works!</p>
+<form>
+  <fieldset>
+    <div *ngIf="userFieldMappings.length > 0" class="form-group">
+      <legend class="px-1">Choix d’un modèle d'import prédéfini</legend>
+      <ng-select
+        id="mappingSelection"
+        [items]="userFieldMappings"
+        [clearable]="true"
+        [formControl]="fieldMappingForm"
+        [compareWith]="areMappingFieldEqual"
+        [disableControl]="!userFieldMappings.length"
+      >
+        <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+          <div>
+            <span class="pre-wrap">
+              {{ item.label }}
+            </span>
+          </div>
+        </ng-template>
+      </ng-select>
+    </div>
+
+    <!-- <div class="d-flex flex-row justify-content-center mt-3">
+      <div class="d-flex justify-content-center align-content-between row w-100">
+        <button
+          *ngIf="cruved.U"
+          class="btn-sm mb-1 ml-1 col-xl-4 w-50"
+          mat-raised-button
+          color="primary"
+          (click)="showRenameMappingForm()"
+          [disabled]="!renameMappingEnabled()"
+        >
+          Renommer le modèle d'import
+        </button>
+        <button
+          *ngIf="cruved.D"
+          class="btn-sm mb-1 ml-1 col-xl-4 w-50"
+          mat-raised-button
+          color="warn"
+          (click)="openDeleteModal()"
+          [disabled]="!deleteMappingEnabled()"
+        >
+          Supprimer le modèle d'import
+        </button>
+        <div
+          *ngIf="config.IMPORT.DISPLAY_CHECK_BOX_MAPPED_FIELD"
+          class="form-check col-xl w-75 d-flex justify-content-center align-items-start"
+        >
+          <input
+            type="checkbox"
+            [(ngModel)]="displayAllValues"
+            [ngModelOptions]="{ standalone: true }"
+            class="mt-1 mr-1"
+          />
+          Afficher les champs automatiquement associés
+        </div>
+      </div>
+    </div>
+
+    <div
+      *ngIf="createMappingFormVisible"
+      class="d-flex flex-row justify-content-between form_group"
+      id="newMap"
+    >
+      <input
+        type="text"
+        class="form-control mr-2"
+        value="Inconnu"
+        [formControl]="createOrRenameMappingForm"
+      />
+      <button
+        class="d-flex justify-content-center align-content-between mr-2 button-success"
+        mat-raised-button
+        matTooltip="Créer un nouveau mapping"
+        (click)="createMapping(createOrRenameMappingForm.value)"
+        [disabled]="!createOrRenameMappingForm.valid"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+      <button
+        class="d-flex justify-content-center align-content-between"
+        mat-raised-button
+        color="warn"
+        (click)="hideCreateOrRenameMappingForm()"
+      >
+        Annuler
+      </button>
+    </div>
+
+    <div
+      *ngIf="renameMappingFormVisible"
+      class="d-flex flex-row justify-content-between form_group"
+      id="updateMap"
+    >
+      <input
+        type="text"
+        class="form-control mr-2"
+        value="Inconnu"
+        [formControl]="createOrRenameMappingForm"
+      />
+      <button
+        class="d-flex justify-content-center align-content-between mr-2 button-success"
+        (click)="renameMapping()"
+        mat-raised-button
+        matTooltip="Modifier le nom du modèle d'import"
+        [disabled]="
+          !createOrRenameMappingForm.valid ||
+          fieldMappingForm.value.label.trim() == this.createOrRenameMappingForm.value.trim()
+        "
+      >
+        <mat-icon>check</mat-icon>
+      </button>
+      <button
+        matTooltip="Annuler la modification du nom du modèle d'import"
+        class="d-flex justify-content-center align-content-between"
+        (click)="hideCreateOrRenameMappingForm()"
+        mat-raised-button
+        color="warn"
+      >
+        Annuler
+      </button>
+    </div>
+
+    <div *ngIf="fieldMappingForm.value != null">
+      <div
+        *ngIf="mappedTargetFields.size > 0"
+        class="alert alert-success"
+        role="alert"
+        style="text-align: center"
+      >
+        {{ mappedTargetFields.size }} champs cibles ont été associés à un champs source.
+      </div>
+      <div
+        *ngIf="unmappedSourceFields.size == 0"
+        class="alert alert-success"
+        role="alert"
+        style="text-align: center"
+      >
+        L'ensemble des {{ mappedSourceFields.size }} champs du fichier d’import ont été associés à
+        un champs cible.
+      </div>
+      <div
+        *ngIf="unmappedSourceFields.size > 0"
+        class="alert alert-warning"
+        role="alert"
+        style="text-align: center"
+      >
+        <a
+          data-toggle="collapse"
+          href="#unmappedSourceFields"
+          aria-expanded="false"
+          aria-controls="unmappedSourceFields"
+        >
+          {{ unmappedSourceFields.size }} champs
+        </a>
+        du fichier d’import ne sont actuellement associés à aucun champs cible et seront donc
+        ignorés.
+        <div class="collapse" id="unmappedSourceFields">
+          <ul style="text-align: left">
+            <li *ngFor="let sourceField of unmappedSourceFields">{{ sourceField }}</li>
+          </ul>
+        </div>
+      </div>
+    </div> -->
+  </fieldset>
+</form>
