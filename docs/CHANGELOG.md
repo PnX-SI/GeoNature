@@ -11,7 +11,7 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
-- Les paramètres de la synthèse permettant de spécifier le nom de certaines colonnes de la vue d'export sont déprécies (`EXPORT_ID_SYNTHESE_COL`, `EXPORT_ID_DIGITISER_COL`, `EXPORT_OBSERVERS_COL`, `EXPORT_GEOJSON_4326_COL`, `EXPORT_GEOJSON_LOCAL_COL`). Si vous aviez surcoucher la vue `gn_synthese.v_synthese_for_export`, il est recommandé de ne plus le faire et de plutôt utiliser le nouveau paramètre `EXPORT_OBSERVATIONS_CUSTOM_VIEWS` permettant de se créer ses propres vues d'export personnalisées.
+- Les paramètres de la synthèse permettant de spécifier le nom de certaines colonnes de la vue d'export sont déprécies (`EXPORT_ID_SYNTHESE_COL`, `EXPORT_ID_DIGITISER_COL`, `EXPORT_OBSERVERS_COL`, `EXPORT_GEOJSON_4326_COL`, `EXPORT_GEOJSON_LOCAL_COL`). Si vous aviez surcouché la vue par défaut `gn_synthese.v_synthese_for_export`, il est recommandé de ne plus le faire et de plutôt utiliser le nouveau paramètre `EXPORT_OBSERVATIONS_CUSTOM_VIEWS` permettant de se créer ses propres vues d'export personnalisées.
 
   2.14.0 - Talpa europaea 👓 (2024-02-28)
 
