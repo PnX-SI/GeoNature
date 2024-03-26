@@ -6,12 +6,15 @@
     <pnx-mapping-selection></pnx-mapping-selection>
     <ng-container *ngIf="isReady" class="">
       <mat-tab-group [(selectedIndex)]="selectedIndex" animationDuration="0ms" class="entities-tab">
-        <mat-tab
-          *ngFor="let entitythemes of targetFields"
-        >
+        <mat-tab *ngFor="let entitythemes of targetFields">
           <ng-template mat-tab-label>
-            <span matBadgeColor="warn" matBadgeSize="small" class="entity-tab-label" [matBadge]="invalidEntityControls(entitythemes.entity.label)"
-            [matBadgeHidden]="invalidEntityControls(entitythemes.entity.label) < 1">
+            <span
+              matBadgeColor="warn"
+              matBadgeSize="small"
+              class="entity-tab-label"
+              [matBadge]="invalidEntityControls(entitythemes.entity.label)"
+              [matBadgeHidden]="invalidEntityControls(entitythemes.entity.label) < 1"
+            >
               {{ entitythemes.entity.label }}
             </span>
           </ng-template>
