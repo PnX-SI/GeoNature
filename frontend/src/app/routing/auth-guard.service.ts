@@ -11,6 +11,8 @@ import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { RoutingService } from './routing.service';
 
+import * as moment from 'moment';
+
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild {
   constructor(
@@ -44,6 +46,14 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         } else {
           return false;
         }
+        // } else if (configService.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
+        //   // if token not here here, redirection to CAS login page
+        //   const url_redirection_cas = `${configService.CAS_PUBLIC.CAS_URL_LOGIN}?service=${configService.API_ENDPOINT}/gn_auth/login_cas`;
+        //   if (!authService.isLoggedIn()) {
+        //     // TODO: set the local storage item 'expires_at' in the API route "gn_auth/login_cas"
+        //     localStorage.setItem('gn_expires_at', moment().add(1, 'days').toISOString());
+        //     document.location.href = url_redirection_cas;
+        //   }
       } else {
         this._router.navigate(['/login'], {
           queryParams: { ...route.queryParams, ...{ route: state.url.split('?')[0] } },
