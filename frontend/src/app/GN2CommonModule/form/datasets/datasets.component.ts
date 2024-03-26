@@ -9,9 +9,9 @@ import {
 } from '@angular/core';
 import { DataFormService } from '../data-form.service';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
-import { CommonService } from '../../service/common.service';
-import { ConfigService } from '@geonature/services/config.service';
-import { AbstractControl, Validators } from '@angular/forms';
+import { Validators } from '@angular/forms';
+import { ContentObserver } from '@angular/cdk/observers';
+import { data } from 'cypress/types/jquery';
 
 /**
  *  Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
@@ -60,9 +60,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
 
   constructor(
     private _dfs: DataFormService,
-    private _commonService: CommonService,
-    private _iterableDiffers: IterableDiffers,
-    public config: ConfigService
+    private _iterableDiffers: IterableDiffers
   ) {
     super();
     this.iterableDiffer = this._iterableDiffers.find([]).create(null);

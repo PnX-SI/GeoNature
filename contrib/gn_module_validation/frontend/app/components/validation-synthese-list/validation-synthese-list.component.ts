@@ -175,7 +175,9 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
 
   viewFitList(id_observations) {
     if (id_observations.length) {
-      this.mapListService.zoomOnSeveralSelectedLayers(this._ms.map, id_observations);
+
+      const group = this.mapListService.getSelectedLayers(this._ms.map, id_observations);
+      this._ms.getMap().fitBounds(group.getBounds());
     }
   }
 
