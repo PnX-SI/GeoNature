@@ -7,7 +7,7 @@ from warnings import warn
 import pytest
 import sqlalchemy as sa
 
-from flask import current_app, testing, url_for
+from flask import current_app, testing, url_for, request
 from geoalchemy2.shape import from_shape
 from PIL import Image
 from shapely.geometry import Point
@@ -96,6 +96,10 @@ def app():
     app.testing = True
     app.test_client_class = GeoNatureClient
     app.config["SERVER_NAME"] = "test.geonature.fr"  # required by url_for
+
+    @app.before_request
+    def get_endpoint():
+        pytest.endpoint = request.endpoint
 
     with app.app_context():
         """
