@@ -9,14 +9,16 @@ from sqlalchemy import event
 from geonature.utils.env import db
 from .benchmark_generator import CLater, BenchmarkTest
 from geonature.tests.test_synthese import blur_sensitive_observations
+import traceback
+from geonature.tests.fixtures import app
 
 logging.basicConfig()
 logger = logging.getLogger("logger-name")
 logger.setLevel(logging.DEBUG)
 
 
-@pytest.fixture(scope="session")
-def activate_profiling_sql(sqllogfilename: pytest.FixtureDef):
+@pytest.fixture(scope="function")
+def activate_profiling_sql(sqllogfilename: pytest.FixtureDef, app: pytest.FixtureDef):
     """
     Fixture to activate profiling for SQL queries and store query's statements and execution times in a CSV file.
 
@@ -29,6 +31,7 @@ def activate_profiling_sql(sqllogfilename: pytest.FixtureDef):
         The path to the CSV file where the query statements and execution times will be stored.
 
     """
+    columns = ["Endpoint", "Query", "Total Time [s.]"]
 
     if not sqllogfilename:
         logger.debug("No SQL Log file provided. SQL Profiling will not be activated.")
@@ -38,8 +41,9 @@ def activate_profiling_sql(sqllogfilename: pytest.FixtureDef):
     if directory and not os.path.exists(directory):
         raise FileNotFoundError(f"Directory {directory} does not exists ! ")
 
-    df = pandas.DataFrame([], columns=["Query", "Total Time [s.]"])
-    df.to_csv(sqllogfilename, header=True, index=None, sep=";")
+    if not os.path.exists(sqllogfilename):
+        df = pandas.DataFrame([], columns=columns)
+        df.to_csv(sqllogfilename, header=True, index=None, sep=";")
 
     def before_cursor_execute(conn, cursor, statement, parameters, context, executemany):
         conn.info.setdefault("query_start_time", []).append(time.time())
@@ -51,7 +55,7 @@ def activate_profiling_sql(sqllogfilename: pytest.FixtureDef):
         logger.debug("Query Complete!")
         logger.debug("Total Time: %f" % total)
         if statement.startswith("SELECT"):
-            df = pandas.DataFrame([[statement, total]], columns=["Query", "Total Time"])
+            df = pandas.DataFrame([[pytest.endpoint, statement, total]], columns=columns)
             df.to_csv(sqllogfilename, mode="a", header=False, index=None, sep=";")
 
     event.listen(db.engine, "before_cursor_execute", before_cursor_execute)
