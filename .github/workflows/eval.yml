@@ -14,8 +14,10 @@ jobs:
           - debian-version: "11"
             python-version: "3.9"
             postgres-version: "13"
+            host-port: "5444"
             postgis-version: "3.2"
           - debian-version: "12"
+            host-port: "5444"
             python-version: "3.11"
             postgres-version: "15"
             postgis-version: "3.3"
@@ -30,7 +32,7 @@ jobs:
           POSTGRES_PASSWORD: geonatpasswd
           POSTGRES_USER: geonatadmin
         ports:
-          - 5444:5444
+          - ${{ matrix.host-port }}:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -43,9 +45,11 @@ jobs:
           submodules: true
       - name: Add database extensions
         run: |
-          psql -h localhost -U geonatadmin -d geonature2db -f install/assets/db/add_pg_extensions.sql
+          psql -p ${{ matrix.host-port }} -h localhost -U geonatadmin -d geonature2db -f install/assets/db/add_pg_extensions.sql
         env:
           PGPASSWORD: geonatpasswd
+      - name: Change geonature config
+        run: sed -i "s|^SQLALCHEMY_DATABASE_URI = .*$|SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/geonatadmin:geonatpasswd@127.0.0.1:${{ matrix.host-port }}\/geonature2db\"|" config/test_config.toml
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
