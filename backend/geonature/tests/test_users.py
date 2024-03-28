@@ -56,12 +56,18 @@ class TestUsers:
 
     def test_get_role(self, users):
         self_user = users["self_user"]
-        set_logged_user(self.client, users["admin_user"])
 
+        # Test when user wants to access its own data
+        set_logged_user(self.client, self_user)
         response = self.client.get(url_for("users.get_role", id_role=self_user.id_role))
 
         assert response.status_code == 200
         assert self_user.id_role == response.json["id_role"]
+
+        # Test when an other user tries to access an other user's data
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(url_for("users.get_role", id_role=self_user.id_role))
+        assert response.status_code == 403
 
     def test_get_roles(self, users):
         noright_user = users["noright_user"]
