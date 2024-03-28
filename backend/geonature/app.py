@@ -38,6 +38,7 @@ from geonature.utils.logs import config_loggers
 from geonature.utils.module import iter_modules_dist
 from geonature.core.admin.admin import admin
 from geonature.middlewares import SchemeFix, RequestID
+from geonature.auth_manager import auth_manager
 
 from pypnusershub.db.tools import (
     user_from_token,
@@ -129,6 +130,7 @@ def create_app(with_external_mods=True):
     migrate.init_app(app, DB, directory=BACKEND_DIR / "geonature" / "migrations")
     MA.init_app(app)
     CORS(app, supports_credentials=True)
+    auth_manager.init_app(app)
 
     if "CELERY" in app.config:
         from geonature.utils.celery import celery_app
