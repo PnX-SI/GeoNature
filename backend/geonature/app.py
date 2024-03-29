@@ -32,7 +32,6 @@ else:  # retro-compatibility SQLAlchemy 1.3
     from sqlalchemy.engine import RowProxy as Row
 
 from geonature.utils.config import config
-from geonature.core.auth.auth_manager import auth_manager
 
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
@@ -46,6 +45,7 @@ from pypnusershub.db.tools import (
     AccessRightsExpiredError,
 )
 from pypnusershub.db.models import Application
+from pypnusershub.auth import auth_manager
 from pypnusershub.login_manager import login_manager
 
 
@@ -99,6 +99,7 @@ def create_app(with_external_mods=True):
     )
     app.config.update(config)
     auth_manager.init_app(app)
+    auth_manager.home_page = config["URL_APPLICATION"]
 
     # Enable deprecation warnings in debug mode
     if app.debug and not sys.warnoptions:
@@ -191,7 +192,6 @@ def create_app(with_external_mods=True):
     )
 
     for blueprint_path, url_prefix in [
-        ("pypnusershub.routes:routes", "/auth"),
         ("pypn_habref_api.routes:routes", "/habref"),
         ("pypnusershub.routes_register:bp", "/pypn/register"),
         ("pypnnomenclature.routes:routes", "/nomenclatures"),

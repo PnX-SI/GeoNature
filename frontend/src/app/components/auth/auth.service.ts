@@ -41,8 +41,24 @@ export class AuthService {
     public config: ConfigService
   ) {}
 
+  /**
+   * Retrieves the URL for the external authentication provider.
+   *
+   * @return {Observable<any>} The URL of the external authentication provider.
+   */
+  getLoginExternalProviderUrl() {
+    // Constructs the URL for the external authentication provider using the API endpoint from the configuration.
+    const url = `${this.config.API_ENDPOINT}/auth/external_provider_url`;
+
+    // Sends an HTTP GET request to the constructed URL and returns the result.
+    return this._http.get<any>(url);
+  }
   setCurrentUser(user) {
     localStorage.setItem(this.prefix + 'current_user', JSON.stringify(user));
+  }
+
+  getAuthProviders(): Observable<Array<string>> {
+    return this._http.get<Array<string>>(`${this.config.API_ENDPOINT}/gn_auth/providers`);
   }
 
   getCurrentUser() {
@@ -77,13 +93,8 @@ export class AuthService {
     localStorage.setItem(this.prefix + 'expires_at', authResult.expires);
   }
 
-  signinUser(user: any) {
-    const options = {
-      login: user.username,
-      password: user.password,
-    };
-
-    return this._http.post<any>(`${this.config.API_ENDPOINT}/auth/login`, options);
+  signinUser(form: any) {
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/auth/login/gn_ecrins`, form);
   }
 
   signinPublicUser(): Observable<any> {
@@ -138,8 +149,12 @@ export class AuthService {
       location.reload();
     });
 
-    if (this.config.CAS_AUTHENTIFICATION) {
-      document.location.href = `${this.config.CAS_PUBLIC_DD.URL_LOGOUT}?service='${this.config.URL_APPLICATION}'`;
+    if (this.config.AUTHENTIFICATION_CONFIG.EXTERNAL_PROVIDER) {
+      this._http
+        .get<any>(`${this.config.API_ENDPOINT}/auth/external_provider_revoke_url`)
+        .subscribe((url) => {
+          document.location.href = url;
+        });
     } else {
       this.router.navigate(['/login']);
     }
