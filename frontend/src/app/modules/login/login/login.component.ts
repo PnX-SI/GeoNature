@@ -19,7 +19,6 @@ export class LoginComponent implements OnInit {
   enable_sign_up: boolean = false;
   enable_user_management: boolean = false;
   external_links: [] = [];
-  public casLogin: boolean;
   public disableSubmit = false;
   public enablePublicAccess = null;
   identifiant: UntypedFormGroup;
@@ -27,9 +26,10 @@ export class LoginComponent implements OnInit {
   form: UntypedFormGroup;
   login_or_pass_recovery: boolean = false;
   public APP_NAME = null;
+  public authProviders: Array<string>;
 
   constructor(
-    private _authService: AuthService,
+    public _authService: AuthService, //FIXME : change to private (html must be modified)
     private _commonService: CommonService,
     public config: ConfigService,
     private moduleService: ModuleService,
@@ -40,7 +40,6 @@ export class LoginComponent implements OnInit {
   ) {
     this.enablePublicAccess = this.config.PUBLIC_ACCESS_USERNAME;
     this.APP_NAME = this.config.appName;
-    this.casLogin = this.config.CAS_PUBLIC.CAS_AUTHENTIFICATION;
     this.enable_sign_up = this.config['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false;
     this.enable_user_management =
       this.config['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false;
@@ -48,19 +47,20 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.config.CAS_AUTHENTIFICATION) {
-      // if token not here here, redirection to CAS login page
-      const url_redirection_cas = `${this.config.CAS_PUBLIC.CAS_URL_LOGIN}?service=${this.config.API_ENDPOINT}/gn_auth/login_cas`;
-      if (!this._authService.isLoggedIn()) {
-        document.location.href = url_redirection_cas;
-      }
+    if (this.config.AUTHENTIFICATION_CONFIG.EXTERNAL_PROVIDER) {
+      this._authService.getLoginExternalProviderUrl().subscribe((url) => {
+        document.location.href = url;
+      });
     }
+    this._authService.getAuthProviders().subscribe((providers) => {
+      this.authProviders = providers;
+    });
   }
 
-  async register(user) {
+  async register(form) {
     this._authService.enableLoader();
     const data = await this._authService
-      .signinUser(user)
+      .signinUser(form)
       .toPromise()
       .catch(() => {
         this._authService.handleLoginError();
