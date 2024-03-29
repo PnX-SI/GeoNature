@@ -146,9 +146,9 @@ class MTDInstanceApi:
 
 
 class INPNCAS:
-    base_url = config["CAS"]["CAS_USER_WS"]["BASE_URL"]
-    user = config["CAS"]["CAS_USER_WS"]["ID"]
-    password = config["CAS"]["CAS_USER_WS"]["PASSWORD"]
+    base_url = ""  # FIXME config["CAS"]["CAS_USER_WS"]["BASE_URL"]
+    user = ""  # FIXME config["CAS"]["CAS_USER_WS"]["BASE_URL"]
+    password = ""  # FIXME config["CAS"]["CAS_USER_WS"]["PASSWORD"]
     id_search_path = "rechercheParId/{user_id}"
 
     @classmethod
