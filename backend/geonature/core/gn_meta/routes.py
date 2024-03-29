@@ -75,7 +75,7 @@ routes = Blueprint("gn_meta", __name__, cli_group="metadata")
 log = logging.getLogger()
 
 
-if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
+if config["MTD"]["ACTIVATED"] and config["AUTHENTIFICATION_CONFIG"]["PROVIDER_NAME"] == "inpn":
 
     @routes.before_request
     def synchronize_mtd():
