@@ -134,13 +134,12 @@ export class AuthService {
   logout() {
     this.cleanLocalStorage();
     this.cruvedService.clearCruved();
-    // call the logout route to delete the session
     this._http.get<any>(`${this.config.API_ENDPOINT}/auth/logout`).subscribe(() => {
       location.reload();
     });
 
-    if (this.config.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
-      document.location.href = `${this.config.CAS_PUBLIC.CAS_URL_LOGOUT}?service=${this.config.URL_APPLICATION}`;
+    if (this.config.CAS_AUTHENTIFICATION) {
+      document.location.href = `${this.config.CAS_PUBLIC_DD.URL_LOGOUT}?service='${this.config.URL_APPLICATION}'`;
     } else {
       this.router.navigate(['/login']);
     }
