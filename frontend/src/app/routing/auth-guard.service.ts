@@ -10,6 +10,7 @@ import { AuthService } from '@geonature/components/auth/auth.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { RoutingService } from './routing.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild {
@@ -23,6 +24,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     const moduleService = this._injector.get(ModuleService);
     const configService = this._injector.get(ConfigService);
     const routingService = this._injector.get(RoutingService);
+    const httpclient = this._injector.get(HttpClient)
 
     if (!authService.isLoggedIn()) {
       if (
@@ -45,6 +47,14 @@ export class AuthGuard implements CanActivate, CanActivateChild {
           return false;
         }
       } else {
+        if (configService.CAS_AUTHENTIFICATION) {
+          let data = await httpclient
+            .get(`${configService.API_ENDPOINT}/auth/get_current_user`)
+            .toPromise();
+          data = { ...data };
+          authService.manageUser(data);
+          return authService.isLoggedIn();
+        }
         this._router.navigate(['/login'], {
           queryParams: { ...route.queryParams, ...{ route: state.url.split('?')[0] } },
         });
