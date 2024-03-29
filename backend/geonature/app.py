@@ -96,7 +96,6 @@ def create_app(with_external_mods=True):
         static_url_path=config["STATIC_URL"],
         template_folder="geonature/templates",
     )
-
     app.config.update(config)
 
     # Enable deprecation warnings in debug mode

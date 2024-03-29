@@ -4,7 +4,7 @@ from urllib.parse import urlsplit
 
 from flask import Config
 from flask.helpers import get_root_path
-from marshmallow import EXCLUDE
+from marshmallow import EXCLUDE, INCLUDE
 from marshmallow.exceptions import ValidationError
 
 from geonature.utils.config_schema import (
@@ -31,8 +31,8 @@ config_toml.update(config_programmatic)
 
 # Validate config
 try:
-    config_backend = GnPySchemaConf().load(config_toml, unknown=EXCLUDE)
-    config_frontend = GnGeneralSchemaConf().load(config_toml, unknown=EXCLUDE)
+    config_backend = GnPySchemaConf().load(config_toml, unknown=INCLUDE)
+    config_frontend = GnGeneralSchemaConf().load(config_toml, unknown=INCLUDE)
 except ValidationError as e:
     raise ConfigError(CONFIG_FILE, e.messages)
 
@@ -41,6 +41,14 @@ config_default = {
     # TODO: use Flask.get_send_file_max_age(filename) to return 0 only for generated PDF files
     "SEND_FILE_MAX_AGE_DEFAULT": 0,
 }
+
+
+try:
+    from geonature.custom import authentification_class
+
+    config_programmatic["authentification_class"] = authentification_class
+except ImportError:
+    pass
 
 config = ChainMap({}, config_programmatic, config_backend, config_frontend, config_default)
 
