@@ -47,7 +47,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
           return false;
         }
       } else {
-        if (configService.CAS_AUTHENTIFICATION) {
+        if (configService.AUTHENTIFICATION_CONFIG.EXTERNAL_PROVIDER) {
           let data = await httpclient
             .get(`${configService.API_ENDPOINT}/auth/get_current_user`)
             .toPromise();
