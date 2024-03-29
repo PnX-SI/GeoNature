@@ -20,9 +20,14 @@ class CasAuthentificationError(GeonatureApiError):
     pass
 
 
-CAS_AUTHENTIFICATION = False
+AUTHENTIFICATION_CONFIG = {
+    "PROVIDER_NAME": "inpn",
+    "EXTERNAL_PROVIDER": True,
+}
+
+CAS_AUTHENTIFICATION = True
 PUB_URL = "https://ginco2-preprod.mnhn.fr/"
-CAS_PUBLIC_DD = dict(
+CAS_PUBLIC = dict(
     URL_LOGIN="https://inpn.mnhn.fr/auth/login",
     URL_LOGOUT="https://inpn.mnhn.fr/auth/logout",
     URL_VALIDATION="https://inpn.mnhn.fr/auth/serviceValidate",
@@ -34,6 +39,7 @@ CAS_USER_WS = dict(
     ID="change_value",
     PASSWORD="change_value",
 )
+USERS_CAN_SEE_ORGANISM_DATA = False
 
 
 def get_user_from_id_inpn_ws(id_user):
@@ -96,12 +102,11 @@ def insert_user_and_org(info_user):
 class AuthenficationCASINPN(Authentification):
 
     def authenticate(self, *args, **kwargs) -> Union[Response, models.User]:
-        config_cas = current_app.config["CAS"]
         params = request.args
         if "ticket" in params:
             base_url = current_app.config["API_ENDPOINT"] + "/auth/login"
             url_validate = "{url}?ticket={ticket}&service={service}".format(
-                url=CAS_PUBLIC_DD["URL_VALIDATION"],
+                url=CAS_PUBLIC["URL_VALIDATION"],
                 ticket=params["ticket"],
                 service=base_url,
             )
@@ -147,7 +152,7 @@ class AuthenficationCASINPN(Authentification):
                 log.error("Erreur d'authentification lié au CAS, voir log du CAS")
                 return render_template(
                     "cas_login_error.html",
-                    cas_logout=CAS_PUBLIC_DD["URL_LOGOUT"],
+                    cas_logout=CAS_PUBLIC["URL_LOGOUT"],
                     url_geonature=current_app.config["URL_APPLICATION"],
                 )
         return jsonify({"message": "Authentification error"}, 500)
@@ -155,7 +160,18 @@ class AuthenficationCASINPN(Authentification):
     def revoke(self) -> Any:
         pass
 
+    def get_provider_url(self) -> str:
+        endpoint = current_app.config["API_ENDPOINT"]
+        base_url = CAS_PUBLIC["URL_LOGIN"]
+        return f"{base_url}?service={endpoint}/auth/login"
 
-auth_manager.set_auth_provider("cas_inpn", AuthenficationCASINPN)
+    def get_provider_revoke_url(self) -> str:
+        endpoint = current_app.config["URL_APPLICATION"]
+        base_url = CAS_PUBLIC["URL_LOGOUT"]
+        return f"{base_url}?service={endpoint}"
+
+
+if CAS_AUTHENTIFICATION:
+    auth_manager.set_auth_provider("cas_inpn", AuthenficationCASINPN)
 
 # Accueil : https://ginco2-preprod.mnhn.fr/ (URL publique) + http://ginco2-preprod.patnat.mnhn.fr/ (URL privée)
