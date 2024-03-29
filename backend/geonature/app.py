@@ -11,7 +11,6 @@ if sys.version_info < (3, 10):
     from importlib_metadata import entry_points
 else:
     from importlib.metadata import entry_points
-
 from flask import Flask, g, request, current_app, send_from_directory
 from flask.json.provider import DefaultJSONProvider
 from flask_mail import Message
@@ -33,6 +32,8 @@ else:  # retro-compatibility SQLAlchemy 1.3
     from sqlalchemy.engine import RowProxy as Row
 
 from geonature.utils.config import config
+from geonature.core.auth.auth_manager import auth_manager
+
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
 from geonature.utils.module import iter_modules_dist
@@ -97,6 +98,7 @@ def create_app(with_external_mods=True):
         template_folder="geonature/templates",
     )
     app.config.update(config)
+    auth_manager.init_app(app)
 
     # Enable deprecation warnings in debug mode
     if app.debug and not sys.warnoptions:

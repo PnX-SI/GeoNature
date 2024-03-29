@@ -42,14 +42,6 @@ config_default = {
     "SEND_FILE_MAX_AGE_DEFAULT": 0,
 }
 
-
-try:
-    from geonature.custom import authentification_class
-
-    config_programmatic["authentification_class"] = authentification_class
-except ImportError:
-    pass
-
 config = ChainMap({}, config_programmatic, config_backend, config_frontend, config_default)
 
 api_uri = urlsplit(config["API_ENDPOINT"])

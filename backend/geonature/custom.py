@@ -1,6 +1,7 @@
 import datetime
 import logging
 from typing import Any, Union
+from geonature.core.auth.auth_manager import auth_manager
 import xmltodict
 
 from flask import Response, current_app, jsonify, make_response, redirect, render_template, request
@@ -155,6 +156,6 @@ class AuthenficationCASINPN(Authentification):
         pass
 
 
-authentification_class = AuthenficationCASINPN
+auth_manager.set_auth_provider("cas_inpn", AuthenficationCASINPN)
 
 # Accueil : https://ginco2-preprod.mnhn.fr/ (URL publique) + http://ginco2-preprod.patnat.mnhn.fr/ (URL privée)
