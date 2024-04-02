@@ -46,6 +46,3 @@ class ExternalGNAuthProvider(Authentication):
 
     def revoke(self):
         pass
-
-    def get_provider_url(self) -> str:
-        return ""

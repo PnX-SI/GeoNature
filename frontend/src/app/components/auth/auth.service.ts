@@ -12,6 +12,7 @@ import { CruvedStoreService } from '@geonature_common/service/cruved-store.servi
 import { ModuleService } from '../../services/module.service';
 import { RoutingService } from '@geonature/routing/routing.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { Provider } from '@geonature/modules/login/providers';
 
 export interface User {
   user_login: string;
@@ -41,24 +42,12 @@ export class AuthService {
     public config: ConfigService
   ) {}
 
-  /**
-   * Retrieves the URL for the external authentication provider.
-   *
-   * @return {Observable<any>} The URL of the external authentication provider.
-   */
-  getLoginExternalProviderUrl() {
-    // Constructs the URL for the external authentication provider using the API endpoint from the configuration.
-    const url = `${this.config.API_ENDPOINT}/auth/external_provider_url`;
-
-    // Sends an HTTP GET request to the constructed URL and returns the result.
-    return this._http.get<any>(url);
-  }
   setCurrentUser(user) {
     localStorage.setItem(this.prefix + 'current_user', JSON.stringify(user));
   }
 
-  getAuthProviders(): Observable<Array<string>> {
-    return this._http.get<Array<string>>(`${this.config.API_ENDPOINT}/gn_auth/providers`);
+  getAuthProviders(): Observable<Array<Provider>> {
+    return this._http.get<Array<Provider>>(`${this.config.API_ENDPOINT}/auth/providers`);
   }
 
   getCurrentUser() {

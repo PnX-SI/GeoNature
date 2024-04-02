@@ -9,6 +9,7 @@ import { ConfigService } from '@geonature/services/config.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoutingService } from '@geonature/routing/routing.service';
+import { Provider } from '../providers';
 
 @Component({
   selector: 'pnx-login',
@@ -26,7 +27,7 @@ export class LoginComponent implements OnInit {
   form: UntypedFormGroup;
   login_or_pass_recovery: boolean = false;
   public APP_NAME = null;
-  public authProviders: Array<string>;
+  public authProviders: Array<Provider>;
 
   constructor(
     public _authService: AuthService, //FIXME : change to private (html must be modified)
@@ -47,11 +48,11 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.config.AUTHENTIFICATION_CONFIG.EXTERNAL_PROVIDER) {
-      this._authService.getLoginExternalProviderUrl().subscribe((url) => {
-        document.location.href = url;
-      });
-    }
+    // if (this.config.AUTHENTIFICATION_CONFIG.EXTERNAL_PROVIDER) {
+    //   this._authService.getLoginExternalProviderUrl().subscribe((url) => {
+    //     document.location.href = url;
+    //   });
+    // }
     this._authService.getAuthProviders().subscribe((providers) => {
       this.authProviders = providers;
     });
