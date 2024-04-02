@@ -1,10 +1,10 @@
 <div
   id="login-body"
-  style="background: url({{ this.config.API_ENDPOINT }}{{this.config.STATIC_URL}}/images/login_background.jpg) center 10% no-repeat;"
+  style="background: url({{ this.config.API_ENDPOINT }}{{
+    this.config.STATIC_URL
+  }}/images/login_background.jpg) center 10% no-repeat;"
 >
-  <div
-    class="container"
-  >
+  <div class="container">
     <div class="row">
       <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
         <div
@@ -41,7 +41,7 @@
                     type="text"
                     id="login"
                     class="form-control"
-                    name="username"
+                    name="login"
                     ngModel
                     placeholder="Identifiant"
                     autofocus
@@ -74,6 +74,10 @@
                 >
                   Se connecter
                 </button>
+                <div>
+                  {{ authProviders | json }}
+                </div>
+
                 <br />
 
                 <div *ngIf="enable_sign_up">

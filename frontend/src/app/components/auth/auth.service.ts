@@ -57,6 +57,10 @@ export class AuthService {
     localStorage.setItem(this.prefix + 'current_user', JSON.stringify(user));
   }
 
+  getAuthProviders(): Observable<Array<string>> {
+    return this._http.get<Array<string>>(`${this.config.API_ENDPOINT}/gn_auth/providers`);
+  }
+
   getCurrentUser() {
     let currentUser = localStorage.getItem(this.prefix + 'current_user');
     return JSON.parse(currentUser);
@@ -89,13 +93,8 @@ export class AuthService {
     localStorage.setItem(this.prefix + 'expires_at', authResult.expires);
   }
 
-  signinUser(user: any) {
-    const options = {
-      login: user.username,
-      password: user.password,
-    };
-
-    return this._http.post<any>(`${this.config.API_ENDPOINT}/auth/login`, options);
+  signinUser(form: any) {
+    return this._http.post<any>(`${this.config.API_ENDPOINT}/auth/login/gn_ecrins`, form);
   }
 
   signinPublicUser(): Observable<any> {
@@ -151,9 +150,11 @@ export class AuthService {
     });
 
     if (this.config.AUTHENTIFICATION_CONFIG.EXTERNAL_PROVIDER) {
-      this._http.get<any>(`${this.config.API_ENDPOINT}/auth/external_provider_revoke_url`).subscribe((url) => {
-        document.location.href = url
-      })
+      this._http
+        .get<any>(`${this.config.API_ENDPOINT}/auth/external_provider_revoke_url`)
+        .subscribe((url) => {
+          document.location.href = url;
+        });
     } else {
       this.router.navigate(['/login']);
     }

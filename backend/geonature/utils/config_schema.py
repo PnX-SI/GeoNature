@@ -198,9 +198,6 @@ class GnPySchemaConf(Schema):
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
     ALEMBIC = fields.Nested(AlembicConfig, load_default=AlembicConfig().load({}))
-    AUTHENTIFICATION_CONFIG = fields.Nested(
-        AuthentificationConfig, load_default=AuthentificationConfig().load({})
-    )
 
     @post_load()
     def folders(self, data, **kwargs):
@@ -565,6 +562,9 @@ class GnGeneralSchemaConf(Schema):
     NOTIFICATIONS_ENABLED = fields.Boolean(load_default=True)
     PROFILES_REFRESH_CRONTAB = fields.String(load_default="0 3 * * *")
     MEDIA_CLEAN_CRONTAB = fields.String(load_default="0 1 * * *")
+    AUTHENTIFICATION_CONFIG = fields.Nested(
+        AuthentificationConfig, load_default=AuthentificationConfig().load({})
+    )
 
     # @validates_schema
     # def validate_enable_sign_up(self, data, **kwargs):
