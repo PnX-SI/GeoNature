@@ -39,6 +39,11 @@ log = logging.getLogger()
 
 @routes.route("/providers", methods=["GET"])
 def get_providers():
+    property_name = ["id_provider", "is_geonature", "logo", "label", "login_url"]
+    return [
+        {getattr(provider, _property) for _property in property_name}
+        for _, provider in current_app.auth_manager.provider_authentication_cls.items()
+    ]
     return list(current_app.auth_manager.provider_authentication_cls.keys())
 
 

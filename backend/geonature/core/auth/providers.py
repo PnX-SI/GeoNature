@@ -10,6 +10,7 @@ from pypnusershub.db.models import User
 
 class ExternalGNAuthProvider(Authentication):
     def __init__(self, base_url, id_group):
+        super().__init__("gn_ecrins")
         self.base_url = base_url
         self.id_group = id_group
 
