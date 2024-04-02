@@ -99,6 +99,7 @@ def create_app(with_external_mods=True):
     )
     app.config.update(config)
     auth_manager.init_app(app)
+    auth_manager.home_page = config["URL_APPLICATION"]
 
     # Enable deprecation warnings in debug mode
     if app.debug and not sys.warnoptions:
