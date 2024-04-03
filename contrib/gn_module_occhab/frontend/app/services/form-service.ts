@@ -40,6 +40,7 @@ export class OcchabFormService {
       id_station: null,
       unique_id_sinp_station: null,
       id_dataset: [null, Validators.required],
+      id_import: null,
       date_min: [null, Validators.required],
       date_max: [null, Validators.required],
       observers: [null, !this.config.OCCHAB.OBSERVER_AS_TXT ? Validators.required : null],

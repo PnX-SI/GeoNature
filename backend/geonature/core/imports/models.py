@@ -143,6 +143,10 @@ class Destination(db.Model):
         return self.module._imports_["check_transient_data"]
 
     @property
+    def get_imported_data_link(self):
+        return self.module._imports_["get_imported_data_link"]
+
+    @property
     def import_data_to_destination(self):
         return self.module._imports_["import_data_to_destination"]
 

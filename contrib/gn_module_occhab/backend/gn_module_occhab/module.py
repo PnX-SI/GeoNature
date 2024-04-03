@@ -4,6 +4,7 @@ from .imports import (
     check_transient_data,
     import_data_to_occhab,
     remove_data_from_occhab,
+    get_imported_data_link,
 )
 
 
@@ -24,4 +25,5 @@ class OcchabModule(TModules):
             {"key": "station_count", "value": "Nombre de stations importées"},
             {"key": "habitat_count", "value": "Nombre d’habitats importés"},
         ],
+        "get_imported_data_link": get_imported_data_link,
     }
