@@ -4,6 +4,7 @@ import geojson
 from geonature.core.gn_meta.models.aframework import TAcquisitionFramework
 from geonature.core.gn_meta.models.commons import CorAcquisitionFrameworkActor, CorDatasetActor
 from geonature.core.gn_meta.models.datasets import TDatasets
+from geonature.core.imports.models import TImports, Destination
 from marshmallow import EXCLUDE, INCLUDE
 
 from flask import (
@@ -324,3 +325,18 @@ def get_default_nomenclatures():
             nomenclature_obj = db.session.get(TNomenclatures, d[1]).as_dict()
         formated_dict[d[0]] = nomenclature_obj
     return formated_dict
+
+
+@blueprint.route("/imports", methods=["GET"])
+@login_required
+@json_resp
+def get_imports():
+    """Get all sources.
+
+    .. :quickref: Occhab;
+    """
+    query = select(TImports).join(Destination).where(Destination.code == "occhab")
+    data = db.session.execute(query).unique().scalars().all()
+    return [
+        {"id_import": d.id_import, "name_source": "Import(id={})".format(d.id_import)} for d in data
+    ]

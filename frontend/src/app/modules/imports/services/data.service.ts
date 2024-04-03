@@ -324,4 +324,8 @@ export class ImportDataService {
       `${this.config.API_ENDPOINT}/import/${destinationCode}/report_plot/${importId}`
     );
   }
+
+  get_imported_data_link(id_import) {
+    return this._http.get(`${this.getUrlApiForADestination()}/imports/${id_import}/data_link`);
+  }
 }

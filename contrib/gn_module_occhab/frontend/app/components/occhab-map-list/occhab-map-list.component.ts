@@ -11,6 +11,7 @@ import { ConfigService } from '@geonature/services/config.service';
 import { OccHabMapListService } from '../../services/occhab-map-list.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'pnx-occhab-map-list',
@@ -40,10 +41,12 @@ export class OccHabMapListComponent implements OnInit {
     public config: ConfigService,
     public mapListFormService: OccHabMapListService,
     private _moduleService: ModuleService,
-    public cruvedStore: CruvedStoreService
+    public cruvedStore: CruvedStoreService,
+    private _route: ActivatedRoute
   ) {}
 
   ngOnInit() {
+    this.collapseFilterIfImport();
     // get user cruved
     const currentModule = this._moduleService.currentModule;
     this.userCruved = currentModule.cruved;
@@ -54,12 +57,21 @@ export class OccHabMapListComponent implements OnInit {
     this.canImport = canCreateImport && canCreateOcchab;
     this.destinationImportCode = currentModule.destination[0]?.code;
 
+    this._route.queryParamMap.subscribe((params) => {
+      if (params.get('id_import')) {
+        this.isCollapseFilter = false;
+      }
+    });
+
     if (this.storeService.firstMessageMapList) {
       this._commonService.regularToaster('info', 'Les 50 dernières stations saisies');
       this.storeService.firstMessageMapList = false;
     }
 
-    this.getStations({ limit: 50 });
+    if (this.isCollapseFilter) {
+      this.getStations({ limit: 50 });
+    }
+
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
 
@@ -68,6 +80,14 @@ export class OccHabMapListComponent implements OnInit {
     this.mapListService.currentIndexRow$.subscribe((indexRow) => {
       const currentPage = Math.trunc(indexRow / this.rowNumber);
       this.dataTable.offset = currentPage;
+    });
+  }
+
+  collapseFilterIfImport() {
+    this._route.queryParamMap.subscribe((params) => {
+      if (params.get('id_import')) {
+        this.isCollapseFilter = false;
+      }
     });
   }
 

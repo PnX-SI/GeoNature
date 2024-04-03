@@ -542,6 +542,20 @@ def get_import_source_file(scope, imprt):
     )
 
 
+@blueprint.route("/<destination>/imports/<int:import_id>/data_link", methods=["GET"])
+@permissions.check_cruved_scope("R", get_scope=True, module_code="IMPORT", object_code="IMPORT")
+def get_imported_data_link(scope, imprt):
+    """
+    .. :quickref: Import; Check if get_imported_data_link exists.
+
+    Check if get_imported_data_link exists in destination module.
+    """
+    try:
+        return jsonify(imprt.destination.get_imported_data_link(imprt))
+    except Exception:
+        return jsonify("NO_IMPORTED_DATA_LINK")
+
+
 @blueprint.route("/<destination>/imports/<int:import_id>/invalid_rows", methods=["GET"])
 @permissions.check_cruved_scope("R", get_scope=True, module_code="IMPORT", object_code="IMPORT")
 def get_import_invalid_rows_as_csv(scope, imprt):

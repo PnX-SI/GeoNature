@@ -111,6 +111,7 @@ export class ImportReportComponent implements OnInit {
       .subscribe((data) => {
         Bokeh.embed.embed_item(data, 'chartreport');
       });
+    this.getImportedDataLink();
   }
 
   /** Gets the validBbox and validData (info about observations)
@@ -238,13 +239,24 @@ export class ImportReportComponent implements OnInit {
     return string_with_format;
   }
 
-  goToSynthese(idDataSet: number) {
-    let navigationExtras = {
-      queryParams: {
-        id_dataset: idDataSet,
-      },
+  goToTargetModule() {
+    const navigationExtras = {
+      queryParams: this.dataPath['query_params'],
     };
-    this._router.navigate(['/synthese'], navigationExtras);
+    this._router.navigate([this.dataPath['module_url']], navigationExtras);
+  }
+
+  getImportedDataLink() {
+    this._dataService.get_imported_data_link(this.importData.id_import).subscribe((data) => {
+      if (data) {
+        if (data == 'NO_IMPORTED_DATA_LINK') {
+          this.isDataLink = false;
+        } else {
+          this.isDataLink = true;
+          this.dataPath = data;
+        }
+      }
+    });
   }
 
   navigateToImportList() {

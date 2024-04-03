@@ -35,6 +35,13 @@
     ></pnx-date>
   </div>
 
+  <div class="col-2">
+    <small *ngIf="processedDefaultFilters"> Filtres avancés </small>
+    <pnx-dynamic-form-generator *ngIf="processedDefaultFilters" [myFormGroup]="mapListFormService.searchForm"
+      [formsDefinition]="dynamycFormDef" [defaults]="processedDefaultFilters">
+    </pnx-dynamic-form-generator>
+  </div>
+
   <button
     mat-raised-button
     color="primary"

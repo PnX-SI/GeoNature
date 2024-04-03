@@ -115,6 +115,11 @@
                 ></mat-spinner>
               </mat-icon>
             </button>
+            <div id="showData" *ngIf="isDataLink">
+              <button report-button mat-raised-button class="align-self-center" color="primary" [disabled]="importData?.date_end_import === null" (click)="goToTargetModule()">
+                Voir les données dans le module de destination
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -446,15 +451,6 @@
               [zoomOnFirstTime]="true"
             ></pnx-geojson>
           </pnx-map>
-          <button
-            mat-raised-button
-            class="align-self-center"
-            color="primary"
-            [disabled]="importData?.date_end_import === null"
-            (click)="goToSynthese(importData?.id_dataset)"
-          >
-            Afficher dans la synthèse
-          </button>
         </div>
         <div
           id="chartreport"

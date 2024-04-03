@@ -17,6 +17,7 @@ export class OccHabMapListService {
       date_low: null,
       date_up: null,
       habitat: null,
+      id_import: null,
     });
   }
   nbOfFilter() {
