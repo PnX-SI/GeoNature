@@ -335,14 +335,8 @@ def get_imports():
 
     .. :quickref: Occhab;
     """
-    query = (
-        select(TImports)
-        .join(Destination)
-        .where(Destination.code == 'occhab')
-    )
+    query = select(TImports).join(Destination).where(Destination.code == "occhab")
     data = db.session.execute(query).unique().scalars().all()
     return [
-        {'id_import': d.id_import, 
-         'name_source': 'Import(id={})'.format(d.id_import)
-        } for d in data
+        {"id_import": d.id_import, "name_source": "Import(id={})".format(d.id_import)} for d in data
     ]

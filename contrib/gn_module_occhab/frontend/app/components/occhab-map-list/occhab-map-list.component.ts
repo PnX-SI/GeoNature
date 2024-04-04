@@ -71,7 +71,7 @@ export class OccHabMapListComponent implements OnInit {
     if (this.isCollapseFilter) {
       this.getStations({ limit: 50 });
     }
-    
+
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
 

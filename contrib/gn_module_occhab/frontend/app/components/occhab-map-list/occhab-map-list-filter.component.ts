@@ -37,7 +37,7 @@ export class OcchabMapListFilterComponent implements OnInit {
         this.mapListFormService.searchForm.controls['id_import'].setValue(
           Number(params.get('id_import'))
         );
-        this.processedDefaultFilters = {id_import: [Number(params.get('id_import'))]};
+        this.processedDefaultFilters = { id_import: [Number(params.get('id_import'))] };
         this.onSearch.emit(this.cleanFilter());
       }
     });
