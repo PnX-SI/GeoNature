@@ -1,61 +1,40 @@
 <div class="row row-sm form">
   <div class="col-2">
-    <pnx-datasets
-      label="{{ 'Releve.Dataset' | translate }}"
-      [displayAll]="true"
-      [displayOnlyActive]="false"
-      [parentFormControl]="mapListFormService.searchForm.get('id_dataset')"
-      moduleCode="OCCHAB"
-    >
+    <pnx-datasets label="{{ 'Releve.Dataset' | translate }}" [displayAll]="true" [displayOnlyActive]="false"
+      [parentFormControl]="mapListFormService.searchForm.get('id_dataset')" moduleCode="OCCHAB">
     </pnx-datasets>
   </div>
   <div class="col-3">
-    <pnx-autocomplete
-      apiEndPoint="{{config.API_ENDPOINT}}/habref/habitats/autocomplete"
-      [searchAsParameter]="false"
-      [parentFormControl]="mapListFormService.searchForm.get('habitat')"
-      queryParamSearch="search_name"
-      [othersGetParams]="{id_list: config.OCCHAB.ID_LIST_HABITAT}"
-      [formatter]="formatter"
-      keyValue="search_name"
-      label="Habitat"
-      placeholder="Tapez les 1eres lettres de l'habitat"
-    >
+    <pnx-autocomplete apiEndPoint="{{config.API_ENDPOINT}}/habref/habitats/autocomplete" [searchAsParameter]="false"
+      [parentFormControl]="mapListFormService.searchForm.get('habitat')" queryParamSearch="search_name"
+      [othersGetParams]="{id_list: config.OCCHAB.ID_LIST_HABITAT}" [formatter]="formatter" keyValue="search_name"
+      label="Habitat" placeholder="Tapez les 1eres lettres de l'habitat">
     </pnx-autocomplete>
   </div>
   <div class="col-2">
-    <pnx-date
-      label="{{ 'Releve.MinDate' | translate }}"
-      [parentFormControl]="mapListFormService.searchForm.get('date_low')"
-    >
+    <pnx-date label="{{ 'Releve.MinDate' | translate }}"
+      [parentFormControl]="mapListFormService.searchForm.get('date_low')">
     </pnx-date>
   </div>
 
   <div class="col-2">
-    <pnx-date
-      label="{{ 'Releve.MaxDate' | translate }}"
-      [parentFormControl]="mapListFormService.searchForm.get('date_up')"
-    >
+    <pnx-date label="{{ 'Releve.MaxDate' | translate }}"
+      [parentFormControl]="mapListFormService.searchForm.get('date_up')">
     </pnx-date>
   </div>
 
-  <button
-    mat-raised-button
-    color="primary"
-    (click)="searchEvent($event)"
-  >
+  <div class="col-2">
+    <small *ngIf="processedDefaultFilters"> Filtres avancés </small>
+    <pnx-dynamic-form-generator *ngIf="processedDefaultFilters" [myFormGroup]="mapListFormService.searchForm"
+      [formsDefinition]="dynamycFormDef" [defaults]="processedDefaultFilters">
+    </pnx-dynamic-form-generator>
+  </div>
+
+  <button mat-raised-button color="primary" (click)="searchEvent($event)">
     Rechercher
   </button>
-  <button
-    mat-raised-button
-    color="warn"
-    (click)="resetFilterForm()"
-    matTooltip="Raffraichir les filtres"
-  >
-    <i
-      class="fa fa-refresh"
-      aria-hidden="true"
-    ></i>
+  <button mat-raised-button color="warn" (click)="resetFilterForm()" matTooltip="Raffraichir les filtres">
+    <i class="fa fa-refresh" aria-hidden="true"></i>
   </button>
 
   <!-- {{mapListFormService.searchForm.value |json}} -->

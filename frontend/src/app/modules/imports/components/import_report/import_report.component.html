@@ -60,6 +60,11 @@
                 <mat-spinner color="warn" diameter="30"> </mat-spinner>
               </mat-icon>
             </button>
+            <div id="showData" *ngIf="isDataLink">
+              <button report-button mat-raised-button class="align-self-center" color="primary" [disabled]="importData?.date_end_import === null" (click)="goToTargetModule()">
+                Voir les données dans le module de destination
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -293,9 +298,6 @@
         <pnx-geojson [geojson]="validBbox" [zoomOnFirstTime]="true">
         </pnx-geojson>
       </pnx-map>
-      <button  mat-raised-button class="align-self-center" color="primary" [disabled]="importData?.date_end_import === null" (click)="goToSynthese(importData?.id_dataset)">
-        Afficher dans la synthèse
-      </button>
     </div>
     <div *ngIf="doughnutChartData.length > 0" class="d-flex flex-column col-sm-6">
       <h5 class="card-title">Répartition des taxons importés</h5>
@@ -314,6 +316,7 @@
       </mat-form-field>
     </div>
     </div>
+    
     </mat-expansion-panel>
   </div>
 </div>

@@ -316,4 +316,8 @@ export class ImportDataService {
       {}
     );
   }
+
+  get_imported_data_link(id_import) {
+    return this._http.get(`${this.getUrlApiForADestination()}/imports/${id_import}/data_link`);
+  }
 }
