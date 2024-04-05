@@ -4,7 +4,7 @@ from geojson import FeatureCollection
 
 from geonature.utils.env import DB
 
-# from geonature.core.gn_monitoring.models import TBaseSites, corSiteArea, corSiteModule
+from geonature.core.gn_monitoring.models import TBaseSites, corSiteArea, corSiteModule
 
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.generic import get_geojson_feature
